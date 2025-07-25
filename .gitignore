@@ -1,1 +1,40 @@
-<FENTI TARTALOM>
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+*.pyo
+
+# 🧪 Virtuális környezetek, dotenv
+venv/
+.env
+
+# 🔌 IDE, rendszerfájlok
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 🗃️ Adatok, cache-ek, exportok, logok
+data/
+logs/
+exports/
+
+# 🔎 Scripts-ből csak a fő python fájlokat engedjük át
+scripts/__pycache__/
+scripts/logs/
+scripts/src/
+scripts/*.csv
+scripts/*.xlsx
+scripts/*.json
+scripts/*.db
+scripts/*.sql
+scripts/*.zip
+
+# 🔁 Explicit allow kivétel – ezek MARADNAK
+!scripts/populate_cities_db.py
+!scripts/fix_hungarian_coordinates.py
+!scripts/ai_studio_code.py
+!scripts/add_coordinates_to_db.py
+
