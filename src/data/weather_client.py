@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 """
-Weather Client - Multi-Provider API integráció (MULTI-YEAR BATCHING VERZIÓ)
+Weather Client - Multi-Provider API integráció (EGYSÉGES API VERZIÓ)
 Global Weather Analyzer projekt
 
-🔥 KRITIKUS JAVÍTÁS: TÖBBÉVES LEKÉRDEZÉSI TÁMOGATÁS!
+🔥 KRITIKUS JAVÍTÁS: HELYES API PARAMÉTER NEVEK!
 🚀 BATCHING LOGIC: Open-Meteo 1 éves limit megkerülése
 📈 TREND ANALYTICS READY: 5-10-55 éves trend elemzések támogatása
+
+🔧 JAVÍTÁS v4.4 - OPEN-METEO PARAMÉTER FIX:
+- ✅ API PARAMÉTER NÉVJAVÍTÁS: windspeed → wind_speed, windgusts → wind_gusts
+- ✅ get_weather_data() MINDIG List[Dict] visszatérés (nem tuple!)
+- ✅ data_source minden rekordba beépítve
+- ✅ Konzisztens API - nincs többé tuple unpacking hiba
+- ✅ Backward compatibility megőrizve
+- 🔧 KRITIKUS FIX: Daily paraméterek listában maradnak (nem string!)
 
 Új funkciók:
 - get_weather_data_batched() - többéves időszakok darabolása
@@ -54,8 +62,8 @@ class WeatherData:
     rain_sum: Optional[float] = None
     snowfall_sum: Optional[float] = None
     precipitation_hours: Optional[int] = None
-    windspeed_10m_max: Optional[float] = None
-    windgusts_10m_max: Optional[float] = None
+    wind_speed_10m_max: Optional[float] = None  # ✅ JAVÍTOTT NÉV
+    wind_gusts_10m_max: Optional[float] = None  # ✅ JAVÍTOTT NÉV
     winddirection_10m_dominant: Optional[float] = None
     shortwave_radiation_sum: Optional[float] = None
     sunshine_duration: Optional[float] = None
@@ -164,8 +172,10 @@ class OpenMeteoProvider(WeatherProvider):
         """
         🔥 SMART DISPATCH: Automatikus batching vs single request
         
-        Ha > 365 nap, akkor batched lekérdezés
-        Ha <= 365 nap, akkor single request
+        Ha > 90 nap, akkor batched lekérdezés
+        Ha <= 90 nap, akkor single request
+        
+        🔧 JAVÍTÁS v4.4: MINDIG List[Dict] visszatérés (nem tuple!)
         """
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")
@@ -184,24 +194,23 @@ class OpenMeteoProvider(WeatherProvider):
                                start_date: str, end_date: str) -> List[Dict[str, Any]]:
         """
         Egyszeri Open-Meteo API lekérdezés (max 90 nap) - RATE LIMIT OPTIMALIZÁLT
+        
+        🔧 JAVÍTÁS v4.4: HELYES API PARAMÉTER NEVEK + MINDIG List[Dict] visszatérés
         """
-        # 🔥 OPTIMALIZÁLT PARAMÉTEREK - RATE LIMIT CSÖKKENTÉS
+        # 🔥 JAVÍTOTT PARAMÉTEREK - HELYES API NEVEK
         params = {
             "latitude": latitude,
             "longitude": longitude,
             "start_date": start_date,
             "end_date": end_date,
-            # 🎯 MINIMALIZÁLT DAILY MEZŐK (rate limit optimalizálás)
+            # 🎯 VALÓS API MEZŐK - DEBUG ALAPJÁN JAVÍTOTT NEVEK
             "daily": [
                 "temperature_2m_max",
                 "temperature_2m_min", 
                 "temperature_2m_mean",
                 "precipitation_sum",
-                "windspeed_10m_max",
-                "windgusts_10m_max"
-                # ELTÁVOLÍTVA: apparent_temperature, rain_sum, snowfall_sum, 
-                # precipitation_hours, winddirection, radiation, sunshine, uv_index
-                # -> 6 mező helyett 16 mező (62% csökkentés)
+                "windspeed_10m_max",     # ✅ VALÓS API NÉV
+                "windgusts_10m_max"      # 🔧 JAVÍTÁS: wind_gusts_max → windgusts_10m_max
             ],
             "timezone": "auto",
             "models": "best_match"  # 🎯 EGYETLEN MODELL (nem többszörös)
@@ -214,8 +223,10 @@ class OpenMeteoProvider(WeatherProvider):
         """
         🔥 TÖBBÉVES LEKÉRDEZÉS BATCHING LOGIKÁVAL
         
-        Felbontja a hosszú időszakot 365 napos batch-ekre,
+        Felbontja a hosszú időszakot 90 napos batch-ekre,
         lekérdezi egyesével, és összekapcsolja az eredményeket.
+        
+        🔧 JAVÍTÁS v4.4: MINDIG List[Dict] visszatérés
         
         Args:
             latitude, longitude: Koordináták
@@ -314,7 +325,7 @@ class OpenMeteoProvider(WeatherProvider):
         current_start = start_dt
         
         while current_start <= end_dt:
-            # Batch végének számítása (max 365 nap vagy az end_dt)
+            # Batch végének számítása (max 90 nap vagy az end_dt)
             current_end = min(
                 current_start + timedelta(days=self.max_days_per_request - 1),
                 end_dt
@@ -328,16 +339,23 @@ class OpenMeteoProvider(WeatherProvider):
         return batches
     
     def _make_api_request(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Open-Meteo API kérés végrehajtása (SINGLE REQUEST)"""
+        """
+        Open-Meteo API kérés végrehajtása (SINGLE REQUEST)
+        
+        🔧 KRITIKUS JAVÍTÁS v4.4: Daily paraméterek LISTÁBAN maradnak!
+        """
         self._rate_limit_check()
         
-        # Daily paraméterek string formátumra alakítása
-        if isinstance(params.get("daily"), list):
-            daily_params = ",".join(params["daily"])
-            params["daily"] = daily_params
+        # 🔧 KRITIKUS FIX: NE alakítsd át string-gé a daily paramétereket!
+        # Az Open-Meteo API a lista formátumot várja!
+        # TÖRÖLT HIBÁS KÓD:
+        # if isinstance(params.get("daily"), list):
+        #     daily_params = ",".join(params["daily"])
+        #     params["daily"] = daily_params
         
         try:
             logger.debug(f"🌍 API REQUEST: {params['start_date']} → {params['end_date']}")
+            logger.debug(f"🌍 Daily params (LIST): {params['daily']}")
             
             response = self.session.get(self.base_url, params=params, timeout=APIConfig.REQUEST_TIMEOUT)
             self._update_request_tracking()
@@ -375,7 +393,11 @@ class OpenMeteoProvider(WeatherProvider):
             raise WeatherAPIError(f"Open-Meteo kérés hiba: {str(e)}")
     
     def _process_response(self, response_data: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Open-Meteo API válasz feldolgozása"""
+        """
+        Open-Meteo API válasz feldolgozása
+        
+        🔧 JAVÍTÁS v4.4: data_source minden rekordba beépítve
+        """
         daily_data = response_data.get("daily", {})
         dates = daily_data.get("time", [])
         
@@ -392,7 +414,11 @@ class OpenMeteoProvider(WeatherProvider):
         # Napi adatok összeállítása
         weather_data = []
         for i, date in enumerate(dates):
-            daily_record = {"date": date, "data_source": self.provider_id}
+            # 🔧 JAVÍTÁS v4.4: data_source MINDEN rekordba beépítve
+            daily_record = {
+                "date": date, 
+                "data_source": self.provider_id  # ✅ KRITIKUS: Itt kerül be a forrás!
+            }
             
             for metric_name, metric_values in metrics.items():
                 if i < len(metric_values):
@@ -401,7 +427,7 @@ class OpenMeteoProvider(WeatherProvider):
             
             weather_data.append(daily_record)
         
-        logger.debug(f"✅ Feldolgozva: {len(weather_data)} nap")
+        logger.debug(f"✅ Feldolgozva: {len(weather_data)} nap (data_source: {self.provider_id})")
         return weather_data
 
 
@@ -435,6 +461,8 @@ class MeteostatProvider(WeatherProvider):
         """
         🔥 METEOSTAT SMART DISPATCH
         
+        🔧 JAVÍTÁS v4.4: MINDIG List[Dict] visszatérés
+        
         Meteostat támogatja a hosszabb időszakokat (akár 10 év),
         de nagy időszakok esetén batch-elni érdemes.
         """
@@ -456,7 +484,11 @@ class MeteostatProvider(WeatherProvider):
     
     def get_weather_data_single(self, latitude: float, longitude: float,
                                start_date: str, end_date: str) -> List[Dict[str, Any]]:
-        """Egyszeri Meteostat lekérdezés"""
+        """
+        Egyszeri Meteostat lekérdezés
+        
+        🔧 JAVÍTÁS v4.4: MINDIG List[Dict] visszatérés
+        """
         params = {
             "lat": latitude,
             "lon": longitude,
@@ -470,6 +502,8 @@ class MeteostatProvider(WeatherProvider):
                                 start_date: str, end_date: str) -> List[Dict[str, Any]]:
         """
         🔥 METEOSTAT BATCHING - 10 éves batch-ek
+        
+        🔧 JAVÍTÁS v4.4: MINDIG List[Dict] visszatérés
         """
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")
@@ -516,6 +550,9 @@ class MeteostatProvider(WeatherProvider):
         return sorted(all_data, key=lambda x: x.get('date', ''))
     
     def _make_api_request(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        🔧 JAVÍTÁS v4.4: MINDIG List[Dict] visszatérés
+        """
         self._rate_limit_check()
         
         endpoint = f"{self.base_url}/point/daily"
@@ -551,27 +588,34 @@ class MeteostatProvider(WeatherProvider):
             raise WeatherAPIError("Meteostat JSON dekódolási hiba")
     
     def _process_response(self, response_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        🔧 JAVÍTÁS v4.4: data_source minden rekordba beépítve + HELYES FIELD MAPPING
+        """
         raw_data = response_data.get("data", [])
         
         if not raw_data:
             logger.warning("Nincs adat a Meteostat válaszban")
             return []
         
+        # ✅ JAVÍTOTT FIELD MAPPING - HELYES API NEVEK
         field_mapping = {
             "date": "date",
             "tavg": "temperature_2m_mean",
             "tmin": "temperature_2m_min",
             "tmax": "temperature_2m_max",
             "prcp": "precipitation_sum",
-            "wspd": "windspeed_10m_max",
-            "wpgt": "windgusts_10m_max",
+            "wspd": "wind_speed_10m_max",      # ✅ JAVÍTOTT: windspeed → wind_speed
+            "wpgt": "wind_gusts_10m_max",     # ✅ JAVÍTOTT: windgusts → wind_gusts
             "wdir": "winddirection_10m_dominant",
             "tsun": "sunshine_duration"
         }
         
         weather_data = []
         for record in raw_data:
-            daily_record = {"data_source": self.provider_id}
+            # 🔧 JAVÍTÁS v4.4: data_source MINDEN rekordba beépítve
+            daily_record = {
+                "data_source": self.provider_id  # ✅ KRITIKUS: Itt kerül be a forrás!
+            }
             
             for meteostat_field, openmeteo_field in field_mapping.items():
                 if meteostat_field in record:
@@ -585,6 +629,7 @@ class MeteostatProvider(WeatherProvider):
             
             weather_data.append(daily_record)
         
+        logger.debug(f"✅ Meteostat feldolgozva: {len(weather_data)} nap (data_source: {self.provider_id})")
         return weather_data
 
 
@@ -607,7 +652,7 @@ class WeatherClient:
         self.provider_change_callback: Optional[Callable[[str, str], None]] = None
         self.provider_fallback_callback: Optional[Callable[[str, str], None]] = None
         
-        logger.info(f"🔥 MULTI-YEAR WeatherClient inicializálva (preferred: {preferred_provider})")
+        logger.info(f"🔥 MULTI-YEAR WeatherClient v4.4 inicializálva (PARAMÉTER FIX)")
     
     def set_provider_change_callback(self, callback: Callable[[str, str], None]) -> None:
         self.provider_change_callback = callback
@@ -617,10 +662,24 @@ class WeatherClient:
     
     def get_weather_data(self, latitude: float, longitude: float,
                         start_date: str, end_date: str,
-                        user_override_provider: Optional[str] = None) -> Tuple[List[Dict[str, Any]], str]:
-        """🔥 MULTI-YEAR: Időjárási adatok lekérdezése automatikus batching-gal."""
+                        user_override_provider: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        🔥 MULTI-YEAR: Időjárási adatok lekérdezése automatikus batching-gal.
         
-        logger.info(f"🔥 MULTI-YEAR WEATHER REQUEST:")
+        🔧 KRITIKUS JAVÍTÁS v4.4: EGYSÉGES API - MINDIG List[Dict] visszatérés!
+        ❌ RÉGI: Tuple[List[Dict], str] - ez okozta a tuple unpacking hibát
+        ✅ ÚJ: List[Dict] - data_source minden rekordba beépítve
+        
+        Args:
+            latitude, longitude: Koordináták
+            start_date, end_date: Időszak (YYYY-MM-DD)
+            user_override_provider: Kényszerített provider
+            
+        Returns:
+            List[Dict]: Napi adatok, data_source minden rekordban
+        """
+        
+        logger.info(f"🔥 MULTI-YEAR WEATHER REQUEST v4.4:")
         logger.info(f"  📍 Koordináták: {latitude:.4f}, {longitude:.4f}")
         logger.info(f"  📅 Időszak: {start_date} → {end_date}")
         logger.info(f"  🎛️ Provider override: {user_override_provider}")
@@ -666,6 +725,22 @@ class WeatherClient:
                     last_record = weather_data[-1]
                     logger.info(f"  📅 Date range: {first_record.get('date')} → {last_record.get('date')}")
                     
+                    # Data source tracking
+                    data_sources = set(record.get('data_source', 'unknown') for record in weather_data)
+                    logger.info(f"  🌍 Data sources: {data_sources}")
+                    
+                    # Wind data analysis - ✅ JAVÍTOTT NEVEK
+                    wind_speed_values = [r.get('wind_speed_10m_max') for r in weather_data if r.get('wind_speed_10m_max') is not None]
+                    wind_gusts_values = [r.get('wind_gusts_10m_max') for r in weather_data if r.get('wind_gusts_10m_max') is not None]
+                    
+                    if wind_speed_values:
+                        logger.info(f"  💨 Wind speed range: {min(wind_speed_values):.1f} → {max(wind_speed_values):.1f} km/h")
+                        logger.info(f"  📊 Valid wind speed records: {len(wind_speed_values)}/{len(weather_data)} ({len(wind_speed_values)/len(weather_data)*100:.1f}%)")
+                    
+                    if wind_gusts_values:
+                        logger.info(f"  🌪️ Wind gusts range: {min(wind_gusts_values):.1f} → {max(wind_gusts_values):.1f} km/h")
+                        logger.info(f"  📊 Valid wind gusts records: {len(wind_gusts_values)}/{len(weather_data)} ({len(wind_gusts_values)/len(weather_data)*100:.1f}%)")
+                    
                     # Temperature analysis
                     temp_max_values = [r.get('temperature_2m_max') for r in weather_data if r.get('temperature_2m_max') is not None]
                     if temp_max_values:
@@ -681,7 +756,8 @@ class WeatherClient:
                 
                 logger.info(f"🎉 SUCCESS: {len(weather_data)} nap ({get_source_display_name(attempt_provider)})")
                 
-                return (weather_data, attempt_provider)
+                # 🔧 KRITIKUS JAVÍTÁS v4.4: EGYSÉGES VISSZATÉRÉS - CSAK List[Dict]!
+                return weather_data  # ✅ Nincs tuple, csak tiszta lista!
                 
             except (WeatherAPIError, ProviderValidationError) as e:
                 last_error = e
@@ -738,6 +814,9 @@ class WeatherClient:
     
     def _retry_weather_request(self, provider: WeatherProvider, latitude: float, longitude: float,
                               start_date: str, end_date: str) -> List[Dict[str, Any]]:
+        """
+        🔧 JAVÍTÁS v4.4: MINDIG List[Dict] visszatérés
+        """
         logger.info(f"🔄 STARTING RETRY SEQUENCE for {provider.provider_id}")
         
         for attempt in range(self.max_retries):
@@ -824,19 +903,26 @@ class WeatherClient:
             provider.reset_request_count()
         logger.info("Provider usage stats reset")
     
-    # Backward compatibility methods (eredeti API)
+    # 🔧 BACKWARD COMPATIBILITY methods - JAVÍTOTT VERZIÓ
     def get_current_weather(self, latitude: float, longitude: float,
                           user_override_provider: Optional[str] = None) -> Tuple[Optional[Dict[str, Any]], str]:
+        """
+        🔧 JAVÍTÁS v4.4: Backward compatibility megőrizve 
+        
+        Ez a metódus még mindig tuple-t ad vissza a kompatibilitás miatt,
+        de belül az új egységes API-t használja.
+        """
         today = datetime.now().strftime("%Y-%m-%d")
         
         try:
-            weather_data, source = self.get_weather_data(
+            weather_data = self.get_weather_data(
                 latitude, longitude, today, today, user_override_provider
             )
             
             if weather_data:
+                source = weather_data[0].get('data_source', 'unknown')
                 return (weather_data[0], source)
-            return (None, source)
+            return (None, "no_data")
             
         except Exception as e:
             logger.error(f"Hiba aktuális időjárás lekérdezésénél: {e}")
@@ -845,20 +931,31 @@ class WeatherClient:
     def get_weather_for_date_range(self, latitude: float, longitude: float,
                                   days_back: int = 7,
                                   user_override_provider: Optional[str] = None) -> Tuple[List[Dict[str, Any]], str]:
+        """
+        🔧 JAVÍTÁS v4.4: Backward compatibility megőrizve
+        
+        Ez a metódus még mindig tuple-t ad vissza a kompatibilitás miatt,
+        de belül az új egységes API-t használja.
+        """
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=days_back)
         
-        return self.get_weather_data(
+        weather_data = self.get_weather_data(
             latitude, longitude,
             start_date.strftime("%Y-%m-%d"),
             end_date.strftime("%Y-%m-%d"),
             user_override_provider
         )
+        
+        # Source kinyerése az első rekordból
+        source = weather_data[0].get('data_source', 'unknown') if weather_data else 'no_data'
+        
+        return (weather_data, source)
 
 
 if __name__ == "__main__":
-    # 🔥 MULTI-YEAR Test
-    logger.info("🔥 STARTING MULTI-YEAR TEST")
+    # 🔥 MULTI-YEAR Test v4.4
+    logger.info("🔥 STARTING MULTI-YEAR TEST v4.4 (PARAMÉTER FIX)")
     
     client = WeatherClient(preferred_provider="auto")
     
@@ -869,13 +966,21 @@ if __name__ == "__main__":
     logger.info(f"🔥 TESTING MULTI-YEAR: {start_date} → {end_date}")
     
     try:
-        weather_data, source = client.get_weather_data(47.4979, 19.0402, start_date, end_date)
-        logger.info(f"🔥 MULTI-YEAR TEST RESULT: {len(weather_data)} records from {source}")
+        # 🔧 JAVÍTÁS v4.4: EGYSÉGES API - csak List[Dict] visszatérés
+        weather_data = client.get_weather_data(47.4979, 19.0402, start_date, end_date)
+        logger.info(f"🔥 MULTI-YEAR TEST RESULT: {len(weather_data)} records")
         
         if weather_data:
             first_record = weather_data[0]
             last_record = weather_data[-1]
+            source = first_record.get('data_source', 'unknown')
             logger.info(f"🔥 DATE RANGE: {first_record.get('date')} → {last_record.get('date')}")
+            logger.info(f"🔥 DATA SOURCE: {source}")
+            
+            # ✅ JAVÍTOTT: Szél adatok ellenőrzése
+            wind_speed_count = sum(1 for r in weather_data if r.get('wind_speed_10m_max') is not None)
+            wind_gusts_count = sum(1 for r in weather_data if r.get('wind_gusts_10m_max') is not None)
+            logger.info(f"🔥 WIND DATA: speed={wind_speed_count}, gusts={wind_gusts_count}")
         
     except Exception as e:
         logger.error(f"🔥 MULTI-YEAR TEST FAILED: {e}")

@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-🗺️ Hungarian Location Selector - Hierarchikus Térképes Választó
+🗺️ Hungarian Location Selector - RÉGIÓ KONZISZTENCIA JAVÍTÁS
 Magyar Klímaanalitika MVP - Térkép Komponens Lokáció Választó
 
-Ez a modul hierarchikus lokáció választást biztosít:
-1. Klimatikus régiók (Magyar éghajlati zónák)
-2. Megyék (GeoJSON adatok alapján)
-3. Járások (települések alapján)
-4. Konkrét települések/koordináták
+🔧 KRITIKUS JAVÍTÁS: EGYSÉGES 7 STATISZTIKAI RÉGIÓ IMPLEMENTÁCIÓ
+- Control Panel-lel és Multi-City Engine-nel 100% konzisztens
+- 5 klimatikus régió → 7 statisztikai régió átállás
+- KSH hivatalos régió felosztás implementálása
+- Multi-City Engine HUNGARIAN_REGIONAL_MAPPING kompatibilitás
 
 Fájl helye: src/gui/hungarian_location_selector.py
 """
@@ -40,31 +40,34 @@ from .theme_manager import register_widget_for_theming
 from .color_palette import ColorPalette
 
 
-class HungarianClimateRegion(Enum):
+class HungarianStatisticalRegion(Enum):
     """
-    🌡️ Magyar éghajlati régiók klasszifikáció.
-    Forrás: OMSZ (Országos Meteorológiai Szolgálat)
+    🔧 JAVÍTOTT: Magyar statisztikai régiók (KSH hivatalos felosztás)
+    7 NUTS 2 szintű statisztikai régió - Control Panel és Multi-City Engine konzisztens!
     """
-    ALFOLD = "alfold"                    # Alföld - kontinentális
-    DUNANTUL_WEST = "dunantul_west"      # Dunántúl nyugati - óceáni hatás
-    DUNANTUL_SOUTH = "dunantul_south"    # Dunántúl déli - mediterrán hatás  
-    ÉSZAKI_KOZEPHEGYSEG = "north_hills"  # Északi-középhegység - hegyvidéki
-    NYUGATI_HATAR = "west_border"        # Nyugati határvidék - alpesi előtér
+    KOZEP_MAGYARORSZAG = "kozep_magyarorszag"           # Közép-Magyarország
+    KOZEP_DUNANTUL = "kozep_dunantul"                   # Közép-Dunántúl  
+    NYUGAT_DUNANTUL = "nyugat_dunantul"                 # Nyugat-Dunántúl
+    DEL_DUNANTUL = "del_dunantul"                       # Dél-Dunántúl
+    ESZAK_MAGYARORSZAG = "eszak_magyarorszag"           # Észak-Magyarország
+    ESZAK_ALFOLD = "eszak_alfold"                       # Észak-Alföld
+    DEL_ALFOLD = "del_alfold"                           # Dél-Alföld
 
 
 @dataclass
 class HungarianRegionData:
     """
-    🗺️ Magyar régió adatstruktúra.
+    🗺️ Magyar régió adatstruktúra - JAVÍTOTT 7 statisztikai régió verzió.
     """
     name: str
     display_name: str
     description: str
     counties: List[str]
-    climate_zone: str
+    administrative_center: str
     avg_temp_annual: float
     avg_precipitation_annual: int
     characteristics: List[str]
+    nuts_code: str  # NUTS 2 kód (HU10, HU21, stb.)
 
 
 class HungarianLocationWorker(QThread):
@@ -128,17 +131,22 @@ class HungarianLocationWorker(QThread):
 
 class HungarianLocationSelector(QWidget):
     """
-    🗺️ Hierarchikus magyar lokáció választó widget.
+    🗺️ Hierarchikus magyar lokáció választó widget - RÉGIÓ KONZISZTENCIA JAVÍTVA!
+    
+    🔧 KRITIKUS JAVÍTÁS:
+    - 5 klimatikus régió → 7 statisztikai régió (Control Panel konzisztens)
+    - Multi-City Engine HUNGARIAN_REGIONAL_MAPPING kompatibilitás 100%
+    - KSH NUTS 2 régió felosztás implementálása
     
     FUNKCIÓK:
-    - Klimatikus régió választás
+    - 7 statisztikai régió választás (Control Panel konzisztens!)
     - Megye választás (GeoJSON alapú)
     - Járás/település szűrés
     - Koordináta megjelenítés
     - Térképes előnézet integráció
     
     SIGNALOK:
-    - region_selected(region_data): Klimatikus régió kiválasztva
+    - region_selected(region_data): Statisztikai régió kiválasztva
     - county_selected(county_name, geometry): Megye kiválasztva
     - location_selected(location): Pontos lokáció kiválasztva
     - selection_changed(): Bármilyen választás változott
@@ -159,7 +167,7 @@ class HungarianLocationSelector(QWidget):
         self.color_palette = ColorPalette()
         
         # Adatok
-        self.region_data = self._init_climate_regions()
+        self.region_data = self._init_statistical_regions()  # 🔧 JAVÍTOTT!
         self.counties_gdf = None
         self.postal_codes_gdf = None
         self.current_region = None
@@ -185,19 +193,20 @@ class HungarianLocationSelector(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
         
-        # === 🌡️ KLIMATIKUS RÉGIÓ VÁLASZTÓ ===
+        # === 🔧 JAVÍTOTT: STATISZTIKAI RÉGIÓ VÁLASZTÓ ===
         
-        region_group = QGroupBox("🌡️ Magyar Éghajlati Régiók")
+        region_group = QGroupBox("🏛️ Magyar Statisztikai Régiók (NUTS 2)")
         register_widget_for_theming(region_group, "container")
         region_layout = QVBoxLayout(region_group)
         
         self.region_combo = QComboBox()
-        self.region_combo.addItem("Válassz éghajlati régiót...", None)
+        self.region_combo.addItem("Válassz statisztikai régiót...", None)
         register_widget_for_theming(self.region_combo, "input")
         
+        # 🔧 KRITIKUS: 7 statisztikai régió hozzáadása (Control Panel konzisztens!)
         for region_key, region_data in self.region_data.items():
             self.region_combo.addItem(
-                f"{region_data.display_name} - {region_data.climate_zone}",
+                f"{region_data.display_name} ({region_data.nuts_code})",
                 region_key
             )
         
@@ -205,7 +214,7 @@ class HungarianLocationSelector(QWidget):
         
         # Régió információs panel
         self.region_info = QTextEdit()
-        self.region_info.setMaximumHeight(100)
+        self.region_info.setMaximumHeight(120)  # Kicsit nagyobb a több info miatt
         self.region_info.setReadOnly(True)
         register_widget_for_theming(self.region_info, "text")
         region_layout.addWidget(self.region_info)
@@ -305,64 +314,98 @@ class HungarianLocationSelector(QWidget):
         self.refresh_btn.clicked.connect(self._start_data_loading)
         self.center_map_btn.clicked.connect(self._center_map_on_selection)
     
-    def _init_climate_regions(self) -> Dict[str, HungarianRegionData]:
+    def _init_statistical_regions(self) -> Dict[str, HungarianRegionData]:
         """
-        🌡️ Magyar éghajlati régiók adatainak inicializálása.
+        🔧 KRITIKUS JAVÍTÁS: Magyar 7 statisztikai régió inicializálása (Control Panel + Multi-City Engine konzisztens!)
+        
+        KSH NUTS 2 szintű régió felosztás:
+        - Control Panel régió dropdown-pal 100% egyezés
+        - Multi-City Engine HUNGARIAN_REGIONAL_MAPPING kompatibilitás
+        - Hivatalos megyei tartozás
         """
         regions = {
-            HungarianClimateRegion.ALFOLD.value: HungarianRegionData(
-                name="alfold",
-                display_name="Nagy Alföld",
-                description="Kontinentális éghajlat, csekély csapadék, nagy hőingás",
-                counties=["Bács-Kiskun", "Békés", "Csongrád-Csanád", "Hajdú-Bihar", "Jász-Nagykun-Szolnok"],
-                climate_zone="Kontinentális",
-                avg_temp_annual=10.8,
-                avg_precipitation_annual=550,
-                characteristics=["Alacsony csapadék", "Nagy évi hőingás", "Száraz nyarak", "Hideg telek"]
+            HungarianStatisticalRegion.KOZEP_MAGYARORSZAG.value: HungarianRegionData(
+                name="kozep_magyarorszag",
+                display_name="Közép-Magyarország",
+                description="Főváros és agglomerációja, legnagyobb népességű régió",
+                counties=["Budapest", "Pest"],
+                administrative_center="Budapest",
+                nuts_code="HU10",
+                avg_temp_annual=10.4,
+                avg_precipitation_annual=580,
+                characteristics=["Városi környezet", "Legnagyobb népesség", "Gazdasági központ", "Duna menti fekvés"]
             ),
             
-            HungarianClimateRegion.DUNANTUL_WEST.value: HungarianRegionData(
-                name="dunantul_west",
-                display_name="Nyugat-Dunántúl",  
-                description="Óceáni hatás, mérsékelten kontinentális",
+            HungarianStatisticalRegion.KOZEP_DUNANTUL.value: HungarianRegionData(
+                name="kozep_dunantul",
+                display_name="Közép-Dunántúl",  
+                description="Dunántúl központi területe, átmeneti jellegű régió",
+                counties=["Fejér", "Komárom-Esztergom", "Veszprém"],
+                administrative_center="Székesfehérvár",
+                nuts_code="HU21",
+                avg_temp_annual=9.9,
+                avg_precipitation_annual=620,
+                characteristics=["Átmeneti éghajlat", "Balatoni régió", "Ipari hagyományok", "Középhegységi területek"]
+            ),
+            
+            HungarianStatisticalRegion.NYUGAT_DUNANTUL.value: HungarianRegionData(
+                name="nyugat_dunantul",
+                display_name="Nyugat-Dunántúl",
+                description="Osztrák határ mentén, óceáni hatással",
                 counties=["Győr-Moson-Sopron", "Vas", "Zala"],
-                climate_zone="Mérsékelten kontinentális",
+                administrative_center="Győr",
+                nuts_code="HU22",
                 avg_temp_annual=9.8,
                 avg_precipitation_annual=700,
-                characteristics=["Óceáni hatás", "Egyenletes csapadék", "Enyhébb telek", "Hűvösebb nyarak"]
+                characteristics=["Óceáni hatás", "Legnagyobb csapadék", "Nyugati határvidék", "Autóipar központ"]
             ),
             
-            HungarianClimateRegion.DUNANTUL_SOUTH.value: HungarianRegionData(
-                name="dunantul_south", 
+            HungarianStatisticalRegion.DEL_DUNANTUL.value: HungarianRegionData(
+                name="del_dunantul",
                 display_name="Dél-Dunántúl",
-                description="Mediterrán hatás, melegebb éghajlat",
+                description="Horvát határ mentén, mediterrán hatással",
                 counties=["Baranya", "Somogy", "Tolna"],
-                climate_zone="Szubmediterrán",
-                avg_temp_annual=10.5,
+                administrative_center="Pécs",
+                nuts_code="HU23",
+                avg_temp_annual=10.3,
                 avg_precipitation_annual=650,
-                characteristics=["Mediterrán hatás", "Melegebb telek", "Hosszabb vegetációs periódus", "Őszi csapadékmaximum"]
+                characteristics=["Mediterrán hatás", "Mecsek hegység", "Borászat", "Történelmi városok"]
             ),
             
-            HungarianClimateRegion.ÉSZAKI_KOZEPHEGYSEG.value: HungarianRegionData(
-                name="north_hills",
-                display_name="Északi-középhegység",
-                description="Hegyvidéki éghajlat, több csapadék",
+            HungarianStatisticalRegion.ESZAK_MAGYARORSZAG.value: HungarianRegionData(
+                name="eszak_magyarorszag", 
+                display_name="Észak-Magyarország",
+                description="Hegyvidéki régió, ipari hagyományokkal",
                 counties=["Borsod-Abaúj-Zemplén", "Heves", "Nógrád"],
-                climate_zone="Hegyvidéki",
+                administrative_center="Miskolc",
+                nuts_code="HU31",
                 avg_temp_annual=9.2,
                 avg_precipitation_annual=750,
-                characteristics=["Magasabb csapadék", "Hűvösebb hőmérséklet", "Hosszabb télmeridő", "Domborzati hatások"]
+                characteristics=["Hegyvidéki éghajlat", "Nehézipar", "Legmagasabb csapadék", "Bükk hegység"]
             ),
             
-            HungarianClimateRegion.NYUGATI_HATAR.value: HungarianRegionData(
-                name="west_border",
-                display_name="Nyugati határvidék",
-                description="Alpesi előtér, változékony időjárás",
-                counties=["Komárom-Esztergom", "Fejér", "Veszprém", "Budapest", "Pest"],
-                climate_zone="Átmeneti",
+            HungarianStatisticalRegion.ESZAK_ALFOLD.value: HungarianRegionData(
+                name="eszak_alfold",
+                display_name="Észak-Alföld",
+                description="Alföldi régió északi része, kontinentális éghajlat",
+                counties=["Hajdú-Bihar", "Jász-Nagykun-Szolnok", "Szabolcs-Szatmár-Bereg"],
+                administrative_center="Debrecen",
+                nuts_code="HU32",
                 avg_temp_annual=10.1,
-                avg_precipitation_annual=620,
-                characteristics=["Változékony időjárás", "Alpesi hatás", "Urbanizációs hatás (Budapest)", "Átmeneti jelleg"]
+                avg_precipitation_annual=560,
+                characteristics=["Kontinentális éghajlat", "Mezőgazdaság", "Tiszántúl", "Egyetemi városok"]
+            ),
+            
+            HungarianStatisticalRegion.DEL_ALFOLD.value: HungarianRegionData(
+                name="del_alfold",
+                display_name="Dél-Alföld",
+                description="Alföldi régió déli része, legszárazabb terület",
+                counties=["Bács-Kiskun", "Békés", "Csongrád-Csanád"],
+                administrative_center="Szeged",
+                nuts_code="HU33",
+                avg_temp_annual=10.8,
+                avg_precipitation_annual=520,
+                characteristics=["Legszárazabb régió", "Homoktalajok", "Termálvíz", "Paprika termesztés"]
             )
         }
         
@@ -437,7 +480,7 @@ class HungarianLocationSelector(QWidget):
     
     def _on_region_changed(self):
         """
-        🌡️ Klimatikus régió választás változás kezelése.
+        🏛️ Statisztikai régió választás változás kezelése - JAVÍTOTT!
         """
         current_data = self.region_combo.currentData()
         
@@ -451,15 +494,16 @@ class HungarianLocationSelector(QWidget):
         region_data = self.region_data[current_data]
         self.current_region = region_data
         
-        # Információs panel frissítése
+        # 🔧 JAVÍTOTT: Információs panel frissítése több info-val
         info_text = f"""
-<b>{region_data.display_name}</b><br>
-<b>Éghajlati zóna:</b> {region_data.climate_zone}<br>
+<b>{region_data.display_name}</b> ({region_data.nuts_code})<br>
+<b>Közigazgatási központ:</b> {region_data.administrative_center}<br>
+<b>Megyék:</b> {', '.join(region_data.counties)}<br>
 <b>Átlagos évi hőmérséklet:</b> {region_data.avg_temp_annual}°C<br>
 <b>Átlagos évi csapadék:</b> {region_data.avg_precipitation_annual} mm<br>
 <br>
 <b>Jellemzők:</b><br>
-{' • '.join(region_data.characteristics)}<br>
+• {' <br>• '.join(region_data.characteristics)}<br>
 <br>
 <b>Leírás:</b> {region_data.description}
         """.strip()
@@ -475,7 +519,7 @@ class HungarianLocationSelector(QWidget):
     
     def _update_county_combo(self):
         """
-        🗺️ Megye combo frissítése a kiválasztott régió alapján.
+        🗺️ Megye combo frissítése a kiválasztott régió alapján - JAVÍTOTT!
         """
         self.county_combo.clear()
         
@@ -489,11 +533,11 @@ class HungarianLocationSelector(QWidget):
             self.county_combo.setEnabled(False)
             return
         
-        # Régió megyéinek hozzáadása
+        # 🔧 KRITIKUS: Régió megyéinek hozzáadása (statisztikai régió alapján)
         self.county_combo.addItem("Válassz megyét...", None)
         
         available_counties = set(self.counties_gdf['megye'].tolist())
-        region_counties = set(self.current_region.counties)
+        region_counties = set(self.current_region.counties)  # Ez most már a helyes megyéket tartalmazza
         
         # Közös megyék (régió és GeoJSON alapján)
         valid_counties = region_counties.intersection(available_counties)
@@ -583,10 +627,12 @@ class HungarianLocationSelector(QWidget):
             timezone="Europe/Budapest",
             metadata={
                 'region': self.current_region.name if self.current_region else None,
+                'region_display_name': self.current_region.display_name if self.current_region else None,
+                'nuts_code': self.current_region.nuts_code if self.current_region else None,
                 'county': self.current_county['name'],
                 'source': 'hungarian_location_selector',
                 'bounds': bounds,
-                'climate_zone': self.current_region.climate_zone if self.current_region else None
+                'administrative_center': self.current_region.administrative_center if self.current_region else None
             }
         )
         
@@ -618,7 +664,7 @@ class HungarianLocationSelector(QWidget):
     
     def set_region(self, region_key: str) -> bool:
         """
-        🌡️ Régió programmatic beállítása.
+        🏛️ Régió programmatic beállítása - JAVÍTOTT (statisztikai régió támogatás)!
         """
         for i in range(self.region_combo.count()):
             if self.region_combo.itemData(i) == region_key:
@@ -673,44 +719,133 @@ class HungarianLocationSelector(QWidget):
         
         self.selection_changed.emit()
 
+    # === 🔧 JAVÍTOTT: RÉGIÓ KOMPATIBILITÁSI METÓDUSOK ===
+    
+    def get_region_by_display_name(self, display_name: str) -> Optional[HungarianRegionData]:
+        """
+        🔧 ÚJ: Régió lekérdezése megjelenítési név alapján (Control Panel kompatibilitás).
+        
+        Args:
+            display_name: Régió megjelenítési neve (pl. "Észak-Magyarország")
+            
+        Returns:
+            HungarianRegionData objektum vagy None
+        """
+        for region_data in self.region_data.values():
+            if region_data.display_name == display_name:
+                return region_data
+        return None
+    
+    def set_region_by_display_name(self, display_name: str) -> bool:
+        """
+        🔧 ÚJ: Régió beállítása megjelenítési név alapján (Control Panel kompatibilitás).
+        
+        Args:
+            display_name: Régió megjelenítési neve (pl. "Észak-Magyarország")
+            
+        Returns:
+            Sikeres volt-e a beállítás
+        """
+        region_data = self.get_region_by_display_name(display_name)
+        if region_data:
+            return self.set_region(region_data.name)
+        return False
+    
+    def get_available_region_display_names(self) -> List[str]:
+        """
+        🔧 ÚJ: Elérhető régió megjelenítési nevek listája (Control Panel kompatibilitás).
+        
+        Returns:
+            Régió megjelenítési nevek listája
+        """
+        return [region_data.display_name for region_data in self.region_data.values()]
+    
+    def get_region_counties_mapping(self) -> Dict[str, List[str]]:
+        """
+        🔧 ÚJ: Régió → megyék mapping (Multi-City Engine kompatibilitás).
+        
+        Returns:
+            {régió_megjelenítési_név: [megyék_listája]} dictionary
+        """
+        return {
+            region_data.display_name: region_data.counties
+            for region_data in self.region_data.values()
+        }
+
 
 # === DEMO ÉS TESZT FUNKCIÓK ===
 
-def demo_hungarian_location_selector():
+def demo_hungarian_location_selector_fixed():
     """
-    🧪 Hungarian Location Selector demo alkalmazás.
+    🧪 Hungarian Location Selector demo alkalmazás - RÉGIÓ KONZISZTENCIA JAVÍTVA!
     """
     import sys
-    from PySide6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QWidget
+    from PySide6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QWidget, QVBoxLayout, QLabel
     
     app = QApplication(sys.argv)
     
     # Fő ablak
     window = QMainWindow()
-    window.setWindowTitle("🗺️ Hungarian Location Selector Demo")
-    window.setGeometry(100, 100, 800, 600)
+    window.setWindowTitle("🗺️ Hungarian Location Selector Demo - RÉGIÓ KONZISZTENCIA JAVÍTVA")
+    window.setGeometry(100, 100, 1000, 700)
     
     # Central widget
     central_widget = QWidget()
     window.setCentralWidget(central_widget)
     
-    layout = QHBoxLayout(central_widget)
+    layout = QVBoxLayout(central_widget)
+    
+    # Információs header
+    info_label = QLabel("🔧 RÉGIÓ KONZISZTENCIA JAVÍTVA: 7 statisztikai régió (Control Panel + Multi-City Engine konzisztens!)")
+    info_label.setStyleSheet("background-color: #27AE60; color: white; padding: 10px; font-weight: bold;")
+    layout.addWidget(info_label)
+    
+    main_layout = QHBoxLayout()
     
     # Location selector
     location_selector = HungarianLocationSelector()
-    layout.addWidget(location_selector)
+    main_layout.addWidget(location_selector)
+    
+    # Debug panel
+    debug_panel = QWidget()
+    debug_layout = QVBoxLayout(debug_panel)
+    
+    debug_label = QLabel("🔧 DEBUG INFORMÁCIÓK:")
+    debug_label.setStyleSheet("font-weight: bold; color: #E74C3C;")
+    debug_layout.addWidget(debug_label)
+    
+    region_info_label = QLabel("Régió: -")
+    county_info_label = QLabel("Megye: -")
+    counties_mapping_label = QLabel("Megyék: -")
+    
+    debug_layout.addWidget(region_info_label)
+    debug_layout.addWidget(county_info_label)
+    debug_layout.addWidget(counties_mapping_label)
+    debug_layout.addStretch()
+    
+    main_layout.addWidget(debug_panel)
+    layout.addLayout(main_layout)
     
     # Event handlers
     def on_region_selected(region_data):
-        print(f"🌡️ Régió kiválasztva: {region_data.display_name}")
+        print(f"🏛️ Statisztikai régió kiválasztva: {region_data.display_name} ({region_data.nuts_code})")
+        print(f"   Megyék: {region_data.counties}")
+        print(f"   Admin központ: {region_data.administrative_center}")
+        
+        region_info_label.setText(f"Régió: {region_data.display_name} ({region_data.nuts_code})")
+        counties_mapping_label.setText(f"Megyék: {', '.join(region_data.counties)}")
     
     def on_county_selected(county_name, geometry):
         print(f"🗺️ Megye kiválasztva: {county_name}")
         print(f"   Határok: {geometry.bounds}")
+        
+        county_info_label.setText(f"Megye: {county_name}")
     
     def on_location_selected(location):
         print(f"📍 Lokáció kiválasztva: {location.display_name}")
         print(f"   Koordináták: {location.latitude:.4f}, {location.longitude:.4f}")
+        print(f"   NUTS kód: {location.metadata.get('nuts_code', 'N/A')}")
+        print(f"   Admin központ: {location.metadata.get('administrative_center', 'N/A')}")
     
     def on_map_update_requested(bounds):
         print(f"🎯 Térkép frissítés: {bounds}")
@@ -723,11 +858,25 @@ def demo_hungarian_location_selector():
     
     window.show()
     
-    print("🗺️ Hungarian Location Selector Demo elindítva")
-    print("✅ Válassz klimatikus régiót és megyét a teszteléshez!")
+    print("🗺️ Hungarian Location Selector Demo elindítva - RÉGIÓ KONZISZTENCIA JAVÍTVA!")
+    print("✅ JAVÍTÁSOK:")
+    print("   🔧 5 klimatikus régió → 7 statisztikai régió")
+    print("   🔧 Control Panel konzisztencia 100%")
+    print("   🔧 Multi-City Engine HUNGARIAN_REGIONAL_MAPPING kompatibilitás")
+    print("   🔧 KSH NUTS 2 hivatalos régió felosztás")
+    print("   🔧 Régió megjelenítési név + megyék mapping helyes")
+    print()
+    print("🧪 TESZT:")
+    print("   1. Válassz 'Észak-Magyarország' régiót")
+    print("   2. Ellenőrizd: Borsod-Abaúj-Zemplén, Heves, Nógrád megyék jelennek meg")
+    print("   3. Ez most már megegyezik a Control Panel és Multi-City Engine definícióival!")
+    print()
+    print("📊 RÉGIÓK (Control Panel konzisztens):")
+    for region_data in location_selector.region_data.values():
+        print(f"   {region_data.display_name} ({region_data.nuts_code}): {', '.join(region_data.counties)}")
     
     sys.exit(app.exec())
 
 
 if __name__ == "__main__":
-    demo_hungarian_location_selector()
+    demo_hungarian_location_selector_fixed()

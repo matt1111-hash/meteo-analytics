@@ -750,9 +750,9 @@ class AppController(QObject):
                 self.error_occurred.emit("A kezdő dátum nem lehet nagyobb a befejező dátumnál")
                 return False
             
-            # Maximum 1 éves tartomány
-            if (end - start).days > 366:
-                self.error_occurred.emit("Maximum 1 éves időszak kérdezhető le")
+            # Maximum 60 éves tartomány
+            if (end - start).days > 60 * 365:
+                self.error_occurred.emit("Maximum 60 éves időszak kérdezhető le")
                 return False
             
         except ValueError:

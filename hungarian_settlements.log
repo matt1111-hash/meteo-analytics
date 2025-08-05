@@ -1,0 +1,225 @@
+2025-07-23 13:34:10,929 - INFO - 🇭🇺 Magyar Települések Adatbázis Generátor v2.0 - KSH HIVATALOS
+2025-07-23 13:34:10,929 - INFO - 📥 KSH Helységnévtár betöltése...
+2025-07-23 13:34:10,929 - INFO - 🏛️ Helyi KSH fájl betöltése: hnt_letoltes_2024.xlsx
+2025-07-23 13:34:11,346 - INFO - ✅ KSH helyi fájl sikeres: 3181 település
+2025-07-23 13:34:11,347 - ERROR - ❌ Hiba: ['Helység megnevezése']
+2025-07-23 13:35:51,623 - INFO - 🇭🇺 Magyar Települések Adatbázis Generátor v2.0 - KSH HIVATALOS
+2025-07-23 13:35:51,623 - INFO - 📥 KSH Helységnévtár betöltése...
+2025-07-23 13:35:51,623 - INFO - 🏛️ Helyi KSH fájl betöltése: hnt_letoltes_2024.xlsx
+2025-07-23 13:35:51,923 - INFO - ✅ KSH helyi fájl sikeres: 3181 település
+2025-07-23 13:35:51,923 - INFO - 📋 Talált oszlopnevek: ['A helységek részletes adatai 2024. január 1. állapot szerint', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25']
+2025-07-23 13:35:51,923 - INFO - 📍 Település oszlop: 'A helységek részletes adatai 2024. január 1. állapot szerint'
+2025-07-23 13:35:51,925 - INFO - 📊 Feldolgozandó települések: 3180
+2025-07-23 13:35:51,925 - INFO - 📊 KSH adatok előzetes elemzése...
+2025-07-23 13:35:51,925 - ERROR - ❌ Hiba: 'Vármegye megnevezése'
+2025-07-23 15:33:27,561 - INFO - 🇭🇺 Magyar Települések Adatbázis Generátor v2.0 - KSH HIVATALOS
+2025-07-23 15:33:27,561 - INFO - 📥 KSH Helységnévtár betöltése...
+2025-07-23 15:33:27,561 - INFO - 🏛️ Helyi KSH fájl betöltése: hnt_letoltes_2024.xlsx
+2025-07-23 15:33:27,880 - INFO - ✅ KSH helyi fájl sikeres: 3181 település
+2025-07-23 15:33:27,880 - INFO - 📋 Talált oszlopnevek: ['A helységek részletes adatai 2024. január 1. állapot szerint', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25']
+2025-07-23 15:33:27,880 - INFO - 📍 Település oszlop: 'A helységek részletes adatai 2024. január 1. állapot szerint'
+2025-07-23 15:33:27,884 - INFO - 📊 Feldolgozandó települések: 3180
+2025-07-23 15:33:27,884 - INFO - 📊 KSH adatok előzetes elemzése...
+2025-07-23 15:33:27,884 - ERROR - ❌ Hiba: 'Vármegye megnevezése'
+2025-07-23 15:35:27,397 - INFO - 🇭🇺 Magyar Települések Adatbázis Generátor v2.0 - KSH HIVATALOS
+2025-07-23 15:35:27,397 - INFO - 📥 KSH Helységnévtár betöltése...
+2025-07-23 15:35:27,397 - INFO - 🏛️ Helyi KSH fájl betöltése: hnt_letoltes_2024.xlsx
+2025-07-23 15:35:27,703 - INFO - ✅ KSH helyi fájl sikeres: 3179 település
+2025-07-23 15:35:27,704 - INFO - 📋 Talált oszlopnevek: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja']...
+2025-07-23 15:35:27,704 - INFO - 📊 Feldolgozandó települések: 3179
+2025-07-23 15:35:27,705 - INFO - 📊 KSH adatok előzetes elemzése...
+2025-07-23 15:35:27,706 - INFO - 🗃️ Adatbázis séma létrehozása...
+2025-07-23 15:35:27,798 - INFO - ✅ Magyar település adatbázis séma létrehozva
+2025-07-23 15:35:27,798 - INFO - ⚙️ Adatok feldolgozása és koordináták beszerzése...
+2025-07-23 15:35:27,798 - WARNING - ⏰ FIGYELEM: Koordináták beszerzése ~10-15 percet igényel (OSM API limit)
+2025-07-23 15:35:39,475 - INFO - 📊 KSH Helységnévtár feldolgozása:
+2025-07-23 15:35:39,476 - INFO - Összes oszlop: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja', 'Járás neve', 'Járás székhelye', 'Polgármesteri hivatal, közös önkormányzati hivatal kódja', 'Polgármesteri hivatal, közös önkormányzati hivatal székhelye', 'Terület  (hektár)', 'Lakó-népesség', 'Lakások száma', 'Becsült terület-adatokkal', 'bolgár  ', 'görög  ', 'horvát  ', 'lengyel  ', 'német  ', 'örmény  ', 'roma', 'román  ', 'ruszin  ', 'szerb  ', 'szlovák  ', 'szlovén  ', 'ukrán  ']
+2025-07-23 15:35:39,476 - INFO - 📋 Használt oszlopok: A,C,D,F,G,J,K,L (B,E,H,I kihagyva)
+2025-07-23 15:35:39,980 - WARNING - ⚠️ Koordináta hiányzik: Aba (Fejér)
+2025-07-23 15:35:42,945 - WARNING - ⚠️ Koordináta hiányzik: Abádszalók (Jász-Nagykun-Szolnok)
+2025-07-23 15:35:45,948 - WARNING - ⚠️ Koordináta hiányzik: Abaliget (Baranya)
+2025-07-23 15:35:48,952 - WARNING - ⚠️ Koordináta hiányzik: Abasár (Heves)
+2025-07-23 15:37:38,131 - INFO - 🇭🇺 Magyar Települések Adatbázis Generátor v2.0 - KSH HIVATALOS
+2025-07-23 15:37:38,131 - INFO - 📥 KSH Helységnévtár betöltése...
+2025-07-23 15:37:38,131 - INFO - 🏛️ Helyi KSH fájl betöltése: hnt_letoltes_2024.xlsx
+2025-07-23 15:37:38,432 - INFO - ✅ KSH helyi fájl sikeres: 3179 település
+2025-07-23 15:37:38,433 - INFO - 📋 Talált oszlopnevek: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja']...
+2025-07-23 15:37:38,434 - INFO - 📊 Feldolgozandó települések: 3179
+2025-07-23 15:37:38,434 - INFO - 📊 KSH adatok előzetes elemzése...
+2025-07-23 15:37:38,434 - INFO - 🗃️ Adatbázis séma létrehozása...
+2025-07-23 15:37:38,435 - INFO - ✅ Magyar település adatbázis séma létrehozva
+2025-07-23 15:37:38,435 - INFO - ⚙️ Adatok feldolgozása...
+2025-07-23 15:37:38,435 - WARNING - 📍 FIGYELEM: Koordináták Budapest default értékkel (47.4979, 19.0402)
+2025-07-23 15:37:38,435 - WARNING - 🔧 TODO: Külön script koordináták pótlásához később!
+2025-07-23 15:37:45,106 - INFO - 📊 KSH Helységnévtár feldolgozása:
+2025-07-23 15:37:45,106 - INFO - Összes oszlop: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja', 'Járás neve', 'Járás székhelye', 'Polgármesteri hivatal, közös önkormányzati hivatal kódja', 'Polgármesteri hivatal, közös önkormányzati hivatal székhelye', 'Terület  (hektár)', 'Lakó-népesség', 'Lakások száma', 'Becsült terület-adatokkal', 'bolgár  ', 'görög  ', 'horvát  ', 'lengyel  ', 'német  ', 'örmény  ', 'roma', 'román  ', 'ruszin  ', 'szerb  ', 'szlovák  ', 'szlovén  ', 'ukrán  ']
+2025-07-23 15:37:45,106 - INFO - 📋 Használt oszlopok: A,C,D,F,G,J,K,L (B,E,H,I kihagyva)
+2025-07-23 15:37:45,111 - INFO - 📍 Aba: default Budapest koordináta használva
+2025-07-23 15:37:45,112 - INFO - 📍 Abádszalók: default Budapest koordináta használva
+2025-07-23 15:37:45,112 - INFO - 📍 Abaliget: default Budapest koordináta használva
+2025-07-23 15:37:45,113 - INFO - 📍 Abasár: default Budapest koordináta használva
+2025-07-23 15:37:45,113 - INFO - 📍 Abaújalpár: default Budapest koordináta használva
+2025-07-23 15:37:45,114 - INFO - 📍 Abaújkér: default Budapest koordináta használva
+2025-07-23 15:37:45,114 - INFO - 📍 Abaújlak: default Budapest koordináta használva
+2025-07-23 15:37:45,114 - INFO - 📍 Abaújszántó: default Budapest koordináta használva
+2025-07-23 15:37:45,115 - INFO - 📍 Abaújszolnok: default Budapest koordináta használva
+2025-07-23 15:37:45,115 - INFO - 📍 Abaújvár: default Budapest koordináta használva
+2025-07-23 15:37:45,125 - INFO - 📍 Feldolgozva: 100 település
+2025-07-23 15:37:45,128 - INFO - 📍 Feldolgozva: 200 település
+2025-07-23 15:37:45,131 - INFO - 📍 Feldolgozva: 300 település
+2025-07-23 15:37:45,134 - INFO - 📍 Feldolgozva: 400 település
+2025-07-23 15:37:45,137 - INFO - 📍 Feldolgozva: 500 település
+2025-07-23 15:37:45,140 - INFO - 📍 Feldolgozva: 600 település
+2025-07-23 15:37:45,143 - INFO - 📍 Feldolgozva: 700 település
+2025-07-23 15:37:45,146 - INFO - 📍 Feldolgozva: 800 település
+2025-07-23 15:37:45,148 - INFO - 📍 Feldolgozva: 900 település
+2025-07-23 15:37:45,151 - INFO - 📍 Feldolgozva: 1000 település
+2025-07-23 15:37:45,154 - INFO - 📍 Feldolgozva: 1100 település
+2025-07-23 15:37:45,157 - INFO - 📍 Feldolgozva: 1200 település
+2025-07-23 15:37:45,160 - INFO - 📍 Feldolgozva: 1300 település
+2025-07-23 15:37:45,162 - INFO - 📍 Feldolgozva: 1400 település
+2025-07-23 15:37:45,165 - INFO - 📍 Feldolgozva: 1500 település
+2025-07-23 15:37:45,168 - INFO - 📍 Feldolgozva: 1600 település
+2025-07-23 15:37:45,170 - INFO - 📍 Feldolgozva: 1700 település
+2025-07-23 15:37:45,173 - INFO - 📍 Feldolgozva: 1800 település
+2025-07-23 15:37:45,176 - INFO - 📍 Feldolgozva: 1900 település
+2025-07-23 15:37:45,179 - INFO - 📍 Feldolgozva: 2000 település
+2025-07-23 15:37:45,182 - INFO - 📍 Feldolgozva: 2100 település
+2025-07-23 15:37:45,184 - INFO - 📍 Feldolgozva: 2200 település
+2025-07-23 15:37:45,187 - INFO - 📍 Feldolgozva: 2300 település
+2025-07-23 15:37:45,190 - INFO - 📍 Feldolgozva: 2400 település
+2025-07-23 15:37:45,193 - INFO - 📍 Feldolgozva: 2500 település
+2025-07-23 15:37:45,196 - INFO - 📍 Feldolgozva: 2600 település
+2025-07-23 15:37:45,198 - INFO - 📍 Feldolgozva: 2700 település
+2025-07-23 15:37:45,201 - INFO - 📍 Feldolgozva: 2800 település
+2025-07-23 15:37:45,204 - INFO - 📍 Feldolgozva: 2900 település
+2025-07-23 15:37:45,207 - INFO - 📍 Feldolgozva: 3000 település
+2025-07-23 15:37:45,210 - INFO - 📍 Feldolgozva: 3100 település
+2025-07-23 15:37:45,212 - ERROR - ❌ Hiba: 'float' object has no attribute 'lower'
+2025-07-23 15:39:29,247 - INFO - 🇭🇺 Magyar Települések Adatbázis Generátor v2.0 - KSH HIVATALOS
+2025-07-23 15:39:29,247 - INFO - 📥 KSH Helységnévtár betöltése...
+2025-07-23 15:39:29,247 - INFO - 🏛️ Helyi KSH fájl betöltése: hnt_letoltes_2024.xlsx
+2025-07-23 15:39:29,553 - INFO - ✅ KSH helyi fájl sikeres: 3179 település
+2025-07-23 15:39:29,553 - INFO - 📋 Talált oszlopnevek: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja']...
+2025-07-23 15:39:29,554 - INFO - 📊 Feldolgozandó települések: 3179
+2025-07-23 15:39:29,554 - INFO - 📊 KSH adatok előzetes elemzése...
+2025-07-23 15:39:29,555 - INFO - 🗃️ Adatbázis séma létrehozása...
+2025-07-23 15:39:29,555 - INFO - ✅ Magyar település adatbázis séma létrehozva
+2025-07-23 15:39:29,555 - INFO - ⚙️ Adatok feldolgozása...
+2025-07-23 15:39:29,555 - WARNING - 📍 FIGYELEM: Koordináták Budapest default értékkel (47.4979, 19.0402)
+2025-07-23 15:39:29,555 - WARNING - 🔧 TODO: Külön script koordináták pótlásához később!
+2025-07-23 15:39:42,401 - INFO - 📊 KSH Helységnévtár feldolgozása:
+2025-07-23 15:39:42,401 - INFO - Összes oszlop: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja', 'Járás neve', 'Járás székhelye', 'Polgármesteri hivatal, közös önkormányzati hivatal kódja', 'Polgármesteri hivatal, közös önkormányzati hivatal székhelye', 'Terület  (hektár)', 'Lakó-népesség', 'Lakások száma', 'Becsült terület-adatokkal', 'bolgár  ', 'görög  ', 'horvát  ', 'lengyel  ', 'német  ', 'örmény  ', 'roma', 'román  ', 'ruszin  ', 'szerb  ', 'szlovák  ', 'szlovén  ', 'ukrán  ']
+2025-07-23 15:39:42,401 - INFO - 📋 Használt oszlopok: A,C,D,F,G,J,K,L (B,E,H,I kihagyva)
+2025-07-23 15:39:42,406 - INFO - 📍 Aba: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abádszalók: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abaliget: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abasár: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abaújalpár: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abaújkér: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abaújlak: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abaújszántó: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abaújszolnok: default Budapest koordináta használva
+2025-07-23 15:39:42,407 - INFO - 📍 Abaújvár: default Budapest koordináta használva
+2025-07-23 15:39:42,410 - INFO - 📍 Feldolgozva: 100 település
+2025-07-23 15:39:42,420 - INFO - 📍 Feldolgozva: 200 település
+2025-07-23 15:39:42,427 - INFO - 📍 Feldolgozva: 300 település
+2025-07-23 15:39:42,430 - INFO - 📍 Feldolgozva: 400 település
+2025-07-23 15:39:42,433 - INFO - 📍 Feldolgozva: 500 település
+2025-07-23 15:39:42,436 - INFO - 📍 Feldolgozva: 600 település
+2025-07-23 15:39:42,439 - INFO - 📍 Feldolgozva: 700 település
+2025-07-23 15:39:42,442 - INFO - 📍 Feldolgozva: 800 település
+2025-07-23 15:39:42,444 - INFO - 📍 Feldolgozva: 900 település
+2025-07-23 15:39:42,447 - INFO - 📍 Feldolgozva: 1000 település
+2025-07-23 15:39:42,450 - INFO - 📍 Feldolgozva: 1100 település
+2025-07-23 15:39:42,453 - INFO - 📍 Feldolgozva: 1200 település
+2025-07-23 15:39:42,456 - INFO - 📍 Feldolgozva: 1300 település
+2025-07-23 15:39:42,458 - INFO - 📍 Feldolgozva: 1400 település
+2025-07-23 15:39:42,461 - INFO - 📍 Feldolgozva: 1500 település
+2025-07-23 15:39:42,464 - INFO - 📍 Feldolgozva: 1600 település
+2025-07-23 15:39:42,467 - INFO - 📍 Feldolgozva: 1700 település
+2025-07-23 15:39:42,470 - INFO - 📍 Feldolgozva: 1800 település
+2025-07-23 15:39:42,473 - INFO - 📍 Feldolgozva: 1900 település
+2025-07-23 15:39:42,475 - INFO - 📍 Feldolgozva: 2000 település
+2025-07-23 15:39:42,478 - INFO - 📍 Feldolgozva: 2100 település
+2025-07-23 15:39:42,481 - INFO - 📍 Feldolgozva: 2200 település
+2025-07-23 15:39:42,484 - INFO - 📍 Feldolgozva: 2300 település
+2025-07-23 15:39:42,486 - INFO - 📍 Feldolgozva: 2400 település
+2025-07-23 15:39:42,489 - INFO - 📍 Feldolgozva: 2500 település
+2025-07-23 15:39:42,492 - INFO - 📍 Feldolgozva: 2600 település
+2025-07-23 15:39:42,495 - INFO - 📍 Feldolgozva: 2700 település
+2025-07-23 15:39:42,498 - INFO - 📍 Feldolgozva: 2800 település
+2025-07-23 15:39:42,501 - INFO - 📍 Feldolgozva: 2900 település
+2025-07-23 15:39:42,503 - INFO - 📍 Feldolgozva: 3000 település
+2025-07-23 15:39:42,506 - INFO - 📍 Feldolgozva: 3100 település
+2025-07-23 15:39:42,511 - ERROR - ❌ Hiba: NOT NULL constraint failed: hungarian_settlements.megye
+2025-07-24 16:21:24,324 - INFO - 🇭🇺 Magyar Települések Adatbázis Generátor v2.0 - KSH HIVATALOS
+2025-07-24 16:21:24,324 - INFO - 📥 KSH Helységnévtár betöltése...
+2025-07-24 16:21:24,324 - INFO - 🏛️ Helyi KSH fájl betöltése: hnt_letoltes_2024.xlsx
+2025-07-24 16:21:24,746 - INFO - ✅ KSH helyi fájl sikeres: 3179 település
+2025-07-24 16:21:24,746 - INFO - 📋 Talált oszlopnevek: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja']...
+2025-07-24 16:21:24,747 - INFO - 📊 Feldolgozandó települések: 3179
+2025-07-24 16:21:24,747 - INFO - 📊 KSH adatok előzetes elemzése...
+2025-07-24 16:21:24,748 - INFO - 🗃️ Adatbázis séma létrehozása...
+2025-07-24 16:21:24,749 - INFO - ✅ Magyar település adatbázis séma létrehozva
+2025-07-24 16:21:24,749 - INFO - ⚙️ Adatok feldolgozása...
+2025-07-24 16:21:24,749 - WARNING - 📍 FIGYELEM: Koordináták Budapest default értékkel (47.4979, 19.0402)
+2025-07-24 16:21:24,749 - WARNING - 🔧 TODO: Külön script koordináták pótlásához később!
+2025-07-24 16:24:22,974 - INFO - ❌ Feldolgozás megszakítva a user által
+2025-07-24 16:29:30,431 - INFO - 🇭🇺 Magyar Települések Adatbázis Generátor v2.0 - KSH HIVATALOS
+2025-07-24 16:29:30,431 - INFO - 📥 KSH Helységnévtár betöltése...
+2025-07-24 16:29:30,431 - INFO - 🏛️ Helyi KSH fájl betöltése: hnt_letoltes_2024.xlsx
+2025-07-24 16:29:30,860 - INFO - ✅ KSH helyi fájl sikeres: 3179 település
+2025-07-24 16:29:30,860 - INFO - 📋 Talált oszlopnevek: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja']...
+2025-07-24 16:29:30,862 - INFO - 📊 Feldolgozandó települések: 3179
+2025-07-24 16:29:30,862 - INFO - 📊 KSH adatok előzetes elemzése...
+2025-07-24 16:29:30,863 - INFO - 🗃️ Adatbázis séma létrehozása...
+2025-07-24 16:29:30,863 - INFO - ✅ Magyar település adatbázis séma létrehozva
+2025-07-24 16:29:30,864 - INFO - ⚙️ Adatok feldolgozása...
+2025-07-24 16:29:30,864 - WARNING - 📍 FIGYELEM: Koordináták Budapest default értékkel (47.4979, 19.0402)
+2025-07-24 16:29:30,864 - WARNING - 🔧 TODO: Külön script koordináták pótlásához később!
+2025-07-24 16:29:33,264 - INFO - 📊 KSH Helységnévtár feldolgozása:
+2025-07-24 16:29:33,265 - INFO - Összes oszlop: ['Helység megnevezése', 'Helység KSH kódja', 'Helység jogállása', 'Vármegye megnevezése', 'Járás kódja', 'Járás neve', 'Járás székhelye', 'Polgármesteri hivatal, közös önkormányzati hivatal kódja', 'Polgármesteri hivatal, közös önkormányzati hivatal székhelye', 'Terület  (hektár)', 'Lakó-népesség', 'Lakások száma', 'Becsült terület-adatokkal', 'bolgár  ', 'görög  ', 'horvát  ', 'lengyel  ', 'német  ', 'örmény  ', 'roma', 'román  ', 'ruszin  ', 'szerb  ', 'szlovák  ', 'szlovén  ', 'ukrán  ']
+2025-07-24 16:29:33,265 - INFO - 📋 Használt oszlopok: A,C,D,F,G,J,K,L (B,E,H,I kihagyva)
+2025-07-24 16:29:33,269 - INFO - 📍 Aba: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abádszalók: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abaliget: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abasár: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abaújalpár: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abaújkér: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abaújlak: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abaújszántó: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abaújszolnok: default Budapest koordináta használva
+2025-07-24 16:29:33,270 - INFO - 📍 Abaújvár: default Budapest koordináta használva
+2025-07-24 16:29:33,273 - INFO - 📍 Feldolgozva: 100 település
+2025-07-24 16:29:33,276 - INFO - 📍 Feldolgozva: 200 település
+2025-07-24 16:29:33,279 - INFO - 📍 Feldolgozva: 300 település
+2025-07-24 16:29:33,282 - INFO - 📍 Feldolgozva: 400 település
+2025-07-24 16:29:33,285 - INFO - 📍 Feldolgozva: 500 település
+2025-07-24 16:29:33,289 - INFO - 📍 Feldolgozva: 600 település
+2025-07-24 16:29:33,292 - INFO - 📍 Feldolgozva: 700 település
+2025-07-24 16:29:33,295 - INFO - 📍 Feldolgozva: 800 település
+2025-07-24 16:29:33,298 - INFO - 📍 Feldolgozva: 900 település
+2025-07-24 16:29:33,301 - INFO - 📍 Feldolgozva: 1000 település
+2025-07-24 16:29:33,304 - INFO - 📍 Feldolgozva: 1100 település
+2025-07-24 16:29:33,307 - INFO - 📍 Feldolgozva: 1200 település
+2025-07-24 16:29:33,310 - INFO - 📍 Feldolgozva: 1300 település
+2025-07-24 16:29:33,312 - INFO - 📍 Feldolgozva: 1400 település
+2025-07-24 16:29:33,315 - INFO - 📍 Feldolgozva: 1500 település
+2025-07-24 16:29:33,318 - INFO - 📍 Feldolgozva: 1600 település
+2025-07-24 16:29:33,321 - INFO - 📍 Feldolgozva: 1700 település
+2025-07-24 16:29:33,324 - INFO - 📍 Feldolgozva: 1800 település
+2025-07-24 16:29:33,327 - INFO - 📍 Feldolgozva: 1900 település
+2025-07-24 16:29:33,330 - INFO - 📍 Feldolgozva: 2000 település
+2025-07-24 16:29:33,333 - INFO - 📍 Feldolgozva: 2100 település
+2025-07-24 16:29:33,336 - INFO - 📍 Feldolgozva: 2200 település
+2025-07-24 16:29:33,339 - INFO - 📍 Feldolgozva: 2300 település
+2025-07-24 16:29:33,342 - INFO - 📍 Feldolgozva: 2400 település
+2025-07-24 16:29:33,345 - INFO - 📍 Feldolgozva: 2500 település
+2025-07-24 16:29:33,348 - INFO - 📍 Feldolgozva: 2600 település
+2025-07-24 16:29:33,351 - INFO - 📍 Feldolgozva: 2700 település
+2025-07-24 16:29:33,353 - INFO - 📍 Feldolgozva: 2800 település
+2025-07-24 16:29:33,356 - INFO - 📍 Feldolgozva: 2900 település
+2025-07-24 16:29:33,359 - INFO - 📍 Feldolgozva: 3000 település
+2025-07-24 16:29:33,362 - INFO - 📍 Feldolgozva: 3100 település
+2025-07-24 16:29:33,368 - ERROR - ❌ Hiba: NOT NULL constraint failed: hungarian_settlements.megye

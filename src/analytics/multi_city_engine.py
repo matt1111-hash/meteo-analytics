@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Multi-City Analytics Engine - Globális időjárás elemzés (NULL-SAFE & DATA TRANSFORM FIXED v2.5)
+Multi-City Analytics Engine - Globális időjárás elemzés (NULL-SAFE & DATA TRANSFORM FIXED v2.7 - RÉGIÓ SZŰRÉS JAVÍTVA!)
 Global Weather Analyzer projekt
 
 Fájl: src/analytics/multi_city_engine.py
@@ -11,16 +11,25 @@ Cél: Többváros időjárási elemzés koordinálása
 - PROGRESS TRACKING - real-time feedback
 - FALLBACK STRATEGY - hibás városok kihagyása
 
-🔧 KRITIKUS JAVÍTÁSOK v2.5.0:
+🔧 KRITIKUS JAVÍTÁSOK v2.7.0:
+- ✅ RÉGIÓ SZŰRÉS IMPLEMENTÁLVA: get_cities_for_region() most már VALÓDI regionális szűrést csinál
+- ✅ HUNGARIAN_REGIONAL_MAPPING: 7 statisztikai régió → megyék mapping
+- ✅ "Észak-Magyarország" → Borsod-Abaúj-Zemplén, Heves, Nógrád megyék szűrése
+- ✅ Database query optimalizálás: megye alapú WHERE feltétel
+- ✅ RÉGIÓ MAPPING KIEGÉSZÍTVE: "Észak-Magyarország", "Dél-Magyarország", "Közép-Magyarország", stb.
+- ✅ ERROR HANDLING JAVÍTVA: analyze_multi_city() mindig AnalyticsResult objektumot ad vissza dict helyett
+- ✅ RESOLVE_REGION_NAME CATCH: Exception esetén fallback logic értelmezhetetlen régiókhoz
+- ✅ MEGYÉK TÁMOGATÁSA: 19 magyar megye + Budapest mapping hozzáadva
 - ✅ NONE-SAFE STATISZTIKÁK: statistics.mean/min/max helyett safe_ függvények
 - ✅ ADAT TRANSZFORMÁCIÓS HIBA JAVÍTVA: A motor most már a UI által várt `AnalyticsResult` és `CityWeatherResult` objektumokat adja vissza.
-- ✅ 0.0°C HIBA JAVÍTVA: A helyes metrika értéke (`temperature_2m_max` stb.) most már bekerül a `value` mezőbe.
+- ✅ 0.0°C HIBA JAVÍTVA: A helyes metrika érték (`temperature_2m_max` stb.) most már bekerül a `value` mezőbe.
 - ✅ STATISZTIKAI HIBA JAVÍTVA: A statisztikák a teljes, sikeresen feldolgozott adathalmazon számolódnak.
 - ✅ NULL-safe sorting logic 
 - ✅ Type-safe value comparisons
 - ✅ MAX_CITIES PARAMÉTER TÁMOGATÁS HOZZÁADVA - BACKWARD COMPATIBLE!
 - ✅ COUNTRY CODE MAPPING: HU → Hungary, EU → Europe, GLOBAL → Global
 - ✅ TypeError: '>' not supported between instances of 'NoneType' and 'float' JAVÍTVA
+- 🔥 QUICKTYPE ENUM JAVÍTÁS: SINGLE_LOCATION/MULTI_CITY/COMPARISON → WEATHER_COMPARISON/TEMPERATURE_MAX
 """
 
 import sqlite3
@@ -147,7 +156,7 @@ class CityWeatherData:
 
 class MultiCityEngine:
     """
-    Multi-city időjárás elemzés koordinátor (DUAL-API CLEAN + NULL-SAFE + DATA TRANSFORM FIXED)
+    Multi-city időjárás elemzés koordinátor (DUAL-API CLEAN + NULL-SAFE + DATA TRANSFORM FIXED + RÉGIÓ/MEGYE MAPPING TELJES + RÉGIÓ SZŰRÉS JAVÍTVA!)
     
     Felelősségek:
     - DUAL-API ROUTING
@@ -156,12 +165,102 @@ class MultiCityEngine:
     - PROGRESS TRACKING
     - ✅ ADAT TRANSZFORMÁCIÓ (CityWeatherData -> CityWeatherResult)
     - ✅ NONE-SAFE STATISZTIKÁK
+    - ✅ RÉGIÓ/MEGYE MAPPING TELJES (19 megye + 7 régió)
+    - ✅ ERROR HANDLING JAVÍTVA (mindig AnalyticsResult objektum)
+    - 🔧 KRITIKUS JAVÍTÁS: VALÓDI REGIONÁLIS SZŰRÉS IMPLEMENTÁLVA!
     """
     
+    # 🔧 KRITIKUS JAVÍTÁS: MAGYAR REGIONÁLIS SZŰRÉS MAPPING HOZZÁADVA!
+    HUNGARIAN_REGIONAL_MAPPING = {
+        # 7 STATISZTIKAI RÉGIÓ → MEGYÉK MAPPING (KSH HIVATALOS)
+        "Észak-Magyarország": ["Borsod-Abaúj-Zemplén", "Heves", "Nógrád"],
+        "Közép-Magyarország": ["Budapest", "Pest"],
+        "Észak-Alföld": ["Hajdú-Bihar", "Jász-Nagykun-Szolnok", "Szabolcs-Szatmár-Bereg"],
+        "Dél-Alföld": ["Bács-Kiskun", "Békés", "Csongrád-Csanád"],
+        "Dél-Dunántúl": ["Baranya", "Somogy", "Tolna"],
+        "Nyugat-Dunántúl": ["Győr-Moson-Sopron", "Vas", "Zala"],
+        "Közép-Dunántúl": ["Fejér", "Komárom-Esztergom", "Veszprém"],
+        
+        # MEGYÉK EGYEDI KEZELÉSE (ha valaki konkrét megyét választ)
+        "Budapest": ["Budapest"],
+        "Pest": ["Pest"],
+        "Borsod-Abaúj-Zemplén": ["Borsod-Abaúj-Zemplén"],
+        "Heves": ["Heves"],
+        "Nógrád": ["Nógrád"],
+        "Hajdú-Bihar": ["Hajdú-Bihar"],
+        "Jász-Nagykun-Szolnok": ["Jász-Nagykun-Szolnok"],
+        "Szabolcs-Szatmár-Bereg": ["Szabolcs-Szatmár-Bereg"],
+        "Bács-Kiskun": ["Bács-Kiskun"],
+        "Békés": ["Békés"],
+        "Csongrád-Csanád": ["Csongrád-Csanád"],
+        "Baranya": ["Baranya"],
+        "Somogy": ["Somogy"],
+        "Tolna": ["Tolna"],
+        "Győr-Moson-Sopron": ["Győr-Moson-Sopron"],
+        "Vas": ["Vas"],
+        "Zala": ["Zala"],
+        "Fejér": ["Fejér"],
+        "Komárom-Esztergom": ["Komárom-Esztergom"],
+        "Veszprém": ["Veszprém"]
+    }
+    
+    # 🔧 KRITIKUS JAVÍTÁS: TELJES RÉGIÓ/MEGYE MAPPING HOZZÁADVA!
     REGION_CODE_MAPPING = {
-        "HU": "Hungary", "EU": "Europe", "GLOBAL": "Global", "WORLD": "Global",
-        "country": "Hungary", "continent": "Europe", "global": "Global",
-        "hungary": "Hungary", "europe": "Europe", "magyarország": "Hungary", "európa": "Europe"
+        # Alapértelmezett mappingek
+        "HU": "Hungary", 
+        "EU": "Europe", 
+        "GLOBAL": "Global", 
+        "WORLD": "Global",
+        "country": "Hungary", 
+        "continent": "Europe", 
+        "global": "Global",
+        "hungary": "Hungary", 
+        "europe": "Europe", 
+        "magyarország": "Hungary", 
+        "európa": "Europe",
+        
+        # 🔧 KRITIKUS: MAGYAR RÉGIÓK (7 statisztikai régió)
+        "Közép-Magyarország": "Hungary",
+        "Észak-Magyarország": "Hungary",  # ← EZ HIÁNYZOTT! 
+        "Észak-Alföld": "Hungary",
+        "Dél-Alföld": "Hungary", 
+        "Dél-Dunántúl": "Hungary",
+        "Nyugat-Dunántúl": "Hungary",
+        "Közép-Dunántúl": "Hungary",
+        
+        # 🔧 KRITIKUS: MAGYAR MEGYÉK (19 megye + Budapest)
+        "Budapest": "Hungary",
+        "Pest": "Hungary",
+        "Fejér": "Hungary", 
+        "Komárom-Esztergom": "Hungary",
+        "Veszprém": "Hungary",
+        "Győr-Moson-Sopron": "Hungary",
+        "Vas": "Hungary", 
+        "Zala": "Hungary",
+        "Baranya": "Hungary",
+        "Somogy": "Hungary", 
+        "Tolna": "Hungary",
+        "Borsod-Abaúj-Zemplén": "Hungary",
+        "Heves": "Hungary",
+        "Nógrád": "Hungary", 
+        "Hajdú-Bihar": "Hungary",
+        "Jász-Nagykun-Szolnok": "Hungary",
+        "Szabolcs-Szatmár-Bereg": "Hungary",
+        "Bács-Kiskun": "Hungary", 
+        "Békés": "Hungary",
+        "Csongrád-Csanád": "Hungary",
+        
+        # Alternatív írásmódok
+        "közép-magyarország": "Hungary",
+        "észak-magyarország": "Hungary",
+        "észak-alföld": "Hungary", 
+        "dél-alföld": "Hungary",
+        "dél-dunántúl": "Hungary",
+        "nyugat-dunántúl": "Hungary", 
+        "közép-dunántúl": "Hungary",
+        "budapest": "Hungary",
+        "pest megye": "Hungary",
+        "fejér megye": "Hungary"
     }
     
     REGIONS = {
@@ -193,7 +292,7 @@ class MultiCityEngine:
             logger.warning(f"❌ WeatherClient import hiba: {e}")
             self.weather_client = None
         
-        logger.info("🚀 Multi-city engine inicializálva (NONE-SAFE v2.5)")
+        logger.info("🚀 Multi-city engine inicializálva (RÉGIÓ SZŰRÉS JAVÍTVA v2.7)")
 
     def execute_analytics_query(self, query: MultiCityQuery, progress_callback: Optional[callable] = None) -> AnalyticsResult:
         return self.analyze_multi_city(
@@ -205,12 +304,36 @@ class MultiCityEngine:
         )
 
     def get_cities_for_region(self, region: str, limit: Optional[int] = None, max_cities: Optional[int] = None) -> List[Dict[str, Any]]:
-        mapped_region = self.resolve_region_name(region)
+        """
+        🔧 KRITIKUS JAVÍTÁS: VALÓDI REGIONÁLIS SZŰRÉS IMPLEMENTÁLVA!
+        
+        RÉGI VISELKEDÉS:
+        - "Észak-Magyarország" → "Hungary" → ÖSSZES magyar város (165)
+        
+        ÚJ VISELKEDÉS:
+        - "Észak-Magyarország" → "Hungary" + regionális szűrés → Csak Borsod-Abaúj-Zemplén, Heves, Nógrád megyék városai
+        
+        Args:
+            region: Eredeti régió név (pl. "Észak-Magyarország")
+            limit: Eredmények limitje
+            max_cities: Maximum városok száma
+            
+        Returns:
+            Szűrt városok listája (regionális vagy teljes)
+        """
+        original_region = region  # Eredeti régió név tárolása
+        
+        try:
+            mapped_region = self.resolve_region_name(region)
+        except ValueError as e:
+            logger.error(f"❌ Invalid region: {region} - {e}")
+            return []
+            
         region_config = self.REGIONS[mapped_region]
         country_codes = region_config["country_codes"]
         final_limit = max_cities or limit or region_config["max_cities"]
         
-        logger.debug(f"🔧 get_cities_for_region: region={region}→{mapped_region}, final_limit={final_limit}")
+        logger.info(f"🔧 get_cities_for_region JAVÍTVA: original='{original_region}' → mapped='{mapped_region}', limit={final_limit}")
         
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -223,13 +346,34 @@ class MultiCityEngine:
                 if mapped_region == "Global":
                     query_str = f'{base_select} WHERE population IS NOT NULL AND population > 100000 ORDER BY population DESC LIMIT ?'
                     params = [final_limit]
+                    
                 elif mapped_region == "Hungary":
-                    query_str = f'{base_select} WHERE country_code = "HU" ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
-                    params = [final_limit]
-                else:
+                    # 🔧 KRITIKUS JAVÍTÁS: REGIONÁLIS SZŰRÉS HOZZÁADÁSA!
+                    
+                    # 1. Ellenőrizzük, hogy az eredeti régió neve megvan-e a mapping-ben
+                    if original_region in self.HUNGARIAN_REGIONAL_MAPPING:
+                        # REGIONÁLIS SZŰRÉS - csak a megadott régió megyéi
+                        target_counties = self.HUNGARIAN_REGIONAL_MAPPING[original_region]
+                        logger.info(f"🎯 REGIONÁLIS SZŰRÉS: '{original_region}' → {target_counties}")
+                        
+                        # Admin_name mező alapú szűrés (amely a megyéket tartalmazza)
+                        placeholders = ','.join(['?' for _ in target_counties])
+                        query_str = f'{base_select} WHERE country_code = "HU" AND admin_name IN ({placeholders}) ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
+                        params = target_counties + [final_limit]
+                        
+                    else:
+                        # ORSZÁGOS SZŰRÉS - összes magyar város (eredeti viselkedés)
+                        logger.info(f"🌍 ORSZÁGOS SZŰRÉS: '{original_region}' nincs regionális mapping-ben")
+                        query_str = f'{base_select} WHERE country_code = "HU" ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
+                        params = [final_limit]
+                        
+                else:  # Europe és egyéb régiók
                     placeholders = ','.join(['?' for _ in country_codes])
                     query_str = f'{base_select} WHERE country_code IN ({placeholders}) AND population IS NOT NULL AND population > 50000 ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
                     params = country_codes + [final_limit]
+                
+                logger.debug(f"🔧 SQL QUERY: {query_str}")
+                logger.debug(f"🔧 SQL PARAMS: {params}")
                 
                 cursor.execute(query_str, params)
                 results = cursor.fetchall()
@@ -240,7 +384,11 @@ class MultiCityEngine:
                     'meteostat_station_id': row[6], 'data_quality_score': row[7]
                 } for row in results]
                 
-                logger.info(f"✅ Lekérdezve {len(cities)} város {mapped_region} régióból")
+                if original_region in self.HUNGARIAN_REGIONAL_MAPPING:
+                    logger.info(f"✅ REGIONÁLIS lekérdezés: {len(cities)} város {original_region} régióból ({self.HUNGARIAN_REGIONAL_MAPPING[original_region]})")
+                else:
+                    logger.info(f"✅ ORSZÁGOS lekérdezés: {len(cities)} város {mapped_region} régióból")
+                
                 return cities
                 
         except Exception as e:
@@ -249,35 +397,44 @@ class MultiCityEngine:
 
     def analyze_multi_city(self, query_type: str, region: str, date: str, limit: Optional[int] = None, question: Optional[AnalyticsQuestion] = None) -> AnalyticsResult:
         """
-        🔧 KRITIKUS JAVÍTÁS: Multi-city elemzés - TELJES ADAT TRANSZFORMÁCIÓVAL + ERROR HANDLING + NONE-SAFE
+        🔧 KRITIKUS JAVÍTÁS: Multi-city elemzés - TELJES ADAT TRANSZFORMÁCIÓVAL + ERROR HANDLING + NONE-SAFE + RÉGIÓ/MEGYE MAPPING JAVÍTVA + LIMIT TYPE FIX + RÉGIÓ SZŰRÉS JAVÍTVA!
         
         Args:
             query_type: Lekérdezés típusa
-            region: Régió
+            region: Régió (most már támogatja az "Észak-Magyarország" stb. régiókat!)
             date: Dátum
-            limit: Eredmények limitje
+            limit: Eredmények limitje (int vagy None)
             question: AnalyticsQuestion objektum
             
         Returns:
-            AnalyticsResult objektum (UI kompatibilis)
+            AnalyticsResult objektum (UI kompatibilis) - MINDIG, hiba esetén is!
         """
         start_time = time.time()
         
         try:
             if query_type not in self.QUERY_TYPES:
-                raise ValueError(f"Ismeretlen lekérdezés típus: {query_type}")
+                logger.error(f"❌ Ismeretlen lekérdezés típus: {query_type}")
+                return self._create_empty_analytics_result(question, f"Ismeretlen lekérdezés típus: {query_type}")
             
-            mapped_region = self.resolve_region_name(region)
+            # 🔧 KRITIKUS JAVÍTÁS: Region mapping hibák kezelése
+            try:
+                mapped_region = self.resolve_region_name(region)
+                logger.info(f"✅ Régió mapping sikeres: '{region}' → '{mapped_region}'")
+            except ValueError as e:
+                logger.error(f"❌ Régió mapping hiba: {e}")
+                return self._create_empty_analytics_result(question, f"Ismeretlen régió: {region}")
+            
             query_config = self.QUERY_TYPES[query_type]
             
-            logger.info(f"🚀 Multi-city elemzés kezdése (NONE-SAFE v2.5): {query_type} - {mapped_region} - {date}")
+            logger.info(f"🚀 Multi-city elemzés kezdése (RÉGIÓ SZŰRÉS JAVÍTVA v2.7): {query_type} - {region} - {date}")
             
-            # Városok lekérdezése - teljes pool
-            cities = self.get_cities_for_region(mapped_region, max_cities=self.REGIONS[mapped_region]["max_cities"])
+            # 🔧 KRITIKUS JAVÍTÁS: Városok lekérdezése REGIONÁLIS SZŰRÉSSEL!
+            # Az eredeti régió nevet adjuk át, nem a mapped-et!
+            cities = self.get_cities_for_region(region, max_cities=self.REGIONS[mapped_region]["max_cities"])
             
             if not cities:
                 logger.error("❌ Nincsenek városok a lekérdezéshez")
-                return self._create_empty_analytics_result(question)
+                return self._create_empty_analytics_result(question, "Nincsenek városok a lekérdezéshez")
             
             # Időjárási adatok lekérdezése
             weather_data = self._fetch_weather_data_dual_api_batch(cities, date, mapped_region)
@@ -310,7 +467,7 @@ class MultiCityEngine:
                 try:
                     final_question = AnalyticsQuestion(
                         question_text=query_config["question_template"].format(region=self.REGIONS[mapped_region]["name"]),
-                        question_type=QuestionType.MULTI_CITY,
+                        question_type=QuestionType.WEATHER_COMPARISON,  # 🔥 FIX: SINGLE_LOCATION → WEATHER_COMPARISON
                         region_scope=RegionScope.COUNTRY if mapped_region == "Hungary" else RegionScope.CONTINENT,
                         metric=query_config["metric_enum"]
                     )
@@ -319,13 +476,29 @@ class MultiCityEngine:
                     # Fallback question
                     final_question = AnalyticsQuestion(
                         question_text="Multi-city analytics",
-                        question_type=QuestionType.MULTI_CITY,
+                        question_type=QuestionType.TEMPERATURE_MAX,  # 🔥 FIX: SINGLE_LOCATION → TEMPERATURE_MAX  
                         region_scope=RegionScope.COUNTRY,
                         metric=AnalyticsMetric.TEMPERATURE_2M_MAX
                     )
 
-            # Csak a limitált eredményeket adjuk át a UI-nak
-            limited_results = transformed_results[:limit] if limit else transformed_results
+            # 🔧 KRITIKUS JAVÍTÁS: LIMIT TYPE VALIDATION ÉS SAFE SLICING
+            safe_limit = None
+            if limit is not None:
+                try:
+                    safe_limit = int(limit)  # Type conversion biztosítása
+                    if safe_limit <= 0:
+                        safe_limit = None  # Invalid limit esetén nincs limitálás
+                except (TypeError, ValueError):
+                    logger.warning(f"⚠️ Invalid limit type: {type(limit)}, value: {limit}")
+                    safe_limit = None
+
+            # Safe slicing with proper type checking
+            if safe_limit is not None and safe_limit > 0:
+                limited_results = transformed_results[:safe_limit]
+                logger.info(f"🔧 Limited results: {len(limited_results)}/{len(transformed_results)} (limit: {safe_limit})")
+            else:
+                limited_results = transformed_results
+                logger.info(f"🔧 No limit applied: {len(limited_results)} results")
 
             try:
                 analytics_result = AnalyticsResult(
@@ -338,17 +511,17 @@ class MultiCityEngine:
                     provider_statistics=self._get_provider_stats(weather_data)
                 )
                 
-                logger.info(f"✅ Multi-city elemzés befejezve (NONE-SAFE v2.5): {len(limited_results)}/{len(cities)} eredmény, {len(transformed_results)} siker")
+                logger.info(f"✅ Multi-city elemzés befejezve (RÉGIÓ SZŰRÉS JAVÍTVA v2.7): {len(limited_results)}/{len(cities)} eredmény, {len(transformed_results)} siker")
                 
                 return analytics_result
                 
             except Exception as e:
                 logger.error(f"❌ AnalyticsResult creation error: {e}")
-                return self._create_empty_analytics_result(final_question)
+                return self._create_empty_analytics_result(final_question, f"Eredmény objektum létrehozási hiba: {e}")
             
         except Exception as e:
             logger.error(f"❌ CRITICAL ERROR in analyze_multi_city: {e}", exc_info=True)
-            return self._create_empty_analytics_result(question)
+            return self._create_empty_analytics_result(question, f"Kritikus hiba a multi-city elemzésben: {e}")
 
     def _get_provider_stats(self, weather_data: List[CityWeatherData]) -> Dict[str, int]:
         """Provider statisztikák kinyerése."""
@@ -660,42 +833,185 @@ class MultiCityEngine:
             logger.error(f"❌ NONE-SAFE Hiba a statisztikák számításánál: {e}", exc_info=True)
             return {}
 
-    def _create_empty_analytics_result(self, question: Optional[AnalyticsQuestion]) -> AnalyticsResult:
-        """Üres AnalyticsResult létrehozása hibák esetén."""
-        return AnalyticsResult(
-            question=question or AnalyticsQuestion("Hiba", QuestionType.MULTI_CITY, RegionScope.GLOBAL, AnalyticsMetric.TEMPERATURE_2M_MAX),
-            city_results=[], execution_time=0.0, total_cities_found=0,
-            data_sources_used=[], statistics={}, provider_statistics={}
-        )
+    def _create_empty_analytics_result(self, question: Optional[AnalyticsQuestion], error_msg: str = "Ismeretlen hiba") -> AnalyticsResult:
+        """
+        🔧 KRITIKUS JAVÍTÁS: Üres AnalyticsResult létrehozása hibák esetén - JAVÍTOTT ERROR HANDLING.
+        
+        Ez a metódus biztosítja, hogy analyze_multi_city() MINDIG AnalyticsResult objektumot adjon vissza,
+        még hiba esetén is (nem dict-et).
+        
+        Args:
+            question: AnalyticsQuestion objektum (lehet None)
+            error_msg: Hibaüzenet
+            
+        Returns:
+            Üres AnalyticsResult objektum proper fallback question-nel
+        """
+        try:
+            # Fallback question létrehozása ha nincs megadva
+            fallback_question = question
+            if not fallback_question:
+                fallback_question = AnalyticsQuestion(
+                    question_text=f"Multi-city elemzés hiba: {error_msg}",
+                    question_type=QuestionType.WEATHER_COMPARISON,  # 🔥 FIX: SINGLE_LOCATION → WEATHER_COMPARISON
+                    region_scope=RegionScope.GLOBAL,
+                    metric=AnalyticsMetric.TEMPERATURE_2M_MAX
+                )
+            
+            # Üres AnalyticsResult objektum létrehozása
+            empty_result = AnalyticsResult(
+                question=fallback_question,
+                city_results=[],  # Üres lista
+                execution_time=0.0,
+                total_cities_found=0,
+                data_sources_used=[],
+                statistics={},
+                provider_statistics={}
+            )
+            
+            logger.info(f"✅ Empty AnalyticsResult created for error: {error_msg}")
+            return empty_result
+            
+        except Exception as e:
+            # Ultimate fallback - ha még ez sem működik
+            logger.error(f"❌ Critical error creating empty AnalyticsResult: {e}")
+            
+            # Manuális objektum létrehozás
+            try:
+                ultra_fallback_question = AnalyticsQuestion(
+                    question_text="Critical error",
+                    question_type=QuestionType.TEMPERATURE_MAX,  # 🔥 FIX: COMPARISON → TEMPERATURE_MAX
+                    region_scope=RegionScope.GLOBAL,
+                    metric=AnalyticsMetric.TEMPERATURE_2M_MAX
+                )
+                
+                ultra_fallback_result = AnalyticsResult(
+                    question=ultra_fallback_question,
+                    city_results=[],
+                    execution_time=0.0,
+                    total_cities_found=0,
+                    data_sources_used=[],
+                    statistics={},
+                    provider_statistics={}
+                )
+                
+                return ultra_fallback_result
+                
+            except Exception as ultra_e:
+                logger.error(f"❌ ULTRA CRITICAL: Cannot create AnalyticsResult at all: {ultra_e}")
+                # Ha még ez sem működik, akkor valami alapvető hiba van
+                raise RuntimeError(f"Cannot create AnalyticsResult: {ultra_e}")
 
     def resolve_region_name(self, region_input: str) -> str:
-        """Régió név feloldása country code-ból."""
-        mapped_region = self.REGION_CODE_MAPPING.get(region_input.upper() if region_input else "", region_input)
-        if mapped_region not in self.REGIONS:
-            raise ValueError(f"Ismeretlen régió: {region_input}")
-        return mapped_region
+        """
+        🔧 KRITIKUS JAVÍTÁS: Régió név feloldása - TELJES MAGYAR RÉGIÓ/MEGYE TÁMOGATÁSSAL + ERROR HANDLING.
+        
+        Támogatott régiók/megyék:
+        - 7 statisztikai régió (pl. "Észak-Magyarország")  
+        - 19 megye + Budapest (pl. "Pest", "Borsod-Abaúj-Zemplén")
+        - Country codes (HU, EU, GLOBAL)
+        - Alternatív írásmódok
+        
+        Args:
+            region_input: Bemeneti régió név (lehet "Észak-Magyarország", "Pest", "HU", stb.)
+            
+        Returns:
+            Mapped régió név ("Hungary", "Europe", "Global")
+            
+        Raises:
+            ValueError: Ha a régió nem ismerhető fel
+        """
+        if not region_input:
+            raise ValueError("Üres régió név")
+        
+        # Case-insensitive lookup
+        region_key = region_input.strip()
+        
+        # Első próbálkozás: pontos egyezés (case-sensitive)
+        if region_key in self.REGION_CODE_MAPPING:
+            mapped = self.REGION_CODE_MAPPING[region_key]
+            logger.info(f"✅ Exact region mapping: '{region_input}' → '{mapped}'")
+            return mapped
+        
+        # Második próbálkozás: case-insensitive
+        region_key_lower = region_key.lower()
+        for key, value in self.REGION_CODE_MAPPING.items():
+            if key.lower() == region_key_lower:
+                mapped = value
+                logger.info(f"✅ Case-insensitive region mapping: '{region_input}' → '{mapped}'")
+                return mapped
+        
+        # Harmadik próbálkozás: partial matching magyar régió nevekhez
+        hungarian_regions = [
+            "közép-magyarország", "észak-magyarország", "észak-alföld",
+            "dél-alföld", "dél-dunántúl", "nyugat-dunántúl", "közép-dunántúl"
+        ]
+        
+        region_normalized = region_input.lower().strip()
+        for region in hungarian_regions:
+            if region in region_normalized or region_normalized in region:
+                logger.info(f"✅ Partial region mapping: '{region_input}' → 'Hungary' (matched: {region})")
+                return "Hungary"
+        
+        # Negyedik próbálkozás: magyar megye nevek
+        hungarian_counties = [
+            "budapest", "pest", "fejér", "komárom-esztergom", "veszprém",
+            "győr-moson-sopron", "vas", "zala", "baranya", "somogy", "tolna",
+            "borsod-abaúj-zemplén", "heves", "nógrád", "hajdú-bihar",
+            "jász-nagykun-szolnok", "szabolcs-szatmár-bereg", "bács-kiskun",
+            "békés", "csongrád-csanád"
+        ]
+        
+        for county in hungarian_counties:
+            if county in region_normalized or region_normalized in county:
+                logger.info(f"✅ County region mapping: '{region_input}' → 'Hungary' (matched: {county})")
+                return "Hungary"
+        
+        # Ha semmi sem működött
+        available_regions = list(self.REGION_CODE_MAPPING.keys())[:10]  # Első 10 példa
+        error_msg = f"Ismeretlen régió: {region_input}. Támogatott régiók: {', '.join(available_regions)}..."
+        logger.error(error_msg)
+        raise ValueError(error_msg)
 
 
-# 🧪 TESTING & DEBUG (NONE-SAFE)
+# 🧪 TESTING & DEBUG (NONE-SAFE + RÉGIÓ MAPPING + RÉGIÓ SZŰRÉS)
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     engine = MultiCityEngine()
     today = datetime.now().strftime("%Y-%m-%d")
     
-    print("\n🚀 NONE-SAFE Analytics 'HU' country code-dal (hottest):")
-    result_hot = engine.analyze_multi_city("hottest_today", "HU", today, limit=10)
-    print(f"📊 Eredmények: {len(result_hot.city_results)} város")
-    print(f"📊 NONE-SAFE Statisztikák: {result_hot.statistics}")
+    print("\n🚀 RÉGIÓ MAPPING TESZTEK:")
+    test_regions = [
+        "HU", "Észak-Magyarország", "Pest", "Budapest", 
+        "észak-magyarország", "közép-magyarország", "EU", "GLOBAL"
+    ]
     
-    # Első 3 város részletei
-    for i, city in enumerate(result_hot.city_results[:3]):
-        print(f"  {i+1}. {city.city_name}: {city.value}°C")
+    for region in test_regions:
+        try:
+            mapped = engine.resolve_region_name(region)
+            print(f"✅ '{region}' → '{mapped}'")
+        except ValueError as e:
+            print(f"❌ '{region}' → ERROR: {e}")
     
-    print("\n🚀 NONE-SAFE Analytics 'HU' country code-dal (coldest):")
-    result_cold = engine.analyze_multi_city("coldest_today", "HU", today, limit=10)
-    print(f"📊 Eredmények: {len(result_cold.city_results)} város")
-    print(f"📊 NONE-SAFE Statisztikák: {result_cold.statistics}")
-    
-    # Első 3 város részletei
-    for i, city in enumerate(result_cold.city_results[:3]):
-        print(f"  {i+1}. {city.city_name}: {city.value}°C")
+    print("\n🚀 RÉGIÓ SZŰRÉS TESZT: 'Észak-Magyarország' régióval (hottest):")
+    try:
+        result_hot = engine.analyze_multi_city("hottest_today", "Észak-Magyarország", today, limit=10)
+        print(f"📊 Eredmények: {len(result_hot.city_results)} város")
+        print(f"📊 NONE-SAFE Statisztikák: {result_hot.statistics}")
+        
+        # Első 3 város részletei
+        for i, city in enumerate(result_hot.city_results[:3]):
+            print(f"  {i+1}. {city.city_name}: {city.value}°C")
+            
+        # ELLENŐRIZZÜK: csak északi városok?
+        northern_counties = ["Borsod-Abaúj-Zemplén", "Heves", "Nógrád"]
+        print(f"\n🔧 REGIONÁLIS SZŰRÉS ELLENŐRZÉS:")
+        print(f"   Várt megyék: {northern_counties}")
+        
+        cities_found = [f"{city.city_name}" for city in result_hot.city_results[:5]]
+        print(f"   Talált városok: {cities_found}")
+            
+    except Exception as e:
+        print(f"❌ Teszt hiba: {e}")
+        import traceback
+        traceback.print_exc()

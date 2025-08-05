@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-🇭🇺 DUAL DATABASE City Manager - Magyar Települések Integrációval
+🇭🇺 DUAL DATABASE City Manager - Magyar Települések Integrációval + TrendDataProcessor Support
 Magyar Klímaanalitika MVP - 3200+ Magyar Település + 44k Globális Város
 
-🚀 ÚJ FUNKCIÓK:
+🚀 ÚJ FUNKCIÓK v4.2:
 ✅ search_hungarian_settlements() - 3200+ magyar település keresése
 ✅ search_unified() - KOMBINÁLT keresés (Magyar + Globális)
+✅ find_city_by_name() - TrendDataProcessor koordináta lekérdezés támogatás ⭐ ÚJ
 ✅ HungarianSettlement adapter - City objektumokká alakítás
 ✅ Magyar prioritás - magyar települések előre helyezése
 ✅ Hierarchikus keresés - falvak, nagyközségek, városok
@@ -23,6 +24,9 @@ manager = CityManager()
 results = manager.search_unified("Kiskunhalas")  # Kis magyar város
 results = manager.search_unified("Budapest")     # Nagy magyar város  
 results = manager.search_unified("London")       # Nemzetközi város
+
+# TrendDataProcessor támogatás
+coords = manager.find_city_by_name("Broxbourne")  # (lat, lon) vagy None
 ```
 
 Fájl helye: src/data/city_manager.py
@@ -213,6 +217,7 @@ class CityManager:
     - search_unified() - KOMBINÁLT keresés (3200+ magyar + 44k globális)
     - search_hungarian_settlements() - Csak magyar települések
     - search_cities() - Csak globális városok (eredeti)
+    - find_city_by_name() - ⭐ ÚJ: Egyetlen koordináta lekérdezés TrendDataProcessor-hez
     - Magyar prioritás - magyar települések előre rendezése
     - Hierarchikus keresés - minden magyar település típus
     """
@@ -244,7 +249,7 @@ class CityManager:
         self.hungarian_query_count = 0
         self.last_query_time: Optional[datetime] = None
         
-        logger.info(f"🇭🇺 Dual Database CityManager inicializálva:")
+        logger.info(f"🇭🇺 Dual Database CityManager v4.2 inicializálva:")
         logger.info(f"   Global cities: {self.db_path}")
         logger.info(f"   Hungarian settlements: {self.hungarian_db_path}")
         
@@ -374,6 +379,76 @@ class CityManager:
         except sqlite3.Error as e:
             logger.error(f"SQL query hiba: {sql} | Error: {e}")
             raise CityDatabaseError(f"Query execution error: {e}")
+    
+    # ⭐ ÚJ FUNKCIÓ: TrendDataProcessor támogatás
+    
+    def find_city_by_name(self, city_name: str) -> Optional[Tuple[float, float]]:
+        """
+        ⭐ EGYETLEN VÁROS KOORDINÁTÁINAK LEKÉRDEZÉSE - TrendDataProcessor támogatás
+        
+        Ez a metódus a TrendDataProcessor számára készült, ami egyetlen,
+        legmegbízhatóbb koordinátát vár egy városnévhez.
+        
+        LOGIKA:
+        1. Magyar prioritás - Ha van magyar település, azt választjuk
+        2. Globális fallback - Ha nincs magyar, akkor globális városok
+        3. Legnagyobb populáció - A legnagyobb város koordinátáit adjuk vissza
+        4. Exact match prioritás - Pontos név egyezés előnyben
+        
+        Args:
+            city_name: Város/település neve (pl. "Budapest", "Broxbourne", "Kiskunhalas")
+            
+        Returns:
+            (latitude, longitude) tuple vagy None ha nem található
+        """
+        try:
+            logger.info(f"🔍 find_city_by_name: '{city_name}'")
+            
+            # 1. MAGYAR KERESÉS ELŐNYBEN (ha van magyar adatbázis)
+            if self.hungarian_connection:
+                hungarian_results = self.search_hungarian_settlements(city_name, limit=3)
+                
+                if hungarian_results:
+                    # Exact match keresése a magyar találatok között
+                    exact_match = next((city for city in hungarian_results 
+                                      if city.city.lower() == city_name.lower()), None)
+                    
+                    if exact_match:
+                        logger.info(f"✅ Magyar exact match: {exact_match.display_name}")
+                        return (exact_match.lat, exact_match.lon)
+                    
+                    # Ha nincs exact match, a legnagyobb magyar települést választjuk
+                    best_hungarian = max(hungarian_results, 
+                                       key=lambda c: (c.region_priority or 0, c.population or 0))
+                    logger.info(f"✅ Magyar legjobb találat: {best_hungarian.display_name}")
+                    return (best_hungarian.lat, best_hungarian.lon)
+            
+            # 2. GLOBÁLIS KERESÉS (ha nincs magyar találat)
+            if self.connection:
+                global_results = self.search_cities(city_name, limit=3)
+                
+                if global_results:
+                    # Exact match keresése a globális találatok között
+                    exact_match = next((city for city in global_results 
+                                      if city.city.lower() == city_name.lower()), None)
+                    
+                    if exact_match:
+                        logger.info(f"✅ Globális exact match: {exact_match.display_name}")
+                        return (exact_match.lat, exact_match.lon)
+                    
+                    # Ha nincs exact match, a legnagyobb globális várost választjuk
+                    best_global = max(global_results, key=lambda c: c.population or 0)
+                    logger.info(f"✅ Globális legjobb találat: {best_global.display_name}")
+                    return (best_global.lat, best_global.lon)
+            
+            # 3. NINCS TALÁLAT
+            logger.warning(f"⚠️ Nincs találat: '{city_name}'")
+            return None
+            
+        except Exception as e:
+            logger.error(f"❌ find_city_by_name hiba '{city_name}': {e}")
+            logger.exception("find_city_by_name stacktrace:")
+            return None
     
     # 🇭🇺 MAGYAR TELEPÜLÉSEK KERESÉS
     
@@ -786,7 +861,7 @@ class CityManager:
 
 def demo_dual_database_city_manager():
     """🇭🇺 Dual Database City Manager demo és tesztelés."""
-    print("🇭🇺 Dual Database City Manager Demo")
+    print("🇭🇺 Dual Database City Manager Demo v4.2")
     print("=" * 60)
     
     try:
@@ -799,6 +874,22 @@ def demo_dual_database_city_manager():
             print(f"   📍 ÖSSZES kereshető helyszín: {stats['total_searchable_locations']:,}")
             print()
             
+            # ⭐ ÚJ: find_city_by_name TESZT
+            print("⭐ ÚJ FUNKCIÓ TESZT: find_city_by_name() - TrendDataProcessor támogatás")
+            print("-" * 70)
+            
+            test_cities = ["Budapest", "Kiskunhalas", "Broxbourne", "London", "New York"]
+            
+            for city_name in test_cities:
+                print(f"🔍 Koordináta keresés: '{city_name}'")
+                coords = manager.find_city_by_name(city_name)
+                if coords:
+                    lat, lon = coords
+                    print(f"   ✅ Koordináták: {lat:.4f}, {lon:.4f}")
+                else:
+                    print(f"   ❌ Nem található")
+                print()
+            
             # Magyar statisztikák
             if stats['hungarian_settlements'] > 0:
                 hu_stats = manager.get_hungarian_statistics()
@@ -808,59 +899,16 @@ def demo_dual_database_city_manager():
                 print(f"   👥 100k+ lakosú: {hu_stats['population_stats']['large_cities_100k_plus']}")
                 print()
             
-            # 1. UNIFIED SEARCH TESZT - Magyar falu
-            print("🔍 UNIFIED SEARCH TESZT #1 - Magyar kis település:")
+            # Unified search tesztek (rövidítve)
+            print("🔍 UNIFIED SEARCH TESZT - Magyar kis település:")
             print("   Keresés: 'Kiskunhalas'")
-            kiskunhalas_results = manager.search_unified("Kiskunhalas", limit=5)
+            kiskunhalas_results = manager.search_unified("Kiskunhalas", limit=3)
             for i, city in enumerate(kiskunhalas_results, 1):
                 flag = "🇭🇺" if city.is_hungarian else "🌍"
                 pop = f"{city.population:,}" if city.population else "N/A"
                 settlement_info = f" ({city.settlement_type})" if city.settlement_type else ""
                 print(f"   {i}. {flag} {city.display_name}: {pop} lakos{settlement_info}")
             print()
-            
-            # 2. UNIFIED SEARCH TESZT - Budapest
-            print("🔍 UNIFIED SEARCH TESZT #2 - Budapest (magyar prioritás):")
-            print("   Keresés: 'Budapest'")
-            budapest_results = manager.search_unified("Budapest", limit=5)
-            for i, city in enumerate(budapest_results, 1):
-                flag = "🇭🇺" if city.is_hungarian else "🌍"
-                pop = f"{city.population:,}" if city.population else "N/A"
-                print(f"   {i}. {flag} {city.display_name}: {pop} lakos")
-            print()
-            
-            # 3. UNIFIED SEARCH TESZT - Nemzetközi város
-            print("🔍 UNIFIED SEARCH TESZT #3 - Nemzetközi város:")
-            print("   Keresés: 'London'")
-            london_results = manager.search_unified("London", limit=5)
-            for i, city in enumerate(london_results, 1):
-                flag = "🇭🇺" if city.is_hungarian else "🌍"
-                pop = f"{city.population:,}" if city.population else "N/A"
-                print(f"   {i}. {flag} {city.display_name}: {pop} lakos")
-            print()
-            
-            # 4. CSAK MAGYAR TELEPÜLÉSEK TESZT
-            print("🇭🇺 CSAK MAGYAR TELEPÜLÉSEK TESZT:")
-            print("   Keresés: 'Buda' (minden Buda kezdetű)")
-            buda_results = manager.search_hungarian_settlements("Buda", limit=7)
-            for i, city in enumerate(buda_results, 1):
-                pop = f"{city.population:,}" if city.population else "N/A"
-                print(f"   {i}. {city.display_name}: {pop} lakos ({city.settlement_type})")
-            print()
-            
-            # 5. MAGYAR MEGYÉK TESZT
-            counties = manager.get_hungarian_counties()
-            print(f"🏛️ MAGYAR MEGYÉK ({len(counties)} db):")
-            print(f"   {', '.join(counties[:10])}{'...' if len(counties) > 10 else ''}")
-            print()
-            
-            if counties:
-                print(f"📊 PEST MEGYE TELEPÜLÉSEK (első 5):")
-                pest_settlements = manager.get_hungarian_settlements_by_county("Pest", limit=5)
-                for i, city in enumerate(pest_settlements, 1):
-                    pop = f"{city.population:,}" if city.population else "N/A"
-                    print(f"   {i}. {city.city}: {pop} lakos ({city.settlement_type})")
-                print()
             
             # Query statistics
             print(f"📈 LEKÉRDEZÉS STATISZTIKÁK:")
