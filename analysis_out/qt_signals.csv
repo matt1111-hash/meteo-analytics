@@ -1,0 +1,631 @@
+module,kind,emitter_or_name,target_or_signature,lineno,path
+scripts.system_diagnostics,connect,sqlite3,db_path,112,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/system_diagnostics.py
+scripts.hungarian_settlements_importer,connect,sqlite3,self.db_path,153,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/hungarian_settlements_importer.py
+scripts.hungarian_settlements_importer,connect,sqlite3,self.db_path,397,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/hungarian_settlements_importer.py
+scripts.hungarian_settlements_importer,connect,sqlite3,self.db_path,404,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/hungarian_settlements_importer.py
+scripts.hungarian_settlements_importer,connect,sqlite3,self.db_path,492,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/hungarian_settlements_importer.py
+scripts.hungarian_settlements_importer,connect,sqlite3,self.db_path,501,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/hungarian_settlements_importer.py
+scripts.hungarian_settlements_importer,connect,sqlite3,self.db_path,517,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/hungarian_settlements_importer.py
+scripts.hungarian_settlements_importer,connect,sqlite3,self.db_path,527,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/hungarian_settlements_importer.py
+scripts.ai_studio_code,connect,sqlite3,self.db_path,67,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/ai_studio_code.py
+scripts.ai_studio_code,connect,sqlite3,self.db_path,105,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/ai_studio_code.py
+scripts.fix_hungarian_coordinates,connect,sqlite3,self.db_path,166,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/fix_hungarian_coordinates.py
+scripts.fix_hungarian_coordinates,connect,sqlite3,self.db_path,326,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/fix_hungarian_coordinates.py
+scripts.fix_hungarian_coordinates,connect,sqlite3,self.db_path,485,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/fix_hungarian_coordinates.py
+scripts.add_coordinates_to_db,connect,sqlite3,DB_PATH,81,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/add_coordinates_to_db.py
+scripts.populate_cities_db,connect,sqlite3,self.db_path,216,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/populate_cities_db.py
+scripts.populate_cities_db,connect,sqlite3,self.db_path,807,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/populate_cities_db.py
+scripts.populate_cities_db,connect,sqlite3,self.db_path,832,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/populate_cities_db.py
+scripts.populate_cities_db,connect,sqlite3,self.db_path,923,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/populate_cities_db.py
+backups_20250813.control_panel,signal,search_requested,Signal(str),134,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,city_selected,"Signal(str, float, float, dict)",137,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,location_changed,Signal(object),140,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,weather_data_requested,"Signal(float, float, str, str, dict)",143,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,multi_city_weather_requested,"Signal(str, str, str, str, dict)",146,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,region_selection_changed,Signal(str),149,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,weather_parameters_changed,Signal(dict),154,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,analysis_parameters_changed,Signal(dict),157,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,date_range_changed,"Signal(str, str)",160,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,parameters_bundle_changed,Signal(dict),163,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,provider_changed,Signal(str),166,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,provider_preferences_updated,Signal(dict),167,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,signal,local_error_occurred,Signal(str),172,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.usage_update_timer.timeout,self._update_usage_display,223,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.analysis_type_button_group.buttonClicked,self._on_analysis_type_changed_safe,353,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.clear_location_btn.clicked,self._clear_location,391,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.region_combo.currentTextChanged,self._on_region_changed_safe,430,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.county_combo.currentTextChanged,self._on_county_changed_safe,462,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.time_range_radio.toggled,self._on_date_mode_changed,508,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.manual_dates_radio.toggled,self._on_date_mode_changed,509,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.time_range_combo.currentTextChanged,self._on_time_range_changed,527,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.last_month_btn.clicked,self._set_last_month,576,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.last_year_btn.clicked,self._set_last_year,581,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.last_1year_btn.clicked,lambda: self._set_years_back(1),587,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.last_5years_btn.clicked,lambda: self._set_years_back(5),593,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.last_10years_btn.clicked,lambda: self._set_years_back(10),604,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.last_25years_btn.clicked,lambda: self._set_years_back(25),609,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.last_55years_btn.clicked,lambda: self._set_years_back(55),614,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.provider_button_group.buttonClicked,self._on_provider_changed,667,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.fetch_button.clicked,self._trigger_weather_fetch,784,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.cancel_button.clicked,self._cancel_operations,802,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.start_date.dateChanged,self._validate_dates_safe,1686,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.end_date.dateChanged,self._validate_dates_safe,1687,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.local_error_occurred,self._show_local_error,1703,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.universal_location_selector.search_requested,self.search_requested.emit,1709,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.universal_location_selector.city_selected,self._on_location_selected_safe,1713,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.universal_location_selector.location_changed,self._on_location_changed_safe,1717,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.theme_manager.theme_changed,self._on_theme_changed,1721,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+backups_20250813.control_panel,connect,self.theme_manager.color_scheme_updated,self._on_color_scheme_updated,1724,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py
+src.data.city_manager,connect,sqlite3,self.db_path,268,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/data/city_manager.py
+src.data.city_manager,connect,sqlite3,self.hungarian_db_path,285,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/data/city_manager.py
+src.analytics.multi_city_engine,connect,sqlite3,database_path,457,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/analytics/multi_city_engine.py
+src.analytics.multi_city_engine,connect,sqlite3,database_path,488,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/analytics/multi_city_engine.py
+src.gui.map_visualizer,signal,server_ready,"Signal(str, int)",126,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,server_error,Signal(str),127,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,county_clicked,Signal(str),190,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,coordinates_clicked,"Signal(float, float)",191,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,map_moved,"Signal(float, float, int)",192,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,county_hovered,Signal(str),193,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,county_unhovered,Signal(),194,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,progress_updated,Signal(int),238,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,map_generated,Signal(str),239,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,error_occurred,Signal(str),240,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,status_updated,Signal(str),241,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,map_ready,Signal(),1049,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,county_clicked,Signal(str),1050,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,coordinates_clicked,"Signal(float, float)",1051,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,map_moved,"Signal(float, float, int)",1052,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,county_hovered,Signal(str),1053,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,export_completed,Signal(str),1054,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,error_occurred,Signal(str),1055,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,signal,bounds_changed,Signal(object),1056,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.style_combo.currentTextChanged,self._on_style_changed,1252,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.counties_check.toggled,self._on_counties_toggled,1253,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.weather_check.toggled,self._on_weather_toggled,1254,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.zoom_slider.valueChanged,self._on_zoom_changed,1255,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.refresh_btn.clicked,self._refresh_map,1257,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.export_btn.clicked,self._export_map,1258,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.reset_btn.clicked,self.reset_map_view,1259,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.web_view.loadFinished,self._on_map_loaded,1262,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.js_bridge.county_clicked,self._on_js_county_clicked,1265,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.js_bridge.coordinates_clicked,self._on_js_coordinates_clicked,1266,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.js_bridge.map_moved,self._on_js_map_moved,1267,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.js_bridge.county_hovered,self._on_js_county_hovered,1268,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.local_server.server_ready,self._on_server_ready,1286,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.local_server.server_error,self._on_server_error,1287,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.map_generator.progress_updated,self.progress_bar.setValue,1378,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.map_generator.status_updated,self.status_label.setText,1379,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.map_generator.map_generated,self._on_map_generated,1380,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,self.map_generator.error_occurred,self._on_map_error,1381,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,debug_info_btn.clicked,show_debug_info,2202,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,counties_test_btn.clicked,test_counties_reactive,2203,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,weather_test_btn.clicked,test_weather_reactive,2204,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,server_info_btn.clicked,show_server_info,2205,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,temp_overlay_btn.clicked,test_temperature_overlay,2208,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,wind_overlay_btn.clicked,test_wind_overlay,2209,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,precip_overlay_btn.clicked,test_precipitation_overlay,2210,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,clear_overlay_btn.clicked,test_clear_overlay,2211,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,map_visualizer.map_ready,on_map_ready,2214,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,map_visualizer.county_clicked,on_county_clicked,2215,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,map_visualizer.coordinates_clicked,on_coordinates_clicked,2216,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,map_visualizer.map_moved,on_map_moved,2217,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,map_visualizer.export_completed,on_export_completed,2218,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,map_visualizer.error_occurred,on_error_occurred,2219,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.map_visualizer,connect,app.aboutToQuit,cleanup_on_close,2226,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py
+src.gui.universal_location_selector,signal,search_requested,Signal(str),119,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py
+src.gui.universal_location_selector,signal,city_selected,"Signal(str, float, float, dict)",120,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py
+src.gui.universal_location_selector,signal,location_changed,Signal(object),121,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py
+src.gui.universal_location_selector,connect,self.search_timer.timeout,self._perform_search,132,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py
+src.gui.universal_location_selector,connect,self.search_input.textChanged,self._on_search_text_changed,349,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py
+src.gui.universal_location_selector,connect,self.results_list.itemDoubleClicked,self._on_result_selected,350,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py
+src.gui.universal_location_selector,connect,self.results_list.itemClicked,self._on_result_clicked,351,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py
+src.gui.universal_location_selector,connect,self.confirm_button.clicked,self._on_confirm_selection,352,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py
+src.gui.map_view,signal,location_selected,Signal(object),51,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,signal,county_clicked_on_map,Signal(str),52,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,signal,map_interaction,"Signal(str, object)",53,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,signal,export_completed,Signal(str),54,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,signal,error_occurred,Signal(str),55,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,signal,data_loading_completed,Signal(),56,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,signal,folium_ready,Signal(),57,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,self.map_tab.location_selected,self.location_selected.emit,98,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,self.map_tab.county_clicked_on_map,self.county_clicked_on_map.emit,99,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,self.map_tab.map_interaction,self.map_interaction.emit,100,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,self.map_tab.export_completed,self.export_completed.emit,101,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,self.map_tab.error_occurred,self.error_occurred.emit,102,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,self.map_tab.data_loading_completed,self.data_loading_completed.emit,103,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,self.map_tab.folium_ready,self.folium_ready.emit,104,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,map_view.location_selected,on_location_selected,540,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,map_view.county_clicked_on_map,on_county_clicked_on_map,541,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,map_view.map_interaction,on_map_interaction,542,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,map_view.export_completed,on_export_completed,543,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,map_view.folium_ready,on_folium_ready,544,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.map_view,connect,map_view.data_loading_completed,on_data_loading_completed,545,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py
+src.gui.chart_container,signal,chart_exported,"Signal(str, bool)",75,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/chart_container.py
+src.gui.chart_container,signal,chart_settings_changed,Signal(dict),76,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/chart_container.py
+src.gui.chart_container,connect,self.grid_check.toggled,self._toggle_grid_optimized,161,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/chart_container.py
+src.gui.chart_container,connect,self.legend_check.toggled,self._toggle_legend_optimized,168,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/chart_container.py
+src.gui.chart_container,connect,export_btn.clicked,self._export_current_chart,174,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/chart_container.py
+src.gui.chart_container,connect,chart.chart_clicked,self._on_chart_clicked,188,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/chart_container.py
+src.gui.chart_container,connect,self.theme_manager.theme_changed,self._on_theme_changed,191,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/chart_container.py
+src.gui.trend_analytics_tab,signal,progress_updated,Signal(int),102,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,data_received,Signal(dict),103,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,error_occurred,Signal(str),104,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,progress_updated,Signal(int),1056,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,data_received,Signal(dict),1057,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,error_occurred,Signal(str),1058,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,finished,Signal(),1059,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,analysis_started,Signal(),1125,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,analysis_completed,Signal(dict),1126,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,error_occurred,Signal(str),1127,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,signal,location_selected,"Signal(str, float, float)",1128,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.processor.progress_updated,self.progress_updated.emit,1069,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.processor.data_received,self.data_received.emit,1070,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.processor.error_occurred,self.error_occurred.emit,1071,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.analyze_button.clicked,self.start_trend_analysis,1416,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.location_combo.currentTextChanged,self.on_location_changed,1419,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.current_worker.progress_updated,self.progress_bar.setValue,1464,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.current_worker.data_received,self.on_analysis_completed,1465,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.current_worker.error_occurred,self.on_analysis_error,1466,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.trend_analytics_tab,connect,self.current_worker.finished,self.on_worker_finished,1467,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/trend_analytics_tab.py
+src.gui.hungarian_location_selector,signal,progress_updated,Signal(int),79,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,counties_loaded,Signal(object),80,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,postal_codes_loaded,Signal(object),81,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,error_occurred,Signal(str),82,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,completed,Signal(),83,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,region_selected,Signal(object),157,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,county_selected,"Signal(str, object)",158,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,location_selected,Signal(object),159,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,selection_changed,Signal(),160,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,signal,map_update_requested,Signal(object),161,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.region_combo.currentTextChanged,self._on_region_changed,312,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.county_combo.currentTextChanged,self._on_county_changed,313,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.refresh_btn.clicked,self._start_data_loading,314,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.center_map_btn.clicked,self._center_map_on_selection,315,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.data_worker.progress_updated,self.progress_bar.setValue,433,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.data_worker.counties_loaded,self._on_counties_loaded,434,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.data_worker.postal_codes_loaded,self._on_postal_codes_loaded,435,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.data_worker.error_occurred,self._on_data_error,436,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,self.data_worker.completed,self._on_data_loading_completed,437,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,location_selector.region_selected,on_region_selected,854,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,location_selector.county_selected,on_county_selected,855,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,location_selector.location_selected,on_location_selected,856,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_location_selector,connect,location_selector.map_update_requested,on_map_update_requested,857,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py
+src.gui.hungarian_map_tab,signal,location_selected,Signal(object),106,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,county_clicked_on_map,Signal(str),107,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,map_interaction,"Signal(str, object)",108,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,export_completed,Signal(str),109,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,error_occurred,Signal(str),110,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,data_loading_started,Signal(),111,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,data_loading_completed,Signal(),112,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,folium_ready,Signal(),113,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,weather_data_updated,Signal(object),114,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,signal,analytics_sync_completed,Signal(str),115,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.reset_view_btn.clicked,self._reset_map_view,368,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.export_map_btn.clicked,self._export_map,369,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.refresh_folium_btn.clicked,self._refresh_folium_map,370,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.refresh_weather_btn.clicked,self._refresh_weather_overlay,373,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.auto_sync_check.toggled,self._on_auto_sync_toggled,376,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.auto_weather_refresh_check.toggled,self._on_auto_weather_refresh_toggled,377,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.location_selector.county_selected,self._on_county_selected,383,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.location_selector.map_update_requested,self._on_map_update_requested,387,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.location_selector.location_selected,self._on_location_selected,391,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.location_selector.selection_changed,self._on_selection_changed,395,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.map_visualizer.map_ready,self._on_folium_map_ready,402,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.map_visualizer.county_clicked,self._on_folium_county_clicked,406,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.map_visualizer.coordinates_clicked,self._on_folium_coordinates_clicked,410,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.map_visualizer.map_moved,self._on_folium_map_moved,414,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.map_visualizer.county_hovered,self._on_folium_county_hovered,418,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.map_visualizer.export_completed,self._on_export_completed,422,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,self.map_visualizer.error_occurred,self._on_error_occurred,426,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,set_temp_btn.clicked,test_set_temperature,2172,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,set_wind_btn.clicked,test_set_wind,2173,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,set_precip_btn.clicked,test_set_precipitation,2174,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,clear_param_btn.clicked,test_clear_parameter,2175,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,analysis_sync_btn.clicked,test_analysis_sync,2178,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,weather_sync_btn.clicked,test_weather_sync,2179,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,date_sync_btn.clicked,test_date_sync,2180,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,bundle_sync_btn.clicked,test_bundle_sync,2181,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,hottest_btn.clicked,load_hottest,2184,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,coldest_btn.clicked,load_coldest,2185,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,wettest_btn.clicked,load_wettest,2186,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,windiest_btn.clicked,load_windiest,2187,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.location_selected,on_location_selected,2190,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.county_clicked_on_map,on_county_clicked_on_map,2191,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.map_interaction,on_map_interaction,2192,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.export_completed,on_export_completed,2193,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.error_occurred,on_error_occurred,2194,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.folium_ready,on_folium_ready,2195,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.weather_data_updated,on_weather_data_updated,2196,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.analytics_sync_completed,on_analytics_sync_completed,2197,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_map_tab,connect,map_tab.data_loading_completed,on_data_loading_completed,2198,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py
+src.gui.hungarian_city_selector,signal,city_selected,"Signal(str, float, float, dict)",179,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,signal,region_selected,"Signal(str, list)",180,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,signal,search_completed,Signal(int),181,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,signal,data_loaded,Signal(int),182,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,signal,error_occurred,Signal(str),183,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,self.search_box.textChanged,self._on_search_text_changed,292,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,self.search_box.returnPressed,self._trigger_search,293,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,clear_btn.clicked,self._clear_search,299,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,self.region_combo.currentTextChanged,self._on_region_changed,331,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,self.city_list.itemDoubleClicked,self._on_city_selected,350,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,select_btn.clicked,self._select_current_city,357,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,refresh_btn.clicked,self._reload_cities,364,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,btn.clicked,"lambda checked, c=city: self._select_quick_city(c)",399,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,self.theme_manager.theme_changed,self._on_theme_changed,444,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,self.search_timer.timeout,self._trigger_search,453,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.hungarian_city_selector,connect,sqlite3,self.db_path,469,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py
+src.gui.analytics_view,signal,analysis_started,Signal(),716,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,signal,analysis_completed,Signal(),717,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,signal,error_occurred,Signal(str),718,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,signal,multi_city_query_requested,"Signal(str, str)",721,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,connect,self.currentChanged,self._on_tab_changed,574,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,connect,self.hottest_button.clicked,self._emit_query_request,903,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,connect,self.coldest_button.clicked,self._emit_query_request,927,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,connect,self.wettest_button.clicked,self._emit_query_request,951,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,connect,self.windiest_button.clicked,self._emit_query_request,975,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.analytics_view,connect,self.theme_manager.theme_changed,self._on_theme_changed,1054,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py
+src.gui.dialogs,connect,self.daily_radio.toggled,self._on_period_type_changed,146,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/dialogs.py
+src.gui.dialogs,connect,self.monthly_radio.toggled,self._on_period_type_changed,147,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/dialogs.py
+src.gui.dialogs,connect,close_button.clicked,self.accept,171,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/dialogs.py
+src.gui.control_panel,signal,analysis_requested,Signal(dict),88,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,signal,search_requested,Signal(str),91,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,signal,city_selected,"Signal(str, float, float, dict)",92,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,signal,local_error_occurred,Signal(str),93,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.analysis_type_widget.analysis_type_changed,self._on_analysis_type_changed,194,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.location_widget.search_requested,self.search_requested.emit,198,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.location_widget.city_selected,self.city_selected.emit,199,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.location_widget.location_changed,self._on_location_changed,202,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.multi_city_widget.selection_changed,self._on_multi_city_selection_changed,205,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.date_range_widget.date_range_changed,self._on_date_range_changed,208,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.date_range_widget.date_mode_changed,self._on_date_mode_changed,209,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.provider_widget.provider_changed,self._on_provider_changed,212,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.api_settings_widget.api_settings_changed,self._on_api_settings_changed,215,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.query_control_widget.fetch_requested,self._on_fetch_requested,218,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.query_control_widget.cancel_requested,self._on_cancel_requested,219,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.control_panel,connect,self.theme_manager.theme_changed,self._on_theme_changed,226,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py
+src.gui.theme_manager,signal,theme_changed,Signal(str),64,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/theme_manager.py
+src.gui.theme_manager,signal,color_scheme_updated,Signal(object),65,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/theme_manager.py
+src.gui.map_visualizer (1),signal,county_clicked,Signal(str),133,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,coordinates_clicked,"Signal(float, float)",134,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,map_moved,"Signal(float, float, int)",135,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,county_hovered,Signal(str),136,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,county_unhovered,Signal(),137,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,progress_updated,Signal(int),178,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,map_generated,Signal(str),179,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,error_occurred,Signal(str),180,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,status_updated,Signal(str),181,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,map_ready,Signal(),1043,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,county_clicked,Signal(str),1044,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,coordinates_clicked,"Signal(float, float)",1045,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,map_moved,"Signal(float, float, int)",1046,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,county_hovered,Signal(str),1047,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,export_completed,Signal(str),1048,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,error_occurred,Signal(str),1049,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),signal,bounds_changed,Signal(object),1050,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.style_combo.currentTextChanged,self._on_style_changed,1241,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.counties_check.toggled,self._on_counties_toggled,1242,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.weather_check.toggled,self._on_weather_toggled,1243,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.zoom_slider.valueChanged,self._on_zoom_changed,1244,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.refresh_btn.clicked,self._refresh_map,1246,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.export_btn.clicked,self._export_map,1247,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.reset_btn.clicked,self.reset_map_view,1248,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.force_reload_btn.clicked,self._force_reload_webengine,1251,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.web_view.loadFinished,self._on_map_loaded,1254,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.js_bridge.county_clicked,self._on_js_county_clicked,1257,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.js_bridge.coordinates_clicked,self._on_js_coordinates_clicked,1258,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.js_bridge.map_moved,self._on_js_map_moved,1259,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.js_bridge.county_hovered,self._on_js_county_hovered,1260,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.map_generator.progress_updated,self.progress_bar.setValue,1315,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.map_generator.status_updated,self.status_label.setText,1316,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.map_generator.map_generated,self._on_map_generated,1317,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,self.map_generator.error_occurred,self._on_map_error,1318,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,force_reload_btn.clicked,test_force_reload,2217,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,debug_info_btn.clicked,show_debug_info,2218,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,nuclear_reset_btn.clicked,test_nuclear_reset,2219,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,temp_overlay_btn.clicked,test_temperature_overlay,2222,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,wind_overlay_btn.clicked,test_wind_overlay,2223,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,precip_overlay_btn.clicked,test_precipitation_overlay,2224,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,clear_overlay_btn.clicked,test_clear_overlay,2225,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,map_visualizer.map_ready,on_map_ready,2228,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,map_visualizer.county_clicked,on_county_clicked,2229,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,map_visualizer.coordinates_clicked,on_coordinates_clicked,2230,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,map_visualizer.map_moved,on_map_moved,2231,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,map_visualizer.export_completed,on_export_completed,2232,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.map_visualizer (1),connect,map_visualizer.error_occurred,on_error_occurred,2233,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py
+src.gui.main_window,signal,theme_changed,Signal(str),1411,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.theme_manager.theme_changed,self._on_theme_manager_changed,261,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.single_city_action.triggered,"lambda: self._switch_view(""single_city"")",290,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.analytics_action.triggered,"lambda: self._switch_view(""analytics"")",298,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.trend_action.triggered,"lambda: self._switch_view(""trend_analysis"")",305,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.map_action.triggered,"lambda: self._switch_view(""map_view"")",312,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.settings_action.triggered,"lambda: self._switch_view(""settings"")",321,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,export_action.triggered,self._export_data,607,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,exit_action.triggered,self.close,617,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,light_theme_action.triggered,lambda: self._apply_theme(ThemeType.LIGHT),634,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,dark_theme_action.triggered,lambda: self._apply_theme(ThemeType.DARK),638,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,extreme_action.triggered,self._show_extreme_weather,646,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,about_action.triggered,self._show_about,655,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.control_panel.analysis_requested,self.controller.handle_analysis_request,711,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.control_panel.cancel_requested,self.controller.stop_current_analysis,720,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.analysis_started,self._on_analysis_started,735,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.analysis_completed,self._on_analysis_completed_with_city_fix,740,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.analysis_failed,self._on_analysis_failed,745,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.analysis_cancelled,self._on_analysis_cancelled,750,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.analysis_progress,self._update_progress_clean,755,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.analytics_panel.multi_city_query_requested,debug_analytics_multi_city_query_requested,768,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.analytics_panel.multi_city_query_requested,self._handle_analytics_view_query,769,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.analytics_panel.analysis_started,"lambda: self.status_bar.showMessage(""📊 Analytics elemzés folyamatban..."")",778,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.analytics_panel.error_occurred,"lambda msg: self.status_bar.showMessage(f""❌ Analytics hiba: {msg}"")",784,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.provider_selected,self._on_provider_selected,796,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.provider_usage_updated,self._on_provider_usage_updated,800,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.provider_warning,self._on_provider_warning,804,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.controller.provider_fallback,self._on_provider_fallback,808,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.results_panel.export_requested,self._handle_export_request,815,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.results_panel.extreme_weather_requested,self._show_extreme_weather,819,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.main_window,connect,self.theme_changed,self._propagate_theme_change,824,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py
+src.gui.app_controller,signal,analysis_started,Signal(str),69,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,analysis_progress,"Signal(str, int)",70,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,analysis_completed,Signal(dict),71,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,analysis_failed,Signal(str),72,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,analysis_cancelled,Signal(),73,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,geocoding_results_ready,Signal(list),76,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,weather_data_ready,Signal(dict),77,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,error_occurred,Signal(str),78,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,status_updated,Signal(str),79,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,progress_updated,"Signal(str, int)",80,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,city_saved_to_db,Signal(dict),83,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,weather_saved_to_db,Signal(bool),84,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,provider_selected,Signal(str),87,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,provider_usage_updated,Signal(dict),88,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,provider_warning,"Signal(str, int)",89,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,signal,provider_fallback,"Signal(str, str)",90,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,self.active_analysis_worker.progress_updated,self._on_analysis_progress,211,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,self.active_analysis_worker.analysis_completed,self._on_analysis_completed,212,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,self.active_analysis_worker.analysis_failed,self._on_analysis_failed,213,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,self.active_analysis_worker.analysis_cancelled,self._on_analysis_cancelled,214,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,sqlite3,str(self.db_path),625,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,self.worker_manager.geocoding_completed,self._on_geocoding_completed,696,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,self.worker_manager.weather_data_completed,self._on_weather_data_completed,700,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,self.worker_manager.error_occurred,self._on_worker_error,704,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,self.worker_manager.progress_updated,self.progress_updated.emit,705,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,sqlite3,str(self.db_path),1072,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.app_controller,connect,sqlite3,str(self.db_path),1462,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py
+src.gui.data_widgets,signal,row_selected,Signal(int),227,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,signal,data_filtered,Signal(int),228,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,signal,export_completed,"Signal(str, bool)",229,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,signal,sorting_changed,"Signal(int, str)",230,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,connect,header.sectionClicked,self._on_header_clicked,286,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,connect,self.search_input.textChanged,self._apply_filter,333,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,connect,self.column_filter.currentTextChanged,self._apply_filter,344,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,connect,self.page_spin.valueChanged,self._change_page,356,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,connect,self.rows_per_page_combo.currentTextChanged,self._change_page_size,361,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,connect,self.csv_btn.clicked,"lambda: self._export_data(""csv"")",372,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,connect,self.excel_btn.clicked,"lambda: self._export_data(""excel"")",376,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.data_widgets,connect,self.table.itemSelectionChanged,self._on_selection_changed,434,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py
+src.gui.main_window_temp,signal,theme_changed,Signal(str),113,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,signal,view_changed,Signal(str),114,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,signal,provider_status_updated,Signal(str),117,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.theme_manager.theme_changed,self._on_theme_manager_changed,347,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.single_city_action.triggered,"lambda: self._switch_view(""single_city"")",397,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.analytics_action.triggered,"lambda: self._switch_view(""analytics"")",405,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.trend_action.triggered,"lambda: self._switch_view(""trend_analysis"")",412,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.map_action.triggered,"lambda: self._switch_view(""map_view"")",419,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.settings_action.triggered,"lambda: self._switch_view(""settings"")",428,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,export_action.triggered,self._export_data,756,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,exit_action.triggered,self.close,766,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,light_theme_action.triggered,lambda: self._apply_theme(ThemeType.LIGHT),783,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,dark_theme_action.triggered,lambda: self._apply_theme(ThemeType.DARK),787,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,extreme_action.triggered,self._show_extreme_weather,795,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,about_action.triggered,self._show_about,804,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.control_panel.analysis_requested,self.controller.handle_analysis_request,965,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.control_panel.cancel_requested,self.controller.stop_current_analysis,974,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.analysis_started,self._on_analysis_started,989,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.analysis_completed,self._on_analysis_completed_with_city_fix,994,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.analysis_failed,self._on_analysis_failed,999,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.analysis_cancelled,self._on_analysis_cancelled,1004,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.analysis_progress,self._update_progress_clean,1009,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.analytics_panel.multi_city_query_requested,debug_analytics_multi_city_query_requested,1022,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.analytics_panel.multi_city_query_requested,self._handle_analytics_view_query,1023,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.analytics_panel.analysis_started,"lambda: self.status_bar.showMessage(""📊 Analytics elemzés folyamatban..."")",1032,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.analytics_panel.error_occurred,"lambda msg: self.status_bar.showMessage(f""❌ Analytics hiba: {msg}"")",1038,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.provider_selected,self._on_provider_selected,1050,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.provider_usage_updated,self._on_provider_usage_updated,1054,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.provider_warning,self._on_provider_warning,1058,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.controller.provider_fallback,self._on_provider_fallback,1062,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.results_panel.export_requested,self._handle_export_request,1069,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.results_panel.extreme_weather_requested,self._show_extreme_weather,1073,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_window_temp,connect,self.theme_changed,self._propagate_theme_change,1078,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py
+src.gui.main_windowold,signal,theme_changed,Signal(str),101,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,signal,view_changed,Signal(str),102,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,signal,provider_status_updated,Signal(str),105,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.theme_manager.theme_changed,self._on_theme_manager_changed,235,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.single_city_action.triggered,"lambda: self._switch_view(""single_city"")",285,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.analytics_action.triggered,"lambda: self._switch_view(""analytics"")",293,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.trend_action.triggered,"lambda: self._switch_view(""trend_analysis"")",300,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.map_action.triggered,"lambda: self._switch_view(""map_view"")",307,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.settings_action.triggered,"lambda: self._switch_view(""settings"")",316,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,export_action.triggered,self._export_data,637,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,exit_action.triggered,self.close,647,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,light_theme_action.triggered,lambda: self._apply_theme(ThemeType.LIGHT),664,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,dark_theme_action.triggered,lambda: self._apply_theme(ThemeType.DARK),668,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,extreme_action.triggered,self._show_extreme_weather,676,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,about_action.triggered,self._show_about,685,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.analysis_parameters_changed,debug_analytics_params_changed,859,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.analysis_parameters_changed,self.hungarian_map_tab.update_analysis_parameters,863,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.weather_parameters_changed,debug_weather_params_changed,874,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.weather_parameters_changed,self.hungarian_map_tab.update_weather_parameters,878,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.date_range_changed,debug_date_range_changed,889,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.date_range_changed,self.hungarian_map_tab.update_date_range,893,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.parameters_bundle_changed,debug_bundle_changed,904,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.parameters_bundle_changed,self.hungarian_map_tab.refresh_with_new_parameters,908,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.provider_selected,debug_provider_selected,962,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.provider_selected,self._on_provider_selected,963,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.provider_usage_updated,debug_provider_usage_updated,970,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.provider_usage_updated,self._on_provider_usage_updated,971,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.provider_warning,debug_provider_warning,978,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.provider_warning,self._on_provider_warning,979,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.provider_fallback,debug_provider_fallback,986,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.provider_fallback,self._on_provider_fallback,987,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.provider_changed,debug_control_panel_provider_changed,1000,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.provider_changed,self.controller.handle_provider_change,1001,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.search_requested,debug_control_panel_search_requested,1010,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.search_requested,self.controller.handle_search_request,1011,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.city_selected,debug_control_panel_city_selected,1021,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.city_selected,self.controller.handle_city_selection,1022,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.weather_data_requested,debug_control_panel_weather_requested,1033,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.weather_data_requested,self.controller.handle_weather_data_request,1034,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.multi_city_weather_requested,debug_control_panel_multi_city_requested,1045,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.multi_city_weather_requested,self._handle_multi_city_weather_request,1046,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.location_changed,debug_control_panel_location_changed,1066,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.location_changed,self.analytics_panel.on_location_changed,1067,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.city_selected,debug_control_panel_city_to_analytics,1084,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.analytics_panel.multi_city_query_requested,debug_analytics_multi_city_query_requested,1094,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.analytics_panel.multi_city_query_requested,self._handle_analytics_view_query,1095,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.analytics_panel.analysis_started,debug_analytics_analysis_started,1106,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.analytics_panel.analysis_started,"lambda: self.status_bar.showMessage(""🔥 Analytics elemzés folyamatban... (refaktorált)"")",1107,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.analytics_panel.error_occurred,debug_analytics_error_occurred,1119,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.analytics_panel.error_occurred,"lambda msg: self.status_bar.showMessage(f""❌ Analytics hiba: {msg}"")",1120,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.control_panel.city_selected,debug_control_panel_city_to_trend,1143,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.trend_analytics_tab.analysis_started,debug_trend_analysis_started,1150,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.trend_analytics_tab.analysis_started,"lambda: self.status_bar.showMessage(""📈 Trend elemzés folyamatban..."")",1151,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.trend_analytics_tab.analysis_completed,debug_trend_analysis_completed,1161,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.trend_analytics_tab.analysis_completed,self._on_trend_analysis_completed,1162,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.trend_analytics_tab.error_occurred,debug_trend_error_occurred,1169,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.trend_analytics_tab.error_occurred,self._on_trend_analysis_error,1170,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.trend_analytics_tab.location_selected,debug_trend_location_selected,1177,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.geocoding_results_ready,debug_controller_geocoding_results,1191,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.geocoding_results_ready,self.control_panel._on_geocoding_completed,1194,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.weather_data_ready,debug_controller_weather_data_ready,1209,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.weather_data_ready,self._on_weather_data_received,1210,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.weather_data_ready,debug_controller_weather_data_to_analytics,1220,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.weather_data_ready,self.analytics_panel.update_data,1221,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.error_occurred,debug_controller_error_occurred,1232,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.error_occurred,self._show_error,1233,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.status_updated,debug_controller_status_updated,1240,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.status_updated,self._update_status,1241,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.progress_updated,debug_controller_progress_updated,1248,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.progress_updated,self._update_progress,1249,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.weather_data_ready,self.control_panel.on_weather_data_completed,1256,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.progress_updated,self.control_panel.update_progress,1261,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.status_updated,self.control_panel.update_status_from_controller,1264,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.controller.error_occurred,self.control_panel.on_controller_error,1267,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.results_panel.export_requested,debug_results_panel_export_requested,1279,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.results_panel.export_requested,self._handle_export_request,1280,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.results_panel.extreme_weather_requested,debug_results_panel_extreme_weather_requested,1287,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.results_panel.extreme_weather_requested,self._show_extreme_weather,1288,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,charts_container.chart_exported,debug_charts_exported,1303,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,charts_container.chart_exported,self._on_chart_exported,1304,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,data_table.export_completed,debug_table_export_completed,1317,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,data_table.export_completed,self._on_table_exported,1318,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,data_table.row_selected,debug_table_row_selected,1325,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,data_table.row_selected,self._on_table_row_selected,1326,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.theme_changed,debug_theme_changed,1334,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.theme_changed,self._propagate_theme_change,1335,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.main_windowold,connect,self.view_changed,debug_view_changed,1341,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py
+src.gui.workers.analysis_worker,signal,progress_updated,"Signal(str, int)",86,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,signal,analysis_completed,Signal(dict),87,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,signal,analysis_failed,Signal(str),88,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,signal,analysis_cancelled,Signal(),89,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,connect,self.worker.progress_updated,self._on_progress,667,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,connect,self.worker.analysis_completed,self._on_completed,668,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,connect,self.worker.analysis_failed,self._on_failed,669,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,connect,self.worker.analysis_cancelled,self._on_cancelled,670,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,connect,self.start_button.clicked,self._start_test,673,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.analysis_worker,connect,self.stop_button.clicked,self._stop_test,674,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py
+src.gui.workers.data_fetch_worker,signal,finished,Signal(),46,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,error_occurred,Signal(str),47,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,progress_updated,Signal(int),48,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,geocoding_completed,Signal(list),87,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,weather_data_completed,Signal(dict),164,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,provider_changed,Signal(str),167,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,provider_fallback_occurred,"Signal(str, str)",168,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,provider_validation_failed,"Signal(str, str)",169,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,query_completed,Signal(object),447,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,error_occurred,Signal(str),534,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,progress_updated,"Signal(str, int)",535,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,worker_started,Signal(str),536,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,worker_finished,Signal(str),537,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,geocoding_completed,Signal(list),540,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,weather_data_completed,Signal(dict),541,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,sql_query_completed,Signal(object),542,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,provider_changed,Signal(str),545,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,provider_fallback_occurred,"Signal(str, str)",546,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,provider_validation_failed,"Signal(str, str)",547,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,signal,provider_usage_tracked,"Signal(str, bool)",548,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,sqlite3,str(self.db_path),470,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.geocoding_completed,self.geocoding_completed.emit,577,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.error_occurred,self._on_worker_error,578,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.finished,lambda worker_id=worker_id: self._on_worker_finished(worker_id),579,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.progress_updated,"lambda p: self.progress_updated.emit(""geocoding"", p)",580,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.weather_data_completed,self.weather_data_completed.emit,602,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.error_occurred,self._on_worker_error,603,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.finished,lambda worker_id=worker_id: self._on_worker_finished(worker_id),604,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.progress_updated,"lambda p: self.progress_updated.emit(""weather_data"", p)",605,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.provider_changed,self._on_provider_changed,608,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.provider_fallback_occurred,self._on_provider_fallback,609,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.provider_validation_failed,self._on_provider_validation_failed,610,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.query_completed,self.sql_query_completed.emit,629,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.error_occurred,self._on_worker_error,630,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.finished,lambda worker_id=worker_id: self._on_worker_finished(worker_id),631,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.workers.data_fetch_worker,connect,worker.progress_updated,"lambda p: self.progress_updated.emit(""sql_query"", p)",632,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/data_fetch_worker.py
+src.gui.results_panel.results_panel,signal,extreme_weather_requested,Signal(),58,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/results_panel.py
+src.gui.results_panel.results_panel,signal,export_requested,Signal(str),59,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/results_panel.py
+src.gui.results_panel.results_panel,signal,chart_type_changed,Signal(str),60,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/results_panel.py
+src.gui.results_panel.results_panel,connect,self.global_export_btn.clicked,"lambda: self.export_requested.emit(""csv"")",112,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/results_panel.py
+src.gui.results_panel.results_panel,connect,self.extreme_tab.extreme_weather_requested,self.extreme_weather_requested.emit,150,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/results_panel.py
+src.gui.results_panel.results_panel,connect,self.table_tab.csv_btn.clicked,"lambda: self.export_requested.emit(""csv"")",154,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/results_panel.py
+src.gui.results_panel.results_panel,connect,self.table_tab.excel_btn.clicked,"lambda: self.export_requested.emit(""excel"")",157,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/results_panel.py
+src.gui.results_panel.results_panel,connect,self.theme_manager.theme_changed,self._on_theme_changed,159,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/results_panel.py
+src.gui.results_panel.extreme_events_tab,signal,extreme_weather_requested,Signal(),63,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/extreme_events_tab.py
+src.gui.results_panel.extreme_events_tab,connect,self.daily_radio.toggled,self._on_period_type_changed,187,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/extreme_events_tab.py
+src.gui.results_panel.extreme_events_tab,connect,self.monthly_radio.toggled,self._on_period_type_changed,188,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/extreme_events_tab.py
+src.gui.results_panel.extreme_events_tab,connect,self.yearly_radio.toggled,self._on_period_type_changed,189,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/extreme_events_tab.py
+src.gui.results_panel.extreme_events_tab,connect,self.detailed_btn.clicked,self._on_detailed_analysis_clicked,223,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/extreme_events_tab.py
+src.gui.results_panel.extreme_events_tab,connect,self.settings_btn.clicked,self._on_anomaly_settings_clicked,227,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/extreme_events_tab.py
+src.gui.panel_widgets.query_control_widget,signal,fetch_requested,Signal(),34,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/query_control_widget.py
+src.gui.panel_widgets.query_control_widget,signal,cancel_requested,Signal(),35,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/query_control_widget.py
+src.gui.panel_widgets.query_control_widget,connect,self.fetch_button.clicked,self._on_fetch_clicked,127,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/query_control_widget.py
+src.gui.panel_widgets.query_control_widget,connect,self.cancel_button.clicked,self._on_cancel_clicked,128,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/query_control_widget.py
+src.gui.panel_widgets.query_control_widget,connect,self.query_widget.fetch_requested,self._test_fetch,238,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/query_control_widget.py
+src.gui.panel_widgets.query_control_widget,connect,self.query_widget.cancel_requested,self._test_cancel,239,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/query_control_widget.py
+src.gui.panel_widgets.query_control_widget,connect,self.test_timer.timeout,self._test_finish,243,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/query_control_widget.py
+src.gui.panel_widgets.provider_widget,signal,provider_changed,Signal(str),50,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/provider_widget.py
+src.gui.panel_widgets.provider_widget,signal,usage_warning,"Signal(str, int)",51,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/provider_widget.py
+src.gui.panel_widgets.provider_widget,signal,cost_warning,"Signal(str, float)",52,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/provider_widget.py
+src.gui.panel_widgets.provider_widget,connect,self.usage_timer.timeout,self._update_usage_display,89,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/provider_widget.py
+src.gui.panel_widgets.provider_widget,connect,refresh_button.clicked,self._refresh_usage_stats,184,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/provider_widget.py
+src.gui.panel_widgets.provider_widget,connect,reset_button.clicked,self._reset_usage_stats,189,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/provider_widget.py
+src.gui.panel_widgets.provider_widget,connect,self.provider_combo.currentTextChanged,self._on_provider_selection_changed,226,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/provider_widget.py
+src.gui.panel_widgets.date_range_widget,signal,date_range_changed,"Signal(str, str)",47,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,signal,date_mode_changed,Signal(str),48,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.time_range_radio.toggled,self._on_date_mode_changed,221,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.manual_dates_radio.toggled,self._on_date_mode_changed,222,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.time_range_combo.currentTextChanged,self._on_time_range_changed,225,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.start_date.dateChanged,self._on_manual_date_changed,228,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.end_date.dateChanged,self._on_manual_date_changed,229,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.last_month_btn.clicked,self._set_last_month,232,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.last_year_btn.clicked,self._set_last_year,233,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.last_1year_btn.clicked,lambda: self._set_years_back(1),234,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.last_5years_btn.clicked,lambda: self._set_years_back(5),235,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.last_10years_btn.clicked,lambda: self._set_years_back(10),236,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.last_25years_btn.clicked,lambda: self._set_years_back(25),237,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.date_range_widget,connect,self.last_55years_btn.clicked,lambda: self._set_years_back(55),238,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py
+src.gui.panel_widgets.api_settings_widget,signal,api_settings_changed,Signal(dict),43,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/api_settings_widget.py
+src.gui.panel_widgets.api_settings_widget,connect,self.auto_timezone.toggled,self._on_settings_changed,112,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/api_settings_widget.py
+src.gui.panel_widgets.api_settings_widget,connect,self.cache_data.toggled,self._on_settings_changed,113,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/api_settings_widget.py
+src.gui.panel_widgets.api_settings_widget,connect,self.api_timeout.valueChanged,self._on_settings_changed,114,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/api_settings_widget.py
+src.gui.panel_widgets.multi_city_widget,signal,selection_changed,Signal(dict),47,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/multi_city_widget.py
+src.gui.panel_widgets.multi_city_widget,connect,self.clear_btn.clicked,self._clear_selection,118,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/multi_city_widget.py
+src.gui.panel_widgets.multi_city_widget,connect,self.combo_box.currentTextChanged,self._on_combo_selection_changed,186,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/multi_city_widget.py
+src.gui.panel_widgets.location_widget,signal,search_requested,Signal(str),49,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/location_widget.py
+src.gui.panel_widgets.location_widget,signal,location_changed,Signal(object),50,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/location_widget.py
+src.gui.panel_widgets.location_widget,signal,city_selected,"Signal(str, float, float, dict)",51,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/location_widget.py
+src.gui.panel_widgets.location_widget,connect,self.clear_btn.clicked,self._clear_location,110,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/location_widget.py
+src.gui.panel_widgets.location_widget,connect,self.location_selector.search_requested,self._on_search_requested,127,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/location_widget.py
+src.gui.panel_widgets.location_widget,connect,self.location_selector.city_selected,self._on_city_selected,128,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/location_widget.py
+src.gui.panel_widgets.location_widget,connect,self.location_selector.location_changed,self._on_location_changed,129,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/location_widget.py
+src.gui.panel_widgets.analysis_type_widget,signal,analysis_type_changed,Signal(str),41,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/analysis_type_widget.py
+src.gui.panel_widgets.analysis_type_widget,connect,self.button_group.buttonClicked,self._on_button_clicked,112,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/analysis_type_widget.py
+src.gui.charts.base_chart,signal,chart_clicked,"Signal(float, float)",44,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/charts/base_chart.py
+src.gui.charts.base_chart,signal,export_requested,Signal(str),45,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/charts/base_chart.py
+src.gui.charts.base_chart,connect,self.theme_manager.theme_changed,self._on_theme_changed,101,/home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/charts/base_chart.py

@@ -1,0 +1,826 @@
+# Project Mapper Report
+
+## Top modules by fan-in (most depended-on)
+
+- `src.config` — fan_in=10, fan_out=0, loc=702
+- `src.data.geo_utils` — fan_in=10, fan_out=0, loc=791
+- `src.data.city_manager` — fan_in=10, fan_out=0, loc=748
+- `src.data.enums` — fan_in=10, fan_out=0, loc=380
+- `src.data.models` — fan_in=10, fan_out=0, loc=1301
+- `src.data.weather_client` — fan_in=10, fan_out=0, loc=798
+- `src.data` — fan_in=10, fan_out=0, loc=0
+- `src.analytics` — fan_in=10, fan_out=0, loc=22
+- `src.gui.map_visualizer` — fan_in=10, fan_out=0, loc=1871
+- `src.gui.mistral_main_window` — fan_in=10, fan_out=0, loc=0
+
+## Top modules by LOC
+
+- `backups_20250813.control_panel` — loc=2213, fan_in=0, fan_out=0
+- `src.gui.map_visualizer` — loc=1871, fan_in=10, fan_out=0
+- `src.gui.map_visualizer (1)` — loc=1869, fan_in=10, fan_out=0
+- `src.gui.hungarian_map_tab` — loc=1786, fan_in=10, fan_out=0
+- `src.gui.main_windowold` — loc=1695, fan_in=9, fan_out=56
+- `src.gui.main_window_temp` — loc=1534, fan_in=9, fan_out=56
+- `src.gui.utils` — loc=1453, fan_in=10, fan_out=0
+- `src.gui.analytics_view` — loc=1443, fan_in=10, fan_out=0
+- `src.data.models` — loc=1301, fan_in=10, fan_out=0
+- `src.gui.app_controller` — loc=1287, fan_in=10, fan_out=0
+
+## Potential god classes
+
+- `scripts.fix_hungarian_coordinates.HungarianCoordinatesFixer` — loc=414, methods=13 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/fix_hungarian_coordinates.py)
+- `scripts.populate_cities_db.CityDatabasePopulator` — loc=800, methods=13 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/scripts/populate_cities_db.py)
+- `backups_20250813.control_panel.ControlPanel` — loc=2149, methods=89 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/backups_20250813/control_panel.py)
+- `src.data.city_manager.CityManager` — loc=509, methods=24 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/data/city_manager.py)
+- `src.analytics.multi_city_engine.MultiCityEngine` — loc=795, methods=15 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/analytics/multi_city_engine.py)
+- `src.gui.map_visualizer.FoliumMapGenerator` — loc=662, methods=16 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py)
+- `src.gui.map_visualizer.HungarianMapVisualizer` — loc=784, methods=45 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer.py)
+- `src.gui.universal_location_selector.UniversalLocationSelector` — loc=410, methods=15 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/universal_location_selector.py)
+- `src.gui.map_view.MapView` — loc=365, methods=32 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_view.py)
+- `src.gui.hungarian_location_selector.HungarianLocationSelector` — loc=522, methods=26 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_location_selector.py)
+- `src.gui.hungarian_map_tab.HungarianMapTab` — loc=1495, methods=69 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_map_tab.py)
+- `src.gui.color_palette.ColorPalette` — loc=491, methods=22 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/color_palette.py)
+- `src.gui.weather_data_bridge.WeatherDataBridge` — loc=401, methods=16 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/weather_data_bridge.py)
+- `src.gui.hungarian_city_selector.HungarianCitySelector` — loc=579, methods=36 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/hungarian_city_selector.py)
+- `src.gui.analytics_view.AnalyticsView` — loc=899, methods=28 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/analytics_view.py)
+- `src.gui.control_panel.ControlPanel` — loc=715, methods=48 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/control_panel.py)
+- `src.gui.theme_manager.ProfessionalThemeManager` — loc=481, methods=20 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/theme_manager.py)
+- `src.gui.map_visualizer (1).FoliumMapGenerator` — loc=710, methods=18 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py)
+- `src.gui.map_visualizer (1).HungarianMapVisualizer` — loc=849, methods=45 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/map_visualizer (1).py)
+- `src.gui.main_window.MainWindow` — loc=1223, methods=60 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window.py)
+- `src.gui.app_controller.AppController` — loc=1261, methods=41 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/app_controller.py)
+- `src.gui.data_widgets.WeatherDataTable` — loc=623, methods=24 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/data_widgets.py)
+- `src.gui.main_window_temp.MainWindow` — loc=1463, methods=60 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_window_temp.py)
+- `src.gui.main_windowold.MainWindow` — loc=1622, methods=59 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/main_windowold.py)
+- `src.gui.workers.analysis_worker.AnalysisWorker` — loc=455, methods=16 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/workers/analysis_worker.py)
+- `src.gui.results_panel.quick_overview_tab.QuickOverviewTab` — loc=475, methods=17 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/quick_overview_tab.py)
+- `src.gui.results_panel.extreme_events_tab.ExtremeEventsTab` — loc=874, methods=28 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/results_panel/extreme_events_tab.py)
+- `src.gui.panel_widgets.provider_widget.ProviderWidget` — loc=369, methods=26 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/provider_widget.py)
+- `src.gui.panel_widgets.date_range_widget.DateRangeWidget` — loc=419, methods=24 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/date_range_widget.py)
+- `src.gui.panel_widgets.multi_city_widget.MultiCityWidget` — loc=442, methods=30 (file: /home/tibor/PythonProjects/openmeteo_history/global_weather_analyzer/src/gui/panel_widgets/multi_city_widget.py)
+
+## Long / complex functions
+
+- `debug_folium_issue.debug_folium_map_issue` — loc=78, cc=16
+- `test_geojson.test_geojson_files` — loc=83, cc=20
+- `test_geojson.main` — loc=33, cc=16
+- `project_mapper_standalone.detect_qt_signals_and_connects` — loc=27, cc=19
+- `project_mapper_standalone.parse_module` — loc=49, cc=18
+- `project_mapper_standalone.write_markdown_report` — loc=36, cc=24
+- `scripts.system_diagnostics.WeatherSystemDiagnostics._generate_recommendations` — loc=41, cc=17
+- `scripts.system_diagnostics.WeatherSystemDiagnostics._print_results` — loc=33, cc=18
+- `scripts.hungarian_settlements_importer.main` — loc=89, cc=21
+- `scripts.hungarian_settlements_importer.HungarianSettlementsDatabase.process_and_insert_settlements` — loc=55, cc=16
+- `scripts.populate_cities_db.CityDatabasePopulator.create_database_schema` — loc=105, cc=7
+- `scripts.populate_cities_db.CityDatabasePopulator.enhance_hungarian_cities` — loc=96, cc=15
+- `scripts.populate_cities_db.CityDatabasePopulator._calculate_station_score` — loc=49, cc=32
+- `scripts.populate_cities_db.CityDatabasePopulator._calculate_quality_score_safe` — loc=62, cc=33
+- `scripts.populate_cities_db.CityDatabasePopulator.save_to_database` — loc=86, cc=14
+- `scripts.populate_cities_db.CityDatabasePopulator.validate_database` — loc=94, cc=12
+- `backups_20250813.control_panel.ControlPanel._create_provider_selector_group` — loc=85, cc=1
+- `backups_20250813.control_panel.ControlPanel._apply_professional_label_styling` — loc=33, cc=17
+- `backups_20250813.control_panel.ControlPanel._set_fetch_state` — loc=64, cc=20
+- `src.data.geo_utils.GeoUtils.find_optimal_cities_for_region` — loc=59, cc=15
+- `src.data.city_manager.CityManager.find_city_by_name` — loc=53, cc=17
+- `src.data.weather_client.WeatherClient.get_weather_data` — loc=87, cc=18
+- `src.analytics.multi_city_engine.MultiCityEngine.get_cities_for_region` — loc=83, cc=20
+- `src.analytics.multi_city_engine.MultiCityEngine.analyze_multi_city` — loc=106, cc=24
+- `src.analytics.multi_city_engine.MultiCityEngine._fetch_single_city_weather_dual_api` — loc=57, cc=16
+- `src.analytics.multi_city_engine.MultiCityEngine._process_weather_results` — loc=57, cc=23
+- `src.analytics.multi_city_engine.MultiCityEngine._calculate_statistics_for_results_none_safe` — loc=48, cc=15
+- `src.gui.map_visualizer.demo_http_server_folium_map_visualizer` — loc=238, cc=9
+- `src.gui.map_visualizer.FoliumMapGenerator._add_javascript_bridge` — loc=108, cc=1
+- `src.gui.map_visualizer.HungarianMapVisualizer._setup_ui` — loc=114, cc=3
+- `src.gui.universal_location_selector.UniversalLocationSelector._setup_ui` — loc=190, cc=1
+- `src.gui.universal_location_selector.UniversalLocationSelector._display_results` — loc=45, cc=16
+- `src.gui.trend_analytics_tab.TrendDataProcessor.fetch_trend_data` — loc=98, cc=17
+- `src.gui.trend_analytics_tab.TrendDataProcessor.calculate_trend_statistics` — loc=158, cc=21
+- `src.gui.trend_analytics_tab.InteractiveTrendChart.update_chart` — loc=129, cc=6
+- `src.gui.trend_analytics_tab.EnhancedStatisticsPanel.update_statistics` — loc=77, cc=15
+- `src.gui.trend_analytics_tab.TrendAnalyticsTab.create_controls_panel` — loc=106, cc=1
+- `src.gui.hungarian_location_selector.HungarianLocationSelector._setup_ui` — loc=83, cc=2
+- `src.gui.hungarian_location_selector.HungarianLocationSelector._init_statistical_regions` — loc=88, cc=1
+- `src.gui.hungarian_map_tab.demo_hungarian_map_tab_analytics_sync_parameter_memory` — loc=237, cc=4
+- `src.gui.hungarian_map_tab.HungarianMapTab._setup_ui` — loc=132, cc=1
+- `src.gui.hungarian_map_tab.HungarianMapTab._full_map_refresh` — loc=39, cc=23
+- `src.gui.analytics_view.AnalyticsView._create_refactored_multi_city_panel` — loc=145, cc=1
+- `src.gui.analytics_view.AnalyticsView._create_fake_single_city_data_from_multi_city` — loc=76, cc=18
+- `src.gui.analytics_view.AnalyticsView._calculate_statistics_data` — loc=64, cc=29
+- `src.gui.analytics_view.AnalyticsView._calculate_records` — loc=64, cc=29
+- `src.gui.control_panel.ControlPanel._comprehensive_fetch_validation` — loc=65, cc=18
+- `src.gui.control_panel.ControlPanel._validate_analysis_request` — loc=48, cc=20
+- `src.gui.theme_manager.ProfessionalThemeManager.get_current_colors` — loc=41, cc=36
+- `src.gui.theme_manager.ProfessionalThemeManager.generate_css_for_class` — loc=131, cc=2
+- `src.gui.map_visualizer (1).demo_folium_map_visualizer_webengine_cache_fix` — loc=168, cc=7
+- `src.gui.map_visualizer (1).FoliumMapGenerator._add_javascript_bridge` — loc=108, cc=1
+- `src.gui.map_visualizer (1).HungarianMapVisualizer._setup_ui` — loc=113, cc=3
+- `src.gui.main_window.MainWindow._connect_mvc_signals_clean_with_city_analysis_fix` — loc=101, cc=14
+- `src.gui.main_window.MainWindow._handle_multi_city_weather_request` — loc=92, cc=12
+- `src.gui.main_window.MainWindow._on_analysis_completed_with_city_fix` — loc=76, cc=18
+- `src.gui.app_controller.AppController._validate_analysis_request` — loc=70, cc=30
+- `src.gui.app_controller.AppController._extract_coordinates_from_request` — loc=30, cc=18
+- `src.gui.app_controller.AppController._process_weather_data` — loc=132, cc=32
+- `src.gui.app_controller.AppController._calculate_daily_max_wind_gusts` — loc=79, cc=20
+- `src.gui.app_controller.AppController._save_weather_to_database` — loc=69, cc=23
+- `src.gui.data_widgets.WeatherTableModel.data` — loc=43, cc=33
+- `src.gui.data_widgets.WeatherDataTable._apply_filter` — loc=43, cc=15
+- `src.gui.data_widgets.WeatherDataTable._populate_table_with_numeric_items` — loc=63, cc=19
+- `src.gui.data_widgets.WeatherDataTable._convert_to_dataframe` — loc=104, cc=26
+- `src.gui.data_widgets.WeatherDataTable.apply_theme` — loc=34, cc=17
+- `src.gui.main_window_temp.MainWindow._connect_mvc_signals_clean_with_city_analysis_fix` — loc=109, cc=14
+- `src.gui.main_window_temp.MainWindow._handle_multi_city_weather_request` — loc=94, cc=12
+- `src.gui.main_window_temp.MainWindow._on_analysis_completed_with_city_fix` — loc=87, cc=28
+- `src.gui.main_windowold.MainWindow._setup_control_panel_connections` — loc=102, cc=19
+- `src.gui.main_windowold.MainWindow._connect_mvc_signals` — loc=304, cc=22
+- `src.gui.main_windowold.MainWindow._handle_multi_city_weather_request` — loc=94, cc=12
+- `src.gui.main_windowold.MainWindow._show_about` — loc=94, cc=1
+- `src.gui.workers.analysis_worker.AnalysisWorker._run_single_location_analysis` — loc=85, cc=26
+- `src.gui.workers.analysis_worker.AnalysisWorker._convert_to_legacy_format` — loc=97, cc=33
+- `src.gui.results_panel.quick_overview_tab.QuickOverviewTab._calculate_temperature_stats` — loc=65, cc=40
+- `src.gui.results_panel.quick_overview_tab.QuickOverviewTab._calculate_wind_stats` — loc=52, cc=17
+- `src.gui.results_panel.results_panel.ResultsPanel._apply_tab_widget_theming` — loc=51, cc=15
+- `src.gui.results_panel.utils.DataFrameExtractor.extract_safely` — loc=73, cc=16
+- `src.gui.results_panel.extreme_events_tab.ExtremeEventsTab._set_anomaly_status_with_theme` — loc=35, cc=17
+- `src.gui.results_panel.extreme_events_tab.ExtremeEventsTab._generate_wind_records_from_dict` — loc=53, cc=21
+- `src.gui.results_panel.extreme_events_tab.ExtremeEventsTab._calculate_daily_extremes` — loc=54, cc=35
+- `src.gui.results_panel.extreme_events_tab.ExtremeEventsTab._calculate_monthly_extremes` — loc=65, cc=18
+- `src.gui.results_panel.extreme_events_tab.ExtremeEventsTab._calculate_yearly_extremes` — loc=115, cc=29
+- `src.gui.charts.comparison_chart.MultiYearComparisonChart._plot_multi_year_comparison` — loc=105, cc=30
+- `src.gui.charts.wind_chart.WindChart._extract_wind_data` — loc=82, cc=28
+- `src.gui.charts.wind_chart.WindChart._plot_wind` — loc=82, cc=25
+- `src.gui.charts.temperature_chart.EnhancedTemperatureChart._plot_enhanced_temperature` — loc=89, cc=28
+- `src.gui.charts.base_chart.WeatherChart._redraw_with_new_theme` — loc=49, cc=17
+- `src.gui.charts.wind_rose_chart.WindRoseChart._extract_wind_data` — loc=92, cc=36
+- `src.gui.charts.wind_rose_chart.WindRoseChart._plot_wind_rose` — loc=127, cc=25
+
+## Qt Signals and connections (heuristic)
+
+### scripts.system_diagnostics
+- Connect at line 112: `sqlite3.connect(db_path)`
+### scripts.hungarian_settlements_importer
+- Connect at line 153: `sqlite3.connect(self.db_path)`
+- Connect at line 397: `sqlite3.connect(self.db_path)`
+- Connect at line 404: `sqlite3.connect(self.db_path)`
+- Connect at line 492: `sqlite3.connect(self.db_path)`
+- Connect at line 501: `sqlite3.connect(self.db_path)`
+- Connect at line 517: `sqlite3.connect(self.db_path)`
+- Connect at line 527: `sqlite3.connect(self.db_path)`
+### scripts.ai_studio_code
+- Connect at line 67: `sqlite3.connect(self.db_path)`
+- Connect at line 105: `sqlite3.connect(self.db_path)`
+### scripts.fix_hungarian_coordinates
+- Connect at line 166: `sqlite3.connect(self.db_path)`
+- Connect at line 326: `sqlite3.connect(self.db_path)`
+- Connect at line 485: `sqlite3.connect(self.db_path)`
+### scripts.add_coordinates_to_db
+- Connect at line 81: `sqlite3.connect(DB_PATH)`
+### scripts.populate_cities_db
+- Connect at line 216: `sqlite3.connect(self.db_path)`
+- Connect at line 807: `sqlite3.connect(self.db_path)`
+- Connect at line 832: `sqlite3.connect(self.db_path)`
+- Connect at line 923: `sqlite3.connect(self.db_path)`
+### backups_20250813.control_panel
+- Signal `search_requested` at line 134: `Signal(str)`
+- Signal `city_selected` at line 137: `Signal(str, float, float, dict)`
+- Signal `location_changed` at line 140: `Signal(object)`
+- Signal `weather_data_requested` at line 143: `Signal(float, float, str, str, dict)`
+- Signal `multi_city_weather_requested` at line 146: `Signal(str, str, str, str, dict)`
+- Signal `region_selection_changed` at line 149: `Signal(str)`
+- Signal `weather_parameters_changed` at line 154: `Signal(dict)`
+- Signal `analysis_parameters_changed` at line 157: `Signal(dict)`
+- Signal `date_range_changed` at line 160: `Signal(str, str)`
+- Signal `parameters_bundle_changed` at line 163: `Signal(dict)`
+- Signal `provider_changed` at line 166: `Signal(str)`
+- Signal `provider_preferences_updated` at line 167: `Signal(dict)`
+- Signal `local_error_occurred` at line 172: `Signal(str)`
+- Connect at line 223: `self.usage_update_timer.timeout.connect(self._update_usage_display)`
+- Connect at line 353: `self.analysis_type_button_group.buttonClicked.connect(self._on_analysis_type_changed_safe)`
+- Connect at line 391: `self.clear_location_btn.clicked.connect(self._clear_location)`
+- Connect at line 430: `self.region_combo.currentTextChanged.connect(self._on_region_changed_safe)`
+- Connect at line 462: `self.county_combo.currentTextChanged.connect(self._on_county_changed_safe)`
+- Connect at line 508: `self.time_range_radio.toggled.connect(self._on_date_mode_changed)`
+- Connect at line 509: `self.manual_dates_radio.toggled.connect(self._on_date_mode_changed)`
+- Connect at line 527: `self.time_range_combo.currentTextChanged.connect(self._on_time_range_changed)`
+- Connect at line 576: `self.last_month_btn.clicked.connect(self._set_last_month)`
+- Connect at line 581: `self.last_year_btn.clicked.connect(self._set_last_year)`
+- Connect at line 587: `self.last_1year_btn.clicked.connect(lambda: self._set_years_back(1))`
+- Connect at line 593: `self.last_5years_btn.clicked.connect(lambda: self._set_years_back(5))`
+- Connect at line 604: `self.last_10years_btn.clicked.connect(lambda: self._set_years_back(10))`
+- Connect at line 609: `self.last_25years_btn.clicked.connect(lambda: self._set_years_back(25))`
+- Connect at line 614: `self.last_55years_btn.clicked.connect(lambda: self._set_years_back(55))`
+- Connect at line 667: `self.provider_button_group.buttonClicked.connect(self._on_provider_changed)`
+- Connect at line 784: `self.fetch_button.clicked.connect(self._trigger_weather_fetch)`
+- Connect at line 802: `self.cancel_button.clicked.connect(self._cancel_operations)`
+- Connect at line 1686: `self.start_date.dateChanged.connect(self._validate_dates_safe)`
+- Connect at line 1687: `self.end_date.dateChanged.connect(self._validate_dates_safe)`
+- Connect at line 1703: `self.local_error_occurred.connect(self._show_local_error)`
+- Connect at line 1709: `self.universal_location_selector.search_requested.connect(self.search_requested.emit)`
+- Connect at line 1713: `self.universal_location_selector.city_selected.connect(self._on_location_selected_safe)`
+- Connect at line 1717: `self.universal_location_selector.location_changed.connect(self._on_location_changed_safe)`
+- Connect at line 1721: `self.theme_manager.theme_changed.connect(self._on_theme_changed)`
+- Connect at line 1724: `self.theme_manager.color_scheme_updated.connect(self._on_color_scheme_updated)`
+### src.data.city_manager
+- Connect at line 268: `sqlite3.connect(self.db_path)`
+- Connect at line 285: `sqlite3.connect(self.hungarian_db_path)`
+### src.analytics.multi_city_engine
+- Connect at line 457: `sqlite3.connect(database_path)`
+- Connect at line 488: `sqlite3.connect(database_path)`
+### src.gui.map_visualizer
+- Signal `server_ready` at line 126: `Signal(str, int)`
+- Signal `server_error` at line 127: `Signal(str)`
+- Signal `county_clicked` at line 190: `Signal(str)`
+- Signal `coordinates_clicked` at line 191: `Signal(float, float)`
+- Signal `map_moved` at line 192: `Signal(float, float, int)`
+- Signal `county_hovered` at line 193: `Signal(str)`
+- Signal `county_unhovered` at line 194: `Signal()`
+- Signal `progress_updated` at line 238: `Signal(int)`
+- Signal `map_generated` at line 239: `Signal(str)`
+- Signal `error_occurred` at line 240: `Signal(str)`
+- Signal `status_updated` at line 241: `Signal(str)`
+- Signal `map_ready` at line 1049: `Signal()`
+- Signal `county_clicked` at line 1050: `Signal(str)`
+- Signal `coordinates_clicked` at line 1051: `Signal(float, float)`
+- Signal `map_moved` at line 1052: `Signal(float, float, int)`
+- Signal `county_hovered` at line 1053: `Signal(str)`
+- Signal `export_completed` at line 1054: `Signal(str)`
+- Signal `error_occurred` at line 1055: `Signal(str)`
+- Signal `bounds_changed` at line 1056: `Signal(object)`
+- Connect at line 1252: `self.style_combo.currentTextChanged.connect(self._on_style_changed)`
+- Connect at line 1253: `self.counties_check.toggled.connect(self._on_counties_toggled)`
+- Connect at line 1254: `self.weather_check.toggled.connect(self._on_weather_toggled)`
+- Connect at line 1255: `self.zoom_slider.valueChanged.connect(self._on_zoom_changed)`
+- Connect at line 1257: `self.refresh_btn.clicked.connect(self._refresh_map)`
+- Connect at line 1258: `self.export_btn.clicked.connect(self._export_map)`
+- Connect at line 1259: `self.reset_btn.clicked.connect(self.reset_map_view)`
+- Connect at line 1262: `self.web_view.loadFinished.connect(self._on_map_loaded)`
+- Connect at line 1265: `self.js_bridge.county_clicked.connect(self._on_js_county_clicked)`
+- Connect at line 1266: `self.js_bridge.coordinates_clicked.connect(self._on_js_coordinates_clicked)`
+- Connect at line 1267: `self.js_bridge.map_moved.connect(self._on_js_map_moved)`
+- Connect at line 1268: `self.js_bridge.county_hovered.connect(self._on_js_county_hovered)`
+- Connect at line 1286: `self.local_server.server_ready.connect(self._on_server_ready)`
+- Connect at line 1287: `self.local_server.server_error.connect(self._on_server_error)`
+- Connect at line 1378: `self.map_generator.progress_updated.connect(self.progress_bar.setValue)`
+- Connect at line 1379: `self.map_generator.status_updated.connect(self.status_label.setText)`
+- Connect at line 1380: `self.map_generator.map_generated.connect(self._on_map_generated)`
+- Connect at line 1381: `self.map_generator.error_occurred.connect(self._on_map_error)`
+- Connect at line 2202: `debug_info_btn.clicked.connect(show_debug_info)`
+- Connect at line 2203: `counties_test_btn.clicked.connect(test_counties_reactive)`
+- Connect at line 2204: `weather_test_btn.clicked.connect(test_weather_reactive)`
+- Connect at line 2205: `server_info_btn.clicked.connect(show_server_info)`
+- Connect at line 2208: `temp_overlay_btn.clicked.connect(test_temperature_overlay)`
+- Connect at line 2209: `wind_overlay_btn.clicked.connect(test_wind_overlay)`
+- Connect at line 2210: `precip_overlay_btn.clicked.connect(test_precipitation_overlay)`
+- Connect at line 2211: `clear_overlay_btn.clicked.connect(test_clear_overlay)`
+- Connect at line 2214: `map_visualizer.map_ready.connect(on_map_ready)`
+- Connect at line 2215: `map_visualizer.county_clicked.connect(on_county_clicked)`
+- Connect at line 2216: `map_visualizer.coordinates_clicked.connect(on_coordinates_clicked)`
+- Connect at line 2217: `map_visualizer.map_moved.connect(on_map_moved)`
+- Connect at line 2218: `map_visualizer.export_completed.connect(on_export_completed)`
+- Connect at line 2219: `map_visualizer.error_occurred.connect(on_error_occurred)`
+- Connect at line 2226: `app.aboutToQuit.connect(cleanup_on_close)`
+### src.gui.universal_location_selector
+- Signal `search_requested` at line 119: `Signal(str)`
+- Signal `city_selected` at line 120: `Signal(str, float, float, dict)`
+- Signal `location_changed` at line 121: `Signal(object)`
+- Connect at line 132: `self.search_timer.timeout.connect(self._perform_search)`
+- Connect at line 349: `self.search_input.textChanged.connect(self._on_search_text_changed)`
+- Connect at line 350: `self.results_list.itemDoubleClicked.connect(self._on_result_selected)`
+- Connect at line 351: `self.results_list.itemClicked.connect(self._on_result_clicked)`
+- Connect at line 352: `self.confirm_button.clicked.connect(self._on_confirm_selection)`
+### src.gui.map_view
+- Signal `location_selected` at line 51: `Signal(object)`
+- Signal `county_clicked_on_map` at line 52: `Signal(str)`
+- Signal `map_interaction` at line 53: `Signal(str, object)`
+- Signal `export_completed` at line 54: `Signal(str)`
+- Signal `error_occurred` at line 55: `Signal(str)`
+- Signal `data_loading_completed` at line 56: `Signal()`
+- Signal `folium_ready` at line 57: `Signal()`
+- Connect at line 98: `self.map_tab.location_selected.connect(self.location_selected.emit)`
+- Connect at line 99: `self.map_tab.county_clicked_on_map.connect(self.county_clicked_on_map.emit)`
+- Connect at line 100: `self.map_tab.map_interaction.connect(self.map_interaction.emit)`
+- Connect at line 101: `self.map_tab.export_completed.connect(self.export_completed.emit)`
+- Connect at line 102: `self.map_tab.error_occurred.connect(self.error_occurred.emit)`
+- Connect at line 103: `self.map_tab.data_loading_completed.connect(self.data_loading_completed.emit)`
+- Connect at line 104: `self.map_tab.folium_ready.connect(self.folium_ready.emit)`
+- Connect at line 540: `map_view.location_selected.connect(on_location_selected)`
+- Connect at line 541: `map_view.county_clicked_on_map.connect(on_county_clicked_on_map)`
+- Connect at line 542: `map_view.map_interaction.connect(on_map_interaction)`
+- Connect at line 543: `map_view.export_completed.connect(on_export_completed)`
+- Connect at line 544: `map_view.folium_ready.connect(on_folium_ready)`
+- Connect at line 545: `map_view.data_loading_completed.connect(on_data_loading_completed)`
+### src.gui.chart_container
+- Signal `chart_exported` at line 75: `Signal(str, bool)`
+- Signal `chart_settings_changed` at line 76: `Signal(dict)`
+- Connect at line 161: `self.grid_check.toggled.connect(self._toggle_grid_optimized)`
+- Connect at line 168: `self.legend_check.toggled.connect(self._toggle_legend_optimized)`
+- Connect at line 174: `export_btn.clicked.connect(self._export_current_chart)`
+- Connect at line 188: `chart.chart_clicked.connect(self._on_chart_clicked)`
+- Connect at line 191: `self.theme_manager.theme_changed.connect(self._on_theme_changed)`
+### src.gui.trend_analytics_tab
+- Signal `progress_updated` at line 102: `Signal(int)`
+- Signal `data_received` at line 103: `Signal(dict)`
+- Signal `error_occurred` at line 104: `Signal(str)`
+- Signal `progress_updated` at line 1056: `Signal(int)`
+- Signal `data_received` at line 1057: `Signal(dict)`
+- Signal `error_occurred` at line 1058: `Signal(str)`
+- Signal `finished` at line 1059: `Signal()`
+- Signal `analysis_started` at line 1125: `Signal()`
+- Signal `analysis_completed` at line 1126: `Signal(dict)`
+- Signal `error_occurred` at line 1127: `Signal(str)`
+- Signal `location_selected` at line 1128: `Signal(str, float, float)`
+- Connect at line 1069: `self.processor.progress_updated.connect(self.progress_updated.emit)`
+- Connect at line 1070: `self.processor.data_received.connect(self.data_received.emit)`
+- Connect at line 1071: `self.processor.error_occurred.connect(self.error_occurred.emit)`
+- Connect at line 1416: `self.analyze_button.clicked.connect(self.start_trend_analysis)`
+- Connect at line 1419: `self.location_combo.currentTextChanged.connect(self.on_location_changed)`
+- Connect at line 1464: `self.current_worker.progress_updated.connect(self.progress_bar.setValue)`
+- Connect at line 1465: `self.current_worker.data_received.connect(self.on_analysis_completed)`
+- Connect at line 1466: `self.current_worker.error_occurred.connect(self.on_analysis_error)`
+- Connect at line 1467: `self.current_worker.finished.connect(self.on_worker_finished)`
+### src.gui.hungarian_location_selector
+- Signal `progress_updated` at line 79: `Signal(int)`
+- Signal `counties_loaded` at line 80: `Signal(object)`
+- Signal `postal_codes_loaded` at line 81: `Signal(object)`
+- Signal `error_occurred` at line 82: `Signal(str)`
+- Signal `completed` at line 83: `Signal()`
+- Signal `region_selected` at line 157: `Signal(object)`
+- Signal `county_selected` at line 158: `Signal(str, object)`
+- Signal `location_selected` at line 159: `Signal(object)`
+- Signal `selection_changed` at line 160: `Signal()`
+- Signal `map_update_requested` at line 161: `Signal(object)`
+- Connect at line 312: `self.region_combo.currentTextChanged.connect(self._on_region_changed)`
+- Connect at line 313: `self.county_combo.currentTextChanged.connect(self._on_county_changed)`
+- Connect at line 314: `self.refresh_btn.clicked.connect(self._start_data_loading)`
+- Connect at line 315: `self.center_map_btn.clicked.connect(self._center_map_on_selection)`
+- Connect at line 433: `self.data_worker.progress_updated.connect(self.progress_bar.setValue)`
+- Connect at line 434: `self.data_worker.counties_loaded.connect(self._on_counties_loaded)`
+- Connect at line 435: `self.data_worker.postal_codes_loaded.connect(self._on_postal_codes_loaded)`
+- Connect at line 436: `self.data_worker.error_occurred.connect(self._on_data_error)`
+- Connect at line 437: `self.data_worker.completed.connect(self._on_data_loading_completed)`
+- Connect at line 854: `location_selector.region_selected.connect(on_region_selected)`
+- Connect at line 855: `location_selector.county_selected.connect(on_county_selected)`
+- Connect at line 856: `location_selector.location_selected.connect(on_location_selected)`
+- Connect at line 857: `location_selector.map_update_requested.connect(on_map_update_requested)`
+### src.gui.hungarian_map_tab
+- Signal `location_selected` at line 106: `Signal(object)`
+- Signal `county_clicked_on_map` at line 107: `Signal(str)`
+- Signal `map_interaction` at line 108: `Signal(str, object)`
+- Signal `export_completed` at line 109: `Signal(str)`
+- Signal `error_occurred` at line 110: `Signal(str)`
+- Signal `data_loading_started` at line 111: `Signal()`
+- Signal `data_loading_completed` at line 112: `Signal()`
+- Signal `folium_ready` at line 113: `Signal()`
+- Signal `weather_data_updated` at line 114: `Signal(object)`
+- Signal `analytics_sync_completed` at line 115: `Signal(str)`
+- Connect at line 368: `self.reset_view_btn.clicked.connect(self._reset_map_view)`
+- Connect at line 369: `self.export_map_btn.clicked.connect(self._export_map)`
+- Connect at line 370: `self.refresh_folium_btn.clicked.connect(self._refresh_folium_map)`
+- Connect at line 373: `self.refresh_weather_btn.clicked.connect(self._refresh_weather_overlay)`
+- Connect at line 376: `self.auto_sync_check.toggled.connect(self._on_auto_sync_toggled)`
+- Connect at line 377: `self.auto_weather_refresh_check.toggled.connect(self._on_auto_weather_refresh_toggled)`
+- Connect at line 383: `self.location_selector.county_selected.connect(self._on_county_selected)`
+- Connect at line 387: `self.location_selector.map_update_requested.connect(self._on_map_update_requested)`
+- Connect at line 391: `self.location_selector.location_selected.connect(self._on_location_selected)`
+- Connect at line 395: `self.location_selector.selection_changed.connect(self._on_selection_changed)`
+- Connect at line 402: `self.map_visualizer.map_ready.connect(self._on_folium_map_ready)`
+- Connect at line 406: `self.map_visualizer.county_clicked.connect(self._on_folium_county_clicked)`
+- Connect at line 410: `self.map_visualizer.coordinates_clicked.connect(self._on_folium_coordinates_clicked)`
+- Connect at line 414: `self.map_visualizer.map_moved.connect(self._on_folium_map_moved)`
+- Connect at line 418: `self.map_visualizer.county_hovered.connect(self._on_folium_county_hovered)`
+- Connect at line 422: `self.map_visualizer.export_completed.connect(self._on_export_completed)`
+- Connect at line 426: `self.map_visualizer.error_occurred.connect(self._on_error_occurred)`
+- Connect at line 2172: `set_temp_btn.clicked.connect(test_set_temperature)`
+- Connect at line 2173: `set_wind_btn.clicked.connect(test_set_wind)`
+- Connect at line 2174: `set_precip_btn.clicked.connect(test_set_precipitation)`
+- Connect at line 2175: `clear_param_btn.clicked.connect(test_clear_parameter)`
+- Connect at line 2178: `analysis_sync_btn.clicked.connect(test_analysis_sync)`
+- Connect at line 2179: `weather_sync_btn.clicked.connect(test_weather_sync)`
+- Connect at line 2180: `date_sync_btn.clicked.connect(test_date_sync)`
+- Connect at line 2181: `bundle_sync_btn.clicked.connect(test_bundle_sync)`
+- Connect at line 2184: `hottest_btn.clicked.connect(load_hottest)`
+- Connect at line 2185: `coldest_btn.clicked.connect(load_coldest)`
+- Connect at line 2186: `wettest_btn.clicked.connect(load_wettest)`
+- Connect at line 2187: `windiest_btn.clicked.connect(load_windiest)`
+- Connect at line 2190: `map_tab.location_selected.connect(on_location_selected)`
+- Connect at line 2191: `map_tab.county_clicked_on_map.connect(on_county_clicked_on_map)`
+- Connect at line 2192: `map_tab.map_interaction.connect(on_map_interaction)`
+- Connect at line 2193: `map_tab.export_completed.connect(on_export_completed)`
+- Connect at line 2194: `map_tab.error_occurred.connect(on_error_occurred)`
+- Connect at line 2195: `map_tab.folium_ready.connect(on_folium_ready)`
+- Connect at line 2196: `map_tab.weather_data_updated.connect(on_weather_data_updated)`
+- Connect at line 2197: `map_tab.analytics_sync_completed.connect(on_analytics_sync_completed)`
+- Connect at line 2198: `map_tab.data_loading_completed.connect(on_data_loading_completed)`
+### src.gui.hungarian_city_selector
+- Signal `city_selected` at line 179: `Signal(str, float, float, dict)`
+- Signal `region_selected` at line 180: `Signal(str, list)`
+- Signal `search_completed` at line 181: `Signal(int)`
+- Signal `data_loaded` at line 182: `Signal(int)`
+- Signal `error_occurred` at line 183: `Signal(str)`
+- Connect at line 292: `self.search_box.textChanged.connect(self._on_search_text_changed)`
+- Connect at line 293: `self.search_box.returnPressed.connect(self._trigger_search)`
+- Connect at line 299: `clear_btn.clicked.connect(self._clear_search)`
+- Connect at line 331: `self.region_combo.currentTextChanged.connect(self._on_region_changed)`
+- Connect at line 350: `self.city_list.itemDoubleClicked.connect(self._on_city_selected)`
+- Connect at line 357: `select_btn.clicked.connect(self._select_current_city)`
+- Connect at line 364: `refresh_btn.clicked.connect(self._reload_cities)`
+- Connect at line 399: `btn.clicked.connect(lambda checked, c=city: self._select_quick_city(c))`
+- Connect at line 444: `self.theme_manager.theme_changed.connect(self._on_theme_changed)`
+- Connect at line 453: `self.search_timer.timeout.connect(self._trigger_search)`
+- Connect at line 469: `sqlite3.connect(self.db_path)`
+### src.gui.analytics_view
+- Signal `analysis_started` at line 716: `Signal()`
+- Signal `analysis_completed` at line 717: `Signal()`
+- Signal `error_occurred` at line 718: `Signal(str)`
+- Signal `multi_city_query_requested` at line 721: `Signal(str, str)`
+- Connect at line 574: `self.currentChanged.connect(self._on_tab_changed)`
+- Connect at line 903: `self.hottest_button.clicked.connect(self._emit_query_request)`
+- Connect at line 927: `self.coldest_button.clicked.connect(self._emit_query_request)`
+- Connect at line 951: `self.wettest_button.clicked.connect(self._emit_query_request)`
+- Connect at line 975: `self.windiest_button.clicked.connect(self._emit_query_request)`
+- Connect at line 1054: `self.theme_manager.theme_changed.connect(self._on_theme_changed)`
+### src.gui.dialogs
+- Connect at line 146: `self.daily_radio.toggled.connect(self._on_period_type_changed)`
+- Connect at line 147: `self.monthly_radio.toggled.connect(self._on_period_type_changed)`
+- Connect at line 171: `close_button.clicked.connect(self.accept)`
+### src.gui.control_panel
+- Signal `analysis_requested` at line 88: `Signal(dict)`
+- Signal `search_requested` at line 91: `Signal(str)`
+- Signal `city_selected` at line 92: `Signal(str, float, float, dict)`
+- Signal `local_error_occurred` at line 93: `Signal(str)`
+- Connect at line 194: `self.analysis_type_widget.analysis_type_changed.connect(self._on_analysis_type_changed)`
+- Connect at line 198: `self.location_widget.search_requested.connect(self.search_requested.emit)`
+- Connect at line 199: `self.location_widget.city_selected.connect(self.city_selected.emit)`
+- Connect at line 202: `self.location_widget.location_changed.connect(self._on_location_changed)`
+- Connect at line 205: `self.multi_city_widget.selection_changed.connect(self._on_multi_city_selection_changed)`
+- Connect at line 208: `self.date_range_widget.date_range_changed.connect(self._on_date_range_changed)`
+- Connect at line 209: `self.date_range_widget.date_mode_changed.connect(self._on_date_mode_changed)`
+- Connect at line 212: `self.provider_widget.provider_changed.connect(self._on_provider_changed)`
+- Connect at line 215: `self.api_settings_widget.api_settings_changed.connect(self._on_api_settings_changed)`
+- Connect at line 218: `self.query_control_widget.fetch_requested.connect(self._on_fetch_requested)`
+- Connect at line 219: `self.query_control_widget.cancel_requested.connect(self._on_cancel_requested)`
+- Connect at line 226: `self.theme_manager.theme_changed.connect(self._on_theme_changed)`
+### src.gui.theme_manager
+- Signal `theme_changed` at line 64: `Signal(str)`
+- Signal `color_scheme_updated` at line 65: `Signal(object)`
+### src.gui.map_visualizer (1)
+- Signal `county_clicked` at line 133: `Signal(str)`
+- Signal `coordinates_clicked` at line 134: `Signal(float, float)`
+- Signal `map_moved` at line 135: `Signal(float, float, int)`
+- Signal `county_hovered` at line 136: `Signal(str)`
+- Signal `county_unhovered` at line 137: `Signal()`
+- Signal `progress_updated` at line 178: `Signal(int)`
+- Signal `map_generated` at line 179: `Signal(str)`
+- Signal `error_occurred` at line 180: `Signal(str)`
+- Signal `status_updated` at line 181: `Signal(str)`
+- Signal `map_ready` at line 1043: `Signal()`
+- Signal `county_clicked` at line 1044: `Signal(str)`
+- Signal `coordinates_clicked` at line 1045: `Signal(float, float)`
+- Signal `map_moved` at line 1046: `Signal(float, float, int)`
+- Signal `county_hovered` at line 1047: `Signal(str)`
+- Signal `export_completed` at line 1048: `Signal(str)`
+- Signal `error_occurred` at line 1049: `Signal(str)`
+- Signal `bounds_changed` at line 1050: `Signal(object)`
+- Connect at line 1241: `self.style_combo.currentTextChanged.connect(self._on_style_changed)`
+- Connect at line 1242: `self.counties_check.toggled.connect(self._on_counties_toggled)`
+- Connect at line 1243: `self.weather_check.toggled.connect(self._on_weather_toggled)`
+- Connect at line 1244: `self.zoom_slider.valueChanged.connect(self._on_zoom_changed)`
+- Connect at line 1246: `self.refresh_btn.clicked.connect(self._refresh_map)`
+- Connect at line 1247: `self.export_btn.clicked.connect(self._export_map)`
+- Connect at line 1248: `self.reset_btn.clicked.connect(self.reset_map_view)`
+- Connect at line 1251: `self.force_reload_btn.clicked.connect(self._force_reload_webengine)`
+- Connect at line 1254: `self.web_view.loadFinished.connect(self._on_map_loaded)`
+- Connect at line 1257: `self.js_bridge.county_clicked.connect(self._on_js_county_clicked)`
+- Connect at line 1258: `self.js_bridge.coordinates_clicked.connect(self._on_js_coordinates_clicked)`
+- Connect at line 1259: `self.js_bridge.map_moved.connect(self._on_js_map_moved)`
+- Connect at line 1260: `self.js_bridge.county_hovered.connect(self._on_js_county_hovered)`
+- Connect at line 1315: `self.map_generator.progress_updated.connect(self.progress_bar.setValue)`
+- Connect at line 1316: `self.map_generator.status_updated.connect(self.status_label.setText)`
+- Connect at line 1317: `self.map_generator.map_generated.connect(self._on_map_generated)`
+- Connect at line 1318: `self.map_generator.error_occurred.connect(self._on_map_error)`
+- Connect at line 2217: `force_reload_btn.clicked.connect(test_force_reload)`
+- Connect at line 2218: `debug_info_btn.clicked.connect(show_debug_info)`
+- Connect at line 2219: `nuclear_reset_btn.clicked.connect(test_nuclear_reset)`
+- Connect at line 2222: `temp_overlay_btn.clicked.connect(test_temperature_overlay)`
+- Connect at line 2223: `wind_overlay_btn.clicked.connect(test_wind_overlay)`
+- Connect at line 2224: `precip_overlay_btn.clicked.connect(test_precipitation_overlay)`
+- Connect at line 2225: `clear_overlay_btn.clicked.connect(test_clear_overlay)`
+- Connect at line 2228: `map_visualizer.map_ready.connect(on_map_ready)`
+- Connect at line 2229: `map_visualizer.county_clicked.connect(on_county_clicked)`
+- Connect at line 2230: `map_visualizer.coordinates_clicked.connect(on_coordinates_clicked)`
+- Connect at line 2231: `map_visualizer.map_moved.connect(on_map_moved)`
+- Connect at line 2232: `map_visualizer.export_completed.connect(on_export_completed)`
+- Connect at line 2233: `map_visualizer.error_occurred.connect(on_error_occurred)`
+### src.gui.main_window
+- Signal `theme_changed` at line 1411: `Signal(str)`
+- Connect at line 261: `self.theme_manager.theme_changed.connect(self._on_theme_manager_changed)`
+- Connect at line 290: `self.single_city_action.triggered.connect(lambda: self._switch_view("single_city"))`
+- Connect at line 298: `self.analytics_action.triggered.connect(lambda: self._switch_view("analytics"))`
+- Connect at line 305: `self.trend_action.triggered.connect(lambda: self._switch_view("trend_analysis"))`
+- Connect at line 312: `self.map_action.triggered.connect(lambda: self._switch_view("map_view"))`
+- Connect at line 321: `self.settings_action.triggered.connect(lambda: self._switch_view("settings"))`
+- Connect at line 607: `export_action.triggered.connect(self._export_data)`
+- Connect at line 617: `exit_action.triggered.connect(self.close)`
+- Connect at line 634: `light_theme_action.triggered.connect(lambda: self._apply_theme(ThemeType.LIGHT))`
+- Connect at line 638: `dark_theme_action.triggered.connect(lambda: self._apply_theme(ThemeType.DARK))`
+- Connect at line 646: `extreme_action.triggered.connect(self._show_extreme_weather)`
+- Connect at line 655: `about_action.triggered.connect(self._show_about)`
+- Connect at line 711: `self.control_panel.analysis_requested.connect(self.controller.handle_analysis_request)`
+- Connect at line 720: `self.control_panel.cancel_requested.connect(self.controller.stop_current_analysis)`
+- Connect at line 735: `self.controller.analysis_started.connect(self._on_analysis_started)`
+- Connect at line 740: `self.controller.analysis_completed.connect(self._on_analysis_completed_with_city_fix)`
+- Connect at line 745: `self.controller.analysis_failed.connect(self._on_analysis_failed)`
+- Connect at line 750: `self.controller.analysis_cancelled.connect(self._on_analysis_cancelled)`
+- Connect at line 755: `self.controller.analysis_progress.connect(self._update_progress_clean)`
+- Connect at line 768: `self.analytics_panel.multi_city_query_requested.connect(debug_analytics_multi_city_query_requested)`
+- Connect at line 769: `self.analytics_panel.multi_city_query_requested.connect(self._handle_analytics_view_query)`
+- Connect at line 778: `self.analytics_panel.analysis_started.connect(lambda: self.status_bar.showMessage("📊 Analytics elemzés folyamatban..."))`
+- Connect at line 784: `self.analytics_panel.error_occurred.connect(lambda msg: self.status_bar.showMessage(f"❌ Analytics hiba: {msg}"))`
+- Connect at line 796: `self.controller.provider_selected.connect(self._on_provider_selected)`
+- Connect at line 800: `self.controller.provider_usage_updated.connect(self._on_provider_usage_updated)`
+- Connect at line 804: `self.controller.provider_warning.connect(self._on_provider_warning)`
+- Connect at line 808: `self.controller.provider_fallback.connect(self._on_provider_fallback)`
+- Connect at line 815: `self.results_panel.export_requested.connect(self._handle_export_request)`
+- Connect at line 819: `self.results_panel.extreme_weather_requested.connect(self._show_extreme_weather)`
+- Connect at line 824: `self.theme_changed.connect(self._propagate_theme_change)`
+### src.gui.app_controller
+- Signal `analysis_started` at line 69: `Signal(str)`
+- Signal `analysis_progress` at line 70: `Signal(str, int)`
+- Signal `analysis_completed` at line 71: `Signal(dict)`
+- Signal `analysis_failed` at line 72: `Signal(str)`
+- Signal `analysis_cancelled` at line 73: `Signal()`
+- Signal `geocoding_results_ready` at line 76: `Signal(list)`
+- Signal `weather_data_ready` at line 77: `Signal(dict)`
+- Signal `error_occurred` at line 78: `Signal(str)`
+- Signal `status_updated` at line 79: `Signal(str)`
+- Signal `progress_updated` at line 80: `Signal(str, int)`
+- Signal `city_saved_to_db` at line 83: `Signal(dict)`
+- Signal `weather_saved_to_db` at line 84: `Signal(bool)`
+- Signal `provider_selected` at line 87: `Signal(str)`
+- Signal `provider_usage_updated` at line 88: `Signal(dict)`
+- Signal `provider_warning` at line 89: `Signal(str, int)`
+- Signal `provider_fallback` at line 90: `Signal(str, str)`
+- Connect at line 211: `self.active_analysis_worker.progress_updated.connect(self._on_analysis_progress)`
+- Connect at line 212: `self.active_analysis_worker.analysis_completed.connect(self._on_analysis_completed)`
+- Connect at line 213: `self.active_analysis_worker.analysis_failed.connect(self._on_analysis_failed)`
+- Connect at line 214: `self.active_analysis_worker.analysis_cancelled.connect(self._on_analysis_cancelled)`
+- Connect at line 625: `sqlite3.connect(str(self.db_path))`
+- Connect at line 696: `self.worker_manager.geocoding_completed.connect(self._on_geocoding_completed)`
+- Connect at line 700: `self.worker_manager.weather_data_completed.connect(self._on_weather_data_completed)`
+- Connect at line 704: `self.worker_manager.error_occurred.connect(self._on_worker_error)`
+- Connect at line 705: `self.worker_manager.progress_updated.connect(self.progress_updated.emit)`
+- Connect at line 1072: `sqlite3.connect(str(self.db_path))`
+- Connect at line 1462: `sqlite3.connect(str(self.db_path))`
+### src.gui.data_widgets
+- Signal `row_selected` at line 227: `Signal(int)`
+- Signal `data_filtered` at line 228: `Signal(int)`
+- Signal `export_completed` at line 229: `Signal(str, bool)`
+- Signal `sorting_changed` at line 230: `Signal(int, str)`
+- Connect at line 286: `header.sectionClicked.connect(self._on_header_clicked)`
+- Connect at line 333: `self.search_input.textChanged.connect(self._apply_filter)`
+- Connect at line 344: `self.column_filter.currentTextChanged.connect(self._apply_filter)`
+- Connect at line 356: `self.page_spin.valueChanged.connect(self._change_page)`
+- Connect at line 361: `self.rows_per_page_combo.currentTextChanged.connect(self._change_page_size)`
+- Connect at line 372: `self.csv_btn.clicked.connect(lambda: self._export_data("csv"))`
+- Connect at line 376: `self.excel_btn.clicked.connect(lambda: self._export_data("excel"))`
+- Connect at line 434: `self.table.itemSelectionChanged.connect(self._on_selection_changed)`
+### src.gui.main_window_temp
+- Signal `theme_changed` at line 113: `Signal(str)`
+- Signal `view_changed` at line 114: `Signal(str)`
+- Signal `provider_status_updated` at line 117: `Signal(str)`
+- Connect at line 347: `self.theme_manager.theme_changed.connect(self._on_theme_manager_changed)`
+- Connect at line 397: `self.single_city_action.triggered.connect(lambda: self._switch_view("single_city"))`
+- Connect at line 405: `self.analytics_action.triggered.connect(lambda: self._switch_view("analytics"))`
+- Connect at line 412: `self.trend_action.triggered.connect(lambda: self._switch_view("trend_analysis"))`
+- Connect at line 419: `self.map_action.triggered.connect(lambda: self._switch_view("map_view"))`
+- Connect at line 428: `self.settings_action.triggered.connect(lambda: self._switch_view("settings"))`
+- Connect at line 756: `export_action.triggered.connect(self._export_data)`
+- Connect at line 766: `exit_action.triggered.connect(self.close)`
+- Connect at line 783: `light_theme_action.triggered.connect(lambda: self._apply_theme(ThemeType.LIGHT))`
+- Connect at line 787: `dark_theme_action.triggered.connect(lambda: self._apply_theme(ThemeType.DARK))`
+- Connect at line 795: `extreme_action.triggered.connect(self._show_extreme_weather)`
+- Connect at line 804: `about_action.triggered.connect(self._show_about)`
+- Connect at line 965: `self.control_panel.analysis_requested.connect(self.controller.handle_analysis_request)`
+- Connect at line 974: `self.control_panel.cancel_requested.connect(self.controller.stop_current_analysis)`
+- Connect at line 989: `self.controller.analysis_started.connect(self._on_analysis_started)`
+- Connect at line 994: `self.controller.analysis_completed.connect(self._on_analysis_completed_with_city_fix)`
+- Connect at line 999: `self.controller.analysis_failed.connect(self._on_analysis_failed)`
+- Connect at line 1004: `self.controller.analysis_cancelled.connect(self._on_analysis_cancelled)`
+- Connect at line 1009: `self.controller.analysis_progress.connect(self._update_progress_clean)`
+- Connect at line 1022: `self.analytics_panel.multi_city_query_requested.connect(debug_analytics_multi_city_query_requested)`
+- Connect at line 1023: `self.analytics_panel.multi_city_query_requested.connect(self._handle_analytics_view_query)`
+- Connect at line 1032: `self.analytics_panel.analysis_started.connect(lambda: self.status_bar.showMessage("📊 Analytics elemzés folyamatban..."))`
+- Connect at line 1038: `self.analytics_panel.error_occurred.connect(lambda msg: self.status_bar.showMessage(f"❌ Analytics hiba: {msg}"))`
+- Connect at line 1050: `self.controller.provider_selected.connect(self._on_provider_selected)`
+- Connect at line 1054: `self.controller.provider_usage_updated.connect(self._on_provider_usage_updated)`
+- Connect at line 1058: `self.controller.provider_warning.connect(self._on_provider_warning)`
+- Connect at line 1062: `self.controller.provider_fallback.connect(self._on_provider_fallback)`
+- Connect at line 1069: `self.results_panel.export_requested.connect(self._handle_export_request)`
+- Connect at line 1073: `self.results_panel.extreme_weather_requested.connect(self._show_extreme_weather)`
+- Connect at line 1078: `self.theme_changed.connect(self._propagate_theme_change)`
+### src.gui.main_windowold
+- Signal `theme_changed` at line 101: `Signal(str)`
+- Signal `view_changed` at line 102: `Signal(str)`
+- Signal `provider_status_updated` at line 105: `Signal(str)`
+- Connect at line 235: `self.theme_manager.theme_changed.connect(self._on_theme_manager_changed)`
+- Connect at line 285: `self.single_city_action.triggered.connect(lambda: self._switch_view("single_city"))`
+- Connect at line 293: `self.analytics_action.triggered.connect(lambda: self._switch_view("analytics"))`
+- Connect at line 300: `self.trend_action.triggered.connect(lambda: self._switch_view("trend_analysis"))`
+- Connect at line 307: `self.map_action.triggered.connect(lambda: self._switch_view("map_view"))`
+- Connect at line 316: `self.settings_action.triggered.connect(lambda: self._switch_view("settings"))`
+- Connect at line 637: `export_action.triggered.connect(self._export_data)`
+- Connect at line 647: `exit_action.triggered.connect(self.close)`
+- Connect at line 664: `light_theme_action.triggered.connect(lambda: self._apply_theme(ThemeType.LIGHT))`
+- Connect at line 668: `dark_theme_action.triggered.connect(lambda: self._apply_theme(ThemeType.DARK))`
+- Connect at line 676: `extreme_action.triggered.connect(self._show_extreme_weather)`
+- Connect at line 685: `about_action.triggered.connect(self._show_about)`
+- Connect at line 859: `self.control_panel.analysis_parameters_changed.connect(debug_analytics_params_changed)`
+- Connect at line 863: `self.control_panel.analysis_parameters_changed.connect(self.hungarian_map_tab.update_analysis_parameters)`
+- Connect at line 874: `self.control_panel.weather_parameters_changed.connect(debug_weather_params_changed)`
+- Connect at line 878: `self.control_panel.weather_parameters_changed.connect(self.hungarian_map_tab.update_weather_parameters)`
+- Connect at line 889: `self.control_panel.date_range_changed.connect(debug_date_range_changed)`
+- Connect at line 893: `self.control_panel.date_range_changed.connect(self.hungarian_map_tab.update_date_range)`
+- Connect at line 904: `self.control_panel.parameters_bundle_changed.connect(debug_bundle_changed)`
+- Connect at line 908: `self.control_panel.parameters_bundle_changed.connect(self.hungarian_map_tab.refresh_with_new_parameters)`
+- Connect at line 962: `self.controller.provider_selected.connect(debug_provider_selected)`
+- Connect at line 963: `self.controller.provider_selected.connect(self._on_provider_selected)`
+- Connect at line 970: `self.controller.provider_usage_updated.connect(debug_provider_usage_updated)`
+- Connect at line 971: `self.controller.provider_usage_updated.connect(self._on_provider_usage_updated)`
+- Connect at line 978: `self.controller.provider_warning.connect(debug_provider_warning)`
+- Connect at line 979: `self.controller.provider_warning.connect(self._on_provider_warning)`
+- Connect at line 986: `self.controller.provider_fallback.connect(debug_provider_fallback)`
+- Connect at line 987: `self.controller.provider_fallback.connect(self._on_provider_fallback)`
+- Connect at line 1000: `self.control_panel.provider_changed.connect(debug_control_panel_provider_changed)`
+- Connect at line 1001: `self.control_panel.provider_changed.connect(self.controller.handle_provider_change)`
+- Connect at line 1010: `self.control_panel.search_requested.connect(debug_control_panel_search_requested)`
+- Connect at line 1011: `self.control_panel.search_requested.connect(self.controller.handle_search_request)`
+- Connect at line 1021: `self.control_panel.city_selected.connect(debug_control_panel_city_selected)`
+- Connect at line 1022: `self.control_panel.city_selected.connect(self.controller.handle_city_selection)`
+- Connect at line 1033: `self.control_panel.weather_data_requested.connect(debug_control_panel_weather_requested)`
+- Connect at line 1034: `self.control_panel.weather_data_requested.connect(self.controller.handle_weather_data_request)`
+- Connect at line 1045: `self.control_panel.multi_city_weather_requested.connect(debug_control_panel_multi_city_requested)`
+- Connect at line 1046: `self.control_panel.multi_city_weather_requested.connect(self._handle_multi_city_weather_request)`
+- Connect at line 1066: `self.control_panel.location_changed.connect(debug_control_panel_location_changed)`
+- Connect at line 1067: `self.control_panel.location_changed.connect(self.analytics_panel.on_location_changed)`
+- Connect at line 1084: `self.control_panel.city_selected.connect(debug_control_panel_city_to_analytics)`
+- Connect at line 1094: `self.analytics_panel.multi_city_query_requested.connect(debug_analytics_multi_city_query_requested)`
+- Connect at line 1095: `self.analytics_panel.multi_city_query_requested.connect(self._handle_analytics_view_query)`
+- Connect at line 1106: `self.analytics_panel.analysis_started.connect(debug_analytics_analysis_started)`
+- Connect at line 1107: `self.analytics_panel.analysis_started.connect(lambda: self.status_bar.showMessage("🔥 Analytics elemzés folyamatban... (refaktorált)"))`
+- Connect at line 1119: `self.analytics_panel.error_occurred.connect(debug_analytics_error_occurred)`
+- Connect at line 1120: `self.analytics_panel.error_occurred.connect(lambda msg: self.status_bar.showMessage(f"❌ Analytics hiba: {msg}"))`
+- Connect at line 1143: `self.control_panel.city_selected.connect(debug_control_panel_city_to_trend)`
+- Connect at line 1150: `self.trend_analytics_tab.analysis_started.connect(debug_trend_analysis_started)`
+- Connect at line 1151: `self.trend_analytics_tab.analysis_started.connect(lambda: self.status_bar.showMessage("📈 Trend elemzés folyamatban..."))`
+- Connect at line 1161: `self.trend_analytics_tab.analysis_completed.connect(debug_trend_analysis_completed)`
+- Connect at line 1162: `self.trend_analytics_tab.analysis_completed.connect(self._on_trend_analysis_completed)`
+- Connect at line 1169: `self.trend_analytics_tab.error_occurred.connect(debug_trend_error_occurred)`
+- Connect at line 1170: `self.trend_analytics_tab.error_occurred.connect(self._on_trend_analysis_error)`
+- Connect at line 1177: `self.trend_analytics_tab.location_selected.connect(debug_trend_location_selected)`
+- Connect at line 1191: `self.controller.geocoding_results_ready.connect(debug_controller_geocoding_results)`
+- Connect at line 1194: `self.controller.geocoding_results_ready.connect(self.control_panel._on_geocoding_completed)`
+- Connect at line 1209: `self.controller.weather_data_ready.connect(debug_controller_weather_data_ready)`
+- Connect at line 1210: `self.controller.weather_data_ready.connect(self._on_weather_data_received)`
+- Connect at line 1220: `self.controller.weather_data_ready.connect(debug_controller_weather_data_to_analytics)`
+- Connect at line 1221: `self.controller.weather_data_ready.connect(self.analytics_panel.update_data)`
+- Connect at line 1232: `self.controller.error_occurred.connect(debug_controller_error_occurred)`
+- Connect at line 1233: `self.controller.error_occurred.connect(self._show_error)`
+- Connect at line 1240: `self.controller.status_updated.connect(debug_controller_status_updated)`
+- Connect at line 1241: `self.controller.status_updated.connect(self._update_status)`
+- Connect at line 1248: `self.controller.progress_updated.connect(debug_controller_progress_updated)`
+- Connect at line 1249: `self.controller.progress_updated.connect(self._update_progress)`
+- Connect at line 1256: `self.controller.weather_data_ready.connect(self.control_panel.on_weather_data_completed)`
+- Connect at line 1261: `self.controller.progress_updated.connect(self.control_panel.update_progress)`
+- Connect at line 1264: `self.controller.status_updated.connect(self.control_panel.update_status_from_controller)`
+- Connect at line 1267: `self.controller.error_occurred.connect(self.control_panel.on_controller_error)`
+- Connect at line 1279: `self.results_panel.export_requested.connect(debug_results_panel_export_requested)`
+- Connect at line 1280: `self.results_panel.export_requested.connect(self._handle_export_request)`
+- Connect at line 1287: `self.results_panel.extreme_weather_requested.connect(debug_results_panel_extreme_weather_requested)`
+- Connect at line 1288: `self.results_panel.extreme_weather_requested.connect(self._show_extreme_weather)`
+- Connect at line 1303: `charts_container.chart_exported.connect(debug_charts_exported)`
+- Connect at line 1304: `charts_container.chart_exported.connect(self._on_chart_exported)`
+- Connect at line 1317: `data_table.export_completed.connect(debug_table_export_completed)`
+- Connect at line 1318: `data_table.export_completed.connect(self._on_table_exported)`
+- Connect at line 1325: `data_table.row_selected.connect(debug_table_row_selected)`
+- Connect at line 1326: `data_table.row_selected.connect(self._on_table_row_selected)`
+- Connect at line 1334: `self.theme_changed.connect(debug_theme_changed)`
+- Connect at line 1335: `self.theme_changed.connect(self._propagate_theme_change)`
+- Connect at line 1341: `self.view_changed.connect(debug_view_changed)`
+### src.gui.workers.analysis_worker
+- Signal `progress_updated` at line 86: `Signal(str, int)`
+- Signal `analysis_completed` at line 87: `Signal(dict)`
+- Signal `analysis_failed` at line 88: `Signal(str)`
+- Signal `analysis_cancelled` at line 89: `Signal()`
+- Connect at line 667: `self.worker.progress_updated.connect(self._on_progress)`
+- Connect at line 668: `self.worker.analysis_completed.connect(self._on_completed)`
+- Connect at line 669: `self.worker.analysis_failed.connect(self._on_failed)`
+- Connect at line 670: `self.worker.analysis_cancelled.connect(self._on_cancelled)`
+- Connect at line 673: `self.start_button.clicked.connect(self._start_test)`
+- Connect at line 674: `self.stop_button.clicked.connect(self._stop_test)`
+### src.gui.workers.data_fetch_worker
+- Signal `finished` at line 46: `Signal()`
+- Signal `error_occurred` at line 47: `Signal(str)`
+- Signal `progress_updated` at line 48: `Signal(int)`
+- Signal `geocoding_completed` at line 87: `Signal(list)`
+- Signal `weather_data_completed` at line 164: `Signal(dict)`
+- Signal `provider_changed` at line 167: `Signal(str)`
+- Signal `provider_fallback_occurred` at line 168: `Signal(str, str)`
+- Signal `provider_validation_failed` at line 169: `Signal(str, str)`
+- Signal `query_completed` at line 447: `Signal(object)`
+- Signal `error_occurred` at line 534: `Signal(str)`
+- Signal `progress_updated` at line 535: `Signal(str, int)`
+- Signal `worker_started` at line 536: `Signal(str)`
+- Signal `worker_finished` at line 537: `Signal(str)`
+- Signal `geocoding_completed` at line 540: `Signal(list)`
+- Signal `weather_data_completed` at line 541: `Signal(dict)`
+- Signal `sql_query_completed` at line 542: `Signal(object)`
+- Signal `provider_changed` at line 545: `Signal(str)`
+- Signal `provider_fallback_occurred` at line 546: `Signal(str, str)`
+- Signal `provider_validation_failed` at line 547: `Signal(str, str)`
+- Signal `provider_usage_tracked` at line 548: `Signal(str, bool)`
+- Connect at line 470: `sqlite3.connect(str(self.db_path))`
+- Connect at line 577: `worker.geocoding_completed.connect(self.geocoding_completed.emit)`
+- Connect at line 578: `worker.error_occurred.connect(self._on_worker_error)`
+- Connect at line 579: `worker.finished.connect(lambda worker_id=worker_id: self._on_worker_finished(worker_id))`
+- Connect at line 580: `worker.progress_updated.connect(lambda p: self.progress_updated.emit("geocoding", p))`
+- Connect at line 602: `worker.weather_data_completed.connect(self.weather_data_completed.emit)`
+- Connect at line 603: `worker.error_occurred.connect(self._on_worker_error)`
+- Connect at line 604: `worker.finished.connect(lambda worker_id=worker_id: self._on_worker_finished(worker_id))`
+- Connect at line 605: `worker.progress_updated.connect(lambda p: self.progress_updated.emit("weather_data", p))`
+- Connect at line 608: `worker.provider_changed.connect(self._on_provider_changed)`
+- Connect at line 609: `worker.provider_fallback_occurred.connect(self._on_provider_fallback)`
+- Connect at line 610: `worker.provider_validation_failed.connect(self._on_provider_validation_failed)`
+- Connect at line 629: `worker.query_completed.connect(self.sql_query_completed.emit)`
+- Connect at line 630: `worker.error_occurred.connect(self._on_worker_error)`
+- Connect at line 631: `worker.finished.connect(lambda worker_id=worker_id: self._on_worker_finished(worker_id))`
+- Connect at line 632: `worker.progress_updated.connect(lambda p: self.progress_updated.emit("sql_query", p))`
+### src.gui.results_panel.results_panel
+- Signal `extreme_weather_requested` at line 58: `Signal()`
+- Signal `export_requested` at line 59: `Signal(str)`
+- Signal `chart_type_changed` at line 60: `Signal(str)`
+- Connect at line 112: `self.global_export_btn.clicked.connect(lambda: self.export_requested.emit("csv"))`
+- Connect at line 150: `self.extreme_tab.extreme_weather_requested.connect(self.extreme_weather_requested.emit)`
+- Connect at line 154: `self.table_tab.csv_btn.clicked.connect(lambda: self.export_requested.emit("csv"))`
+- Connect at line 157: `self.table_tab.excel_btn.clicked.connect(lambda: self.export_requested.emit("excel"))`
+- Connect at line 159: `self.theme_manager.theme_changed.connect(self._on_theme_changed)`
+### src.gui.results_panel.extreme_events_tab
+- Signal `extreme_weather_requested` at line 63: `Signal()`
+- Connect at line 187: `self.daily_radio.toggled.connect(self._on_period_type_changed)`
+- Connect at line 188: `self.monthly_radio.toggled.connect(self._on_period_type_changed)`
+- Connect at line 189: `self.yearly_radio.toggled.connect(self._on_period_type_changed)`
+- Connect at line 223: `self.detailed_btn.clicked.connect(self._on_detailed_analysis_clicked)`
+- Connect at line 227: `self.settings_btn.clicked.connect(self._on_anomaly_settings_clicked)`
+### src.gui.panel_widgets.query_control_widget
+- Signal `fetch_requested` at line 34: `Signal()`
+- Signal `cancel_requested` at line 35: `Signal()`
+- Connect at line 127: `self.fetch_button.clicked.connect(self._on_fetch_clicked)`
+- Connect at line 128: `self.cancel_button.clicked.connect(self._on_cancel_clicked)`
+- Connect at line 238: `self.query_widget.fetch_requested.connect(self._test_fetch)`
+- Connect at line 239: `self.query_widget.cancel_requested.connect(self._test_cancel)`
+- Connect at line 243: `self.test_timer.timeout.connect(self._test_finish)`
+### src.gui.panel_widgets.provider_widget
+- Signal `provider_changed` at line 50: `Signal(str)`
+- Signal `usage_warning` at line 51: `Signal(str, int)`
+- Signal `cost_warning` at line 52: `Signal(str, float)`
+- Connect at line 89: `self.usage_timer.timeout.connect(self._update_usage_display)`
+- Connect at line 184: `refresh_button.clicked.connect(self._refresh_usage_stats)`
+- Connect at line 189: `reset_button.clicked.connect(self._reset_usage_stats)`
+- Connect at line 226: `self.provider_combo.currentTextChanged.connect(self._on_provider_selection_changed)`
+### src.gui.panel_widgets.date_range_widget
+- Signal `date_range_changed` at line 47: `Signal(str, str)`
+- Signal `date_mode_changed` at line 48: `Signal(str)`
+- Connect at line 221: `self.time_range_radio.toggled.connect(self._on_date_mode_changed)`
+- Connect at line 222: `self.manual_dates_radio.toggled.connect(self._on_date_mode_changed)`
+- Connect at line 225: `self.time_range_combo.currentTextChanged.connect(self._on_time_range_changed)`
+- Connect at line 228: `self.start_date.dateChanged.connect(self._on_manual_date_changed)`
+- Connect at line 229: `self.end_date.dateChanged.connect(self._on_manual_date_changed)`
+- Connect at line 232: `self.last_month_btn.clicked.connect(self._set_last_month)`
+- Connect at line 233: `self.last_year_btn.clicked.connect(self._set_last_year)`
+- Connect at line 234: `self.last_1year_btn.clicked.connect(lambda: self._set_years_back(1))`
+- Connect at line 235: `self.last_5years_btn.clicked.connect(lambda: self._set_years_back(5))`
+- Connect at line 236: `self.last_10years_btn.clicked.connect(lambda: self._set_years_back(10))`
+- Connect at line 237: `self.last_25years_btn.clicked.connect(lambda: self._set_years_back(25))`
+- Connect at line 238: `self.last_55years_btn.clicked.connect(lambda: self._set_years_back(55))`
+### src.gui.panel_widgets.api_settings_widget
+- Signal `api_settings_changed` at line 43: `Signal(dict)`
+- Connect at line 112: `self.auto_timezone.toggled.connect(self._on_settings_changed)`
+- Connect at line 113: `self.cache_data.toggled.connect(self._on_settings_changed)`
+- Connect at line 114: `self.api_timeout.valueChanged.connect(self._on_settings_changed)`
+### src.gui.panel_widgets.multi_city_widget
+- Signal `selection_changed` at line 47: `Signal(dict)`
+- Connect at line 118: `self.clear_btn.clicked.connect(self._clear_selection)`
+- Connect at line 186: `self.combo_box.currentTextChanged.connect(self._on_combo_selection_changed)`
+### src.gui.panel_widgets.location_widget
+- Signal `search_requested` at line 49: `Signal(str)`
+- Signal `location_changed` at line 50: `Signal(object)`
+- Signal `city_selected` at line 51: `Signal(str, float, float, dict)`
+- Connect at line 110: `self.clear_btn.clicked.connect(self._clear_location)`
+- Connect at line 127: `self.location_selector.search_requested.connect(self._on_search_requested)`
+- Connect at line 128: `self.location_selector.city_selected.connect(self._on_city_selected)`
+- Connect at line 129: `self.location_selector.location_changed.connect(self._on_location_changed)`
+### src.gui.panel_widgets.analysis_type_widget
+- Signal `analysis_type_changed` at line 41: `Signal(str)`
+- Connect at line 112: `self.button_group.buttonClicked.connect(self._on_button_clicked)`
+### src.gui.charts.base_chart
+- Signal `chart_clicked` at line 44: `Signal(float, float)`
+- Signal `export_requested` at line 45: `Signal(str)`
+- Connect at line 101: `self.theme_manager.theme_changed.connect(self._on_theme_changed)`

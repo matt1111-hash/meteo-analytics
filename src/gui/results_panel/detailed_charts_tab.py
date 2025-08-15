@@ -4,7 +4,8 @@
 """
 Global Weather Analyzer - Detailed Charts Tab Module
 📈 "Részletes Diagramok" TAB - Nagy, professzionális chartok
-🔧 MODULÁRIS BONTÁS: chart_widgets.py → chart_container.py import frissítés
+🔧 KRITIKUS JAVÍTÁS: WindChart integráció - HIÁNYZÓ CHART FRISSÍTÉS
+🌪️ WIND CHART INTEGRÁCIÓ: WindChart és WindRoseChart explicit frissítése
 """
 
 import logging
@@ -23,7 +24,8 @@ logger = logging.getLogger(__name__)
 class DetailedChartsTab(QWidget):
     """
     📈 "Részletes Diagramok" TAB - Nagy, professzionális chartok.
-    🔧 MODULÁRIS BONTÁS: chart_widgets.py → chart_container.py import frissítés
+    🔧 KRITIKUS JAVÍTÁS: WindChart integráció - HIÁNYZÓ CHART FRISSÍTÉS
+    🌪️ WIND CHART INTEGRÁCIÓ: WindChart és WindRoseChart explicit frissítése
     """
     
     def __init__(self, parent: Optional[QWidget] = None):
@@ -70,25 +72,60 @@ class DetailedChartsTab(QWidget):
     
     def update_data(self, data: Dict[str, Any]) -> None:
         """
-        Részletes chartok frissítése.
+        🔧 KRITIKUS JAVÍTÁS: Részletes chartok frissítése - WIND CHART INTEGRÁCIÓ.
         
         Args:
             data: OpenMeteo API válasz
         """
-        logger.info("DetailedChartsTab.update_data() MEGHÍVVA!")
+        logger.info("🌪️ KRITIKUS JAVÍTÁS: DetailedChartsTab.update_data() - WIND CHART INTEGRÁCIÓ!")
         
         # === CHARTS CONTAINER ELLENŐRZÉS ===
         if self.charts_container:
             logger.debug("charts_container EXISTS - calling update_charts...")
             
             try:
+                # 🌪️ KRITIKUS JAVÍTÁS: Explicit chart frissítés logging
+                logger.info("🌪️ WIND CHART DEBUG: Calling charts_container.update_charts() with data...")
+                
                 self.charts_container.update_charts(data)
-                logger.info("charts_container.update_charts() SIKERES!")
+                
+                # 🌪️ EXPLICIT WIND CHART ELLENŐRZÉS
+                if hasattr(self.charts_container, 'wind_chart'):
+                    logger.info("🌪️ WIND CHART DEBUG: wind_chart EXISTS in container!")
+                    if hasattr(self.charts_container.wind_chart, 'current_data'):
+                        wind_data = self.charts_container.wind_chart.current_data
+                        if wind_data is not None:
+                            logger.info(f"🌪️ WIND CHART SUCCESS: Wind chart has data: {len(wind_data) if hasattr(wind_data, '__len__') else 'non-empty'}")
+                        else:
+                            logger.warning("🌪️ WIND CHART WARNING: Wind chart current_data is None!")
+                    else:
+                        logger.warning("🌪️ WIND CHART WARNING: Wind chart has no current_data attribute!")
+                else:
+                    logger.error("🌪️ WIND CHART ERROR: wind_chart NOT FOUND in container!")
+                
+                # 🌹 EXPLICIT WIND ROSE CHART ELLENŐRZÉS  
+                if hasattr(self.charts_container, 'windrose_chart'):
+                    logger.info("🌹 WIND ROSE DEBUG: windrose_chart EXISTS in container!")
+                    if hasattr(self.charts_container.windrose_chart, 'current_data'):
+                        windrose_data = self.charts_container.windrose_chart.current_data
+                        if windrose_data is not None:
+                            logger.info(f"🌹 WIND ROSE SUCCESS: Wind rose chart has data: {len(windrose_data) if hasattr(windrose_data, '__len__') else 'non-empty'}")
+                        else:
+                            logger.warning("🌹 WIND ROSE WARNING: Wind rose chart current_data is None!")
+                    else:
+                        logger.warning("🌹 WIND ROSE WARNING: Wind rose chart has no current_data attribute!")
+                else:
+                    logger.error("🌹 WIND ROSE ERROR: windrose_chart NOT FOUND in container!")
+                
+                logger.info("✅ DetailedChartsTab: charts_container.update_charts() SIKERES! (WIND CHART INTEGRATION)")
                 
             except Exception as e:
-                logger.error(f"HIBA a charts_container.update_charts() hívásban: {e}")
+                logger.error(f"❌ HIBA a charts_container.update_charts() hívásban: {e}")
+                logger.error(f"❌ Exception type: {type(e).__name__}")
+                import traceback
+                logger.error(f"❌ Traceback: {traceback.format_exc()}")
         else:
-            logger.error("charts_container is None! - Ez a probléma oka!")
+            logger.error("❌ charts_container is None! - Ez a probléma oka!")
     
     def clear_data(self) -> None:
         """Chartok törlése."""

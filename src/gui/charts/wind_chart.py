@@ -8,11 +8,14 @@ Széllökés grafikon widget professzionális vizualizációval.
 🌪️ MAGYAR METEOROLÓGIAI SZABVÁNY: 43-61-90-119 km/h küszöbök
 🎨 TÉMA INTEGRÁCIÓ: ColorPalette wind színek használata
 🔧 KRITIKUS JAVÍTÁS: Magyar szélsebesség-kategóriák + SIMPLIFIED THEMEMANAGER
-✅ wind_gusts_max prioritás → windspeed_10m_max fallback rendszer
+✅ windgusts_10m_max prioritás → windspeed_10m_max fallback rendszer
 ✅ Magyar szélkategóriák: Erős szél (43), Viharos szél (61), Erős vihar (90), Orkán (119)
 ✅ Piros (#C43939) téma támogatás
-✅ Élethű széllökés megjelenítés VALÓDI API adatokkal
+✅ Élethi széllökés megjelenítés VALÓDI API adatokkal
 ✅ Professzionális kategorizálás magyar terminológiával
+🚨 KRITIKUS DEBUG: Explicit konzol üzenetek minden lépésnél
+🎯 VÉGSŐ JAVÍTÁS: has_valid_data() - ellenőrzi van-e valódi adat a None-ok helyett!
+🔧 KRITIKUS FIX v4.6: windgusts_10m_max API kulcsok javítása!
 """
 
 from typing import Optional, Dict, Any
@@ -29,37 +32,52 @@ from ..theme_manager import get_current_colors
 
 class WindChart(WeatherChart):
     """
-    🌪️ MAGYAR METEOROLÓGIAI SZABVÁNY: Széllökés grafikon widget - MAGYAR SZÉLKATEGÓRIÁK + SIMPLIFIED THEMEMANAGER.
+    🌪️ KRITIKUS DEBUG: MAGYAR METEOROLÓGIAI SZABVÁNY: Széllökés grafikon widget - MAGYAR SZÉLKATEGÓRIÁK + SIMPLIFIED THEMEMANAGER.
     🎨 TÉMA INTEGRÁCIÓ: ColorPalette wind színek használata
-    ✅ wind_gusts_max prioritás → windspeed_10m_max fallback rendszer
+    ✅ windgusts_10m_max prioritás → windspeed_10m_max fallback rendszer
     ✅ Magyar szélkategóriák: Erős szél (43), Viharos szél (61), Erős vihar (90), Orkán (119)
-    ✅ Élethű széllökés megjelenítés VALÓDI API adatokkal
+    ✅ Élethi széllökés megjelenítés VALÓDI API adatokkal
+    🚨 EXPLICIT DEBUG minden lépésnél
+    🎯 VÉGSŐ JAVÍTÁS: has_valid_data() - ellenőrzi van-e valódi adat!
+    🔧 KRITIKUS FIX v4.6: API kulcsok javítása!
     """
     
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(figsize=(12, 6), parent=parent)
         self.chart_title = "🌪️ Széllökések változása"  # 🌪️ WIND GUSTS CÍM
         self.y_label = "Széllökések (km/h)"  # 🌪️ WIND GUSTS LABEL
+        print("🌪️ DEBUG: WindChart.__init__() SIKERES!")
     
     def update_data(self, data: Dict[str, Any]) -> None:
         """
-        🔧 KRITIKUS JAVÍTÁS: Duplikáció-mentes szél chart frissítés + SIMPLIFIED THEMEMANAGER.
+        🚨 KRITIKUS DEBUG: Duplikáció-mentes szél chart frissítés + SIMPLIFIED THEMEMANAGER + EXPLICIT DEBUG.
         """
-        print("💨 DEBUG: WindChart.update_data() - MAGYAR SZABVÁNY + SIMPLIFIED THEMEMANAGER VERZIÓ")
+        print("🌪️ DEBUG: WindChart.update_data() - EXPLICIT DEBUG VERZIÓ STARTED!!!")
+        print(f"🌪️ DEBUG: Input data type: {type(data)}")
+        print(f"🌪️ DEBUG: Input data keys: {list(data.keys()) if isinstance(data, dict) else 'NOT DICT'}")
         
         try:
             if self._is_updating:
+                print("🌪️ DEBUG: WindChart already updating, skipping...")
                 return
             
+            print("🌪️ DEBUG: Setting _is_updating = True")
             self._is_updating = True
             
+            print("🌪️ DEBUG: Calling _extract_wind_data()...")
             df = self._extract_wind_data(data)
+            print(f"🌪️ DEBUG: _extract_wind_data() returned DataFrame with {len(df) if not df.empty else 0} rows")
+            
             if df.empty:
                 print("⚠️ DEBUG: Üres DataFrame, szél chart törlése")
                 self.clear_chart()
+                print("🌪️ DEBUG: WindChart.update_data() FINISHED - EMPTY DATA")
+                self._is_updating = False
                 return
             
+            print("🌪️ DEBUG: Setting self.current_data...")
             self.current_data = df
+            print(f"🌪️ DEBUG: self.current_data set successfully, type: {type(self.current_data)}")
             
             # === KRITIKUS: TELJES FIGURE TÖRLÉSE ===
             print("🧹 DEBUG: Wind Figure.clear() - DUPLIKÁCIÓ ELLEN")
@@ -67,67 +85,100 @@ class WindChart(WeatherChart):
             self.ax = self.figure.add_subplot(111)
             
             # 🎨 TÉMA ALKALMAZÁSA
+            print("🎨 DEBUG: Applying theme to WindChart...")
             self._apply_theme_to_chart()
             
+            print("📊 DEBUG: Calling _plot_wind()...")
             self._plot_wind(df)
             
+            print("🖼️ DEBUG: Calling draw()...")
             self.draw()
+            
+            print("🌪️ DEBUG: Setting _is_updating = False")
             self._is_updating = False
             
-            print("✅ DEBUG: WindChart frissítés kész - MAGYAR SZABVÁNY + THEMED")
+            print("✅ DEBUG: WindChart frissítés TELJESEN KÉSZ - MAGYAR SZABVÁNY + THEMED")
             
         except Exception as e:
             print(f"❌ DEBUG: Szél chart hiba: {e}")
+            import traceback
+            print(f"❌ DEBUG: WindChart traceback: {traceback.format_exc()}")
             self._is_updating = False
             self.clear_chart()
     
     def _extract_wind_data(self, data: Dict[str, Any]) -> pd.DataFrame:
         """
-        🌪️ KRITIKUS JAVÍTÁS: Széllökés adatok kinyerése - WIND GUSTS PRIORITÁS + FALLBACK.
+        🚨 KRITIKUS DEBUG: Széllökés adatok kinyerése - WIND GUSTS PRIORITÁS + FALLBACK + EXPLICIT DEBUG.
+        🎯 VÉGSŐ JAVÍTÁS: has_valid_data() segédfüggvény - ellenőrzi van-e valódi adat!
+        🔧 KRITIKUS FIX v4.6: windgusts_10m_max API kulcsok javítása!
         
         PRIORITÁS RENDSZER:
-        1. wind_gusts_max (óránkénti→napi max széllökések) ⭐ ELSŐDLEGES
+        1. windgusts_10m_max (órankénti→napi max széllökések) ⭐ ELSŐDLEGES
         2. windspeed_10m_max (napi max szélsebesség) ⭐ FALLBACK
         3. Hibaüzenet ha egyik sem elérhető
         """
-        daily_data = data.get("daily", {})
-        dates = daily_data.get("time", [])
+        print("🌪️ DEBUG: _extract_wind_data() STARTED!!!")
+        print(f"🌪️ DEBUG: data type: {type(data)}")
         
-        # 🌪️ WIND GUSTS PRIORITÁS: wind_gusts_max ELSŐDLEGESEN
-        wind_gusts_max = daily_data.get("wind_gusts_max", [])
+        daily_data = data.get("daily", {})
+        print(f"🌪️ DEBUG: daily_data type: {type(daily_data)}")
+        print(f"🌪️ DEBUG: daily_data keys: {list(daily_data.keys()) if isinstance(daily_data, dict) else 'NOT DICT'}")
+        
+        dates = daily_data.get("time", [])
+        print(f"🌪️ DEBUG: dates: {len(dates) if dates else 0} elems")
+        
+        # 🌪️ WIND GUSTS PRIORITÁS: windgusts_10m_max ELSŐDLEGESEN (JAVÍTOTT KULCS!)
+        windgusts_10m_max = daily_data.get("windgusts_10m_max", [])  # ✅ JAVÍTOTT: wind_gusts_max → windgusts_10m_max
         windspeed_10m_max = daily_data.get("windspeed_10m_max", [])  # Fallback
         
-        print(f"🌪️ DEBUG: WindChart data sources - wind_gusts_max: {len(wind_gusts_max) if wind_gusts_max else 0}, windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0}")
+        print(f"🌪️ DEBUG: windgusts_10m_max: {len(windgusts_10m_max) if windgusts_10m_max else 0} elems")
+        print(f"🌪️ DEBUG: windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0} elems")
+        
+        if windgusts_10m_max:
+            print(f"🌪️ DEBUG: windgusts_10m_max sample: {windgusts_10m_max[:3] if len(windgusts_10m_max) >= 3 else windgusts_10m_max}")
+        if windspeed_10m_max:
+            print(f"🌪️ DEBUG: windspeed_10m_max sample: {windspeed_10m_max[:3] if len(windspeed_10m_max) >= 3 else windspeed_10m_max}")
+        
+        print(f"🌪️ DEBUG: WindChart data sources - windgusts_10m_max: {len(windgusts_10m_max) if windgusts_10m_max else 0}, windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0}")
         
         # Elérhető adatok ellenőrzése
         if not dates:
             print("⚠️ DEBUG: Nincs dátum adat - WindChart nem jeleníthető meg")
             return pd.DataFrame()
         
+        # 🎯 OKOS SEGÉDFÜGGVÉNY - ellenőrzi van-e valódi adat
+        def has_valid_data(data_list):
+            """Ellenőrzi, hogy van-e valódi szám adat a listában (nem csak None-ok)"""
+            return any(x is not None and isinstance(x, (int, float)) for x in data_list)
+        
         # PRIORITÁS KIÉRTÉKELÉS
         windspeed_data = []
         data_source = ""
         
-        if wind_gusts_max and len(wind_gusts_max) == len(dates):
-            # 🌪️ ELSŐDLEGES: wind_gusts_max használata
-            windspeed_data = wind_gusts_max
-            data_source = "wind_gusts_max"
-            self.chart_title = "🌪️ Széllökések változása"  # Dinamikus cím
+        print("🌪️ DEBUG: Checking windgusts_10m_max priority...")
+        if windgusts_10m_max and len(windgusts_10m_max) == len(dates) and has_valid_data(windgusts_10m_max):
+            # 🌪️ ELSŐDLEGES: windgusts_10m_max, CSAK HA VAN BENNE ÉRVÉNYES ADAT
+            windspeed_data = windgusts_10m_max
+            data_source = "windgusts_10m_max"
+            self.chart_title = "🌪️ Széllökések változása"
             self.y_label = "Széllökések (km/h)"
             print(f"✅ DEBUG: WindChart using PRIMARY source: {data_source}")
-        elif windspeed_10m_max and len(windspeed_10m_max) == len(dates):
+        elif windspeed_10m_max and len(windspeed_10m_max) == len(dates) and has_valid_data(windspeed_10m_max):
             # ⚠️ FALLBACK: windspeed_10m_max használata
-            windspeed_data = windspeed_10m_max  
+            print("🌪️ DEBUG: windgusts_10m_max not suitable, checking fallback...")
+            windspeed_data = windspeed_10m_max
             data_source = "windspeed_10m_max"
-            self.chart_title = "💨 Szélsebesség változása (Fallback)"  # Jelzés a fallback-ről
+            self.chart_title = "💨 Szélsebesség változása (Fallback)"
             self.y_label = "Szélsebesség (km/h)"
             print(f"⚠️ DEBUG: WindChart using FALLBACK source: {data_source}")
         else:
             print(f"❌ DEBUG: Nincs használható szél adat - WindChart nem jeleníthető meg")
-            print(f"   - wind_gusts_max: {len(wind_gusts_max) if wind_gusts_max else 0} elem")
-            print(f"   - windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0} elem") 
+            print(f"   - windgusts_10m_max: {len(windgusts_10m_max) if windgusts_10m_max else 0} elem, has_valid_data: {has_valid_data(windgusts_10m_max) if windgusts_10m_max else False}")
+            print(f"   - windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0} elem, has_valid_data: {has_valid_data(windspeed_10m_max) if windspeed_10m_max else False}") 
             print(f"   - dates: {len(dates)} elem")
             return pd.DataFrame()
+        
+        print(f"🌪️ DEBUG: Creating DataFrame with {len(windspeed_data)} wind values and {len(dates)} dates...")
         
         # DataFrame létrehozása
         df = pd.DataFrame({
@@ -136,16 +187,23 @@ class WindChart(WeatherChart):
             '_data_source': data_source  # Debug info
         })
         
+        print(f"🌪️ DEBUG: DataFrame created, shape: {df.shape}")
+        
         # NaN értékek kezelése
+        print("🌪️ DEBUG: Dropping NaN values...")
+        df_before = len(df)
         df = df.dropna()
+        df_after = len(df)
+        print(f"🌪️ DEBUG: DataFrame after dropna: {df_before} -> {df_after} rows")
         
         if df.empty:
             print(f"❌ DEBUG: Üres DataFrame {data_source} adatok után - WindChart nem jeleníthető meg")
         else:
             max_wind = df['windspeed'].max()
             avg_wind = df['windspeed'].mean()
-            print(f"✅ DEBUG: WindChart DataFrame kész - {data_source}, max: {max_wind:.1f} km/h, avg: {avg_wind:.1f} km/h")
+            print(f"✅ DEBUG: WindChart DataFrame KÉSZ - {data_source}, max: {max_wind:.1f} km/h, avg: {avg_wind:.1f} km/h")
         
+        print("🌪️ DEBUG: _extract_wind_data() FINISHED!")
         return df
     
     def _plot_wind(self, df: pd.DataFrame) -> None:
@@ -180,7 +238,7 @@ class WindChart(WeatherChart):
         # === SZÉLLÖKÉS VONAL + TERÜLET DIAGRAM ===
         
         # Alapvonal és kitöltés
-        line_label = "Max széllökések" if data_source == "wind_gusts_max" else "Max szélsebesség (fallback)"
+        line_label = "Max széllökések" if data_source == "windgusts_10m_max" else "Max szélsebesség (fallback)"
         self.ax.plot(df['date'], df['windspeed'], color=wind_colors['moderate'], linewidth=2.5, alpha=0.9, label=line_label)
         self.ax.fill_between(df['date'], 0, df['windspeed'], alpha=0.3, color=wind_colors['light'])
         

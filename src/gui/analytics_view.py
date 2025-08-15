@@ -2,8 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Universal Weather Research Platform - Analytics View - KONSTANS HEATMAP VERZIÓ + MULTI-CITY RÉGIÓ INTEGRÁCIÓ
-🎯 FELHASZNÁLÓI IGÉNY: MINDEN TÉGLALAP KITÖLTVE - KONSTANS 365 TÉGLALAP + RÉGIÓ ELEMZÉS
+Universal Weather Research Platform - Analytics View Module (REFAKTORÁLT)
+Ez a modul a multi-city régió elemzések dashboardját valósítja meg.
+
+✅ REFAKTORÁLT MŰKÖDÉS:
+- A nézet most már nem indít saját lekérdezéseket.
+- A gombok egy központi `multi_city_query_requested` signalt bocsátanak ki.
+- A MainWindow kezeli a lekérdezést és az eredményt egy publikus slot-on
+  (`update_with_multi_city_result`) keresztül küldi vissza.
+- Ezzel a nézet teljesen szinkronban van a többi modullal (Térkép, ControlPanel).
 
 🔧 KRITIKUS JAVÍTÁSOK:
 ✅ Visszatérés a HEATMAP-ekhez (MINDEN TAB)
@@ -19,23 +26,8 @@ Universal Weather Research Platform - Analytics View - KONSTANS HEATMAP VERZIÓ 
 ✅ KOMPAKT KÁRTYÁS RENDSZER - 12px olvasható betűméret
 🚀 MULTI-CITY RÉGIÓ INTEGRÁCIÓ - Észak-Magyarország, Pest, stb. elemzések
 🔥 SIGNAL EMISSION JAVÍTÁS - multi_city_analysis_completed signal kibocsátás
-
-🎨 KONSTANS VIZUÁLIS FELBONTÁS:
-• **1 év** (365 nap) → 365 téglalap → 1 nap/téglalap
-• **5 év** (1825 nap) → 365 téglalap → 5 nap/téglalap  
-• **10 év** (3650 nap) → 365 téglalap → 10 nap/téglalap
-• **50 év** (18250 nap) → 365 téglalap → 50 nap/téglalap
-
-🌧️ CSAPADÉK: 0mm = FEHÉR szín (száraz nap)
-💨 SZÉL: 0km/h = FEHÉR szín (szélcsend) - BEAUFORT 13 fokozat
-🌪️ MAX SZÉLLÖKÉS: 0km/h = FEHÉR szín (szélcsend) - BEAUFORT 13 fokozat
-🌡️ HŐMÉRSÉKLET: RdYlBu_r colormap (működik)
-
-🚀 MULTI-CITY RÉGIÓ FUNKCIÓK:
-🌡️ "Legmelegebb ma Észak-Magyarországban"
-🌧️ "Legcsapadékosabb ma"  
-💨 "Legszelesebb ma"
-❄️ "Leghidegebb ma"
+🚨 STATISZTIKÁK JAVÍTÁS - _process_and_display_statistics() MEGHÍVÁS
+🌪️ VÉGSŐ JAVÍTÁS: WindChart/WindRoseChart DEDICATED KOMPONENSEK HOZZÁADÁSA
 
 Fájl helye: src/gui/analytics_view.py
 """
@@ -59,8 +51,10 @@ from PySide6.QtGui import QFont
 # Téma rendszer
 from .theme_manager import get_theme_manager, register_widget_for_theming, get_current_colors
 
-# Chart imports - JAVÍTOTT: VISSZA A HEATMAP-EKHEZ
+# Chart imports - JAVÍTOTT: VISSZA A HEATMAP-EKHEZ + DEDICATED WIND CHARTOK
 from .charts.heatmap_chart import HeatmapCalendarChart
+from .charts.wind_chart import WindChart
+from .charts.wind_rose_chart import WindRoseChart
 
 # 🚀 MULTI-CITY ENGINE IMPORT
 try:
@@ -168,51 +162,6 @@ class MeteorologicalColorMaps:
         norm = mcolors.BoundaryNorm(beaufort_levels, len(beaufort_colors))
         
         return cmap, norm
-
-
-# 🚀 MULTI-CITY WORKER THREAD (ASYNC ELEMZÉS)
-class MultiCityWorker(QThread):
-    """🚀 Multi-City elemzés worker thread - UI blokkolás nélkül"""
-    
-    # Signalok
-    analysis_completed = Signal(object)  # AnalyticsResult
-    analysis_failed = Signal(str)        # Error message
-    progress_updated = Signal(str)       # Progress message
-    
-    def __init__(self, query_type: str, region: str, date: str, limit: int = 10):
-        super().__init__()
-        self.query_type = query_type
-        self.region = region
-        self.date = date
-        self.limit = limit
-        self.engine = None
-    
-    def run(self):
-        """Multi-City elemzés futtatása"""
-        try:
-            # Progress signal
-            self.progress_updated.emit(f"🚀 Multi-City Engine inicializálás...")
-            
-            # Multi-City Engine létrehozása
-            self.engine = MultiCityEngine()
-            
-            self.progress_updated.emit(f"🌍 Régió elemzés: {self.region}")
-            
-            # Elemzés futtatása
-            result = self.engine.analyze_multi_city(
-                query_type=self.query_type,
-                region=self.region,
-                date=self.date,
-                limit=self.limit
-            )
-            
-            # Eredmény signal
-            self.analysis_completed.emit(result)
-            
-        except Exception as e:
-            error_msg = f"Multi-City elemzési hiba: {str(e)}"
-            logger.error(error_msg, exc_info=True)
-            self.analysis_failed.emit(error_msg)
 
 
 # 🔧 NONE-SAFE HELPER FÜGGVÉNYEK
@@ -387,254 +336,6 @@ class RecordSummaryCard(QWidget):
         if 'windiest' in records:
             rec = records['windiest']
             self.windiest_card.update_record(rec.get('value', '-'), rec.get('date', '-'))
-
-
-# 🚀 MULTI-CITY RÉGIÓ ELEMZÉS PANEL
-class MultiCityRegionPanel(QWidget):
-    """🌍 Multi-City régió elemzés panel - ANALYTIC VIEW INTEGRÁCIÓHOZ"""
-    
-    # Signalok
-    multi_city_analysis_started = Signal()
-    multi_city_analysis_completed = Signal(object)  # AnalyticsResult objektum
-    multi_city_analysis_failed = Signal(str)
-    
-    def __init__(self):
-        super().__init__()
-        
-        # Multi-City availability check
-        self.multi_city_available = MULTI_CITY_AVAILABLE
-        
-        # Worker thread
-        self.worker = None
-        
-        # UI components
-        self.region_combo = None
-        self.analysis_buttons = []
-        self.progress_bar = None
-        self.status_label = None
-        
-        self._setup_ui()
-        logger.info("🌍 Multi-City Régió Panel inicializálva")
-    
-    def _setup_ui(self):
-        """Multi-City régió panel UI"""
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(6, 6, 6, 6)
-        layout.setSpacing(4)
-        
-        # Availability check
-        if not self.multi_city_available:
-            self._create_unavailable_ui(layout)
-            return
-        
-        # Header
-        header_label = QLabel("🌍 RÉGIÓ ELEMZÉS")
-        header_font = QFont()
-        header_font.setPointSize(11)
-        header_font.setBold(True)
-        header_label.setFont(header_font)
-        header_label.setAlignment(Qt.AlignCenter)
-        header_label.setStyleSheet("color: #C43939; margin-bottom: 5px;")
-        layout.addWidget(header_label)
-        
-        # Régió választó
-        region_layout = QVBoxLayout()
-        region_label = QLabel("📍 Válassz régiót:")
-        region_label.setStyleSheet("font-weight: bold; font-size: 10px;")
-        region_layout.addWidget(region_label)
-        
-        self.region_combo = QComboBox()
-        self.region_combo.addItems([
-            "Észak-Magyarország",
-            "Közép-Magyarország", 
-            "Észak-Alföld",
-            "Dél-Alföld",
-            "Dél-Dunántúl",
-            "Nyugat-Dunántúl",
-            "Közép-Dunántúl",
-            "Budapest",
-            "Pest",
-            "Borsod-Abaúj-Zemplén"
-        ])
-        self.region_combo.setStyleSheet("""
-            QComboBox {
-                padding: 3px;
-                border: 1px solid #ccc;
-                border-radius: 3px;
-                font-size: 9px;
-            }
-        """)
-        region_layout.addWidget(self.region_combo)
-        layout.addLayout(region_layout)
-        
-        # Elemzés gombok
-        buttons_layout = QVBoxLayout()
-        buttons_layout.setSpacing(3)
-        
-        analysis_configs = [
-            ("🌡️", "Legmelegebb ma", "hottest_today", "#FF6B6B"),
-            ("❄️", "Leghidegebb ma", "coldest_today", "#4DABF7"), 
-            ("🌧️", "Legcsapadékosabb ma", "wettest_today", "#69DB7C"),
-            ("💨", "Legszelesebb ma", "windiest_today", "#FFD93D")
-        ]
-        
-        for icon, title, query_type, color in analysis_configs:
-            btn = QPushButton(f"{icon} {title}")
-            btn.setProperty("query_type", query_type)
-            btn.clicked.connect(self._on_analysis_button_clicked)
-            btn.setStyleSheet(f"""
-                QPushButton {{
-                    background-color: {color};
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    padding: 6px;
-                    font-weight: bold;
-                    font-size: 9px;
-                }}
-                QPushButton:hover {{
-                    background-color: {self._darken_color(color)};
-                }}
-                QPushButton:pressed {{
-                    background-color: {self._darken_color(color, 0.3)};
-                }}
-                QPushButton:disabled {{
-                    background-color: #ccc;
-                    color: #666;
-                }}
-            """)
-            buttons_layout.addWidget(btn)
-            self.analysis_buttons.append(btn)
-        
-        layout.addLayout(buttons_layout)
-        
-        # Progress bar
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setVisible(False)
-        self.progress_bar.setStyleSheet("""
-            QProgressBar {
-                border: 1px solid #ccc;
-                border-radius: 3px;
-                text-align: center;
-                font-size: 8px;
-            }
-            QProgressBar::chunk {
-                background-color: #C43939;
-                border-radius: 2px;
-            }
-        """)
-        layout.addWidget(self.progress_bar)
-        
-        # Status label
-        self.status_label = QLabel("Válassz régiót és elemzést")
-        self.status_label.setStyleSheet("color: gray; font-size: 8px; margin-top: 3px;")
-        self.status_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.status_label)
-        
-        # Panel styling
-        self.setStyleSheet("""
-            MultiCityRegionPanel {
-                background-color: #f8f9fa;
-                border: 2px solid #C43939;
-                border-radius: 6px;
-                margin: 2px;
-            }
-        """)
-    
-    def _create_unavailable_ui(self, layout):
-        """Multi-City nem elérhető UI"""
-        unavailable_label = QLabel("❌ Multi-City Engine\nnem elérhető")
-        unavailable_label.setAlignment(Qt.AlignCenter)
-        unavailable_label.setStyleSheet("""
-            QLabel {
-                color: #666;
-                font-style: italic;
-                padding: 20px;
-                font-size: 10px;
-                border: 1px dashed #ccc;
-                border-radius: 4px;
-                background-color: #f5f5f5;
-            }
-        """)
-        layout.addWidget(unavailable_label)
-    
-    def _darken_color(self, color: str, factor: float = 0.15) -> str:
-        """Szín sötétítése"""
-        try:
-            # Hex to RGB
-            color = color.lstrip('#')
-            rgb = tuple(int(color[i:i+2], 16) for i in (0, 2, 4))
-            # Darken
-            darkened = tuple(max(0, int(c * (1 - factor))) for c in rgb)
-            # RGB to hex
-            return f"#{darkened[0]:02x}{darkened[1]:02x}{darkened[2]:02x}"
-        except:
-            return color
-    
-    def _on_analysis_button_clicked(self):
-        """Elemzés gomb kattintás kezelő"""
-        if not self.multi_city_available:
-            return
-        
-        sender = self.sender()
-        query_type = sender.property("query_type")
-        region = self.region_combo.currentText()
-        date = datetime.now().strftime("%Y-%m-%d")
-        
-        logger.info(f"🚀 Multi-City elemzés indítása: {query_type} - {region}")
-        
-        # UI frissítése
-        self._set_analysis_running(True)
-        self.status_label.setText(f"🚀 Elemzés: {region}")
-        
-        # Worker thread indítása
-        self.worker = MultiCityWorker(query_type, region, date, limit=10)
-        self.worker.analysis_completed.connect(self._on_analysis_completed)
-        self.worker.analysis_failed.connect(self._on_analysis_failed)
-        self.worker.progress_updated.connect(self._on_progress_updated)
-        self.worker.start()
-        
-        # Signal küldése
-        self.multi_city_analysis_started.emit()
-    
-    def _on_analysis_completed(self, result):
-        """Elemzés befejezve"""
-        self._set_analysis_running(False)
-        self.status_label.setText(f"✅ {len(result.city_results)} város elemezve")
-        
-        logger.info(f"✅ Multi-City elemzés sikeres: {len(result.city_results)} város")
-        
-        # Signal küldése
-        self.multi_city_analysis_completed.emit(result)
-    
-    def _on_analysis_failed(self, error_msg):
-        """Elemzés hiba"""
-        self._set_analysis_running(False)
-        self.status_label.setText("❌ Elemzési hiba")
-        
-        logger.error(f"❌ Multi-City elemzés hiba: {error_msg}")
-        
-        # Error dialog
-        QMessageBox.warning(self, "Multi-City Elemzési Hiba", error_msg)
-        
-        # Signal küldése
-        self.multi_city_analysis_failed.emit(error_msg)
-    
-    def _on_progress_updated(self, message):
-        """Progress frissítés"""
-        self.status_label.setText(message)
-    
-    def _set_analysis_running(self, running: bool):
-        """UI állapot beállítása"""
-        for btn in self.analysis_buttons:
-            btn.setEnabled(not running)
-        
-        self.progress_bar.setVisible(running)
-        if running:
-            self.progress_bar.setRange(0, 0)  # Indeterminate progress
-        
-        if self.region_combo:
-            self.region_combo.setEnabled(not running)
 
 
 # 🌡️ KONSTANS HEATMAP TAB WIDGET-EK
@@ -848,7 +549,7 @@ class WindGustTabWidget(QWidget):
 
 
 class ClimateTabWidget(QTabWidget):
-    """🌡️ Klímakutató tab widget - 4 KONSTANS HEATMAP TAB - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ"""
+    """🌡️ Klímakutató tab widget - 4 KONSTANS HEATMAP TAB + 2 DEDICATED WIND CHART - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ"""
     
     def __init__(self):
         super().__init__()
@@ -859,24 +560,32 @@ class ClimateTabWidget(QTabWidget):
         self.wind_tab = WindTabWidget()             # 💨 Szél KONSTANS HEATMAP (BEAUFORT, átlagos max)
         self.windgust_tab = WindGustTabWidget()     # 🌪️ Max Széllökés KONSTANS HEATMAP (BEAUFORT, gusts)
         
+        # 🌪️ DEDICATED WIND CHARTOK HOZZÁADÁSA
+        self.dedicated_wind_chart = WindChart()     # 🌪️ WindChart dedicated
+        self.dedicated_windrose_chart = WindRoseChart()  # 🌹 WindRoseChart dedicated
+        
         self._setup_tabs()
         
         # Lazy loading tracking
         self.data_cache = None
-        self.tabs_initialized = {'temp': False, 'precip': False, 'wind': False, 'windgust': False}
+        self.tabs_initialized = {'temp': False, 'precip': False, 'wind': False, 'windgust': False, 'wind_chart': False, 'windrose_chart': False}
         
         # Tab változás figyelése
         self.currentChanged.connect(self._on_tab_changed)
         
-        logger.info("ClimateTabWidget inicializálva - 4 KONSTANS HEATMAP TAB (365 téglalap, BEAUFORT szél + max széllökés)")
+        logger.info("ClimateTabWidget inicializálva - 4 KONSTANS HEATMAP TAB + 2 DEDICATED WIND CHART (365 téglalap, BEAUFORT szél + max széllökés)")
     
     def _setup_tabs(self):
-        """Tab-ok beállítása - KONSTANS HEATMAP-EK + MAX SZÉLLÖKÉS"""
+        """Tab-ok beállítása - KONSTANS HEATMAP-EK + MAX SZÉLLÖKÉS + DEDICATED WIND CHARTOK"""
         # Tab-ok hozzáadása
         self.addTab(self.temp_tab, "🌡️ Hőmérséklet")         # KONSTANS HEATMAP
         self.addTab(self.precip_tab, "🌧️ Csapadék")           # KONSTANS HEATMAP (0mm=fehér)
         self.addTab(self.wind_tab, "💨 Szél")                 # KONSTANS HEATMAP (BEAUFORT, átlagos max)
         self.addTab(self.windgust_tab, "🌪️ Max Széllökés")   # KONSTANS HEATMAP (BEAUFORT, max gusts)
+        
+        # 🌪️ DEDICATED WIND CHARTOK HOZZÁADÁSA
+        self.addTab(self.dedicated_wind_chart, "🌪️ Széllökések")  # DEDICATED WindChart
+        self.addTab(self.dedicated_windrose_chart, "🌹 Széllökés Rózsa")  # DEDICATED WindRoseChart
         
         # Tab styling
         self.setStyleSheet("""
@@ -905,7 +614,7 @@ class ClimateTabWidget(QTabWidget):
         """)
     
     def update_data(self, data: Dict[str, Any]):
-        """🎯 KONSTANS HEATMAP Tab widget adatok frissítése - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ"""
+        """🎯 KONSTANS HEATMAP + DEDICATED WIND CHARTOK Tab widget adatok frissítése - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ"""
         try:
             # Adatok cache-elése
             self.data_cache = data
@@ -913,6 +622,21 @@ class ClimateTabWidget(QTabWidget):
             # Aktív tab frissítése
             current_index = self.currentIndex()
             self._update_current_tab(current_index)
+            
+            # 🌪️ KRITIKUS JAVÍTÁS: DEDICATED WIND CHARTOK MINDIG FRISSÍTÉSE
+            print("🌪️ DEBUG [ClimateTabWidget]: DEDICATED WIND CHARTOK frissítése...")
+            
+            try:
+                self.dedicated_wind_chart.update_data(data)
+                print("✅ DEBUG [ClimateTabWidget]: dedicated_wind_chart frissítve!")
+            except Exception as e:
+                print(f"❌ ERROR [ClimateTabWidget]: dedicated_wind_chart hiba: {e}")
+            
+            try:
+                self.dedicated_windrose_chart.update_data(data)
+                print("✅ DEBUG [ClimateTabWidget]: dedicated_windrose_chart frissítve!")
+            except Exception as e:
+                print(f"❌ ERROR [ClimateTabWidget]: dedicated_windrose_chart hiba: {e}")
             
             # Teljes napok számának logolása
             daily_data = data.get('daily', {})
@@ -930,7 +654,7 @@ class ClimateTabWidget(QTabWidget):
         self._update_current_tab(index)
     
     def _update_current_tab(self, index: int):
-        """Aktív tab frissítése - KONSTANS HEATMAP VERZIÓK + MAX SZÉLLÖKÉS"""
+        """Aktív tab frissítése - KONSTANS HEATMAP VERZIÓK + MAX SZÉLLÖKÉS + DEDICATED WIND CHARTOK"""
         if not self.data_cache:
             return
         
@@ -947,6 +671,14 @@ class ClimateTabWidget(QTabWidget):
             elif index == 3:  # Max Széllökés tab (konstans heatmap, BEAUFORT, max gusts)
                 self.windgust_tab.update_data(self.data_cache)
                 self.tabs_initialized['windgust'] = True
+            elif index == 4:  # 🌪️ DEDICATED WindChart tab
+                self.dedicated_wind_chart.update_data(self.data_cache)
+                self.tabs_initialized['wind_chart'] = True
+                print("✅ DEBUG [_update_current_tab]: DEDICATED WindChart tab aktívált és frissítve!")
+            elif index == 5:  # 🌹 DEDICATED WindRoseChart tab
+                self.dedicated_windrose_chart.update_data(self.data_cache)
+                self.tabs_initialized['windrose_chart'] = True
+                print("✅ DEBUG [_update_current_tab]: DEDICATED WindRoseChart tab aktívált és frissítve!")
                 
         except Exception as e:
             logger.error(f"Tab {index} frissítési hiba: {e}")
@@ -954,18 +686,30 @@ class ClimateTabWidget(QTabWidget):
 
 class AnalyticsView(QWidget):
     """
-    🎯 KONSTANS HEATMAP Analytics View - MINDEN TÉGLALAP KITÖLTVE - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ + MULTI-CITY RÉGIÓ INTEGRÁCIÓ
+    🎯 REFAKTORÁLT KONSTANS HEATMAP Analytics View - KÖZPONTI SIGNAL RENDSZERREL + DEDICATED WIND CHARTOK
+    
+    ✅ REFAKTORÁLT MŰKÖDÉS:
+    - A nézet most már nem indít saját lekérdezéseket.
+    - A gombok egy központi `multi_city_query_requested` signalt bocsátanak ki.
+    - A MainWindow kezeli a lekérdezést és az eredményt egy publikus slot-on
+      (`update_with_multi_city_result`) keresztül küldi vissza.
+    - Ezzel a nézet teljesen szinkronban van a többi modullal (Térkép, ControlPanel).
     
     FELELŐSSÉG: 
     - 🌡️ Hőmérséklet tab: KONSTANS HEATMAP (RdYlBu_r, 365 téglalap, rács vonalak)
     - 🌧️ Csapadék tab: KONSTANS HEATMAP (meteorológiai, 0mm=fehér, 365 téglalap, rács vonalak)
     - 💨 Szél tab: KONSTANS HEATMAP (BEAUFORT 13 fokozat, átlagos max szél, 365 téglalap, rács vonalak)
     - 🌪️ Max Széllökés tab: KONSTANS HEATMAP (BEAUFORT 13 fokozat, max gusts, 365 téglalap, rács vonalak)
+    - 🌪️ Széllökések tab: DEDICATED WindChart professzionális szél grafikonokkal
+    - 🌹 Széllökés Rózsa tab: DEDICATED WindRoseChart polár rózsadiagrammal
     - 🏆 5 rekord kategória (napi szinten) kompakt megjelenítéssel
     - 🔧 KONSTANS VIZUÁLIS FELBONTÁS - függetlenül az időszaktól
     - 🎯 INTELLIGENS TENGELYEK - időszak alapú címkék
     - 📊 KOMPAKT KÁRTYÁS STATISZTIKÁK - 12px olvasható betűméret
     - 🚀 MULTI-CITY RÉGIÓ ELEMZÉS - Észak-Magyarország, Pest, stb. elemzések
+    - 🔥 SIGNAL EMISSION JAVÍTÁS - multi_city_query_requested signal kibocsátás MainWindow felé
+    - 🚨 STATISZTIKÁK JAVÍTÁS - _process_and_display_statistics() MEGHÍVÁS BIZTOSÍTVA
+    - 🌪️ VÉGSŐ JAVÍTÁS: DEDICATED WindChart és WindRoseChart komponensek integrálása
     """
     
     # Signalok
@@ -973,8 +717,8 @@ class AnalyticsView(QWidget):
     analysis_completed = Signal()
     error_occurred = Signal(str)
     
-    # 🚀 MULTI-CITY SIGNALOK
-    multi_city_analysis_completed = Signal(object)  # AnalyticsResult objektum → Térkép
+    # 🚀 ÚJ: Signal a lekérdezés indításához a MainWindow felé
+    multi_city_query_requested = Signal(str, str)  # query_type, region_name
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -993,17 +737,18 @@ class AnalyticsView(QWidget):
         self.climate_tabs = None
         self.status_label = None
         
-        # 🚀 MULTI-CITY KOMPONENSEK
-        self.multi_city_panel = None
+        # 🚀 MULTI-CITY KOMPONENSEK (refaktorált)
+        self.region_combo = None
+        self.analysis_buttons = []
         
         # UI építése
         self._setup_ui()
         self._setup_theme()
         
-        logger.info("🗓️ AnalyticsView KONSTANS HEATMAP BEAUFORT + MAX SZÉLLÖKÉS + MULTI-CITY RÉGIÓ VERZIÓ betöltve - 365 téglalap/tab, 4 tab + régió elemzés")
+        logger.info("🗂️ AnalyticsView REFAKTORÁLT KONSTANS HEATMAP BEAUFORT + MAX SZÉLLÖKÉS + MULTI-CITY RÉGIÓ + DEDICATED WIND CHARTOK VERZIÓ betöltve - 6 tab + régió elemzés + STATISZTIKÁK JAVÍTÁS")
     
     def _setup_ui(self) -> None:
-        """UI felépítése - konstans heatmap dashboard + multi-city"""
+        """UI felépítése - konstans heatmap dashboard + refaktorált multi-city + dedicated wind chartok"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
         layout.setSpacing(4)
@@ -1019,11 +764,11 @@ class AnalyticsView(QWidget):
         # Fő tartalom splitter
         content_splitter = QSplitter(Qt.Horizontal)
         
-        # Bal oldal: statisztikák + multi-city (kompakt)
+        # Bal oldal: statisztikák + refaktorált multi-city (kompakt)
         stats_widget = self._create_statistics_panel()
         content_splitter.addWidget(stats_widget)
         
-        # Jobb oldal: Tab-os klímakutató dashboard
+        # Jobb oldal: Tab-os klímakutató dashboard + DEDICATED WIND CHARTOK
         tab_widget = self._create_tab_dashboard()
         content_splitter.addWidget(tab_widget)
         
@@ -1041,7 +786,7 @@ class AnalyticsView(QWidget):
         layout = QHBoxLayout()
         
         # Cím
-        title_label = QLabel("🎯 Konstans Heatmap Klímakutató Dashboard + Régió Elemzés")
+        title_label = QLabel("🎯 Konstans Heatmap Klímakutató Dashboard + Régió Elemzés + DEDICATED Wind Chartok")
         title_font = QFont()
         title_font.setPointSize(14)
         title_font.setBold(True)
@@ -1051,7 +796,7 @@ class AnalyticsView(QWidget):
         layout.addStretch()
         
         # Verzió info
-        version_label = QLabel("v13.0 - Multi-City Régió Integráció")
+        version_label = QLabel("v14.0 - DEDICATED WIND CHARTOK")
         version_label.setStyleSheet("color: gray; font-size: 8px;")
         layout.addWidget(version_label)
         
@@ -1078,17 +823,14 @@ class AnalyticsView(QWidget):
         return group
     
     def _create_statistics_panel(self) -> QWidget:
-        """Statisztikák panel + Multi-City - KOMPAKT KÁRTYÁS RENDSZER"""
+        """Statisztikák panel + Refaktorált Multi-City - KOMPAKT KÁRTYÁS RENDSZER"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(3, 3, 3, 3)
         
-        # 🚀 MULTI-CITY RÉGIÓ ELEMZÉS PANEL
-        if MULTI_CITY_AVAILABLE:
-            self.multi_city_panel = MultiCityRegionPanel()
-            self.multi_city_panel.multi_city_analysis_completed.connect(self._on_multi_city_completed)
-            self.multi_city_panel.multi_city_analysis_failed.connect(self._on_multi_city_failed)
-            layout.addWidget(self.multi_city_panel)
+        # 🚀 REFAKTORÁLT MULTI-CITY RÉGIÓ ELEMZÉS PANEL
+        multi_city_group = self._create_refactored_multi_city_panel()
+        layout.addWidget(multi_city_group)
         
         # Statisztikák csoport
         stats_group = QGroupBox("📈 Statisztikák")
@@ -1117,8 +859,180 @@ class AnalyticsView(QWidget):
         
         return widget
     
+    def _create_refactored_multi_city_panel(self) -> QGroupBox:
+        """🚀 REFAKTORÁLT Multi-City régió elemzés panel - SIGNAL EMISSION"""
+        group = QGroupBox("🌍 RÉGIÓ ELEMZÉS")
+        layout = QVBoxLayout(group)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
+        
+        # Régió választó
+        region_layout = QVBoxLayout()
+        region_label = QLabel("📍 Válassz régiót:")
+        region_label.setStyleSheet("font-weight: bold; font-size: 10px;")
+        region_layout.addWidget(region_label)
+        
+        self.region_combo = QComboBox()
+        self.region_combo.addItems([
+            "Észak-Magyarország",
+            "Észak-Alföld", 
+            "Dél-Alföld",
+            "Közép-Magyarország", 
+            "Közép-Dunántúl", 
+            "Nyugat-Dunántúl",
+            "Dél-Dunántúl"
+        ])
+        self.region_combo.setStyleSheet("""
+            QComboBox {
+                padding: 3px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                font-size: 9px;
+            }
+        """)
+        region_layout.addWidget(self.region_combo)
+        layout.addLayout(region_layout)
+        
+        # Elemzés gombok
+        buttons_layout = QVBoxLayout()
+        buttons_layout.setSpacing(3)
+        
+        # 🔥 Legmelegebb ma
+        self.hottest_button = QPushButton("🔥 Legmelegebb ma")
+        self.hottest_button.setProperty("query_type", "hottest_today")
+        self.hottest_button.clicked.connect(self._emit_query_request)
+        self.hottest_button.setStyleSheet("""
+            QPushButton {
+                background-color: #FF6B6B;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px;
+                font-weight: bold;
+                font-size: 9px;
+            }
+            QPushButton:hover {
+                background-color: #E55555;
+            }
+            QPushButton:pressed {
+                background-color: #CC4444;
+            }
+        """)
+        buttons_layout.addWidget(self.hottest_button)
+        self.analysis_buttons.append(self.hottest_button)
+        
+        # ❄️ Leghidegebb ma
+        self.coldest_button = QPushButton("❄️ Leghidegebb ma")
+        self.coldest_button.setProperty("query_type", "coldest_today")
+        self.coldest_button.clicked.connect(self._emit_query_request)
+        self.coldest_button.setStyleSheet("""
+            QPushButton {
+                background-color: #4DABF7;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px;
+                font-weight: bold;
+                font-size: 9px;
+            }
+            QPushButton:hover {
+                background-color: #339FE6;
+            }
+            QPushButton:pressed {
+                background-color: #2288CC;
+            }
+        """)
+        buttons_layout.addWidget(self.coldest_button)
+        self.analysis_buttons.append(self.coldest_button)
+        
+        # 🌧️ Legcsapadékosabb ma
+        self.wettest_button = QPushButton("🌧️ Legcsapadékosabb ma")
+        self.wettest_button.setProperty("query_type", "wettest_today")
+        self.wettest_button.clicked.connect(self._emit_query_request)
+        self.wettest_button.setStyleSheet("""
+            QPushButton {
+                background-color: #69DB7C;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px;
+                font-weight: bold;
+                font-size: 9px;
+            }
+            QPushButton:hover {
+                background-color: #51CF66;
+            }
+            QPushButton:pressed {
+                background-color: #40C057;
+            }
+        """)
+        buttons_layout.addWidget(self.wettest_button)
+        self.analysis_buttons.append(self.wettest_button)
+        
+        # 💨 Legszelesebb ma
+        self.windiest_button = QPushButton("💨 Legszelesebb ma")
+        self.windiest_button.setProperty("query_type", "windiest_today")
+        self.windiest_button.clicked.connect(self._emit_query_request)
+        self.windiest_button.setStyleSheet("""
+            QPushButton {
+                background-color: #FFD93D;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px;
+                font-weight: bold;
+                font-size: 9px;
+            }
+            QPushButton:hover {
+                background-color: #FCC419;
+            }
+            QPushButton:pressed {
+                background-color: #FAB005;
+            }
+        """)
+        buttons_layout.addWidget(self.windiest_button)
+        self.analysis_buttons.append(self.windiest_button)
+        
+        layout.addLayout(buttons_layout)
+        
+        # Panel styling
+        group.setStyleSheet("""
+            QGroupBox {
+                background-color: #f8f9fa;
+                border: 2px solid #C43939;
+                border-radius: 6px;
+                margin: 2px;
+                font-weight: bold;
+                font-size: 11px;
+                color: #C43939;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 6px;
+                padding: 0 3px 0 3px;
+            }
+        """)
+        
+        return group
+    
+    def _emit_query_request(self):
+        """🚀 KRITIKUS: Elküldi a lekérdezési kérést a MainWindow felé - REFAKTORÁLT SIGNAL EMISSION"""
+        sender = self.sender()
+        query_type = sender.property("query_type")
+        region_name = self.region_combo.currentText()
+        
+        print(f"🚀 ANALYTICS_VIEW: Signal 'multi_city_query_requested' emitted with: {query_type}, {region_name}")
+        
+        # ✅ ÚJ: Signal kibocsátása a MainWindow felé
+        self.multi_city_query_requested.emit(query_type, region_name)
+        
+        # UI visszajelzés
+        self._update_status(f"🚀 Multi-City kérés elküldve: {region_name} ({query_type})")
+        
+        logger.info(f"🚀 Multi-City query request emitted: {query_type} for {region_name}")
+    
     def _create_tab_dashboard(self) -> QWidget:
-        """Tab-os klímakutató dashboard"""
+        """Tab-os klímakutató dashboard + DEDICATED WIND CHARTOK"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(4, 4, 4, 4)
@@ -1128,7 +1042,7 @@ class AnalyticsView(QWidget):
         self.record_summary = RecordSummaryCard()
         layout.addWidget(self.record_summary)
         
-        # Climate tab widget - KONSTANS HEATMAP BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ
+        # Climate tab widget - KONSTANS HEATMAP BEAUFORT + MAX SZÉLLÖKÉS + DEDICATED WIND CHARTOK VERZIÓ
         self.climate_tabs = ClimateTabWidget()
         layout.addWidget(self.climate_tabs, 1)  # Expandálható
         
@@ -1169,31 +1083,34 @@ class AnalyticsView(QWidget):
         self._apply_current_theme()
         logger.debug(f"Konstans heatmap dashboard téma frissítve: {theme_name}")
     
-    # === 🚀 MULTI-CITY EVENT HANDLERS ===
+    # === ✅ ÚJ PUBLIKUS SLOT: Eredmények fogadása a MainWindow-tól ===
     
-    def _on_multi_city_completed(self, analytics_result):
-        """🚀 Multi-City elemzés befejezve - TÉRKÉP OVERLAY AKTIVÁLÁS - SIGNAL EMISSION JAVÍTÁS"""
+    def update_with_multi_city_result(self, result: 'AnalyticsResult'):
+        """
+        ✅ ÚJ: Frissíti a nézetet a MainWindow-tól kapott elemzési eredménnyel.
+        
+        Args:
+            result: AnalyticsResult objektum a Multi-City Engine-ből
+        """
+        print(f"✅ ANALYTICS_VIEW: Eredmény fogadva a MainWindow-tól: {len(result.city_results) if result and result.city_results else 0} város.")
+        
         try:
-            logger.info(f"🚀 Multi-City elemzés sikeres: {len(analytics_result.city_results)} város")
+            if not result or not result.city_results:
+                self._update_status("❌ Nincs Multi-City eredmény")
+                return
             
-            # 🔥 KRITIKUS JAVÍTÁS: SIGNAL EMISSION HOZZÁADÁSA
-            logger.info("🔥 DEBUG: Analytics result received - emitting multi_city_analysis_completed signal")
-            self.multi_city_analysis_completed.emit(analytics_result)
-            logger.info("✅ DEBUG: multi_city_analysis_completed signal emitted successfully")
+            # Fake single-city data létrehozása a heatmap-ekhez (a meglévő logika)
+            self._create_fake_single_city_data_from_multi_city(result)
             
-            # UI frissítés - fake single-city data létrehozása a heatmap-ekhez
-            self._create_fake_single_city_data_from_multi_city(analytics_result)
+            # Status frissítése
+            self._update_status(f"✅ Multi-City eredmény feldolgozva: {len(result.city_results)} város")
             
-            self._update_status(f"✅ Multi-City: {len(analytics_result.city_results)} város → Térkép overlay aktív")
+            logger.info(f"✅ Multi-City result processed in AnalyticsView: {len(result.city_results)} cities")
             
         except Exception as e:
-            logger.error(f"❌ Multi-City completed handler hiba: {e}")
-    
-    def _on_multi_city_failed(self, error_msg):
-        """🚀 Multi-City elemzés hiba"""
-        logger.error(f"❌ Multi-City elemzés hiba: {error_msg}")
-        self._update_status(f"❌ Multi-City hiba: {error_msg}")
-        self.error_occurred.emit(error_msg)
+            logger.error(f"❌ Multi-City result processing error: {e}")
+            self._update_status(f"❌ Multi-City eredmény feldolgozási hiba: {e}")
+            self.error_occurred.emit(f"Multi-City eredmény hiba: {e}")
     
     def _create_fake_single_city_data_from_multi_city(self, analytics_result):
         """🎯 Fake single-city data létrehozása Multi-City eredményekből a heatmap megjelenítéshez"""
@@ -1330,13 +1247,15 @@ class AnalyticsView(QWidget):
     
     def update_data(self, data: Dict[str, Any]) -> None:
         """
-        🎯 KONSTANS HEATMAP adatok frissítése - 365 TÉGLALAP - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ
+        🎯 KONSTANS HEATMAP + DEDICATED WIND CHARTOK adatok frissítése - 6 TAB - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ
+        🚨 STATISZTIKÁK JAVÍTÁS - _process_and_display_statistics() MEGHÍVÁS BIZTOSÍTVA
+        🌪️ VÉGSŐ JAVÍTÁS: DEDICATED WindChart és WindRoseChart frissítése
         
         Args:
             data: Időjárási adatok dictionary
         """
         try:
-            logger.info("🗓️ Konstans heatmap dashboard adatok frissítése - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ")
+            logger.info("🗂️ Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok frissítése - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ")
             
             # Adatok tárolása
             self.current_data = data
@@ -1354,31 +1273,57 @@ class AnalyticsView(QWidget):
             logger.info(f"  💨 Szél: BEAUFORT 13 fokozat (átlagos max)")
             logger.info(f"  🌪️ Max Széllökés: BEAUFORT 13 fokozat (max gusts)")
             
-            # Bal oldali statisztikák frissítése - KOMPAKT KÁRTYÁS RENDSZER
+            # 🚨 KRITIKUS JAVÍTÁS: Bal oldali statisztikák frissítése - KOMPAKT KÁRTYÁS RENDSZER
+            logger.info("🚨 STATISZTIKÁK JAVÍTÁS: _process_and_display_statistics() meghívása")
             self._process_and_display_statistics(data, total_days)
             
             # Rekordok frissítése (mindig napi szinten)
             records = self._calculate_records(data)
             self.record_summary.update_records(records)
             
-            # Tab widget frissítése (konstans heatmap verziók)
+            # Tab widget frissítése (konstans heatmap verziók + DEDICATED WIND CHARTOK)
             if self.climate_tabs:
                 self.climate_tabs.update_data(data)
+                
+                # 🌪️ VÉGSŐ KRITIKUS JAVÍTÁS: EXPLICIT DEDICATED WIND CHARTOK FRISSÍTÉSE
+                print("🌪️ FINAL DEBUG [AnalyticsView]: EXPLICIT DEDICATED WIND CHARTOK frissítése...")
+                
+                # DEDICATED WindChart explicit frissítés
+                if hasattr(self.climate_tabs, 'dedicated_wind_chart') and self.climate_tabs.dedicated_wind_chart:
+                    try:
+                        print("🌪️ DEBUG [AnalyticsView]: dedicated_wind_chart.update_data() EXPLICIT hívás...")
+                        self.climate_tabs.dedicated_wind_chart.update_data(data)
+                        print("✅ DEBUG [AnalyticsView]: dedicated_wind_chart SIKERESEN frissítve!")
+                    except Exception as e:
+                        print(f"❌ ERROR [AnalyticsView]: dedicated_wind_chart hiba: {e}")
+                        import traceback
+                        print(f"❌ DEBUG [AnalyticsView]: dedicated_wind_chart traceback: {traceback.format_exc()}")
+                
+                # DEDICATED WindRoseChart explicit frissítés
+                if hasattr(self.climate_tabs, 'dedicated_windrose_chart') and self.climate_tabs.dedicated_windrose_chart:
+                    try:
+                        print("🌹 DEBUG [AnalyticsView]: dedicated_windrose_chart.update_data() EXPLICIT hívás...")
+                        self.climate_tabs.dedicated_windrose_chart.update_data(data)
+                        print("✅ DEBUG [AnalyticsView]: dedicated_windrose_chart SIKERESEN frissítve!")
+                    except Exception as e:
+                        print(f"❌ ERROR [AnalyticsView]: dedicated_windrose_chart hiba: {e}")
+                        import traceback
+                        print(f"❌ DEBUG [AnalyticsView]: dedicated_windrose_chart traceback: {traceback.format_exc()}")
             
             # Állapot frissítése
-            self._update_status(f"✅ {total_days} nap → 365 téglalap - Beaufort + Max Széllökés Dashboard")
+            self._update_status(f"✅ {total_days} nap → 365 téglalap - Beaufort + Max Széllökés Dashboard + DEDICATED WIND CHARTOK + STATISZTIKÁK")
             
             # Signal
             self.analysis_completed.emit()
             
         except Exception as e:
-            logger.error(f"Konstans heatmap dashboard adatfrissítési hiba: {e}", exc_info=True)
+            logger.error(f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatfrissítési hiba: {e}", exc_info=True)
             self.error_occurred.emit(f"Adatfrissítési hiba: {str(e)}")
             self._update_status("❌ Adatfeldolgozási hiba")
     
     def clear_data(self) -> None:
         """Adatok törlése és UI visszaállítása"""
-        logger.info("Konstans heatmap dashboard adatok törlése")
+        logger.info("Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok törlése")
         
         self.current_data = None
         self.current_location = None
@@ -1434,25 +1379,35 @@ class AnalyticsView(QWidget):
     
     def on_analysis_start(self) -> None:
         """Elemzés indítása"""
-        logger.info("Konstans heatmap dashboard elemzés indítása")
+        logger.info("Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés indítása")
         self.analysis_started.emit()
-        self._update_status("⏳ Konstans heatmap dashboard elemzés folyamatban...")
+        self._update_status("⏳ Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés folyamatban...")
     
     # === BELSŐ METÓDUSOK ===
     
     def _process_and_display_statistics(self, data: Dict[str, Any], total_days: int) -> None:
-        """Statisztikák feldolgozása és megjelenítése - KOMPAKT KÁRTYÁS RENDSZER"""
+        """🚨 JAVÍTOTT: Statisztikák feldolgozása és megjelenítése - KOMPAKT KÁRTYÁS RENDSZER"""
         try:
+            logger.info("🚨 _process_and_display_statistics() MEGHÍVVA - STATISZTIKÁK JAVÍTÁS")
+            
             # Statisztikai adatok számítása
             stats_data = self._calculate_statistics_data(data, total_days)
             
             # Kompakt kártyás widget létrehozása
             stats_widget = self._create_statistics_cards_widget(stats_data)
+            
+            # 🚨 KRITIKUS: Statisztikák widget beállítása a scroll area-ba
             self.statistics_area.setWidget(stats_widget)
+            
+            logger.info("✅ Statisztikák sikeresen megjelenítve a bal oldali panelen")
             
         except Exception as e:
             logger.error(f"Statisztika feldolgozási hiba: {e}", exc_info=True)
-            raise
+            # Hiba esetén alapértelmezett üzenet
+            error_widget = QLabel(f"❌ Statisztika hiba: {str(e)}")
+            error_widget.setAlignment(Qt.AlignCenter)
+            error_widget.setStyleSheet("color: red; padding: 20px;")
+            self.statistics_area.setWidget(error_widget)
     
     def _calculate_statistics_data(self, data: Dict[str, Any], total_days: int) -> Dict[str, Any]:
         """📊 STATISZTIKAI ADATOK KISZÁMÍTÁSA - KÁRTYÁS RENDSZERHEZ"""
@@ -1592,7 +1547,7 @@ class AnalyticsView(QWidget):
             
             # === 4. IDŐSZAK KÁRTYA ===
             period_card = self._create_statistic_card(
-                "📊 IDŐSZAK & RENDSZER INFÓ",
+                "📊 IDŐSZAK & RENDSZER INFO",
                 [
                     f"• Időtartam: {stats.get('start_date', 'N/A')} - {stats.get('end_date', 'N/A')}",
                     f"• Napok száma: {stats.get('total_days', 0)} nap",
@@ -1668,7 +1623,7 @@ class AnalyticsView(QWidget):
         return card
     
     def _calculate_records(self, data: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
-        """🏆 5 rekord kategória számítása - MINDIG NAPI SZINTEN (MAX SZÉLLÖKÉS-ekkel)"""
+        """🏆 5 rekord kategória számítása - MINDIG NAPI SZINTEN (MAX SZÉLLÖKÉSEKKEL)"""
         try:
             daily_data = data.get('daily', {})
             
@@ -1789,7 +1744,7 @@ class AnalyticsView(QWidget):
         """Állapot üzenet frissítése"""
         if self.status_label:
             self.status_label.setText(message)
-        logger.info(f"Konstans heatmap dashboard állapot: {message}")
+        logger.info(f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK állapot: {message}")
     
     # === TÉMA API ===
     
@@ -1807,4 +1762,4 @@ class AnalyticsView(QWidget):
 
 
 # Export
-__all__ = ['AnalyticsView', 'MeteorologicalColorMaps', 'MultiCityRegionPanel']
+__all__ = ['AnalyticsView', 'MeteorologicalColorMaps']

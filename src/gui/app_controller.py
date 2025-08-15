@@ -2,16 +2,19 @@
 # -*- coding: utf-8 -*-
 
 """
-Global Weather Analyzer - Application Controller - PROVIDER ROUTING SUPPORT
-Alkalmazás központi logikai vezérlője - PROVIDER SELECTOR támogatással.
+Global Weather Analyzer - Application Controller - CLEAN ARCHITECTURE REFACTOR
+Alkalmazás központi logikai vezérlője - REFAKTORÁLT MVC ARCHITEKTÚRÁVAL.
 
-🌍 PROVIDER ROUTING FUNKCIÓK:
-✅ Smart provider routing (Open-Meteo vs Meteostat)
-✅ User preference kezelés (Automatikus/Kényszerített)
-✅ Usage tracking és cost monitoring
-✅ Provider status signalok GUI-nak
-✅ Rate limiting és fallback logic
-✅ Wind gusts támogatás minden providernél
+🎯 CLEAN ARCHITECTURE FUNKCIÓK:
+✅ Központi analysis request handling
+✅ Worker lifecycle management (AnalysisWorker + eredeti workerek)  
+✅ Clean signal orchestration (UI ↔ Controller ↔ Workers)
+✅ Provider routing integration
+✅ Wind gusts támogatás minden analysis típusban
+✅ Interrupt/Cancel támogatás minden workernél
+🔧 KOORDINÁTA KULCSOK KOMPATIBILITÁS JAVÍTÁS: lat/lon ÉS latitude/longitude támogatás
+🌪️ KRITIKUS JAVÍTÁS: SZÉLSEBESSÉG ADATOK FELDOLGOZÁSA
+🌹 SZÉLIRÁNY KOMPATIBILITÁSI FIX: winddirection_10m_dominant → wind_direction_10m_dominant
 """
 
 from typing import Optional, Dict, Any, List
@@ -19,27 +22,57 @@ from datetime import datetime, timedelta
 import sqlite3
 from pathlib import Path
 import pandas as pd
+import logging
 
-from PySide6.QtCore import QObject, Signal, Slot
-from PySide6.QtWidgets import QMessageBox
+from PySide6.QtCore import QObject, Signal, Slot, QTimer
 
 from ..config import DATA_DIR, APIConfig, ProviderConfig, UserPreferences, UsageTracker
 from .workers.data_fetch_worker import WorkerManager, GeocodingWorker, WeatherDataWorker
+from .workers.analysis_worker import AnalysisWorker
 
 
 class AppController(QObject):
     """
-    Az alkalmazás logikai vezérlője - PROVIDER ROUTING támogatással.
+    🎯 CLEAN ARCHITECTURE CONTROLLER - Központi logikai agy
     
-    🌍 PROVIDER ROUTING FUNKCIÓK:
+    FELELŐSSÉGEK:
+    - Analysis request routing (single/multi-city/county)
+    - Worker lifecycle management (create/start/stop/cleanup)
+    - Provider selection és fallback strategies
+    - Signal orchestration (UI ↔ Controller ↔ Analytics)
+    - State management (current selections, active workers)
+    
+    🌐 PROVIDER ROUTING FUNKCIÓK:
     ✅ Smart provider selection (Open-Meteo vs Meteostat)
     ✅ User preference override support
     ✅ Usage tracking és cost monitoring
     ✅ Provider fallback strategies
     ✅ Wind gusts támogatás minden providernél
+    
+    🔧 KOORDINÁTA KULCSOK KOMPATIBILITÁS:
+    ✅ 'lat'/'lon' ÉS 'latitude'/'longitude' kulcsok támogatása
+    ✅ ControlPanel ↔ AppController kompatibilitás javítva
+    
+    🌪️ SZÉLSEBESSÉG KRITIKUS JAVÍTÁS:
+    ✅ windspeed_10m_max adatok explicit másolása
+    ✅ Napi adatok structured processing
+    ✅ Teljes széladat kompatibilitás (speed + gusts)
+    
+    🌹 SZÉLIRÁNY KOMPATIBILITÁSI FIX:
+    ✅ winddirection_10m_dominant → wind_direction_10m_dominant mapping
+    ✅ WindRoseChart kompatibilitás biztosítva
     """
     
-    # Signalok a GUI komponensek felé
+    # === CLEAN ARCHITECTURE SIGNALS ===
+    
+    # Analysis lifecycle signalok
+    analysis_started = Signal(str)              # analysis_type
+    analysis_progress = Signal(str, int)        # message, percentage
+    analysis_completed = Signal(dict)           # result_data
+    analysis_failed = Signal(str)               # error_message
+    analysis_cancelled = Signal()               # megszakítás megerősítése
+    
+    # Eredeti signalok megőrzése (backwards compatibility)
     geocoding_results_ready = Signal(list)      # List[Dict] - település találatok
     weather_data_ready = Signal(dict)           # Dict - API válasz adatok
     error_occurred = Signal(str)                # str - hibaüzenet
@@ -50,35 +83,45 @@ class AppController(QObject):
     city_saved_to_db = Signal(dict)             # Dict - elmentett település adatok
     weather_saved_to_db = Signal(bool)          # bool - sikeres mentés
     
-    # 🌍 PROVIDER ROUTING SIGNALOK
+    # 🌐 PROVIDER ROUTING SIGNALOK
     provider_selected = Signal(str)             # str - választott provider neve
     provider_usage_updated = Signal(dict)       # Dict - usage statistics
     provider_warning = Signal(str, int)         # provider_name, usage_percent
     provider_fallback = Signal(str, str)        # from_provider, to_provider
     
     def __init__(self, parent: Optional[QObject] = None):
-        """Controller inicializálása PROVIDER ROUTING támogatással."""
+        """Controller inicializálása CLEAN ARCHITECTURE támogatással."""
         super().__init__(parent)
         
-        print("🌍 DEBUG: AppController __init__ started (PROVIDER ROUTING support)")
+        self._logger = logging.getLogger(__name__)
+        self._logger.info("🎯 AppController __init__ started (CLEAN ARCHITECTURE)")
         
-        # Állapot változók
+        # === CLEAN ARCHITECTURE STATE ===
         self.current_city_data: Optional[Dict[str, Any]] = None
         self.current_weather_data: Optional[Dict[str, Any]] = None
         self.active_search_query: Optional[str] = None
         
-        # 🌍 PROVIDER ROUTING KOMPONENSEK
+        # 🎯 ANALYSIS WORKER MANAGEMENT
+        self.active_analysis_worker: Optional[AnalysisWorker] = None
+        self.analysis_state = {
+            'is_running': False,
+            'analysis_type': None,
+            'start_time': None,
+            'request_data': None
+        }
+        
+        # 🌐 PROVIDER ROUTING KOMPONENSEK (megőrizve)
         self.provider_config = ProviderConfig()
         self.user_preferences = UserPreferences()
         self.usage_tracker = UsageTracker()
         
-        print("🌍 DEBUG: Provider routing komponensek betöltve:")
-        print(f"🌍 DEBUG: - Default provider: {self.user_preferences.get_selected_provider()}")
-        print(f"🌍 DEBUG: - Available providers: {list(self.provider_config.PROVIDERS.keys())}")
+        self._logger.info("🌐 Provider routing komponensek betöltve:")
+        self._logger.info(f"🌐 - Default provider: {self.user_preferences.get_selected_provider()}")
+        self._logger.info(f"🌐 - Available providers: {list(self.provider_config.PROVIDERS.keys())}")
         
-        # WorkerManager központi használata
+        # WorkerManager központi használata (megőrizve)
         self.worker_manager = WorkerManager()
-        print("🌍 DEBUG: WorkerManager created with PROVIDER ROUTING support")
+        self._logger.info("🌐 WorkerManager created with PROVIDER ROUTING support")
         
         # Adatbázis kapcsolat inicializálása
         self.db_path = DATA_DIR / "meteo_data.db"
@@ -86,17 +129,461 @@ class AppController(QObject):
         
         # Signal kapcsolások
         self._connect_worker_signals()
+        self._connect_analysis_worker_signals()
         
         # Provider preferences betöltése
         self._load_user_preferences()
         
-        print("✅ DEBUG: AppController inicializálva (PROVIDER ROUTING support)")
+        self._logger.info("✅ AppController inicializálva (CLEAN ARCHITECTURE)")
+    
+    def _connect_analysis_worker_signals(self) -> None:
+        """🎯 ANALYSIS WORKER signal bekötések."""
+        self._logger.info("🔗 Analysis worker signals kapcsolása...")
+        
+        # Megjegyzés: Az AnalysisWorker signalok dinamikusan kerülnek bekötésre
+        # amikor egy új worker létrejön a handle_analysis_request metódusban
+        
+        self._logger.info("✅ Analysis worker signals előkészítve")
+    
+    # === 🎯 CLEAN ARCHITECTURE - KÖZPONTI ANALYSIS REQUEST HANDLER ===
+    
+    @Slot(dict)
+    def handle_analysis_request(self, request_data: Dict[str, Any]) -> None:
+        """
+        🎯 KÖZPONTI ELEMZÉSI KÉRÉS KEZELŐ - Clean Architecture Pattern
+        
+        Ez a metódus fogadja az összes elemzési kérést a ControlPanel-től
+        és a megfelelő worker-ben futtatja azt háttérszálon.
+        
+        Args:
+            request_data (dict): Teljes elemzési kérés minden paraméterre:
+                - analysis_type: 'single_location', 'multi_city', 'county_analysis'
+                - location_data: {'lat': float, 'lon': float, 'name': str, ...}
+                - date_range: {'start_date': str, 'end_date': str}
+                - provider_settings: {'provider': str, 'api_config': dict}
+                - analysis_config: egyéb elemzési beállítások
+        """
+        self._logger.info(f"🎯 ANALYSIS REQUEST received: {request_data.get('analysis_type', 'unknown')}")
+        
+        try:
+            # === 1. AKTUÁLIS ANALYSIS LEÁLLÍTÁSA ===
+            if self.analysis_state['is_running']:
+                self._logger.info("🛑 Aktuális analysis leállítása...")
+                self.stop_current_analysis()
+                
+                # Rövid várakozás a tiszta leállásra
+                QTimer.singleShot(200, lambda: self._start_new_analysis(request_data))
+                return
+            
+            # === 2. ÚJ ANALYSIS AZONNALI INDÍTÁSA ===
+            self._start_new_analysis(request_data)
+            
+        except Exception as e:
+            self._logger.error(f"Analysis request hiba: {e}")
+            self.analysis_failed.emit(f"Elemzési kérés hiba: {e}")
+    
+    def _start_new_analysis(self, request_data: Dict[str, Any]) -> None:
+        """
+        🎯 ÚJ ANALYSIS INDÍTÁSA - Worker létrehozás és konfigurálás
+        
+        Args:
+            request_data: Elemzési kérés paraméterei
+        """
+        try:
+            # === 1. REQUEST VALIDÁLÁS ===
+            if not self._validate_analysis_request(request_data):
+                return
+            
+            analysis_type = request_data.get('analysis_type', 'unknown')
+            
+            # === 2. ANALYSIS STATE INICIALIZÁLÁS ===
+            self.analysis_state = {
+                'is_running': True,
+                'analysis_type': analysis_type,
+                'start_time': datetime.now(),
+                'request_data': request_data.copy()
+            }
+            
+            # === 3. ANALYSIS WORKER LÉTREHOZÁS ===
+            self.active_analysis_worker = AnalysisWorker(parent=self)
+            
+            # === 4. WORKER SIGNAL BEKÖTÉSEK ===
+            self.active_analysis_worker.progress_updated.connect(self._on_analysis_progress)
+            self.active_analysis_worker.analysis_completed.connect(self._on_analysis_completed)
+            self.active_analysis_worker.analysis_failed.connect(self._on_analysis_failed)
+            self.active_analysis_worker.analysis_cancelled.connect(self._on_analysis_cancelled)
+            
+            # === 5. PROVIDER ROUTING INTEGRÁCIÓ ===
+            enhanced_request = self._enhance_request_with_provider_routing(request_data)
+            
+            # === 6. WORKER INDÍTÁS ===
+            success = self.active_analysis_worker.start_analysis(enhanced_request)
+            
+            if success:
+                # Indítás signalok
+                self.analysis_started.emit(analysis_type)
+                self.status_updated.emit(f"🎯 {analysis_type.replace('_', ' ').title()} elemzés indítva...")
+                
+                self._logger.info(f"✅ Analysis worker elindítva: {analysis_type}")
+            else:
+                self._logger.error("❌ Analysis worker indítás sikertelen")
+                self.analysis_failed.emit("Worker indítási hiba")
+                self._cleanup_analysis_state()
+                
+        except Exception as e:
+            self._logger.error(f"Analysis indítási hiba: {e}")
+            self.analysis_failed.emit(f"Elemzés indítási hiba: {e}")
+            self._cleanup_analysis_state()
+    
+    def _validate_analysis_request(self, request_data: Dict[str, Any]) -> bool:
+        """
+        🔧 KRITIKUS JAVÍTÁS: ANALYSIS REQUEST VALIDÁLÁS - KOORDINÁTA KULCSOK KOMPATIBILITÁS
+        
+        Args:
+            request_data: Kérés adatok
+            
+        Returns:
+            bool: Valid-e a kérés
+        """
+        try:
+            # Kötelező mezők ellenőrzése
+            required_fields = ['analysis_type', 'date_range']
+            for field in required_fields:
+                if field not in request_data:
+                    self.analysis_failed.emit(f"Hiányzó kötelező mező: {field}")
+                    return False
+            
+            analysis_type = request_data.get('analysis_type')
+            valid_types = ['single_location', 'multi_city', 'county_analysis']
+            
+            if analysis_type not in valid_types:
+                self.analysis_failed.emit(f"Érvénytelen elemzés típus: {analysis_type}")
+                return False
+            
+            # Dátum range validálás
+            date_range = request_data.get('date_range', {})
+            if not date_range.get('start_date') or not date_range.get('end_date'):
+                self.analysis_failed.emit("Hiányzó dátum tartomány")
+                return False
+            
+            # 🔧 KRITIKUS JAVÍTÁS: Lokáció validálás KOORDINÁTA KULCSOK KOMPATIBILITÁSSAL
+            if analysis_type == 'single_location':
+                # ControlPanel többféle formátumot küldhet:
+                # 1. Direkt koordináták: "latitude", "longitude" 
+                # 2. location_data objektumban: "lat", "lon" VAGY "latitude", "longitude"
+                
+                has_direct_coords = False
+                has_location_data_coords = False
+                
+                # 1. Direkt koordináták ellenőrzése (ControlPanel formátum)
+                if 'latitude' in request_data and 'longitude' in request_data:
+                    has_direct_coords = True
+                    self._logger.info("🔧 Found direct coordinates: latitude/longitude")
+                elif 'lat' in request_data and 'lon' in request_data:
+                    has_direct_coords = True
+                    self._logger.info("🔧 Found direct coordinates: lat/lon")
+                
+                # 2. location_data objektum ellenőrzése (AppController várt formátum)
+                location_data = request_data.get('location_data', {})
+                if location_data:
+                    # Mindkét koordináta kulcs formátum támogatása
+                    lat_keys = ['lat', 'latitude']
+                    lon_keys = ['lon', 'longitude']
+                    
+                    has_lat = any(key in location_data for key in lat_keys)
+                    has_lon = any(key in location_data for key in lon_keys)
+                    
+                    if has_lat and has_lon:
+                        has_location_data_coords = True
+                        self._logger.info("🔧 Found location_data coordinates")
+                
+                # Koordináták validálása
+                if not (has_direct_coords or has_location_data_coords):
+                    error_msg = "Hiányzó lokáció koordináták"
+                    self._logger.error(f"🔧 COORDINATE VALIDATION FAILED: {error_msg}")
+                    self._logger.error(f"🔧 Request keys: {list(request_data.keys())}")
+                    if location_data:
+                        self._logger.error(f"🔧 location_data keys: {list(location_data.keys())}")
+                    
+                    self.analysis_failed.emit(error_msg)
+                    return False
+                
+                self._logger.info("✅ Single location coordinates validation passed")
+            
+            elif analysis_type in ['multi_city', 'county_analysis']:
+                if not request_data.get('region_name') and not request_data.get('county_name'):
+                    self.analysis_failed.emit("Hiányzó régió vagy megye név")
+                    return False
+            
+            self._logger.info(f"✅ Analysis request validation OK: {analysis_type}")
+            return True
+            
+        except Exception as e:
+            self._logger.error(f"Request validation hiba: {e}")
+            self.analysis_failed.emit(f"Kérés validálási hiba: {e}")
+            return False
+    
+    def _enhance_request_with_provider_routing(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        🌐 PROVIDER ROUTING INTEGRÁCIÓ - Kérés gazdagítása provider információkkal
+        
+        Args:
+            request_data: Eredeti kérés
+            
+        Returns:
+            Gazdagított kérés provider routing információkkal
+        """
+        try:
+            enhanced_request = request_data.copy()
+            
+            # Koordináták kinyerése az elemzés típusa alapján
+            latitude, longitude = self._extract_coordinates_from_request(request_data)
+            
+            if latitude is not None and longitude is not None:
+                # Smart provider selection
+                date_range = request_data.get('date_range', {})
+                selected_provider = self._select_provider_for_request(
+                    latitude, longitude, 
+                    date_range.get('start_date', ''),
+                    date_range.get('end_date', '')
+                )
+                
+                # Provider információk hozzáadása
+                enhanced_request['selected_provider'] = selected_provider
+                enhanced_request['provider_config'] = self.provider_config.PROVIDERS.get(selected_provider, {})
+                
+                # Usage tracking
+                self._track_provider_usage(selected_provider)
+                
+                self._logger.info(f"🌐 Provider routing: {selected_provider} selected")
+            else:
+                # Fallback provider
+                enhanced_request['selected_provider'] = 'open-meteo'
+                self._logger.warning("🌐 No coordinates found, using fallback provider")
+            
+            return enhanced_request
+            
+        except Exception as e:
+            self._logger.error(f"Provider routing enhancement hiba: {e}")
+            return request_data  # Return original on error
+    
+    def _extract_coordinates_from_request(self, request_data: Dict[str, Any]) -> tuple[Optional[float], Optional[float]]:
+        """
+        🔧 KOORDINÁTA KULCSOK KOMPATIBILITÁS: Koordináták kinyerése a kérésből az elemzés típusa alapján
+        
+        Args:
+            request_data: Kérés adatok
+            
+        Returns:
+            (latitude, longitude) tuple vagy (None, None)
+        """
+        analysis_type = request_data.get('analysis_type')
+        
+        if analysis_type == 'single_location':
+            # 1. Direkt koordináták keresése (ControlPanel formátum)
+            if 'latitude' in request_data and 'longitude' in request_data:
+                return request_data.get('latitude'), request_data.get('longitude')
+            elif 'lat' in request_data and 'lon' in request_data:
+                return request_data.get('lat'), request_data.get('lon')
+            
+            # 2. location_data objektum ellenőrzése (AppController várt formátum)
+            location_data = request_data.get('location_data', {})
+            if location_data:
+                # Mindkét koordináta kulcs formátum támogatása
+                lat = location_data.get('latitude') or location_data.get('lat')
+                lon = location_data.get('longitude') or location_data.get('lon')
+                
+                if lat is not None and lon is not None:
+                    return lat, lon
+        
+        elif analysis_type in ['multi_city', 'county_analysis']:
+            # Multi-city esetén használjuk a jelenlegi város koordinátáit (ha van)
+            if self.current_city_data:
+                return self.current_city_data.get('latitude'), self.current_city_data.get('longitude')
+            
+            # Vagy egy default magyar koordináta
+            return 47.4979, 19.0402  # Budapest
+        
+        return None, None
+    
+    # === 🎯 ANALYSIS WORKER EVENT HANDLERS ===
+    
+    @Slot(str, int)
+    def _on_analysis_progress(self, message: str, percentage: int):
+        """Analysis progress frissítése"""
+        self.analysis_progress.emit(message, percentage)
+        self.status_updated.emit(f"📊 {message} ({percentage}%)")
+        
+        self._logger.debug(f"📊 Analysis progress: {message} - {percentage}%")
+    
+    @Slot(dict)
+    def _on_analysis_completed(self, result_data: dict):
+        """Analysis befejezése sikeresen"""
+        try:
+            self._logger.info("✅ Analysis completed successfully")
+            
+            # Eredmény feldolgozása típus alapján
+            processed_result = self._process_analysis_result(result_data)
+            
+            # State cleanup
+            analysis_type = self.analysis_state.get('analysis_type', 'unknown')
+            duration = self._calculate_analysis_duration()
+            
+            # Success signalok
+            self.analysis_completed.emit(processed_result)
+            self.status_updated.emit(f"✅ {analysis_type.replace('_', ' ').title()} elemzés befejezve ({duration:.1f}s)")
+            
+            # Típus-specifikus eredmény továbbítás (backwards compatibility)
+            if analysis_type == 'single_location':
+                self.weather_data_ready.emit(processed_result)
+            elif analysis_type in ['multi_city', 'county_analysis']:
+                # A MultiCityEngine eredményét továbbítjuk a megfelelő GUI komponenseknek
+                # Ez a MainWindow-ban fog megjelenni a térképen és az analytics nézetben
+                pass
+            
+            # Cleanup
+            self._cleanup_analysis_state()
+            
+        except Exception as e:
+            self._logger.error(f"Analysis result processing hiba: {e}")
+            self.analysis_failed.emit(f"Eredmény feldolgozási hiba: {e}")
+    
+    @Slot(str)
+    def _on_analysis_failed(self, error_message: str):
+        """Analysis hiba kezelése"""
+        self._logger.error(f"❌ Analysis failed: {error_message}")
+        
+        self.analysis_failed.emit(error_message)
+        self.status_updated.emit(f"❌ Elemzési hiba: {error_message}")
+        
+        self._cleanup_analysis_state()
+    
+    @Slot()
+    def _on_analysis_cancelled(self):
+        """Analysis megszakítás kezelése"""
+        self._logger.info("ℹ️ Analysis cancelled")
+        
+        self.analysis_cancelled.emit()
+        self.status_updated.emit("ℹ️ Elemzés megszakítva")
+        
+        self._cleanup_analysis_state()
+    
+    def _process_analysis_result(self, result_data: dict) -> dict:
+        """
+        Analysis eredmény feldolgozása és strukturálása
+        
+        Args:
+            result_data: Nyers worker eredmény
+            
+        Returns:
+            Feldolgozott és strukturált eredmény
+        """
+        try:
+            analysis_type = self.analysis_state.get('analysis_type', 'unknown')
+            
+            processed_result = {
+                'analysis_type': analysis_type,
+                'request_data': self.analysis_state.get('request_data', {}),
+                'result_data': result_data.get('result_data', {}),
+                'metadata': {
+                    'provider': result_data.get('provider', 'unknown'),
+                    'timestamp': result_data.get('timestamp'),
+                    'duration': self._calculate_analysis_duration(),
+                    'success': result_data.get('success', True)
+                }
+            }
+            
+            # Típus-specifikus feldolgozás
+            if analysis_type == 'single_location':
+                # Single location eredmény további feldolgozása (ha szükséges)
+                pass
+            elif analysis_type in ['multi_city', 'county_analysis']:
+                # Multi-city eredmény további feldolgozása
+                processed_result['city_count'] = len(result_data.get('result_data', {}).get('cities', []))
+            
+            return processed_result
+            
+        except Exception as e:
+            self._logger.error(f"Result processing hiba: {e}")
+            return result_data  # Return original on error
+    
+    def _calculate_analysis_duration(self) -> float:
+        """Analysis időtartam számítása másodpercben"""
+        start_time = self.analysis_state.get('start_time')
+        if start_time:
+            return (datetime.now() - start_time).total_seconds()
+        return 0.0
+    
+    def _cleanup_analysis_state(self):
+        """Analysis state és worker cleanup"""
+        try:
+            # Worker cleanup
+            if self.active_analysis_worker:
+                if self.active_analysis_worker.isRunning():
+                    self.active_analysis_worker.stop_analysis()
+                
+                # Disconnect signalok
+                self.active_analysis_worker.progress_updated.disconnect()
+                self.active_analysis_worker.analysis_completed.disconnect()
+                self.active_analysis_worker.analysis_failed.disconnect()
+                self.active_analysis_worker.analysis_cancelled.disconnect()
+                
+                # Worker törlése
+                self.active_analysis_worker.deleteLater()
+                self.active_analysis_worker = None
+            
+            # State reset
+            self.analysis_state = {
+                'is_running': False,
+                'analysis_type': None,
+                'start_time': None,
+                'request_data': None
+            }
+            
+            self._logger.info("🧹 Analysis state cleaned up")
+            
+        except Exception as e:
+            self._logger.error(f"Cleanup hiba: {e}")
+    
+    # === 🎯 ANALYSIS CONTROL METHODS ===
+    
+    def stop_current_analysis(self) -> None:
+        """
+        🛑 AKTUÁLIS ANALYSIS LEÁLLÍTÁSA
+        Graceful shutdown - nem brutális terminálás
+        """
+        try:
+            if not self.analysis_state['is_running']:
+                self._logger.info("🛑 Nincs futó analysis amit meg lehetne szakítani")
+                return
+            
+            analysis_type = self.analysis_state.get('analysis_type', 'unknown')
+            self._logger.info(f"🛑 Analysis megszakítása: {analysis_type}")
+            
+            if self.active_analysis_worker:
+                self.active_analysis_worker.stop_analysis()
+            
+            # State update
+            self.status_updated.emit("🛑 Elemzés megszakítása...")
+            
+        except Exception as e:
+            self._logger.error(f"Analysis stop hiba: {e}")
+    
+    def is_analysis_running(self) -> bool:
+        """Analysis futási állapot lekérdezése"""
+        return self.analysis_state.get('is_running', False)
+    
+    def get_current_analysis_info(self) -> Dict[str, Any]:
+        """Jelenlegi analysis információk lekérdezése"""
+        return self.analysis_state.copy()
+    
+    # === EREDETI METÓDUSOK MEGŐRZÉSE (Backwards Compatibility) ===
     
     def _load_user_preferences(self) -> None:
         """User preferences betöltése és signalok küldése."""
         try:
             selected_provider = self.user_preferences.get_selected_provider()
-            print(f"🌍 DEBUG: User selected provider: {selected_provider}")
+            self._logger.info(f"🌐 User selected provider: {selected_provider}")
             
             # Provider selection signal
             self.provider_selected.emit(selected_provider)
@@ -123,10 +610,10 @@ class AppController(QObject):
             elif warning_level == 'warning':
                 self.provider_warning.emit('meteostat', int(usage_percent))
             
-            print("✅ DEBUG: User preferences betöltve és signalok elküldve")
+            self._logger.info("✅ User preferences betöltve és signalok elküldve")
             
         except Exception as e:
-            print(f"⚠️ DEBUG: User preferences betöltési hiba: {e}")
+            self._logger.error(f"User preferences betöltési hiba: {e}")
     
     def _init_database_connection(self) -> None:
         """🌪️ KRITIKUS JAVÍTÁS: Adatbázis kapcsolat inicializálása WIND GUSTS séma frissítéssel."""
@@ -142,10 +629,10 @@ class AppController(QObject):
             
             conn.close()
             
-            print(f"✅ DEBUG: Adatbázis kapcsolat OK (WIND GUSTS support): {self.db_path}")
+            self._logger.info(f"✅ Adatbázis kapcsolat OK (WIND GUSTS support): {self.db_path}")
             
         except Exception as e:
-            print(f"❌ DEBUG: Adatbázis kapcsolat hiba: {e}")
+            self._logger.error(f"Adatbázis kapcsolat hiba: {e}")
             self.error_occurred.emit(f"Adatbázis hiba: {e}")
     
     def _update_database_schema(self, conn: sqlite3.Connection) -> None:
@@ -163,7 +650,7 @@ class AppController(QObject):
             columns = [column[1] for column in cursor.fetchall()]
             
             if 'wind_gusts_max' not in columns:
-                print("🌪️ DEBUG: wind_gusts_max oszlop nem létezik - hozzáadás...")
+                self._logger.info("🌪️ wind_gusts_max oszlop nem létezik - hozzáadás...")
                 
                 # Új oszlop hozzáadása
                 cursor.execute("""
@@ -171,7 +658,7 @@ class AppController(QObject):
                     ADD COLUMN wind_gusts_max REAL
                 """)
                 
-                print("✅ DEBUG: wind_gusts_max oszlop sikeresen hozzáadva")
+                self._logger.info("✅ wind_gusts_max oszlop sikeresen hozzáadva")
                 
                 # Index létrehozása a gyorsabb lekérdezésekhez
                 cursor.execute("""
@@ -179,52 +666,52 @@ class AppController(QObject):
                     ON weather_data(wind_gusts_max)
                 """)
                 
-                print("✅ DEBUG: wind_gusts_max index sikeresen létrehozva")
+                self._logger.info("✅ wind_gusts_max index sikeresen létrehozva")
                 
             else:
-                print("✅ DEBUG: wind_gusts_max oszlop már létezik")
+                self._logger.info("✅ wind_gusts_max oszlop már létezik")
             
-            # 🌍 Provider tracking oszlop hozzáadása
+            # 🌐 Provider tracking oszlop hozzáadása
             if 'data_provider' not in columns:
-                print("🌍 DEBUG: data_provider oszlop nem létezik - hozzáadás...")
+                self._logger.info("🌐 data_provider oszlop nem létezik - hozzáadás...")
                 
                 cursor.execute("""
                     ALTER TABLE weather_data 
                     ADD COLUMN data_provider TEXT DEFAULT 'open-meteo'
                 """)
                 
-                print("✅ DEBUG: data_provider oszlop sikeresen hozzáadva")
+                self._logger.info("✅ data_provider oszlop sikeresen hozzáadva")
             
             conn.commit()
             
         except Exception as e:
-            print(f"❌ DEBUG: Adatbázis séma frissítés hiba: {e}")
+            self._logger.error(f"Adatbázis séma frissítés hiba: {e}")
             # Nem kritikus hiba, folytatjuk a működést
     
     def _connect_worker_signals(self) -> None:
         """Worker signal kapcsolások."""
-        print("🔗 DEBUG: Worker signals kapcsolása...")
+        self._logger.info("🔗 Worker signals kapcsolása...")
         
         # Geocoding worker signalok
         self.worker_manager.geocoding_completed.connect(self._on_geocoding_completed)
-        print("🔗 DEBUG: geocoding_completed signal connected")
+        self._logger.info("🔗 geocoding_completed signal connected")
         
         # Weather data worker signalok
         self.worker_manager.weather_data_completed.connect(self._on_weather_data_completed)
-        print("🔗 DEBUG: weather_data_completed signal connected")
+        self._logger.info("🔗 weather_data_completed signal connected")
         
         # Általános worker signalok
         self.worker_manager.error_occurred.connect(self._on_worker_error)
         self.worker_manager.progress_updated.connect(self.progress_updated.emit)
         
-        print("✅ DEBUG: Signal kapcsolások kész")
+        self._logger.info("✅ Signal kapcsolások kész")
     
-    # === PROVIDER ROUTING METÓDUSOK ===
+    # === PROVIDER ROUTING METÓDUSOK (MEGŐRIZVE) ===
     
     def _select_provider_for_request(self, latitude: float, longitude: float, 
                                    start_date: str, end_date: str) -> str:
         """
-        🌍 Smart provider selection a kérés alapján.
+        🌐 Smart provider selection a kérés alapján.
         
         Args:
             latitude: Földrajzi szélesség
@@ -240,20 +727,20 @@ class AppController(QObject):
             user_provider = self.user_preferences.get_selected_provider()
             
             if user_provider != 'auto':
-                print(f"🌍 DEBUG: User forced provider: {user_provider}")
+                self._logger.info(f"🌐 User forced provider: {user_provider}")
                 
                 # Rate limiting ellenőrzés premium providereknél
                 if user_provider != 'open-meteo':
                     usage_summary = self.usage_tracker.get_usage_summary()
                     if usage_summary.get('warning_level') == 'critical':
-                        print(f"⚠️ DEBUG: Provider {user_provider} rate limit exceeded, fallback to open-meteo")
+                        self._logger.warning(f"⚠️ Provider {user_provider} rate limit exceeded, fallback to open-meteo")
                         self.provider_fallback.emit(user_provider, 'open-meteo')
                         return 'open-meteo'
                 
                 return user_provider
             
             # Automatikus provider routing
-            print("🌍 DEBUG: Automatic provider routing...")
+            self._logger.info("🌐 Automatic provider routing...")
             
             # Dátum tartomány ellenőrzése
             start = datetime.strptime(start_date, "%Y-%m-%d")
@@ -267,29 +754,29 @@ class AppController(QObject):
             # Nagy dátum tartomány (3+ hónap)
             is_large_request = days_requested > 90
             
-            print(f"🌍 DEBUG: Request analysis:")
-            print(f"🌍 DEBUG: - Days requested: {days_requested}")
-            print(f"🌍 DEBUG: - Is historical: {is_historical}")
-            print(f"🌍 DEBUG: - Is large request: {is_large_request}")
+            self._logger.info(f"🌐 Request analysis:")
+            self._logger.info(f"🌐 - Days requested: {days_requested}")
+            self._logger.info(f"🌐 - Is historical: {is_historical}")
+            self._logger.info(f"🌐 - Is large request: {is_large_request}")
             
             # Smart routing logic
             if is_historical or is_large_request:
                 # Meteostat jobb historikus adatokhoz
                 usage_summary = self.usage_tracker.get_usage_summary()
                 if usage_summary.get('warning_level') != 'critical':
-                    print("🌍 DEBUG: Selected Meteostat for historical/large request")
+                    self._logger.info("🌐 Selected Meteostat for historical/large request")
                     return 'meteostat'
                 else:
-                    print("🌍 DEBUG: Meteostat rate limited, fallback to Open-Meteo")
+                    self._logger.info("🌐 Meteostat rate limited, fallback to Open-Meteo")
                     self.provider_fallback.emit('meteostat', 'open-meteo')
                     return 'open-meteo'
             else:
                 # Aktuális/közelmúlt adatokhoz Open-Meteo
-                print("🌍 DEBUG: Selected Open-Meteo for recent data")
+                self._logger.info("🌐 Selected Open-Meteo for recent data")
                 return 'open-meteo'
                 
         except Exception as e:
-            print(f"❌ DEBUG: Provider selection error: {e}")
+            self._logger.error(f"Provider selection error: {e}")
             return 'open-meteo'  # Fallback to free provider
     
     def _track_provider_usage(self, provider_name: str) -> None:
@@ -304,7 +791,7 @@ class AppController(QObject):
             updated_usage = self.usage_tracker.track_request(provider_name)
             
             if updated_usage:
-                print(f"🌍 DEBUG: Tracked usage for {provider_name}")
+                self._logger.info(f"🌐 Tracked usage for {provider_name}")
                 
                 # Usage statistics frissítése - a track_request visszaadott adatok alapján
                 usage_summary = self.usage_tracker.get_usage_summary()
@@ -325,16 +812,16 @@ class AppController(QObject):
                     usage_percent = usage_summary.get('meteostat_percentage', 0)
                     
                     if warning_level == 'critical':
-                        print(f"🚨 DEBUG: Provider {provider_name} usage critical: {usage_percent:.1f}%")
+                        self._logger.critical(f"🚨 Provider {provider_name} usage critical: {usage_percent:.1f}%")
                         self.provider_warning.emit(provider_name, int(usage_percent))
                     elif warning_level == 'warning':
-                        print(f"⚠️ DEBUG: Provider {provider_name} usage warning: {usage_percent:.1f}%")
+                        self._logger.warning(f"⚠️ Provider {provider_name} usage warning: {usage_percent:.1f}%")
                         self.provider_warning.emit(provider_name, int(usage_percent))
             else:
-                print(f"⚠️ DEBUG: Failed to track usage for {provider_name}")
+                self._logger.warning(f"⚠️ Failed to track usage for {provider_name}")
                 
         except Exception as e:
-            print(f"❌ DEBUG: Usage tracking error: {e}")
+            self._logger.error(f"Usage tracking error: {e}")
     
     @Slot(str)
     def handle_provider_change(self, provider_name: str) -> None:
@@ -345,7 +832,7 @@ class AppController(QObject):
             provider_name: Új provider neve
         """
         try:
-            print(f"🌍 DEBUG: Provider change request: {provider_name}")
+            self._logger.info(f"🌐 Provider change request: {provider_name}")
             
             # User preferences frissítése
             self.user_preferences.set_selected_provider(provider_name)
@@ -359,17 +846,17 @@ class AppController(QObject):
             else:
                 provider_info = self.provider_config.PROVIDERS.get(provider_name, {})
                 provider_display = provider_info.get('name', provider_name)
-                status_msg = f"🌍 Provider beállítva: {provider_display}"
+                status_msg = f"🌐 Provider beállítva: {provider_display}"
             
             self.status_updated.emit(status_msg)
             
-            print(f"✅ DEBUG: Provider changed to: {provider_name}")
+            self._logger.info(f"✅ Provider changed to: {provider_name}")
             
         except Exception as e:
-            print(f"❌ DEBUG: Provider change error: {e}")
+            self._logger.error(f"Provider change error: {e}")
             self.error_occurred.emit(f"Provider váltási hiba: {e}")
     
-    # === TELEPÜLÉS KERESÉS LOGIKA ===
+    # === TELEPÜLÉS KERESÉS LOGIKA (MEGŐRIZVE) ===
     
     @Slot(str)
     def handle_search_request(self, search_query: str) -> None:
@@ -379,44 +866,44 @@ class AppController(QObject):
         Args:
             search_query: Keresési kifejezés
         """
-        print(f"🔍 DEBUG: handle_search_request called with: '{search_query}'")
+        self._logger.info(f"🔍 handle_search_request called with: '{search_query}'")
         
         # Alapszintű validáció
         if not search_query or len(search_query.strip()) < 2:
             error_msg = "Legalább 2 karakter szükséges a kereséshez"
-            print(f"❌ DEBUG: Validation error: {error_msg}")
+            self._logger.error(f"Validation error: {error_msg}")
             self.error_occurred.emit(error_msg)
             return
         
         # Jelenlegi keresés tárolása
         self.active_search_query = search_query.strip()
-        print(f"🔍 DEBUG: Active search query set: '{self.active_search_query}'")
+        self._logger.info(f"🔍 Active search query set: '{self.active_search_query}'")
         
         # Státusz frissítése
         search_info = f"Keresés: {self.active_search_query}"
         self.status_updated.emit(search_info + "...")
-        print(f"📝 DEBUG: Status updated: {search_info}")
+        self._logger.info(f"🔍 Status updated: {search_info}")
         
         # Geocoding worker indítása
         try:
-            print("🚀 DEBUG: Creating GeocodingWorker...")
+            self._logger.info("🚀 Creating GeocodingWorker...")
             worker = GeocodingWorker(self.active_search_query)
-            print(f"✅ DEBUG: GeocodingWorker created for query: '{self.active_search_query}'")
+            self._logger.info(f"✅ GeocodingWorker created for query: '{self.active_search_query}'")
             
             # WorkerManager központi használata
-            print("🚀 DEBUG: Starting worker via WorkerManager...")
+            self._logger.info("🚀 Starting worker via WorkerManager...")
             worker_id = self.worker_manager.start_geocoding(worker)
-            print(f"✅ DEBUG: GeocodingWorker started via WorkerManager with ID: {worker_id}")
+            self._logger.info(f"✅ GeocodingWorker started via WorkerManager with ID: {worker_id}")
             
         except Exception as e:
             error_msg = f"Geocoding worker indítási hiba: {e}"
-            print(f"❌ DEBUG: {error_msg}")
+            self._logger.error(error_msg)
             import traceback
             traceback.print_exc()
             self.error_occurred.emit(error_msg)
             return
         
-        print(f"✅ DEBUG: handle_search_request completed successfully for '{search_query}'")
+        self._logger.info(f"✅ handle_search_request completed successfully for '{search_query}'")
     
     @Slot(list)
     def _on_geocoding_completed(self, results: List[Dict[str, Any]]) -> None:
@@ -426,35 +913,35 @@ class AppController(QObject):
         Args:
             results: Település találatok listája
         """
-        print(f"📍 DEBUG: _on_geocoding_completed called with {len(results)} results")
+        self._logger.info(f"🔍 _on_geocoding_completed called with {len(results)} results")
         
         try:
             if not results:
                 msg = "Nem található település ezzel a névvel"
-                print(f"📍 DEBUG: No results found")
+                self._logger.info(f"🔍 No results found")
                 self.status_updated.emit(msg)
                 self.geocoding_results_ready.emit([])
                 return
             
-            print(f"📍 DEBUG: Processing {len(results)} geocoding results...")
+            self._logger.info(f"🔍 Processing {len(results)} geocoding results...")
             
             # Eredmények feldolgozása és gazdagítása
             processed_results = self._process_geocoding_results(results)
-            print(f"📍 DEBUG: Processed {len(processed_results)} results")
+            self._logger.info(f"🔍 Processed {len(processed_results)} results")
             
             # Státusz frissítése
             status_msg = f"{len(processed_results)} település találat"
             self.status_updated.emit(status_msg)
-            print(f"📝 DEBUG: Status updated: {status_msg}")
+            self._logger.info(f"🔍 Status updated: {status_msg}")
             
             # Eredmények továbbítása a GUI-nak
-            print(f"📡 DEBUG: Emitting geocoding_results_ready signal...")
+            self._logger.info(f"📡 Emitting geocoding_results_ready signal...")
             self.geocoding_results_ready.emit(processed_results)
             
-            print(f"✅ DEBUG: Geocoding befejezve: {len(processed_results)} találat")
+            self._logger.info(f"✅ Geocoding befejezve: {len(processed_results)} találat")
             
         except Exception as e:
-            print(f"❌ DEBUG: Geocoding feldolgozási hiba: {e}")
+            self._logger.error(f"Geocoding feldolgozási hiba: {e}")
             import traceback
             traceback.print_exc()
             self.error_occurred.emit(f"Keresési eredmények feldolgozási hiba: {e}")
@@ -471,7 +958,7 @@ class AppController(QObject):
         """
         processed = []
         
-        print(f"📍 DEBUG: Processing {len(raw_results)} raw results")
+        self._logger.info(f"🔍 Processing {len(raw_results)} raw results")
         
         for i, result in enumerate(raw_results):
             try:
@@ -487,7 +974,7 @@ class AppController(QObject):
                     'timezone': result.get('timezone', 'UTC'),
                     'elevation': result.get('elevation'),
                     
-                    # Megjegzítések a GUI számára
+                    # Megjelenítés a GUI számára
                     'display_name': self._create_display_name(result),
                     'search_rank': result.get('rank', 999),
                     'original_query': self.active_search_query,
@@ -499,15 +986,15 @@ class AppController(QObject):
                 if i < 5 or i % 5 == 0:
                     name = processed_result['name']
                     country = processed_result['country']
-                    print(f"📍 DEBUG: Result {i}: {name}, {country}")
+                    self._logger.debug(f"🔍 Result {i}: {name}, {country}")
                 
             except Exception as e:
-                print(f"⚠️ DEBUG: Eredmény {i} feldolgozási hiba: {e}")
+                self._logger.warning(f"⚠️ Eredmény {i} feldolgozási hiba: {e}")
                 continue
         
         # Rendezés relevancia szerint
         processed.sort(key=lambda x: x['search_rank'])
-        print(f"📍 DEBUG: Results sorted by relevance")
+        self._logger.info(f"🔍 Results sorted by relevance")
         
         return processed
     
@@ -535,7 +1022,7 @@ class AppController(QObject):
         
         return ', '.join(display_parts)
     
-    # === TELEPÜLÉS KIVÁLASZTÁS LOGIKA ===
+    # === TELEPÜLÉS KIVÁLASZTÁS LOGIKA (MEGŐRIZVE) ===
     
     @Slot(str, float, float, dict)
     def handle_city_selection(self, city_name: str, latitude: float, longitude: float, metadata: Dict[str, Any]) -> None:
@@ -548,7 +1035,7 @@ class AppController(QObject):
             longitude: Földrajzi hosszúság  
             metadata: További metaadatok
         """
-        print(f"📍 DEBUG: handle_city_selection called: {city_name} ({latitude:.4f}, {longitude:.4f})")
+        self._logger.info(f"🔍 handle_city_selection called: {city_name} ({latitude:.4f}, {longitude:.4f})")
         
         try:
             # Kiválasztott település adatainak mentése
@@ -563,15 +1050,15 @@ class AppController(QObject):
             # Státusz frissítése
             status_msg = f"Kiválasztva: {city_name}"
             self.status_updated.emit(status_msg)
-            print(f"📝 DEBUG: City selection status: {status_msg}")
+            self._logger.info(f"🔍 City selection status: {status_msg}")
             
             # Adatbázisba mentés (aszinkron)
             self._save_city_to_database(self.current_city_data)
             
-            print(f"✅ DEBUG: Település kiválasztva: {city_name} ({latitude:.4f}, {longitude:.4f})")
+            self._logger.info(f"✅ Település kiválasztva: {city_name} ({latitude:.4f}, {longitude:.4f})")
             
         except Exception as e:
-            print(f"❌ DEBUG: Település kiválasztási hiba: {e}")
+            self._logger.error(f"Település kiválasztási hiba: {e}")
             self.error_occurred.emit(f"Település kiválasztási hiba: {e}")
     
     def _save_city_to_database(self, city_data: Dict[str, Any]) -> None:
@@ -603,19 +1090,19 @@ class AppController(QObject):
             # Sikeres mentés jelzése
             self.city_saved_to_db.emit(city_data)
             
-            print(f"✅ DEBUG: Település mentve adatbázisba: {city_data['name']}")
+            self._logger.info(f"✅ Település mentve adatbázisba: {city_data['name']}")
             
         except Exception as e:
-            print(f"❌ DEBUG: Adatbázis mentési hiba: {e}")
+            self._logger.error(f"Adatbázis mentési hiba: {e}")
             # Nem kritikus hiba, nem szakítjuk meg a folyamatot
     
-    # === IDŐJÁRÁSI ADATOK LEKÉRDEZÉS LOGIKA (PROVIDER ROUTING + WIND GUSTS) ===
+    # === IDŐJÁRÁSI ADATOK LEKÉRDEZÉS LOGIKA (MEGŐRIZVE, DE DEPRECATED) ===
     
     @Slot(float, float, str, str, dict)
     def handle_weather_data_request(self, latitude: float, longitude: float, 
                                    start_date: str, end_date: str, params: Dict[str, Any]) -> None:
         """
-        🌍🌪️ KRITIKUS JAVÍTÁS: Időjárási adatok lekérdezés PROVIDER ROUTING + WIND GUSTS támogatással.
+        🌐🌪️ DEPRECATED: Időjárási adatok lekérdezés (használd handle_analysis_request-et helyette)
         
         Args:
             latitude: Földrajzi szélesség
@@ -624,157 +1111,39 @@ class AppController(QObject):
             end_date: Befejező dátum (YYYY-MM-DD)
             params: API paraméterek
         """
-        print(f"🌍🌪️ DEBUG: Weather data request (PROVIDER ROUTING + WIND GUSTS): {latitude:.4f}, {longitude:.4f}")
+        self._logger.warning("🌐🌪️ DEPRECATED: handle_weather_data_request használata. Használd handle_analysis_request-et!")
         
-        try:
-            if not self.current_city_data:
-                error_msg = "Nincs kiválasztva település"
-                print(f"❌ DEBUG: {error_msg}")
-                self.error_occurred.emit(error_msg)
-                return
-            
-            # Állapot tisztítás
-            self.current_weather_data = None
-            
-            # Kérés validálása
-            if not self._validate_weather_request(latitude, longitude, start_date, end_date):
-                return
-            
-            # 🌍 PROVIDER ROUTING: Smart provider selection
-            selected_provider = self._select_provider_for_request(latitude, longitude, start_date, end_date)
-            print(f"🌍 DEBUG: Selected provider: {selected_provider}")
-            
-            # Provider selection signal küldése
-            self.provider_selected.emit(selected_provider)
-            
-            # Usage tracking
-            self._track_provider_usage(selected_provider)
-            
-            city_name = self.current_city_data.get('name', 'Ismeretlen')
-            
-            print(f"🌍🌪️ DEBUG: {selected_provider.upper()} WIND GUSTS kérés - {city_name}, {start_date} - {end_date}")
-            
-            # Provider-specifikus kérés indítása
-            provider_display = self.provider_config.PROVIDERS.get(selected_provider, {}).get('name', selected_provider)
-            self.status_updated.emit(f"🌍🌪️ Időjárási adatok lekérdezése ({provider_display}): {city_name}")
-            
-            self._start_weather_request_with_provider(
-                latitude, longitude, start_date, end_date, selected_provider
-            )
-            
-        except Exception as e:
-            print(f"❌ DEBUG: Weather data kérési hiba: {e}")
-            self.error_occurred.emit(f"Lekérdezési hiba: {e}")
-    
-    def _start_weather_request_with_provider(self, latitude: float, longitude: float, 
-                                           start_date: str, end_date: str, provider: str) -> None:
-        """
-        🌍🌪️ KRITIKUS JAVÍTÁS: Időjárási adatok lekérdezése megadott providerrel WIND GUSTS támogatással.
+        # Konvertálás új formátumra és továbbítás
+        analysis_request = {
+            'analysis_type': 'single_location',
+            'location_data': {
+                'lat': latitude,
+                'lon': longitude,
+                'name': self.current_city_data.get('name', 'Unknown') if self.current_city_data else 'Unknown'
+            },
+            'date_range': {
+                'start_date': start_date,
+                'end_date': end_date
+            },
+            'api_params': params
+        }
         
-        Args:
-            latitude: Földrajzi szélesség
-            longitude: Földrajzi hosszúság
-            start_date: Kezdő dátum
-            end_date: Befejező dátum
-            provider: Provider neve
-        """
-        try:
-            print(f"🌍🌪️ DEBUG: Starting weather request with provider: {provider}")
-            
-            # Weather data worker létrehozása provider specifikus konfigurációval
-            worker = WeatherDataWorker(
-                latitude=latitude,
-                longitude=longitude, 
-                start_date=start_date,
-                end_date=end_date,
-                preferred_provider=provider  # 🌍 Provider routing parameter (javított!)
-            )
-            
-            # WorkerManager központi használata
-            print(f"🚀 DEBUG: Starting {provider.upper()} WIND GUSTS worker via WorkerManager...")
-            worker_id = self.worker_manager.start_weather_data_fetch(worker)
-            print(f"✅ DEBUG: {provider.upper()} WIND GUSTS worker started via WorkerManager with ID: {worker_id}")
-            
-        except Exception as e:
-            print(f"❌ DEBUG: {provider} WIND GUSTS worker indítási hiba: {e}")
-            
-            # Fallback strategy - ha a kiválasztott provider sikertelen
-            if provider != 'open-meteo':
-                print(f"🌍 DEBUG: Fallback to Open-Meteo due to {provider} failure")
-                self.provider_fallback.emit(provider, 'open-meteo')
-                
-                try:
-                    # Retry with Open-Meteo
-                    fallback_worker = WeatherDataWorker(
-                        latitude=latitude,
-                        longitude=longitude,
-                        start_date=start_date,
-                        end_date=end_date,
-                        preferred_provider='open-meteo'  # 🌍 Javított paraméter név!
-                    )
-                    
-                    worker_id = self.worker_manager.start_weather_data_fetch(fallback_worker)
-                    print(f"✅ DEBUG: Open-Meteo fallback worker started with ID: {worker_id}")
-                    
-                except Exception as fallback_error:
-                    print(f"❌ DEBUG: Fallback worker indítási hiba: {fallback_error}")
-                    self.error_occurred.emit(f"Időjárási adatok lekérdezése sikertelen: {e}")
-            else:
-                self.error_occurred.emit(f"Időjárási adatok lekérdezése sikertelen: {e}")
-    
-    def _validate_weather_request(self, latitude: float, longitude: float, 
-                                 start_date: str, end_date: str) -> bool:
-        """
-        Weather data kérés validálása.
-        
-        Args:
-            latitude: Földrajzi szélesség
-            longitude: Földrajzi hosszúság  
-            start_date: Kezdő dátum
-            end_date: Befejező dátum
-            
-        Returns:
-            Érvényes-e a kérés
-        """
-        # Koordináták validálása
-        if not (-90 <= latitude <= 90) or not (-180 <= longitude <= 180):
-            self.error_occurred.emit("Érvénytelen koordináták")
-            return False
-        
-        # Dátumok validálása
-        try:
-            start = datetime.strptime(start_date, "%Y-%m-%d")
-            end = datetime.strptime(end_date, "%Y-%m-%d")
-            
-            if start > end:
-                self.error_occurred.emit("A kezdő dátum nem lehet nagyobb a befejező dátumnál")
-                return False
-            
-            # Maximum 60 éves tartomány
-            if (end - start).days > 60 * 365:
-                self.error_occurred.emit("Maximum 60 éves időszak kérdezhető le")
-                return False
-            
-        except ValueError:
-            self.error_occurred.emit("Érvénytelen dátum formátum")
-            return False
-        
-        return True
+        self.handle_analysis_request(analysis_request)
     
     @Slot(dict)
     def _on_weather_data_completed(self, data: Dict[str, Any]) -> None:
         """
-        🌍🌪️ KRITIKUS JAVÍTÁS: Időjárási adatok lekérdezésének befejezése PROVIDER ROUTING + WIND GUSTS támogatással.
+        🌐🌪️ Időjárási adatok lekérdezésének befejezése (backwards compatibility).
         
         Args:
             data: API válasz adatok
         """
-        print(f"🌍🌪️ DEBUG: _on_weather_data_completed called (PROVIDER ROUTING + WIND GUSTS support)")
+        self._logger.info(f"🌐🌪️ _on_weather_data_completed called (backwards compatibility)")
         
         try:
             # Provider információ kinyerése az adatokból
             used_provider = data.get('provider', 'unknown')
-            print(f"🌍 DEBUG: Weather data received from provider: {used_provider}")
+            self._logger.info(f"🌐 Weather data received from provider: {used_provider}")
             
             # Adatok feldolgozása és validálása
             processed_data = self._process_weather_data(data)
@@ -796,7 +1165,7 @@ class AppController(QObject):
             city_name = self.current_city_data.get('name', 'Ismeretlen') if self.current_city_data else 'Ismeretlen'
             record_count = len(processed_data.get('daily', {}).get('time', []))
             
-            # 🌪️ KRITIKUS JAVÍTÁS: Széllökés statisztika a státuszban
+            # 🌪️ Széllökés statisztika a státuszban
             wind_gusts_info = ""
             if 'wind_gusts_max' in processed_data.get('daily', {}):
                 wind_gusts_max = processed_data['daily']['wind_gusts_max']
@@ -804,28 +1173,29 @@ class AppController(QObject):
                     max_gust = max([g for g in wind_gusts_max if g is not None])
                     wind_gusts_info = f", max széllökés: {max_gust:.1f} km/h"
             
-            # 🌍 Provider info a státuszban
+            # 🌐 Provider info a státuszban
             provider_display = self.provider_config.PROVIDERS.get(used_provider, {}).get('name', used_provider)
             
             self.status_updated.emit(
-                f"🌍🌪️ Adatok sikeresen lekérdezve ({provider_display}): {city_name} ({record_count} nap{wind_gusts_info})"
+                f"🌐🌪️ Adatok sikeresen lekérdezve ({provider_display}): {city_name} ({record_count} nap{wind_gusts_info})"
             )
             
             # Eredmények továbbítása a GUI komponenseknek
-            print(f"📡 DEBUG: Emitting weather_data_ready signal...")
+            self._logger.info(f"📡 Emitting weather_data_ready signal...")
             self.weather_data_ready.emit(processed_data)
             
-            print(f"✅ DEBUG: Weather data befejezve: {record_count} napi rekord (PROVIDER ROUTING + WIND GUSTS support)")
+            self._logger.info(f"✅ Weather data befejezve: {record_count} napi rekord (backwards compatibility)")
             
         except Exception as e:
-            print(f"❌ DEBUG: Weather data feldolgozási hiba: {e}")
+            self._logger.error(f"Weather data feldolgozási hiba: {e}")
             import traceback
             traceback.print_exc()
             self.error_occurred.emit(f"Adatok feldolgozási hiba: {e}")
     
     def _process_weather_data(self, raw_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        🌪️ KRITIKUS JAVÍTÁS: Időjárási adatok feldolgozása WIND GUSTS támogatással.
+        🌪️ KRITIKUS SZÉLSEBESSÉG JAVÍTÁS: Időjárási adatok feldolgozása WIND SPEED + WIND GUSTS teljes támogatással.
+        🌹 SZÉLIRÁNY KOMPATIBILITÁSI FIX: winddirection_10m_dominant → wind_direction_10m_dominant mapping
         
         Args:
             raw_data: Nyers API adatok
@@ -834,10 +1204,10 @@ class AppController(QObject):
             Feldolgozott adatok vagy None
         """
         try:
-            print(f"🌪️ DEBUG: Processing weather data (WIND GUSTS support)...")
+            self._logger.info(f"🌪️🌹 Processing weather data (COMPLETE WIND DATA + WIND DIRECTION FIX)...")
             
             if not raw_data or 'daily' not in raw_data:
-                print(f"⚠️ DEBUG: Invalid weather data structure")
+                self._logger.warning(f"⚠️ Invalid weather data structure")
                 return None
             
             daily_data = raw_data['daily']
@@ -847,11 +1217,27 @@ class AppController(QObject):
             required_fields = ['time', 'temperature_2m_max', 'temperature_2m_min', 'precipitation_sum']
             for field in required_fields:
                 if field not in daily_data or not daily_data[field]:
-                    print(f"⚠️ DEBUG: Hiányzó mező: {field}")
+                    self._logger.warning(f"⚠️ Hiányzó mező: {field}")
                     return None
             
             record_count = len(daily_data['time'])
-            print(f"🌪️ DEBUG: Weather data valid - {record_count} records")
+            self._logger.info(f"🌪️🌹 Weather data valid - {record_count} records")
+            
+            # 🌹 DEBUG: Eredeti adatok kulcsainak ellenőrzése
+            self._logger.info(f"🌹 DEBUG: daily_data keys: {list(daily_data.keys())}")
+            
+            # 🌹 KRITIKUS JAVÍTÁS: Szélirány adatok ellenőrzése és debug
+            if 'winddirection_10m_dominant' in daily_data:
+                wind_direction_data = daily_data['winddirection_10m_dominant']
+                valid_directions = [d for d in wind_direction_data if d is not None]
+                self._logger.info(f"🌹 DEBUG: winddirection: {len(valid_directions)} elems")
+                if valid_directions:
+                    self._logger.info(f"🌹 Found wind direction data: {len(valid_directions)} valid values")
+                    self._logger.info(f"🌹 Wind direction range: {min(valid_directions):.0f}° → {max(valid_directions):.0f}°")
+                else:
+                    self._logger.warning(f"🌹 No valid wind direction data found!")
+            else:
+                self._logger.warning(f"🌹 No winddirection_10m_dominant field found in daily_data!")
             
             # 🌪️ KRITIKUS JAVÍTÁS: Óránkénti széllökések → napi maximum számítás
             daily_wind_gusts_max = self._calculate_daily_max_wind_gusts(
@@ -860,9 +1246,9 @@ class AppController(QObject):
                 daily_data.get('time', [])
             )
             
-            # Feldolgozott adatok összeállítása
+            # 🌪️ KRITIKUS JAVÍTÁS: Feldolgozott adatok strukturált összeállítása
             processed = {
-                'daily': daily_data.copy(),
+                'daily': {},  # 🚀 KEZDETBEN ÜRES - Explicit feltöltés következik!
                 'hourly': hourly_data,  # Óránkénti adatok megtartása
                 'latitude': raw_data.get('latitude'),
                 'longitude': raw_data.get('longitude'),
@@ -872,41 +1258,92 @@ class AppController(QObject):
                 # Metaadatok
                 'data_source': raw_data.get('provider', 'unknown'),
                 'source_type': raw_data.get('provider', 'unknown'),
-                'provider': raw_data.get('provider', 'unknown'),  # 🌍 Provider info biztosítása
+                'provider': raw_data.get('provider', 'unknown'),  # 🌐 Provider info biztosítása
                 'processed_at': datetime.now().isoformat(),
                 'city_data': self.current_city_data.copy() if self.current_city_data else None,
                 'record_count': record_count
             }
             
+            # 🚀 KRITIKUS JAVÍTÁS: Napi adatok explicit másolása, beleértve a szélsebességet is!
+            required_daily_fields = [
+                'time', 'temperature_2m_max', 'temperature_2m_min', 'precipitation_sum',
+                'windspeed_10m_max'  # 🌪️ EZ A HIÁNYZÓ LÁNCSZEM!
+            ]
+            
+            self._logger.info(f"🌪️ Explicit copying of daily fields...")
+            for field in required_daily_fields:
+                if field in daily_data:
+                    processed['daily'][field] = daily_data[field]
+                    self._logger.debug(f"🌪️ Copied field: {field} ({len(daily_data[field])} values)")
+                else:
+                    self._logger.warning(f"⚠️ Missing field in daily_data: {field}")
+            
+            # További opcionális mezők másolása
+            optional_daily_fields = [
+                'windspeed_10m_mean', 'winddirection_10m_dominant', 
+                'apparent_temperature_max', 'apparent_temperature_min',
+                'shortwave_radiation_sum', 'et0_fao_evapotranspiration'
+            ]
+            
+            for field in optional_daily_fields:
+                if field in daily_data:
+                    processed['daily'][field] = daily_data[field]
+                    self._logger.debug(f"🌪️ Copied optional field: {field}")
+            
             # 🌪️ KRITIKUS JAVÍTÁS: Napi maximum széllökések hozzáadása
             if daily_wind_gusts_max:
                 processed['daily']['wind_gusts_max'] = daily_wind_gusts_max
-                print(f"🌪️ DEBUG: Added {len(daily_wind_gusts_max)} daily wind gusts max values")
+                self._logger.info(f"🌪️ Added {len(daily_wind_gusts_max)} daily wind gusts max values")
                 
                 # Statisztika
                 valid_gusts = [g for g in daily_wind_gusts_max if g is not None and g > 0]
                 if valid_gusts:
                     max_gust = max(valid_gusts)
-                    print(f"🌪️ DEBUG: Maximum napi széllökés: {max_gust:.1f} km/h")
+                    self._logger.info(f"🌪️ Maximum napi széllökés: {max_gust:.1f} km/h")
                     
                     # Kritikus ellenőrzés - életveszélyes alulbecslés detektálása
                     if max_gust > 100:
-                        print(f"⚠️  DEBUG: KRITIKUS: Extrém széllökés detektálva: {max_gust:.1f} km/h")
+                        self._logger.warning(f"⚠️  KRITIKUS: Extrém széllökés detektálva: {max_gust:.1f} km/h")
                     elif max_gust > 80:
-                        print(f"⚠️  DEBUG: Viharos széllökés detektálva: {max_gust:.1f} km/h")
+                        self._logger.warning(f"⚠️  Viharos széllökés detektálva: {max_gust:.1f} km/h")
                     elif max_gust > 60:
-                        print(f"✅ DEBUG: Erős széllökés detektálva: {max_gust:.1f} km/h")
+                        self._logger.info(f"✅ Erős széllökés detektálva: {max_gust:.1f} km/h")
                     else:
-                        print(f"✅ DEBUG: Mérsékelt széllökés: {max_gust:.1f} km/h")
+                        self._logger.info(f"✅ Mérsékelt széllökés: {max_gust:.1f} km/h")
             else:
-                print(f"⚠️ DEBUG: Nincs széllökés adat az óránkénti adatokban")
+                self._logger.warning(f"⚠️ Nincs széllökés adat az óránkénti adatokban")
             
-            print(f"✅ DEBUG: Weather data processed successfully with WIND GUSTS - {record_count} records")
+            # 🌪️ KRITIKUS ELLENŐRZÉS: Szélsebesség adat jelenlét validálása
+            if 'windspeed_10m_max' in processed['daily']:
+                wind_speeds = processed['daily']['windspeed_10m_max']
+                valid_speeds = [s for s in wind_speeds if s is not None and s > 0]
+                if valid_speeds:
+                    max_speed = max(valid_speeds)
+                    avg_speed = sum(valid_speeds) / len(valid_speeds)
+                    self._logger.info(f"🌪️ Szélsebesség adatok sikeresen feldolgozva:")
+                    self._logger.info(f"🌪️ - Maximum szélsebesség: {max_speed:.1f} km/h")
+                    self._logger.info(f"🌪️ - Átlagos szélsebesség: {avg_speed:.1f} km/h")
+                    self._logger.info(f"🌪️ - Érvényes napok: {len(valid_speeds)}/{len(wind_speeds)}")
+                else:
+                    self._logger.warning(f"⚠️ Szélsebesség adatok üresek vagy nullák!")
+            else:
+                self._logger.error(f"❌ KRITIKUS: windspeed_10m_max NEM került át a feldolgozott adatokba!")
+                self._logger.error(f"❌ Available daily fields: {list(processed['daily'].keys())}")
+                self._logger.error(f"❌ Original daily fields: {list(daily_data.keys())}")
+            
+            self._logger.info(f"✅ Weather data processed successfully with COMPLETE WIND DATA - {record_count} records")
+            self._logger.info(f"🌪️ Final processed daily fields: {list(processed['daily'].keys())}")
+
+            # === 🌹 KRITIKUS SZÉLIRÁNY KOMPATIBILITÁSI FIX ===
+            # Biztosítja, hogy a WindRoseChart megkapja az adatot a várt kulccsal.
+            if 'winddirection_10m_dominant' in daily_data:
+                processed['daily']['wind_direction_10m_dominant'] = daily_data['winddirection_10m_dominant']
+                self._logger.info("✅ Wind direction data mapped for WindRoseChart compatibility.")
             
             return processed
             
         except Exception as e:
-            print(f"❌ DEBUG: Weather data feldolgozási hiba: {e}")
+            self._logger.error(f"Weather data feldolgozási hiba: {e}")
             import traceback
             traceback.print_exc()
             return None
@@ -915,7 +1352,7 @@ class AppController(QObject):
                                        hourly_times: List[str], 
                                        daily_times: List[str]) -> List[float]:
         """
-        🌪️ KRITIKUS JAVÍTÁS: Óránkénti széllökések → napi maximum konverzió.
+        🌪️ KRITIKUS JAVÍTÁS: Óránkénti széllökések → napi maximum konverziója.
         
         Args:
             hourly_gusts: Óránkénti széllökések (km/h)
@@ -926,13 +1363,13 @@ class AppController(QObject):
             Napi maximum széllökések listája
         """
         try:
-            print(f"🌪️ DEBUG: Calculating daily max wind gusts...")
-            print(f"🌪️ DEBUG: Hourly gusts count: {len(hourly_gusts)}")
-            print(f"🌪️ DEBUG: Hourly times count: {len(hourly_times)}")
-            print(f"🌪️ DEBUG: Daily times count: {len(daily_times)}")
+            self._logger.info(f"🌪️ Calculating daily max wind gusts...")
+            self._logger.info(f"🌪️ Hourly gusts count: {len(hourly_gusts)}")
+            self._logger.info(f"🌪️ Hourly times count: {len(hourly_times)}")
+            self._logger.info(f"🌪️ Daily times count: {len(daily_times)}")
             
             if not hourly_gusts or not hourly_times or not daily_times:
-                print(f"⚠️ DEBUG: Missing data for wind gusts calculation")
+                self._logger.warning(f"⚠️ Missing data for wind gusts calculation")
                 return []
             
             # Óránkénti adatok DataFrame-be konvertálása
@@ -965,7 +1402,7 @@ class AppController(QObject):
                             
                             # Debug logolás minden 10. naphoz
                             if len(daily_max_gusts) % 10 == 0:
-                                print(f"🌪️ DEBUG: Day {daily_time}: max gust {daily_max:.1f} km/h")
+                                self._logger.debug(f"🌪️ Day {daily_time}: max gust {daily_max:.1f} km/h")
                         else:
                             # Nincs érvényes széllökés adat erre a napra
                             daily_max_gusts.append(None)
@@ -974,7 +1411,7 @@ class AppController(QObject):
                         daily_max_gusts.append(None)
                         
                 except Exception as e:
-                    print(f"⚠️ DEBUG: Error processing day {daily_time}: {e}")
+                    self._logger.warning(f"⚠️ Error processing day {daily_time}: {e}")
                     daily_max_gusts.append(None)
             
             # Eredmény validálás
@@ -984,42 +1421,42 @@ class AppController(QObject):
                 max_overall = max(valid_gusts)
                 avg_gusts = sum(valid_gusts) / len(valid_gusts)
                 
-                print(f"🌪️ DEBUG: Daily wind gusts calculation complete:")
-                print(f"🌪️ DEBUG: - Valid days: {len(valid_gusts)}/{len(daily_max_gusts)}")
-                print(f"🌪️ DEBUG: - Maximum overall: {max_overall:.1f} km/h")
-                print(f"🌪️ DEBUG: - Average gusts: {avg_gusts:.1f} km/h")
+                self._logger.info(f"🌪️ Daily wind gusts calculation complete:")
+                self._logger.info(f"🌪️ - Valid days: {len(valid_gusts)}/{len(daily_max_gusts)}")
+                self._logger.info(f"🌪️ - Maximum overall: {max_overall:.1f} km/h")
+                self._logger.info(f"🌪️ - Average gusts: {avg_gusts:.1f} km/h")
                 
                 # Kritikus ellenőrzés - életveszélyes alulbecslés detektálása
                 if max_overall > 120:
-                    print(f"🚨 DEBUG: KRITIKUS: Hurrikán erősségű széllökés: {max_overall:.1f} km/h")
+                    self._logger.critical(f"🚨 KRITIKUS: Hurrikán erősségű széllökés: {max_overall:.1f} km/h")
                 elif max_overall > 100:
-                    print(f"⚠️  DEBUG: KRITIKUS: Extrém széllökés: {max_overall:.1f} km/h")
+                    self._logger.warning(f"⚠️  KRITIKUS: Extrém széllökés: {max_overall:.1f} km/h")
                 elif max_overall > 80:
-                    print(f"⚠️  DEBUG: Viharos széllökés: {max_overall:.1f} km/h")
+                    self._logger.warning(f"⚠️  Viharos széllökés: {max_overall:.1f} km/h")
                 else:
-                    print(f"✅ DEBUG: Mérsékelt széllökés: {max_overall:.1f} km/h")
+                    self._logger.info(f"✅ Mérsékelt széllökés: {max_overall:.1f} km/h")
                     
             else:
-                print(f"⚠️ DEBUG: Nincs érvényes széllökés adat")
+                self._logger.warning(f"⚠️ Nincs érvényes széllökés adat")
             
             return daily_max_gusts
             
         except Exception as e:
-            print(f"❌ DEBUG: Daily wind gusts calculation error: {e}")
+            self._logger.error(f"Daily wind gusts calculation error: {e}")
             import traceback
             traceback.print_exc()
             return []
     
     def _save_weather_to_database(self, weather_data: Dict[str, Any]) -> None:
         """
-        🌍🌪️ KRITIKUS JAVÍTÁS: Időjárási adatok mentése adatbázisba PROVIDER ROUTING + WIND GUSTS támogatással.
+        🌐🌪️ KRITIKUS JAVÍTÁS: Időjárási adatok mentése adatbázisba PROVIDER ROUTING + WIND GUSTS támogatással.
         
         Args:
             weather_data: Feldolgozott időjárási adatok
         """
         try:
             if not self.current_city_data:
-                print("⚠️ DEBUG: Nincs város adat az időjárási adatok mentéséhez")
+                self._logger.warning("⚠️ Nincs város adat az időjárási adatok mentéséhez")
                 return
             
             conn = sqlite3.connect(str(self.db_path))
@@ -1033,14 +1470,14 @@ class AppController(QObject):
             
             city_result = cursor.fetchone()
             if not city_result:
-                print("⚠️ DEBUG: Város nem található az adatbázisban")
+                self._logger.warning("⚠️ Város nem található az adatbázisban")
                 conn.close()
                 return
             
             city_id = city_result[0]
             daily_data = weather_data['daily']
             
-            # 🌍 Provider információ
+            # 🌐 Provider információ
             data_provider = weather_data.get('provider', 'unknown')
             
             # Időjárási adatok mentése
@@ -1052,6 +1489,11 @@ class AppController(QObject):
                     if 'wind_gusts_max' in daily_data and i < len(daily_data['wind_gusts_max']):
                         wind_gusts_max = daily_data['wind_gusts_max'][i]
                     
+                    # 🌪️ KRITIKUS JAVÍTÁS: windspeed_10m_max proper handling
+                    windspeed_max = None
+                    if 'windspeed_10m_max' in daily_data and i < len(daily_data['windspeed_10m_max']):
+                        windspeed_max = daily_data['windspeed_10m_max'][i]
+                    
                     cursor.execute('''
                         INSERT OR REPLACE INTO weather_data 
                         (city_id, date, temp_max, temp_min, precipitation, windspeed_max, wind_gusts_max, data_provider)
@@ -1062,18 +1504,20 @@ class AppController(QObject):
                         daily_data['temperature_2m_max'][i] if i < len(daily_data['temperature_2m_max']) else None,
                         daily_data['temperature_2m_min'][i] if i < len(daily_data['temperature_2m_min']) else None,
                         daily_data['precipitation_sum'][i] if i < len(daily_data['precipitation_sum']) else None,
-                        daily_data.get('windspeed_10m_max', [None] * len(daily_data['time']))[i] if 'windspeed_10m_max' in daily_data else None,
-                        wind_gusts_max,  # 🌪️ KRITIKUS JAVÍTÁS: Új wind_gusts_max oszlop
-                        data_provider   # 🌍 Provider tracking
+                        windspeed_max,      # 🌪️ KRITIKUS JAVÍTÁS: Proper windspeed_max használata
+                        wind_gusts_max,     # 🌪️ KRITIKUS JAVÍTÁS: Új wind_gusts_max oszlop
+                        data_provider       # 🌐 Provider tracking
                     ))
                     saved_count += 1
                     
-                    # Debug logolás széllökésekhez
+                    # Debug logolás szélsebesség + széllökésekhez
+                    if windspeed_max is not None and windspeed_max > 40:
+                        self._logger.info(f"🌪️ Saved high wind speed ({data_provider}): {date} - {windspeed_max:.1f} km/h")
                     if wind_gusts_max is not None and wind_gusts_max > 80:
-                        print(f"🌪️ DEBUG: Saved extreme wind gust ({data_provider}): {date} - {wind_gusts_max:.1f} km/h")
+                        self._logger.info(f"🌪️ Saved extreme wind gust ({data_provider}): {date} - {wind_gusts_max:.1f} km/h")
                         
                 except Exception as e:
-                    print(f"⚠️ DEBUG: Rekord mentési hiba: {e}")
+                    self._logger.warning(f"⚠️ Rekord mentési hiba: {e}")
                     continue
             
             conn.commit()
@@ -1082,10 +1526,10 @@ class AppController(QObject):
             # Sikeres mentés jelzése
             self.weather_saved_to_db.emit(True)
             
-            print(f"✅ DEBUG: Weather data mentve adatbázisba ({data_provider}): {saved_count} rekord")
+            self._logger.info(f"✅ Weather data mentve adatbázisba ({data_provider}): {saved_count} rekord")
             
         except Exception as e:
-            print(f"❌ DEBUG: Weather data adatbázis hiba: {e}")
+            self._logger.error(f"Weather data adatbázis hiba: {e}")
             self.weather_saved_to_db.emit(False)
     
     # === HIBA KEZELÉS ===
@@ -1098,7 +1542,7 @@ class AppController(QObject):
         Args:
             error_message: Hibaüzenet
         """
-        print(f"❌ DEBUG: Worker error: {error_message}")
+        self._logger.error(f"Worker error: {error_message}")
         
         self.status_updated.emit(f"Hiba: {error_message}")
         self.error_occurred.emit(error_message)
@@ -1115,7 +1559,7 @@ class AppController(QObject):
     
     def get_provider_info(self) -> Dict[str, Any]:
         """
-        🌍 Provider információk lekérdezése GUI számára.
+        🌐 Provider információk lekérdezése GUI számára.
         
         Returns:
             Provider információk és statistics
@@ -1131,32 +1575,39 @@ class AppController(QObject):
                 'provider_configs': self.provider_config.PROVIDERS
             }
         except Exception as e:
-            print(f"❌ DEBUG: Provider info hiba: {e}")
+            self._logger.error(f"Provider info hiba: {e}")
             return {}
     
     def cancel_all_operations(self) -> None:
         """
-        Összes aktív művelet megszakítása.
+        🛑 Összes aktív művelet megszakítása.
         """
         try:
-            print("🛑 DEBUG: Cancelling all operations...")
+            self._logger.info("🛑 Cancelling all operations...")
+            
+            # Analysis Worker megszakítása
+            if self.is_analysis_running():
+                self.stop_current_analysis()
             
             # WorkerManager központi cancel
             self.worker_manager.cancel_all()
             
-            self.status_updated.emit("Műveletek megszakítva")
-            print("✅ DEBUG: Összes művelet megszakítva via WorkerManager")
+            self.status_updated.emit("🛑 Műveletek megszakítva")
+            self._logger.info("✅ Összes művelet megszakítva")
             
         except Exception as e:
-            print(f"❌ DEBUG: Műveletek megszakítási hiba: {e}")
+            self._logger.error(f"Műveletek megszakítási hiba: {e}")
     
     def shutdown(self) -> None:
         """Controller leállítása és cleanup."""
         try:
-            print("🛑 DEBUG: AppController leállítása...")
+            self._logger.info("🛑 AppController leállítása...")
             
             # Összes művelet megszakítása
             self.cancel_all_operations()
+            
+            # Analysis worker cleanup
+            self._cleanup_analysis_state()
             
             # WorkerManager központi leállítás
             self.worker_manager.shutdown()
@@ -1170,9 +1621,9 @@ class AppController(QObject):
             self.current_weather_data = None
             self.active_search_query = None
             
-            print("✅ DEBUG: AppController leállítva (PROVIDER ROUTING support)")
+            self._logger.info("✅ AppController leállítva (CLEAN ARCHITECTURE)")
             
         except Exception as e:
-            print(f"⚠️ DEBUG: Controller leállítási hiba: {e}")
+            self._logger.warning(f"⚠️ Controller leállítási hiba: {e}")
             import traceback
             traceback.print_exc()

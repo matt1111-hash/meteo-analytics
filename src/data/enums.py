@@ -3,22 +3,39 @@
 
 """
 Global Weather Analyzer - Shared Enums
-🎯 CLEAN ARCHITECTURE - Központi enum definíciók
+🎯 CLEAN ARCHITECTURE - Központi enum definíciók + MISSING ANALYSISTYPE FIX
 
 REFAKTOR CÉL:
 - city_analytics.py függőségek megszüntetése
 - Tiszta enum separation
 - Import chaos felszámolása
 - SOLID principles alkalmazása
+- AnalysisType enum hozzáadása (KRITIKUS JAVÍTÁS!)
 
 HASZNÁLAT:
 ```python
-from src.data.enums import RegionScope, AnalyticsMetric, QuestionType, AnomalySeverity
+from src.data.enums import RegionScope, AnalyticsMetric, QuestionType, AnomalySeverity, AnalysisType
 ```
 """
 
 from enum import Enum
 from typing import Dict, List
+
+
+class AnalysisType(Enum):
+    """
+    🔥 ÚJ: Elemzés típus enum - KRITIKUS HIÁNYZÓ ENUM!
+    
+    Analytics és trend elemzések típusának meghatározásához.
+    """
+    SINGLE_CITY = "single_city"
+    MULTI_CITY = "multi_city"
+    REGIONAL = "regional"
+    COMPARATIVE = "comparative"
+    TREND = "trend"
+    STATISTICAL = "statistical"
+    ANOMALY = "anomaly"
+    CLIMATE = "climate"
 
 
 class RegionScope(Enum):
@@ -135,6 +152,21 @@ class AnomalyType(Enum):
     BOTH = "both"           # Mindkét irányú anomália
 
 
+class DataProvider(Enum):
+    """
+    🔥 ÚJ: Adatszolgáltató enum - KRITIKUS HIÁNYZÓ ENUM!
+    
+    Weather API szolgáltatók azonosításához.
+    """
+    OPEN_METEO = "open-meteo"
+    METEOSTAT = "meteostat" 
+    WEATHERAPI = "weatherapi"
+    OPENWEATHER = "openweather"
+    ECMWF = "ecmwf"
+    NOAA = "noaa"
+    AUTO = "auto"           # Automatikus kiválasztás
+
+
 class DataSource(Enum):
     """
     Adatforrás enum.
@@ -173,6 +205,66 @@ class AnalyticsMode(Enum):
 
 
 # UTILITY FUNKCIÓK
+
+def get_analysis_type_display_name(analysis_type: AnalysisType) -> str:
+    """
+    🔥 ÚJ: AnalysisType display név lekérdezése.
+    
+    Args:
+        analysis_type: AnalysisType enum érték
+        
+    Returns:
+        Magyar display név
+    """
+    display_names = {
+        AnalysisType.SINGLE_CITY: "Egyváros elemzés",
+        AnalysisType.MULTI_CITY: "Többváros elemzés", 
+        AnalysisType.REGIONAL: "Regionális elemzés",
+        AnalysisType.COMPARATIVE: "Összehasonlító elemzés",
+        AnalysisType.TREND: "Trend elemzés",
+        AnalysisType.STATISTICAL: "Statisztikai elemzés",
+        AnalysisType.ANOMALY: "Anomália elemzés",
+        AnalysisType.CLIMATE: "Klíma elemzés"
+    }
+    
+    return display_names.get(analysis_type, analysis_type.value)
+
+
+def get_data_provider_display_name(provider: DataProvider) -> str:
+    """
+    🔥 ÚJ: DataProvider display név lekérdezése.
+    
+    Args:
+        provider: DataProvider enum érték
+        
+    Returns:
+        Display név
+    """
+    display_names = {
+        DataProvider.OPEN_METEO: "Open-Meteo",
+        DataProvider.METEOSTAT: "Meteostat",
+        DataProvider.WEATHERAPI: "WeatherAPI",
+        DataProvider.OPENWEATHER: "OpenWeatherMap",
+        DataProvider.ECMWF: "ECMWF",
+        DataProvider.NOAA: "NOAA",
+        DataProvider.AUTO: "Automatikus"
+    }
+    
+    return display_names.get(provider, provider.value)
+
+
+def validate_data_provider(provider_str: str) -> bool:
+    """
+    🔥 ÚJ: DataProvider validálása.
+    
+    Args:
+        provider_str: Provider string reprezentáció
+        
+    Returns:
+        Érvényes provider-e
+    """
+    return provider_str in [p.value for p in DataProvider]
+
 
 def get_metric_display_name(metric: AnalyticsMetric) -> str:
     """
@@ -292,6 +384,19 @@ def get_severity_color(severity: AnomalySeverity) -> str:
 
 # VALIDATION FUNKCIÓK
 
+def validate_analysis_type(analysis_type_str: str) -> bool:
+    """
+    🔥 ÚJ: AnalysisType validálása.
+    
+    Args:
+        analysis_type_str: AnalysisType string reprezentáció
+        
+    Returns:
+        Érvényes analysis type-e
+    """
+    return analysis_type_str in [a.value for a in AnalysisType]
+
+
 def validate_analytics_metric(metric_str: str) -> bool:
     """
     Analytics metrika validálása.
@@ -353,6 +458,8 @@ def get_available_metrics_for_question_type(question_type: QuestionType) -> List
 
 # EXPORT API
 __all__ = [
+    'AnalysisType',        # 🔥 ÚJ - KRITIKUS HIÁNYZÓ ENUM!
+    'DataProvider',        # 🔥 ÚJ - KRITIKUS HIÁNYZÓ ENUM!
     'RegionScope',
     'AnalyticsMetric', 
     'QuestionType',
@@ -361,11 +468,15 @@ __all__ = [
     'DataSource',
     'RegionType',
     'AnalyticsMode',
+    'get_analysis_type_display_name',  # 🔥 ÚJ
+    'get_data_provider_display_name',  # 🔥 ÚJ
     'get_metric_display_name',
     'get_metric_unit',
     'get_region_scope_display_name',
     'get_question_type_display_name',
     'get_severity_color',
+    'validate_analysis_type',          # 🔥 ÚJ
+    'validate_data_provider',          # 🔥 ÚJ
     'validate_analytics_metric',
     'validate_region_scope',
     'get_available_metrics_for_question_type'

@@ -13,14 +13,15 @@ Alaposztály minden weather chart widget-hez ColorPalette integrációval.
 ✅ Memory leak-ek megszüntetése
 ✅ Optimális legend pozíció
 ✅ Teljes téma szinkronizáció
+🚨 KRITIKUS JAVÍTÁS: PySide6 backend használata Qt5 helyett
 """
 
 from typing import Optional, Dict, Any
 import matplotlib
-matplotlib.use('Qt5Agg')  # PySide6 backend
+matplotlib.use('QtAgg')  # 🚨 JAVÍTOTT: PySide6 backend
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 from PySide6.QtWidgets import QWidget
@@ -36,6 +37,7 @@ class WeatherChart(FigureCanvas):
     Base class a specifikus chart típusokhoz - BŐVÍTETT PROFESSZIONÁLIS VERZIÓ + SIMPLIFIED THEMEMANAGER.
     🎨 TÉMA INTEGRÁCIÓ: SimplifiedThemeManager színpaletta automatikus alkalmazása
     🔧 KRITIKUS JAVÍTÁS: Robusztus chart lifecycle management + duplikáció bugfix + HELYES API HASZNÁLAT
+    🚨 PySide6 BACKEND: Qt6 támogatás Qt5 helyett
     """
     
     # Signalok
@@ -103,7 +105,7 @@ class WeatherChart(FigureCanvas):
     def _setup_matplotlib_style(self) -> None:
         """
         Matplotlib stílus beállítások - TÉMA SZINKRONIZÁCIÓ JAVÍTVA.
-        🎨 SIMPLIFIED THEMEMANAGER INTEGRÁCIÓ: Dinamikus színek témaváltáskor
+        🎨 SIMPLIFIED THEMEMANAGER INTEGRÁCIÓ: Dinamikus színek témavaltáskor
         🔧 KRITIKUS JAVÍTÁS: NEM GLOBÁLIS rcParams → Figure-specifikus színek
         """
         # 🔧 KRITIKUS JAVÍTÁS: NE MÓDOSÍTSUNK GLOBÁLIS rcParams-ot
@@ -146,7 +148,7 @@ class WeatherChart(FigureCanvas):
             'axes.spines.top': False,  # Modern: felső keret eltávolítása
             'axes.spines.right': False, # Modern: jobb oldali keret eltávolítása
             
-            # 🔧 EMOJI ESPECÍFIKUS BEÁLLÍTÁSOK
+            # 🔧 EMOJI ESPECIFIKUS BEÁLLÍTÁSOK
             'axes.unicode_minus': False,  # Unicode mínusz kezelés javítása
             'font.stretch': 'normal',     # Font stretch beállítás
             'font.weight': 'normal'       # Font súly normalizálás
@@ -190,7 +192,7 @@ class WeatherChart(FigureCanvas):
     def _redraw_with_new_theme(self) -> None:
         """
         🎨 KRITIKUS JAVÍTÁS: Chart újrarajzolása új téma színekkel - TELJES SZINKRONIZÁCIÓ.
-        Témaváltáskor minden chart elem színe frissül.
+        Témavaltáskor minden chart elem színe frissül.
         """
         try:
             if self._is_updating:

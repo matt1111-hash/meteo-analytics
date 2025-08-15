@@ -3,18 +3,19 @@
 
 """
 Global Weather Analyzer - Heatmap Calendar Chart - VÉGLEGES JAVÍTOTT VERZIÓ
-🎯 TELJES TÉGLALAPOK + CUSTOM COLORMAP + 365 KONSTANS AGGREGÁCIÓ
+🎯 TELJES TÉGLALAP + CUSTOM COLORMAP + 365 KONSTANS AGGREGÁCIÓ
 
 🔧 KRITIKUS JAVÍTÁSOK:
-✅ imshow → pcolormesh: TELJES TÉGLALAPOK (nem vékony csíkok)
+✅ imshow → pcolormesh: TELJES TÉGLALAP (nem vékony csíkok)
 ✅ Custom colormap támogatás (_custom_cmap, _custom_norm)
 ✅ 365 konstans téglalap minden időszakra (aggregáció)
 ✅ Dinamikus paraméter kezelés (temperature/precipitation/wind)
 ✅ Meteorológiai színskálák integráció (0mm=fehér, 0km/h=fehér)
 ✅ Robusztus hibakezelés és logging
 ✅ Kalendár mátrix (7 nap × 53 hét = 365+ cellák)
+🚨 SZÍNSKÁLA JAVÍTÁS: RdYlBu_r → RdYlBu (HELYES IRÁNY!)
 
-📅 HEATMAP LOGIKA: Konstans 365 téglalap tetszőleges időszakra
+🔅 HEATMAP LOGIKA: Konstans 365 téglalap tetszőleges időszakra
 🎨 SZÍNSKÁLA: Custom meteorológiai + standard colormap-ek
 🔧 RENDERING: pcolormesh vektorgrafikus téglalapok
 
@@ -40,17 +41,18 @@ class HeatmapCalendarChart(WeatherChart):
     🔧 VÉGLEGES JAVÍTOTT VERZIÓ: pcolormesh + custom colormap + 365 konstans téglalap
     
     FELELŐSSÉGEK:
-    - ✅ TELJES TÉGLALAPOK renderelése (pcolormesh)
+    - ✅ TELJES TÉGLALAP renderelése (pcolormesh)
     - ✅ Custom meteorológiai színskálák fogadása
     - ✅ Dinamikus paraméter kezelés (hőmérséklet/csapadék/szél)
     - ✅ 365 konstans téglalap logika aggregációval
     - ✅ Kalendár mátrix építés (7×53 cellák)
     - ✅ 0 értékek helyes színezése
+    - 🚨 SZÍNSKÁLA JAVÍTVA: RdYlBu (helyes irány!)
     """
     
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(figsize=(20, 12), parent=parent)  # EXTRA NAGY MÉRET
-        self.chart_title = "📅 Konstans Heatmap"
+        self.chart_title = "🔅 Konstans Heatmap"
         self.parameter = "temperature_2m_mean"  # Alapértelmezett paraméter
         
         # 🔧 Colorbar tracking (duplikáció ellen)
@@ -66,7 +68,7 @@ class HeatmapCalendarChart(WeatherChart):
         """
         🔧 VÉGLEGES: pcolormesh + custom colormap + 365 konstans téglalap
         """
-        logger.info(f"📅 HeatmapCalendarChart.update_data() - VÉGLEGES VERZIÓ (param: {self.parameter})")
+        logger.info(f"🔅 HeatmapCalendarChart.update_data() - VÉGLEGES VERZIÓ (param: {self.parameter})")
         
         try:
             if self._is_updating:
@@ -207,7 +209,7 @@ class HeatmapCalendarChart(WeatherChart):
         
         # === 6. ✅ PCOLORMESH TELJES TÉGLALAP RENDERELÉS ===
         
-        logger.info("🎨 PCOLORMESH rendering - TELJES TÉGLALAPOK")
+        logger.info("🎨 PCOLORMESH rendering - TELJES TÉGLALAP")
         
         # Koordináták a cellák széleihez (53 hét + 1, 7 nap + 1)
         x_edges = np.arange(54) - 0.5  # 53 hét + 1 = 54 él
@@ -218,7 +220,7 @@ class HeatmapCalendarChart(WeatherChart):
                                cmap=cmap, norm=norm, shading='flat',
                                edgecolors='lightgray', linewidths=0.5)
         
-        logger.debug("✅ pcolormesh renderelés kész - TELJES TÉGLALAPOK")
+        logger.debug("✅ pcolormesh renderelés kész - TELJES TÉGLALAP")
         
         # === 7. TENGELYEK ÉS CÍMKÉK ===
         
@@ -245,7 +247,7 @@ class HeatmapCalendarChart(WeatherChart):
         # Layout optimalizálás
         self.figure.tight_layout()
         
-        logger.info(f"✅ 365 konstans heatmap kész - TELJES TÉGLALAPOK, {valid_data_count} adat")
+        logger.info(f"✅ 365 konstans heatmap kész - TELJES TÉGLALAP, {valid_data_count} adat")
     
     def _aggregate_to_365(self, values: list, total_days: int) -> np.ndarray:
         """
@@ -332,6 +334,8 @@ class HeatmapCalendarChart(WeatherChart):
         1. Custom colormap (_custom_cmap, _custom_norm) - meteorológiai színek
         2. Paraméter-specifikus colormap (hőmérséklet/csapadék/szél)
         3. Alapértelmezett viridis
+        
+        🚨 KRITIKUS JAVÍTÁS: RdYlBu_r → RdYlBu (HELYES IRÁNY!)
         """
         
         # ✅ 1. CUSTOM COLORMAP PRIORITÁS (meteorológiai színek)
@@ -351,8 +355,9 @@ class HeatmapCalendarChart(WeatherChart):
         # 🔧 PARAMÉTER-SPECIFIKUS COLORMAP
         if 'temperature' in self.parameter:
             if vmin < 0 and vmax > 20:  # Teljes szezonális spektrum
-                cmap = 'RdYlBu_r'  # Piros-Sárga-Kék (fordított)
-                logger.debug("🌡️ Hőmérséklet: RdYlBu_r (szezonális)")
+                # 🚨 KRITIKUS JAVÍTÁS: _r ELTÁVOLÍTVA!
+                cmap = 'RdYlBu'  # Piros-Sárga-Kék (HELYES IRÁNY!)
+                logger.debug("🌡️ Hőmérséklet: RdYlBu (szezonális - JAVÍTOTT)")
             elif vmax <= 15:  # Főleg hideg időszak
                 cmap = 'Blues'
                 logger.debug("🌡️ Hőmérséklet: Blues (hideg)")
@@ -416,7 +421,7 @@ class HeatmapCalendarChart(WeatherChart):
             x_labels = ['Tavasz', 'Nyár', 'Ősz', 'Tél'][:len(x_ticks)]
             
         else:  # 3+ év - HOSSZÚ IDŐSZAK
-            # ÁV CÍMKÉK hosszú időszakra
+            # ÉV CÍMKÉK hosszú időszakra
             tick_interval = 26  # ~félévenkénti címkék (26 hét = ~fél év)
             x_ticks = np.arange(13, total_weeks, tick_interval)  # 13, 39
             
@@ -489,7 +494,7 @@ class HeatmapCalendarChart(WeatherChart):
     
     def _format_period_text(self, min_date: pd.Timestamp, max_date: pd.Timestamp, total_days: int) -> str:
         """
-        📅 Időszak szöveg formázása címhez
+        🔅 Időszak szöveg formázása címhez
         """
         years = sorted(set([min_date.year, max_date.year]))
         
@@ -512,14 +517,15 @@ class HeatmapCalendarChart(WeatherChart):
         text_color = current_colors.get('on_surface', '#1f2937')
         surface_color = current_colors.get('surface_variant', '#f9fafb')
         
-        placeholder_text = f'📅 Konstans Heatmap (365 téglalap)\n\n'
+        placeholder_text = f'🔅 Konstans Heatmap (365 téglalap)\n\n'
         placeholder_text += f'❌ Nincs elegendő adat\n\n'
         placeholder_text += f'Paraméter: {self.parameter}\n\n'
         placeholder_text += f'A heatmap megjelenítéséhez\nlegalább 10 valódi adat\nszükséges az API-ból.\n\n'
         placeholder_text += f'🎯 VÉGLEGES VERZIÓ:\n'
         placeholder_text += f'• pcolormesh renderelés\n'
         placeholder_text += f'• Custom colormap támogatás\n'
-        placeholder_text += f'• 365 konstans téglalap'
+        placeholder_text += f'• 365 konstans téglalap\n'
+        placeholder_text += f'🚨 SZÍNSKÁLA JAVÍTVA!'
         
         self.ax.text(0.5, 0.5, placeholder_text, 
                     ha='center', va='center', transform=self.ax.transAxes,

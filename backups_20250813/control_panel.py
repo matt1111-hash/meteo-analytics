@@ -2,8 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-Universal Weather Research Platform - Control Panel Module (KISZÜRÜLÉSI BUG FIX!)
-MVC kompatibilis vezérlő panel modul - SIGNAL LOOP BUG JAVÍTÁS + STATE MANAGEMENT FIX.
+Universal Weather Research Platform - Control Panel Module (ANALYTICS MAP SYNC FIX!)
+MVC kompatibilis vezérlő panel modul - ANALYTICS → MAP SYNC SIGNALOK HOZZÁADVA!
+
+🚨 ANALYTICS → MAP SYNC FIX IMPLEMENTÁLVA:
+✅ weather_parameters_changed = Signal(dict) - API settings, provider változások
+✅ analysis_parameters_changed = Signal(dict) - Analysis típus, régió, megye változások  
+✅ date_range_changed = Signal(str, str) - Dátum tartomány változások
+✅ parameters_bundle_changed = Signal(dict) - Komplex paraméter csomag
+✅ Helper metódusok: _get_current_*_parameters() implementálva
+✅ Signal emit hozzáadva minden kritikus változáshoz
 
 🔧 KRITIKUS KISZÜRÜLÉSI BUG JAVÍTÁSOK:
 ✅ Signal loop megszakítás - blockSignals() használata
@@ -68,7 +76,15 @@ from ..data.models import UniversalLocation
 
 class ControlPanel(QWidget):
     """
-    🔧 KISZÜRÜLÉSI BUG FIX + 🚀 MULTI-YEAR BATCH TÁMOGATÁS + 🏞️ RÉGIÓ/MEGYE TÁMOGATÁS + LAYOUT & RESPONSIVENESS JAVÍTOTT MVC kompatibilis vezérlő panel.
+    🚨 ANALYTICS → MAP SYNC FIX + 🔧 KISZÜRÜLÉSI BUG FIX + 🚀 MULTI-YEAR BATCH TÁMOGATÁS + 🏞️ RÉGIÓ/MEGYE TÁMOGATÁS + LAYOUT & RESPONSIVENESS JAVÍTOTT MVC kompatibilis vezérlő panel.
+    
+    🚨 ANALYTICS → MAP SYNC FIX EBBEN A VERZIÓBAN:
+    - weather_parameters_changed signal - API settings, provider változások
+    - analysis_parameters_changed signal - Analysis típus, régió, megye változások  
+    - date_range_changed signal - Dátum tartomány változások
+    - parameters_bundle_changed signal - Komplex paraméter csomag
+    - Helper metódusok minden paraméter típushoz
+    - Signal emit minden kritikus változásnál
     
     🔧 KRITIKUS KISZÜRÜLÉSI BUG JAVÍTÁSOK EBBEN A VERZIÓBAN:
     - Signal loop megszakítás blockSignals() használatával
@@ -132,6 +148,20 @@ class ControlPanel(QWidget):
     # 🛠️ JAVÍTÁS - Régió kiválasztás signal Hungarian Map Tab frissítéshez
     region_selection_changed = Signal(str)  # selected_region
     
+    # === 🚨 ANALYTICS → MAP SYNC SIGNALOK ===
+    
+    # Weather paraméterek változás (API settings, provider)
+    weather_parameters_changed = Signal(dict)  # API settings, provider változások
+    
+    # Analysis paraméterek változás (típus, régió, megye, lokáció)
+    analysis_parameters_changed = Signal(dict)  # Analysis típus, régió, megye változások
+    
+    # Dátum tartomány változás
+    date_range_changed = Signal(str, str)  # start_date, end_date
+    
+    # Komplex paraméter csomag változás (minden paraméter egyben)
+    parameters_bundle_changed = Signal(dict)  # Comprehensive bundle minden paraméterrel
+    
     # ✅ PROVIDER SELECTOR SIGNALOK
     provider_changed = Signal(str)  # provider_name ("auto", "open-meteo", "meteostat")
     provider_preferences_updated = Signal(dict)  # updated_preferences
@@ -143,7 +173,7 @@ class ControlPanel(QWidget):
     
     def __init__(self, worker_manager: WorkerManager, parent: Optional[QWidget] = None):
         """
-        🔧 KISZÜRÜLÉSI BUG FIX + 🚀 MULTI-YEAR BATCH TÁMOGATÁS + 🏞️ RÉGIÓ/MEGYE TÁMOGATÁS + LAYOUT & RESPONSIVENESS JAVÍTOTT vezérlő panel inicializálása.
+        🚨 ANALYTICS → MAP SYNC FIX + 🔧 KISZÜRÜLÉSI BUG FIX + 🚀 MULTI-YEAR BATCH TÁMOGATÁS + 🏞️ RÉGIÓ/MEGYE TÁMOGATÁS + LAYOUT & RESPONSIVENESS JAVÍTOTT vezérlő panel inicializálása.
         
         Args:
             worker_manager: Háttérszálak kezelője (kompatibilitás miatt)
@@ -208,10 +238,10 @@ class ControlPanel(QWidget):
         # 🔧 KRITIKUS: UI inicializálás befejezve flag
         self._ui_initialized = True
         
-        print("🔧 DEBUG: ControlPanel KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE TÁMOGATÁS + LAYOUT & RESPONSIVENESS JAVÍTOTT verzió kész")
+        print("🚨 DEBUG: ControlPanel ANALYTICS → MAP SYNC FIX + KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE TÁMOGATÁS + LAYOUT & RESPONSIVENESS JAVÍTOTT verzió kész")
     
     def _init_ui(self) -> None:
-        """🔧 KISZÜRÜLÉSI BUG FIX + 🚀 MULTI-YEAR BATCH + 🏞️ RÉGIÓ/MEGYE + LAYOUT & RESPONSIVENESS JAVÍTOTT UI elemek inicializálása."""
+        """🚨 ANALYTICS → MAP SYNC FIX + 🔧 KISZÜRÜLÉSI BUG FIX + 🚀 MULTI-YEAR BATCH + 🏞️ RÉGIÓ/MEGYE + LAYOUT & RESPONSIVENESS JAVÍTOTT UI elemek inicializálása."""
         
         # 🔧 KRITIKUS: PANEL SIZE POLICY ÉS CONSTRAINTS
         self.setMinimumWidth(320)
@@ -283,7 +313,7 @@ class ControlPanel(QWidget):
         # Rugalmas hely a panel alján
         layout.addStretch()
         
-        print(f"🔧 DEBUG: ControlPanel KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE + LAYOUT JAVÍTVA - size: {self.minimumWidth()}-{self.maximumWidth()}px, scroll enabled")
+        print(f"🚨 DEBUG: ControlPanel ANALYTICS → MAP SYNC FIX + KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE + LAYOUT JAVÍTVA - size: {self.minimumWidth()}-{self.maximumWidth()}px, scroll enabled")
     
     def _create_analysis_type_group(self) -> QGroupBox:
         """
@@ -809,18 +839,80 @@ class ControlPanel(QWidget):
         
         return group
     
-    # === 🔧 KISZÜRÜLÉSI BUG FIX - VÉDETT SIGNAL HANDLERS ===
+    # === 🚨 ANALYTICS → MAP SYNC HELPER METÓDUSOK ===
+    
+    def _get_current_analysis_parameters(self) -> Dict[str, Any]:
+        """
+        🚨 ANALYTICS → MAP SYNC: Jelenlegi analysis paraméterek lekérdezése.
+        """
+        params = {
+            "analysis_type": self.analysis_type,
+            "location": None,
+            "region": None,
+            "county": None
+        }
+        
+        if self.analysis_type == "single_location" and self.current_city_data:
+            params["location"] = {
+                "name": self.current_city_data.get("name", ""),
+                "latitude": self.current_city_data.get("latitude", 0.0),
+                "longitude": self.current_city_data.get("longitude", 0.0),
+                "display_name": self.current_city_data.get("display_name", "")
+            }
+        elif self.analysis_type == "region":
+            params["region"] = self.selected_region or self.region_combo.currentText()
+        elif self.analysis_type == "county":
+            params["county"] = self.selected_county or self.county_combo.currentText()
+        
+        return params
+    
+    def _get_current_weather_parameters(self) -> Dict[str, Any]:
+        """
+        🚨 ANALYTICS → MAP SYNC: Jelenlegi weather paraméterek lekérdezése.
+        """
+        return {
+            "provider": self.current_provider,
+            "timeout": self.api_timeout.value(),
+            "cache": self.cache_data.isChecked(),
+            "timezone": "auto" if self.auto_timezone.isChecked() else "UTC"
+        }
+    
+    def _get_current_date_parameters(self) -> Dict[str, Any]:
+        """
+        🚨 ANALYTICS → MAP SYNC: Jelenlegi date paraméterek lekérdezése.
+        """
+        start_date, end_date = self._get_effective_date_range()
+        
+        return {
+            "mode": self.date_mode,
+            "time_range": self.time_range_combo.currentText() if self.date_mode == "time_range" else None,
+            "start_date": start_date,
+            "end_date": end_date
+        }
+    
+    def _get_all_parameters(self) -> Dict[str, Any]:
+        """
+        🚨 ANALYTICS → MAP SYNC: Comprehensive bundle minden paraméterrel.
+        """
+        return {
+            "analysis": self._get_current_analysis_parameters(),
+            "weather": self._get_current_weather_parameters(),
+            "date": self._get_current_date_parameters(),
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    # === 🔧 KISZÜRÜLÉSI BUG FIX - VÉDETT SIGNAL HANDLERS + 🚨 ANALYTICS → MAP SYNC EMIT ===
     
     def _on_analysis_type_changed_safe(self, button):
         """
-        🔧 KISZÜRÜLÉSI BUG FIX - Elemzési típus változás kezelése VÉDETT VERZIÓVAL.
+        🚨 ANALYTICS → MAP SYNC + 🔧 KISZÜRÜLÉSI BUG FIX - Elemzési típus változás kezelése VÉDETT VERZIÓVAL + SIGNAL EMIT.
         """
         if self._updating_state or not self._ui_initialized:
             print("🔧 DEBUG: Analysis type change BLOCKED - updating state or not initialized")
             return
         
         try:
-            print("🔧 DEBUG: _on_analysis_type_changed_safe triggered - ENTERING CRITICAL SECTION")
+            print("🚨 DEBUG: _on_analysis_type_changed_safe triggered - ENTERING CRITICAL SECTION")
             
             # 🔧 KRITIKUS: State update flag beállítása
             self._updating_state = True
@@ -839,7 +931,7 @@ class ControlPanel(QWidget):
                 old_type = self.analysis_type
                 self.analysis_type = new_type
                 
-                print(f"🔧 DEBUG: Analysis type changed from {old_type} to {new_type} - SAFE VERSION")
+                print(f"🚨 DEBUG: Analysis type changed from {old_type} to {new_type} - ANALYTICS → MAP SYNC VERSION")
                 
                 # UI elemek megjelenítése/elrejtése - SIGNAL BLOCKER VERZIÓVAL
                 self._update_ui_for_analysis_type_with_signal_blocking()
@@ -850,16 +942,26 @@ class ControlPanel(QWidget):
                 # Status frissítése
                 self._update_status_for_analysis_type(new_type)
                 
+                # 🚨 ANALYTICS → MAP SYNC: Analysis parameters changed signal emit
+                analysis_params = self._get_current_analysis_parameters()
+                self.analysis_parameters_changed.emit(analysis_params)
+                print(f"🚨 DEBUG: analysis_parameters_changed signal EMITTED: {analysis_params}")
+                
+                # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+                bundle = self._get_all_parameters()
+                self.parameters_bundle_changed.emit(bundle)
+                print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after analysis type change")
+                
         except Exception as e:
             print(f"❌ ERROR: Analysis type change SAFE handling error: {e}")
         finally:
             # 🔧 KRITIKUS: State update flag törlése
             self._updating_state = False
-            print("🔧 DEBUG: _on_analysis_type_changed_safe - EXITING CRITICAL SECTION")
+            print("🚨 DEBUG: _on_analysis_type_changed_safe - EXITING CRITICAL SECTION")
     
     def _on_region_changed_safe(self, region: str):
         """
-        🔧 KISZÜRÜLÉSI BUG FIX - Régió választás változás kezelése VÉDETT VERZIÓVAL.
+        🚨 ANALYTICS → MAP SYNC + 🔧 KISZÜRÜLÉSI BUG FIX - Régió választás változás kezelése VÉDETT VERZIÓVAL + SIGNAL EMIT.
         🛠️ JAVÍTÁS: region_selection_changed signal emit hozzáadva.
         """
         if self._updating_state or not self._ui_initialized:
@@ -871,13 +973,13 @@ class ControlPanel(QWidget):
             return
         
         try:
-            print(f"🔧 DEBUG: _on_region_changed_safe triggered: {region} - ENTERING CRITICAL SECTION")
+            print(f"🚨 DEBUG: _on_region_changed_safe triggered: {region} - ENTERING CRITICAL SECTION")
             
             # 🔧 KRITIKUS: State update flag beállítása
             self._updating_state = True
             
             self.selected_region = region
-            print(f"🔧 DEBUG: Region selected SAFELY: {region}")
+            print(f"🚨 DEBUG: Region selected SAFELY: {region}")
             
             # Fetch button állapot frissítése
             self._update_fetch_button_state_safe()
@@ -889,16 +991,26 @@ class ControlPanel(QWidget):
             self.region_selection_changed.emit(region)
             print(f"🛠️ DEBUG: region_selection_changed signal EMITTED: {region}")
             
+            # 🚨 ANALYTICS → MAP SYNC: Analysis parameters changed signal emit
+            analysis_params = self._get_current_analysis_parameters()
+            self.analysis_parameters_changed.emit(analysis_params)
+            print(f"🚨 DEBUG: analysis_parameters_changed signal EMITTED for region: {analysis_params}")
+            
+            # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+            bundle = self._get_all_parameters()
+            self.parameters_bundle_changed.emit(bundle)
+            print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after region change")
+            
         except Exception as e:
             print(f"❌ ERROR: Region change SAFE handling error: {e}")
         finally:
             # 🔧 KRITIKUS: State update flag törlése
             self._updating_state = False
-            print("🔧 DEBUG: _on_region_changed_safe - EXITING CRITICAL SECTION")
+            print("🚨 DEBUG: _on_region_changed_safe - EXITING CRITICAL SECTION")
     
     def _on_county_changed_safe(self, county: str):
         """
-        🔧 KISZÜRÜLÉSI BUG FIX - Megye választás változás kezelése VÉDETT VERZIÓVAL.
+        🚨 ANALYTICS → MAP SYNC + 🔧 KISZÜRÜLÉSI BUG FIX - Megye választás változás kezelése VÉDETT VERZIÓVAL + SIGNAL EMIT.
         """
         if self._updating_state or not self._ui_initialized:
             print("🔧 DEBUG: County change BLOCKED - updating state or not initialized")
@@ -909,13 +1021,13 @@ class ControlPanel(QWidget):
             return
         
         try:
-            print(f"🔧 DEBUG: _on_county_changed_safe triggered: {county} - ENTERING CRITICAL SECTION")
+            print(f"🚨 DEBUG: _on_county_changed_safe triggered: {county} - ENTERING CRITICAL SECTION")
             
             # 🔧 KRITIKUS: State update flag beállítása
             self._updating_state = True
             
             self.selected_county = county
-            print(f"🔧 DEBUG: County selected SAFELY: {county}")
+            print(f"🚨 DEBUG: County selected SAFELY: {county}")
             
             # Fetch button állapot frissítése
             self._update_fetch_button_state_safe()
@@ -923,12 +1035,202 @@ class ControlPanel(QWidget):
             # Status frissítése
             self._update_status(f"🏛️ Kiválasztott megye: {county}")
             
+            # 🚨 ANALYTICS → MAP SYNC: Analysis parameters changed signal emit
+            analysis_params = self._get_current_analysis_parameters()
+            self.analysis_parameters_changed.emit(analysis_params)
+            print(f"🚨 DEBUG: analysis_parameters_changed signal EMITTED for county: {analysis_params}")
+            
+            # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+            bundle = self._get_all_parameters()
+            self.parameters_bundle_changed.emit(bundle)
+            print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after county change")
+            
         except Exception as e:
             print(f"❌ ERROR: County change SAFE handling error: {e}")
         finally:
             # 🔧 KRITIKUS: State update flag törlése
             self._updating_state = False
-            print("🔧 DEBUG: _on_county_changed_safe - EXITING CRITICAL SECTION")
+            print("🚨 DEBUG: _on_county_changed_safe - EXITING CRITICAL SECTION")
+    
+    def _on_location_selected_safe(self, name: str, lat: float, lon: float, data: Dict[str, Any]):
+        """
+        🚨 ANALYTICS → MAP SYNC + 🔧 KISZÜRÜLÉSI BUG FIX - lokáció kiválasztás kezelése SAFE VERZIÓVAL + SIGNAL EMIT.
+        """
+        if self._updating_state:
+            print("🔧 DEBUG: Location selection BLOCKED - updating state")
+            return
+        
+        try:
+            print(f"🚨 DEBUG: _on_location_selected_safe called: {name} [{lat:.4f}, {lon:.4f}] - ENTERING CRITICAL SECTION")
+            
+            # 🔧 KRITIKUS: State update flag beállítása
+            self._updating_state = True
+            
+            # current_city_data frissítése
+            self.current_city_data = {
+                "name": name,
+                "latitude": lat,
+                "longitude": lon,
+                "display_name": name,
+                **data
+            }
+            print(f"🚨 DEBUG: current_city_data FRISSÍTVE SAFELY: {self.current_city_data['name']}")
+            
+            # Lokáció info frissítése
+            self._update_location_info(name, lat, lon)
+            
+            # Clear gomb engedélyezése
+            self.clear_location_btn.setEnabled(True)
+            
+            # Signal továbbítása (kompatibilitás)
+            self.city_selected.emit(name, lat, lon, data)
+            
+            # UI állapot frissítése
+            self._update_status(f"Kiválasztva: {name}")
+            
+            # 🚨 ANALYTICS → MAP SYNC: Analysis parameters changed signal emit
+            analysis_params = self._get_current_analysis_parameters()
+            self.analysis_parameters_changed.emit(analysis_params)
+            print(f"🚨 DEBUG: analysis_parameters_changed signal EMITTED for location: {analysis_params}")
+            
+            # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+            bundle = self._get_all_parameters()
+            self.parameters_bundle_changed.emit(bundle)
+            print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after location selection")
+            
+            print(f"✅ DEBUG: Location selection ANALYTICS → MAP SYNC VERSION: {name}")
+            
+        except Exception as e:
+            print(f"❌ DEBUG: Safe lokáció kiválasztási hiba: {e}")
+            self.local_error_occurred.emit("Lokáció kiválasztási hiba")
+        finally:
+            # 🔧 KRITIKUS: State update flag törlése
+            self._updating_state = False
+            
+            # Fetch button állapot frissítése
+            self._update_fetch_button_state_safe()
+            print("🚨 DEBUG: _on_location_selected_safe - EXITING CRITICAL SECTION")
+    
+    def _on_provider_changed(self, button) -> None:
+        """
+        🚨 ANALYTICS → MAP SYNC + ✅ PROVIDER SELECTOR - Provider radio button változás kezelése + SIGNAL EMIT.
+        """
+        try:
+            # Új provider meghatározása
+            if button == self.auto_radio:
+                new_provider = "auto"
+            elif button == self.openmeteo_radio:
+                new_provider = "open-meteo"
+            elif button == self.meteostat_radio:
+                new_provider = "meteostat"
+            else:
+                return
+            
+            if new_provider != self.current_provider:
+                self.current_provider = new_provider
+                
+                # Preferences mentése
+                self._save_provider_preferences()
+                
+                # Signal kibocsátása Controller felé
+                self.provider_changed.emit(new_provider)
+                
+                # UI frissítése
+                self._update_status_for_provider_change(new_provider)
+                
+                # 🚨 ANALYTICS → MAP SYNC: Weather parameters changed signal emit
+                weather_params = self._get_current_weather_parameters()
+                self.weather_parameters_changed.emit(weather_params)
+                print(f"🚨 DEBUG: weather_parameters_changed signal EMITTED for provider: {weather_params}")
+                
+                # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+                bundle = self._get_all_parameters()
+                self.parameters_bundle_changed.emit(bundle)
+                print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after provider change")
+                
+                print(f"🚨 DEBUG: Provider changed to ANALYTICS → MAP SYNC VERSION: {new_provider}")
+                
+        except Exception as e:
+            print(f"❌ ERROR: Provider change handling error: {e}")
+    
+    def _on_time_range_changed(self, time_range_text: str):
+        """
+        🚨 ANALYTICS → MAP SYNC + 🚀 MULTI-YEAR BATCH - Időtartam dropdown változás kezelése + SIGNAL EMIT.
+        """
+        print(f"🚨 DEBUG: _on_time_range_changed: {time_range_text}")
+        
+        if self.date_mode == "time_range":
+            self._update_computed_dates()
+            
+            # 🚨 ANALYTICS → MAP SYNC: Date range changed signal emit
+            start_date, end_date = self._get_effective_date_range()
+            self.date_range_changed.emit(start_date, end_date)
+            print(f"🚨 DEBUG: date_range_changed signal EMITTED: {start_date} → {end_date}")
+            
+            # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+            bundle = self._get_all_parameters()
+            self.parameters_bundle_changed.emit(bundle)
+            print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after time range change")
+        
+        # Fetch button state frissítése
+        self._update_fetch_button_state_safe()
+    
+    def _on_date_mode_changed(self):
+        """
+        🚨 ANALYTICS → MAP SYNC + 🚀 MULTI-YEAR BATCH - Dátum mód változás kezelése + SIGNAL EMIT.
+        """
+        if self.time_range_radio.isChecked():
+            self.date_mode = "time_range"
+            self._set_manual_dates_enabled(False)
+            self._update_computed_dates()
+            print("🚨 DEBUG: Date mode switched to: time_range")
+        else:
+            self.date_mode = "manual_dates"
+            self._set_manual_dates_enabled(True)
+            print("🚨 DEBUG: Date mode switched to: manual_dates")
+        
+        # 🚨 ANALYTICS → MAP SYNC: Date range changed signal emit
+        start_date, end_date = self._get_effective_date_range()
+        self.date_range_changed.emit(start_date, end_date)
+        print(f"🚨 DEBUG: date_range_changed signal EMITTED for mode change: {start_date} → {end_date}")
+        
+        # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+        bundle = self._get_all_parameters()
+        self.parameters_bundle_changed.emit(bundle)
+        print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after date mode change")
+        
+        # Fetch button state frissítése
+        self._update_fetch_button_state_safe()
+    
+    def _validate_dates_safe(self) -> None:
+        """🚨 ANALYTICS → MAP SYNC + 🔧 KISZÜRÜLÉSI BUG FIX - dátumok validálása SAFE VERZIÓVAL + SIGNAL EMIT."""
+        if self._updating_state:
+            print("🔧 DEBUG: Date validation BLOCKED - updating state")
+            return
+        
+        start = self.start_date.date()
+        end = self.end_date.date()
+        
+        if start > end:
+            # Ha kezdő dátum nagyobb, automatikusan javítjuk
+            if self.sender() == self.start_date:
+                self.end_date.setDate(start)
+            else:
+                self.start_date.setDate(end)
+        
+        # 🚨 ANALYTICS → MAP SYNC: Date range changed signal emit (csak manual mode-ban)
+        if self.date_mode == "manual_dates":
+            start_date, end_date = self._get_effective_date_range()
+            self.date_range_changed.emit(start_date, end_date)
+            print(f"🚨 DEBUG: date_range_changed signal EMITTED for manual date validation: {start_date} → {end_date}")
+            
+            # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+            bundle = self._get_all_parameters()
+            self.parameters_bundle_changed.emit(bundle)
+            print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after manual date validation")
+        
+        # 🔧 KRITIKUS: Fetch button állapot frissítése SAFE VERZIÓVAL
+        self._update_fetch_button_state_safe()
     
     def _update_ui_for_analysis_type_with_signal_blocking(self):
         """
@@ -1159,23 +1461,6 @@ class ControlPanel(QWidget):
     
     # === 🚀 MULTI-YEAR BATCH LOGIC - 1 ÉV OPCIÓ ===
     
-    def _on_date_mode_changed(self):
-        """
-        🚀 Dátum mód változás kezelése (time_range vs manual_dates).
-        """
-        if self.time_range_radio.isChecked():
-            self.date_mode = "time_range"
-            self._set_manual_dates_enabled(False)
-            self._update_computed_dates()
-            print("🚀 DEBUG: Date mode switched to: time_range")
-        else:
-            self.date_mode = "manual_dates"
-            self._set_manual_dates_enabled(True)
-            print("🚀 DEBUG: Date mode switched to: manual_dates")
-        
-        # Fetch button state frissítése
-        self._update_fetch_button_state_safe()
-    
     def _set_manual_dates_enabled(self, enabled: bool):
         """Manual dátum chooser-ek engedélyezése/letiltása."""
         self.start_date.setEnabled(enabled)
@@ -1190,18 +1475,6 @@ class ControlPanel(QWidget):
         
         # Időtartam dropdown ellenkezője
         self.time_range_combo.setEnabled(not enabled)
-    
-    def _on_time_range_changed(self, time_range_text: str):
-        """
-        🚀 Időtartam dropdown változás kezelése - automatikus dátum számítás 1 ÉV OPCIÓVAL.
-        """
-        print(f"🚀 DEBUG: _on_time_range_changed: {time_range_text}")
-        
-        if self.date_mode == "time_range":
-            self._update_computed_dates()
-        
-        # Fetch button state frissítése
-        self._update_fetch_button_state_safe()
     
     def _update_computed_dates(self):
         """
@@ -1285,6 +1558,20 @@ class ControlPanel(QWidget):
         
         print(f"🚀 DEBUG: Set {years} years back (1 év támogatással): {start.toString()} → {end.toString()}")
     
+    def _set_last_month(self):
+        """Előző hónap beállítása."""
+        today = QDate.currentDate()
+        last_month = today.addMonths(-1)
+        self.start_date.setDate(last_month)
+        self.end_date.setDate(today)
+    
+    def _set_last_year(self):
+        """Előző év beállítása."""
+        today = QDate.currentDate()
+        last_year = today.addYears(-1)
+        self.start_date.setDate(last_year)
+        self.end_date.setDate(today)
+    
     # === WIDGET REGISZTRÁCIÓ ÉS THEMING ===
     
     def _register_widgets_for_theming(self) -> None:
@@ -1352,7 +1639,7 @@ class ControlPanel(QWidget):
         # === PROGRESS BAR ===
         register_widget_for_theming(self.progress_bar, "container")
         
-        print("🔧 DEBUG: ControlPanel KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE + LAYOUT JAVÍTVA - Professional ColorPalette integrálva")
+        print("🚨 DEBUG: ControlPanel ANALYTICS → MAP SYNC FIX + KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE + LAYOUT JAVÍTVA - Professional ColorPalette integrálva")
     
     def _apply_professional_label_styling(self, label: QLabel, style_type: str) -> None:
         """
@@ -1408,15 +1695,15 @@ class ControlPanel(QWidget):
         # 🏞️ Elemzési típus kezdeti állapot - BUG FIX VERZIÓVAL
         self._update_ui_for_analysis_type_with_signal_blocking()
         
-        print("🔧 DEBUG: Default values KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE - fetch button state tracking")
+        print("🚨 DEBUG: Default values ANALYTICS → MAP SYNC FIX + KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE - fetch button state tracking")
     
     def _connect_internal_signals(self) -> None:
-        """🔧 KISZÜRÜLÉSI BUG FIX - belső signal-slot kapcsolatok VÉDETT VERZIÓVAL."""
+        """🚨 ANALYTICS → MAP SYNC FIX + 🔧 KISZÜRÜLÉSI BUG FIX - belső signal-slot kapcsolatok VÉDETT VERZIÓVAL."""
         # Lokális hibák kezelése
         self.local_error_occurred.connect(self._show_local_error)
         
         # 🔧 KRITIKUS JAVÍTÁS: UNIVERSAL LOCATION SELECTOR signal kapcsolatok
-        print("🔧 DEBUG: Connecting KISZÜRÜLÉSI BUG FIX UniversalLocationSelector signals...")
+        print("🚨 DEBUG: Connecting ANALYTICS → MAP SYNC FIX UniversalLocationSelector signals...")
         
         # Search signal
         self.universal_location_selector.search_requested.connect(self.search_requested.emit)
@@ -1436,11 +1723,11 @@ class ControlPanel(QWidget):
         if hasattr(self.theme_manager, 'color_scheme_updated'):
             self.theme_manager.color_scheme_updated.connect(self._on_color_scheme_updated)
         
-        print("🔧 DEBUG: KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE signal connections kész")
+        print("🚨 DEBUG: ANALYTICS → MAP SYNC FIX + KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE signal connections kész")
     
     def _on_theme_changed(self, theme_name: str) -> None:
         """🎨 PROFESSZIONÁLIS téma változás kezelése."""
-        print(f"🎨 DEBUG: ControlPanel KISZÜRÜLÉSI BUG FIX theme change: {theme_name}")
+        print(f"🎨 DEBUG: ControlPanel ANALYTICS → MAP SYNC FIX theme change: {theme_name}")
         
         # Label-ek újra-stílusozása
         self._apply_professional_label_styling(self.location_info_label, "secondary")
@@ -1453,7 +1740,7 @@ class ControlPanel(QWidget):
     
     def _on_color_scheme_updated(self, color_palette) -> None:
         """🎨 PROFESSZIONÁLIS ColorPalette változás kezelése."""
-        print("🎨 DEBUG: ControlPanel KISZÜRÜLÉSI BUG FIX ColorPalette updated")
+        print("🎨 DEBUG: ControlPanel ANALYTICS → MAP SYNC FIX ColorPalette updated")
         
         # Összes styling újra-alkalmazása
         self._apply_professional_label_styling(self.location_info_label, "secondary")
@@ -1464,65 +1751,16 @@ class ControlPanel(QWidget):
     
     # === 🔧 KISZÜRÜLÉSI BUG FIX - SAFE UNIVERSAL LOCATION SELECTOR LOGIC ===
     
-    def _on_location_selected_safe(self, name: str, lat: float, lon: float, data: Dict[str, Any]):
-        """
-        🔧 KISZÜRÜLÉSI BUG FIX - lokáció kiválasztás kezelése SAFE VERZIÓVAL.
-        """
-        if self._updating_state:
-            print("🔧 DEBUG: Location selection BLOCKED - updating state")
-            return
-        
-        try:
-            print(f"🔧 DEBUG: _on_location_selected_safe called: {name} [{lat:.4f}, {lon:.4f}] - ENTERING CRITICAL SECTION")
-            
-            # 🔧 KRITIKUS: State update flag beállítása
-            self._updating_state = True
-            
-            # current_city_data frissítése
-            self.current_city_data = {
-                "name": name,
-                "latitude": lat,
-                "longitude": lon,
-                "display_name": name,
-                **data
-            }
-            print(f"🔧 DEBUG: current_city_data FRISSÍTVE SAFELY: {self.current_city_data['name']}")
-            
-            # Lokáció info frissítése
-            self._update_location_info(name, lat, lon)
-            
-            # Clear gomb engedélyezése
-            self.clear_location_btn.setEnabled(True)
-            
-            # Signal továbbítása (kompatibilitás)
-            self.city_selected.emit(name, lat, lon, data)
-            
-            # UI állapot frissítése
-            self._update_status(f"Kiválasztva: {name}")
-            
-            print(f"✅ DEBUG: Location selection SAFE VERSION: {name}")
-            
-        except Exception as e:
-            print(f"❌ DEBUG: Safe lokáció kiválasztási hiba: {e}")
-            self.local_error_occurred.emit("Lokáció kiválasztási hiba")
-        finally:
-            # 🔧 KRITIKUS: State update flag törlése
-            self._updating_state = False
-            
-            # Fetch button állapot frissítése
-            self._update_fetch_button_state_safe()
-            print("🔧 DEBUG: _on_location_selected_safe - EXITING CRITICAL SECTION")
-    
     def _on_location_changed_safe(self, location: UniversalLocation):
         """
-        🔧 KISZÜRÜLÉSI BUG FIX - UniversalLocation objektum változás kezelése SAFE VERZIÓVAL.
+        🚨 ANALYTICS → MAP SYNC + 🔧 KISZÜRÜLÉSI BUG FIX - UniversalLocation objektum változás kezelése SAFE VERZIÓVAL + SIGNAL EMIT.
         """
         if self._updating_state:
             print("🔧 DEBUG: Location change BLOCKED - updating state")
             return
         
         try:
-            print(f"🔧 DEBUG: _on_location_changed_safe called: {location} - ENTERING CRITICAL SECTION")
+            print(f"🚨 DEBUG: _on_location_changed_safe called: {location} - ENTERING CRITICAL SECTION")
             
             # 🔧 KRITIKUS: State update flag beállítása
             self._updating_state = True
@@ -1541,12 +1779,22 @@ class ControlPanel(QWidget):
                     "country": getattr(location, 'country', ''),
                     "region": getattr(location, 'region', '')
                 }
-                print(f"🔧 DEBUG: current_city_data frissítve UniversalLocation-ből SAFELY: {self.current_city_data['name']}")
+                print(f"🚨 DEBUG: current_city_data frissítve UniversalLocation-ből SAFELY: {self.current_city_data['name']}")
             
             # Signal továbbítása
             self.location_changed.emit(location)
             
-            print(f"✅ DEBUG: UniversalLocation change SAFE VERSION: {location}")
+            # 🚨 ANALYTICS → MAP SYNC: Analysis parameters changed signal emit
+            analysis_params = self._get_current_analysis_parameters()
+            self.analysis_parameters_changed.emit(analysis_params)
+            print(f"🚨 DEBUG: analysis_parameters_changed signal EMITTED for UniversalLocation: {analysis_params}")
+            
+            # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+            bundle = self._get_all_parameters()
+            self.parameters_bundle_changed.emit(bundle)
+            print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after UniversalLocation change")
+            
+            print(f"✅ DEBUG: UniversalLocation change ANALYTICS → MAP SYNC VERSION: {location}")
             
         except Exception as e:
             print(f"❌ DEBUG: Safe UniversalLocation változás hiba: {e}")
@@ -1556,7 +1804,7 @@ class ControlPanel(QWidget):
             
             # Fetch button állapot frissítése
             self._update_fetch_button_state_safe()
-            print("🔧 DEBUG: _on_location_changed_safe - EXITING CRITICAL SECTION")
+            print("🚨 DEBUG: _on_location_changed_safe - EXITING CRITICAL SECTION")
     
     def _update_location_info(self, name: str, lat: float, lon: float):
         """Lokáció információ megjelenítés frissítése."""
@@ -1565,13 +1813,13 @@ class ControlPanel(QWidget):
         self._apply_professional_label_styling(self.location_info_label, "primary")
     
     def _clear_location(self):
-        """🔧 KISZÜRÜLÉSI BUG FIX - lokáció kiválasztás törlése SAFE VERZIÓVAL."""
+        """🚨 ANALYTICS → MAP SYNC + 🔧 KISZÜRÜLÉSI BUG FIX - lokáció kiválasztás törlése SAFE VERZIÓVAL + SIGNAL EMIT."""
         if self._updating_state:
             print("🔧 DEBUG: Location clear BLOCKED - updating state")
             return
         
         try:
-            print("🔧 DEBUG: _clear_location called - ENTERING CRITICAL SECTION")
+            print("🚨 DEBUG: _clear_location called - ENTERING CRITICAL SECTION")
             
             # 🔧 KRITIKUS: State update flag beállítása
             self._updating_state = True
@@ -1582,7 +1830,7 @@ class ControlPanel(QWidget):
             # Lokális állapot törlése
             self.current_location = None
             self.current_city_data = None
-            print("🔧 DEBUG: current_city_data TÖRÖLVE SAFELY")
+            print("🚨 DEBUG: current_city_data TÖRÖLVE SAFELY")
             
             # UI elemek visszaállítása
             self.location_info_label.setText("Válasszon lokációt...")
@@ -1591,7 +1839,17 @@ class ControlPanel(QWidget):
             
             self._update_status("Válasszon lokációt a kezdéshez")
             
-            print("✅ DEBUG: Lokáció törlése SAFE VERSION")
+            # 🚨 ANALYTICS → MAP SYNC: Analysis parameters changed signal emit
+            analysis_params = self._get_current_analysis_parameters()
+            self.analysis_parameters_changed.emit(analysis_params)
+            print(f"🚨 DEBUG: analysis_parameters_changed signal EMITTED for location clear: {analysis_params}")
+            
+            # 🚨 ANALYTICS → MAP SYNC: Bundle changed signal emit
+            bundle = self._get_all_parameters()
+            self.parameters_bundle_changed.emit(bundle)
+            print(f"🚨 DEBUG: parameters_bundle_changed signal EMITTED after location clear")
+            
+            print("✅ DEBUG: Lokáció törlése ANALYTICS → MAP SYNC VERSION")
             
         except Exception as e:
             print(f"❌ DEBUG: Safe lokáció törlési hiba: {e}")
@@ -1601,7 +1859,7 @@ class ControlPanel(QWidget):
             
             # Fetch button állapot frissítése
             self._update_fetch_button_state_safe()
-            print("🔧 DEBUG: _clear_location - EXITING CRITICAL SECTION")
+            print("🚨 DEBUG: _clear_location - EXITING CRITICAL SECTION")
     
     # === ✅ PROVIDER SELECTOR LOGIC ===
     
@@ -1639,36 +1897,6 @@ class ControlPanel(QWidget):
                 
         except Exception as e:
             print(f"❌ Error saving provider preferences: {e}")
-    
-    def _on_provider_changed(self, button) -> None:
-        """Provider radio button változás kezelése."""
-        try:
-            # Új provider meghatározása
-            if button == self.auto_radio:
-                new_provider = "auto"
-            elif button == self.openmeteo_radio:
-                new_provider = "open-meteo"
-            elif button == self.meteostat_radio:
-                new_provider = "meteostat"
-            else:
-                return
-            
-            if new_provider != self.current_provider:
-                self.current_provider = new_provider
-                
-                # Preferences mentése
-                self._save_provider_preferences()
-                
-                # Signal kibocsátása Controller felé
-                self.provider_changed.emit(new_provider)
-                
-                # UI frissítése
-                self._update_status_for_provider_change(new_provider)
-                
-                print(f"🎛️ Provider changed to: {new_provider}")
-                
-        except Exception as e:
-            print(f"❌ Error handling provider change: {e}")
     
     def _update_status_for_provider_change(self, provider: str) -> None:
         """Státusz frissítése provider változás esetén."""
@@ -1787,7 +2015,7 @@ class ControlPanel(QWidget):
     
     def _trigger_weather_fetch(self) -> None:
         """🚀 MULTI-YEAR BATCH + 🏞️ RÉGIÓ/MEGYE TÁMOGATÁS: időjárási adatok lekérdezésének indítása."""
-        print("🔧 DEBUG: _trigger_weather_fetch called - KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE VALIDÁCIÓ")
+        print("🚨 DEBUG: _trigger_weather_fetch called - ANALYTICS → MAP SYNC FIX + KISZÜRÜLÉSI BUG FIX + MULTI-YEAR BATCH + RÉGIÓ/MEGYE VALIDÁCIÓ")
         
         if self.is_fetching:
             print("⚠️ DEBUG: Already fetching, ignoring request")
@@ -1897,7 +2125,8 @@ class ControlPanel(QWidget):
                 "time_range": self.time_range_combo.currentText() if self.date_mode == "time_range" else None,
                 "analysis_type": "region",
                 "region_name": self.selected_region,
-                "cities": self._get_region_cities(self.selected_region)
+                "cities": self._get_region_cities(self.selected_region),
+                "query_type": self.analysis_parameter_combo.currentData() if hasattr(self, "analysis_parameter_combo") else "hottest_today",
             }
             
             # 🚀 MULTI-YEAR BATCH: Lokális dátum validáció
@@ -1954,7 +2183,8 @@ class ControlPanel(QWidget):
                 "time_range": self.time_range_combo.currentText() if self.date_mode == "time_range" else None,
                 "analysis_type": "county",
                 "county_name": self.selected_county,
-                "cities": self._get_county_cities(self.selected_county)
+                "cities": self._get_county_cities(self.selected_county),
+                "query_type": self.analysis_parameter_combo.currentData() if hasattr(self, "analysis_parameter_combo") else "hottest_today",
             }
             
             # 🚀 MULTI-YEAR BATCH: Lokális dátum validáció
@@ -2010,8 +2240,9 @@ class ControlPanel(QWidget):
         print(f"🔧 DEBUG: _set_fetch_state: {fetching} - WITH SIGNAL BLOCKING")
         
         try:
-            # 🔧 KRITIKUS: State update flag beállítása
-            self._updating_state = True
+            # 🔧 KRITIKUS: State update flag beállítása - DE NEM FETCH MÓD ESETÉN!
+            if fetching:
+                self._updating_state = True
             
             self.is_fetching = fetching
             
@@ -2023,182 +2254,427 @@ class ControlPanel(QWidget):
             self.progress_bar.setVisible(fetching)
             if fetching:
                 self.progress_bar.setRange(0, 0)  # Indeterminate
+            else:
+                self.progress_bar.setRange(0, 100)
+                self.progress_bar.setValue(0)
             
-            # 🔧 SIGNAL BLOCKING: Elemzési típus vezérlők letiltása fetch közben
-            self.single_location_radio.blockSignals(True)
-            self.region_radio.blockSignals(True)
-            self.county_radio.blockSignals(True)
-            
-            self.single_location_radio.setEnabled(not fetching)
-            self.region_radio.setEnabled(not fetching)
-            self.county_radio.setEnabled(not fetching)
-            
-            # Lokáció selector letiltása fetch közben (csak single_location módban)
-            if self.analysis_type == "single_location":
-                self.universal_location_selector.setEnabled(not fetching)
-                self.clear_location_btn.setEnabled(not fetching and self.current_city_data is not None)
-            
-            # 🔧 SIGNAL BLOCKING: Régió/megye selector letiltása fetch közben
-            self.region_combo.blockSignals(True)
-            self.county_combo.blockSignals(True)
-            
-            self.region_combo.setEnabled(not fetching and self.analysis_type == "region")
-            self.county_combo.setEnabled(not fetching and self.analysis_type == "county")
-            
-            # 🚀 MULTI-YEAR BATCH vezérlők letiltása lekérdezés közben
-            self.time_range_radio.setEnabled(not fetching)
-            self.manual_dates_radio.setEnabled(not fetching)
-            self.time_range_combo.setEnabled(not fetching and self.date_mode == "time_range")
-            
-            # Dátum vezérlők letiltása lekérdezés közben
-            self.start_date.setEnabled(not fetching and self.date_mode == "manual_dates")
-            self.end_date.setEnabled(not fetching and self.date_mode == "manual_dates")
-            
-            # ✅ PROVIDER SELECTOR vezérlők letiltása fetch közben
-            self.auto_radio.setEnabled(not fetching)
-            self.openmeteo_radio.setEnabled(not fetching)
-            self.meteostat_radio.setEnabled(not fetching)
-            
-            print(f"✅ DEBUG: KISZÜRÜLÉSI BUG FIX + MULTI-YEAR + RÉGIÓ/MEGYE Fetch state BEÁLLÍTVA: {fetching}")
-            
-        except Exception as e:
-            print(f"❌ ERROR: Set fetch state with signal blocking error: {e}")
-        finally:
-            # 🔧 KRITIKUS: Signal blokkolás feloldása ha nem fetch mód
-            if not fetching:
+            # 🔧 KRITIKUS JAVÍTÁS: SIGNAL BLOCKING CSAK FETCH KÖZBEN!
+            if fetching:
+                # Signal blokkolás CSAK fetch közben
+                self.single_location_radio.blockSignals(True)
+                self.region_radio.blockSignals(True)
+                self.county_radio.blockSignals(True)
+                self.region_combo.blockSignals(True)
+                self.county_combo.blockSignals(True)
+            else:
+                # Signal blokkolás feloldása fetch befejezése után
                 self.single_location_radio.blockSignals(False)
                 self.region_radio.blockSignals(False)
                 self.county_radio.blockSignals(False)
                 self.region_combo.blockSignals(False)
                 self.county_combo.blockSignals(False)
-                print("🔧 DEBUG: Signals UNBLOCKED after fetch state change")
+                print("🔧 DEBUG: Signals UNBLOCKED after fetch completion")
             
-            # 🔧 KRITIKUS: State update flag törlése
-            self._updating_state = False
+            # Elemzési típus vezérlők engedélyezése/letiltása
+            self.single_location_radio.setEnabled(not fetching)
+            self.region_radio.setEnabled(not fetching)
+            self.county_radio.setEnabled(not fetching)
+            
+            # Lokáció selector állapot (csak single_location módban)
+            if self.analysis_type == "single_location":
+                self.universal_location_selector.setEnabled(not fetching)
+                self.clear_location_btn.setEnabled(not fetching and self.current_city_data is not None)
+            
+            # Régió/megye selector állapot megfelelő analysis type szerint
+            self.region_combo.setEnabled(not fetching and self.analysis_type == "region")
+            self.county_combo.setEnabled(not fetching and self.analysis_type == "county")
+            
+            # 🚀 MULTI-YEAR BATCH vezérlők
+            self.time_range_radio.setEnabled(not fetching)
+            self.manual_dates_radio.setEnabled(not fetching)
+            self.time_range_combo.setEnabled(not fetching and self.date_mode == "time_range")
+            
+            # Dátum vezérlők
+            self.start_date.setEnabled(not fetching and self.date_mode == "manual_dates")
+            self.end_date.setEnabled(not fetching and self.date_mode == "manual_dates")
+            
+            # ✅ PROVIDER SELECTOR vezérlők
+            self.auto_radio.setEnabled(not fetching)
+            self.openmeteo_radio.setEnabled(not fetching)
+            self.meteostat_radio.setEnabled(not fetching)
+            
+            print(f"✅ DEBUG: FETCH STATE JAVÍTVA: {fetching} - Analysis type controls enabled: {not fetching}")
+            
+        except Exception as e:
+            print(f"❌ ERROR: Set fetch state error: {e}")
+        finally:
+            # 🔧 KRITIKUS JAVÍTÁS: State update flag törlése MINDEN esetben
+            if self._updating_state:
+                self._updating_state = False
+                print("🔧 DEBUG: _updating_state flag RESET in _set_fetch_state finally block")
     
     def _cancel_operations(self) -> None:
-        """Műveletek megszakítása."""
-        if self.is_fetching:
-            # Worker manager megszakítás
-            self.worker_manager.cancel_all()
-            
-            # UI állapot visszaállítása
-            self._set_fetch_state(False)
-            
-            self._update_status("Műveletek megszakítva")
-            print("🛑 Műveletek megszakítva")
-    
-    # === DÁTUM HELPER METÓDUSOK ===
-    
-    def _set_last_month(self) -> None:
-        """Előző hónap beállítása."""
-        today = QDate.currentDate()
-        start = today.addMonths(-1).addDays(1 - today.day())  # Hónap első napja
-        end = today.addDays(-today.day())  # Előző hónap utolsó napja
+        """Lekérdezés megszakítása."""
+        print("🚨 DEBUG: _cancel_operations called")
         
-        self.start_date.setDate(start)
-        self.end_date.setDate(end)
-    
-    def _set_last_year(self) -> None:
-        """Előző év beállítása."""
-        today = QDate.currentDate()
-        start = QDate(today.year() - 1, 1, 1)
-        end = QDate(today.year() - 1, 12, 31)
+        # Worker manager stop parancs
+        if self.worker_manager:
+            self.worker_manager.stop_all_workers()
         
-        self.start_date.setDate(start)
-        self.end_date.setDate(end)
-    
-    def _validate_dates_safe(self) -> None:
-        """🔧 KISZÜRÜLÉSI BUG FIX - dátumok validálása SAFE VERZIÓVAL."""
-        if self._updating_state:
-            print("🔧 DEBUG: Date validation BLOCKED - updating state")
-            return
+        # UI állapot visszaállítása
+        self._set_fetch_state(False)
         
-        start = self.start_date.date()
-        end = self.end_date.date()
+        self._update_status("Lekérdezés megszakítva")
+        print("✅ DEBUG: Operations cancelled")
+    
+    def _show_local_error(self, error_message: str) -> None:
+        """Helyi hiba megjelenítése."""
+        print(f"❌ LOCAL ERROR: {error_message}")
         
-        if start > end:
-            # Ha kezdő dátum nagyobb, automatikusan javítjuk
-            if self.sender() == self.start_date:
-                self.end_date.setDate(start)
-            else:
-                self.start_date.setDate(end)
+        # Status frissítése
+        self._update_status(f"❌ Hiba: {error_message}")
         
-        # 🔧 KRITIKUS: Fetch button állapot frissítése SAFE VERZIÓVAL
-        self._update_fetch_button_state_safe()
-    
-    # === 🔧 UI ÁLLAPOT KEZELÉS - KISZÜRÜLÉSI BUG FIX VERZIÓVAL ===
-    
-    def _update_fetch_button_state(self) -> None:
-        """🔧 WRAPPER - eredeti metódus átirányítása SAFE verzióra."""
-        self._update_fetch_button_state_safe()
-    
-    def _update_status(self, message: str) -> None:
-        """🎨 PROFESSZIONÁLIS állapot üzenet frissítése."""
-        self.status_label.setText(message)
-        self._apply_professional_label_styling(self.status_label, "primary")
-    
-    def _show_local_error(self, message: str) -> None:
-        """🎨 PROFESSZIONÁLIS lokális hiba megjelenítése."""
-        self.status_label.setText(f"❌ {message}")
+        # Error styling
         self._apply_professional_label_styling(self.status_label, "error")
         
-        # 3 másodperc után visszaállítás
-        QTimer.singleShot(3000, lambda: self._apply_professional_label_styling(self.status_label, "primary"))
+        # Fetch state reset ha szükséges
+        if self.is_fetching:
+            self._set_fetch_state(False)
     
-    def _show_success_message(self, message: str) -> None:
-        """🎨 PROFESSZIONÁLIS siker üzenet megjelenítése."""
-        self.status_label.setText(f"✅ {message}")
-        self._apply_professional_label_styling(self.status_label, "success")
+    def _update_status(self, message: str) -> None:
+        """Status üzenet frissítése."""
+        self.status_label.setText(message)
+        print(f"📊 STATUS: {message}")
         
-        # 3 másodperc után visszaállítás
-        QTimer.singleShot(3000, lambda: self._apply_professional_label_styling(self.status_label, "primary"))
+        # Reset styling to primary if not error
+        if not message.startswith("❌"):
+            self._apply_professional_label_styling(self.status_label, "primary")
     
-    # === PUBLIKUS SLOT METÓDUSOK A CONTROLLER FELŐLI KOMMUNIKÁCIÓHOZ ===
+    # === 🚨 ANALYTICS → MAP SYNC FIX - PUBLIKUS API METÓDUSOK ===
+    
+    def get_current_analysis_parameters(self) -> Dict[str, Any]:
+        """
+        🚨 ANALYTICS → MAP SYNC - Publikus API: Jelenlegi analysis paraméterek lekérdezése.
+        """
+        return self._get_current_analysis_parameters()
+    
+    def get_current_weather_parameters(self) -> Dict[str, Any]:
+        """
+        🚨 ANALYTICS → MAP SYNC - Publikus API: Jelenlegi weather paraméterek lekérdezése.
+        """
+        return self._get_current_weather_parameters()
+    
+    def get_current_date_parameters(self) -> Dict[str, Any]:
+        """
+        🚨 ANALYTICS → MAP SYNC - Publikus API: Jelenlegi date paraméterek lekérdezése.
+        """
+        return self._get_current_date_parameters()
+    
+    def get_all_parameters(self) -> Dict[str, Any]:
+        """
+        🚨 ANALYTICS → MAP SYNC - Publikus API: Comprehensive bundle minden paraméterrel.
+        """
+        return self._get_all_parameters()
+    
+    def trigger_analysis_parameters_sync(self) -> None:
+        """
+        🚨 ANALYTICS → MAP SYNC - Publikus API: Analysis paraméterek szinkronizálás manuális trigger.
+        """
+        analysis_params = self._get_current_analysis_parameters()
+        self.analysis_parameters_changed.emit(analysis_params)
+        print(f"🚨 DEBUG: Manual analysis_parameters_changed trigger: {analysis_params}")
+    
+    def trigger_weather_parameters_sync(self) -> None:
+        """
+        🚨 ANALYTICS → MAP SYNC - Publikus API: Weather paraméterek szinkronizálás manuális trigger.
+        """
+        weather_params = self._get_current_weather_parameters()
+        self.weather_parameters_changed.emit(weather_params)
+        print(f"🚨 DEBUG: Manual weather_parameters_changed trigger: {weather_params}")
+    
+    def trigger_full_parameters_sync(self) -> None:
+        """
+        🚨 ANALYTICS → MAP SYNC - Publikus API: Összes paraméter szinkronizálás manuális trigger.
+        """
+        bundle = self._get_all_parameters()
+        self.parameters_bundle_changed.emit(bundle)
+        print(f"🚨 DEBUG: Manual parameters_bundle_changed trigger")
+    
+    # === KOMPATIBILITÁSI METÓDUSOK ===
+    
+    def get_selected_city_data(self) -> Optional[Dict[str, Any]]:
+        """
+        Kompatibilitási metódus: Kiválasztott város adatok lekérdezése.
+        """
+        return self.current_city_data
+    
+    def get_selected_location(self) -> Optional[UniversalLocation]:
+        """
+        Kompatibilitási metódus: Kiválasztott UniversalLocation objektum lekérdezése.
+        """
+        return self.current_location
+    
+    def get_date_range(self) -> tuple[str, str]:
+        """
+        Kompatibilitási metódus: Aktuális dátum tartomány lekérdezése.
+        """
+        return self._get_effective_date_range()
+    
+    def get_analysis_type(self) -> str:
+        """
+        Kompatibilitási metódus: Aktuális elemzési típus lekérdezése.
+        """
+        return self.analysis_type
+    
+    def get_provider(self) -> str:
+        """
+        Kompatibilitási metódus: Aktuális provider lekérdezése.
+        """
+        return self.current_provider
+    
+    def is_fetch_in_progress(self) -> bool:
+        """
+        Kompatibilitási metódus: Lekérdezés folyamatban állapot ellenőrzése.
+        """
+        return self.is_fetching
+    
+    # === UI FRISSÍTÉSI METÓDUSOK ===
+    
+    def refresh_ui_state(self) -> None:
+        """
+        UI állapot teljes frissítése - használható külső hívásokból.
+        """
+        print("🔄 DEBUG: refresh_ui_state called")
+        
+        # Elemzési típus UI frissítése
+        self._update_ui_for_analysis_type_with_signal_blocking()
+        
+        # Fetch button állapot frissítése
+        self._update_fetch_button_state_safe()
+        
+        # Provider selector frissítése
+        self._update_usage_display()
+        
+        # Dátum számítás frissítése
+        if self.date_mode == "time_range":
+            self._update_computed_dates()
+        
+        print("✅ DEBUG: UI state refreshed")
+    
+    def set_analysis_type_programmatically(self, analysis_type: str) -> bool:
+        """
+        Elemzési típus programozott beállítása - használható külső hívásokból.
+        """
+        if analysis_type not in ["single_location", "region", "county"]:
+            print(f"❌ ERROR: Invalid analysis type: {analysis_type}")
+            return False
+        
+        try:
+            # Signal blokkolása a programozott változás alatt
+            self._updating_state = True
+            
+            # Radio button beállítása
+            if analysis_type == "single_location":
+                self.single_location_radio.setChecked(True)
+            elif analysis_type == "region":
+                self.region_radio.setChecked(True)
+            elif analysis_type == "county":
+                self.county_radio.setChecked(True)
+            
+            # Állapot frissítése
+            self.analysis_type = analysis_type
+            
+            # UI frissítése
+            self._update_ui_for_analysis_type_with_signal_blocking()
+            self._update_fetch_button_state_safe()
+            
+            print(f"✅ DEBUG: Analysis type set programmatically: {analysis_type}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ ERROR: Failed to set analysis type programmatically: {e}")
+            return False
+        finally:
+            self._updating_state = False
+    
+    def set_provider_programmatically(self, provider: str) -> bool:
+        """
+        Provider programozott beállítása - használható külső hívásokból.
+        """
+        if provider not in ["auto", "open-meteo", "meteostat"]:
+            print(f"❌ ERROR: Invalid provider: {provider}")
+            return False
+        
+        try:
+            # Radio button beállítása
+            if provider == "auto":
+                self.auto_radio.setChecked(True)
+            elif provider == "open-meteo":
+                self.openmeteo_radio.setChecked(True)
+            elif provider == "meteostat":
+                self.meteostat_radio.setChecked(True)
+            
+            # Állapot frissítése
+            self.current_provider = provider
+            
+            # Preferences mentése
+            self._save_provider_preferences()
+            
+            # Status frissítése
+            self._update_status_for_provider_change(provider)
+            
+            print(f"✅ DEBUG: Provider set programmatically: {provider}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ ERROR: Failed to set provider programmatically: {e}")
+            return False
+    
+    def force_fetch_button_update(self) -> None:
+        """
+        Fetch button állapot kényszerített frissítése - használható külső hívásokból.
+        """
+        self._update_fetch_button_state_safe()
+        print("🔄 DEBUG: Fetch button state force updated")
+    
+    # === HIÁNYZÓ KOMPATIBILITÁSI METÓDUSOK ===
     
     def _on_geocoding_completed(self, results: List[Dict[str, Any]]) -> None:
         """
-        🌍 KOMPATIBILITÁS - Geocoding befejezés kezelése a Controller-től.
+        Geocoding eredmények fogadása - kompatibilitási metódus.
         """
-        print(f"📍 DEBUG: _on_geocoding_completed called (COMPATIBILITY): {len(results)} results")
+        print(f"📍 DEBUG: _on_geocoding_completed called with {len(results)} results")
         
-        if not results:
-            self._update_status("Nem található település ezzel a névvel")
-        else:
-            self._update_status(f"{len(results)} település találat")
-    
-    def update_progress(self, worker_type: str, progress: int) -> None:
-        """Progress frissítése a Controller-től."""
-        if self.progress_bar.isVisible():
-            if progress == 100:
-                self.progress_bar.setVisible(False)
-                self._set_fetch_state(False)
-                self._update_usage_display()
+        try:
+            # UniversalLocationSelector frissítése az eredményekkel
+            if hasattr(self, 'universal_location_selector'):
+                self.universal_location_selector.update_search_results(results)
+                print(f"✅ DEBUG: Search results updated in UniversalLocationSelector")
+            
+            # Status frissítése
+            if results:
+                self._update_status(f"📍 {len(results)} találat")
             else:
-                self.progress_bar.setRange(0, 100)
-                self.progress_bar.setValue(progress)
-        
-        # Státusz frissítése - MULTI-YEAR BATCH + RÉGIÓ/MEGYE info
-        if progress < 100:
-            provider_info = f"({self.current_provider})" if self.current_provider != "auto" else ""
-            batch_info = ""
-            if self.date_mode == "time_range":
-                batch_info = f" [{self.time_range_combo.currentText()}]"
-            
-            analysis_info = ""
-            if self.analysis_type == "region":
-                analysis_info = f" [Régió: {self.region_combo.currentText()}]"
-            elif self.analysis_type == "county":
-                analysis_info = f" [Megye: {self.county_combo.currentText()}]"
-            
-            self._update_status(f"⏳ {worker_type}: {progress}%{provider_info}{batch_info}{analysis_info}")
+                self._update_status("❌ Nincs találat")
+                
+        except Exception as e:
+            print(f"❌ ERROR: Geocoding completion handling error: {e}")
+            self.local_error_occurred.emit(f"Geocoding eredmény feldolgozási hiba: {str(e)}")
     
-    def update_status_from_controller(self, message: str) -> None:
-        """Státusz frissítése a Controller-től."""
-        self._update_status(message)
+    def _on_geocoding_error(self, error_message: str) -> None:
+        """
+        Geocoding hiba fogadása - kompatibilitási metódus.
+        """
+        print(f"❌ DEBUG: _on_geocoding_error called: {error_message}")
+        
+        # Error status beállítása
+        self._update_status(f"❌ Keresési hiba: {error_message}")
+        self._apply_professional_label_styling(self.status_label, "error")
+        
+        # Local error signal emit
+        self.local_error_occurred.emit(f"Keresési hiba: {error_message}")
+    
+    def _on_weather_data_received(self, data: Dict[str, Any]) -> None:
+        """
+        Weather data fogadása - kompatibilitási metódus.
+        """
+        print(f"🌤️ DEBUG: _on_weather_data_received called")
+        
+        try:
+            # Fetch state reset
+            self._set_fetch_state(False)
+            
+            # Success status
+            location_name = "Unknown"
+            if self.current_city_data:
+                location_name = self.current_city_data.get("display_name", "Unknown")
+            elif self.analysis_type == "region" and self.selected_region:
+                location_name = self.selected_region
+            elif self.analysis_type == "county" and self.selected_county:
+                location_name = self.selected_county
+            
+            self._update_status(f"✅ Adatok fogadva: {location_name}")
+            self._apply_professional_label_styling(self.status_label, "success")
+            
+            print(f"✅ DEBUG: Weather data received for: {location_name}")
+            
+        except Exception as e:
+            print(f"❌ ERROR: Weather data reception handling error: {e}")
+    
+    def _on_weather_data_error(self, error_message: str) -> None:
+        """
+        Weather data hiba fogadása - kompatibilitási metódus.
+        """
+        print(f"❌ DEBUG: _on_weather_data_error called: {error_message}")
+        
+        try:
+            # Fetch state reset
+            self._set_fetch_state(False)
+            
+            # Error status beállítása
+            self._update_status(f"❌ Lekérdezési hiba: {error_message}")
+            self._apply_professional_label_styling(self.status_label, "error")
+            
+            # Local error signal emit
+            self.local_error_occurred.emit(f"Lekérdezési hiba: {error_message}")
+            
+        except Exception as e:
+            print(f"❌ ERROR: Weather data error handling error: {e}")
+    
+    def _on_multi_city_data_received(self, data: Dict[str, Any]) -> None:
+        """
+        Multi-city data fogadása - kompatibilitási metódus.
+        """
+        print(f"🏞️ DEBUG: _on_multi_city_data_received called")
+        
+        try:
+            # Fetch state reset
+            self._set_fetch_state(False)
+            
+            # Success status
+            region_name = "Unknown"
+            if self.analysis_type == "region" and self.selected_region:
+                region_name = f"Régió: {self.selected_region}"
+            elif self.analysis_type == "county" and self.selected_county:
+                region_name = f"Megye: {self.selected_county}"
+            
+            city_count = len(data.get("city_results", []))
+            self._update_status(f"✅ Multi-city adatok fogadva: {region_name} ({city_count} város)")
+            self._apply_professional_label_styling(self.status_label, "success")
+            
+            print(f"✅ DEBUG: Multi-city data received for: {region_name} ({city_count} cities)")
+            
+        except Exception as e:
+            print(f"❌ ERROR: Multi-city data reception handling error: {e}")
+    
+    def _on_multi_city_data_error(self, error_message: str) -> None:
+        """
+        Multi-city data hiba fogadása - kompatibilitási metódus.
+        """
+        print(f"❌ DEBUG: _on_multi_city_data_error called: {error_message}")
+        
+        try:
+            # Fetch state reset
+            self._set_fetch_state(False)
+            
+            # Error status beállítása
+            self._update_status(f"❌ Multi-city lekérdezési hiba: {error_message}")
+            self._apply_professional_label_styling(self.status_label, "error")
+            
+            # Local error signal emit
+            self.local_error_occurred.emit(f"Multi-city lekérdezési hiba: {error_message}")
+            
+        except Exception as e:
+            print(f"❌ ERROR: Multi-city data error handling error: {e}")
+    
+    # === PUBLIKUS SLOT METÓDUSOK A CONTROLLER FELŐLI KOMMUNIKÁCIÓHOZ ===
     
     def on_weather_data_completed(self) -> None:
-        """Időjárási adatok lekérdezésének befejezése a Controller-től."""
+        """
+        🚨 ANALYTICS → MAP SYNC + 🚀 MULTI-YEAR BATCH + 🏞️ RÉGIÓ/MEGYE - Időjárási adatok lekérdezésének befejezése a Controller-től.
+        """
+        print("✅ DEBUG: on_weather_data_completed called from Controller")
+        
         self._set_fetch_state(False)
         
         # MULTI-YEAR BATCH + RÉGIÓ/MEGYE specifikus success message
@@ -2213,226 +2689,84 @@ class ControlPanel(QWidget):
         elif self.analysis_type == "county":
             success_msg += f" [Megye: {self.county_combo.currentText()}]"
         
-        self._show_success_message(success_msg)
+        # Status frissítése success styling-gal
+        self._update_status(f"✅ {success_msg}")
+        self._apply_professional_label_styling(self.status_label, "success")
+        
+        # Usage display frissítése
         self._update_usage_display()
     
     def on_controller_error(self, error_message: str) -> None:
-        """Hiba kezelése a Controller-től."""
+        """
+        🚨 ANALYTICS → MAP SYNC + 🚀 MULTI-YEAR BATCH + 🏞️ RÉGIÓ/MEGYE - Hiba kezelése a Controller-től.
+        """
+        print(f"❌ DEBUG: on_controller_error called from Controller: {error_message}")
+        
         self._set_fetch_state(False)
         self._show_local_error(error_message)
     
-    # === ✅ PROVIDER SELECTOR PUBLIKUS API ===
-    
-    def update_usage_from_controller(self, usage_data: Dict[str, Any]) -> None:
-        """Usage adatok frissítése a Controller-től."""
-        self.usage_data = usage_data
-        self._update_usage_display()
-    
-    def get_selected_provider(self) -> str:
-        """Jelenleg kiválasztott provider lekérdezése."""
-        return self.current_provider
-    
-    def set_provider(self, provider: str) -> None:
-        """Provider beállítása programmatikusan."""
-        if provider not in ProviderConfig.PROVIDERS:
-            return
+    def update_progress(self, worker_type: str, progress: int) -> None:
+        """
+        🚨 ANALYTICS → MAP SYNC + 🚀 MULTI-YEAR BATCH + 🏞️ RÉGIÓ/MEGYE - Progress frissítése a Controller-től.
+        """
+        if self.progress_bar.isVisible():
+            if progress == 100:
+                self.progress_bar.setVisible(False)
+                # Az _set_fetch_state(False) már az on_weather_data_completed-ben megtörténik
+            else:
+                self.progress_bar.setRange(0, 100)
+                self.progress_bar.setValue(progress)
         
-        self.current_provider = provider
+        if progress < 100:
+            provider_info = f"({self.current_provider})" if self.current_provider != "auto" else ""
+            batch_info = f" [{self.time_range_combo.currentText()}]" if self.date_mode == "time_range" else ""
+            
+            analysis_info = ""
+            if self.analysis_type == "region":
+                analysis_info = f" [Régió: {self.region_combo.currentText()}]"
+            elif self.analysis_type == "county":
+                analysis_info = f" [Megye: {self.county_combo.currentText()}]"
+            
+            self._update_status(f"⏳ {worker_type}: {progress}%{provider_info}{batch_info}{analysis_info}")
+    
+    def update_status_from_controller(self, message: str) -> None:
+        """
+        🚨 ANALYTICS → MAP SYNC + 🚀 MULTI-YEAR BATCH + 🏞️ RÉGIÓ/MEGYE - Státusz frissítése a Controller-től.
+        """
+        print(f"📊 DEBUG: update_status_from_controller called: {message}")
+        self._update_status(message)
+    
+    # === DESTRUKTOR ÉS CLEANUP ===
+    
+    def cleanup(self) -> None:
+        """
+        ControlPanel cleanup - timer leállítása és erőforrások felszabadítása.
+        """
+        print("🧹 DEBUG: ControlPanel cleanup started")
         
-        # Radio button frissítése
-        if provider == "auto":
-            self.auto_radio.setChecked(True)
-        elif provider == "open-meteo":
-            self.openmeteo_radio.setChecked(True)
-        elif provider == "meteostat":
-            self.meteostat_radio.setChecked(True)
-        
-        self._save_provider_preferences()
-        self._update_status_for_provider_change(provider)
-    
-    def get_provider_info(self) -> Dict[str, Any]:
-        """Jelenlegi provider információk lekérdezése."""
-        return {
-            "selected_provider": self.current_provider,
-            "provider_config": ProviderConfig.PROVIDERS.get(self.current_provider, {}),
-            "usage_data": self.usage_data,
-            "preferences": self.provider_preferences
-        }
-    
-    # === 🌍 UNIVERSAL LOCATION SELECTOR PUBLIKUS API ===
-    
-    def get_current_location(self) -> Optional[UniversalLocation]:
-        """Jelenlegi UniversalLocation objektum lekérdezése."""
-        return self.current_location
-    
-    def set_location(self, location: UniversalLocation) -> None:
-        """UniversalLocation beállítása programmatikusan."""
         try:
-            self.universal_location_selector.set_current_location(location)
-            # Az _on_location_changed_safe automatikusan meghívódik
+            # Timer leállítása
+            if hasattr(self, 'usage_update_timer') and self.usage_update_timer:
+                self.usage_update_timer.stop()
+                print("✅ DEBUG: Usage update timer stopped")
+            
+            # Worker manager cleanup
+            if hasattr(self, 'worker_manager') and self.worker_manager:
+                self.worker_manager.stop_all_workers()
+                print("✅ DEBUG: Worker manager stopped")
+            
+            # State reset
+            self._updating_state = False
+            self.is_fetching = False
+            
+            print("✅ DEBUG: ControlPanel cleanup completed")
             
         except Exception as e:
-            print(f"❌ Location beállítási hiba: {e}")
+            print(f"❌ ERROR: ControlPanel cleanup error: {e}")
     
-    def focus_location_search(self) -> None:
-        """Fókusz a lokáció keresés fülre."""
-        self.universal_location_selector.focus_search()
-    
-    # === 🚀 MULTI-YEAR BATCH PUBLIKUS API - 1 ÉV OPCIÓVAL ===
-    
-    def get_date_mode(self) -> str:
-        """Jelenlegi dátum mód lekérdezése."""
-        return self.date_mode
-    
-    def set_date_mode(self, mode: str) -> None:
-        """Dátum mód beállítása programmatikusan."""
-        if mode == "time_range":
-            self.time_range_radio.setChecked(True)
-        elif mode == "manual_dates":
-            self.manual_dates_radio.setChecked(True)
-        
-        self._on_date_mode_changed()
-    
-    def get_selected_time_range(self) -> str:
-        """Kiválasztott időtartam lekérdezése."""
-        return self.time_range_combo.currentText()
-    
-    def set_time_range(self, time_range: str) -> None:
-        """Időtartam beállítása programmatikusan - 1 ÉV OPCIÓVAL."""
-        self.time_range_combo.setCurrentText(time_range)
-        self._on_time_range_changed(time_range)
-    
-    def get_computed_date_range(self) -> tuple[str, str]:
-        """Számított dátum tartomány lekérdezése."""
-        return self._get_effective_date_range()
-    
-    def is_multi_year_capable(self) -> bool:
-        """Multi-year batch képesség ellenőrzése."""
-        return True  # Ez a verzió támogatja
-    
-    def get_max_supported_years(self) -> int:
-        """Maximum támogatott évek száma."""
-        return 60  # Praktikus limit
-    
-    # === 🏞️ RÉGIÓ/MEGYE PUBLIKUS API ===
-    
-    def get_analysis_type(self) -> str:
-        """Jelenlegi elemzési típus lekérdezése."""
-        return self.analysis_type
-    
-    def set_analysis_type(self, analysis_type: str) -> None:
-        """Elemzési típus beállítása programmatikusan."""
-        if analysis_type == "single_location":
-            self.single_location_radio.setChecked(True)
-        elif analysis_type == "region":
-            self.region_radio.setChecked(True)
-        elif analysis_type == "county":
-            self.county_radio.setChecked(True)
-        
-        # Megfelelő radio button referencia
-        radio_button = getattr(self, f"{analysis_type}_radio", self.single_location_radio)
-        self._on_analysis_type_changed_safe(radio_button)
-    
-    def get_selected_region(self) -> Optional[str]:
-        """Kiválasztott régió lekérdezése."""
-        return self.selected_region if self.analysis_type == "region" else None
-    
-    def set_region(self, region: str) -> None:
-        """Régió beállítása programmatikusan."""
-        self.region_combo.setCurrentText(region)
-        self._on_region_changed_safe(region)
-    
-    def get_selected_county(self) -> Optional[str]:
-        """Kiválasztott megye lekérdezése."""
-        return self.selected_county if self.analysis_type == "county" else None
-    
-    def set_county(self, county: str) -> None:
-        """Megye beállítása programmatikusan."""
-        self.county_combo.setCurrentText(county)
-        self._on_county_changed_safe(county)
-    
-    def get_region_cities_list(self, region: str) -> List[Dict[str, Any]]:
-        """Régió városainak listája lekérdezése."""
-        return self._get_region_cities(region)
-    
-    def get_county_cities_list(self, county: str) -> List[Dict[str, Any]]:
-        """Megye városainak listája lekérdezése."""
-        return self._get_county_cities(county)
-    
-    def is_multi_city_analysis(self) -> bool:
-        """Multi-city elemzés ellenőrzése."""
-        return self.analysis_type in ["region", "county"]
-    
-    def get_analysis_info(self) -> Dict[str, Any]:
-        """Elemzési információk összesített lekérdezése."""
-        info = {
-            "analysis_type": self.analysis_type,
-            "date_mode": self.date_mode,
-            "time_range": self.get_selected_time_range() if self.date_mode == "time_range" else None,
-            "date_range": self.get_computed_date_range(),
-            "provider": self.current_provider
-        }
-        
-        if self.analysis_type == "single_location" and self.current_city_data:
-            info["location"] = self.current_city_data.copy()
-        elif self.analysis_type == "region":
-            info["region"] = self.get_selected_region()
-            info["cities"] = self.get_region_cities_list(self.get_selected_region() or "")
-        elif self.analysis_type == "county":
-            info["county"] = self.get_selected_county()
-            info["cities"] = self.get_county_cities_list(self.get_selected_county() or "")
-        
-        return info
-    
-    # === PUBLIKUS API (KOMPATIBILITÁS) ===
-    
-    def clear_selection(self) -> None:
-        """Kiválasztás törlése."""
-        if self.analysis_type == "single_location":
-            self._clear_location()
-        elif self.analysis_type == "region":
-            self.region_combo.setCurrentIndex(0)
-            self.selected_region = None
-        elif self.analysis_type == "county":
-            self.county_combo.setCurrentIndex(0)
-            self.selected_county = None
-        
-        self._update_fetch_button_state_safe()
-    
-    def set_enabled(self, enabled: bool) -> None:
-        """Panel engedélyezése/letiltása."""
-        self.setEnabled(enabled)
-    
-    def get_current_city_data(self) -> Optional[Dict[str, Any]]:
-        """Jelenlegi kiválasztott város adatainak lekérdezése."""
-        return self.current_city_data.copy() if self.current_city_data else None
-    
-    # === PROFESSZIONÁLIS THEMEMANAGER PUBLIKUS API ===
-    
-    def apply_theme(self, theme_name: str) -> None:
-        """🎨 PROFESSZIONÁLIS téma alkalmazása a panel-re."""
-        success = self.theme_manager.set_theme(theme_name)
-        if success:
-            print(f"🎨 DEBUG: ControlPanel Professional theme applied: {theme_name}")
-        else:
-            print(f"❌ DEBUG: ControlPanel Professional theme failed: {theme_name}")
-    
-    def get_current_theme(self) -> str:
-        """Jelenlegi téma nevének lekérdezése."""
-        return self.theme_manager.get_current_theme()
-    
-    def get_color_palette(self):
-        """🎨 PROFESSZIONÁLIS API - ColorPalette objektum lekérdezése."""
-        return self.theme_manager.get_color_scheme()
-    
-    def get_current_colors(self) -> Dict[str, str]:
-        """🎨 PROFESSZIONÁLIS API - Jelenlegi színek lekérdezése."""
-        return self.theme_manager.get_current_colors()
-    
-    def get_weather_colors(self) -> Dict[str, str]:
-        """🌦️ PROFESSZIONÁLIS API - Időjárás-specifikus színek lekérdezése."""
-        return self.theme_manager.get_weather_colors()
-
-
-# Export
-__all__ = ['ControlPanel']
+    def __del__(self):
+        """Destruktor."""
+        try:
+            self.cleanup()
+        except:
+            pass

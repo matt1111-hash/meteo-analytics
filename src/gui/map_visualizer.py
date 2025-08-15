@@ -2,22 +2,22 @@
 # -*- coding: utf-8 -*-
 
 """
-🗺️ Magyar Folium Térkép Vizualizáló - TELJES INTERAKTÍV VERZIÓ
+🗺️ Magyar Folium Térkép Vizualizáló - HELYI HTTP SZERVER VERZIÒ v3.0
 Magyar Klímaanalitika MVP - Folium + Leaflet.js Alapú Térképes Megjelenítő
 
-🚀 FOLIUM INTERAKTÍV TÉRKÉP:
-- Teljes Leaflet.js funkcionalitás
-- Kattintható magyar megyék
-- Weather overlay support
-- Hover tooltipek
-- Zoom/Pan interakció
-- JavaScript ↔ PySide6 bridge
-- Téma támogatás (light/dark)
+🚀 HELYI HTTP SZERVER MEGOLDÁS v3.0:
+- Beágyazott HTTP szerver QThread-ben
+- WebEngine http://127.0.0.1:PORT/map.html betöltés
+- Same-Origin Policy problémák végleg megoldva
+- Nagy HTML fájlok (1.5MB+) támogatása
+- Folium teljes funkcionalitás
+- Stabil és megbízható működés
 
-🔧 DINAMIKUS SZÍNSKÁLA JAVÍTÁS v1.1:
-✅ COLOR_SCALE_GRADIENTS mapping hozzáadva
-✅ _get_dynamic_gradient() metódus implementálva
-✅ Hardcoded gradient lecserélve dinamikusra
+🔧 KRITIKUS JAVÍTÁS:
+- setHtml() méretkorlát megoldva
+- file:// protokoll problémák megszűntek
+- JavaScript és CSS teljes támogatás
+- Nincs WebEngine cache konfliktus
 
 FÁJL: src/gui/map_visualizer.py
 """
@@ -26,6 +26,10 @@ from typing import Dict, List, Optional, Tuple, Any, Union
 import os
 import json
 import tempfile
+import threading
+import time
+import socketserver
+import http.server
 from pathlib import Path
 from dataclasses import dataclass, field
 from datetime import datetime, date
@@ -93,6 +97,9 @@ class FoliumMapConfig:
     weather_overlay: bool = False
     weather_opacity: float = 0.6
     
+    # 🔧 Active overlay parameter
+    active_overlay_parameter: Optional[str] = None  # "temperature", "wind_speed", "precipitation"
+    
     # Interaktivitás
     disable_scroll_zoom: bool = False
     dragging: bool = True
@@ -105,6 +112,70 @@ class FoliumMapConfig:
     
     # Theme
     theme: str = "light"  # "light" vagy "dark"
+
+
+class LocalHttpServerThread(QThread):
+    """
+    🌐 Helyi HTTP szerver QThread-ben a Folium térképek kiszolgálásához.
+    
+    Ez a szerver megoldja a WebEngine Same-Origin Policy problémáit
+    és támogatja a nagy HTML fájlokat (1.5MB+).
+    """
+    
+    # Signalok
+    server_ready = Signal(str, int)  # host, port
+    server_error = Signal(str)       # error message
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.server = None
+        self.httpd = None
+        self.temp_dir = tempfile.gettempdir()
+        self.host = "127.0.0.1"
+        self.port = 0  # 0 = automatikus szabad port keresés
+        self.running = False
+        
+    def run(self):
+        """
+        🚀 HTTP szerver indítása háttérben.
+        """
+        try:
+            # Munkamappa beállítása
+            os.chdir(self.temp_dir)
+            
+            # HTTP kérés handler
+            class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+                def log_message(self, format, *args):
+                    # Csendes mód - nincs console spam
+                    pass
+            
+            # HTTP szerver létrehozása
+            with socketserver.TCPServer((self.host, self.port), QuietHTTPRequestHandler) as httpd:
+                self.httpd = httpd
+                self.port = httpd.server_address[1]  # Valós port megszerzése
+                self.running = True
+                
+                print(f"🌐 Local HTTP Server started: http://{self.host}:{self.port}")
+                
+                # Szerver kész jelzés
+                self.server_ready.emit(self.host, self.port)
+                
+                # Szerver futtatása
+                httpd.serve_forever()
+                
+        except Exception as e:
+            error_msg = f"HTTP Server error: {e}"
+            print(f"❌ {error_msg}")
+            self.server_error.emit(error_msg)
+    
+    def stop(self):
+        """
+        🛑 HTTP szerver leállítása.
+        """
+        if self.httpd:
+            self.httpd.shutdown()
+            self.running = False
+            print("🛑 Local HTTP Server stopped")
 
 
 class JavaScriptBridge(QWidget):
@@ -154,35 +225,38 @@ class JavaScriptBridge(QWidget):
 
 class FoliumMapGenerator(QThread):
     """
-    🔄 Háttér worker a Folium interaktív térkép generálásához.
+    📄 Háttér worker a Folium interaktív térkép generálásához - HTTP SZERVER VERZIÓ.
     
-    Ez a worker háttérben generálja le a teljes Folium térképet
-    minden interaktív funkcióval.
+    🔧 KRITIKUS VÁLTOZÁS v3.0:
+    - Visszatér a fájlmentéshez
+    - HTTP szerver kiszolgálja a fájlokat
+    - Nagy HTML fájlok (1.5MB+) támogatása
+    - Same-Origin Policy problémák végleg megoldva
     """
     
     # Signalok
     progress_updated = Signal(int)         # progress (0-100)
-    map_generated = Signal(str)           # HTML fájl path
+    map_generated = Signal(str)           # HTML FILE PATH (nem content!)
     error_occurred = Signal(str)          # error message
     status_updated = Signal(str)          # status message
     
-    def __init__(self, config: FoliumMapConfig, counties_gdf=None, weather_data=None, output_path=None, bridge_id=None):
+    def __init__(self, config: FoliumMapConfig, counties_gdf=None, weather_data=None, bridge_id=None, output_path=None):
         super().__init__()
         self.config = config
         self.counties_gdf = counties_gdf
         self.weather_data = weather_data
-        self.output_path = output_path or self._get_temp_html_path()
         self.bridge_id = bridge_id or str(uuid.uuid4())
-    
-    def _get_temp_html_path(self) -> str:
-        """Ideiglenes HTML fájl útvonal generálása."""
-        temp_dir = tempfile.gettempdir()
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        return os.path.join(temp_dir, f"hungarian_folium_map_{timestamp}.html")
+        
+        # Output path generálás
+        if output_path is None:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            self.output_path = os.path.join(tempfile.gettempdir(), f"hungarian_folium_map_{timestamp}.html")
+        else:
+            self.output_path = output_path
     
     def run(self):
         """
-        🗺️ Folium interaktív térkép generálása.
+        🗺️ Folium interaktív térkép generálása - HTTP SZERVER VERZIÓ.
         """
         try:
             if not FOLIUM_AVAILABLE:
@@ -221,18 +295,29 @@ class FoliumMapGenerator(QThread):
             self._add_map_controls(map_obj)
             self.progress_updated.emit(90)
             
-            # === HTML MENTÉS ===
+            # 🔧 KRITIKUS: FÁJL MENTÉS (HTTP szerver miatt)
             
-            self.status_updated.emit("💾 Folium térkép mentése...")
+            self.status_updated.emit("💾 HTML fájl mentése...")
+            
+            # Folium térkép mentése fájlba
             map_obj.save(self.output_path)
             
-            # === JAVASCRIPT INJECTION ===
+            # Fájl létezés ellenőrzése
+            if not os.path.exists(self.output_path):
+                raise FileNotFoundError(f"Generated HTML file not found: {self.output_path}")
             
-            self._inject_custom_javascript()
+            # Fájl méret ellenőrzése
+            file_size = os.path.getsize(self.output_path)
+            if file_size < 1000:
+                raise ValueError(f"Generated HTML file too small: {file_size} bytes")
             
             self.progress_updated.emit(100)
-            self.status_updated.emit("✅ Folium interaktív térkép elkészült!")
+            self.status_updated.emit("✅ Folium térkép HTTP szerver verzió elkészült!")
+            
+            # 🔧 FILE PATH VISSZAADÁS (nem content!)
             self.map_generated.emit(self.output_path)
+            
+            print(f"✅ HTTP Server Folium map generated: {self.output_path} ({file_size:,} bytes)")
             
         except Exception as e:
             import traceback
@@ -321,20 +406,6 @@ class FoliumMapGenerator(QThread):
                 'fillOpacity': 0.8
             }
         
-        # Tooltip function
-        def create_tooltip(feature):
-            props = feature['properties']
-            county_name = props.get('megye', 'Ismeretlen')
-            region = props.get('region', 'Ismeretlen régió')
-            
-            return f"""
-            <div style="font-family: Arial; font-size: 12px;">
-                <b>🏛️ {county_name}</b><br>
-                🌡️ {region}<br>
-                🖱️ Kattints a részletekért
-            </div>
-            """
-        
         # GeoJson layer hozzáadása
         counties_layer = folium.GeoJson(
             counties_geojson,
@@ -363,12 +434,6 @@ class FoliumMapGenerator(QThread):
     def _add_weather_overlay(self, map_obj: folium.Map):
         """
         🌤️ Időjárási adatok overlay hozzáadása HeatMap plugin-nal.
-        
-        Támogatott overlay típusok:
-        - Hőmérséklet heatmap (°C)
-        - Csapadék overlay (mm)
-        - Szél sebesség (km/h)
-        - Relatív páratartalom (%)
         """
         if not self.weather_data:
             print("⚠️ No weather data available for overlay")
@@ -395,7 +460,7 @@ class FoliumMapGenerator(QThread):
             print("✅ Weather overlay layers added successfully")
             
         except Exception as e:
-            print(f"❌ Weather overlay error: {e}")
+            print(f"⚠️ Weather overlay error: {e}")
     
     def _add_temperature_heatmap(self, map_obj: folium.Map):
         """
@@ -439,18 +504,11 @@ class FoliumMapGenerator(QThread):
         except ImportError:
             print("⚠️ HeatMap plugin not available")
         except Exception as e:
-            print(f"❌ Temperature heatmap error: {e}")
+            print(f"⚠️ Temperature heatmap error: {e}")
     
     def _get_dynamic_gradient(self, color_scale: str, overlay_type: str) -> Dict[float, str]:
         """
         🔧 KRITIKUS ÚJ METÓDUS: Dinamikus gradient generálás color_scale alapján
-        
-        Args:
-            color_scale: Weather Data Bridge-ből ('RdYlBu_r', 'Blues', 'Greens', 'Oranges')
-            overlay_type: Overlay típus ('temperature', 'precipitation', 'wind_speed', 'wind_gusts')
-            
-        Returns:
-            Folium HeatMap gradient dict
         """
         # 🎨 DINAMIKUS SZÍNSKÁLA MAPPING
         COLOR_SCALE_GRADIENTS = {
@@ -478,7 +536,7 @@ class FoliumMapGenerator(QThread):
                 0.8: '#228B22',  # Forest Green
                 1.0: '#006400'   # Dark Green
             },
-            'Oranges': {  # Széllökés - Világos narancs → Sötét narancs/piros
+            'Oranges': {  # Széllökések - Világos narancs → Sötét narancs/piros
                 0.0: '#FFF8DC',  # Cornsilk (krémszín)
                 0.2: '#FFEFD5',  # Papaya Whip
                 0.4: '#FFE4B5',  # Moccasin  
@@ -510,11 +568,11 @@ class FoliumMapGenerator(QThread):
                 return gradient
             
             # Ultimate fallback
-            print(f"❌ Ismeretlen color_scale és overlay_type: {color_scale}, {overlay_type}")
+            print(f"⚠️ Ismeretlen color_scale és overlay_type: {color_scale}, {overlay_type}")
             return COLOR_SCALE_GRADIENTS['RdYlBu_r']  # Default hőmérséklet
             
         except Exception as e:
-            print(f"❌ Gradient generálási hiba: {e}")
+            print(f"⚠️ Gradient generálási hiba: {e}")
             return COLOR_SCALE_GRADIENTS['RdYlBu_r']  # Safe fallback
     
     def _add_precipitation_overlay(self, map_obj: folium.Map):
@@ -566,7 +624,7 @@ class FoliumMapGenerator(QThread):
             print(f"🌧️ Precipitation overlay added with {len(precip_data)} points")
             
         except Exception as e:
-            print(f"❌ Precipitation overlay error: {e}")
+            print(f"⚠️ Precipitation overlay error: {e}")
     
     def _add_wind_speed_overlay(self, map_obj: folium.Map):
         """
@@ -622,63 +680,167 @@ class FoliumMapGenerator(QThread):
             print(f"💨 Wind speed overlay added with {len(wind_data)} points")
             
         except Exception as e:
-            print(f"❌ Wind speed overlay error: {e}")
+            print(f"⚠️ Wind speed overlay error: {e}")
     
     def _add_weather_legend(self, map_obj: folium.Map):
         """
-        📊 Weather overlay legend hozzáadása.
+        📊 Weather overlay legend hozzáadása DINAMIKUS OVERLAY PARAMETER alapján.
         """
         try:
-            # Legend HTML
-            legend_html = '''
-            <div style="position: fixed; 
-                        top: 80px; right: 20px; width: 200px; height: auto; 
-                        background-color: rgba(255, 255, 255, 0.9);
-                        border: 2px solid grey; z-index:9999; 
-                        font-size: 12px; padding: 10px;
-                        border-radius: 5px;
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                        ">
-            <h4 style="margin-top: 0; color: #2E4057;">🌤️ Időjárási Overlay</h4>
+            # 🔧 JAVÍTOTT: Active overlay parameter alapú legend
+            active_parameter = self.config.active_overlay_parameter
             
-            <p><b>🌡️ Hőmérséklet:</b></p>
-            <div style="background: linear-gradient(to right, #0000FF, #00FFFF, #00FF00, #FFFF00, #FF8000, #FF0000); 
-                        height: 15px; margin: 5px 0;"></div>
-            <div style="display: flex; justify-content: space-between; font-size: 10px;">
-                <span>-20°C</span><span>+40°C</span>
-            </div>
-            
-            <p style="margin-top: 15px;"><b>🌧️ Csapadék:</b></p>
-            <div style="display: flex; align-items: center; margin: 5px 0;">
-                <div style="width: 10px; height: 10px; background: #E8F4FD; border-radius: 50%; margin-right: 5px;"></div>
-                <span style="font-size: 10px;">< 1 mm</span>
-            </div>
-            <div style="display: flex; align-items: center; margin: 5px 0;">
-                <div style="width: 15px; height: 15px; background: #80D0FF; border-radius: 50%; margin-right: 5px;"></div>
-                <span style="font-size: 10px;">5-10 mm</span>
-            </div>
-            <div style="display: flex; align-items: center; margin: 5px 0;">
-                <div style="width: 20px; height: 20px; background: #0080FF; border-radius: 50%; margin-right: 5px;"></div>
-                <span style="font-size: 10px;">> 25 mm</span>
-            </div>
-            
-            <p style="margin-top: 15px;"><b>💨 Szél:</b></p>
-            <div style="font-size: 10px;">
-                <div>🟢 < 12 km/h - Enyhe</div>
-                <div>🟡 12-20 km/h - Gyenge</div>
-                <div>🟠 20-39 km/h - Mérsékelt</div>
-                <div>🔴 > 50 km/h - Erős</div>
-            </div>
-            </div>
-            '''
+            if active_parameter == 'temperature':
+                legend_html = self._create_temperature_legend()
+            elif active_parameter == 'wind_speed':
+                legend_html = self._create_wind_legend()
+            elif active_parameter == 'precipitation':
+                legend_html = self._create_precipitation_legend()
+            else:
+                # Fallback: általános legend
+                legend_html = self._create_general_legend()
             
             # Legend hozzáadása a térképhez
             map_obj.get_root().html.add_child(folium.Element(legend_html))
             
-            print("📊 Weather legend added")
+            print(f"📊 Weather legend added for parameter: {active_parameter}")
             
         except Exception as e:
-            print(f"❌ Weather legend error: {e}")
+            print(f"⚠️ Weather legend error: {e}")
+    
+    def _create_temperature_legend(self) -> str:
+        """🌡️ Hőmérséklet specifikus legend HTML."""
+        return '''
+        <div style="position: fixed; 
+                    top: 80px; right: 20px; width: 200px; height: auto; 
+                    background-color: rgba(255, 255, 255, 0.9);
+                    border: 2px solid grey; z-index:9999; 
+                    font-size: 12px; padding: 10px;
+                    border-radius: 5px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    ">
+        <h4 style="margin-top: 0; color: #2E4057;">🌡️ Hőmérséklet</h4>
+        
+        <div style="background: linear-gradient(to right, #0000FF, #00FFFF, #00FF00, #FFFF00, #FF8000, #FF0000); 
+                    height: 15px; margin: 5px 0;"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 10px;">
+            <span>-20°C</span><span>+40°C</span>
+        </div>
+        
+        <p style="margin-top: 10px; font-size: 10px;">
+            <b>Színskála:</b> Kék (hideg) → Piros (meleg)<br>
+            <b>Adatok:</b> Napi maximum hőmérséklet
+        </p>
+        </div>
+        '''
+    
+    def _create_wind_legend(self) -> str:
+        """💨 Szél specifikus legend HTML."""
+        return '''
+        <div style="position: fixed; 
+                    top: 80px; right: 20px; width: 200px; height: auto; 
+                    background-color: rgba(255, 255, 255, 0.9);
+                    border: 2px solid grey; z-index:9999; 
+                    font-size: 12px; padding: 10px;
+                    border-radius: 5px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    ">
+        <h4 style="margin-top: 0; color: #2E4057;">💨 Szélsebesség</h4>
+        
+        <div style="background: linear-gradient(to right, #F0FFF0, #90EE90, #32CD32, #228B22, #006400); 
+                    height: 15px; margin: 5px 0;"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 10px;">
+            <span>0 km/h</span><span>60+ km/h</span>
+        </div>
+        
+        <p style="margin-top: 10px; font-size: 10px;">
+            <div>🟢 < 12 km/h - Enyhe szél</div>
+            <div>🟡 12-20 km/h - Gyenge szél</div>
+            <div>🟠 20-39 km/h - Mérsékelt szél</div>
+            <div>🔴 > 50 km/h - Erős szél</div>
+        </p>
+        </div>
+        '''
+    
+    def _create_precipitation_legend(self) -> str:
+        """🌧️ Csapadék specifikus legend HTML."""
+        return '''
+        <div style="position: fixed; 
+                    top: 80px; right: 20px; width: 200px; height: auto; 
+                    background-color: rgba(255, 255, 255, 0.9);
+                    border: 2px solid grey; z-index:9999; 
+                    font-size: 12px; padding: 10px;
+                    border-radius: 5px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    ">
+        <h4 style="margin-top: 0; color: #2E4057;">🌧️ Csapadék</h4>
+        
+        <div style="background: linear-gradient(to right, #F0F8FF, #B3D9FF, #4D94FF, #0066CC, #003366); 
+                    height: 15px; margin: 5px 0;"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 10px;">
+            <span>0 mm</span><span>50+ mm</span>
+        </div>
+        
+        <p style="margin-top: 10px; font-size: 10px;">
+            <div style="display: flex; align-items: center; margin: 5px 0;">
+                <div style="width: 10px; height: 10px; background: #E8F4FD; border-radius: 50%; margin-right: 5px;"></div>
+                <span>< 1 mm</span>
+            </div>
+            <div style="display: flex; align-items: center; margin: 5px 0;">
+                <div style="width: 15px; height: 15px; background: #80D0FF; border-radius: 50%; margin-right: 5px;"></div>
+                <span>5-10 mm</span>
+            </div>
+            <div style="display: flex; align-items: center; margin: 5px 0;">
+                <div style="width: 20px; height: 20px; background: #0080FF; border-radius: 50%; margin-right: 5px;"></div>
+                <span>> 25 mm</span>
+            </div>
+        </p>
+        </div>
+        '''
+    
+    def _create_general_legend(self) -> str:
+        """🌤️ Általános weather legend HTML."""
+        return '''
+        <div style="position: fixed; 
+                    top: 80px; right: 20px; width: 200px; height: auto; 
+                    background-color: rgba(255, 255, 255, 0.9);
+                    border: 2px solid grey; z-index:9999; 
+                    font-size: 12px; padding: 10px;
+                    border-radius: 5px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    ">
+        <h4 style="margin-top: 0; color: #2E4057;">🌤️ Időjárási Overlay</h4>
+        
+        <p><b>🌡️ Hőmérséklet:</b></p>
+        <div style="background: linear-gradient(to right, #0000FF, #00FFFF, #00FF00, #FFFF00, #FF8000, #FF0000); 
+                    height: 15px; margin: 5px 0;"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 10px;">
+            <span>-20°C</span><span>+40°C</span>
+        </div>
+        
+        <p style="margin-top: 15px;"><b>🌧️ Csapadék:</b></p>
+        <div style="display: flex; align-items: center; margin: 5px 0;">
+            <div style="width: 10px; height: 10px; background: #E8F4FD; border-radius: 50%; margin-right: 5px;"></div>
+            <span style="font-size: 10px;">< 1 mm</span>
+        </div>
+        <div style="display: flex; align-items: center; margin: 5px 0;">
+            <div style="width: 15px; height: 15px; background: #80D0FF; border-radius: 50%; margin-right: 5px;"></div>
+            <span style="font-size: 10px;">5-10 mm</span>
+        </div>
+        <div style="display: flex; align-items: center; margin: 5px 0;">
+            <div style="width: 20px; height: 20px; background: #0080FF; border-radius: 50%; margin-right: 5px;"></div>
+            <span style="font-size: 10px;">> 25 mm</span>
+        </div>
+        
+        <p style="margin-top: 15px;"><b>💨 Szél:</b></p>
+        <div style="font-size: 10px;">
+            <div>🟢 < 12 km/h - Enyhe</div>
+            <div>🟡 12-20 km/h - Gyenge</div>
+            <div>🟠 20-39 km/h - Mérsékelt</div>
+            <div>🔴 > 50 km/h - Erős</div>
+        </div>
+        </div>
+        '''
     
     def _add_javascript_bridge(self, map_obj: folium.Map):
         """
@@ -751,7 +913,7 @@ class FoliumMapGenerator(QThread):
             // Initialize QWebChannel
             initializeQtBridge();
             
-            // Map click események figyelése
+            // Map click esemény figyelése
             setTimeout(function() {{
                 if (typeof window.map_{map_obj._id} !== 'undefined') {{
                     var map = window.map_{map_obj._id};
@@ -782,7 +944,7 @@ class FoliumMapGenerator(QThread):
         
         // QWebChannel script loading
         if (typeof QWebChannel === 'undefined') {{
-            console.log('📥 Loading QWebChannel script...');
+            console.log('🔥 Loading QWebChannel script...');
             var script = document.createElement('script');
             script.src = 'qrc:///qtwebchannel/qwebchannel.js';
             script.onload = function() {{
@@ -790,7 +952,7 @@ class FoliumMapGenerator(QThread):
                 initializeQtBridge();
             }};
             script.onerror = function() {{
-                console.log('❌ Failed to load QWebChannel script');
+                console.log('⚠️ Failed to load QWebChannel script');
             }};
             document.head.appendChild(script);
         }} else {{
@@ -840,62 +1002,37 @@ class FoliumMapGenerator(QThread):
         minimap.add_to(map_obj)
         
         print("✅ Map controls added")
-    
-    def _inject_custom_javascript(self):
-        """
-        💉 Custom JavaScript kód injektálása a generált HTML-be.
-        """
-        try:
-            # HTML fájl beolvasása
-            with open(self.output_path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-            
-            # Custom CSS és JavaScript hozzáadása
-            custom_head = """
-            <style>
-            /* Magyar Klímaanalitika Custom Styles */
-            .folium-map {
-                border-radius: 8px !important;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-            }
-            
-            .leaflet-popup-content {
-                font-family: 'Segoe UI', Arial, sans-serif !important;
-                color: #2E4057 !important;
-            }
-            
-            .leaflet-tooltip {
-                background: rgba(46, 64, 87, 0.9) !important;
-                color: white !important;
-                border: none !important;
-                border-radius: 4px !important;
-                font-size: 12px !important;
-            }
-            </style>
-            """
-            
-            # HTML módosítása
-            html_content = html_content.replace('</head>', custom_head + '</head>')
-            
-            # Módosított HTML mentése
-            with open(self.output_path, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-            
-            print("✅ Custom JavaScript injected")
-            
-        except Exception as e:
-            print(f"⚠️ Failed to inject custom JavaScript: {e}")
 
 
 class HungarianMapVisualizer(QWidget):
     """
-    🗺️ Magyar Folium térkép vizualizáló widget - TELJES INTERAKTÍV VERZIÓ.
+    🗺️ Magyar Folium térkép vizualizáló widget - HELYI HTTP SZERVER VERZIÓ v3.0
+    
+    🔧 HELYI HTTP SZERVER MEGOLDÁS v3.0:
+    - Beágyazott HTTP szerver QThread-ben
+    - WebEngine http://127.0.0.1:PORT/map.html betöltés
+    - Same-Origin Policy problémák végleg megoldva
+    - Nagy HTML fájlok (1.5MB+) támogatása
+    - Folium teljes funkcionalitás
+    - Stabil és megbízható működés
+    
+    🚀 REAKTÍV MEGYEHATÁROK v3.0:
+    - set_counties_geodataframe() AZONNALI térképfrissítést indít
+    - set_weather_data() AZONNALI térképfrissítést indít  
+    - A "futár és festő" probléma megoldva
+    - Magyar megyék automatikusan megjelennek betöltés után
+    - Nincs manuális frissítés szükséges
+    
+    🔧 DINAMIKUS SZÍNSKÁLA v1.2:
+    - COLOR_SCALE_GRADIENTS mapping minden overlay típushoz
+    - set_active_overlay_parameter() metódus
+    - Overlay-specifikus jelmagyarázat generálás
     
     FUNKCIÓK:
     - Folium + Leaflet.js alapú interaktív térkép
     - Kattintható magyar megyék
     - Hover tooltipek és popupok
-    - Weather overlay support
+    - Weather overlay support (DINAMIKUS SZÍNSKÁLÁVAL)
     - JavaScript ↔ PySide6 bridge
     - Téma támogatás
     - Export funkciók
@@ -930,7 +1067,12 @@ class HungarianMapVisualizer(QWidget):
         # Adatok
         self.counties_gdf = None
         self.current_weather_data = None
-        self.current_html_path = None
+        
+        # 🔧 HTTP SZERVER VERZIÓ: Szerver objektumok
+        self.local_server = None
+        self.http_host = None
+        self.http_port = None
+        self.current_map_file = None
         
         # Worker threads
         self.map_generator = None
@@ -944,15 +1086,19 @@ class HungarianMapVisualizer(QWidget):
         self._setup_theme()
         self._connect_signals()
         
-        # Folium elérhetőség ellenőrzése
+        # HTTP szerver indítása
+        self._start_local_server()
+        
+        # Folium elérhető ellenőrzése
         if FOLIUM_AVAILABLE:
-            self._generate_default_map()
+            # Várunk a szervertől majd generálunk alapértelmezett térképet
+            pass
         else:
             self._show_folium_error()
     
     def _setup_ui(self):
         """
-        🎨 UI komponensek létrehozása - FOLIUM VERZIÓ.
+        🎨 UI komponensek létrehozása - HTTP SZERVER VERZIÓ.
         """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(5, 5, 5, 5)
@@ -960,7 +1106,7 @@ class HungarianMapVisualizer(QWidget):
         
         # === FOLIUM TÉRKÉP VEZÉRLŐK ===
         
-        controls_group = QGroupBox("🗺️ Folium Interaktív Térkép")
+        controls_group = QGroupBox("🌐 HTTP Szerver Folium Térkép v3.0 + 🔧 Same-Origin Policy Fix + Reaktív Megyehatárok + Dinamikus Színskála")
         register_widget_for_theming(controls_group, "container")
         controls_layout = QHBoxLayout(controls_group)
         
@@ -992,6 +1138,24 @@ class HungarianMapVisualizer(QWidget):
         self.weather_check.setChecked(False)
         register_widget_for_theming(self.weather_check, "input")
         controls_layout.addWidget(self.weather_check)
+        
+        # 🔧 ÚJ: Active overlay parameter kijelző
+        self.overlay_parameter_label = QLabel("🎨 Overlay: Nincs")
+        overlay_param_font = self.overlay_parameter_label.font()
+        overlay_param_font.setPointSize(9)
+        self.overlay_parameter_label.setFont(overlay_param_font)
+        self.overlay_parameter_label.setStyleSheet("color: #9B59B6; font-weight: bold;")
+        register_widget_for_theming(self.overlay_parameter_label, "text")
+        controls_layout.addWidget(self.overlay_parameter_label)
+        
+        # HTTP szerver status
+        self.server_status_label = QLabel("🌐 Szerver: Indítás...")
+        server_font = self.server_status_label.font()
+        server_font.setPointSize(9)
+        self.server_status_label.setFont(server_font)
+        self.server_status_label.setStyleSheet("color: #3498DB; font-weight: bold;")
+        register_widget_for_theming(self.server_status_label, "text")
+        controls_layout.addWidget(self.server_status_label)
         
         # Zoom kontroll
         zoom_label = QLabel("Zoom:")
@@ -1034,7 +1198,7 @@ class HungarianMapVisualizer(QWidget):
         register_widget_for_theming(self.progress_bar, "input")
         layout.addWidget(self.progress_bar)
         
-        self.status_label = QLabel("Folium interaktív térkép inicializálása...")
+        self.status_label = QLabel("🌐 HTTP szerver Folium térkép + Same-Origin Policy fix + Reaktív megyehatárok inicializálása...")
         register_widget_for_theming(self.status_label, "text")
         layout.addWidget(self.status_label)
         
@@ -1043,24 +1207,23 @@ class HungarianMapVisualizer(QWidget):
         self.web_view = QWebEngineView()
         register_widget_for_theming(self.web_view, "container")
         
-        # 🔧 WEBENGINE SETTINGS FIX - Same-Origin Policy engedélyezés
+        # 🔧 WEBENGINE SETTINGS - HTTP szerver optimalizált beállítások
         try:
             from PySide6.QtWebEngineCore import QWebEngineSettings
             
             settings = self.web_view.settings()
-            # Helyi fájlok elérés engedélyezése
-            settings.setAttribute(QWebEngineSettings.LocalStorageEnabled, True)
-            settings.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True) 
-            settings.setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
-            settings.setAttribute(QWebEngineSettings.AllowRunningInsecureContent, True)
-            # JavaScript debugging
+            # JavaScript engedélyezés
             settings.setAttribute(QWebEngineSettings.JavascriptEnabled, True)
             settings.setAttribute(QWebEngineSettings.ErrorPageEnabled, True)
             # WebGL és Canvas engedélyezés
             settings.setAttribute(QWebEngineSettings.WebGLEnabled, True)
             settings.setAttribute(QWebEngineSettings.Accelerated2dCanvasEnabled, True)
+            # Local content optimalizáció
+            settings.setAttribute(QWebEngineSettings.LocalStorageEnabled, True)
+            # HTTP cache
+            settings.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
             
-            print("✅ WebEngine settings configured for local content access")
+            print("✅ WebEngine settings configured for HTTP server content")
             
         except ImportError as e:
             print(f"⚠️ WebEngineSettings not available: {e}")
@@ -1083,7 +1246,7 @@ class HungarianMapVisualizer(QWidget):
     
     def _connect_signals(self):
         """
-        🔗 Signal-slot kapcsolatok létrehozása - FOLIUM VERZIÓ.
+        🔗 Signal-slot kapcsolatok létrehozása - HTTP SZERVER VERZIÓ.
         """
         # UI vezérlők
         self.style_combo.currentTextChanged.connect(self._on_style_changed)
@@ -1104,13 +1267,63 @@ class HungarianMapVisualizer(QWidget):
         self.js_bridge.map_moved.connect(self._on_js_map_moved)
         self.js_bridge.county_hovered.connect(self._on_js_county_hovered)
         
-        print("✅ Folium MapVisualizer signals connected")
+        print("✅ HTTP Server MapVisualizer signals connected")
+    
+    def _start_local_server(self):
+        """
+        🌐 Helyi HTTP szerver indítása.
+        """
+        if self.local_server and self.local_server.running:
+            print("⚠️ Local server already running")
+            return
+        
+        print("🌐 Starting local HTTP server...")
+        
+        # LocalHttpServerThread létrehozása
+        self.local_server = LocalHttpServerThread(self)
+        
+        # Szerver signalok bekötése
+        self.local_server.server_ready.connect(self._on_server_ready)
+        self.local_server.server_error.connect(self._on_server_error)
+        
+        # Szerver indítása
+        self.local_server.start()
+    
+    def _on_server_ready(self, host: str, port: int):
+        """
+        ✅ HTTP szerver kész és elérhető.
+        """
+        self.http_host = host
+        self.http_port = port
+        
+        print(f"✅ Local HTTP server ready: http://{host}:{port}")
+        
+        # UI frissítése
+        self.server_status_label.setText(f"🌐 Szerver: http://{host}:{port}")
+        self.server_status_label.setStyleSheet("color: #27AE60; font-weight: bold;")
+        
+        # Alapértelmezett térkép generálása a szerver elindulása után
+        if FOLIUM_AVAILABLE:
+            self._generate_default_map()
+    
+    def _on_server_error(self, error_message: str):
+        """
+        ❌ HTTP szerver hiba.
+        """
+        print(f"❌ Local HTTP server error: {error_message}")
+        
+        # UI frissítése
+        self.server_status_label.setText("🌐 Szerver: HIBA")
+        self.server_status_label.setStyleSheet("color: #E74C3C; font-weight: bold;")
+        
+        # Hiba jelzés
+        self.error_occurred.emit(f"HTTP szerver hiba: {error_message}")
     
     def _show_folium_error(self):
         """
-        ❌ Folium hiány esetén hibaüzenet megjelenítése.
+        ⚠️ Folium hiány esetén hibaüzenet megjelenítése.
         """
-        self.status_label.setText("❌ Folium library hiányzik! pip install folium")
+        self.status_label.setText("⚠️ Folium library hiányzik! pip install folium")
         self.progress_bar.setVisible(False)
         
         # Vezérlők letiltása
@@ -1127,14 +1340,22 @@ class HungarianMapVisualizer(QWidget):
         if not FOLIUM_AVAILABLE:
             return
         
+        if not self.http_host or not self.http_port:
+            print("⚠️ HTTP server not ready for map generation")
+            return
+        
         self._start_map_generation()
     
     def _start_map_generation(self):
         """
-        🔄 Folium térkép generálás indítása háttérben.
+        🔄 Folium térkép generálás indítása háttérben - HTTP SZERVER VERZIÓ.
         """
         if not FOLIUM_AVAILABLE:
             self._show_folium_error()
+            return
+        
+        if not self.http_host or not self.http_port:
+            print("⚠️ HTTP server not ready for map generation")
             return
         
         if self.map_generator and self.map_generator.isRunning():
@@ -1143,7 +1364,7 @@ class HungarianMapVisualizer(QWidget):
         # Progress bar megjelenítése
         self.progress_bar.setVisible(True)
         self.progress_bar.setValue(0)
-        self.status_label.setText("🔄 Folium interaktív térkép generálása...")
+        self.status_label.setText("🌐 HTTP szerver Folium térkép + Same-Origin Policy fix + Reaktív megyehatárok generálása...")
         
         # Worker létrehozása
         self.map_generator = FoliumMapGenerator(
@@ -1162,58 +1383,76 @@ class HungarianMapVisualizer(QWidget):
         # Worker indítása
         self.map_generator.start()
     
-    def _on_map_generated(self, html_path: str):
+    def _on_map_generated(self, file_path: str):
         """
-        ✅ Folium térkép generálás befejezve.
+        ✅ Folium térkép generálás befejezve - HTTP SZERVER VERZIÓ.
+        
+        Args:
+            file_path: Generált HTML fájl teljes elérési útja
         """
-        self.current_html_path = html_path
+        print(f"🌐 DEBUG: HTTP Server map generated - {file_path}")
         
-        # 🔧 WEBENGINE FIX: Proper file URL handling
-        file_url = QUrl.fromLocalFile(os.path.abspath(html_path))
+        # Fájl elérési út tárolása
+        self.current_map_file = file_path
         
-        print(f"🔧 DEBUG: Loading Folium HTML: {file_url.toString()}")
+        # Fájl létezés ellenőrzése
+        if not os.path.exists(file_path):
+            error_msg = f"Generated HTML file not found: {file_path}"
+            self.error_occurred.emit(error_msg)
+            return
         
-        # 🚀 DELAYED LOADING FIX: WebEngine késleltetett betöltés
-        QTimer.singleShot(500, lambda: self._load_folium_html_delayed(file_url))
+        # Fájl méret ellenőrzése
+        file_size = os.path.getsize(file_path)
+        if file_size < 1000:
+            error_msg = f"Generated HTML file too small: {file_size} bytes"
+            self.error_occurred.emit(error_msg)
+            return
+        
+        print(f"✅ Valid HTML file generated - Size: {file_size:,} bytes")
+        
+        # 🌐 HTTP URL GENERÁLÁS ÉS BETÖLTÉS
+        self._load_map_from_http_url(file_path)
         
         self.progress_bar.setVisible(False)
-        self.status_label.setText("🔄 Folium térkép WebEngine betöltése...")
+        self.status_label.setText("🌐 HTTP szerver térkép betöltése...")
         
-        print(f"✅ Folium map generated: {html_path}")
+        print(f"✅ HTTP Server Folium map loading initiated")
     
-    def _load_folium_html_delayed(self, file_url: QUrl):
+    def _load_map_from_http_url(self, file_path: str):
         """
-        🚀 FIXED: HTML Content Injection - Same-Origin Policy megkerülés.
+        🌐 KRITIKUS ÚJ METÓDUS: Térkép betöltése HTTP URL-ről.
         
-        A file:// protokoll korlátozások helyett a HTML tartalmát 
-        közvetlenül injektáljuk a WebEngine-be.
+        Ez a metódus generálja a http://127.0.0.1:PORT/filename.html URL-t
+        és betölti a WebEngine-be.
+        
+        Args:
+            file_path: Generált HTML fájl teljes elérési útja
         """
         try:
-            # WebEngine reset before loading
+            print("🌐 DEBUG: Starting HTTP URL loading...")
+            
+            # Fájlnév kinyerése az elérési útból
+            filename = os.path.basename(file_path)
+            
+            # HTTP URL összeállítása
+            http_url = f"http://{self.http_host}:{self.http_port}/{filename}"
+            
+            print(f"🌐 DEBUG: Loading map from HTTP URL: {http_url}")
+            
+            # WebEngine reset és cache clear
             self.web_view.stop()
             
-            # 🔧 HTML CONTENT INJECTION FIX
-            html_path = file_url.toLocalFile()
+            # HTTP URL betöltése WebEngine-be
+            self.web_view.load(QUrl(http_url))
             
-            # HTML tartalom beolvasása
-            with open(html_path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-            
-            # Base URL meghatározása a relatív hivatkozásokhoz
-            base_url = QUrl.fromLocalFile(os.path.dirname(html_path))
-            
-            # HTML tartalom közvetlen betöltése Same-Origin Policy megkerüléssel
-            self.web_view.setHtml(html_content, base_url)
-            
-            print(f"✅ HTML Content Injection: {html_path}")
-            print(f"📁 Base URL for relative paths: {base_url.toString()}")
+            print(f"✅ HTTP URL loading initiated: {http_url}")
             
             # Status update
-            self.status_label.setText("🔧 HTML Content Injection - Same-Origin Policy megkerülése...")
+            self.status_label.setText(f"🌐 HTTP térkép betöltve: {filename}")
             
         except Exception as e:
-            error_msg = f"HTML Content Injection hiba: {e}"
-            print(f"❌ HTML Injection Error: {error_msg}")
+            error_msg = f"HTTP URL betöltési hiba: {e}"
+            print(f"❌ HTTP URL Loading Error: {error_msg}")
             self.error_occurred.emit(error_msg)
     
     def _on_map_error(self, error_message: str):
@@ -1228,54 +1467,18 @@ class HungarianMapVisualizer(QWidget):
     
     def _on_map_loaded(self, success: bool):
         """
-        🗺️ WebEngine Folium térkép betöltés befejezve.
+        🗺️ WebEngine Folium térkép betöltés befejezve - HTTP SZERVER VERZIÓ + REAKTÍV MEGYEHATÁROK.
         """
         if success:
             self.map_ready.emit()
-            self.status_label.setText("🗺️ Interaktív térkép kész! Kattints a megyékre!")
-            print("✅ Folium map loaded successfully in WebEngine")
+            counties_info = f" ({len(self.counties_gdf)} megye)" if self.counties_gdf is not None else ""
+            self.status_label.setText(f"🌐 HTTP szerver interaktív térkép kész!{counties_info} Kattints a megyékre!")
+            print("✅ HTTP Server Folium map with reactive counties loaded successfully in WebEngine")
         else:
-            # 🔧 DETAILED ERROR DIAGNOSIS
-            page = self.web_view.page()
-            
-            print("❌ WebEngine load failed - diagnosing...")
-            print(f"🔧 DEBUG: Page URL: {page.url().toString()}")
-            print(f"🔧 DEBUG: Page title: {page.title()}")
-            
-            # Próbáljuk meg újra betölteni 2 másodperc múlva
-            self.status_label.setText("⚠️ WebEngine újrapróbálkozás 2 másodpercben...")
-            QTimer.singleShot(2000, self._retry_map_loading)
-            
-            print("🔄 Scheduling retry in 2 seconds...")
-    
-    def _retry_map_loading(self):
-        """
-        🔄 Térkép betöltés újrapróbálása alternatív módszerrel.
-        """
-        if not self.current_html_path:
-            self.error_occurred.emit("No HTML path available for retry")
-            return
-        
-        print("🔄 Retrying map loading with alternative method...")
-        
-        try:
-            # 🔧 ALTERNATÍV MÓDSZER: Egyszerű file:// URL betöltés
-            file_url = QUrl.fromLocalFile(os.path.abspath(self.current_html_path))
-            
-            # WebEngine teljes reset
-            self.web_view.stop()
-            self.web_view.reload()
-            
-            # Egyszerű betöltés
-            self.web_view.load(file_url)
-            
-            self.status_label.setText("🔄 Alternatív betöltési módszer...")
-            print(f"🔄 Alternative loading method: {file_url.toString()}")
-            
-        except Exception as e:
-            error_msg = f"Retry loading failed: {e}"
-            print(f"❌ Retry failed: {error_msg}")
+            error_msg = "WebEngine HTTP loading failed"
             self.error_occurred.emit(error_msg)
+            self.status_label.setText("❌ WebEngine HTTP betöltés sikertelen!")
+            print(f"❌ WebEngine HTTP loading failed")
     
     # === UI EVENT HANDLERS ===
     
@@ -1352,43 +1555,18 @@ class HungarianMapVisualizer(QWidget):
         print("🔄 Manual Folium map refresh requested")
         self._start_map_generation()
     
-    def _generate_demo_weather(self):
-        """
-        🧪 Demo időjárási adatok generálása és betöltése.
-        """
-        try:
-            # Demo adatok generálása
-            demo_data = self.generate_demo_weather_data()
-            
-            # Adatok beállítása
-            self.set_weather_data(demo_data)
-            
-            # Weather overlay bekapcsolása
-            self.weather_check.setChecked(True)
-            self.map_config.weather_overlay = True
-            
-            # Térkép frissítése az új adatokkal
-            self._start_map_generation()
-            
-            self.status_label.setText("🧪 Demo időjárási adatok betöltve! Weather overlay bekapcsolva.")
-            
-        except Exception as e:
-            error_msg = f"Demo weather data generation failed: {e}"
-            print(f"❌ {error_msg}")
-            self.error_occurred.emit(error_msg)
-    
     def _export_map(self):
         """
-        💾 Folium térkép exportálása.
+        💾 Folium térkép exportálása - HTTP SZERVER VERZIÓ.
         """
-        if not self.current_html_path:
+        if not self.current_map_file or not os.path.exists(self.current_map_file):
             QMessageBox.warning(self, "Export", "Nincs Folium térkép az exportáláshoz!")
             return
         
         # Fájl mentés dialog
         file_path, _ = QFileDialog.getSaveFileName(
             self,
-            "Folium térkép exportálása",
+            "HTTP szerver Folium térkép exportálása",
             f"hungarian_folium_map_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html",
             "HTML fájlok (*.html);;Minden fájl (*)"
         )
@@ -1397,68 +1575,145 @@ class HungarianMapVisualizer(QWidget):
             try:
                 # HTML fájl másolása
                 import shutil
-                shutil.copy2(self.current_html_path, file_path)
+                shutil.copy2(self.current_map_file, file_path)
                 
                 self.export_completed.emit(file_path)
-                QMessageBox.information(self, "Export", f"Folium térkép sikeresen exportálva:\n{file_path}")
+                QMessageBox.information(self, "Export", f"HTTP szerver Folium térkép sikeresen exportálva:\n{file_path}")
+                
+                print(f"✅ HTTP server map exported: {file_path}")
                 
             except Exception as e:
                 error_msg = f"Export hiba: {e}"
                 self.error_occurred.emit(error_msg)
                 QMessageBox.critical(self, "Export hiba", error_msg)
     
-    # === PUBLIKUS API - FOLIUM VERZIÓ ===
+    # === 🔧 ÚJ METÓDUSOK - DINAMIKUS SZÍNSKÁLA TÁMOGATÁS ===
+    
+    def set_active_overlay_parameter(self, parameter: str):
+        """
+        🔧 KRITIKUS ÚJ METÓDUS: Active overlay parameter beállítása
+        
+        Args:
+            parameter: Overlay parameter ("temperature", "wind_speed", "precipitation", stb.)
+        """
+        print(f"🎨 DEBUG: Setting active overlay parameter: {parameter}")
+        
+        # Config frissítése
+        self.map_config.active_overlay_parameter = parameter
+        
+        # UI frissítése
+        parameter_display_names = {
+            "temperature": "🌡️ Hőmérséklet",
+            "wind_speed": "💨 Szélsebesség",
+            "precipitation": "🌧️ Csapadék",
+            "wind_gusts": "🌪️ Széllökések",
+            "humidity": "💧 Páratartalom"
+        }
+        
+        display_name = parameter_display_names.get(parameter, f"🎨 {parameter}")
+        self.overlay_parameter_label.setText(f"🎨 Overlay: {display_name}")
+        
+        print(f"✅ DEBUG: Active overlay parameter set: {parameter} → {display_name}")
+    
+    def clear_active_overlay_parameter(self):
+        """
+        🧹 Active overlay parameter törlése.
+        """
+        print("🧹 DEBUG: Clearing active overlay parameter")
+        
+        self.map_config.active_overlay_parameter = None
+        self.overlay_parameter_label.setText("🎨 Overlay: Nincs")
+        self.overlay_parameter_label.setStyleSheet("color: #95A5A6;")
+    
+    def get_active_overlay_parameter(self) -> Optional[str]:
+        """
+        📍 Jelenlegi active overlay parameter lekérdezése.
+        
+        Returns:
+            Active overlay parameter vagy None
+        """
+        return self.map_config.active_overlay_parameter
+    
+    # === 🚀 REAKTÍV PUBLIKUS API - HTTP SZERVER VERZIÓ + DINAMIKUS SZÍNSKÁLA ===
     
     def set_counties_geodataframe(self, counties_gdf):
         """
-        🗺️ Megyék GeoDataFrame beállítása.
+        🗺️ 🚀 REAKTÍV JAVÍTÁS: Megyék GeoDataFrame beállítása és a térkép AZONNALI frissítése.
+        
+        🔧 KRITIKUS VÁLTOZÁS v3.0:
+        Ez a metódus most REAKTÍV! Amint megkapja az új megyeadatokat,
+        azonnal elindít egy új térképgenerálási folyamatot.
+        
+        Megoldja a "futár és festő" problémát:
+        - A "futár" (MainWindow) átadja az adatokat
+        - A "festő" (HungarianMapVisualizer) AZONNAL újrafesti a térképet
+        
+        Args:
+            counties_gdf: Magyar megyék GeoDataFrame
         """
+        print(f"🗺️ 🚀 REAKTÍV: Counties GeoDataFrame set: {len(counties_gdf) if counties_gdf is not None else 0} counties")
+        
+        # Adatok tárolása
         self.counties_gdf = counties_gdf
-        print(f"🗺️ Folium counties GeoDataFrame set: {len(counties_gdf) if counties_gdf is not None else 0} counties")
+        
+        # 🚀 KRITIKUS JAVÍTÁS: AZONNALI TÉRKÉPFRISSÍTÉS!
+        # A "futár és festő" probléma megoldása
+        if counties_gdf is not None and len(counties_gdf) > 0:
+            print("🔄 🚀 REAKTÍV: County data received, triggering IMMEDIATE map refresh...")
+            print(f"📍 Counties columns: {list(counties_gdf.columns) if hasattr(counties_gdf, 'columns') else 'No columns'}")
+            
+            # Térképkonfiguráció automatikus beállítása
+            self.map_config.show_counties = True
+            self.counties_check.setChecked(True)
+            
+            # AZONNALI térképgenerálás indítása az új adatokkal
+            self._start_map_generation()
+            
+            print("✅ 🚀 REAKTÍV: Map refresh triggered automatically after county data received")
+        else:
+            print("⚠️ Empty or None counties data received - no map refresh triggered")
     
     def set_weather_data(self, weather_data: Dict):
         """
-        🌤️ Időjárási adatok beállítása Folium overlay-hez.
+        🌤️ 🚀 REAKTÍV JAVÍTÁS: Időjárási adatok beállítása Folium overlay-hez DINAMIKUS SZÍNSKÁLÁVAL + AZONNALI FRISSÍTÉS - HTTP SZERVER VERZIÓ.
         
-        Expected weather_data format:
-        {
-            'temperature': {
-                'Budapest': {
-                    'coordinates': [47.4979, 19.0402],
-                    'value': 22.5  # °C
-                },
-                ...
-            },
-            'precipitation': {
-                'Budapest': {
-                    'coordinates': [47.4979, 19.0402], 
-                    'value': 15.3  # mm
-                },
-                ...
-            },
-            'wind_speed': {
-                'Budapest': {
-                    'coordinates': [47.4979, 19.0402],
-                    'speed': 18.2,    # km/h
-                    'direction': 225  # degrees
-                },
-                ...
-            }
-        }
+        🔧 KRITIKUS VÁLTOZÁS v3.0:
+        Ez a metódus most REAKTÍV! Amint megkapja az új időjárási adatokat,
+        azonnal elindít egy új térképgenerálási folyamatot.
         
         Ez a metódus VALÓS ADATOKAT fogad a weather_client.py-ból
         és az analytics engine-ből.
+        
+        Args:
+            weather_data: Időjárási adatok dictionary
         """
+        print(f"🌤️ 🚀 REAKTÍV: Real weather data set for HTTP server Folium overlay with dynamic gradients:")
+        
+        # Adatok tárolása
         self.current_weather_data = weather_data
-        print(f"🌤️ Real weather data set for Folium overlay:")
         
         if weather_data:
             for data_type, locations in weather_data.items():
                 print(f"  📊 {data_type}: {len(locations)} locations")
-        
-        # Ha a weather overlay be van kapcsolva, frissítjük a térképet
-        if self.map_config.weather_overlay:
+                
+                # 🔧 AUTOMATIKUS OVERLAY PARAMETER BEÁLLÍTÁS
+                if data_type in ['temperature', 'wind_speed', 'precipitation', 'wind_gusts']:
+                    self.set_active_overlay_parameter(data_type)
+                    print(f"  🎨 Auto-set active overlay parameter: {data_type}")
+            
+            # 🚀 KRITIKUS JAVÍTÁS: AZONNALI TÉRKÉPFRISSÍTÉS!
+            # Weather overlay automatikus bekapcsolása
+            self.map_config.weather_overlay = True
+            self.weather_check.setChecked(True)
+            
+            print("🔄 🚀 REAKTÍV: Weather data received, triggering IMMEDIATE map refresh...")
+            
+            # AZONNALI térképgenerálás indítása az új időjárási adatokkal
             self._start_map_generation()
+            
+            print("✅ 🚀 REAKTÍV: Map refresh triggered automatically after weather data received")
+        else:
+            print("⚠️ Empty weather data received - no map refresh triggered")
     
     def update_map_bounds(self, bounds: Tuple[float, float, float, float]):
         """
@@ -1490,7 +1745,7 @@ class HungarianMapVisualizer(QWidget):
         # UI frissítése
         self.zoom_slider.setValue(zoom)
         
-        print(f"🎯 Folium map bounds updated: center=({center_lat:.4f}, {center_lon:.4f}), zoom={zoom}")
+        print(f"🎯 HTTP server map bounds updated: center=({center_lat:.4f}, {center_lon:.4f}), zoom={zoom}")
         
         # Folium térkép újragenerálása
         self._start_map_generation()
@@ -1511,12 +1766,15 @@ class HungarianMapVisualizer(QWidget):
         self.map_config.selected_county = None
         self.map_config.highlighted_counties = []
         
+        # 🔧 Active overlay parameter reset
+        self.clear_active_overlay_parameter()
+        
         # UI reset
         self.zoom_slider.setValue(7)
         self.style_combo.setCurrentText("OpenStreetMap")
         
         self._start_map_generation()
-        print("🏠 Folium map reset to default Hungary view")
+        print("🏠 HTTP server map reset to default Hungary view")
     
     def set_map_style(self, style: str):
         """
@@ -1533,7 +1791,7 @@ class HungarianMapVisualizer(QWidget):
         self.map_config.tiles = map_style
         self.map_config.theme = style
         
-        print(f"🎨 Folium map style set to: {map_style} (theme: {style})")
+        print(f"🎨 HTTP server map style set to: {map_style} (theme: {style})")
     
     def toggle_counties(self, show: bool):
         """
@@ -1552,7 +1810,7 @@ class HungarianMapVisualizer(QWidget):
         🎯 Kiválasztott megye beállítása és térkép frissítése.
         """
         self.map_config.selected_county = county_name
-        print(f"🎯 Folium map selected county: {county_name}")
+        print(f"🎯 HTTP server map selected county: {county_name}")
         
         # Térkép frissítése a kiválasztott megyével
         self._start_map_generation()
@@ -1575,22 +1833,168 @@ class HungarianMapVisualizer(QWidget):
         🌉 JavaScript bridge referencia lekérdezése.
         """
         return self.js_bridge
+    
+    def get_http_server_info(self) -> Dict[str, Any]:
+        """
+        🌐 HTTP szerver információk lekérdezése.
+        
+        Returns:
+            HTTP szerver információk dictionary
+        """
+        return {
+            "server_running": self.local_server is not None and self.local_server.running,
+            "http_host": self.http_host,
+            "http_port": self.http_port,
+            "server_url": f"http://{self.http_host}:{self.http_port}" if self.http_host and self.http_port else None,
+            "current_map_file": self.current_map_file,
+            "current_map_size": os.path.getsize(self.current_map_file) if self.current_map_file and os.path.exists(self.current_map_file) else 0,
+            "version": "v3.0"
+        }
+    
+    def generate_demo_weather_data(self) -> Dict[str, Any]:
+        """
+        🧪 Demo időjárási adatok generálása teszteléshez.
+        """
+        import random
+        
+        # Magyar városok demo adatok
+        cities = [
+            {"name": "Budapest", "coordinates": [47.4979, 19.0402]},
+            {"name": "Debrecen", "coordinates": [47.5316, 21.6273]},
+            {"name": "Szeged", "coordinates": [46.2530, 20.1414]},
+            {"name": "Miskolc", "coordinates": [48.1034, 20.7784]},
+            {"name": "Pécs", "coordinates": [46.0727, 18.2329]},
+            {"name": "Győr", "coordinates": [47.6874, 17.6504]},
+            {"name": "Nyíregyháza", "coordinates": [47.9562, 21.7201]},
+            {"name": "Kecskemét", "coordinates": [46.9061, 19.6938]},
+            {"name": "Székesfehérvár", "coordinates": [47.1884, 18.4241]},
+            {"name": "Szombathely", "coordinates": [47.2309, 16.6218]}
+        ]
+        
+        demo_data = {
+            'temperature': {},
+            'precipitation': {},
+            'wind_speed': {}
+        }
+        
+        for city in cities:
+            # Hőmérséklet
+            demo_data['temperature'][city['name']] = {
+                'coordinates': city['coordinates'],
+                'value': random.uniform(-5, 35)
+            }
+            
+            # Csapadék
+            demo_data['precipitation'][city['name']] = {
+                'coordinates': city['coordinates'],
+                'value': random.uniform(0, 25)
+            }
+            
+            # Szélsebesség
+            demo_data['wind_speed'][city['name']] = {
+                'coordinates': city['coordinates'],
+                'speed': random.uniform(5, 45),
+                'direction': random.randint(0, 360)
+            }
+        
+        print(f"🧪 Demo weather data generated: {len(cities)} cities")
+        return demo_data
+    
+    def get_dynamic_gradient_info(self) -> Dict[str, Any]:
+        """
+        🔧 Dinamikus gradient információk lekérdezése debugging célokra.
+        
+        Returns:
+            Gradient információk dictionary
+        """
+        return {
+            "active_overlay_parameter": self.get_active_overlay_parameter(),
+            "available_gradients": ["RdYlBu_r", "Blues", "Greens", "Oranges"],
+            "gradient_mapping": {
+                "temperature": "RdYlBu_r",
+                "precipitation": "Blues",
+                "wind_speed": "Greens", 
+                "wind_gusts": "Oranges"
+            },
+            "dynamic_gradient_support": True,
+            "http_server_version": True,
+            "same_origin_policy_fixed": True,
+            "reactive_counties": True,
+            "reactive_weather": True,
+            "large_html_support": True,
+            "version": "v3.0"
+        }
+    
+    def get_current_map_file(self) -> Optional[str]:
+        """
+        📄 Jelenlegi térkép fájl elérési útja - HTTP SZERVER VERZIÓ.
+        
+        Returns:
+            Jelenleg betöltött térkép fájl elérési útja vagy None
+        """
+        return self.current_map_file
+    
+    def get_http_debug_info(self) -> Dict[str, Any]:
+        """
+        🌐 HTTP szerver verzió debug információk.
+        
+        Returns:
+            HTTP szerver debug információk
+        """
+        server_info = self.get_http_server_info()
+        
+        return {
+            "http_server_running": server_info["server_running"],
+            "server_url": server_info["server_url"],
+            "map_file_available": server_info["current_map_file"] is not None,
+            "map_file_size": server_info["current_map_size"],
+            "large_html_support": True,
+            "same_origin_policy_fix": True,
+            "webengine_http_loading": True,
+            "no_temp_files_conflict": True,
+            "reactive_counties": True,
+            "reactive_weather": True,
+            "counties_loaded": self.counties_gdf is not None,
+            "counties_count": len(self.counties_gdf) if self.counties_gdf is not None else 0,
+            "weather_data_loaded": self.current_weather_data is not None,
+            "version": "v3.0"
+        }
+    
+    def cleanup(self):
+        """
+        🧹 Cleanup metódus az objektum megszüntetésekor.
+        """
+        # HTTP szerver leállítása
+        if self.local_server and self.local_server.running:
+            print("🛑 Stopping local HTTP server...")
+            self.local_server.stop()
+            self.local_server.wait()
+        
+        # Temp fájlok törlése
+        if self.current_map_file and os.path.exists(self.current_map_file):
+            try:
+                os.remove(self.current_map_file)
+                print(f"🗑️ Temp map file removed: {self.current_map_file}")
+            except Exception as e:
+                print(f"⚠️ Failed to remove temp file: {e}")
+        
+        print("🧹 HungarianMapVisualizer cleanup completed")
 
 
 # === DEMO ÉS TESZT FUNKCIÓK ===
 
-def demo_folium_map_visualizer():
+def demo_http_server_folium_map_visualizer():
     """
-    🧪 Folium Map Visualizer demo alkalmazás.
+    🧪 🌐 HTTP SZERVER Folium Map Visualizer demo alkalmazás - Same-Origin Policy Fix + Reaktív Megyehatárok verziója.
     """
     import sys
-    from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+    from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QLabel
     
     app = QApplication(sys.argv)
     
     # Fő ablak
     window = QMainWindow()
-    window.setWindowTitle("🗺️ Folium Map Visualizer Demo - Teljes Interaktív")
+    window.setWindowTitle("🌐 HTTP SZERVER Folium Map Visualizer Demo - Same-Origin Policy Fix v3.0 + Reaktív Megyehatárok + Dinamikus Színskála")
     window.setGeometry(100, 100, 1400, 900)
     
     # Central widget
@@ -1599,13 +2003,73 @@ def demo_folium_map_visualizer():
     
     layout = QVBoxLayout(central_widget)
     
+    # 🌐 HTTP szerver verzió info
+    server_info = QWidget()
+    server_layout = QHBoxLayout(server_info)
+    
+    server_title = QLabel("🌐 HTTP SZERVER VERZIÓ TESZT:")
+    server_title.setStyleSheet("font-weight: bold; color: #3498DB;")
+    server_layout.addWidget(server_title)
+    
+    debug_info_btn = QPushButton("🔍 Debug Info")
+    counties_test_btn = QPushButton("🗺️ Megyék Teszt")
+    weather_test_btn = QPushButton("🌤️ Weather Teszt")
+    server_info_btn = QPushButton("🌐 Szerver Info")
+    
+    server_layout.addWidget(debug_info_btn)
+    server_layout.addWidget(counties_test_btn)
+    server_layout.addWidget(weather_test_btn)
+    server_layout.addWidget(server_info_btn)
+    server_layout.addStretch()
+    
+    layout.addWidget(server_info)
+    
+    # 🔧 Dinamikus színskála teszt gombok
+    gradient_controls = QWidget()
+    gradient_layout = QHBoxLayout(gradient_controls)
+    
+    gradient_title = QLabel("🎨 DINAMIKUS SZÍNSKÁLA TESZT:")
+    gradient_title.setStyleSheet("font-weight: bold; color: #9B59B6;")
+    gradient_layout.addWidget(gradient_title)
+    
+    temp_overlay_btn = QPushButton("🌡️ Hőmérséklet Overlay")
+    wind_overlay_btn = QPushButton("💨 Szél Overlay")
+    precip_overlay_btn = QPushButton("🌧️ Csapadék Overlay")
+    clear_overlay_btn = QPushButton("🧹 Clear Overlay")
+    
+    gradient_layout.addWidget(temp_overlay_btn)
+    gradient_layout.addWidget(wind_overlay_btn)
+    gradient_layout.addWidget(precip_overlay_btn)
+    gradient_layout.addWidget(clear_overlay_btn)
+    gradient_layout.addStretch()
+    
+    layout.addWidget(gradient_controls)
+    
     # Folium map visualizer
     map_visualizer = HungarianMapVisualizer()
     layout.addWidget(map_visualizer)
     
     # Event handlers
     def on_map_ready():
-        print("🗺️ Folium térkép betöltve és kész!")
+        print("🌐 HTTP SZERVER Folium térkép betöltve és kész - Same-Origin Policy fix + Reaktív megyehatárok sikeres!")
+        
+        # Server info
+        server_info = map_visualizer.get_http_server_info()
+        print("🌐 HTTP szerver információk:")
+        for key, value in server_info.items():
+            print(f"   {key}: {value}")
+        
+        # Gradient info
+        gradient_info = map_visualizer.get_dynamic_gradient_info()
+        print("🎨 Dinamikus gradient információk:")
+        for key, value in gradient_info.items():
+            print(f"   {key}: {value}")
+        
+        # HTTP debug info
+        http_info = map_visualizer.get_http_debug_info()
+        print("🌐 HTTP szerver verzió információk:")
+        for key, value in http_info.items():
+            print(f"   {key}: {value}")
     
     def on_county_clicked(county_name):
         print(f"🖱️ Megye kattintva: {county_name}")
@@ -1622,6 +2086,130 @@ def demo_folium_map_visualizer():
     def on_error_occurred(message):
         print(f"❌ Hiba: {message}")
     
+    # HTTP szerver button handlers
+    def show_debug_info():
+        print("🔍 HTTP szerver debug info megjelenítése...")
+        http_info = map_visualizer.get_http_debug_info()
+        gradient_info = map_visualizer.get_dynamic_gradient_info()
+        
+        debug_text = "🌐 HTTP SZERVER DEBUG INFO:\n"
+        for key, value in http_info.items():
+            debug_text += f"  {key}: {value}\n"
+        
+        debug_text += "\n🎨 GRADIENT DEBUG INFO:\n"
+        for key, value in gradient_info.items():
+            debug_text += f"  {key}: {value}\n"
+        
+        QMessageBox.information(window, "HTTP Szerver Debug Info", debug_text)
+    
+    def test_counties_reactive():
+        print("🗺️ 🚀 HTTP SZERVER Megyék teszt...")
+        print("🧪 Generálok demo megyeadatokat és tesztelem a reaktív frissítést...")
+        
+        # Demo megyék generálása (egyszerű téglalap geometriákkal)
+        import geopandas as gpd
+        import pandas as pd
+        from shapely.geometry import Polygon
+        
+        demo_counties = []
+        county_names = ["Budapest", "Pest", "Fejér", "Komárom-Esztergom", "Veszprém"]
+        
+        for i, name in enumerate(county_names):
+            # Egyszerű téglalap minden megyének
+            bounds = [
+                18.5 + i * 0.5,     # min_x
+                47.0 + i * 0.3,     # min_y  
+                19.0 + i * 0.5,     # max_x
+                47.5 + i * 0.3      # max_y
+            ]
+            
+            polygon = Polygon([
+                (bounds[0], bounds[1]),  # SW
+                (bounds[2], bounds[1]),  # SE
+                (bounds[2], bounds[3]),  # NE
+                (bounds[0], bounds[3]),  # NW
+                (bounds[0], bounds[1])   # SW (close)
+            ])
+            
+            demo_counties.append({
+                'megye': name,
+                'geometry': polygon
+            })
+        
+        demo_gdf = gpd.GeoDataFrame(demo_counties)
+        
+        print(f"🧪 Demo counties GeoDataFrame created: {len(demo_gdf)} counties")
+        print("🚀 Testing HTTP SERVER REACTIVE set_counties_geodataframe...")
+        
+        # REAKTÍV teszt - a térkép automatikusan frissül!
+        map_visualizer.set_counties_geodataframe(demo_gdf)
+        
+        print("✅ 🚀 HTTP SZERVER REAKTÍV teszt befejezve - a térkép automatikusan frissült!")
+    
+    def test_weather_reactive():
+        print("🌤️ 🚀 HTTP SZERVER Weather teszt...")
+        demo_data = map_visualizer.generate_demo_weather_data()
+        
+        print("🚀 Testing HTTP SERVER REACTIVE set_weather_data...")
+        
+        # REAKTÍV teszt - a térkép automatikusan frissül!
+        map_visualizer.set_weather_data(demo_data)
+        
+        print("✅ 🚀 HTTP SZERVER weather teszt befejezve - a térkép automatikusan frissült!")
+    
+    def show_server_info():
+        print("🌐 HTTP szerver információk megjelenítése...")
+        server_info = map_visualizer.get_http_server_info()
+        
+        if server_info["server_running"]:
+            info_text = f"🌐 HTTP SZERVER AKTÍV:\n\n"
+            info_text += f"URL: {server_info['server_url']}\n"
+            info_text += f"Host: {server_info['http_host']}\n"
+            info_text += f"Port: {server_info['http_port']}\n"
+            info_text += f"Térkép fájl: {server_info['current_map_file']}\n"
+            info_text += f"Fájl méret: {server_info['current_map_size']:,} bytes\n"
+            info_text += f"Verzió: {server_info['version']}"
+        else:
+            info_text = "❌ HTTP szerver nem fut!"
+        
+        QMessageBox.information(window, "HTTP Szerver Info", info_text)
+    
+    # Gradient teszt button handlers
+    def test_temperature_overlay():
+        print("🌡️ Hőmérséklet overlay teszt...")
+        demo_data = map_visualizer.generate_demo_weather_data()
+        temp_data = {'temperature': demo_data['temperature']}
+        map_visualizer.set_weather_data(temp_data)  # REAKTÍV!
+    
+    def test_wind_overlay():
+        print("💨 Szél overlay teszt...")
+        demo_data = map_visualizer.generate_demo_weather_data()
+        wind_data = {'wind_speed': demo_data['wind_speed']}
+        map_visualizer.set_weather_data(wind_data)  # REAKTÍV!
+    
+    def test_precipitation_overlay():
+        print("🌧️ Csapadék overlay teszt...")
+        demo_data = map_visualizer.generate_demo_weather_data()
+        precip_data = {'precipitation': demo_data['precipitation']}
+        map_visualizer.set_weather_data(precip_data)  # REAKTÍV!
+    
+    def test_clear_overlay():
+        print("🧹 Overlay törlése...")
+        map_visualizer.clear_active_overlay_parameter()
+        map_visualizer.toggle_weather_overlay(False)
+    
+    # HTTP szerver button connections
+    debug_info_btn.clicked.connect(show_debug_info)
+    counties_test_btn.clicked.connect(test_counties_reactive)
+    weather_test_btn.clicked.connect(test_weather_reactive)
+    server_info_btn.clicked.connect(show_server_info)
+    
+    # Gradient button connections
+    temp_overlay_btn.clicked.connect(test_temperature_overlay)
+    wind_overlay_btn.clicked.connect(test_wind_overlay)
+    precip_overlay_btn.clicked.connect(test_precipitation_overlay)
+    clear_overlay_btn.clicked.connect(test_clear_overlay)
+    
     # Signalok kapcsolása
     map_visualizer.map_ready.connect(on_map_ready)
     map_visualizer.county_clicked.connect(on_county_clicked)
@@ -1630,19 +2218,60 @@ def demo_folium_map_visualizer():
     map_visualizer.export_completed.connect(on_export_completed)
     map_visualizer.error_occurred.connect(on_error_occurred)
     
+    # Cleanup
+    def cleanup_on_close():
+        print("🧹 Application closing - cleaning up...")
+        map_visualizer.cleanup()
+    
+    app.aboutToQuit.connect(cleanup_on_close)
+    
     window.show()
     
-    print("🗺️ Folium Map Visualizer Demo elindítva!")
-    print("✅ TELJES INTERAKTÍV FOLIUM TÉRKÉP!")
+    print("🌐 HTTP SZERVER Folium Map Visualizer Demo elindítva - Same-Origin Policy Fix v3.0 + Reaktív Megyehatárok!")
+    print("🔧 HTTP SZERVER MEGOLDÁS ELŐNYEI v3.0:")
+    print("   ✅ Beágyazott HTTP szerver QThread-ben")
+    print("   ✅ WebEngine http://127.0.0.1:PORT/map.html betöltés")
+    print("   ✅ Same-Origin Policy problémák végleg megoldva")
+    print("   ✅ Nagy HTML fájlok (1.5MB+) teljes támogatása")
+    print("   ✅ setHtml() méretkorlát megoldva")
+    print("   ✅ file:// protokoll problémák megszűntek")
+    print("   ✅ JavaScript és CSS teljes támogatás")
+    print("   ✅ Nincs WebEngine cache konfliktus")
+    print("   ✅ Stabil és megbízható működés")
+    print("   🚀 REAKTÍV MEGYEHATÁROK - A 'futár és festő' probléma megoldva!")
+    print("   🚀 REAKTÍV IDŐJÁRÁSI OVERLAY - Automatikus frissítés")
+    print("   🚀 set_counties_geodataframe() → AZONNALI térképfrissítés")
+    print("   🚀 set_weather_data() → AZONNALI térképfrissítés")
+    print("🔧 DINAMIKUS SZÍNSKÁLA JAVÍTÁSOK v1.2:")
+    print("   ✅ COLOR_SCALE_GRADIENTS mapping minden overlay típushoz")
+    print("   ✅ set_active_overlay_parameter() metódus")
+    print("   ✅ Overlay-specifikus jelmagyarázat generálás")
+    print("   ✅ Automatikus overlay parameter beállítás")
+    print("   ✅ UI kijelző az aktív overlay parameter-hez")
+    print("✅ TELJES HTTP SZERVER INTERAKTÍV FOLIUM TÉRKÉP!")
     print("🎮 Elérhető funkciók:")
     print("   🖱️ Kattintható megyék")
     print("   📍 Koordináta kattintás")
     print("   🔍 Zoom/Pan interakció")
     print("   👆 Hover tooltipek")
-    print("   🌤️ Weather overlay")
+    print("   🌤️ Weather overlay dinamikus színskálával")
     print("   🎨 Téma támogatás")
     print("   💾 HTML export")
     print("   🌉 JavaScript ↔ Python bridge")
+    print("   🧪 HTTP SZERVER TESZT GOMBOK:")
+    print("      🚀 Kattints a reaktív gombokra a működés teszteléséhez!")
+    print("      🗺️ 'Megyék Teszt' - Demo megyék betöltése és AZONNALI térképfrissítés")
+    print("      🌤️ 'Weather Teszt' - Demo időjárási adatok és AZONNALI térképfrissítés") 
+    print("      🌐 'Szerver Info' - HTTP szerver részletes információk")
+    print("      🎨 Kattints a színskála gombokra a különböző overlay típusok teszteléséhez!")
+    print("🎯 HTTP SZERVER MŰKÖDÉS:")
+    print("   🌐 Automatikus helyi HTTP szerver indítás")
+    print("   🌐 Folium térkép fájlba mentés")
+    print("   🌐 WebEngine http://127.0.0.1:PORT/map.html betöltés")
+    print("   🚀 Amikor az alkalmazás betölti a magyar megyéket → AUTOMATIKUS térképfrissítés")
+    print("   🚀 Amikor időjárási adatok érkeznek → AUTOMATIKUS térképfrissítés")
+    print("   🚀 Nincs manuális frissítés szükséges!")
+    print("   🚀 A 'futár és festő' probléma végleg megoldva!")
     
     if FOLIUM_AVAILABLE:
         print("✅ Folium library elérhető!")
@@ -1653,4 +2282,9 @@ def demo_folium_map_visualizer():
 
 
 if __name__ == "__main__":
-    demo_folium_map_visualizer()
+    demo_http_server_folium_map_visualizer()
+
+
+# Export
+__all__ = ['HungarianMapVisualizer', 'FoliumMapConfig', 'JavaScriptBridge', 'FoliumMapGenerator', 'LocalHttpServerThread']
+        

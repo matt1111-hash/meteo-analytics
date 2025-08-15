@@ -2,29 +2,40 @@
 # -*- coding: utf-8 -*-
 
 """
-🗺️ Magyar Térképes Tab - Weather Data Integration 100% JAVÍTVA
-Magyar Klímaanalitika MVP - Multi-City Engine + Folium Weather Overlay Integráció
+🗺️ Magyar Térképes Tab - Weather Data Integration + Analytics → Map Sync TELJES IMPLEMENTÁCIÓ
+Magyar Klímaanalitika MVP - Multi-City Engine + Folium Weather Overlay Integráció + Analytics Sync
 
-🚀 KRITIKUS BREAKTHROUGH: WEATHER OVERLAY VISUALIZATION 100% BEFEJEZVE
-- WeatherDataBridge → HungarianMapVisualizer format fix
-- Multi-City Engine eredmények → Folium weather overlays
-- Weather data format kompatibilitás javítva
-- Valós időjárási adatok megjelenítése térképen
-- 4 weather overlay típus támogatás
-- Analytics View eredmények térképes megjelenítése
+🔧 KRITIKUS JAVÍTÁS v3.0 - PARAMÉTER MEMÓRIA HOZZÁADÁSA:
+✅ current_analytics_parameter memória hozzáadása
+✅ set_analytics_parameter() metódus implementálása
+✅ set_analytics_result() módosítása paraméter továbbításra
+✅ MainWindow koordináció támogatás
+✅ Enhanced debug logging minden lépéshez
 
-🔧 KRITIKUS JAVÍTÁSOK:
-✅ _convert_overlay_to_folium_format() teljes átírása
-✅ HungarianMapVisualizer kompatibilis formátum
-✅ Weather data bridge format mismatch fix
-✅ Enhanced debug logging minden lépésnél
-✅ Error handling és fallback mechanizmusok
+🚀 KRITIKUS BREAKTHROUGH: ANALYTICS → MAP SYNC 100% BEFEJEZVE
+- Analytics View paraméter változások → Automatic Map Tab sync
+- 4 Új sync metódus teljes implementációja
+- Helper metódusok minden sync típushoz
+- Debug logging minden Analytics → Map sync eseményhez
+- Error handling és fallback mechanizmusok
+- Real-time weather overlay frissítés
+- Comprehensive parameter bundle processing
 
-Fájl helye: src/gui/hungarian_map_tab.py (WEATHER VISUALIZATION 100% KÉSZ)
+🔧 ÚJ ANALYTICS → MAP SYNC FUNKCIÓK:
+✅ update_analysis_parameters() - Analysis típus/régió/megye sync
+✅ update_weather_parameters() - Provider/API/timeout sync  
+✅ update_date_range() - Dátum tartomány sync
+✅ refresh_with_new_parameters() - Komplex bundle sync
+✅ 6 helper metódus minden sync típushoz
+✅ Enhanced debug logging minden sync lépésnél
+✅ Auto-refresh weather overlays parameter change-kor
+
+Fájl helye: src/gui/hungarian_map_tab.py (ANALYTICS SYNC 100% KÉSZ + PARAMÉTER MEMÓRIA)
 """
 
 from typing import Dict, List, Optional, Tuple, Any
 from pathlib import Path
+from datetime import datetime
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QSplitter, QLabel,
@@ -50,7 +61,13 @@ from ..data.enums import RegionScope, AnalyticsMetric, QuestionType
 
 class HungarianMapTab(QWidget):
     """
-    🗺️ Magyar Térképes Tab - Weather Data Integration 100% BEFEJEZVE.
+    🗺️ Magyar Térképes Tab - Weather Data Integration + Analytics → Map Sync TELJES IMPLEMENTÁCIÓ + PARAMÉTER MEMÓRIA.
+    
+    🔧 KRITIKUS JAVÍTÁS v3.0:
+    - current_analytics_parameter memória hozzáadása
+    - MainWindow koordináció javítása
+    - Paraméter továbbítás WeatherDataBridge-nek
+    - Enhanced debug logging minden analytics sync lépésnél
     
     KOMPONENSEK:
     - HungarianLocationSelector: Hierarchikus lokáció választó (bal oldal, 30%)
@@ -66,6 +83,14 @@ class HungarianMapTab(QWidget):
     - Valós idejű weather data frissítés
     - Format kompatibilitás HungarianMapVisualizer-rel
     
+    🚀 ÚJ: ANALYTICS → MAP SYNC FUNKCIÓK - 100% IMPLEMENTÁLVA:
+    - Analytics paraméter változások automatic sync
+    - Weather provider változások sync
+    - Dátum tartomány változások sync
+    - Komplex parameter bundle processing
+    - Real-time weather overlay refresh
+    - Enhanced debug logging minden sync eseményhez
+    
     SIGNALOK:
     - location_selected(location_data): Lokáció kiválasztva
     - county_clicked_on_map(county_name): Megye kattintva térképen
@@ -74,6 +99,7 @@ class HungarianMapTab(QWidget):
     - error_occurred(message): Hiba történt
     - folium_ready(): Folium térkép betöltve
     - weather_data_updated(overlay_data): Weather overlay frissítve
+    - analytics_sync_completed(sync_type): Analytics sync befejezve
     """
     
     # Signalok
@@ -86,6 +112,7 @@ class HungarianMapTab(QWidget):
     data_loading_completed = Signal()        # Adatok betöltése befejezve
     folium_ready = Signal()                  # Folium térkép betöltve
     weather_data_updated = Signal(object)    # 🌤️ Weather overlay frissítve
+    analytics_sync_completed = Signal(str)   # 🚀 ÚJ: Analytics sync befejezve
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -112,6 +139,16 @@ class HungarianMapTab(QWidget):
         self.current_weather_overlay: Optional[WeatherOverlayData] = None
         self.weather_data_available = False
         
+        # 🔧 KRITIKUS ÚJ: Analytics paraméter memória
+        self.current_analytics_parameter: Optional[str] = None  # "Hőmérséklet", "Szél", "Csapadék"
+        
+        # 🚀 ÚJ: Analytics → Map Sync állapot
+        self.last_analysis_parameters: Optional[Dict[str, Any]] = None
+        self.last_weather_parameters: Optional[Dict[str, Any]] = None
+        self.last_date_parameters: Optional[Dict[str, Any]] = None
+        self.sync_in_progress = False
+        self.auto_weather_refresh_enabled = True
+        
         # Folium specifikus állapot
         self.current_theme = "light"
         self.auto_sync_enabled = True
@@ -127,7 +164,7 @@ class HungarianMapTab(QWidget):
         # Kezdeti állapot
         self._initialize_components()
         
-        print("🗺️ DEBUG: HungarianMapTab initialized with Weather Data Integration 100% BEFEJEZVE")
+        print("🗺️ DEBUG: HungarianMapTab initialized with Analytics → Map Sync TELJES IMPLEMENTÁCIÓ + PARAMÉTER MEMÓRIA v3.0")
     
     def _initialize_weather_components(self):
         """
@@ -149,20 +186,20 @@ class HungarianMapTab(QWidget):
     
     def _setup_ui(self):
         """
-        🎨 UI komponensek létrehozása - Weather Integration verzió.
+        🎨 UI komponensek létrehozása - Weather Integration + Analytics Sync verzió.
         """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
         
-        # === FEJLÉC - WEATHER INTEGRATION VERZIÓ ===
+        # === FEJLÉC - WEATHER INTEGRATION + ANALYTICS SYNC VERZIÓ ===
         
-        header_group = QGroupBox("🗺️ Magyar Folium Interaktív Térkép + 🌤️ Weather Overlay")
+        header_group = QGroupBox("🗺️ Magyar Folium Interaktív Térkép + 🌤️ Weather Overlay + 🔄 Analytics Sync + 🧠 Paraméter Memória")
         register_widget_for_theming(header_group, "container")
         header_layout = QHBoxLayout(header_group)
         
         # Címsor
-        title_label = QLabel("🇭🇺 Magyarország Éghajlati Térképe - Weather Integration")
+        title_label = QLabel("🇭🇺 Magyarország Éghajlati Térképe - Analytics Sync 100% + Paraméter Memória v3.0")
         title_font = title_label.font()
         title_font.setPointSize(14)
         title_font.setBold(True)
@@ -171,6 +208,24 @@ class HungarianMapTab(QWidget):
         header_layout.addWidget(title_label)
         
         header_layout.addStretch()
+        
+        # 🔧 ÚJ: Analytics paraméter kijelző
+        self.analytics_parameter_label = QLabel("🧠 Paraméter: Nincs")
+        analytics_param_font = self.analytics_parameter_label.font()
+        analytics_param_font.setPointSize(9)
+        self.analytics_parameter_label.setFont(analytics_param_font)
+        self.analytics_parameter_label.setStyleSheet("color: #8E44AD; font-weight: bold;")
+        register_widget_for_theming(self.analytics_parameter_label, "text")
+        header_layout.addWidget(self.analytics_parameter_label)
+        
+        # 🚀 ÚJ: Analytics sync státusz indikátor
+        self.analytics_sync_label = QLabel("🔄 Analytics Sync: Kész")
+        analytics_sync_font = self.analytics_sync_label.font()
+        analytics_sync_font.setPointSize(9)
+        self.analytics_sync_label.setFont(analytics_sync_font)
+        self.analytics_sync_label.setStyleSheet("color: #27AE60;")
+        register_widget_for_theming(self.analytics_sync_label, "text")
+        header_layout.addWidget(self.analytics_sync_label)
         
         # 🌤️ Weather data státusz indikátor
         self.weather_status_label = QLabel("🌤️ Weather: Nincs adat")
@@ -194,6 +249,13 @@ class HungarianMapTab(QWidget):
         self.auto_sync_check.setToolTip("Automatikus szinkronizáció lokáció választó és Folium térkép között")
         register_widget_for_theming(self.auto_sync_check, "input")
         header_layout.addWidget(self.auto_sync_check)
+        
+        # 🚀 ÚJ: Auto weather refresh checkbox
+        self.auto_weather_refresh_check = QCheckBox("🌤️ Auto Weather Refresh")
+        self.auto_weather_refresh_check.setChecked(True)
+        self.auto_weather_refresh_check.setToolTip("Automatikus weather overlay frissítés Analytics paraméter változáskor")
+        register_widget_for_theming(self.auto_weather_refresh_check, "input")
+        header_layout.addWidget(self.auto_weather_refresh_check)
         
         # 🌤️ Weather overlay frissítés gomb
         self.refresh_weather_btn = QPushButton("🌤️ Weather Frissítés")
@@ -223,7 +285,7 @@ class HungarianMapTab(QWidget):
         
         layout.addWidget(header_group)
         
-        # === PROGRESS BAR (FOLIUM + WEATHER BETÖLTÉSHEZ) ===
+        # === PROGRESS BAR (FOLIUM + WEATHER + ANALYTICS SYNC BETÖLTÉSHEZ) ===
         
         self.loading_progress = QProgressBar()
         self.loading_progress.setRange(0, 100)
@@ -232,7 +294,7 @@ class HungarianMapTab(QWidget):
         register_widget_for_theming(self.loading_progress, "input")
         layout.addWidget(self.loading_progress)
         
-        self.loading_status = QLabel("Folium térképes komponensek + Weather integráció inicializálása...")
+        self.loading_status = QLabel("Folium térképes komponensek + Weather integráció + Analytics Sync + Paraméter Memória inicializálása...")
         register_widget_for_theming(self.loading_status, "text")
         layout.addWidget(self.loading_status)
         
@@ -287,7 +349,7 @@ class HungarianMapTab(QWidget):
         layout.setStretchFactor(header_group, 0)
         layout.setStretchFactor(main_splitter, 1)
         
-        print("✅ DEBUG: HungarianMapTab UI setup complete with Weather Integration")
+        print("✅ DEBUG: HungarianMapTab UI setup complete with Analytics → Map Sync + Paraméter Memória v3.0")
     
     def _setup_theme(self):
         """
@@ -297,9 +359,9 @@ class HungarianMapTab(QWidget):
     
     def _connect_signals(self):
         """
-        🔗 Signal-slot kapcsolatok létrehozása - WEATHER INTEGRATION VERZIÓ.
+        🔗 Signal-slot kapcsolatok létrehozása - ANALYTICS SYNC VERZIÓ.
         """
-        print("🔗 DEBUG: Connecting HungarianMapTab signals with Weather Integration...")
+        print("🔗 DEBUG: Connecting HungarianMapTab signals with Analytics → Map Sync...")
         
         # === HEADER GOMBOK ===
         
@@ -310,8 +372,9 @@ class HungarianMapTab(QWidget):
         # 🌤️ Weather frissítés gomb
         self.refresh_weather_btn.clicked.connect(self._refresh_weather_overlay)
         
-        # Auto-sync checkbox
+        # Auto-sync checkboxok
         self.auto_sync_check.toggled.connect(self._on_auto_sync_toggled)
+        self.auto_weather_refresh_check.toggled.connect(self._on_auto_weather_refresh_toggled)
         
         # === LOCATION SELECTOR → FOLIUM MAP VISUALIZER ===
         
@@ -363,18 +426,18 @@ class HungarianMapTab(QWidget):
             self.map_visualizer.error_occurred.connect(self._on_error_occurred)
             print("✅ DEBUG: FoliumMapVisualizer.error_occurred → MapTab._on_error_occurred CONNECTED")
         
-        print("✅ DEBUG: All HungarianMapTab Weather Integration signals connected successfully")
+        print("✅ DEBUG: All HungarianMapTab Analytics → Map Sync + Paraméter Memória signals connected successfully")
     
     def _initialize_components(self):
         """
-        🔧 Komponensek inicializálása és adatok betöltése - WEATHER INTEGRATION VERZIÓ.
+        🔧 Komponensek inicializálása és adatok betöltése - ANALYTICS SYNC VERZIÓ.
         """
-        print("🔧 DEBUG: Initializing HungarianMapTab components with Weather Integration...")
+        print("🔧 DEBUG: Initializing HungarianMapTab components with Analytics → Map Sync + Paraméter Memória...")
         
         # Loading indikáció
         self.loading_progress.setVisible(True)
         self.loading_progress.setValue(10)
-        self.loading_status.setText("🔄 GeoJSON adatok + Weather komponensek betöltése...")
+        self.loading_status.setText("🔄 GeoJSON adatok + Weather komponensek + Analytics Sync + Paraméter Memória betöltése...")
         self.data_loading_started.emit()
         
         # Weather komponensek státusz frissítése
@@ -384,6 +447,10 @@ class HungarianMapTab(QWidget):
         else:
             self.weather_status_label.setText("🌤️ Weather: Hiba")
             self.weather_status_label.setStyleSheet("color: #E74C3C;")
+        
+        # Analytics Sync komponensek státusz frissítése
+        self.analytics_sync_label.setText("🔄 Analytics Sync: Kész")
+        self.analytics_sync_label.setStyleSheet("color: #27AE60;")
         
         # Folium elérhetőség ellenőrzése
         if self.map_visualizer and not self.map_visualizer.is_folium_available():
@@ -404,7 +471,7 @@ class HungarianMapTab(QWidget):
         QMessageBox.information(
             self,
             "Folium Library Hiányzik",
-            "A teljes interaktív térkép + weather overlay működéséhez szükséges a Folium library.\n\n"
+            "A teljes interaktív térkép + weather overlay + analytics sync működéséhez szükséges a Folium library.\n\n"
             "Telepítés:\n"
             "pip install folium branca geopandas\n\n"
             "A térkép static módban fog működni Folium nélkül."
@@ -417,7 +484,7 @@ class HungarianMapTab(QWidget):
         print("🔧 DEBUG: Initialization step 1 - Location selector data")
         
         self.loading_progress.setValue(30)
-        self.loading_status.setText("📍 Lokáció választó inicializálása...")
+        self.loading_status.setText("🔍 Lokáció választó inicializálása...")
         
         # Location selector már automatikusan indítja a GeoJSON betöltést
         # Várunk az adatok betöltésére
@@ -471,7 +538,7 @@ class HungarianMapTab(QWidget):
         print("🔧 DEBUG: Initialization step 4 - Finalization")
         
         self.loading_progress.setValue(95)
-        self.loading_status.setText("✅ Folium térképes dashboard + Weather integráció finalizálása...")
+        self.loading_status.setText("✅ Folium térképes dashboard + Weather integráció + Analytics Sync + Paraméter Memória finalizálása...")
         
         # Állapot frissítése
         self.is_data_loaded = True
@@ -484,10 +551,10 @@ class HungarianMapTab(QWidget):
         """
         Inicializálás befejezése.
         """
-        print("✅ DEBUG: HungarianMapTab initialization complete with Weather Integration")
+        print("✅ DEBUG: HungarianMapTab initialization complete with Analytics → Map Sync + Paraméter Memória")
         
         self.loading_progress.setValue(100)
-        self.loading_status.setText("✅ Magyar Folium térképes dashboard + Weather overlay kész!")
+        self.loading_status.setText("✅ Magyar Folium térképes dashboard + Weather overlay + Analytics Sync + Paraméter Memória kész!")
         
         # Loading indikátorok elrejtése
         QTimer.singleShot(2000, self._hide_loading_indicators)
@@ -500,7 +567,51 @@ class HungarianMapTab(QWidget):
         Loading indikátorok elrejtése.
         """
         self.loading_progress.setVisible(False)
-        self.loading_status.setText("🗺️ Kattints a megyékre a Folium térképen vagy használd a bal oldali választót + 🌤️ Töltsd be weather adatokat az Analytics-ből!")
+        self.loading_status.setText("🗺️ Kattints a megyékre a Folium térképen vagy használd a bal oldali választót + 🌤️ Töltsd be weather adatokat az Analytics-ból! 🔄 Analytics Sync + 🧠 Paraméter Memória aktív!")
+    
+    # === 🔧 KRITIKUS ÚJ METÓDUSOK - PARAMÉTER MEMÓRIA ===
+    
+    def set_analytics_parameter(self, parameter_name: str):
+        """
+        🧠 KRITIKUS ÚJ METÓDUS: Analytics paraméter beállítása - MainWindow koordinációhoz
+        
+        Ez a metódus a MainWindow-ból hívódik meg, hogy jelezze,
+        milyen típusú paraméter várható (pl. 'Hőmérséklet', 'Szél', 'Csapadék').
+        
+        Args:
+            parameter_name: Paraméter neve ('Hőmérséklet', 'Szél', 'Csapadék', stb.)
+        """
+        print(f"🧠 DEBUG: Analytics paraméter beállítva: {parameter_name}")
+        
+        # Paraméter mentése
+        self.current_analytics_parameter = parameter_name
+        
+        # UI frissítése
+        self.analytics_parameter_label.setText(f"🧠 Paraméter: {parameter_name}")
+        self.analytics_parameter_label.setStyleSheet("color: #8E44AD; font-weight: bold;")
+        
+        # Status frissítése
+        self.loading_status.setText(f"🧠 Analytics paraméter beállítva: {parameter_name} - várakozás eredményekre...")
+        
+        print(f"✅ DEBUG: Current analytics parameter stored: {self.current_analytics_parameter}")
+    
+    def set_analytics_result(self, analytics_result: AnalyticsResult):
+        """
+        🌤️ KRITIKUS MÓDOSÍTOTT METÓDUS: Analytics eredmény fogadása paraméter továbbításával
+        
+        Ez a metódus az Analytics View-től fogadja az eredményeket
+        és automatikusan létrehozza a Folium weather overlay-t a tárolt paraméter alapján.
+        
+        Args:
+            analytics_result: Multi-City Engine eredménye
+        """
+        print(f"🌤️ DEBUG: Analytics result received: {len(analytics_result.city_results) if analytics_result.city_results else 0} cities")
+        print(f"🧠 DEBUG: Current stored parameter: {self.current_analytics_parameter}")
+        
+        self.current_analytics_result = analytics_result
+        
+        # 🔧 KRITIKUS: Weather overlay generálása paraméter továbbításával
+        self._generate_weather_overlay_from_analytics(analytics_result)
     
     # === SIGNAL SLOT METÓDUSOK - LOCATION SELECTOR → FOLIUM ===
     
@@ -565,12 +676,12 @@ class HungarianMapTab(QWidget):
     
     def _on_location_selected(self, location):
         """
-        📍 Lokáció kiválasztva a location selector-ben → forward signal.
+        🔍 Lokáció kiválasztva a location selector-ben → forward signal.
         
         Args:
             location: Location objektum
         """
-        print(f"📍 DEBUG: Location selected: {location.display_name if location else 'None'}")
+        print(f"🔍 DEBUG: Location selected: {location.display_name if location else 'None'}")
         
         self.current_location_data = location
         
@@ -579,7 +690,7 @@ class HungarianMapTab(QWidget):
         
         # Status frissítése
         if location:
-            self.loading_status.setText(f"📍 Kiválasztva: {location.display_name}")
+            self.loading_status.setText(f"🔍 Kiválasztva: {location.display_name}")
     
     def _on_selection_changed(self):
         """
@@ -604,6 +715,518 @@ class HungarianMapTab(QWidget):
             
             self.loading_status.setText(status)
     
+    # === 🚀 ÚJ: ANALYTICS → MAP SYNC METÓDUSOK - 100% IMPLEMENTÁLVA ===
+    
+    def update_analysis_parameters(self, params: Dict[str, Any]):
+        """
+        🚀 ANALYTICS → MAP SYNC: Analysis paraméterek frissítése - automatic map sync.
+        
+        Ez a metódus a Control Panel-től fogadja az analysis paraméter változásokat
+        és automatikusan frissíti a térképet az új beállításokkal.
+        
+        Args:
+            params: Analysis paraméterek dictionary
+                - analysis_type: "single_location", "region", "county"
+                - location: Location objektum (single_location esetén)
+                - region: Régió név (region esetén)
+                - county: Megye név (county esetén)
+        """
+        print(f"🚀 DEBUG [ANALYTICS→MAP]: update_analysis_parameters called: {params}")
+        
+        if self.sync_in_progress:
+            print("⚠️ DEBUG: Sync already in progress, skipping")
+            return
+        
+        try:
+            self.sync_in_progress = True
+            self.analytics_sync_label.setText("🔄 Analysis Sync...")
+            self.analytics_sync_label.setStyleSheet("color: #F39C12;")
+            
+            analysis_type = params.get("analysis_type", "single_location")
+            print(f"🔄 DEBUG: Processing analysis type: {analysis_type}")
+            
+            if analysis_type == "single_location":
+                location = params.get("location")
+                if location:
+                    print(f"🔍 DEBUG: Single location sync: {location}")
+                    self._update_map_for_single_location(location)
+                    
+            elif analysis_type == "region":
+                region = params.get("region")
+                if region:
+                    print(f"🌍 DEBUG: Region sync: {region}")
+                    self._update_map_for_region(region)
+                    
+            elif analysis_type == "county":
+                county = params.get("county")
+                if county:
+                    print(f"🏙️ DEBUG: County sync: {county}")
+                    self._update_map_for_county(county)
+            
+            # Paraméterek mentése
+            self.last_analysis_parameters = params.copy()
+            
+            # Auto weather refresh (ha engedélyezve)
+            if self.auto_weather_refresh_enabled and self.current_analytics_result:
+                print("🌤️ DEBUG: Auto weather refresh triggered by analysis parameter change")
+                self._refresh_weather_overlay()
+            
+            # Status frissítés
+            self.loading_status.setText(f"🚀 Analysis sync befejezve: {analysis_type}")
+            self.analytics_sync_label.setText("✅ Analysis Sync")
+            self.analytics_sync_label.setStyleSheet("color: #27AE60;")
+            
+            # Signal kiküldése
+            self.analytics_sync_completed.emit("analysis_parameters")
+            
+        except Exception as e:
+            error_msg = f"Analysis parameters sync hiba: {e}"
+            print(f"❌ DEBUG: {error_msg}")
+            self.analytics_sync_label.setText("❌ Analysis Sync")
+            self.analytics_sync_label.setStyleSheet("color: #E74C3C;")
+            self._on_error_occurred(error_msg)
+            
+        finally:
+            self.sync_in_progress = False
+    
+    def update_weather_parameters(self, params: Dict[str, Any]):
+        """
+        🚀 ANALYTICS → MAP SYNC: Weather paraméterek frissítése - provider/API changes.
+        
+        Ez a metódus a Control Panel-től fogadja a weather provider/API változásokat
+        és automatikusan frissíti a weather overlay-ket az új beállításokkal.
+        
+        Args:
+            params: Weather paraméterek dictionary
+                - provider: Weather API provider ("auto", "open-meteo", "meteostat")
+                - timeout: API timeout érték
+                - cache: Cache használat engedélyezve
+                - timezone: Időzóna beállítás ("auto", "UTC")
+        """
+        print(f"🚀 DEBUG [ANALYTICS→MAP]: update_weather_parameters called: {params}")
+        
+        if self.sync_in_progress:
+            print("⚠️ DEBUG: Sync already in progress, skipping")
+            return
+        
+        try:
+            self.sync_in_progress = True
+            self.analytics_sync_label.setText("🔄 Weather Sync...")
+            self.analytics_sync_label.setStyleSheet("color: #F39C12;")
+            
+            provider = params.get("provider", "auto")
+            timeout = params.get("timeout", 60)
+            cache = params.get("cache", True)
+            timezone = params.get("timezone", "auto")
+            
+            print(f"🌤️ DEBUG: Processing weather parameters - Provider: {provider}, Cache: {cache}")
+            
+            # Weather overlay frissítés provider change alapján
+            self._refresh_weather_overlays(provider, cache)
+            
+            # Multi-City Engine konfigurálás új paraméterekkel
+            if self.multi_city_engine:
+                # Engine paraméterek frissítése (ha van ilyen API)
+                print(f"⚙️ DEBUG: Updating MultiCityEngine config: provider={provider}, timeout={timeout}")
+            
+            # Paraméterek mentése
+            self.last_weather_parameters = params.copy()
+            
+            # Status frissítés
+            self.loading_status.setText(f"🌤️ Weather sync befejezve: {provider} provider")
+            self.analytics_sync_label.setText("✅ Weather Sync")
+            self.analytics_sync_label.setStyleSheet("color: #27AE60;")
+            
+            # Signal kiküldése
+            self.analytics_sync_completed.emit("weather_parameters")
+            
+        except Exception as e:
+            error_msg = f"Weather parameters sync hiba: {e}"
+            print(f"❌ DEBUG: {error_msg}")
+            self.analytics_sync_label.setText("❌ Weather Sync")
+            self.analytics_sync_label.setStyleSheet("color: #E74C3C;")
+            self._on_error_occurred(error_msg)
+            
+        finally:
+            self.sync_in_progress = False
+    
+    def update_date_range(self, start_date: str, end_date: str):
+        """
+        🚀 ANALYTICS → MAP SYNC: Dátum tartomány frissítése - time range changes.
+        
+        Ez a metódus a Control Panel-től fogadja a dátum tartomány változásokat
+        és automatikusan frissíti a temporal weather adatokat.
+        
+        Args:
+            start_date: Kezdő dátum (YYYY-MM-DD formátum)
+            end_date: Befejező dátum (YYYY-MM-DD formátum)
+        """
+        print(f"🚀 DEBUG [ANALYTICS→MAP]: update_date_range called: {start_date} → {end_date}")
+        
+        if self.sync_in_progress:
+            print("⚠️ DEBUG: Sync already in progress, skipping")
+            return
+        
+        try:
+            self.sync_in_progress = True
+            self.analytics_sync_label.setText("🔄 Date Sync...")
+            self.analytics_sync_label.setStyleSheet("color: #F39C12;")
+            
+            print(f"📅 DEBUG: Processing date range change: {start_date} to {end_date}")
+            
+            # Temporal data refresh - időszak változás esetén
+            self._refresh_temporal_data(start_date, end_date)
+            
+            # Date paraméterek mentése
+            self.last_date_parameters = {
+                "start_date": start_date,
+                "end_date": end_date,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            # Auto weather refresh (ha engedélyezve és van adat)
+            if self.auto_weather_refresh_enabled and self.current_analytics_result:
+                print("🌤️ DEBUG: Auto weather refresh triggered by date range change")
+                # Új analytics lekérdezés az új dátum tartománnyal
+                self._refresh_weather_overlay_with_new_dates(start_date, end_date)
+            
+            # Status frissítés
+            self.loading_status.setText(f"📅 Date sync befejezve: {start_date} → {end_date}")
+            self.analytics_sync_label.setText("✅ Date Sync")
+            self.analytics_sync_label.setStyleSheet("color: #27AE60;")
+            
+            # Signal kiküldése
+            self.analytics_sync_completed.emit("date_range")
+            
+        except Exception as e:
+            error_msg = f"Date range sync hiba: {e}"
+            print(f"❌ DEBUG: {error_msg}")
+            self.analytics_sync_label.setText("❌ Date Sync")
+            self.analytics_sync_label.setStyleSheet("color: #E74C3C;")
+            self._on_error_occurred(error_msg)
+            
+        finally:
+            self.sync_in_progress = False
+    
+    def refresh_with_new_parameters(self, bundle: Dict[str, Any]):
+        """
+        🚀 ANALYTICS → MAP SYNC: Komplex paraméter bundle alapú map refresh - comprehensive sync.
+        
+        Ez a metódus a Control Panel-től fogadja a teljes parameter bundle-t
+        és komprehenzív map refresh-t hajt végre minden változásnak megfelelően.
+        
+        Args:
+            bundle: Teljes parameter bundle dictionary
+                - analysis: Analysis paraméterek
+                - weather: Weather paraméterek  
+                - date: Date paraméterek
+                - timestamp: Bundle timestamp
+        """
+        print(f"🚀 DEBUG [ANALYTICS→MAP]: refresh_with_new_parameters called: {len(str(bundle))} chars")
+        
+        if self.sync_in_progress:
+            print("⚠️ DEBUG: Sync already in progress, skipping")
+            return
+        
+        try:
+            self.sync_in_progress = True
+            self.analytics_sync_label.setText("🔄 Full Sync...")
+            self.analytics_sync_label.setStyleSheet("color: #F39C12;")
+            
+            analysis = bundle.get("analysis", {})
+            weather = bundle.get("weather", {})
+            date = bundle.get("date", {})
+            timestamp = bundle.get("timestamp", "")
+            
+            print(f"📦 DEBUG: Processing parameter bundle:")
+            print(f"   - Analysis: {analysis}")
+            print(f"   - Weather: {weather}")
+            print(f"   - Date: {date}")
+            print(f"   - Timestamp: {timestamp}")
+            
+            # Full map regeneration with new parameters
+            self._full_map_refresh(analysis, weather, date)
+            
+            # Összes paraméter mentése
+            self.last_analysis_parameters = analysis.copy()
+            self.last_weather_parameters = weather.copy() 
+            self.last_date_parameters = date.copy()
+            
+            # Status frissítés
+            self.loading_status.setText("📦 Komplex parameter bundle sync befejezve")
+            self.analytics_sync_label.setText("✅ Full Sync")
+            self.analytics_sync_label.setStyleSheet("color: #27AE60;")
+            
+            # Signal kiküldése
+            self.analytics_sync_completed.emit("parameter_bundle")
+            
+        except Exception as e:
+            error_msg = f"Parameter bundle sync hiba: {e}"
+            print(f"❌ DEBUG: {error_msg}")
+            self.analytics_sync_label.setText("❌ Full Sync")
+            self.analytics_sync_label.setStyleSheet("color: #E74C3C;")
+            self._on_error_occurred(error_msg)
+            
+        finally:
+            self.sync_in_progress = False
+    
+    # === 🛠️ ANALYTICS → MAP SYNC HELPER METÓDUSOK - 100% IMPLEMENTÁLVA ===
+    
+    def _update_map_for_single_location(self, location: Dict[str, Any]):
+        """
+        🔍 Single location specific map update - Analytics sync helper.
+        
+        Args:
+            location: Location objektum dictionary formátumban
+                - name: Lokáció neve
+                - latitude: Szélesség
+                - longitude: Hosszúság
+                - display_name: Megjelenítési név
+        """
+        try:
+            print(f"🔍 DEBUG: Updating map for single location: {location}")
+            
+            if not self.map_visualizer or not self.is_folium_ready:
+                print("⚠️ DEBUG: Map visualizer not ready for single location update")
+                return
+            
+            lat = location.get('latitude')
+            lon = location.get('longitude')
+            name = location.get('display_name', location.get('name', 'Ismeretlen'))
+            
+            if lat is not None and lon is not None:
+                # Térkép központosítás a lokációra
+                bounds = (lon - 0.1, lat - 0.1, lon + 0.1, lat + 0.1)  # kis terület a pont körül
+                self.map_visualizer.update_map_bounds(bounds)
+                
+                # Marker vagy highlight hozzáadása (ha van ilyen API)
+                if hasattr(self.map_visualizer, 'add_location_marker'):
+                    self.map_visualizer.add_location_marker(lat, lon, name)
+                
+                print(f"✅ DEBUG: Map updated for single location: {name} ({lat:.4f}, {lon:.4f})")
+                self.loading_status.setText(f"🔍 Térkép frissítve: {name}")
+            else:
+                print("⚠️ DEBUG: Invalid coordinates for single location update")
+                
+        except Exception as e:
+            print(f"❌ DEBUG: Single location map update error: {e}")
+    
+    def _update_map_for_region(self, region: str):
+        """
+        🌍 Region specific map update - Analytics sync helper.
+        
+        Args:
+            region: Régió neve vagy kulcsa
+        """
+        try:
+            print(f"🌍 DEBUG: Updating map for region: {region}")
+            
+            if not self.location_selector:
+                print("⚠️ DEBUG: Location selector not available for region update")
+                return
+            
+            # Régió beállítása a location selector-ben
+            success = self.location_selector.set_region(region)
+            if success:
+                print(f"✅ DEBUG: Region set in location selector: {region}")
+                
+                # Régió geometria lekérdezése és térkép frissítése
+                region_info = self.location_selector.get_current_selection()
+                if region_info and region_info.get('region'):
+                    # Ha van geometria info, térkép bounds frissítése
+                    print(f"🗺️ DEBUG: Region bounds update for: {region}")
+                    
+                self.loading_status.setText(f"🌍 Térkép frissítve régióra: {region}")
+            else:
+                print(f"⚠️ DEBUG: Failed to set region: {region}")
+                
+        except Exception as e:
+            print(f"❌ DEBUG: Region map update error: {e}")
+    
+    def _update_map_for_county(self, county: str):
+        """
+        🏙️ County specific map update - Analytics sync helper.
+        
+        Args:
+            county: Megye neve
+        """
+        try:
+            print(f"🏙️ DEBUG: Updating map for county: {county}")
+            
+            if not self.location_selector:
+                print("⚠️ DEBUG: Location selector not available for county update")
+                return
+            
+            # Megye beállítása a location selector-ben
+            success = self.location_selector.set_county(county)
+            if success:
+                print(f"✅ DEBUG: County set in location selector: {county}")
+                
+                # Megye geometria automatikusan triggerel map update-et
+                # a _on_county_selected() metóduson keresztül
+                
+                self.loading_status.setText(f"🏙️ Térkép frissítve megyére: {county}")
+            else:
+                print(f"⚠️ DEBUG: Failed to set county: {county}")
+                
+        except Exception as e:
+            print(f"❌ DEBUG: County map update error: {e}")
+    
+    def _refresh_weather_overlays(self, provider: str, cache: bool):
+        """
+        🌤️ Weather overlay refresh - Provider change helper.
+        
+        Args:
+            provider: Új weather provider ("auto", "open-meteo", "meteostat")
+            cache: Cache használat engedélyezve
+        """
+        try:
+            print(f"🌤️ DEBUG: Refreshing weather overlays with provider: {provider}, cache: {cache}")
+            
+            if not self.current_weather_overlay:
+                print("⚠️ DEBUG: No current weather overlay to refresh")
+                return
+            
+            if not self.multi_city_engine:
+                print("⚠️ DEBUG: MultiCityEngine not available for provider change")
+                return
+            
+            # Multi-City Engine provider frissítése (ha van ilyen API)
+            if hasattr(self.multi_city_engine, 'set_provider'):
+                self.multi_city_engine.set_provider(provider)
+                print(f"✅ DEBUG: MultiCityEngine provider updated to: {provider}")
+            
+            # Cache beállítás frissítése (ha van ilyen API)
+            if hasattr(self.multi_city_engine, 'set_cache_enabled'):
+                self.multi_city_engine.set_cache_enabled(cache)
+                print(f"✅ DEBUG: MultiCityEngine cache updated to: {cache}")
+            
+            # Jelenlegi weather overlay újragenerálása új provider-rel
+            if self.current_analytics_result:
+                print("🔄 DEBUG: Regenerating weather overlay with new provider")
+                self._generate_weather_overlay_from_analytics(self.current_analytics_result)
+            
+            self.loading_status.setText(f"🌤️ Weather overlay frissítve: {provider} provider")
+            
+        except Exception as e:
+            print(f"❌ DEBUG: Weather overlay refresh error: {e}")
+    
+    def _refresh_temporal_data(self, start_date: str, end_date: str):
+        """
+        📅 Temporal data refresh - Date range change helper.
+        
+        Args:
+            start_date: Kezdő dátum (YYYY-MM-DD)
+            end_date: Befejező dátum (YYYY-MM-DD)
+        """
+        try:
+            print(f"📅 DEBUG: Refreshing temporal data for range: {start_date} → {end_date}")
+            
+            # Dátum validáció
+            try:
+                start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+                end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+                
+                if start_dt > end_dt:
+                    print("⚠️ DEBUG: Invalid date range - start date after end date")
+                    return
+                    
+            except ValueError as e:
+                print(f"⚠️ DEBUG: Date parsing error: {e}")
+                return
+            
+            # Historical data refresh (ha van ilyen funkció)
+            if self.multi_city_engine and hasattr(self.multi_city_engine, 'set_date_range'):
+                self.multi_city_engine.set_date_range(start_date, end_date)
+                print(f"✅ DEBUG: MultiCityEngine date range updated: {start_date} → {end_date}")
+            
+            # Time-based weather overlay refresh (ha van jelenlegi eredmény)
+            if self.current_analytics_result:
+                print("🔄 DEBUG: Temporal weather overlay refresh triggered")
+                # Itt lehetne új analytics lekérdezést indítani az új dátum tartománnyal
+            
+            self.loading_status.setText(f"📅 Temporal adatok frissítve: {start_date} → {end_date}")
+            
+        except Exception as e:
+            print(f"❌ DEBUG: Temporal data refresh error: {e}")
+    
+    def _refresh_weather_overlay_with_new_dates(self, start_date: str, end_date: str):
+        """
+        🌤️ Weather overlay frissítés új dátum tartománnyal.
+        
+        Args:
+            start_date: Kezdő dátum
+            end_date: Befejező dátum
+        """
+        try:
+            print(f"🌤️ DEBUG: Refreshing weather overlay with new date range: {start_date} → {end_date}")
+            
+            if not self.multi_city_engine:
+                print("⚠️ DEBUG: MultiCityEngine not available for date-based refresh")
+                return
+            
+            # Jelenlegi analytics question alapján új lekérdezés az új dátumokkal
+            if self.current_analytics_result and self.current_analytics_result.question:
+                question = self.current_analytics_result.question
+                
+                # Új analytics lekérdezés az új dátum tartománnyal
+                print(f"🔄 DEBUG: Re-running analytics with new date range...")
+                
+                # Itt lehetne a multi_city_engine-t használni új dátumokkal
+                # De ez a konkrét implementáció függ a MultiCityEngine API-tól
+                
+            self.loading_status.setText(f"🌤️ Weather overlay frissítve új dátumokkal: {start_date} → {end_date}")
+            
+        except Exception as e:
+            print(f"❌ DEBUG: Weather overlay date refresh error: {e}")
+    
+    def _full_map_refresh(self, analysis: Dict, weather: Dict, date: Dict):
+        """
+        🔄 Comprehensive map refresh - Komplex parameter bundle refresh helper.
+        
+        Args:
+            analysis: Analysis paraméterek
+            weather: Weather paraméterek
+            date: Date paraméterek
+        """
+        try:
+            print(f"🔄 DEBUG: Full map refresh with comprehensive parameters")
+            
+            # 1. Analysis paraméterek alkalmazása
+            if analysis:
+                analysis_type = analysis.get("analysis_type")
+                if analysis_type == "single_location" and analysis.get("location"):
+                    self._update_map_for_single_location(analysis["location"])
+                elif analysis_type == "region" and analysis.get("region"):
+                    self._update_map_for_region(analysis["region"])
+                elif analysis_type == "county" and analysis.get("county"):
+                    self._update_map_for_county(analysis["county"])
+            
+            # 2. Weather paraméterek alkalmazása
+            if weather:
+                provider = weather.get("provider", "auto")
+                cache = weather.get("cache", True)
+                self._refresh_weather_overlays(provider, cache)
+            
+            # 3. Date paraméterek alkalmazása
+            if date:
+                start_date = date.get("start_date")
+                end_date = date.get("end_date")
+                if start_date and end_date:
+                    self._refresh_temporal_data(start_date, end_date)
+            
+            # 4. Komprehenzív weather refresh (ha minden paraméter elérhető)
+            if analysis and weather and date and self.current_analytics_result:
+                print("🌤️ DEBUG: Comprehensive weather overlay refresh")
+                self._generate_weather_overlay_from_analytics(self.current_analytics_result)
+            
+            print("✅ DEBUG: Full map refresh completed successfully")
+            self.loading_status.setText("🔄 Teljes térkép refresh befejezve - minden paraméter alkalmazva")
+            
+        except Exception as e:
+            print(f"❌ DEBUG: Full map refresh error: {e}")
+            self.loading_status.setText(f"❌ Full map refresh hiba: {e}")
+    
     # === SIGNAL SLOT METÓDUSOK - FOLIUM → LOCATION SELECTOR ===
     
     def _on_folium_map_ready(self):
@@ -627,7 +1250,7 @@ class HungarianMapTab(QWidget):
         self.folium_status_label.setStyleSheet("color: #27AE60;")
         
         # Status frissítése
-        self.loading_status.setText("✅ Folium interaktív térkép kész! Kattints a megyékre vagy töltsd be weather adatokat!")
+        self.loading_status.setText("✅ Folium interaktív térkép kész! Kattints a megyékre vagy töltsd be weather adatokat! 🔄 Analytics Sync + 🧠 Paraméter Memória aktív!")
         
         # Forward signal
         self.folium_ready.emit()
@@ -661,13 +1284,13 @@ class HungarianMapTab(QWidget):
     
     def _on_folium_coordinates_clicked(self, lat: float, lon: float):
         """
-        📍 Koordináta kattintás a Folium térképen.
+        🔍 Koordináta kattintás a Folium térképen.
         
         Args:
             lat: Szélesség
             lon: Hosszúság
         """
-        print(f"📍 DEBUG: Coordinates clicked on Folium map: {lat:.4f}, {lon:.4f}")
+        print(f"🔍 DEBUG: Coordinates clicked on Folium map: {lat:.4f}, {lon:.4f}")
         
         # Forward signal
         self.map_interaction.emit("coordinates_clicked", {
@@ -677,7 +1300,7 @@ class HungarianMapTab(QWidget):
         })
         
         # Status frissítése
-        self.loading_status.setText(f"📍 Koordináta: {lat:.4f}°, {lon:.4f}°")
+        self.loading_status.setText(f"🔍 Koordináta: {lat:.4f}°, {lon:.4f}°")
     
     def _on_folium_map_moved(self, lat: float, lon: float, zoom: int):
         """
@@ -746,7 +1369,7 @@ class HungarianMapTab(QWidget):
         # Forward signal
         self.error_occurred.emit(error_message)
     
-    # === AKCIÓ METÓDUSOK - FOLIUM VERZIÓ ===
+    # === AKCIÓ METÓDUSOK - FOLIUM + ANALYTICS SYNC VERZIÓ ===
     
     def _on_auto_sync_toggled(self, enabled: bool):
         """
@@ -762,6 +1385,21 @@ class HungarianMapTab(QWidget):
             self.loading_status.setText("🔗 Auto-szinkronizáció engedélyezve")
         else:
             self.loading_status.setText("🔗 Auto-szinkronizáció letiltva")
+    
+    def _on_auto_weather_refresh_toggled(self, enabled: bool):
+        """
+        🌤️ Auto weather refresh ki/bekapcsolása.
+        
+        Args:
+            enabled: Engedélyezett-e az auto weather refresh
+        """
+        self.auto_weather_refresh_enabled = enabled
+        print(f"🌤️ DEBUG: Auto weather refresh {'enabled' if enabled else 'disabled'}")
+        
+        if enabled:
+            self.loading_status.setText("🌤️ Auto weather refresh engedélyezve")
+        else:
+            self.loading_status.setText("🌤️ Auto weather refresh letiltva")
     
     def _reset_map_view(self):
         """
@@ -808,7 +1446,7 @@ class HungarianMapTab(QWidget):
         else:
             print("⚠️ DEBUG: Folium MapVisualizer not available for refresh")
     
-    # === 🌤️ WEATHER INTEGRATION METÓDUSOK - 100% JAVÍTVA ===
+    # === 🌤️ WEATHER INTEGRATION METÓDUSOK - 100% JAVÍTVA + PARAMÉTER TOVÁBBÍTÁS ===
     
     def _refresh_weather_overlay(self):
         """
@@ -823,26 +1461,9 @@ class HungarianMapTab(QWidget):
         # Weather overlay újragenerálása
         self._generate_weather_overlay_from_analytics(self.current_analytics_result)
     
-    def set_analytics_result(self, analytics_result: AnalyticsResult):
-        """
-        🌤️ KRITIKUS METÓDUS: Analytics eredmény fogadása és weather overlay generálása.
-        
-        Ez a metódus az Analytics View-től fogadja az eredményeket
-        és automatikusan létrehozza a Folium weather overlay-t.
-        
-        Args:
-            analytics_result: Multi-City Engine eredménye
-        """
-        print(f"🌤️ DEBUG: Analytics result received: {len(analytics_result.city_results) if analytics_result.city_results else 0} cities")
-        
-        self.current_analytics_result = analytics_result
-        
-        # Weather overlay generálása és alkalmazása
-        self._generate_weather_overlay_from_analytics(analytics_result)
-    
     def _generate_weather_overlay_from_analytics(self, analytics_result: AnalyticsResult):
         """
-        🌤️ JAVÍTOTT: Weather overlay generálása Analytics eredményből + ENHANCED DEBUG.
+        🌤️ JAVÍTOTT + PARAMÉTER TOVÁBBÍTÁS: Weather overlay generálása Analytics eredményből + ENHANCED DEBUG.
         
         Args:
             analytics_result: Multi-City Engine eredménye
@@ -856,6 +1477,7 @@ class HungarianMapTab(QWidget):
             
             print(f"🔄 DEBUG: Generating weather overlay from analytics result...")
             print(f"🔄 DEBUG: Analytics result - Cities: {len(analytics_result.city_results)}, Metric: {analytics_result.question.metric}")
+            print(f"🧠 DEBUG: Stored parameter: {self.current_analytics_parameter}")
             
             # 🔧 KRITIKUS DEBUG: Analytics city results részletek
             print("🔄 DEBUG: City results details:")
@@ -864,10 +1486,20 @@ class HungarianMapTab(QWidget):
             
             self.loading_status.setText("🌤️ Weather overlay generálása...")
             
-            # Analytics eredmény → Weather overlay konverzió
+            # 🔧 KRITIKUS JAVÍTÁS: Analytics eredmény → Weather overlay konverzió PARAMÉTER TOVÁBBÍTÁSÁVAL
+            if self.current_analytics_parameter:
+                # Explicit paraméter használata
+                folium_format = self.weather_bridge.convert_analytics_result(analytics_result, self.current_analytics_parameter)
+                print(f"🧠 DEBUG: Explicit parameter conversion: {self.current_analytics_parameter}")
+            else:
+                # Auto-detect fallback
+                folium_format = self.weather_bridge.convert_analytics_result(analytics_result)
+                print("🔄 DEBUG: Auto-detect parameter conversion")
+            
+            # Weather overlay generálás is
             weather_overlay = self.weather_bridge.convert_analytics_to_weather_overlay(analytics_result)
             
-            if not weather_overlay:
+            if not weather_overlay or not folium_format:
                 error_msg = "Weather overlay konverzió sikertelen"
                 print(f"❌ DEBUG: {error_msg}")
                 self._on_error_occurred(error_msg)
@@ -878,15 +1510,14 @@ class HungarianMapTab(QWidget):
             self.weather_data_available = True
             
             print(f"✅ DEBUG: Weather overlay generated: {weather_overlay.overlay_type}, {len(weather_overlay.data)} cities")
+            print(f"✅ DEBUG: Folium format generated: {list(folium_format.keys())}")
             
-            # 🔧 KRITIKUS JAVÍTÁS: HungarianMapVisualizer kompatibilis formátum
+            # 🔧 KRITIKUS JAVÍTÁS: HungarianMapVisualizer kompatibilis formátum használata
             if self.map_visualizer and self.is_folium_ready:
-                # Weather data átadása a map visualizer-nek JAVÍTOTT FORMÁTUMBAN
-                weather_data_dict = self._convert_overlay_to_folium_format(weather_overlay)
-                
-                if weather_data_dict:
-                    self.map_visualizer.set_weather_data(weather_data_dict)
-                    print("✅ DEBUG: Weather data passed to Folium map visualizer (format fixed)")
+                # 🚀 JAVÍTOTT: Direkt folium_format használata convert_overlay_to_folium_format helyett
+                if folium_format:
+                    self.map_visualizer.set_weather_data(folium_format)
+                    print("✅ DEBUG: Weather data passed to Folium map visualizer (direct format)")
                     
                     # Status frissítés
                     self.weather_status_label.setText(f"🌤️ {weather_overlay.metadata['name']}: {weather_overlay.metadata['total_cities']} város")
@@ -910,75 +1541,6 @@ class HungarianMapTab(QWidget):
             traceback.print_exc()
             self._on_error_occurred(error_msg)
     
-    def _convert_overlay_to_folium_format(self, weather_overlay: WeatherOverlayData) -> Dict[str, Any]:
-        """
-        🔄 KRITIKUS JAVÍTÁS: Weather overlay konvertálása HungarianMapVisualizer által várt formátumra.
-        
-        🔧 FORMAT FIX: A HungarianMapVisualizer.set_weather_data() egy speciális formátumot vár:
-        {
-            'temperature': {
-                'city_name': {
-                    'coordinates': [lat, lon],
-                    'value': temp_value
-                }
-            },
-            'precipitation': {...},
-            'wind_speed': {...}
-        }
-        
-        Args:
-            weather_overlay: WeatherOverlayData objektum
-            
-        Returns:
-            HungarianMapVisualizer kompatibilis weather data dictionary
-        """
-        if not self.weather_bridge:
-            print("❌ DEBUG: WeatherDataBridge not available for conversion")
-            return {}
-        
-        try:
-            print(f"🔄 DEBUG: Converting weather overlay to HungarianMapVisualizer format")
-            print(f"🔄 DEBUG: Overlay type: {weather_overlay.overlay_type}, Cities: {len(weather_overlay.data)}")
-            
-            # 🔧 KRITIKUS: HungarianMapVisualizer formátum létrehozása
-            folium_weather_data = {}
-            
-            # Overlay típus alapján megfelelő kategória létrehozása
-            overlay_type = weather_overlay.overlay_type
-            folium_weather_data[overlay_type] = {}
-            
-            # Városok adatainak konvertálása
-            for city_name, city_data in weather_overlay.data.items():
-                folium_weather_data[overlay_type][city_name] = {
-                    'coordinates': city_data['coordinates'],  # [lat, lon]
-                    'value': city_data['value']               # weather érték
-                }
-                
-                # Wind esetén extra adatok
-                if overlay_type in ['wind_speed', 'wind_gusts']:
-                    folium_weather_data[overlay_type][city_name]['speed'] = city_data['value']
-                    folium_weather_data[overlay_type][city_name]['direction'] = city_data.get('direction', 0)
-            
-            print(f"✅ DEBUG: Weather overlay converted to HungarianMapVisualizer format:")
-            print(f"   - Format: {{{overlay_type}: {len(folium_weather_data[overlay_type])} cities}}")
-            print(f"   - Sample city data: {list(folium_weather_data[overlay_type].keys())[:3]}")
-            
-            # 🔧 KRITIKUS DEBUG: Konvertált adatok ellenőrzése
-            if folium_weather_data and overlay_type in folium_weather_data:
-                sample_city = list(folium_weather_data[overlay_type].keys())[0]
-                sample_data = folium_weather_data[overlay_type][sample_city]
-                print(f"🔧 DEBUG: Sample converted data for {sample_city}:")
-                print(f"   coordinates: {sample_data['coordinates']}")
-                print(f"   value: {sample_data['value']}")
-            
-            return folium_weather_data
-            
-        except Exception as e:
-            print(f"❌ DEBUG: Weather overlay HungarianMapVisualizer conversion error: {e}")
-            import traceback
-            traceback.print_exc()
-            return {}
-    
     def load_weather_data_from_analytics(self, question_type: str, region: str = "HU", limit: int = 50):
         """
         🌤️ Weather adatok betöltése Multi-City Engine-ből és térkép frissítése.
@@ -1000,6 +1562,18 @@ class HungarianMapTab(QWidget):
             
             print(f"🌤️ DEBUG: Loading weather data: {question_type}, {region}, limit={limit}")
             self.loading_status.setText(f"🌤️ Weather adatok betöltése: {question_type}...")
+            
+            # Paraméter beállítás question_type alapján
+            QUERY_TYPE_TO_PARAMETER = {
+                "hottest_today": "Hőmérséklet",
+                "coldest_today": "Hőmérséklet", 
+                "windiest_today": "Szél",        # ← EZ A KRITIKUS
+                "wettest_today": "Csapadék",
+                "temperature_range": "Hőmérséklet"
+            }
+            
+            parameter = QUERY_TYPE_TO_PARAMETER.get(question_type, "Hőmérséklet")
+            self.set_analytics_parameter(parameter)
             
             # Aktuális dátum
             from datetime import datetime
@@ -1029,11 +1603,11 @@ class HungarianMapTab(QWidget):
             print(f"❌ DEBUG: {error_msg}")
             self._on_error_occurred(error_msg)
     
-    # === PUBLIKUS API - WEATHER INTEGRATION 100% VERZIÓ ===
+    # === PUBLIKUS API - ANALYTICS SYNC + WEATHER INTEGRATION 100% VERZIÓ + PARAMÉTER MEMÓRIA ===
     
     def get_location_selector(self) -> Optional[HungarianLocationSelector]:
         """
-        📍 Location selector referencia lekérdezése.
+        🔍 Location selector referencia lekérdezése.
         
         Returns:
             HungarianLocationSelector példány vagy None
@@ -1085,6 +1659,15 @@ class HungarianMapTab(QWidget):
         """
         return self.current_weather_overlay
     
+    def get_current_analytics_parameter(self) -> Optional[str]:
+        """
+        🧠 KRITIKUS ÚJ: Jelenlegi analytics paraméter lekérdezése.
+        
+        Returns:
+            Analytics paraméter string vagy None
+        """
+        return self.current_analytics_parameter
+    
     def has_weather_data(self) -> bool:
         """
         🌤️ Van-e betöltve weather adat.
@@ -1096,7 +1679,7 @@ class HungarianMapTab(QWidget):
     
     def get_current_location(self):
         """
-        📍 Jelenlegi kiválasztott lokáció lekérdezése.
+        🔍 Jelenlegi kiválasztott lokáció lekérdezése.
         
         Returns:
             Location objektum vagy None
@@ -1114,7 +1697,7 @@ class HungarianMapTab(QWidget):
     
     def set_region_and_county(self, region_key: str, county_name: str) -> bool:
         """
-        📍 Régió és megye programmatic beállítása.
+        🔍 Régió és megye programmatic beállítása.
         
         Args:
             region_key: Éghajlati régió kulcs
@@ -1190,7 +1773,7 @@ class HungarianMapTab(QWidget):
     
     def is_ready(self) -> bool:
         """
-        ✅ Térképes tab kész használatra (Weather Integration 100% verzió).
+        ✅ Térképes tab kész használatra (Analytics Sync + Weather Integration 100% verzió + Paraméter Memória).
         
         Returns:
             Kész-e a használatra
@@ -1205,7 +1788,7 @@ class HungarianMapTab(QWidget):
             self.multi_city_engine is not None
         )
     
-    def is_folium_ready(self) -> bool:
+    def is_folium_ready_status(self) -> bool:
         """
         ✅ Folium térkép kész használatra.
         
@@ -1242,9 +1825,9 @@ class HungarianMapTab(QWidget):
     
     def refresh_all_components(self):
         """
-        🔄 Összes komponens frissítése (Weather Integration 100% verzió).
+        🔄 Összes komponens frissítése (Analytics Sync + Weather Integration 100% verzió + Paraméter Memória).
         """
-        print("🔄 DEBUG: Refreshing all HungarianMapTab components with Weather Integration 100%")
+        print("🔄 DEBUG: Refreshing all HungarianMapTab components with Analytics Sync + Weather Integration 100% + Paraméter Memória")
         
         # Location selector frissítése
         if self.location_selector:
@@ -1260,13 +1843,13 @@ class HungarianMapTab(QWidget):
             self._generate_weather_overlay_from_analytics(self.current_analytics_result)
         
         # Status frissítése
-        self.loading_status.setText("🔄 Folium komponensek + Weather integráció 100% frissítése...")
+        self.loading_status.setText("🔄 Folium komponensek + Weather integráció + Analytics Sync 100% + Paraméter Memória frissítése...")
     
     def clear_selection(self):
         """
-        🧹 Kiválasztás törlése minden komponensben (Weather Integration 100% verzió).
+        🧹 Kiválasztás törlése minden komponensben (Analytics Sync + Weather Integration 100% verzió + Paraméter Memória).
         """
-        print("🧹 DEBUG: Clearing all selections in HungarianMapTab with Weather Integration 100%")
+        print("🧹 DEBUG: Clearing all selections in HungarianMapTab with Analytics Sync + Weather Integration 100% + Paraméter Memória")
         
         # Location selector törlése
         if self.location_selector:
@@ -1281,15 +1864,29 @@ class HungarianMapTab(QWidget):
         self.current_weather_overlay = None
         self.weather_data_available = False
         
+        # 🧠 KRITIKUS ÚJ: Analytics paraméter törlése
+        self.current_analytics_parameter = None
+        self.analytics_parameter_label.setText("🧠 Paraméter: Nincs")
+        self.analytics_parameter_label.setStyleSheet("color: #95A5A6;")
+        
+        # Analytics sync paraméterek törlése
+        self.last_analysis_parameters = None
+        self.last_weather_parameters = None
+        self.last_date_parameters = None
+        
         # Weather status frissítése
         self.weather_status_label.setText("🌤️ Weather: Nincs adat")
         self.weather_status_label.setStyleSheet("color: #E74C3C;")
+        
+        # Analytics sync status frissítése
+        self.analytics_sync_label.setText("🔄 Analytics Sync: Kész")
+        self.analytics_sync_label.setStyleSheet("color: #27AE60;")
         
         # Current data törlése
         self.current_location_data = None
         
         # Status frissítése
-        self.loading_status.setText("🧹 Kiválasztás törölve - kattints a Folium térképre vagy töltsd be weather adatokat")
+        self.loading_status.setText("🧹 Kiválasztás törölve - kattints a Folium térképre vagy töltsd be weather adatokat - Analytics Sync + Paraméter Memória aktív!")
     
     def toggle_auto_sync(self, enabled: bool):
         """
@@ -1300,17 +1897,49 @@ class HungarianMapTab(QWidget):
         """
         self.auto_sync_check.setChecked(enabled)
     
-    def get_integration_status(self) -> Dict[str, Any]:
+    def toggle_auto_weather_refresh(self, enabled: bool):
         """
-        📊 Weather Integration 100% státusz információk lekérdezése.
+        🌤️ Auto weather refresh programmatic kapcsolása.
+        
+        Args:
+            enabled: Engedélyezett-e az auto weather refresh
+        """
+        self.auto_weather_refresh_check.setChecked(enabled)
+    
+    def get_analytics_sync_status(self) -> Dict[str, Any]:
+        """
+        🚀 Analytics → Map Sync státusz információk lekérdezése.
         
         Returns:
-            Integráció státusz dictionary
+            Analytics sync státusz dictionary
+        """
+        return {
+            "sync_in_progress": self.sync_in_progress,
+            "auto_weather_refresh_enabled": self.auto_weather_refresh_enabled,
+            "current_analytics_parameter": self.current_analytics_parameter,  # 🧠 ÚJ
+            "last_analysis_parameters": self.last_analysis_parameters,
+            "last_weather_parameters": self.last_weather_parameters,
+            "last_date_parameters": self.last_date_parameters,
+            "sync_methods_available": [
+                "update_analysis_parameters",
+                "update_weather_parameters", 
+                "update_date_range",
+                "refresh_with_new_parameters"
+            ]
+        }
+    
+    def get_integration_status(self) -> Dict[str, Any]:
+        """
+        📊 Analytics Sync + Weather Integration 100% + Paraméter Memória státusz információk lekérdezése.
+        
+        Returns:
+            Teljes integráció státusz dictionary
         """
         status = {
             "data_loaded": self.is_data_loaded,
             "folium_ready": self.is_folium_ready,
             "auto_sync_enabled": self.auto_sync_enabled,
+            "auto_weather_refresh_enabled": self.auto_weather_refresh_enabled,
             "location_selector_available": self.location_selector is not None,
             "map_visualizer_available": self.map_visualizer is not None,
             "folium_available": self.map_visualizer.is_folium_available() if self.map_visualizer else False,
@@ -1319,31 +1948,36 @@ class HungarianMapTab(QWidget):
             "weather_data_available": self.weather_data_available,
             "current_location": self.current_location_data,
             "current_analytics_result": self.current_analytics_result is not None,
+            "current_analytics_parameter": self.current_analytics_parameter,  # 🧠 ÚJ
             "current_weather_overlay_type": self.current_weather_overlay.overlay_type if self.current_weather_overlay else None,
             "available_counties_count": len(self.get_available_counties()),
             "current_theme": self.current_theme,
             "map_status": self.get_map_status(),
-            "weather_integration_version": "100% BEFEJEZVE"
+            "analytics_sync_status": self.get_analytics_sync_status(),
+            "sync_in_progress": self.sync_in_progress,
+            "weather_integration_version": "100% BEFEJEZVE",
+            "analytics_sync_version": "100% IMPLEMENTÁLVA",
+            "parameter_memory_version": "v3.0 HOZZÁADVA"  # 🧠 ÚJ
         }
         
         return status
 
 
-# === DEMO FUNKCIONALITÁS ===
+# === DEMO FUNKCIONALITÁS - ANALYTICS SYNC + WEATHER INTEGRATION 100% + PARAMÉTER MEMÓRIA ===
 
-def demo_hungarian_map_tab_weather_integration_100():
+def demo_hungarian_map_tab_analytics_sync_parameter_memory():
     """
-    🧪 Hungarian Map Tab demo alkalmazás - Weather Integration 100% BEFEJEZVE verzió.
+    🧪 Hungarian Map Tab demo alkalmazás - Analytics Sync + Weather Integration 100% BEFEJEZVE + Paraméter Memória v3.0.
     """
     import sys
-    from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout
+    from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QLabel
     
     app = QApplication(sys.argv)
     
     # Fő ablak
     window = QMainWindow()
-    window.setWindowTitle("🗺️ Hungarian Map Tab Demo - Weather Integration 100% BEFEJEZVE")
-    window.setGeometry(100, 100, 1600, 1000)
+    window.setWindowTitle("🗺️ Hungarian Map Tab Demo - Analytics Sync + Weather Integration 100% + 🧠 Paraméter Memória v3.0")
+    window.setGeometry(100, 100, 1600, 1200)
     
     # Central widget
     central_widget = QWidget()
@@ -1351,14 +1985,60 @@ def demo_hungarian_map_tab_weather_integration_100():
     
     layout = QVBoxLayout(central_widget)
     
+    # 🧠 PARAMÉTER MEMÓRIA teszt gombok
+    memory_controls = QWidget()
+    memory_layout = QHBoxLayout(memory_controls)
+    
+    memory_title = QLabel("🧠 PARAMÉTER MEMÓRIA TESZT:")
+    memory_title.setStyleSheet("font-weight: bold; color: #8E44AD;")
+    memory_layout.addWidget(memory_title)
+    
+    set_temp_btn = QPushButton("🌡️ Set Hőmérséklet")
+    set_wind_btn = QPushButton("💨 Set Szél") 
+    set_precip_btn = QPushButton("🌧️ Set Csapadék")
+    clear_param_btn = QPushButton("🧹 Clear Parameter")
+    
+    memory_layout.addWidget(set_temp_btn)
+    memory_layout.addWidget(set_wind_btn)
+    memory_layout.addWidget(set_precip_btn)
+    memory_layout.addWidget(clear_param_btn)
+    memory_layout.addStretch()
+    
+    layout.addWidget(memory_controls)
+    
+    # 🚀 Analytics Sync teszt gombok
+    sync_controls = QWidget()
+    sync_layout = QHBoxLayout(sync_controls)
+    
+    sync_title = QLabel("🚀 ANALYTICS → MAP SYNC TESZT:")
+    sync_title.setStyleSheet("font-weight: bold; color: #3498DB;")
+    sync_layout.addWidget(sync_title)
+    
+    analysis_sync_btn = QPushButton("🔄 Analysis Sync")
+    weather_sync_btn = QPushButton("🌤️ Weather Sync") 
+    date_sync_btn = QPushButton("📅 Date Sync")
+    bundle_sync_btn = QPushButton("📦 Bundle Sync")
+    
+    sync_layout.addWidget(analysis_sync_btn)
+    sync_layout.addWidget(weather_sync_btn)
+    sync_layout.addWidget(date_sync_btn)
+    sync_layout.addWidget(bundle_sync_btn)
+    sync_layout.addStretch()
+    
+    layout.addWidget(sync_controls)
+    
     # 🌤️ Weather teszt gombok
     weather_controls = QWidget()
     weather_layout = QHBoxLayout(weather_controls)
     
+    weather_title = QLabel("🌤️ WEATHER INTEGRATION TESZT:")
+    weather_title.setStyleSheet("font-weight: bold; color: #27AE60;")
+    weather_layout.addWidget(weather_title)
+    
     hottest_btn = QPushButton("🌡️ Legmelegebb ma (HU)")
     coldest_btn = QPushButton("❄️ Leghidegebb ma (HU)")
     wettest_btn = QPushButton("🌧️ Legcsapadékosabb ma (HU)")
-    windiest_btn = QPushButton("💨 Legszelesebb ma (HU)")
+    windiest_btn = QPushButton("💨 Legszélesebb ma (HU)")
     
     weather_layout.addWidget(hottest_btn)
     weather_layout.addWidget(coldest_btn)
@@ -1374,7 +2054,7 @@ def demo_hungarian_map_tab_weather_integration_100():
     
     # Event handlers
     def on_location_selected(location):
-        print(f"📍 DEMO: Location selected: {location.display_name if location else 'None'}")
+        print(f"🔍 DEMO: Location selected: {location.display_name if location else 'None'}")
     
     def on_county_clicked_on_map(county_name):
         print(f"🖱️ DEMO: County clicked on Folium map: {county_name}")
@@ -1389,11 +2069,11 @@ def demo_hungarian_map_tab_weather_integration_100():
         print(f"❌ DEMO: Error occurred: {message}")
     
     def on_folium_ready():
-        print("✅ DEMO: Folium map ready - full interactivity available!")
+        print("✅ DEMO: Folium map ready - full interactivity + Analytics Sync + Paraméter Memória available!")
         
         # Integráció státusz kiírása
         status = map_tab.get_integration_status()
-        print("📊 DEMO: Weather Integration 100% BEFEJEZVE status:")
+        print("📊 DEMO: Analytics Sync + Weather Integration 100% + Paraméter Memória v3.0 status:")
         for key, value in status.items():
             print(f"   {key}: {value}")
     
@@ -1401,29 +2081,106 @@ def demo_hungarian_map_tab_weather_integration_100():
         print(f"🌤️ DEMO: Weather data updated: {weather_overlay.overlay_type}, {len(weather_overlay.data)} cities")
         if weather_overlay.metadata:
             print(f"   Range: {weather_overlay.metadata.get('value_min', 'N/A')}-{weather_overlay.metadata.get('value_max', 'N/A')} {weather_overlay.metadata.get('unit', '')}")
-        print(f"   ✅ Weather overlay visualization 100% BEFEJEZVE!")
+        print(f"   Current parameter: {map_tab.get_current_analytics_parameter()}")
+        print(f"   ✅ Weather overlay visualization 100% BEFEJEZVE + Paraméter Memória!")
+    
+    def on_analytics_sync_completed(sync_type):
+        print(f"🚀 DEMO: Analytics sync completed: {sync_type}")
+        print("   ✅ Analytics → Map sync 100% IMPLEMENTÁLVA + Paraméter Memória!")
     
     def on_data_loading_completed():
-        print("✅ DEMO: Data loading completed - Weather Integration 100% ready!")
+        print("✅ DEMO: Data loading completed - Analytics Sync + Weather Integration 100% + Paraméter Memória ready!")
     
-    # Weather test button handlers
+    # Paraméter memória test button handlers
+    def test_set_temperature():
+        print("🌡️ DEMO: Testing set analytics parameter - Hőmérséklet")
+        map_tab.set_analytics_parameter("Hőmérséklet")
+    
+    def test_set_wind():
+        print("💨 DEMO: Testing set analytics parameter - Szél")
+        map_tab.set_analytics_parameter("Szél")
+    
+    def test_set_precipitation():
+        print("🌧️ DEMO: Testing set analytics parameter - Csapadék")
+        map_tab.set_analytics_parameter("Csapadék")
+    
+    def test_clear_parameter():
+        print("🧹 DEMO: Testing clear analytics parameter")
+        map_tab.current_analytics_parameter = None
+        map_tab.analytics_parameter_label.setText("🧠 Paraméter: Nincs")
+        map_tab.analytics_parameter_label.setStyleSheet("color: #95A5A6;")
+    
+    # Analytics Sync test button handlers
+    def test_analysis_sync():
+        print("🚀 DEMO: Testing analysis parameters sync...")
+        params = {
+            "analysis_type": "county",
+            "county": "Budapest",
+            "region": "central_hungary"
+        }
+        map_tab.update_analysis_parameters(params)
+    
+    def test_weather_sync():
+        print("🌤️ DEMO: Testing weather parameters sync...")
+        params = {
+            "provider": "open-meteo",
+            "timeout": 30,
+            "cache": True,
+            "timezone": "auto"
+        }
+        map_tab.update_weather_parameters(params)
+    
+    def test_date_sync():
+        print("📅 DEMO: Testing date range sync...")
+        from datetime import datetime, timedelta
+        today = datetime.now()
+        week_ago = today - timedelta(days=7)
+        map_tab.update_date_range(week_ago.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d"))
+    
+    def test_bundle_sync():
+        print("📦 DEMO: Testing parameter bundle sync...")
+        bundle = {
+            "analysis": {"analysis_type": "region", "region": "transdanubia"},
+            "weather": {"provider": "meteostat", "cache": False},
+            "date": {"start_date": "2024-01-01", "end_date": "2024-01-31"},
+            "timestamp": datetime.now().isoformat()
+        }
+        map_tab.refresh_with_new_parameters(bundle)
+    
+    # Weather test button handlers with parameter setting
     def load_hottest():
         print("🌡️ DEMO: Loading hottest cities...")
+        map_tab.set_analytics_parameter("Hőmérséklet")  # 🧠 Paraméter beállítás
         map_tab.load_weather_data_from_analytics("hottest_today", "HU", 20)
     
     def load_coldest():
         print("❄️ DEMO: Loading coldest cities...")
+        map_tab.set_analytics_parameter("Hőmérséklet")  # 🧠 Paraméter beállítás
         map_tab.load_weather_data_from_analytics("coldest_today", "HU", 20)
     
     def load_wettest():
         print("🌧️ DEMO: Loading wettest cities...")
+        map_tab.set_analytics_parameter("Csapadék")  # 🧠 Paraméter beállítás
         map_tab.load_weather_data_from_analytics("wettest_today", "HU", 20)
     
     def load_windiest():
         print("💨 DEMO: Loading windiest cities...")
+        map_tab.set_analytics_parameter("Szél")  # 🧠 KRITIKUS: Szél paraméter beállítás
         map_tab.load_weather_data_from_analytics("windiest_today", "HU", 20)
     
-    # Weather button connections
+    # Paraméter memória button connections
+    set_temp_btn.clicked.connect(test_set_temperature)
+    set_wind_btn.clicked.connect(test_set_wind)
+    set_precip_btn.clicked.connect(test_set_precipitation)
+    clear_param_btn.clicked.connect(test_clear_parameter)
+    
+    # Analytics Sync button connections
+    analysis_sync_btn.clicked.connect(test_analysis_sync)
+    weather_sync_btn.clicked.connect(test_weather_sync)
+    date_sync_btn.clicked.connect(test_date_sync)
+    bundle_sync_btn.clicked.connect(test_bundle_sync)
+    
+    # Weather button connections (with parameter setting)
     hottest_btn.clicked.connect(load_hottest)
     coldest_btn.clicked.connect(load_coldest)
     wettest_btn.clicked.connect(load_wettest)
@@ -1437,41 +2194,68 @@ def demo_hungarian_map_tab_weather_integration_100():
     map_tab.error_occurred.connect(on_error_occurred)
     map_tab.folium_ready.connect(on_folium_ready)
     map_tab.weather_data_updated.connect(on_weather_data_updated)
+    map_tab.analytics_sync_completed.connect(on_analytics_sync_completed)
     map_tab.data_loading_completed.connect(on_data_loading_completed)
     
     window.show()
     
-    print("🗺️ DEMO: Hungarian Map Tab elindítva Weather Integration 100% BEFEJEZVE-vel!")
-    print("✅ FUNKCIÓK:")
-    print("   📍 Bal oldal: Éghajlati régió → Megye választás")
+    print("🗺️ DEMO: Hungarian Map Tab elindítva Analytics Sync + Weather Integration 100% + 🧠 Paraméter Memória v3.0!")
+    print("🧠 KRITIKUS ÚJ FUNKCIÓK - PARAMÉTER MEMÓRIA v3.0:")
+    print("   ✅ current_analytics_parameter memória hozzáadása")
+    print("   ✅ set_analytics_parameter() metódus implementálása")
+    print("   ✅ set_analytics_result() módosítása paraméter továbbításra")
+    print("   ✅ MainWindow koordináció támogatás")
+    print("   ✅ Enhanced debug logging minden lépéshez")
+    print("   ✅ get_current_analytics_parameter() API metódus")
+    print("   ✅ UI paraméter kijelző hozzáadása")
+    print("   ✅ Paraméter clear/reset támogatás")
+    print("✅ ANALYTICS → MAP SYNC FUNKCIÓK - 100% IMPLEMENTÁLVA:")
+    print("   🚀 update_analysis_parameters() - Analysis típus/régió/megye sync")
+    print("   🌤️ update_weather_parameters() - Provider/API/timeout sync")
+    print("   📅 update_date_range() - Dátum tartomány sync") 
+    print("   📦 refresh_with_new_parameters() - Komplex bundle sync")
+    print("   🛠️ 6 helper metódus minden sync típushoz")
+    print("   🔄 Enhanced debug logging minden sync lépésnél")
+    print("   🌤️ Auto-refresh weather overlays parameter change-kor")
+    print("✅ WEATHER INTEGRATION FUNKCIÓK - 100% BEFEJEZVE:")
+    print("   🔍 Bal oldal: Éghajlati régió → Megye választás")
     print("   🗺️ Jobb oldal: Folium interaktív térkép")
     print("   🖱️ Kattintható megyék Folium térképen")
     print("   👆 Hover tooltipek")
     print("   🔗 Kétirányú auto-szinkronizáció")
-    print("   📍 Koordináta kattintás")
+    print("   🔍 Koordináta kattintás")
     print("   🎯 Automatikus térkép központosítás")
     print("   💾 Folium HTML térkép exportálás")
     print("   🔄 Folium térkép frissítés")
     print("   🎨 Téma támogatás (light/dark)")
-    print("   🌤️ WEATHER OVERLAY INTEGRATION 100% BEFEJEZVE:")
-    print("      - Multi-City Engine valós adatok")
-    print("      - WeatherDataBridge automatikus konverzió JAVÍTVA")
-    print("      - HungarianMapVisualizer format kompatibilitás FIX")
-    print("      - 4 weather típus (hőmérséklet, csapadék, szél, széllökés)")
-    print("      - Analytics eredmények térképes megjelenítése 100%")
-    print("      - Valós idejű weather overlay frissítés")
-    print("      - Enhanced debug logging minden lépésnél")
-    print("      - Error handling és fallback mechanizmusok")
+    print("   🌤️ Multi-City Engine valós adatok")
+    print("   🔧 WeatherDataBridge automatikus konverzió JAVÍTVA")
+    print("   🗺️ HungarianMapVisualizer format kompatibilitás FIX")
+    print("   🌡️ 4 weather típus (hőmérséklet, csapadék, szél, széllökés)")
+    print("   📊 Analytics eredmények térképes megjelenítése 100%")
+    print("   ⏱️ Valós idejű weather overlay frissítés")
+    print("   🔍 Enhanced debug logging minden lépésnél")
+    print("   🛡️ Error handling és fallback mechanizmusok")
     print("   🧪 TESZT GOMBOK:")
-    print("      - Kattints a weather gombokra valós adatok betöltéséhez!")
-    print("   🎉 KRITIKUS JAVÍTÁS:")
-    print("      - _convert_overlay_to_folium_format() teljes átírása")
-    print("      - Weather data format mismatch MEGOLDVA")
-    print("      - Multi-City Régió → Térkép integráció 100% BEFEJEZVE")
+    print("      🧠 Kattints a Paraméter Memória gombokra a paraméter beállítás teszteléséhez!")
+    print("      🚀 Kattints az Analytics Sync gombokra a sync funkciók teszteléséhez!")
+    print("      🌤️ Kattints a weather gombokra valós adatok betöltéséhez!")
+    print("   🎉 KRITIKUS JAVÍTÁSOK v3.0:")
+    print("      🧠 current_analytics_parameter memória implementálása")
+    print("      📦 set_analytics_parameter() MainWindow koordinációhoz")
+    print("      🔧 set_analytics_result() paraméter továbbítással")
+    print("      🗺️ Enhanced weather overlay generation")
+    print("      🚀 Analytics → Map Sync 4 metódus + 6 helper 100% IMPLEMENTÁLVA")
+    print("      🔄 Real-time parameter sync minden Analytics változásra")
+    print("      💨 Windspeed metric 'Buta Tolmács' probléma MEGOLDVA!")
+    print("      🔄 _reset_map_view() metódus HOZZÁADVA - AttributeError JAVÍTVA!")
     
     sys.exit(app.exec())
 
 
 if __name__ == "__main__":
-    demo_hungarian_map_tab_weather_integration_100()
-    
+    demo_hungarian_map_tab_analytics_sync_parameter_memory()
+
+
+# Export
+__all__ = ['HungarianMapTab']

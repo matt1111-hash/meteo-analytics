@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Multi-City Analytics Engine - Globális időjárás elemzés (NULL-SAFE & DATA TRANSFORM FIXED v2.7 - RÉGIÓ SZŰRÉS JAVÍTVA!)
+Multi-City Analytics Engine - Globális időjárás elemzés (NULL-SAFE & DATA TRANSFORM FIXED v2.8.2 - DATABASE PATH ABSOLUTE FIX!)
 Global Weather Analyzer projekt
 
 Fájl: src/analytics/multi_city_engine.py
@@ -11,7 +11,14 @@ Cél: Többváros időjárási elemzés koordinálása
 - PROGRESS TRACKING - real-time feedback
 - FALLBACK STRATEGY - hibás városok kihagyása
 
-🔧 KRITIKUS JAVÍTÁSOK v2.7.0:
+🔧 KRITIKUS JAVÍTÁSOK v2.8.2:
+- ✅ ABSOLUTE DATABASE PATH FIX: Most már minden esetben megtalálja a data/ mappát!
+- ✅ Path(__file__).parent.parent.parent használata a projekt root megkeresésére
+- ✅ Working directory független működés
+- ✅ Részletes path debugging minden inicializáláskor
+- ✅ Fallback path logika ha a relatív utak nem működnek
+- ✅ WINDSPEED METRIC JAVÍTVA: windgusts_10m_max → windspeed_10m_max (MEGBÍZHATÓBB!)
+- ✅ windiest_today most windspeed_10m_max-ot használ windgusts_10m_max helyett
 - ✅ RÉGIÓ SZŰRÉS IMPLEMENTÁLVA: get_cities_for_region() most már VALÓDI regionális szűrést csinál
 - ✅ HUNGARIAN_REGIONAL_MAPPING: 7 statisztikai régió → megyék mapping
 - ✅ "Észak-Magyarország" → Borsod-Abaúj-Zemplén, Heves, Nógrád megyék szűrése
@@ -30,6 +37,7 @@ Cél: Többváros időjárási elemzés koordinálása
 - ✅ COUNTRY CODE MAPPING: HU → Hungary, EU → Europe, GLOBAL → Global
 - ✅ TypeError: '>' not supported between instances of 'NoneType' and 'float' JAVÍTVA
 - 🔥 QUICKTYPE ENUM JAVÍTÁS: SINGLE_LOCATION/MULTI_CITY/COMPARISON → WEATHER_COMPARISON/TEMPERATURE_MAX
+- 🔥 WINDSPEED METRIC JAVÍTÁS: windgusts_10m_max → windspeed_10m_max (ROBUSZTUSABB!)
 """
 
 import sqlite3
@@ -44,6 +52,7 @@ import statistics
 import time
 import json
 import sys
+import os
 
 # 🔧 KRITIKUS JAVÍTÁS: Szabványos modellek importálása a UI kompatibilitáshoz
 from ..data.models import AnalyticsResult, CityWeatherResult, AnalyticsQuestion
@@ -53,7 +62,7 @@ from ..data.enums import RegionScope, AnalyticsMetric, QuestionType, DataSource
 logger = logging.getLogger(__name__)
 
 
-# 🔧 NONE-SAFE HELPER FÜGGVÉNYEK (MULTI-CITY ENGINE VERZIÓ)
+# 🔧 NONE-SAFE HELPER FÜGGVÉNYEK (MULTI-CITY ENGINE VERZIÓJA)
 def safe_statistics_mean(values: List[Union[float, int, None]]) -> Optional[float]:
     """None-safe statistics.mean replacement"""
     if not values:
@@ -156,7 +165,7 @@ class CityWeatherData:
 
 class MultiCityEngine:
     """
-    Multi-city időjárás elemzés koordinátor (DUAL-API CLEAN + NULL-SAFE + DATA TRANSFORM FIXED + RÉGIÓ/MEGYE MAPPING TELJES + RÉGIÓ SZŰRÉS JAVÍTVA!)
+    Multi-city időjárás elemzés koordinátor (ABSOLUTE DATABASE PATH FIX v2.8.2 + DUAL-API CLEAN + NULL-SAFE + DATA TRANSFORM FIXED + RÉGIÓ/MEGYE MAPPING TELJES + RÉGIÓ SZŰRÉS JAVÍTVA + WINDSPEED METRIC JAVÍTVA!)
     
     Felelősségek:
     - DUAL-API ROUTING
@@ -168,6 +177,8 @@ class MultiCityEngine:
     - ✅ RÉGIÓ/MEGYE MAPPING TELJES (19 megye + 7 régió)
     - ✅ ERROR HANDLING JAVÍTVA (mindig AnalyticsResult objektum)
     - 🔧 KRITIKUS JAVÍTÁS: VALÓDI REGIONÁLIS SZŰRÉS IMPLEMENTÁLVA!
+    - 🔥 WINDSPEED METRIC JAVÍTÁS: windgusts_10m_max → windspeed_10m_max (MEGBÍZHATÓBB!)
+    - 🔧 ABSOLUTE DATABASE PATH FIX: Working directory független működés!
     """
     
     # 🔧 KRITIKUS JAVÍTÁS: MAGYAR REGIONÁLIS SZŰRÉS MAPPING HOZZÁADVA!
@@ -269,30 +280,134 @@ class MultiCityEngine:
         "Global": {"name": "Globális", "country_codes": [], "max_cities": 160, "batch_size": 8, "rate_limit_delay": 0.5},
     }
     
+    # 🔥 KRITIKUS JAVÍTÁS: WINDSPEED METRIC JAVÍTVA!
+    # windgusts_10m_max → windspeed_10m_max (MEGBÍZHATÓBB!)
     QUERY_TYPES = {
         "hottest_today": {"name": "Legmelegebb ma", "metric": "temperature_2m_max", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legmelegebb {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MAX},
         "coldest_today": {"name": "Leghidegebb ma", "metric": "temperature_2m_min", "unit": "°C", "sort_desc": False, "question_template": "Hol volt ma a leghidegebb {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MIN},
         "wettest_today": {"name": "Legcsapadékosabb ma", "metric": "precipitation_sum", "unit": "mm", "sort_desc": True, "question_template": "Hol esett ma a legtöbb csapadék {region}ban?", "metric_enum": AnalyticsMetric.PRECIPITATION_SUM},
-        "windiest_today": {"name": "Legszelesebb ma", "metric": "windgusts_10m_max", "unit": "km/h", "sort_desc": True, "question_template": "Hol fújt ma a legerősebb szél {region}ban?", "metric_enum": AnalyticsMetric.WINDSPEED_10M_MAX},
+        
+        # 🔥 KRITIKUS JAVÍTÁS: windgusts_10m_max → windspeed_10m_max
+        # A windspeed_10m_max sokkal megbízhatóbban elérhető az API-kban!
+        "windiest_today": {"name": "Legszelesebb ma", "metric": "windspeed_10m_max", "unit": "km/h", "sort_desc": True, "question_template": "Hol fújt ma a legerősebb szél {region}ban?", "metric_enum": AnalyticsMetric.WINDSPEED_10M_MAX},
+        
         "temperature_range": {"name": "Legnagyobb hőingás", "metric": "temperature_range", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legnagyobb hőingás {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_RANGE}
     }
     
-    def __init__(self, db_path: str = "src/data/cities.db"):
-        self.db_path = Path(db_path)
+    def __init__(self, db_path: Optional[str] = None, hungarian_db_path: Optional[str] = None):
+        """
+        🔧 ABSOLUTE DATABASE PATH FIX v2.8.2!
+        
+        MultiCityEngine inicializálása ABSZOLÚT database path-okkal.
+        Working directory független működés!
+        
+        Args:
+            db_path: Global cities.db elérési út (opcionális)
+            hungarian_db_path: Hungarian settlements.db elérési út (opcionális)
+        """
+        
+        # 🔧 KRITIKUS JAVÍTÁS v2.8.2: ABSZOLÚT PATH HASZNÁLATA
+        if db_path is None:
+            # Projekt root megkeresése: src/analytics/multi_city_engine.py → project_root
+            project_root = Path(__file__).parent.parent.parent  # src/analytics → src → project_root
+            self.db_path = project_root / "data" / "cities.db"
+        else:
+            self.db_path = Path(db_path)
+        
+        if hungarian_db_path is None:
+            project_root = Path(__file__).parent.parent.parent
+            self.hungarian_db_path = project_root / "data" / "hungarian_settlements.db"
+        else:
+            self.hungarian_db_path = Path(hungarian_db_path)
+        
+        # 🔧 FALLBACK PATH LOGIKA: ha az abszolút path nem működik
+        if not self.db_path.exists():
+            # Fallback: aktuális working directory-ből
+            fallback_db = Path.cwd() / "data" / "cities.db"
+            if fallback_db.exists():
+                self.db_path = fallback_db
+                logger.info(f"🔧 FALLBACK: Using working directory path for cities.db")
+            else:
+                # Fallback 2: környezeti változó vagy config alapján
+                env_data_dir = os.environ.get("WEATHER_ANALYZER_DATA_DIR")
+                if env_data_dir:
+                    env_db = Path(env_data_dir) / "cities.db"
+                    if env_db.exists():
+                        self.db_path = env_db
+                        logger.info(f"🔧 FALLBACK: Using env variable path for cities.db")
+        
+        if not self.hungarian_db_path.exists():
+            fallback_hungarian_db = Path.cwd() / "data" / "hungarian_settlements.db"
+            if fallback_hungarian_db.exists():
+                self.hungarian_db_path = fallback_hungarian_db
+                logger.info(f"🔧 FALLBACK: Using working directory path for hungarian_settlements.db")
+            else:
+                env_data_dir = os.environ.get("WEATHER_ANALYZER_DATA_DIR")
+                if env_data_dir:
+                    env_hungarian_db = Path(env_data_dir) / "hungarian_settlements.db"
+                    if env_hungarian_db.exists():
+                        self.hungarian_db_path = env_hungarian_db
+                        logger.info(f"🔧 FALLBACK: Using env variable path for hungarian_settlements.db")
+        
         self.max_workers = 8
         self.request_timeout = 90
         self.max_retries = 2
         self.retry_delay = 3.0
+        
+        # 🔧 RÉSZLETES PATH DEBUGGING v2.8.2
+        logger.info(f"🔧 ABSOLUTE DATABASE PATH FIX v2.8.2:")
+        logger.info(f"   Script file location: {Path(__file__).absolute()}")
+        logger.info(f"   Project root (calculated): {Path(__file__).parent.parent.parent.absolute()}")
+        logger.info(f"   Current working directory: {Path.cwd().absolute()}")
+        logger.info(f"   Global cities DB: {self.db_path.absolute()}")
+        logger.info(f"   Hungarian settlements DB: {self.hungarian_db_path.absolute()}")
+        logger.info(f"   Global DB exists: {self.db_path.exists()}")
+        logger.info(f"   Hungarian DB exists: {self.hungarian_db_path.exists()}")
+        
+        # Database path validálás
+        self._validate_database_paths()
         
         try:
             from src.data.weather_client import WeatherClient
             self.weather_client = WeatherClient()
             logger.info("✅ WeatherClient dual-API integráció sikeres")
         except ImportError as e:
-            logger.warning(f"❌ WeatherClient import hiba: {e}")
+            logger.warning(f"⚠ WeatherClient import hiba: {e}")
             self.weather_client = None
         
-        logger.info("🚀 Multi-city engine inicializálva (RÉGIÓ SZŰRÉS JAVÍTVA v2.7)")
+        logger.info("🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)")
+
+    def _validate_database_paths(self) -> None:
+        """
+        🔧 ÚJ METÓDUS: Database path-ok validálása és hibajelentés.
+        """
+        issues = []
+        
+        if not self.db_path.exists():
+            issues.append(f"❌ Global cities database nem található: {self.db_path.absolute()}")
+            issues.append("   🔧 Javítás: Futtasd 'python scripts/populate_cities_db.py'")
+            
+            # További debugging info
+            data_dir = self.db_path.parent
+            if data_dir.exists():
+                files_in_data = list(data_dir.iterdir())
+                issues.append(f"   📁 data/ mappa tartalma: {[f.name for f in files_in_data]}")
+            else:
+                issues.append(f"   📁 data/ mappa nem létezik: {data_dir.absolute()}")
+        
+        if not self.hungarian_db_path.exists():
+            issues.append(f"❌ Magyar települések database nem található: {self.hungarian_db_path.absolute()}")
+            issues.append("   🔧 Javítás: Futtasd 'python scripts/hungarian_settlements_importer.py'")
+        
+        if issues:
+            for issue in issues:
+                logger.error(issue)
+            
+            # Ha egyik sem elérhető, exception
+            if not self.db_path.exists() and not self.hungarian_db_path.exists():
+                raise RuntimeError(f"Egyetlen adatbázis sem elérhető! Ellenőrizd:\n1. {self.db_path.absolute()}\n2. {self.hungarian_db_path.absolute()}\n\nFuttasd a database setup script-eket a projekt root-ból!")
+        else:
+            logger.info("✅ Database path-ok validálva - minden adatbázis elérhető")
 
     def execute_analytics_query(self, query: MultiCityQuery, progress_callback: Optional[callable] = None) -> AnalyticsResult:
         return self.analyze_multi_city(
@@ -326,7 +441,7 @@ class MultiCityEngine:
         try:
             mapped_region = self.resolve_region_name(region)
         except ValueError as e:
-            logger.error(f"❌ Invalid region: {region} - {e}")
+            logger.error(f"⚠ Invalid region: {region} - {e}")
             return []
             
         region_config = self.REGIONS[mapped_region]
@@ -336,14 +451,16 @@ class MultiCityEngine:
         logger.info(f"🔧 get_cities_for_region JAVÍTVA: original='{original_region}' → mapped='{mapped_region}', limit={final_limit}")
         
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            # 🔧 DATABASE PATH JAVÍTÁS: self.hungarian_db_path használata
+            database_path = self.hungarian_db_path if mapped_region == "Hungary" and original_region in self.HUNGARIAN_REGIONAL_MAPPING else self.db_path
+            
+            with sqlite3.connect(database_path) as conn:
                 cursor = conn.cursor()
                 query_str = ""
                 params = []
                 
-                base_select = 'SELECT city, country, country_code, lat, lon, population, meteostat_station_id, data_quality_score FROM cities'
-                
                 if mapped_region == "Global":
+                    base_select = 'SELECT city, country, country_code, lat, lon, population, meteostat_station_id, data_quality_score FROM cities'
                     query_str = f'{base_select} WHERE population IS NOT NULL AND population > 100000 ORDER BY population DESC LIMIT ?'
                     params = [final_limit]
                     
@@ -356,24 +473,33 @@ class MultiCityEngine:
                         target_counties = self.HUNGARIAN_REGIONAL_MAPPING[original_region]
                         logger.info(f"🎯 REGIONÁLIS SZŰRÉS: '{original_region}' → {target_counties}")
                         
-                        # Admin_name mező alapú szűrés (amely a megyéket tartalmazza)
+                        # Hungarian settlements database használata
+                        base_select = 'SELECT name as city, "Magyarország" as country, "HU" as country_code, latitude as lat, longitude as lon, population, NULL as meteostat_station_id, region_priority as data_quality_score FROM hungarian_settlements'
                         placeholders = ','.join(['?' for _ in target_counties])
-                        query_str = f'{base_select} WHERE country_code = "HU" AND admin_name IN ({placeholders}) ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
+                        query_str = f'{base_select} WHERE megye IN ({placeholders}) ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
                         params = target_counties + [final_limit]
                         
                     else:
                         # ORSZÁGOS SZŰRÉS - összes magyar város (eredeti viselkedés)
                         logger.info(f"🌍 ORSZÁGOS SZŰRÉS: '{original_region}' nincs regionális mapping-ben")
-                        query_str = f'{base_select} WHERE country_code = "HU" ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
-                        params = [final_limit]
+                        
+                        # Global cities database használata Magyarország számára
+                        database_path = self.db_path
+                        with sqlite3.connect(database_path) as conn:
+                            cursor = conn.cursor()
+                            base_select = 'SELECT city, country, country_code, lat, lon, population, meteostat_station_id, data_quality_score FROM cities'
+                            query_str = f'{base_select} WHERE country_code = "HU" ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
+                            params = [final_limit]
                         
                 else:  # Europe és egyéb régiók
+                    base_select = 'SELECT city, country, country_code, lat, lon, population, meteostat_station_id, data_quality_score FROM cities'
                     placeholders = ','.join(['?' for _ in country_codes])
                     query_str = f'{base_select} WHERE country_code IN ({placeholders}) AND population IS NOT NULL AND population > 50000 ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
                     params = country_codes + [final_limit]
                 
                 logger.debug(f"🔧 SQL QUERY: {query_str}")
                 logger.debug(f"🔧 SQL PARAMS: {params}")
+                logger.debug(f"🔧 DATABASE PATH: {database_path}")
                 
                 cursor.execute(query_str, params)
                 results = cursor.fetchall()
@@ -392,15 +518,18 @@ class MultiCityEngine:
                 return cities
                 
         except Exception as e:
-            logger.error(f"❌ Hiba városok lekérdezésénél: {e}", exc_info=True)
+            logger.error(f"⚠ Hiba városok lekérdezésénél: {e}", exc_info=True)
+            logger.error(f"🔧 DATABASE PATH DEBUG: {database_path}")
+            logger.error(f"🔧 QUERY DEBUG: {query_str}")
+            logger.error(f"🔧 PARAMS DEBUG: {params}")
             return []
 
     def analyze_multi_city(self, query_type: str, region: str, date: str, limit: Optional[int] = None, question: Optional[AnalyticsQuestion] = None) -> AnalyticsResult:
         """
-        🔧 KRITIKUS JAVÍTÁS: Multi-city elemzés - TELJES ADAT TRANSZFORMÁCIÓVAL + ERROR HANDLING + NONE-SAFE + RÉGIÓ/MEGYE MAPPING JAVÍTVA + LIMIT TYPE FIX + RÉGIÓ SZŰRÉS JAVÍTVA!
+        🔧 KRITIKUS JAVÍTÁS: Multi-city elemzés - TELJES ADAT TRANSZFORMÁCIÓVAL + ERROR HANDLING + NONE-SAFE + RÉGIÓ/MEGYE MAPPING JAVÍTVA + LIMIT TYPE FIX + RÉGIÓ SZŰRÉS JAVÍTVA + WINDSPEED METRIC JAVÍTVA!
         
         Args:
-            query_type: Lekérdezés típusa
+            query_type: Lekérdezés típusa (pl. "windiest_today" most már windspeed_10m_max-ot használ!)
             region: Régió (most már támogatja az "Észak-Magyarország" stb. régiókat!)
             date: Dátum
             limit: Eredmények limitje (int vagy None)
@@ -413,7 +542,7 @@ class MultiCityEngine:
         
         try:
             if query_type not in self.QUERY_TYPES:
-                logger.error(f"❌ Ismeretlen lekérdezés típus: {query_type}")
+                logger.error(f"⚠ Ismeretlen lekérdezés típus: {query_type}")
                 return self._create_empty_analytics_result(question, f"Ismeretlen lekérdezés típus: {query_type}")
             
             # 🔧 KRITIKUS JAVÍTÁS: Region mapping hibák kezelése
@@ -421,19 +550,20 @@ class MultiCityEngine:
                 mapped_region = self.resolve_region_name(region)
                 logger.info(f"✅ Régió mapping sikeres: '{region}' → '{mapped_region}'")
             except ValueError as e:
-                logger.error(f"❌ Régió mapping hiba: {e}")
+                logger.error(f"⚠ Régió mapping hiba: {e}")
                 return self._create_empty_analytics_result(question, f"Ismeretlen régió: {region}")
             
             query_config = self.QUERY_TYPES[query_type]
             
-            logger.info(f"🚀 Multi-city elemzés kezdése (RÉGIÓ SZŰRÉS JAVÍTVA v2.7): {query_type} - {region} - {date}")
+            logger.info(f"🚀 Multi-city elemzés kezdése (ABSOLUTE DATABASE PATH FIX v2.8.2): {query_type} - {region} - {date}")
+            logger.info(f"🔥 WINDSPEED FIX: windiest_today most '{query_config['metric']}' metrikát használja!")
             
             # 🔧 KRITIKUS JAVÍTÁS: Városok lekérdezése REGIONÁLIS SZŰRÉSSEL!
             # Az eredeti régió nevet adjuk át, nem a mapped-et!
             cities = self.get_cities_for_region(region, max_cities=self.REGIONS[mapped_region]["max_cities"])
             
             if not cities:
-                logger.error("❌ Nincsenek városok a lekérdezéshez")
+                logger.error("⚠ Nincsenek városok a lekérdezéshez")
                 return self._create_empty_analytics_result(question, "Nincsenek városok a lekérdezéshez")
             
             # Időjárási adatok lekérdezése
@@ -453,7 +583,7 @@ class MultiCityEngine:
                         result_item.rank = i + 1
                         transformed_results.append(result_item)
                     except Exception as e:
-                        logger.error(f"❌ Transform error for {city_data.city}: {e}")
+                        logger.error(f"⚠ Transform error for {city_data.city}: {e}")
                         continue
 
             logger.info(f"🔧 TRANSFORMED RESULTS: {len(transformed_results)} cities transformed")
@@ -472,7 +602,7 @@ class MultiCityEngine:
                         metric=query_config["metric_enum"]
                     )
                 except Exception as e:
-                    logger.error(f"❌ Question creation error: {e}")
+                    logger.error(f"⚠ Question creation error: {e}")
                     # Fallback question
                     final_question = AnalyticsQuestion(
                         question_text="Multi-city analytics",
@@ -511,16 +641,16 @@ class MultiCityEngine:
                     provider_statistics=self._get_provider_stats(weather_data)
                 )
                 
-                logger.info(f"✅ Multi-city elemzés befejezve (RÉGIÓ SZŰRÉS JAVÍTVA v2.7): {len(limited_results)}/{len(cities)} eredmény, {len(transformed_results)} siker")
+                logger.info(f"✅ Multi-city elemzés befejezve (ABSOLUTE DATABASE PATH FIX v2.8.2): {len(limited_results)}/{len(cities)} eredmény, {len(transformed_results)} siker")
                 
                 return analytics_result
                 
             except Exception as e:
-                logger.error(f"❌ AnalyticsResult creation error: {e}")
+                logger.error(f"⚠ AnalyticsResult creation error: {e}")
                 return self._create_empty_analytics_result(final_question, f"Eredmény objektum létrehozási hiba: {e}")
             
         except Exception as e:
-            logger.error(f"❌ CRITICAL ERROR in analyze_multi_city: {e}", exc_info=True)
+            logger.error(f"⚠ CRITICAL ERROR in analyze_multi_city: {e}", exc_info=True)
             return self._create_empty_analytics_result(question, f"Kritikus hiba a multi-city elemzésben: {e}")
 
     def _get_provider_stats(self, weather_data: List[CityWeatherData]) -> Dict[str, int]:
@@ -539,6 +669,8 @@ class MultiCityEngine:
         1. Kiveszi a specifikus metrika értéket a CityWeatherData-ból
         2. Behelyezi a `value` mezőbe
         3. Létrehozza a teljes CityWeatherResult objektumot
+        
+        🔥 WINDSPEED METRIC JAVÍTÁS: windiest_today most windspeed_10m_max-ot használ!
         
         Args:
             city_data: Belső weather data objektum
@@ -559,7 +691,7 @@ class MultiCityEngine:
         
         # 🔧 CRITICAL DEBUG: Log what we're getting
         logger.info(f"🔧 TRANSFORM DEBUG: {city_data.city} - {metric_name}={metric_value} (type: {type(metric_value)})")
-        logger.info(f"🔧 RAW DATA: temp_max={city_data.temperature_2m_max}, temp_min={city_data.temperature_2m_min}, precip={city_data.precipitation_sum}")
+        logger.info(f"🔧 RAW DATA: temp_max={city_data.temperature_2m_max}, temp_min={city_data.temperature_2m_min}, precip={city_data.precipitation_sum}, windspeed={city_data.windspeed_10m_max}")
         
         # 🔧 NONE-SAFE value conversion - STRICTER VALIDATION
         if metric_value is not None and metric_value != 0:
@@ -595,7 +727,7 @@ class MultiCityEngine:
         """Párhuzamos időjárás lekérdezés (DUAL-API BATCH PROCESSING)."""
         weather_data = []
         if not self.weather_client:
-            logger.error("❌ WeatherClient nem elérhető")
+            logger.error("⚠ WeatherClient nem elérhető")
             return [self._create_empty_city_data(city) for city in cities]
 
         region_config = self.REGIONS[region]
@@ -637,7 +769,7 @@ class MultiCityEngine:
                     city_data = future.result(timeout=self.request_timeout)
                     batch_results.append(city_data)
                 except Exception as e:
-                    logger.error(f"❌ Hiba a város feldolgozásánál ({city.get('city')}): {e}", exc_info=True)
+                    logger.error(f"⚠ Hiba a város feldolgozásánál ({city.get('city')}): {e}", exc_info=True)
                     batch_results.append(self._create_empty_city_data(city, str(e)))
         return batch_results
 
@@ -646,6 +778,7 @@ class MultiCityEngine:
         Egyetlen város DUAL-API lekérdezése retry logikával.
         
         🔧 JAVÍTÁS: WeatherClient visszatérési értékének helyes kezelése
+        🔥 WINDSPEED METRIC JAVÍTÁS: windspeed_10m_max most már rendelkezésre áll!
         """
         last_error = None
         for attempt in range(self.max_retries):
@@ -673,6 +806,11 @@ class MultiCityEngine:
                         except (TypeError, ValueError):
                             temp_range = None
 
+                    # 🔥 WINDSPEED DEBUG: Log what we're getting
+                    windspeed = daily_data.get('windspeed_10m_max')
+                    windgusts = daily_data.get('windgusts_10m_max')
+                    logger.debug(f"🔧 WINDSPEED DEBUG {city['city']}: windspeed={windspeed}, windgusts={windgusts}")
+
                     return CityWeatherData(
                         city=city['city'], country=city['country'], country_code=city['country_code'],
                         lat=city['lat'], lon=city['lon'], population=city.get('population'),
@@ -680,8 +818,8 @@ class MultiCityEngine:
                         temperature_2m_max=temp_max, temperature_2m_min=temp_min,
                         temperature_2m_mean=daily_data.get('temperature_2m_mean'),
                         precipitation_sum=daily_data.get('precipitation_sum'),
-                        windspeed_10m_max=daily_data.get('windspeed_10m_max'),
-                        windgusts_10m_max=daily_data.get('windgusts_10m_max'),
+                        windspeed_10m_max=windspeed,  # 🔥 Most már ezt használjuk!
+                        windgusts_10m_max=windgusts,
                         meteostat_station_id=city.get('meteostat_station_id'),
                         data_quality_score=city.get('data_quality_score'),
                         data_source=source,
@@ -697,7 +835,7 @@ class MultiCityEngine:
                 if attempt < self.max_retries - 1:
                     time.sleep(self.retry_delay)
         
-        logger.error(f"❌ Végső hiba a(z) {city['city']} lekérdezésénél: {last_error}")
+        logger.error(f"⚠ Végső hiba a(z) {city['city']} lekérdezésénél: {last_error}")
         return self._create_empty_city_data(city, last_error)
 
     def _create_empty_city_data(self, city: Dict[str, Any], error_msg: str = "Ismeretlen hiba") -> CityWeatherData:
@@ -712,21 +850,21 @@ class MultiCityEngine:
         """
         Időjárási eredmények feldolgozása és NULL-safe rendezése.
         
-        🔧 EMERGENCY DEBUG: Full logging to find the issue
+        🔥 WINDSPEED METRIC JAVÍTÁS: windiest_today most windspeed_10m_max-ot keresi!
         """
-        logger.info(f"🔧 EMERGENCY DEBUG: _process_weather_results called with {len(weather_data)} cities")
+        logger.info(f"🔧 WINDSPEED FIX: _process_weather_results called with {len(weather_data)} cities")
         
         query_config = self.QUERY_TYPES[query_type]
         metric = query_config["metric"]
         sort_desc = query_config["sort_desc"]
         
-        logger.info(f"🔧 EMERGENCY DEBUG: Looking for metric '{metric}' in weather data")
+        logger.info(f"🔧 WINDSPEED FIX: Looking for metric '{metric}' in weather data")
         
         # Log first few cities' data for debugging
         for i, city in enumerate(weather_data[:3]):
             logger.info(f"🔧 CITY {i+1}: {city.city} - success={city.fetch_success}")
             logger.info(f"    temp_max={city.temperature_2m_max}, temp_min={city.temperature_2m_min}")
-            logger.info(f"    precip={city.precipitation_sum}, wind={city.windspeed_10m_max}")
+            logger.info(f"    precip={city.precipitation_sum}, windspeed={city.windspeed_10m_max}, windgusts={city.windgusts_10m_max}")
         
         # 🔧 NONE-SAFE hőingás számítása a temperature_range query-hez
         if metric == "temperature_range":
@@ -745,10 +883,10 @@ class MultiCityEngine:
         # Érvényes adatok szűrése
         valid_data = [d for d in weather_data if d.fetch_success and getattr(d, metric, None) is not None]
         
-        logger.info(f"🔧 EMERGENCY DEBUG: {len(valid_data)} valid cities with metric '{metric}'")
+        logger.info(f"🔧 WINDSPEED FIX: {len(valid_data)} valid cities with metric '{metric}'")
         
         if not valid_data:
-            logger.error(f"❌ NO VALID DATA! All cities missing metric '{metric}'")
+            logger.error(f"⚠ NO VALID DATA! All cities missing metric '{metric}'")
             # Return first few cities anyway for debugging
             return weather_data[:5]
         
@@ -765,10 +903,17 @@ class MultiCityEngine:
         try:
             sorted_data = sorted(valid_data, key=get_sort_value, reverse=sort_desc)
         except Exception as e:
-            logger.error(f"❌ Rendezési hiba: {e}", exc_info=True)
+            logger.error(f"⚠ Rendezési hiba: {e}", exc_info=True)
             sorted_data = valid_data
         
         logger.info(f"🔧 Feldolgozott adatok: {len(sorted_data)} érvényes város {metric} alapján rendezve")
+        
+        # 🔥 WINDSPEED DEBUG: Log top 3 cities
+        if query_type == "windiest_today":
+            logger.info("🔥 TOP 3 WINDIEST CITIES:")
+            for i, city in enumerate(sorted_data[:3]):
+                wind_value = getattr(city, metric, None)
+                logger.info(f"  {i+1}. {city.city}: {wind_value} km/h")
         
         return sorted_data
 
@@ -799,7 +944,7 @@ class MultiCityEngine:
         logger.info(f"🔧 NONE-SAFE STATS DEBUG: {len(all_values)} total values from {len(results)} results")
         
         if not all_values:
-            logger.error(f"❌ NONE-SAFE STATS DEBUG: No values at all! Results sample: {[(r.city_name, r.value) for r in results[:3]]}")
+            logger.error(f"⚠ NONE-SAFE STATS DEBUG: No values at all! Results sample: {[(r.city_name, r.value) for r in results[:3]]}")
             return {}
         
         try:
@@ -830,7 +975,7 @@ class MultiCityEngine:
             return stats
             
         except Exception as e:
-            logger.error(f"❌ NONE-SAFE Hiba a statisztikák számításánál: {e}", exc_info=True)
+            logger.error(f"⚠ NONE-SAFE Hiba a statisztikák számításánál: {e}", exc_info=True)
             return {}
 
     def _create_empty_analytics_result(self, question: Optional[AnalyticsQuestion], error_msg: str = "Ismeretlen hiba") -> AnalyticsResult:
@@ -874,7 +1019,7 @@ class MultiCityEngine:
             
         except Exception as e:
             # Ultimate fallback - ha még ez sem működik
-            logger.error(f"❌ Critical error creating empty AnalyticsResult: {e}")
+            logger.error(f"⚠ Critical error creating empty AnalyticsResult: {e}")
             
             # Manuális objektum létrehozás
             try:
@@ -898,7 +1043,7 @@ class MultiCityEngine:
                 return ultra_fallback_result
                 
             except Exception as ultra_e:
-                logger.error(f"❌ ULTRA CRITICAL: Cannot create AnalyticsResult at all: {ultra_e}")
+                logger.error(f"⚠ ULTRA CRITICAL: Cannot create AnalyticsResult at all: {ultra_e}")
                 # Ha még ez sem működik, akkor valami alapvető hiba van
                 raise RuntimeError(f"Cannot create AnalyticsResult: {ultra_e}")
 
@@ -974,44 +1119,83 @@ class MultiCityEngine:
         raise ValueError(error_msg)
 
 
-# 🧪 TESTING & DEBUG (NONE-SAFE + RÉGIÓ MAPPING + RÉGIÓ SZŰRÉS)
+# 🧪 TESTING & DEBUG (ABSOLUTE DATABASE PATH FIX + NONE-SAFE + RÉGIÓ MAPPING + RÉGIÓ SZŰRÉS + WINDSPEED METRIC JAVÍTÁS)
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    engine = MultiCityEngine()
-    today = datetime.now().strftime("%Y-%m-%d")
     
-    print("\n🚀 RÉGIÓ MAPPING TESZTEK:")
-    test_regions = [
-        "HU", "Észak-Magyarország", "Pest", "Budapest", 
-        "észak-magyarország", "közép-magyarország", "EU", "GLOBAL"
-    ]
+    print("\n🚀 ABSOLUTE DATABASE PATH FIX TESZTEK v2.8.2:")
+    print(f"🔧 Script location: {Path(__file__).absolute()}")
+    print(f"🔧 Working directory: {Path.cwd().absolute()}")
     
-    for region in test_regions:
-        try:
-            mapped = engine.resolve_region_name(region)
-            print(f"✅ '{region}' → '{mapped}'")
-        except ValueError as e:
-            print(f"❌ '{region}' → ERROR: {e}")
-    
-    print("\n🚀 RÉGIÓ SZŰRÉS TESZT: 'Észak-Magyarország' régióval (hottest):")
     try:
-        result_hot = engine.analyze_multi_city("hottest_today", "Észak-Magyarország", today, limit=10)
-        print(f"📊 Eredmények: {len(result_hot.city_results)} város")
-        print(f"📊 NONE-SAFE Statisztikák: {result_hot.statistics}")
+        engine = MultiCityEngine()
+        today = datetime.now().strftime("%Y-%m-%d")
         
-        # Első 3 város részletei
-        for i, city in enumerate(result_hot.city_results[:3]):
-            print(f"  {i+1}. {city.city_name}: {city.value}°C")
-            
-        # ELLENŐRIZZÜK: csak északi városok?
-        northern_counties = ["Borsod-Abaúj-Zemplén", "Heves", "Nógrád"]
-        print(f"\n🔧 REGIONÁLIS SZŰRÉS ELLENŐRZÉS:")
-        print(f"   Várt megyék: {northern_counties}")
+        print(f"\n🔧 Calculated paths:")
+        print(f"   Global cities DB: {engine.db_path.absolute()}")
+        print(f"   Hungarian settlements DB: {engine.hungarian_db_path.absolute()}")
+        print(f"   Global DB exists: {engine.db_path.exists()}")
+        print(f"   Hungarian DB exists: {engine.hungarian_db_path.exists()}")
         
-        cities_found = [f"{city.city_name}" for city in result_hot.city_results[:5]]
-        print(f"   Talált városok: {cities_found}")
+        print("\n🚀 RÉGIÓ MAPPING TESZTEK:")
+        test_regions = [
+            "HU", "Észak-Magyarország", "Pest", "Budapest", 
+            "észak-magyarország", "közép-magyarország", "EU", "GLOBAL"
+        ]
+        
+        for region in test_regions:
+            try:
+                mapped = engine.resolve_region_name(region)
+                print(f"✅ '{region}' → '{mapped}'")
+            except ValueError as e:
+                print(f"⚠ '{region}' → ERROR: {e}")
+        
+        print("\n🚀 WINDSPEED METRIC JAVÍTÁS TESZT: 'Észak-Magyarország' régióval (windiest):")
+        try:
+            result_wind = engine.analyze_multi_city("windiest_today", "Észak-Magyarország", today, limit=10)
+            print(f"📊 Eredmények: {len(result_wind.city_results)} város")
+            print(f"📊 NONE-SAFE Statisztikák: {result_wind.statistics}")
             
+            # Első 3 város részletei
+            print("🔥 TOP 3 LEGSZELESEBB VÁROSOK:")
+            for i, city in enumerate(result_wind.city_results[:3]):
+                print(f"  {i+1}. {city.city_name}: {city.value} km/h")
+                
+            # ELLENŐRIZZÜK: vannak-e nem-nulla értékek?
+            non_zero_count = len([c for c in result_wind.city_results if c.value > 0])
+            print(f"\n🔧 WINDSPEED METRIC JAVÍTÁS ELLENŐRZÉS:")
+            print(f"   Nem-nulla szélsebesség értékek: {non_zero_count}/{len(result_wind.city_results)}")
+            
+            if non_zero_count > 0:
+                print("✅ WINDSPEED METRIC JAVÍTÁS SIKERES!")
+            else:
+                print("⚠ WINDSPEED METRIC JAVÍTÁS SIKERTELEN!")
+                
+        except Exception as e:
+            print(f"⚠ Teszt hiba: {e}")
+            import traceback
+            traceback.print_exc()
+        
+        print(f"\n🔧 ABSOLUTE DATABASE PATH TESZT BEFEJEZVE v2.8.2")
+        
     except Exception as e:
-        print(f"❌ Teszt hiba: {e}")
+        print(f"❌ KRITIKUS HIBA az engine inicializáláskor: {e}")
+        print(f"🔧 Debugging info:")
+        print(f"   Current working dir: {Path.cwd().absolute()}")
+        print(f"   Script location: {Path(__file__).absolute()}")
+        
+        # Projekt root keresés debug
+        project_root = Path(__file__).parent.parent.parent
+        print(f"   Calculated project root: {project_root.absolute()}")
+        print(f"   Project root exists: {project_root.exists()}")
+        
+        data_dir = project_root / "data"
+        print(f"   Data directory: {data_dir.absolute()}")
+        print(f"   Data directory exists: {data_dir.exists()}")
+        
+        if data_dir.exists():
+            files = list(data_dir.iterdir())
+            print(f"   Files in data/: {[f.name for f in files]}")
+        
         import traceback
         traceback.print_exc()

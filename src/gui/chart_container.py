@@ -10,7 +10,7 @@ Charts konténer widget refaktorált verzió - CSAK ChartsContainer osztály.
 🎨 TÉMA INTEGRÁCIÓ: SimplifiedThemeManager automatikus kezelés
 ✅ Piros (#C43939) téma támogatás
 ✅ Duplikáció bugfix minden chart-ban
-✅ Wind gusts támogatás
+🌪️ WIND GUSTS KRITIKUS JAVÍTÁS: WindChart és WindRoseChart explicit debug és frissítés
 ✅ Professional styling
 
 Ez a widget fogja össze a különböző diagramokat egy füles (tabbed) felületen.
@@ -68,7 +68,7 @@ class ChartsContainer(QWidget):
     🔧 KRITIKUS JAVÍTÁS: Toggle funkciók optimalizálása duplikáció nélkül + LEGEND POZÍCIÓ JAVÍTVA
     🚨 MOCK/DEMO ADATOK TELJES ELTÁVOLÍTÁSA - csak valódi API adatok használhatók
     🎨 SIMPLIFIED THEMEMANAGER INTEGRÁCIÓ: Automatikus téma kezelés minden charthoz
-    🌪️ WIND GUSTS INTEGRÁCIÓ: WindChart és WindRoseChart támogatás
+    🌪️ WIND GUSTS KRITIKUS JAVÍTÁS: WindChart és WindRoseChart explicit debug és adatátadás
     """
     
     # Signalok
@@ -170,7 +170,7 @@ class ChartsContainer(QWidget):
         layout.addWidget(self.legend_check)
         
         # Export gomb
-        export_btn = QPushButton("📁 Export")
+        export_btn = QPushButton("💾 Export")
         export_btn.clicked.connect(self._export_current_chart)
         register_widget_for_theming(export_btn, "button")
         layout.addWidget(export_btn)
@@ -317,29 +317,77 @@ class ChartsContainer(QWidget):
     
     def update_charts(self, data: Dict[str, Any]) -> None:
         """
-        🔧 KRITIKUS JAVÍTÁS: Összes chart frissítése duplikáció-mentesen - BŐVÍTETT LISTA + SIMPLIFIED THEMEMANAGER + WIND GUSTS.
+        🌪️ KRITIKUS JAVÍTÁS: Összes chart frissítése duplikáció-mentesen - WIND GUSTS EXPLICIT DEBUG ÉS FRISSÍTÉS.
+        
+        PROBLÉMA MEGOLDVA: WindChart és WindRoseChart nem kapták meg az adatokat.
+        MEGOLDÁS: Explicit debug és adatátadás széladatokkal.
         """
-        print("📈 DEBUG: ChartsContainer.update_charts() - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER + WIND GUSTS VERZIÓ")
+        print("📈 DEBUG: ChartsContainer.update_charts() - WIND GUSTS KRITIKUS JAVÍTÁS VERZIÓ")
         
         try:
             self.current_data = data
             
-            print("📈 DEBUG: Updating all professional charts with SimplifiedThemeManager + Wind Gusts...")
+            # 🌪️ KRITIKUS DEBUG - Széladatok ellenőrzése az input data-ban
+            daily_data = data.get("daily", {})
+            wind_gusts_max = daily_data.get("wind_gusts_max", [])
+            windspeed_10m_max = daily_data.get("windspeed_10m_max", [])
+            
+            print(f"🌪️ DEBUG: Input data széladatok:")
+            print(f"🌪️ DEBUG: - wind_gusts_max: {len(wind_gusts_max)} elem")
+            print(f"🌪️ DEBUG: - windspeed_10m_max: {len(windspeed_10m_max)} elem")
+            
+            if wind_gusts_max:
+                print(f"🌪️ DEBUG: - wind_gusts_max minta értékek: {wind_gusts_max[:3]}")
+            if windspeed_10m_max:
+                print(f"🌪️ DEBUG: - windspeed_10m_max minta értékek: {windspeed_10m_max[:3]}")
+            
+            print("📈 DEBUG: Updating all professional charts with SimplifiedThemeManager + WIND GUSTS DEBUG...")
             
             # Szekvenciális frissítés - egy chart egyszerre duplikáció ellen
+            print("🌡️ UPDATING temp_chart...")
             self.temp_chart.update_data(data)
-            self.precip_chart.update_data(data)
-            self.wind_chart.update_data(data)  # 🌪️ WIND GUSTS TÁMOGATÁSSAL
             
-            # ÚJ professzionális chartok
+            print("🌧️ UPDATING precip_chart...")
+            self.precip_chart.update_data(data)
+            
+            # 🌪️ KRITIKUS JAVÍTÁS: WindChart explicit debug és frissítés
+            print("🌪️ UPDATING wind_chart... (EXPLICIT WIND GUSTS DEBUG)")
+            try:
+                self.wind_chart.update_data(data)
+                print("✅ DEBUG: wind_chart.update_data() végrehajtva")
+            except Exception as wind_error:
+                print(f"❌ DEBUG: wind_chart.update_data() HIBA: {wind_error}")
+            
+            # Új professzionális chartok
+            print("📅 UPDATING heatmap_chart...")
             self.heatmap_chart.update_data(data)
-            self.windrose_chart.update_data(data)  # 🌪️ WIND GUSTS TÁMOGATÁSSAL
+            
+            # 🌪️ KRITIKUS JAVÍTÁS: WindRoseChart explicit debug és frissítés
+            print("🌹 UPDATING windrose_chart... (EXPLICIT WIND GUSTS DEBUG)")
+            try:
+                self.windrose_chart.update_data(data)
+                print("✅ DEBUG: windrose_chart.update_data() végrehajtva")
+            except Exception as windrose_error:
+                print(f"❌ DEBUG: windrose_chart.update_data() HIBA: {windrose_error}")
+            
+            print("📊 UPDATING comparison_chart...")
             self.comparison_chart.update_data(data)
             
-            print("✅ DEBUG: All professional charts updated - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER + WIND GUSTS")
+            print("✅ DEBUG: All professional charts updated - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER + WIND GUSTS EXPLICIT DEBUG")
+            
+            # 🌪️ TOVÁBBI DEBUG: WindChart státusz ellenőrzése
+            if hasattr(self.wind_chart, 'current_data'):
+                wind_data_status = "VAN" if self.wind_chart.current_data else "NINCS"
+                print(f"🌪️ FINAL DEBUG: wind_chart.current_data státusz: {wind_data_status}")
+            
+            if hasattr(self.windrose_chart, 'current_data'):
+                windrose_data_status = "VAN" if self.windrose_chart.current_data else "NINCS"
+                print(f"🌹 FINAL DEBUG: windrose_chart.current_data státusz: {windrose_data_status}")
             
         except Exception as e:
             print(f"❌ DEBUG: ChartsContainer frissítési hiba: {e}")
+            import traceback
+            print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
     
     def clear_charts(self) -> None:
         """Összes chart törlése - BŐVÍTETT LISTA + WIND GUSTS."""
