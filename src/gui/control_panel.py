@@ -3,19 +3,19 @@
 
 """
 Universal Weather Research Platform - Control Panel (CLEAN ARCHITECTURE)
-SIGNAL AGGREGATOR PATTERN - MULTI-CITY WIDGET INTEGRÁCIÓ BEFEJEZVE!
+SIGNAL AGGREGATOR PATTERN - FETCH_BUTTON FIX BEFEJEZVE!
 
-🎯 CLEAN ARCHITECTURE + MULTI-CITY TÁMOGATÁS:
+🎯 CLEAN ARCHITECTURE + FETCH_BUTTON FIX:
 - Single Responsibility: Widget aggregáció és egyetlen signal routing
 - Signal Aggregation: CSAK analysis_requested = Signal(dict) - FŐCSATORNA  
 - Widget Composition: 7 specializált widget komponens (+ MultiCityWidget)
 - State Management: get_current_state() minden widget-ből
+- 🔧 FETCH_BUTTON FIX: fetch_button → query_button minden előfordulásban
 - 🏙️ MULTI-CITY WIDGET INTEGRÁCIÓ: Régió/megye választás támogatás
-- 🔄 ANALYSIS TYPE VÁLTÁS: LocationWidget ↔ MultiCityWidget dinamikus váltás
 - 📡 SIGNAL ROUTING: Multi-city selection_changed signal kezelés
 
 🔧 KRITIKUS JAVÍTÁSOK BEFEJEZVE:
-✅ _update_ui_for_analysis_type_fixed() - Widget váltás LocationWidget ↔ MultiCityWidget
+✅ _update_fetch_button_state_comprehensive() - fetch_button → query_button
 ✅ _preserve_widget_states() - State megőrzés analysis type váltás előtt  
 ✅ _restore_widget_states() - State visszaállítás analysis type váltás után
 ✅ _force_widget_refresh() - Widget belső állapot refresh
@@ -25,6 +25,8 @@ SIGNAL AGGREGATOR PATTERN - MULTI-CITY WIDGET INTEGRÁCIÓ BEFEJEZVE!
 ✅ 📡 Multi-city selection signal routing
 ✅ 🚨 DATE RANGE FIX: AppController kompatibilis formátum
 ✅ 🚨 VALIDATION FIX: location_data objektum alatt keresi lat/lon kulcsokat
+✅ 🔧 FETCH_BUTTON ATTRIBUTE FIX: Minden query_button.setEnabled() javítva
+✅ 🔥 PROGRESS TEXT FIX: set_progress_text → update_progress
 
 📋 WIDGET HIERARCHIA (KIEGÉSZÍTVE):
 - AnalysisTypeWidget: Egyedi/Régió/Megye választó
@@ -59,7 +61,7 @@ from ..data.city_manager import CityManager
 
 class ControlPanel(QWidget):
     """
-    🎯 CLEAN ARCHITECTURE CONTROL PANEL - MULTI-CITY WIDGET INTEGRÁCIÓ BEFEJEZVE!
+    🎯 CLEAN ARCHITECTURE CONTROL PANEL - FETCH_BUTTON FIX BEFEJEZVE!
     
     WIDGET HIERARCHIA:
     - AnalysisTypeWidget: Egyedi/Régió/Megye választó
@@ -508,15 +510,15 @@ class ControlPanel(QWidget):
     
     def _update_fetch_button_state_comprehensive(self) -> None:
         """
-        🔧 ROBUSZTUS: Fetch button állapot újraértékelése - comprehensive validation + MULTI-CITY.
+        🔧 KRITIKUS FIX: Fetch button állapot újraértékelése - comprehensive validation + MULTI-CITY + QUERY_BUTTON.
         """
         can_fetch = self._comprehensive_fetch_validation()
         
-        # Csak ha nem fetch-elünk éppen
+        # 🔧 KRITIKUS FIX: fetch_button → query_button
         if not self.query_control_widget._is_fetching:
-            self.query_control_widget.fetch_button.setEnabled(can_fetch)
+            self.query_control_widget.query_button.setEnabled(can_fetch)
         
-        print(f"🚀 DEBUG: Fetch button enabled: {can_fetch} (comprehensive validation + multi-city)")
+        print(f"🚀 DEBUG: Query button enabled: {can_fetch} (comprehensive validation + multi-city + FETCH_BUTTON FIX)")
     
     def _comprehensive_fetch_validation(self) -> bool:
         """
@@ -868,13 +870,15 @@ class ControlPanel(QWidget):
         if self.query_control_widget._is_fetching:
             print("🔧 DEBUG: Auto-resetting fetch state after timeout")
             self.query_control_widget.set_fetching_state(False)
-            self.query_control_widget.set_progress_text("⏰ Timeout - próbálja újra")
+            # 🔥 KRITIKUS FIX: set_progress_text → update_progress
+            self.query_control_widget.update_progress("⏰ Timeout - próbálja újra")
             self._update_fetch_button_state_comprehensive()
     
     def on_weather_data_completed(self) -> None:
         """Weather data lekérdezés befejezése külső jelzés alapján."""
         self.query_control_widget.set_fetching_state(False)
-        self.query_control_widget.set_progress_text("✅ Adatok sikeresen lekérdezve")
+        # 🔥 KRITIKUS FIX: set_progress_text → update_progress
+        self.query_control_widget.update_progress("✅ Adatok sikeresen lekérdezve")
         self._update_fetch_button_state_comprehensive()
         
         print("✅ Weather data completed - UI updated")
@@ -882,7 +886,8 @@ class ControlPanel(QWidget):
     def on_controller_error(self, error_message: str) -> None:
         """Hiba kezelése külső jelzés alapján."""
         self.query_control_widget.set_fetching_state(False)
-        self.query_control_widget.set_progress_text(f"❌ Hiba: {error_message}")
+        # 🔥 KRITIKUS FIX: set_progress_text → update_progress
+        self.query_control_widget.update_progress(f"❌ Hiba: {error_message}")
         self._update_fetch_button_state_comprehensive()
         
         self.local_error_occurred.emit(error_message)
@@ -893,14 +898,17 @@ class ControlPanel(QWidget):
         """Progress frissítése külső jelzés alapján."""
         if 0 <= progress <= 100:
             self.query_control_widget.set_progress_value(progress)
-            self.query_control_widget.set_progress_text(f"⏳ {worker_type}: {progress}%")
+            # 🔥 KRITIKUS FIX: set_progress_text → update_progress
+            self.query_control_widget.update_progress(f"⏳ {worker_type}: {progress}%")
         
         if progress >= 100:
-            self.query_control_widget.set_progress_text("✅ Befejezve")
+            # 🔥 KRITIKUS FIX: set_progress_text → update_progress
+            self.query_control_widget.update_progress("✅ Befejezve")
     
     def update_status_from_controller(self, message: str) -> None:
         """Status frissítése külső controller-ből."""
-        self.query_control_widget.set_progress_text(message)
+        # 🔥 KRITIKUS FIX: set_progress_text → update_progress
+        self.query_control_widget.update_progress(message)
         print(f"📊 Status update: {message}")
     
     # === GEOCODING COMPATIBILITY HANDLERS (UNCHANGED) ===

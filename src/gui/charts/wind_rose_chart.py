@@ -10,7 +10,8 @@ Széllökés rózsadiagram widget professzionális polárkoordinátás vizualiz�
 🔧 KRITIKUS JAVÍTÁS: Duplikáció-mentes frissítés + SIMPLIFIED THEMEMANAGER
 ✅ wind_gusts_max prioritás → windspeed_10m_max fallback rendszer
 ✅ Kritikus széllökés küszöbök: 70, 100, 120 km/h
-✅ Piros (#C43939) téma támogatás
+✅ 🔥 SZÍNEK JAVÍTVA: Megfelelő wind rose színpaletta
+✅ 🔥 BETŰTÍPUS JAVÍTVA: Bold címek és címkék
 ✅ 16 fő szélirány + 6 sebesség kategória
 ✅ Polárkoordinátás rózsadiagram
 🚨 KRITIKUS DEBUG: Explicit konzol üzenetek minden lépésnél
@@ -36,6 +37,7 @@ class WindRoseChart(WeatherChart):
     ✅ Kritikus széllökés küszöbök: 70, 100, 120 km/h
     🚨 EXPLICIT DEBUG minden lépésnél
     🎯 VÉGSŐ JAVÍTÁS: has_valid_data() - ellenőrzi van-e valódi adat!
+    🔥 SZÍNEK ÉS BETŰTÍPUS JAVÍTVA!
     """
     
     def __init__(self, parent: Optional[QWidget] = None):
@@ -219,8 +221,9 @@ class WindRoseChart(WeatherChart):
         """
         Wind rose diagram megrajzolása - DUPLIKÁCIÓ BUGFIX + SIMPLIFIED THEMEMANAGER.
         🎨 SIMPLIFIED THEMEMANAGER INTEGRÁCIÓ: ColorPalette wind színek használata
+        🔥 SZÍNEK ÉS BETŰTÍPUS JAVÍTVA!
         """
-        print("🎨 DEBUG: _plot_wind_rose() - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER")
+        print("🎨 DEBUG: _plot_wind_rose() - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER + COLORS FIXED")
         
         if df.empty:
             print("⚠️ DEBUG: Empty DataFrame, showing placeholder...")
@@ -228,29 +231,27 @@ class WindRoseChart(WeatherChart):
             return
         
         # === KRITIKUS: POLAR KOORDINÁTA RENDSZER BEÁLLÍTÁSA ===
-        print("🔄 DEBUG: Creating polar subplot...")
+        print("🔥 DEBUG: Creating polar subplot...")
         self.ax = self.figure.add_subplot(111, projection='polar')
         
-        # 🔧 KRITIKUS JAVÍTÁS: HELYES API HASZNÁLAT - wind színek generálása
+        # 🔥 JAVÍTOTT SZÍNPALETTA - Látható kontrasztokkal
+        current_colors = get_current_colors()
+        
         wind_colors = {
-            'calm': self.color_palette.get_color('info', 'light') or '#a3a3a3',
-            'light': self.color_palette.get_color('success', 'light') or '#86efac',
-            'moderate': self.color_palette.get_color('warning', 'base') or '#f59e0b',
-            'strong': self.color_palette.get_color('error', 'light') or '#f87171',
-            'very_strong': self.color_palette.get_color('error', 'base') or '#dc2626',
-            'extreme': self.color_palette.get_color('error', 'dark') or '#991b1b'
+            # Fokozatos színátmenetek - zöldtől pirosig
+            'calm': '#9ca3af',        # Szürke - csendes
+            'light': '#34d399',       # Világos zöld - enyhe
+            'moderate': '#fbbf24',    # Sárga - közepes  
+            'strong': '#f97316',      # Narancs - erős
+            'very_strong': '#ef4444', # Piros - nagyon erős
+            'extreme': '#dc2626'      # Sötét piros - extrém
         }
         
-        # Weather színpaletta integrálása
-        weather_wind_color = self.weather_colors.get('wind', '#10b981')
-        wind_colors['moderate'] = weather_wind_color
-        
-        current_colors = get_current_colors()
         text_color = current_colors.get('on_surface', '#1f2937')
         
-        print(f"🎨 DEBUG: Using SimplifiedThemeManager wind colors: {wind_colors}")
+        print(f"🎨 DEBUG: Using FIXED wind colors: {wind_colors}")
         
-        # 🌪️ SZÉLLÖKÉS SEBESSÉG KATEGÓRIÁK - ÉLETHU KÜSZÖBÖK + SIMPLIFIED THEMEMANAGER SZÍNEK
+        # 🌪️ SZÉLLÖKÉS SEBESSÉG KATEGÓRIÁK - ÉLETHU KÜSZÖBÖK + FIXED SZÍNEK
         speed_bins = [0, 25, 50, 70, 100, 120, 200]  # km/h - WIND GUSTS KÜSZÖBÖK
         speed_labels = ['0-25', '25-50', '50-70', '70-100', '100-120', '120+ km/h']  # ÉLETHU CÍMKÉK
         colors = [
@@ -308,17 +309,17 @@ class WindRoseChart(WeatherChart):
             
             # Oszlopok rajzolása
             bars = self.ax.bar(theta, values, width=np.pi / 8, bottom=bottom, 
-                              color=color, alpha=0.8, label=label, 
+                              color=color, alpha=0.85, label=label, 
                               edgecolor=current_colors.get('border', '#d1d5db'), linewidth=0.5)
             
             bottom += values
         
         print("🎨 DEBUG: Formatting wind rose chart...")
-        # === FORMÁZÁS + SIMPLIFIED THEMEMANAGER ===
+        # === FORMÁZÁS + SIMPLIFIED THEMEMANAGER + 🔥 BOLD BETŰTÍPUS ===
         
-        # Irány címkék
+        # Irány címkék - 🔥 BOLD
         self.ax.set_xticks(theta)
-        self.ax.set_xticklabels(direction_labels[:len(theta)])
+        self.ax.set_xticklabels(direction_labels[:len(theta)], fontweight='bold', fontsize=11)
         
         # 0° = É (észak) legyen felül
         self.ax.set_theta_zero_location('N')
@@ -327,18 +328,25 @@ class WindRoseChart(WeatherChart):
         # Grid és címkék + SIMPLIFIED THEMEMANAGER SZÍNEK
         grid_color = current_colors.get('border', '#d1d5db')
         self.ax.grid(True, alpha=0.3, color=grid_color)
-        self.ax.set_title(self.chart_title, fontsize=16, fontweight='bold', pad=30, color=text_color)
         
-        # Tick színek
-        self.ax.tick_params(colors=text_color)
+        # 🔥 CÍM BOLD
+        self.ax.set_title(self.chart_title, fontsize=18, fontweight='bold', pad=30, color=text_color)
         
-        # Legend - JAVÍTOTT POZÍCIÓ + SIMPLIFIED THEMEMANAGER SZÍNEK
+        # 🔥 TICK CÍMKÉK BOLD
+        self.ax.tick_params(colors=text_color, labelsize=10)
+        for label in self.ax.get_yticklabels():
+            label.set_fontweight('bold')
+        
+        # Legend - JAVÍTOTT POZÍCIÓ + SIMPLIFIED THEMEMANAGER SZÍNEK + 🔥 BOLD
         if self.legend_enabled:
-            legend = self.ax.legend(bbox_to_anchor=(1.2, 1), loc='upper left', fontsize=10)
+            legend = self.ax.legend(bbox_to_anchor=(1.2, 1), loc='upper left', fontsize=11)
             legend.get_frame().set_facecolor(current_colors.get('surface', '#ffffff'))
             legend.get_frame().set_edgecolor(current_colors.get('border', '#d1d5db'))
+            # 🔥 LEGEND SZÖVEGEK BOLD
+            for text in legend.get_texts():
+                text.set_fontweight('bold')
         
-        # Statisztika szöveg + SIMPLIFIED THEMEMANAGER SZÍNEK
+        # Statisztika szöveg + SIMPLIFIED THEMEMANAGER SZÍNEK + 🔥 BOLD
         total_records = len(df)
         avg_speed = df['windspeed'].mean()
         max_speed = df['windspeed'].max()
@@ -364,18 +372,19 @@ class WindRoseChart(WeatherChart):
         elif max_speed >= 70:
             stats_text += "🌪️ Viharos széllökések detected!"
         
+        # 🔥 STATISZTIKA SZÖVEG BOLD
         self.ax.text(0.02, 0.98, stats_text, transform=self.ax.transAxes, 
-                    fontsize=10, verticalalignment='top', color=text_color,
+                    fontsize=11, fontweight='bold', verticalalignment='top', color=text_color,
                     bbox=dict(boxstyle="round,pad=0.3", 
                              facecolor=current_colors.get('surface_variant', '#f9fafb'), 
-                             edgecolor=current_colors.get('border', '#d1d5db'), alpha=0.8))
+                             edgecolor=current_colors.get('border', '#d1d5db'), alpha=0.9))
         
         print("🔧 DEBUG: Applying tight layout...")
         self.figure.tight_layout()
-        print("✅ DEBUG: Wind rose plotting COMPLETE!")
+        print("✅ DEBUG: Wind rose plotting COMPLETE with FIXED COLORS and BOLD FONTS!")
     
     def _plot_wind_rose_placeholder(self) -> None:
-        """Wind rose placeholder ha nincs valódi adat - MOCK ADATOK NÉLKÜL + SIMPLIFIED THEMEMANAGER."""
+        """Wind rose placeholder ha nincs valódi adat - MOCK ADATOK NÉLKÜL + SIMPLIFIED THEMEMANAGER + 🔥 BOLD."""
         print("🌹 DEBUG: Showing wind rose placeholder...")
         # Sima axis használata placeholder-hez
         self.ax = self.figure.add_subplot(111)
@@ -394,15 +403,32 @@ class WindRoseChart(WeatherChart):
         placeholder_text += "• winddirection_10m_dominant\n\n"
         placeholder_text += "🚨 Mock adatok használata TILOS!"
         
+        # 🔥 PLACEHOLDER SZÖVEG BOLD
         self.ax.text(0.5, 0.5, placeholder_text, ha='center', va='center', 
-                    transform=self.ax.transAxes, fontsize=13, color=text_color,
+                    transform=self.ax.transAxes, fontsize=14, fontweight='bold', color=text_color,
                     bbox=dict(boxstyle="round,pad=0.5", facecolor=surface_color, 
                              edgecolor=current_colors.get('border', '#d1d5db'), alpha=0.8))
         
-        self.ax.set_title(self.chart_title, fontsize=16, fontweight='bold', pad=20, color=text_color)
+        # 🔥 CÍM BOLD
+        self.ax.set_title(self.chart_title, fontsize=18, fontweight='bold', pad=20, color=text_color)
         
         # Tengelyek elrejtése placeholder módban
         self.ax.set_xticks([])
         self.ax.set_yticks([])
         for spine in self.ax.spines.values():
             spine.set_visible(False)
+    
+    def has_valid_data(self) -> bool:
+        """
+        🎯 VÉGSŐ JAVÍTÁS: Ellenőrzi, hogy van-e valódi széllökés/szél adat megjelenítéshez.
+        
+        Returns:
+            bool: True ha van érvényes wind rose adat
+        """
+        if not hasattr(self, 'current_data') or self.current_data is None:
+            return False
+        
+        if isinstance(self.current_data, pd.DataFrame):
+            return not self.current_data.empty and len(self.current_data) > 0
+        
+        return False

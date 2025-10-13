@@ -38,3 +38,11 @@ scripts/*.zip
 !scripts/ai_studio_code.py
 !scripts/add_coordinates_to_db.py
 
+# 📁 Csak src mappa tartalma legyen a repo-ban (struktúrával)
+# Exclude minden mást a gyökéren, kivéve src/** és a fenti scripts kivételeket
+*/
+!src/
+!scripts/
+# A scripts kivételek már fentiekben
+!data_explorer.py
+!tools_archi_scan.py

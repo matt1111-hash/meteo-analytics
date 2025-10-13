@@ -3,21 +3,20 @@
 Weather Client - Multi-Provider API integráció (EGYSÉGES API VERZIÓ)
 Global Weather Analyzer projekt
 
-🔥 KRITIKUS JAVÍTÁS: HELYES API PARAMÉTER NEVEK!
+🔥 KRITIKUS JAVÍTÁS v4.7: HELYES API PARAMÉTER NEVEK!
+🌪️ BUG FIX: windgusts_10m_max → wind_gusts_10m_max (CURL TESZT ALAPJÁN!)
 🚀 BATCHING LOGIC: Open-Meteo 1 éves limit megkerülése
 📈 TREND ANALYTICS READY: 5-10-55 éves trend elemzések támogatása
 🌪️ SZÉLIRÁNY JAVÍTÁS: winddirection_10m_dominant hozzáadva a daily paraméterekhez!
 
-🔧 JAVÍTÁS v4.6 - SZÉLIRÁNY API PARAMÉTER FIX:
-- ✅ wind_direction_10m_dominant ➜ winddirection_10m_dominant (HELYES API NÉV!)
-- ✅ WindRose chart támogatás biztosítva
-- ✅ API PARAMÉTER NÉVJAVÍTÁS: windspeed → wind_speed, windgusts → wind_gusts  
+🔧 JAVÍTÁS v4.7 - API PARAMÉTER NEVEK FIX (CURL TESZT ALAPJÁN):
+- ✅ wind_gusts_10m_max API paraméter (CURL teszt: MŰKÖDIK!)
+- ✅ winddirection_10m_dominant API paraméter (CURL teszt: MŰKÖDIK!)
+- ✅ windspeed_10m_max API paraméter (CURL teszt: MŰKÖDIK!)
 - ✅ get_weather_data() MINDIG List[Dict] visszatérés (nem tuple!)
 - ✅ data_source minden rekordba beépítve
 - ✅ Konzisztens API - nincs többé tuple unpacking hiba
 - ✅ Backward compatibility megőrizve
-- 🔧 KRITIKUS FIX: Daily paraméterek listában maradnak (nem string!)
-- 🌪️ API PARAMÉTER SZÉLIRÁNY FIX: wind_direction_10m_dominant ➜ winddirection_10m_dominant
 
 Új funkciók:
 - get_weather_data_batched() - többéves időszakok darabolása
@@ -66,7 +65,7 @@ class WeatherData:
     rain_sum: Optional[float] = None
     snowfall_sum: Optional[float] = None
     precipitation_hours: Optional[int] = None
-    wind_speed_10m_max: Optional[float] = None  # ✅ JAVÍTOTT NÉV
+    windspeed_10m_max: Optional[float] = None  # ✅ JAVÍTOTT NÉV
     wind_gusts_10m_max: Optional[float] = None  # ✅ JAVÍTOTT NÉV
     winddirection_10m_dominant: Optional[float] = None
     shortwave_radiation_sum: Optional[float] = None
@@ -199,26 +198,26 @@ class OpenMeteoProvider(WeatherProvider):
         """
         Egyszeri Open-Meteo API lekérdezés (max 90 nap) - RATE LIMIT OPTIMALIZÁLT
         
-        🔧 JAVÍTÁS v4.6: HELYES API PARAMÉTER NEVEK + SZÉLIRÁNY + MINDIG List[Dict] visszatérés
+        🔧 JAVÍTÁS v4.7: HELYES API PARAMÉTER NEVEK (CURL TESZT ALAPJÁN)!
         """
-        # 🔥 JAVÍTOTT PARAMÉTEREK - HELYES API NEVEK + SZÉLIRÁNY
+        # 🔥 JAVÍTOTT PARAMÉTEREK - CURL TESZT ALAPJÁN HELYES API NEVEK!
         params = {
             "latitude": latitude,
             "longitude": longitude,
             "start_date": start_date,
             "end_date": end_date,
-            # 🎯 VALÓS API MEZŐK - DEBUG ALAPJÁN JAVÍTOTT NEVEK + SZÉLIRÁNY HOZZÁADVA
+            # 🎯 CURL TESZT ALAPJÁN VALIDÁLT API MEZŐK!
             "daily": [
                 "temperature_2m_max",
                 "temperature_2m_min", 
                 "temperature_2m_mean",
                 "precipitation_sum",
-                "windspeed_10m_max",         # ✅ VALÓS API NÉV
-                "windgusts_10m_max",         # 🔧 JAVÍTÁS: wind_gusts_max → windgusts_10m_max
-                "winddirection_10m_dominant" # 🌪️ KRITIKUS JAVÍTÁS: HELYES API NÉV! (nem wind_direction_10m_dominant!)
+                "windspeed_10m_max",         # ✅ CURL TESZT: MŰKÖDIK
+                "wind_gusts_10m_max",        # 🔧 KRITIKUS FIX: CURL TESZT ALAPJÁN!
+                "winddirection_10m_dominant" # 🌪️ CURL TESZT: MŰKÖDIK!
             ],
             "timezone": "auto",
-            "models": "best_match"  # 🎯 EGYETLEN MODELL (nem többszörös)
+            "models": "era5_seamless"  # 🔧 KRITIKUS FIX v4.7: best_match → era5_seamless (HISTORIKUS ADATOK!)
         }
         
         return self._make_api_request(params)
@@ -353,10 +352,6 @@ class OpenMeteoProvider(WeatherProvider):
         
         # 🔧 KRITIKUS FIX: NE alakítsd át string-gé a daily paramétereket!
         # Az Open-Meteo API a lista formátumot várja!
-        # TÖRŐLT HIBÁS KÓD:
-        # if isinstance(params.get("daily"), list):
-        #     daily_params = ",".join(params["daily"])
-        #     params["daily"] = daily_params
         
         try:
             logger.debug(f"🌍 API REQUEST: {params['start_date']} → {params['end_date']}")
@@ -401,7 +396,7 @@ class OpenMeteoProvider(WeatherProvider):
         """
         Open-Meteo API válasz feldolgozása
         
-        🔧 JAVÍTÁS v4.6: data_source minden rekordba beépítve + SZÉLIRÁNY FELDOLGOZÁS
+        🔧 JAVÍTÁS v4.7: data_source minden rekordba beépítve + SZÉLIRÁNY FELDOLGOZÁS + API FIX
         """
         daily_data = response_data.get("daily", {})
         dates = daily_data.get("time", [])
@@ -424,13 +419,25 @@ class OpenMeteoProvider(WeatherProvider):
         else:
             logger.warning("⚠️ Nincs szélirány adat a válaszban!")
         
-        # 🌪️ SZÉLLÖKÉS ELLENŐRZÉS
-        if "windgusts_10m_max" in metrics:
-            wind_gusts = metrics["windgusts_10m_max"]
+        # 🌪️ SZÉLLÖKÉS ELLENŐRZÉS - JAVÍTOTT API PARAMÉTER
+        if "wind_gusts_10m_max" in metrics:
+            wind_gusts = metrics["wind_gusts_10m_max"]
             valid_gusts = [g for g in wind_gusts if g is not None]
             logger.info(f"🌪️ Széllökés adatok feldolgozva: {len(valid_gusts)}/{len(wind_gusts)} érvényes értékek")
+            if valid_gusts:
+                logger.info(f"🌪️ Széllökés tartomány: {min(valid_gusts):.1f} → {max(valid_gusts):.1f} km/h")
         else:
             logger.warning("⚠️ Nincs széllökés adat a válaszban!")
+        
+        # 💨 SZÉLSEBESSÉG ELLENŐRZÉS
+        if "windspeed_10m_max" in metrics:
+            wind_speeds = metrics["windspeed_10m_max"]
+            valid_speeds = [s for s in wind_speeds if s is not None]
+            logger.info(f"💨 Szélsebesség adatok feldolgozva: {len(valid_speeds)}/{len(wind_speeds)} érvényes értékek")
+            if valid_speeds:
+                logger.info(f"💨 Szélsebesség tartomány: {min(valid_speeds):.1f} → {max(valid_speeds):.1f} km/h")
+        else:
+            logger.warning("⚠️ Nincs szélsebesség adat a válaszban!")
         
         # Napi adatok összeállítása
         weather_data = []
@@ -610,7 +617,7 @@ class MeteostatProvider(WeatherProvider):
     
     def _process_response(self, response_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        🔧 JAVÍTÁS v4.6: data_source minden rekordba beépítve + HELYES FIELD MAPPING + SZÉLIRÁNY
+        🔧 JAVÍTÁS v4.7: data_source minden rekordba beépítve + HELYES FIELD MAPPING + SZÉLIRÁNY
         """
         raw_data = response_data.get("data", [])
         
@@ -626,7 +633,7 @@ class MeteostatProvider(WeatherProvider):
             "tmax": "temperature_2m_max",
             "prcp": "precipitation_sum",
             "wspd": "windspeed_10m_max",        # ✅ JAVÍTOTT: windspeed → windspeed_10m_max
-            "wpgt": "windgusts_10m_max",       # ✅ JAVÍTOTT: windgusts → windgusts_10m_max
+            "wpgt": "wind_gusts_10m_max",       # ✅ JAVÍTOTT: windgusts → wind_gusts_10m_max
             "wdir": "winddirection_10m_dominant",  # 🌪️ SZÉLIRÁNY MAPPING
             "tsun": "sunshine_duration"
         }
@@ -673,7 +680,7 @@ class WeatherClient:
         self.provider_change_callback: Optional[Callable[[str, str], None]] = None
         self.provider_fallback_callback: Optional[Callable[[str, str], None]] = None
         
-        logger.info(f"🔥 MULTI-YEAR WeatherClient v4.6 inicializálva (SZÉLIRÁNY JAVÍTÁS)")
+        logger.info(f"🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)")
     
     def set_provider_change_callback(self, callback: Callable[[str, str], None]) -> None:
         self.provider_change_callback = callback
@@ -700,7 +707,7 @@ class WeatherClient:
             List[Dict]: Napi adatok, data_source minden rekordban
         """
         
-        logger.info(f"🔥 MULTI-YEAR WEATHER REQUEST v4.6:")
+        logger.info(f"🔥 MULTI-YEAR WEATHER REQUEST v4.7:")
         logger.info(f"  📍 Koordináták: {latitude:.4f}, {longitude:.4f}")
         logger.info(f"  📅 Időszak: {start_date} → {end_date}")
         logger.info(f"  🎛️ Provider override: {user_override_provider}")
@@ -752,7 +759,7 @@ class WeatherClient:
                     
                     # Wind data analysis - ✅ JAVÍTOTT NEVEK + SZÉLIRÁNY
                     wind_speed_values = [r.get('windspeed_10m_max') for r in weather_data if r.get('windspeed_10m_max') is not None]
-                    wind_gusts_values = [r.get('windgusts_10m_max') for r in weather_data if r.get('windgusts_10m_max') is not None]
+                    wind_gusts_values = [r.get('wind_gusts_10m_max') for r in weather_data if r.get('wind_gusts_10m_max') is not None]
                     wind_direction_values = [r.get('winddirection_10m_dominant') for r in weather_data if r.get('winddirection_10m_dominant') is not None]
                     
                     if wind_speed_values:
@@ -980,21 +987,21 @@ class WeatherClient:
 
 
 if __name__ == "__main__":
-    # 🔥 MULTI-YEAR Test v4.6
-    logger.info("🔥 STARTING MULTI-YEAR TEST v4.6 (SZÉLIRÁNY JAVÍTÁS)")
+    # 🔥 MULTI-YEAR Test v4.7 - API PARAMÉTER FIX
+    logger.info("🔥 STARTING MULTI-YEAR TEST v4.7 (API PARAMÉTER FIX)")
     
     client = WeatherClient(preferred_provider="auto")
     
-    # Test 5 year trend
+    # Test rövid időszak (7 nap) széllökés adatokkal
     end_date = datetime.now().strftime("%Y-%m-%d")
-    start_date = (datetime.now() - timedelta(days=5*365)).strftime("%Y-%m-%d")
+    start_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
     
-    logger.info(f"🔥 TESTING MULTI-YEAR: {start_date} → {end_date}")
+    logger.info(f"🔥 TESTING API FIX: {start_date} → {end_date}")
     
     try:
         # 🔧 JAVÍTÁS v4.5: EGYSÉGES API - csak List[Dict] visszatérés
         weather_data = client.get_weather_data(47.4979, 19.0402, start_date, end_date)
-        logger.info(f"🔥 MULTI-YEAR TEST RESULT: {len(weather_data)} records")
+        logger.info(f"🔥 API FIX TEST RESULT: {len(weather_data)} records")
         
         if weather_data:
             first_record = weather_data[0]
@@ -1003,11 +1010,19 @@ if __name__ == "__main__":
             logger.info(f"🔥 DATE RANGE: {first_record.get('date')} → {last_record.get('date')}")
             logger.info(f"🔥 DATA SOURCE: {source}")
             
-            # ✅ JAVÍTOTT: Szél adatok ellenőrzése + SZÉLIRÁNY
+            # ✅ JAVÍTOTT: Szél adatok ellenőrzése + SZÉLIRÁNY + SZÉLLÖKÉS FIX
             wind_speed_count = sum(1 for r in weather_data if r.get('windspeed_10m_max') is not None)
-            wind_gusts_count = sum(1 for r in weather_data if r.get('windgusts_10m_max') is not None)
+            wind_gusts_count = sum(1 for r in weather_data if r.get('wind_gusts_10m_max') is not None)
             wind_direction_count = sum(1 for r in weather_data if r.get('winddirection_10m_dominant') is not None)
-            logger.info(f"🔥 WIND DATA: speed={wind_speed_count}, gusts={wind_gusts_count}, direction={wind_direction_count}")
+            logger.info(f"🔥 WIND DATA COUNTS: speed={wind_speed_count}, gusts={wind_gusts_count}, direction={wind_direction_count}")
+            
+            # Széllökés értékek elemzése
+            wind_gusts_values = [r.get('wind_gusts_10m_max') for r in weather_data if r.get('wind_gusts_10m_max') is not None]
+            if wind_gusts_values:
+                logger.info(f"🌪️ WIND GUSTS VALUES: {wind_gusts_values}")
+                logger.info(f"🌪️ WIND GUSTS RANGE: {min(wind_gusts_values):.1f} → {max(wind_gusts_values):.1f} km/h")
+            else:
+                logger.error("❌ NO WIND GUSTS DATA - API PARAMÉTER PROBLÉMA!")
         
     except Exception as e:
-        logger.error(f"🔥 MULTI-YEAR TEST FAILED: {e}")
+        logger.error(f"🔥 API FIX TEST FAILED: {e}")

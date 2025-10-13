@@ -2,19 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Global Weather Analyzer - Results Panel Utility Classes
-Közös utility osztályok a results panel moduljai számára.
-🌪️ WIND GUSTS TÁMOGATÁS: Élethű széllökés kategorizálás és értékelés
-🚀 PROFESSIONAL CODING: DRY, KISS, SOLID principles
-🔧 MODULÁRIS DESIGN: Újrafelhasználható komponensek
+🔥 KRITIKUS UTOLSÓ BUG JAVÍTÁS: utils.py
 
-🏗️ UTILITY OSZTÁLYOK:
-✅ WindGustsConstants - Széllökés konstansok és küszöbök
-✅ DataFrameExtractor - DataFrame konvertálás és validálás  
-✅ WindGustsAnalyzer - Széllökés elemzés és kategorizálás
+JAVÍTÁS:
+🎯 API MEZŐNEVEK VS KONVERTÁLT NEVEK KONZISZTENCIA
+- wind_gusts_10m_max PRIORITÁS (konvertált név)
+- windspeed_10m_max FALLBACK
 
-🎯 HASZNÁLAT:
-from .utils import WindGustsConstants, DataFrameExtractor, WindGustsAnalyzer
+EREDMÉNY: WindyDaysTab végre a HELYES széllökés adatokat kapja!
 """
 
 import logging
@@ -68,16 +63,17 @@ class WindGustsConstants:
 
 class DataFrameExtractor:
     """
-    Adatok DataFrame-be konvertálásáért felelős utility osztály.
-    🚀 SOLID: Single Responsibility Principle
-    🌪️ WIND GUSTS TÁMOGATÁS: wind_gusts_max prioritással, windspeed_10m_max fallback-kel
+    🔥 JAVÍTOTT: Adatok DataFrame-be konvertálásáért felelős utility osztály.
+    🎯 API KONZISZTENCIA: Helyes mezőnevek használata
+    🌪️ WIND GUSTS TÁMOGATÁS: wind_gusts_10m_max prioritással, windspeed_10m_max fallback-kel
     """
     
     @staticmethod
     def extract_safely(data: Dict[str, Any]) -> pd.DataFrame:
         """
-        Adatok DataFrame-be konvertálása - robusztus implementáció.
-        🌪️ WIND GUSTS PRIORITÁS: wind_gusts_max → windspeed_10m_max fallback
+        🔥 KRITIKUS JAVÍTÁS: Adatok DataFrame-be konvertálása - API KONZISZTENS mezőnevekkel.
+        
+        JAVÍTÁS: wind_gusts_10m_max → wind_gusts_max API konzisztencia
         
         Args:
             data: OpenMeteo API válasz
@@ -111,9 +107,10 @@ class DataFrameExtractor:
             # === CSAPADÉK ADATOK ===
             precip = daily_data.get("precipitation_sum", [])
             
-            # === 🌪️ KRITIKUS: WIND GUSTS PRIORITÁS ===
-            wind_gusts_max = daily_data.get("wind_gusts_max", [])
-            windspeed_10m_max = daily_data.get("windspeed_10m_max", [])
+            # === 🔥 KRITIKUS JAVÍTÁS: API KONZISZTENS MEZŐNEVEK ===
+            # Az OpenMeteo API ezeket a mezőneveket használja:
+            wind_gusts_10m_max = daily_data.get("wind_gusts_10m_max", [])  # 🌪️ SZÉLLÖKÉSEK (ELSŐDLEGES)
+            windspeed_10m_max = daily_data.get("windspeed_10m_max", [])    # 💨 SZÉLSEBESSÉG (FALLBACK)
             
             # Hiányzó temp_mean számítása ha nincs
             if not temp_mean and temp_max and temp_min:
@@ -137,24 +134,28 @@ class DataFrameExtractor:
             if temp_mean:
                 df_data['temp_mean'] = DataFrameExtractor._ensure_length(temp_mean, max_length)
             
-            # === 🌪️ KRITIKUS: WIND DATA SOURCE DETECTION ===
-            if wind_gusts_max:
-                # ELSŐDLEGES: wind_gusts_max (élethű széllökések)
-                df_data['windspeed'] = DataFrameExtractor._ensure_length(wind_gusts_max, max_length)
-                df_data['wind_data_source'] = ['wind_gusts_max'] * max_length
-                logger.info(f"✅ Wind data source: wind_gusts_max ({len(wind_gusts_max)} values)")
+            # === 🔥 KRITIKUS JAVÍTÁS: HELYES SZÉLLÖKÉS PRIORITÁS ===
+            if wind_gusts_10m_max:
+                # 🌪️ ELSŐDLEGES: wind_gusts_10m_max (VALÓDI széllökések 10-87 km/h)
+                df_data['wind_gusts_max'] = DataFrameExtractor._ensure_length(wind_gusts_10m_max, max_length)
+                df_data['wind_data_source'] = ['wind_gusts_10m_max'] * max_length
+                logger.info(f"✅ HELYES SZÉLLÖKÉS FORRÁS: wind_gusts_10m_max ({len(wind_gusts_10m_max)} values)")
                 
             elif windspeed_10m_max:
-                # FALLBACK: windspeed_10m_max (szélsebesség átlag)
-                df_data['windspeed'] = DataFrameExtractor._ensure_length(windspeed_10m_max, max_length)
+                # 💨 FALLBACK: windspeed_10m_max (átlagos szélsebesség 3-41 km/h)
+                df_data['wind_gusts_max'] = DataFrameExtractor._ensure_length(windspeed_10m_max, max_length)
                 df_data['wind_data_source'] = ['windspeed_10m_max'] * max_length
-                logger.warning(f"⚠️ Fallback to windspeed_10m_max ({len(windspeed_10m_max)} values)")
+                logger.warning(f"⚠️ FALLBACK TO SZÉLSEBESSÉG: windspeed_10m_max ({len(windspeed_10m_max)} values)")
                 
             else:
-                # NINCS SZÉL ADAT
-                logger.error("❌ Nincs szél adat sem wind_gusts_max, sem windspeed_10m_max")
-                df_data['windspeed'] = [None] * max_length
+                # ❌ NINCS SZÉL ADAT
+                logger.error("❌ Nincs szél adat sem wind_gusts_10m_max, sem windspeed_10m_max")
+                df_data['wind_gusts_max'] = [None] * max_length
                 df_data['wind_data_source'] = ['no_data'] * max_length
+            
+            # BACKWARD COMPATIBILITY: windspeed oszlop is (régi kódok számára)
+            if 'wind_gusts_max' in df_data:
+                df_data['windspeed'] = df_data['wind_gusts_max']
             
             # DataFrame létrehozása
             df = pd.DataFrame(df_data)
@@ -162,10 +163,20 @@ class DataFrameExtractor:
             logger.info(f"✅ DataFrame extracted successfully: {df.shape} (rows, cols)")
             logger.debug(f"Columns: {list(df.columns)}")
             
+            # 🔍 DEBUG: Széladatok tartománya
+            if 'wind_gusts_max' in df.columns:
+                wind_data = df['wind_gusts_max'].dropna()
+                if len(wind_data) > 0:
+                    source = df['wind_data_source'].iloc[0] if 'wind_data_source' in df.columns else 'unknown'
+                    logger.info(f"🌪️ Wind stats - Source: {source}")
+                    logger.info(f"🌪️ Wind range: {wind_data.min():.1f} → {wind_data.max():.1f} km/h")
+            
             return df
             
         except Exception as e:
             logger.error(f"❌ DataFrame extract hiba: {e}")
+            import traceback
+            traceback.print_exc()
             return pd.DataFrame()
     
     @staticmethod
@@ -191,7 +202,7 @@ class DataFrameExtractor:
             # Kiegészítés None értékekkel
             return lst + [None] * (target - current_len)
         else:
-            # Levágas célhosszra
+            # Levágás célhosszra
             return lst[:target]
     
     @staticmethod
@@ -253,7 +264,7 @@ class DataFrameExtractor:
 
 class WindGustsAnalyzer:
     """
-    🌪️ Széllökés elemzésért felelős utility osztály.
+    🌪️ Széllökés elemzéséért felelős utility osztály.
     🚀 SOLID: Single Responsibility Principle
     🌪️ METEOROLÓGIAI STANDARDOK: Beaufort skála alapú kategorizálás
     """
@@ -275,7 +286,7 @@ class WindGustsAnalyzer:
             return 'moderate'  # Default safe category
         
         try:
-            if data_source == 'wind_gusts_max':
+            if data_source in ['wind_gusts_max', 'wind_gusts_10m_max']:
                 # ÉLETHŰ SZÉLLÖKÉS KÜSZÖBÖK (wind_gusts_max)
                 if wind_speed >= WindGustsConstants.HURRICANE_THRESHOLD:
                     return 'hurricane'    # ≥120 km/h - Hurrikán (Beaufort 12)
@@ -313,7 +324,7 @@ class WindGustsAnalyzer:
         Returns:
             float: Küszöbérték km/h-ban
         """
-        if data_source == 'wind_gusts_max':
+        if data_source in ['wind_gusts_max', 'wind_gusts_10m_max']:
             return WindGustsConstants.WINDY_THRESHOLD_GUSTS  # 70.0 km/h
         else:
             return WindGustsConstants.WINDY_THRESHOLD_WINDSPEED  # 20.0 km/h
@@ -339,7 +350,7 @@ class WindGustsAnalyzer:
             category_label = WindGustsConstants.CATEGORIES.get(category, 'ISMERETLEN')
             category_emoji = WindGustsConstants.CATEGORY_EMOJIS.get(category, '💨')
             
-            if data_source == 'wind_gusts_max':
+            if data_source in ['wind_gusts_max', 'wind_gusts_10m_max']:
                 # Részletes széllökés leírás
                 return f"{category_emoji} {category_label} ({wind_speed:.1f} km/h)"
             else:

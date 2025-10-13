@@ -2,24 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-Global Weather Analyzer - Heatmap Calendar Chart - VÉGLEGES JAVÍTOTT VERZIÓ
-🎯 TELJES TÉGLALAP + CUSTOM COLORMAP + 365 KONSTANS AGGREGÁCIÓ
+Global Weather Analyzer - Heatmap Calendar Chart
+🎯 CLEAN HEATMAP - TOOLTIP NÉLKÜL
 
-🔧 KRITIKUS JAVÍTÁSOK:
-✅ imshow → pcolormesh: TELJES TÉGLALAP (nem vékony csíkok)
-✅ Custom colormap támogatás (_custom_cmap, _custom_norm)
-✅ 365 konstans téglalap minden időszakra (aggregáció)
-✅ Dinamikus paraméter kezelés (temperature/precipitation/wind)
-✅ Meteorológiai színskálák integráció (0mm=fehér, 0km/h=fehér)
-✅ Robusztus hibakezelés és logging
-✅ Kalendár mátrix (7 nap × 53 hét = 365+ cellák)
-🚨 SZÍNSKÁLA JAVÍTÁS: RdYlBu_r → RdYlBu (HELYES IRÁNY!)
+📋 FUNKCIÓK:
+✅ Calendar heatmap renderelés
+✅ Valódi hónap címkék
+✅ 365 konstans felbontás
+✅ Meteorológiai színskálák
 
-🔅 HEATMAP LOGIKA: Konstans 365 téglalap tetszőleges időszakra
-🎨 SZÍNSKÁLA: Custom meteorológiai + standard colormap-ek
-🔧 RENDERING: pcolormesh vektorgrafikus téglalapok
-
-Fájl helye: src/gui/charts/heatmap_chart.py
+📍 Fájl helye: src/gui/charts/heatmap_chart.py
 """
 
 from typing import Optional, Dict, Any
@@ -38,37 +30,41 @@ logger = logging.getLogger(__name__)
 
 class HeatmapCalendarChart(WeatherChart):
     """
-    🔧 VÉGLEGES JAVÍTOTT VERZIÓ: pcolormesh + custom colormap + 365 konstans téglalap
+    🎯 HEATMAP CHART - CLEAN VERZIÓ
     
     FELELŐSSÉGEK:
     - ✅ TELJES TÉGLALAP renderelése (pcolormesh)
-    - ✅ Custom meteorológiai színskálák fogadása
+    - ✅ Custom meteorológiai színskálák
     - ✅ Dinamikus paraméter kezelés (hőmérséklet/csapadék/szél)
     - ✅ 365 konstans téglalap logika aggregációval
     - ✅ Kalendár mátrix építés (7×53 cellák)
-    - ✅ 0 értékek helyes színezése
-    - 🚨 SZÍNSKÁLA JAVÍTVA: RdYlBu (helyes irány!)
+    - ✅ Valódi hónap címkék
     """
     
     def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(figsize=(20, 12), parent=parent)  # EXTRA NAGY MÉRET
-        self.chart_title = "🔅 Konstans Heatmap"
-        self.parameter = "temperature_2m_mean"  # Alapértelmezett paraméter
+        super().__init__(figsize=(20, 12), parent=parent)
+        self.chart_title = "📅 Konstans Heatmap"
+        self.parameter = "temperature_2m_mean"
         
-        # 🔧 Colorbar tracking (duplikáció ellen)
+        # Colorbar tracking
         self._colorbar = None
         
-        # ✅ CUSTOM COLORMAP TÁMOGATÁS
+        # Custom colormap support
         self._custom_cmap = None
         self._custom_norm = None
         
-        logger.info("HeatmapCalendarChart VÉGLEGES VERZIÓ inicializálva (pcolormesh + custom colormap)")
+        # Calendar data
+        self._calendar_matrix = None
+        self._min_date = None
+        self._max_date = None
+        self._total_days = 0
+        self._first_day_weekday = 0
+        
+        logger.info("HeatmapCalendarChart inicializálva - CLEAN VERZIÓ")
     
     def update_data(self, data: Dict[str, Any]) -> None:
-        """
-        🔧 VÉGLEGES: pcolormesh + custom colormap + 365 konstans téglalap
-        """
-        logger.info(f"🔅 HeatmapCalendarChart.update_data() - VÉGLEGES VERZIÓ (param: {self.parameter})")
+        """Data update"""
+        logger.info(f"📅 HeatmapCalendarChart.update_data() (param: {self.parameter})")
         
         try:
             if self._is_updating:
@@ -77,7 +73,7 @@ class HeatmapCalendarChart(WeatherChart):
             
             self._is_updating = True
             
-            # Napi adatok kinyerése
+            # Extract daily data
             df = self._extract_daily_data(data)
             if df.empty:
                 logger.warning(f"⚠️ Üres DataFrame ({self.parameter}), heatmap törlése")
@@ -86,22 +82,22 @@ class HeatmapCalendarChart(WeatherChart):
             
             self.current_data = df
             
-            # === KRITIKUS: TELJES FIGURE TÖRLÉSE ===
+            # Clear figure
             logger.debug("🧹 Figure.clear() - DUPLIKÁCIÓ ELLENI VÉDELEM")
             self.figure.clear()
             self.ax = self.figure.add_subplot(111)
-            self._colorbar = None  # Colorbar referencia reset
+            self._colorbar = None
             
-            # 🎨 Téma alkalmazása
+            # Apply theme
             self._apply_theme_to_chart()
             
-            # ✅ VÉGLEGES HEATMAP RENDERELÉS
+            # Plot heatmap
             self._plot_365_constant_heatmap(df)
             
             self.draw()
             self._is_updating = False
             
-            logger.info(f"✅ HeatmapCalendarChart VÉGLEGES frissítés kész - {self.parameter}")
+            logger.info(f"✅ HeatmapCalendarChart frissítés kész - {self.parameter}")
             
         except Exception as e:
             logger.error(f"❌ Heatmap calendar chart hiba ({self.parameter}): {e}", exc_info=True)
@@ -109,42 +105,29 @@ class HeatmapCalendarChart(WeatherChart):
             self.clear_chart()
     
     def _extract_daily_data(self, data: Dict[str, Any]) -> pd.DataFrame:
-        """
-        ✅ DINAMIKUS paraméter kezelés - MINDEN időjárási paraméter támogatása
-        """
+        """Extract daily data for parameter"""
         daily_data = data.get("daily", {})
         dates = daily_data.get("time", [])
-        
-        # ✅ DINAMIKUS PARAMÉTER LEKÉRÉSE
         parameter_values = daily_data.get(self.parameter, [])
         
         logger.debug(f"🔍 Paraméter keresése: {self.parameter}")
         logger.debug(f"  📊 Dates: {len(dates)} elem")
         logger.debug(f"  📈 Values: {len(parameter_values)} elem")
         
-        # 🚨 KRITIKUS: CSAK VALÓDI API ADATOK
         if not dates or not parameter_values:
             logger.warning(f"⚠️ Hiányzó {self.parameter} adatok")
             return pd.DataFrame()
         
-        # Adatstruktúra hosszak ellenőrzése
         if len(dates) != len(parameter_values):
             logger.error(f"❌ Eltérő hosszúságú {self.parameter} adatok")
-            logger.error(f"  Dates: {len(dates)}, Values: {len(parameter_values)}")
             return pd.DataFrame()
         
-        # ✅ DINAMIKUS DATAFRAME LÉTREHOZÁS
         df = pd.DataFrame({
             'date': pd.to_datetime(dates),
             self.parameter: parameter_values
         })
         
-        # NaN értékek eltávolítása
-        original_count = len(df)
         df = df.dropna()
-        
-        if len(df) < original_count:
-            logger.debug(f"📊 {original_count - len(df)} NaN érték eltávolítva")
         
         if df.empty:
             logger.warning(f"⚠️ Nincs érvényes {self.parameter} adat")
@@ -154,120 +137,130 @@ class HeatmapCalendarChart(WeatherChart):
         return df
     
     def _plot_365_constant_heatmap(self, df: pd.DataFrame) -> None:
-        """
-        🎯 VÉGLEGES: 365 konstans téglalap + pcolormesh + custom colormap
-        
-        LOGIKA:
-        1. Adatok aggregálása 365 értékre (konstans felbontás)
-        2. 7×53 kalendár mátrix építése (365+ cellák)
-        3. Custom colormap prioritás (meteorológiai színek)
-        4. pcolormesh teljes téglalap renderelés
-        5. Dinamikus tengelyek és colorbar
-        """
-        logger.info(f"🎨 _plot_365_constant_heatmap() - VÉGLEGES VERZIÓ ({self.parameter})")
+        """Plot 365 constant heatmap"""
+        logger.info(f"🎨 _plot_365_constant_heatmap() ({self.parameter})")
         
         if df.empty or self.parameter not in df.columns:
             self._plot_heatmap_placeholder()
             return
         
-        # === 1. DÁTUMTARTOMÁNY ELEMZÉS ===
+        # Date range analysis
+        self._min_date = df['date'].min()
+        self._max_date = df['date'].max()
+        self._total_days = (self._max_date - self._min_date).days + 1
+        self._first_day_weekday = self._min_date.weekday()
         
-        min_date = df['date'].min()
-        max_date = df['date'].max()
-        total_days = (max_date - min_date).days + 1
+        logger.info(f"🗓️ Időszak: {self._min_date} - {self._max_date} ({self._total_days} nap)")
         
-        logger.info(f"🗓️ Időszak: {min_date} - {max_date} ({total_days} nap)")
+        # Aggregate to 365 values
+        values_365 = self._aggregate_to_365(df[self.parameter].tolist(), self._total_days)
         
-        # === 2. KONSTANS 365 AGGREGÁCIÓ ===
+        # Build calendar matrix
+        self._calendar_matrix = self._build_calendar_matrix(values_365, self._min_date)
         
-        values_365 = self._aggregate_to_365(df[self.parameter].tolist(), total_days)
+        logger.debug(f"🎯 Kalendár mátrix shape: {self._calendar_matrix.shape}")
+        logger.debug(f"📅 Valódi dátum címkék használata")
         
-        logger.info(f"📊 Aggregáció: {total_days} nap → 365 érték")
-        logger.debug(f"📈 Aggregált értékek: min={np.nanmin(values_365):.2f}, max={np.nanmax(values_365):.2f}")
-        
-        # === 3. KALENDÁR MÁTRIX ÉPÍTÉSE (7×53) ===
-        
-        calendar_matrix = self._build_calendar_matrix(values_365)
-        
-        logger.debug(f"🎯 Kalendár mátrix shape: {calendar_matrix.shape}")
-        
-        # === 4. ADATOK VALIDÁLÁSA ===
-        
-        valid_data_count = np.sum(~np.isnan(calendar_matrix))
-        total_cells = calendar_matrix.size
-        
-        logger.info(f"📊 Heatmap cellák: {valid_data_count}/{total_cells} kitöltve")
+        # Validate data
+        valid_data_count = np.sum(~np.isnan(self._calendar_matrix))
         
         if valid_data_count < 10:
-            logger.warning(f"⚠️ Túl kevés valódi adat ({valid_data_count}) - placeholder megjelenítése")
+            logger.warning(f"⚠️ Túl kevés valódi adat ({valid_data_count})")
             self._plot_heatmap_placeholder()
             return
         
-        # === 5. SZÍNSKÁLA BEÁLLÍTÁSA ===
+        # Get colormap
+        cmap, norm = self._get_colormap_and_norm(self._calendar_matrix)
         
-        cmap, norm = self._get_colormap_and_norm(calendar_matrix)
+        # Render pcolormesh
+        x_edges = np.arange(54) - 0.5
+        y_edges = np.arange(8) - 0.5
         
-        # === 6. ✅ PCOLORMESH TELJES TÉGLALAP RENDERELÉS ===
-        
-        logger.info("🎨 PCOLORMESH rendering - TELJES TÉGLALAP")
-        
-        # Koordináták a cellák széleihez (53 hét + 1, 7 nap + 1)
-        x_edges = np.arange(54) - 0.5  # 53 hét + 1 = 54 él
-        y_edges = np.arange(8) - 0.5   # 7 nap + 1 = 8 él
-        
-        # ✅ PCOLORMESH - vektorgrafikus téglalapok + RÁCS VONALAK
-        im = self.ax.pcolormesh(x_edges, y_edges, calendar_matrix, 
+        im = self.ax.pcolormesh(x_edges, y_edges, self._calendar_matrix, 
                                cmap=cmap, norm=norm, shading='flat',
                                edgecolors='lightgray', linewidths=0.5)
         
-        logger.debug("✅ pcolormesh renderelés kész - TELJES TÉGLALAP")
+        # Setup axes and labels
+        self._setup_axes_and_labels(self._min_date, self._max_date)
         
-        # === 7. TENGELYEK ÉS CÍMKÉK ===
-        
-        self._setup_axes_and_labels(min_date, max_date)
-        
-        # === 8. COLORBAR LÉTREHOZÁSA ===
-        
+        # Create colorbar
         self._create_colorbar(im)
         
-        # === 9. FORMÁZÁS ===
-        
+        # Formatting
         current_colors = get_current_colors()
         text_color = current_colors.get('on_surface', '#1f2937')
         
-        # Dinamikus cím
-        period_text = self._format_period_text(min_date, max_date, total_days)
+        period_text = self._format_period_text(self._min_date, self._max_date, self._total_days)
         full_title = f"{self.chart_title}{period_text}"
         
         self.ax.set_title(full_title, fontsize=18, fontweight='bold', pad=20, color=text_color)
-        
-        # Grid eltávolítása (pcolormesh-nél nem szükséges)
         self.ax.grid(False)
-        
-        # Layout optimalizálás
         self.figure.tight_layout()
         
-        logger.info(f"✅ 365 konstans heatmap kész - TELJES TÉGLALAP, {valid_data_count} adat")
+        logger.info(f"✅ 365 konstans heatmap kész - {valid_data_count} adat")
+    
+    def _get_temperature_category(self, temp: float) -> str:
+        """Temperature categorization"""
+        if temp >= 35:
+            return "🔥 Extrém forró"
+        elif temp >= 30:
+            return "🌞 Forró"
+        elif temp >= 25:
+            return "☀️ Meleg"
+        elif temp >= 20:
+            return "🌤️ Kellemes"
+        elif temp >= 15:
+            return "🌥️ Hűvös"
+        elif temp >= 10:
+            return "🌫️ Hideg"
+        elif temp >= 0:
+            return "❄️ Fagyos"
+        else:
+            return "🧊 Extrém hideg"
+    
+    def _get_precipitation_category(self, precip: float) -> str:
+        """Precipitation categorization"""
+        if precip >= 50:
+            return "⛈️ Viharos zápo"
+        elif precip >= 20:
+            return "🌧️ Erős esőzés"
+        elif precip >= 10:
+            return "🌦️ Közepes esőzés"
+        elif precip >= 2:
+            return "🌦️ Gyenge esőzés"
+        elif precip >= 0.5:
+            return "💧 Szitálás"
+        else:
+            return "☀️ Száraz időjárás"
+    
+    def _get_wind_category(self, wind: float) -> str:
+        """Wind speed categorization"""
+        if wind >= 119:
+            return "🌪️ Orkán erősségű szél"
+        elif wind >= 90:
+            return "💨 Viharos szél"
+        elif wind >= 61:
+            return "🌬️ Erős szél"
+        elif wind >= 43:
+            return "🍃 Élénk szél"
+        elif wind >= 20:
+            return "🌿 Mérsékelt szél"
+        elif wind >= 10:
+            return "🕊️ Gyenge szél"
+        else:
+            return "🌅 Szélcsend"
     
     def _aggregate_to_365(self, values: list, total_days: int) -> np.ndarray:
         """
-        🎯 KONSTANS 365 AGGREGÁCIÓ - bármely időszakot 365 értékre
-        
-        LOGIKA:
-        - Bin méret = total_days / 365.0
-        - Hőmérséklet: átlag/bin
-        - Csapadék: összeg/bin  
-        - Szél: maximum/bin
+        Aggregate any timespan to 365 values.
+        If timespan is <= 365 days, it uses the original data without aggregation.
         """
         if total_days <= 365:
-            # Rövid időszak: kitöltés 365-re (ismétlés vagy NaN)
-            result = np.full(365, np.nan)
-            result[:len(values)] = values
-            
-            logger.debug(f"📊 Rövid időszak: {len(values)} → 365 (kitöltés)")
-            return result
-        
-        # Hosszú időszak: aggregáció 365 bin-re
+            # Nincs szükség aggregációra, az eredeti adatokat használjuk
+            logger.debug(f"📊 Rövid időszak: {len(values)} nap, nincs aggregáció.")
+            return np.array(values)
+
+        # Hosszú időszak esetén aggregálunk
         bin_size = total_days / 365.0
         aggregated = np.full(365, np.nan)
         
@@ -280,200 +273,170 @@ class HeatmapCalendarChart(WeatherChart):
                 clean_values = [v for v in bin_values if v is not None and not np.isnan(v)]
                 
                 if clean_values:
-                    # Paraméter-specifikus aggregáció
                     if 'temperature' in self.parameter:
-                        aggregated[i] = np.mean(clean_values)  # Hőmérséklet: átlag
+                        aggregated[i] = np.mean(clean_values)
                     elif 'precipitation' in self.parameter:
-                        aggregated[i] = np.sum(clean_values)   # Csapadék: összeg
+                        aggregated[i] = np.sum(clean_values)
                     elif 'wind' in self.parameter:
-                        aggregated[i] = np.max(clean_values)   # Szél: maximum
+                        aggregated[i] = np.max(clean_values)
                     else:
-                        aggregated[i] = np.mean(clean_values)  # Alapértelmezett: átlag
+                        aggregated[i] = np.mean(clean_values)
         
-        logger.debug(f"📊 Hosszú aggregáció: {total_days} nap → 365 bin (bin_size={bin_size:.2f})")
-        
+        logger.debug(f"📊 Hosszú aggregáció: {total_days} nap → 365 bin")
         return aggregated
     
-    def _build_calendar_matrix(self, values_365: np.ndarray) -> np.ndarray:
+    def _build_calendar_matrix(self, values: np.ndarray, start_date: pd.Timestamp) -> np.ndarray:
         """
-        🗓️ 7×53 kalendár mátrix építése 365 értékből
+        Build 7x53 calendar matrix, considering the start day's weekday.
+        """
+        # A hét első napjának megkeresése (0=Hétfő, 6=Vasárnap)
+        first_day_weekday = start_date.weekday()
         
-        STRUKTÚRA:
-        - 7 sor (hétfő-vasárnap)
-        - 53 oszlop (hetek)
-        - 365 értéket elhelyezzük kronologikusan
-        """
-        # 7 nap × 53 hét = 371 cella (365+ érték tárolására)
+        # A teljes naptár mérete: az eltolás + az adatok hossza
+        total_cells = first_day_weekday + len(values)
+        
+        # Feltöltjük a teljes listát NaN-okkal
+        full_year_values = np.full(total_cells, np.nan)
+        
+        # Beillesztjük a valódi adatokat a megfelelő helyre
+        full_year_values[first_day_weekday:] = values
+        
+        # Létrehozzuk a 7x53-as mátrixot
         calendar_matrix = np.full((7, 53), np.nan)
         
-        # 365 értéket helyezzük el sorfolytonosan
-        for i, value in enumerate(values_365):
-            if i >= 7 * 53:  # Biztonsági határérték
-                break
-                
-            week = i // 7
-            day = i % 7
-            
-            if week < 53:
-                calendar_matrix[day, week] = value
+        num_weeks = (total_cells + 6) // 7
         
-        # 🌧️ CSAPADÉK és 💨 SZÉL: NaN → 0 (fehér szín biztosításához)
+        for week in range(min(num_weeks, 53)):
+            start_idx = week * 7
+            end_idx = start_idx + 7
+            week_data = full_year_values[start_idx:end_idx]
+            
+            # Biztosítjuk, hogy a hét adatai 7 eleműek legyenek
+            padded_week_data = np.pad(week_data, (0, 7 - len(week_data)), 'constant', constant_values=np.nan)
+            calendar_matrix[:, week] = padded_week_data
+            
         if 'precipitation' in self.parameter or 'wind' in self.parameter:
             calendar_matrix = np.nan_to_num(calendar_matrix, nan=0.0)
-            logger.debug(f"🔧 NaN értékek 0-ra állítva ({self.parameter})")
         
-        logger.debug(f"🗓️ Kalendár mátrix: {calendar_matrix.shape}, {np.sum(~np.isnan(calendar_matrix))} kitöltött cella")
-        
+        logger.debug(f"🗓️ OKOS Kalendár mátrix: {calendar_matrix.shape}, első nap: {start_date.strftime('%A')}")
         return calendar_matrix
     
     def _get_colormap_and_norm(self, calendar_matrix: np.ndarray) -> tuple:
-        """
-        🎨 Színskála és normalizálás meghatározása
-        
-        PRIORITÁS:
-        1. Custom colormap (_custom_cmap, _custom_norm) - meteorológiai színek
-        2. Paraméter-specifikus colormap (hőmérséklet/csapadék/szél)
-        3. Alapértelmezett viridis
-        
-        🚨 KRITIKUS JAVÍTÁS: RdYlBu_r → RdYlBu (HELYES IRÁNY!)
-        """
-        
-        # ✅ 1. CUSTOM COLORMAP PRIORITÁS (meteorológiai színek)
+        """Get colormap and normalization"""
         if self._custom_cmap is not None and self._custom_norm is not None:
-            logger.info(f"🎨 Custom colormap használata: {type(self._custom_cmap).__name__}")
+            logger.info(f"🎨 Custom colormap használata")
             return self._custom_cmap, self._custom_norm
         
-        # 2. AUTOMATIC COLORMAP VÁLASZTÁS
         valid_values = calendar_matrix[~np.isnan(calendar_matrix)]
         if len(valid_values) == 0:
-            logger.warning("⚠️ Nincs érvényes adat - alapértelmezett viridis")
+            logger.warning("⚠️ Nincs érvényes adat")
             return 'viridis', None
             
         vmin = valid_values.min()
         vmax = valid_values.max()
         
-        # 🔧 PARAMÉTER-SPECIFIKUS COLORMAP
         if 'temperature' in self.parameter:
-            if vmin < 0 and vmax > 20:  # Teljes szezonális spektrum
-                # 🚨 KRITIKUS JAVÍTÁS: _r ELTÁVOLÍTVA!
-                cmap = 'RdYlBu'  # Piros-Sárga-Kék (HELYES IRÁNY!)
-                logger.debug("🌡️ Hőmérséklet: RdYlBu (szezonális - JAVÍTOTT)")
-            elif vmax <= 15:  # Főleg hideg időszak
-                cmap = 'Blues'
-                logger.debug("🌡️ Hőmérséklet: Blues (hideg)")
-            elif vmin >= 15:  # Főleg meleg időszak
-                cmap = 'Reds'
+            if vmin < 0 and vmax > 20:
+                cmap = 'RdYlBu_r'  # REVERSE: piros=meleg, kék=hideg
+                logger.debug("🌡️ Hőmérséklet: RdYlBu_r (piros=meleg, kék=hideg)")
+            elif vmax <= 15:
+                cmap = 'Blues_r'  # Hideg: sötétkék=hidegebb
+                logger.debug("🌡️ Hőmérséklet: Blues_r (hideg)")
+            elif vmin >= 15:
+                cmap = 'Reds'  # Meleg: sötétpiros=melegebb  
                 logger.debug("🌡️ Hőmérséklet: Reds (meleg)")
             else:
                 cmap = 'viridis'
                 logger.debug("🌡️ Hőmérséklet: viridis (alapértelmezett)")
         elif 'precipitation' in self.parameter:
-            cmap = 'Blues'  # Kék skála csapadékhoz
-            logger.debug("🌧️ Csapadék: Blues")
+            cmap = 'Blues'
         elif 'wind' in self.parameter:
-            cmap = 'Greens'  # Zöld skála szélhez
-            logger.debug("💨 Szél: Greens")
+            cmap = 'Greens'
         else:
             cmap = 'viridis'
-            logger.debug("🎨 Egyéb paraméter: viridis")
         
         norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
-        
-        logger.info(f"🎨 Auto colormap: {cmap}, tartomány: {vmin:.2f} - {vmax:.2f}")
-        
         return cmap, norm
     
     def _setup_axes_and_labels(self, min_date: pd.Timestamp, max_date: pd.Timestamp) -> None:
-        """
-        🏷️ Tengelyek és címkék beállítása - INTELLIGENS IDŐSZAK ALAPJÁN
-        """
+        """Setup axes VALÓDI DÁTUMOKKAL"""
         current_colors = get_current_colors()
         text_color = current_colors.get('on_surface', '#1f2937')
         
         total_days = (max_date - min_date).days + 1
         
-        # === X TENGELY - INTELLIGENS CÍMKÉZÉS IDŐSZAK ALAPJÁN ===
+        # X TENGELY - VALÓDI HÓNAPOK A VALÓDI POZÍCIÓBAN
+        x_ticks = []
+        x_labels = []
         
-        # Hetek száma (53 maxmium)
-        total_weeks = 53
+        # Végigmegyünk a heteken és keressük a hónap váltásokat
+        current_date = min_date
+        seen_months = set()
         
-        if total_days <= 400:  # ~1 év vagy kevesebb
-            # HAVI CÍMKÉK rövid időszakra
-            tick_interval = 4  # ~havi címkék (4 hét = ~1 hónap)
-            x_ticks = np.arange(2, total_weeks, tick_interval)  # 2, 6, 10, 14...
+        hungarian_months = [
+            '', 'Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún',
+            'Júl', 'Aug', 'Sze', 'Okt', 'Nov', 'Dec'
+        ]
+        
+        # 53 hét végigiterálása
+        for week_idx in range(53):
+            # Hét első napjának kiszámítása
+            days_from_start = week_idx * 7 - self._first_day_weekday
             
+            if days_from_start >= 0 and days_from_start < total_days:
+                week_date = min_date + pd.Timedelta(days=days_from_start)
+                month_key = (week_date.year, week_date.month)
+                
+                # Ha új hónap, jelöljük
+                if month_key not in seen_months and week_idx % 4 == 0:  # Minden 4. héten
+                    seen_months.add(month_key)
+                    x_ticks.append(week_idx)
+                    
+                    month_name = hungarian_months[week_date.month]
+                    if week_date.year != min_date.year:
+                        x_labels.append(f"{month_name}\n{week_date.year}")
+                    else:
+                        x_labels.append(month_name)
+        
+        # Ha túl kevés címke, alapértelmezett
+        if len(x_ticks) < 3:
+            x_ticks = np.arange(6, 53, 8)
             x_labels = []
             for week_idx in x_ticks:
-                # Évszak alapú címkék
-                month_approx = int((week_idx * 12) / 52) + 1  # 1-12 hónap
-                month_names = ['Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún', 
-                              'Júl', 'Aug', 'Sze', 'Okt', 'Nov', 'Dec']
-                if 1 <= month_approx <= 12:
-                    x_labels.append(month_names[month_approx - 1])
+                days_from_start = week_idx * 7 - self._first_day_weekday
+                if days_from_start >= 0 and days_from_start < total_days:
+                    week_date = min_date + pd.Timedelta(days=days_from_start)
+                    month_name = hungarian_months[week_date.month]
+                    x_labels.append(month_name)
                 else:
                     x_labels.append(f"H{week_idx}")
-            
-        elif total_days <= 1100:  # ~2-3 év
-            # ÉVSZAK CÍMKÉK közepes időszakra
-            tick_interval = 13  # ~évszakonkénti címkék (13 hét = ~évszak)
-            x_ticks = np.arange(6, total_weeks, tick_interval)  # 6, 19, 32, 45
-            
-            x_labels = ['Tavasz', 'Nyár', 'Ősz', 'Tél'][:len(x_ticks)]
-            
-        else:  # 3+ év - HOSSZÚ IDŐSZAK
-            # ÉV CÍMKÉK hosszú időszakra
-            tick_interval = 26  # ~félévenkénti címkék (26 hét = ~fél év)
-            x_ticks = np.arange(13, total_weeks, tick_interval)  # 13, 39
-            
-            x_labels = ['Fél év', 'Teljes év'][:len(x_ticks)]
         
         self.ax.set_xticks(x_ticks)
         self.ax.set_xticklabels(x_labels, color=text_color, rotation=0, ha='center')
+        self.ax.set_xlabel('Valódi hónapok (helyes pozíciók)', color=text_color, fontsize=12)
         
-        # X tengely címke - IDŐSZAK ALAPJÁN
-        if total_days <= 400:
-            xlabel = 'Hónapok (365 napos konstans felbontás)'
-        elif total_days <= 1100:
-            xlabel = 'Évszakok (365 napos konstans felbontás)'
-        else:
-            xlabel = f'Időszak ({total_days} nap → 365 konstans felbontás)'
-            
-        self.ax.set_xlabel(xlabel, color=text_color, fontsize=12)
-        
-        # === Y TENGELY - NAPOK (változatlan) ===
-        
+        # Y TENGELY - HÉTKÖZNAPOK
         self.ax.set_yticks(range(7))
         self.ax.set_yticklabels([
             'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'
         ], color=text_color)
-        
-        # Y tengely fordítása (hétfő legyen felül)
         self.ax.invert_yaxis()
         
-        # === TENGELYEK TARTOMÁNYÁNAK BEÁLLÍTÁSA ===
-        
-        self.ax.set_xlim(-0.5, 52.5)  # 53 hét (0-52)
-        self.ax.set_ylim(-0.5, 6.5)   # 7 nap (0-6)
-        
-        logger.debug(f"🏷️ Tengelyek beállítva - {total_days} napra ({xlabel})")
+        self.ax.set_xlim(-0.5, 52.5)
+        self.ax.set_ylim(-0.5, 6.5)
     
     def _create_colorbar(self, im) -> None:
-        """
-        🎨 Colorbar létrehozása paraméter-specifikus címkével
-        """
+        """Create colorbar with parameter-specific label"""
         current_colors = get_current_colors()
         text_color = current_colors.get('on_surface', '#1f2937')
         
         try:
-            # Meglévő colorbar törlése
             if self._colorbar:
                 self._colorbar.remove()
                 self._colorbar = None
                 
-            # Új colorbar létrehozása
             self._colorbar = self.figure.colorbar(im, ax=self.ax, shrink=0.8, aspect=30, pad=0.02)
             
-            # ✅ PARAMÉTER-SPECIFIKUS CÍMKE
             if 'temperature' in self.parameter:
                 label = 'Hőmérséklet (°C)'
             elif 'precipitation' in self.parameter:
@@ -486,46 +449,37 @@ class HeatmapCalendarChart(WeatherChart):
             self._colorbar.set_label(label, fontsize=12, fontweight='500', color=text_color, labelpad=15)
             self._colorbar.ax.tick_params(colors=text_color, labelsize=10)
             
-            logger.debug(f"✅ Colorbar létrehozva: {label}")
-            
         except Exception as e:
-            # Colorbar hiba nem kritikus
-            logger.warning(f"⚠️ Colorbar létrehozási hiba (nem kritikus): {e}")
+            logger.warning(f"⚠️ Colorbar hiba: {e}")
     
     def _format_period_text(self, min_date: pd.Timestamp, max_date: pd.Timestamp, total_days: int) -> str:
-        """
-        🔅 Időszak szöveg formázása címhez
-        """
+        """Format period text for title"""
         years = sorted(set([min_date.year, max_date.year]))
         
         if len(years) == 1:
-            # Egy éven belüli időszak
             if (min_date.month == 1 and min_date.day == 1 and 
                 max_date.month == 12 and max_date.day == 31):
-                return f" ({years[0]})"  # Teljes év
+                return f" ({years[0]})"
             else:
                 return f" ({min_date.strftime('%Y.%m.%d')} - {max_date.strftime('%m.%d')})"
         else:
-            # Több évet átfogó időszak
             return f" ({min_date.strftime('%Y.%m')} - {max_date.strftime('%Y.%m')}, {total_days} nap)"
     
     def _plot_heatmap_placeholder(self) -> None:
-        """
-        📋 Heatmap placeholder ha nincs elegendő adat
-        """
+        """Plot placeholder when insufficient data"""
         current_colors = get_current_colors()
         text_color = current_colors.get('on_surface', '#1f2937')
         surface_color = current_colors.get('surface_variant', '#f9fafb')
         
-        placeholder_text = f'🔅 Konstans Heatmap (365 téglalap)\n\n'
+        placeholder_text = f'📅 Konstans Heatmap (365 téglalap)\n\n'
         placeholder_text += f'❌ Nincs elegendő adat\n\n'
         placeholder_text += f'Paraméter: {self.parameter}\n\n'
         placeholder_text += f'A heatmap megjelenítéséhez\nlegalább 10 valódi adat\nszükséges az API-ból.\n\n'
-        placeholder_text += f'🎯 VÉGLEGES VERZIÓ:\n'
-        placeholder_text += f'• pcolormesh renderelés\n'
-        placeholder_text += f'• Custom colormap támogatás\n'
-        placeholder_text += f'• 365 konstans téglalap\n'
-        placeholder_text += f'🚨 SZÍNSKÁLA JAVÍTVA!'
+        placeholder_text += f'🎯 FUNKCIÓK:\n'
+        placeholder_text += f'• Valódi hónap címkék\n'
+        placeholder_text += f'• 365 konstans felbontás\n'
+        placeholder_text += f'• Meteorológiai színskálák\n'
+        placeholder_text += f'📊 Clean heatmap!'
         
         self.ax.text(0.5, 0.5, placeholder_text, 
                     ha='center', va='center', transform=self.ax.transAxes,
@@ -535,14 +489,11 @@ class HeatmapCalendarChart(WeatherChart):
         
         self.ax.set_title(f"{self.chart_title} - Nincs Adat", fontsize=18, fontweight='bold', pad=20, color=text_color)
         
-        # Tengelyek elrejtése placeholder módban
         self.ax.set_xticks([])
         self.ax.set_yticks([])
         for spine in self.ax.spines.values():
             spine.set_visible(False)
-        
-        logger.debug("📋 Heatmap placeholder megjelenítve")
 
 
-# Modul szintű export
+# Module export
 __all__ = ['HeatmapCalendarChart']

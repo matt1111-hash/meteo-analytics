@@ -8,18 +8,22 @@ Széllökés grafikon widget professzionális vizualizációval.
 🌪️ MAGYAR METEOROLÓGIAI SZABVÁNY: 43-61-90-119 km/h küszöbök
 🎨 TÉMA INTEGRÁCIÓ: ColorPalette wind színek használata
 🔧 KRITIKUS JAVÍTÁS: Magyar szélsebesség-kategóriák + SIMPLIFIED THEMEMANAGER
-✅ windgusts_10m_max prioritás → windspeed_10m_max fallback rendszer
+🎯 TOOLTIP INTEGRÁCIÓ: WeatherTooltipMixin - MAGYAR METEOROLÓGIAI TARTALOM!
+✅ wind_gusts_10m_max prioritás → windspeed_10m_max fallback rendszer
 ✅ Magyar szélkategóriák: Erős szél (43), Viharos szél (61), Erős vihar (90), Orkán (119)
 ✅ Piros (#C43939) téma támogatás
 ✅ Élethi széllökés megjelenítés VALÓDI API adatokkal
 ✅ Professzionális kategorizálás magyar terminológiával
+✅ INTERAKTÍV TOOLTIP FUNKCIÓK: Beaufort skála + széljárás leírások
 🚨 KRITIKUS DEBUG: Explicit konzol üzenetek minden lépésnél
 🎯 VÉGSŐ JAVÍTÁS: has_valid_data() - ellenőrzi van-e valódi adat a None-ok helyett!
-🔧 KRITIKUS FIX v4.6: windgusts_10m_max API kulcsok javítása!
+🔧 KRITIKUS FIX v4.7: API KULCSOK KONZISZTENCIA JAVÍTÁS!
 """
 
 from typing import Optional, Dict, Any
 import pandas as pd
+import numpy as np
+from datetime import datetime
 
 from matplotlib.dates import DateFormatter, MonthLocator
 import matplotlib.pyplot as plt
@@ -27,25 +31,31 @@ import matplotlib.pyplot as plt
 from PySide6.QtWidgets import QWidget
 
 from .base_chart import WeatherChart
+from .tooltip_mixin import WeatherTooltipMixin  # 🎯 TOOLTIP MIXIN IMPORT
 from ..theme_manager import get_current_colors
 
 
-class WindChart(WeatherChart):
+class WindChart(WeatherChart, WeatherTooltipMixin):  # 🎯 MIXIN HOZZÁADÁSA
     """
-    🌪️ KRITIKUS DEBUG: MAGYAR METEOROLÓGIAI SZABVÁNY: Széllökés grafikon widget - MAGYAR SZÉLKATEGÓRIÁK + SIMPLIFIED THEMEMANAGER.
+    🌪️ KRITIKUS DEBUG: MAGYAR METEOROLÓGIAI SZABVÁNY: Széllökés grafikon widget - MAGYAR SZÉLKATEGÓRIÁK + SIMPLIFIED THEMEMANAGER + TOOLTIP.
     🎨 TÉMA INTEGRÁCIÓ: ColorPalette wind színek használata
-    ✅ windgusts_10m_max prioritás → windspeed_10m_max fallback rendszer
+    🎯 TOOLTIP ENHANCEMENT: WeatherTooltipMixin integráció - MAGYAR METEOROLÓGIAI TARTALOM
+    ✅ wind_gusts_10m_max prioritás → windspeed_10m_max fallback rendszer
     ✅ Magyar szélkategóriák: Erős szél (43), Viharos szél (61), Erős vihar (90), Orkán (119)
     ✅ Élethi széllökés megjelenítés VALÓDI API adatokkal
     🚨 EXPLICIT DEBUG minden lépésnél
     🎯 VÉGSŐ JAVÍTÁS: has_valid_data() - ellenőrzi van-e valódi adat!
-    🔧 KRITIKUS FIX v4.6: API kulcsok javítása!
+    🔧 KRITIKUS FIX v4.7: API kulcsok konzisztencia javítása!
     """
     
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(figsize=(12, 6), parent=parent)
         self.chart_title = "🌪️ Széllökések változása"  # 🌪️ WIND GUSTS CÍM
         self.y_label = "Széllökések (km/h)"  # 🌪️ WIND GUSTS LABEL
+        
+        # 🎯 TOOLTIP AKTIVÁLÁS - OPT-IN RENDSZER
+        self.enable_tooltips(hover_tolerance=15)
+        print("🎯 DEBUG: WindChart tooltip-ok aktiválva!")
         print("🌪️ DEBUG: WindChart.__init__() SIKERES!")
     
     def update_data(self, data: Dict[str, Any]) -> None:
@@ -97,7 +107,7 @@ class WindChart(WeatherChart):
             print("🌪️ DEBUG: Setting _is_updating = False")
             self._is_updating = False
             
-            print("✅ DEBUG: WindChart frissítés TELJESEN KÉSZ - MAGYAR SZABVÁNY + THEMED")
+            print("✅ DEBUG: WindChart frissítés TELJESEN KÉSZ - MAGYAR SZABVÁNY + THEMED + TOOLTIP READY")
             
         except Exception as e:
             print(f"❌ DEBUG: Szél chart hiba: {e}")
@@ -110,10 +120,10 @@ class WindChart(WeatherChart):
         """
         🚨 KRITIKUS DEBUG: Széllökés adatok kinyerése - WIND GUSTS PRIORITÁS + FALLBACK + EXPLICIT DEBUG.
         🎯 VÉGSŐ JAVÍTÁS: has_valid_data() segédfüggvény - ellenőrzi van-e valódi adat!
-        🔧 KRITIKUS FIX v4.6: windgusts_10m_max API kulcsok javítása!
+        🔧 KRITIKUS FIX v4.7: API KULCSOK KONZISZTENCIA JAVÍTÁS!
         
         PRIORITÁS RENDSZER:
-        1. windgusts_10m_max (órankénti→napi max széllökések) ⭐ ELSŐDLEGES
+        1. wind_gusts_10m_max (óránkénti→napi max széllökések) ⭐ ELSŐDLEGES
         2. windspeed_10m_max (napi max szélsebesség) ⭐ FALLBACK
         3. Hibaüzenet ha egyik sem elérhető
         """
@@ -127,19 +137,20 @@ class WindChart(WeatherChart):
         dates = daily_data.get("time", [])
         print(f"🌪️ DEBUG: dates: {len(dates) if dates else 0} elems")
         
-        # 🌪️ WIND GUSTS PRIORITÁS: windgusts_10m_max ELSŐDLEGESEN (JAVÍTOTT KULCS!)
-        windgusts_10m_max = daily_data.get("windgusts_10m_max", [])  # ✅ JAVÍTOTT: wind_gusts_max → windgusts_10m_max
+        # 🔧 KRITIKUS FIX v4.7: API KULCSOK KONZISZTENCIA JAVÍTÁS!
+        # ✅ HELYES KULCSOK - weather_client.py-val konzisztens
+        wind_gusts_10m_max = daily_data.get("wind_gusts_10m_max", [])  # ✅ JAVÍTOTT: windgusts_10m_max → wind_gusts_10m_max
         windspeed_10m_max = daily_data.get("windspeed_10m_max", [])  # Fallback
         
-        print(f"🌪️ DEBUG: windgusts_10m_max: {len(windgusts_10m_max) if windgusts_10m_max else 0} elems")
+        print(f"🌪️ DEBUG: wind_gusts_10m_max: {len(wind_gusts_10m_max) if wind_gusts_10m_max else 0} elems")
         print(f"🌪️ DEBUG: windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0} elems")
         
-        if windgusts_10m_max:
-            print(f"🌪️ DEBUG: windgusts_10m_max sample: {windgusts_10m_max[:3] if len(windgusts_10m_max) >= 3 else windgusts_10m_max}")
+        if wind_gusts_10m_max:
+            print(f"🌪️ DEBUG: wind_gusts_10m_max sample: {wind_gusts_10m_max[:3] if len(wind_gusts_10m_max) >= 3 else wind_gusts_10m_max}")
         if windspeed_10m_max:
             print(f"🌪️ DEBUG: windspeed_10m_max sample: {windspeed_10m_max[:3] if len(windspeed_10m_max) >= 3 else windspeed_10m_max}")
         
-        print(f"🌪️ DEBUG: WindChart data sources - windgusts_10m_max: {len(windgusts_10m_max) if windgusts_10m_max else 0}, windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0}")
+        print(f"🌪️ DEBUG: WindChart data sources - wind_gusts_10m_max: {len(wind_gusts_10m_max) if wind_gusts_10m_max else 0}, windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0}")
         
         # Elérhető adatok ellenőrzése
         if not dates:
@@ -155,17 +166,17 @@ class WindChart(WeatherChart):
         windspeed_data = []
         data_source = ""
         
-        print("🌪️ DEBUG: Checking windgusts_10m_max priority...")
-        if windgusts_10m_max and len(windgusts_10m_max) == len(dates) and has_valid_data(windgusts_10m_max):
-            # 🌪️ ELSŐDLEGES: windgusts_10m_max, CSAK HA VAN BENNE ÉRVÉNYES ADAT
-            windspeed_data = windgusts_10m_max
-            data_source = "windgusts_10m_max"
+        print("🌪️ DEBUG: Checking wind_gusts_10m_max priority...")
+        if wind_gusts_10m_max and len(wind_gusts_10m_max) == len(dates) and has_valid_data(wind_gusts_10m_max):
+            # 🌪️ ELSŐDLEGES: wind_gusts_10m_max, CSAK HA VAN BENNE ÉRVÉNYES ADAT
+            windspeed_data = wind_gusts_10m_max
+            data_source = "wind_gusts_10m_max"
             self.chart_title = "🌪️ Széllökések változása"
             self.y_label = "Széllökések (km/h)"
             print(f"✅ DEBUG: WindChart using PRIMARY source: {data_source}")
         elif windspeed_10m_max and len(windspeed_10m_max) == len(dates) and has_valid_data(windspeed_10m_max):
             # ⚠️ FALLBACK: windspeed_10m_max használata
-            print("🌪️ DEBUG: windgusts_10m_max not suitable, checking fallback...")
+            print("🌪️ DEBUG: wind_gusts_10m_max not suitable, checking fallback...")
             windspeed_data = windspeed_10m_max
             data_source = "windspeed_10m_max"
             self.chart_title = "💨 Szélsebesség változása (Fallback)"
@@ -173,7 +184,7 @@ class WindChart(WeatherChart):
             print(f"⚠️ DEBUG: WindChart using FALLBACK source: {data_source}")
         else:
             print(f"❌ DEBUG: Nincs használható szél adat - WindChart nem jeleníthető meg")
-            print(f"   - windgusts_10m_max: {len(windgusts_10m_max) if windgusts_10m_max else 0} elem, has_valid_data: {has_valid_data(windgusts_10m_max) if windgusts_10m_max else False}")
+            print(f"   - wind_gusts_10m_max: {len(wind_gusts_10m_max) if wind_gusts_10m_max else 0} elem, has_valid_data: {has_valid_data(wind_gusts_10m_max) if wind_gusts_10m_max else False}")
             print(f"   - windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0} elem, has_valid_data: {has_valid_data(windspeed_10m_max) if windspeed_10m_max else False}") 
             print(f"   - dates: {len(dates)} elem")
             return pd.DataFrame()
@@ -238,7 +249,7 @@ class WindChart(WeatherChart):
         # === SZÉLLÖKÉS VONAL + TERÜLET DIAGRAM ===
         
         # Alapvonal és kitöltés
-        line_label = "Max széllökések" if data_source == "windgusts_10m_max" else "Max szélsebesség (fallback)"
+        line_label = "Max széllökések" if data_source == "wind_gusts_10m_max" else "Max szélsebesség (fallback)"
         self.ax.plot(df['date'], df['windspeed'], color=wind_colors['moderate'], linewidth=2.5, alpha=0.9, label=line_label)
         self.ax.fill_between(df['date'], 0, df['windspeed'], alpha=0.3, color=wind_colors['light'])
         
@@ -247,7 +258,7 @@ class WindChart(WeatherChart):
         max_wind = df['windspeed'].max() if not df.empty else 50
         
         # 43 km/h - Erős szél (magyar szabvány szerint)
-        if max_wind >= 30:  # Csak akkor jelenítjük meg, ha releváns
+        if max_wind >= 30:  # Csak akkor jelenítsük meg, ha releváns
             self.ax.axhline(y=43, color=wind_colors['strong'], linestyle='--', alpha=0.8, linewidth=2, 
                            label='🌬️ Erős szél (43 km/h)')
         
@@ -355,3 +366,305 @@ class WindChart(WeatherChart):
         # Layout optimalizálás
         self.figure.autofmt_xdate()
         self.figure.tight_layout()
+        
+        print("✅ DEBUG: Wind chart formázva + TOOLTIP READY")
+    
+    def _find_closest_chart_point(self, event) -> Optional[Dict[str, Any]]:
+        """
+        🎯 WIND CHART SPECIFIKUS PONT KERESÉS - TOOLTIP MIXIN OVERRIDE
+        
+        🔧 WIND CHART KOMPATIBILITÁS:
+        - windspeed oszlop kezelése
+        - Pixel-based távolság számítás
+        - Professional wind tooltip adatok
+        """
+        try:
+            if not hasattr(self, 'current_data') or self.current_data is None or self.current_data.empty:
+                return None
+            
+            df = self.current_data
+            
+            # Matplotlib dátum koordináták
+            if 'date' not in df.columns or 'windspeed' not in df.columns:
+                return None
+                
+            import matplotlib.dates as mdates
+            plot_dates = mdates.date2num(df['date'])
+            windspeeds = df['windspeed']
+            
+            # Mouse pozíció display koordinátákban
+            mouse_x_display, mouse_y_display = self.ax.transData.transform((event.xdata, event.ydata))
+            
+            closest_idx = None
+            min_distance = float('inf')
+            
+            # Minden adatponthoz távolság számítás
+            for i, (x_val, y_val) in enumerate(zip(plot_dates, windspeeds)):
+                if pd.isna(y_val):  # Skip NaN values
+                    continue
+                    
+                # Adatpont display koordinátái
+                point_x_display, point_y_display = self.ax.transData.transform((x_val, y_val))
+                
+                # Pixel távolság
+                distance = np.sqrt((mouse_x_display - point_x_display)**2 + 
+                                 (mouse_y_display - point_y_display)**2)
+                
+                if distance < min_distance:
+                    min_distance = distance
+                    closest_idx = i
+            
+            # Tolerance check
+            if closest_idx is not None and min_distance <= self._hover_tolerance:
+                
+                # Pont adatok összeállítása - WIND SPECIFIKUS
+                point_data = {
+                    'index': closest_idx,
+                    'date': df.iloc[closest_idx]['date'],
+                    'windspeed': df.iloc[closest_idx]['windspeed'],
+                    'primary_temp': df.iloc[closest_idx]['windspeed'],  # Mixin kompatibilitás
+                    'primary_temp_column': 'windspeed',                # Mixin kompatibilitás
+                    'pixel_distance': min_distance,
+                    'data_source': df.iloc[closest_idx]['_data_source'] if '_data_source' in df.columns else 'unknown',
+                    'chart_type': 'wind'
+                }
+                
+                return point_data
+        
+        except Exception as e:
+            print(f"⚠️ DEBUG: Wind point calculation error: {e}")
+        
+        return None
+    
+    def _format_tooltip_text(self, point_data: Dict[str, Any]) -> str:
+        """
+        📝 WIND CHART TOOLTIP FORMÁZÁS
+        
+        💨 PROFESSIONAL WIND TOOLTIP:
+        - Magyar szélkategóriák és Beaufort skála
+        - Széljárás leírások
+        - Meteorológiai hatások
+        - Magyar weather ikonok
+        """
+        date = point_data['date']
+        windspeed = point_data['windspeed']
+        data_source = point_data.get('data_source', 'unknown')
+        
+        # Dátum formázás
+        if isinstance(date, datetime):
+            date_str = date.strftime('%Y-%m-%d (%A)')
+        else:
+            date_str = str(date)
+        
+        # 💨 MAGYAR SZÉLKATEGÓRIÁK ÉS BEAUFORT SKÁLA
+        if windspeed >= 119:
+            wind_icon = "🚨"
+            category = "ORKÁN"
+            beaufort = "12"
+            description = "Pusztító szélerő"
+            effects = "🏠 Épületek rongálódnak, fák kidőlnek"
+            intensity = "Rendkívül veszélyes"
+        elif windspeed >= 90:
+            wind_icon = "⚠️"
+            category = "Erős vihar"
+            beaufort = "10-11"
+            description = "Heves viharos szél"
+            effects = "🌳 Nagy fák törnek, tetőcserepek repülnek"
+            intensity = "Nagyon veszélyes"
+        elif windspeed >= 61:
+            wind_icon = "🌪️"
+            category = "Viharos szél"
+            beaufort = "8-9"
+            description = "Viharos erősségű szél"
+            effects = "🚗 Járművezetés nehéz, ágak törnek"
+            intensity = "Veszélyes"
+        elif windspeed >= 43:
+            wind_icon = "🌬️"
+            category = "Erős szél"
+            beaufort = "6-7"
+            description = "Erős széljárás"
+            effects = "☂️ Esernyő nehezen használható"
+            intensity = "Figyelmeztető"
+        elif windspeed >= 28:
+            wind_icon = "💨"
+            category = "Mérsékelt szél"
+            beaufort = "4-5"
+            description = "Élénk széljárás"
+            effects = "🍃 Por és papír felemelkedik"
+            intensity = "Mérsékelt"
+        elif windspeed >= 12:
+            wind_icon = "🌱"
+            category = "Gyenge szél"
+            beaufort = "2-3"
+            description = "Gyenge széljárás"
+            effects = "🌿 Levelek mozognak, zászlók lengnek"
+            intensity = "Kellemes"
+        elif windspeed >= 1:
+            wind_icon = "🍃"
+            category = "Szellő"
+            beaufort = "1"
+            description = "Alig érezhető szellő"
+            effects = "🌾 Füst iránya látható"
+            intensity = "Gyenge"
+        else:
+            wind_icon = "😴"
+            category = "Szélcsend"
+            beaufort = "0"
+            description = "Nincs légmozgás"
+            effects = "🕯️ Láng egyenesen ég"
+            intensity = "Nincs szél"
+        
+        # 📊 SZÉLMÉRÉS TÍPUSA
+        measurement_type = "Széllökések" if data_source == "wind_gusts_10m_max" else "Szélsebesség (átlag)"
+        measurement_icon = "⚡" if data_source == "wind_gusts_10m_max" else "🌀"
+        
+        # 🧭 SZÉLJÁRÁS RÉSZLETEK
+        wind_details = []
+        
+        if windspeed > 50:
+            wind_details.append("🏠 Épületek beltéri tartózkodás ajánlott")
+            wind_details.append("🚫 Kültéri tevékenység kerülendő")
+        elif windspeed > 30:
+            wind_details.append("🚗 Óvatos közlekedés szükséges")
+            wind_details.append("🌳 Fákra figyeljen")
+        elif windspeed > 15:
+            wind_details.append("🥾 Kültéri sportokhoz alkalmas")
+            wind_details.append("⛵ Vitorlázáshoz jó körülmények")
+        elif windspeed > 5:
+            wind_details.append("🚴 Kerékpározáshoz ideális")
+            wind_details.append("🏃 Futáshoz kellemes")
+        
+        # Tooltip szöveg összeállítása
+        tooltip_lines = [
+            f"📅 {date_str}",
+            "",  # Üres sor a strukturáláshoz
+            f"{wind_icon} {measurement_type}: {windspeed:.1f} km/h",
+            f"🏷️ {category}",
+            f"📊 Beaufort skála: {beaufort}",
+            f"🌬️ {description}",
+            "",
+            f"📈 Intenzitás: {intensity}",
+            effects,
+        ]
+        
+        # Széljárás részletek hozzáadása
+        if wind_details:
+            tooltip_lines.append("")
+            tooltip_lines.extend(wind_details)
+        
+        # Adatforrás jelzése (ha fallback)
+        if data_source == "windspeed_10m_max":
+            tooltip_lines.extend([
+                "",
+                "ℹ️ Fallback adatforrás (átlag szélsebesség)"
+            ])
+        
+        return '\n'.join(tooltip_lines)
+    
+    def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
+        """
+        💬 WIND CHART TOOLTIP POSITIONING
+        
+        🎨 WIND CHART SPECIFIC TOOLTIP:
+        - Professional design
+        - Wind-specific formatting
+        - 🎯 SMART POSITIONING: Avoits chart edges
+        """
+        if not hasattr(self, 'ax'):
+            return
+            
+        # Előző tooltip törlése
+        self._hide_tooltip()
+        
+        # Tooltip szöveg formázása
+        tooltip_text = self._format_tooltip_text(point_data)
+        
+        # Koordináták meghatározása
+        import matplotlib.dates as mdates
+        x_pos = mdates.date2num(point_data['date'])
+        y_pos = point_data['windspeed']
+        
+        # 🎯 SMART POSITIONING LOGIC
+        # Chart területének boundaries
+        xlim = self.ax.get_xlim()
+        ylim = self.ax.get_ylim()
+        
+        # Pont pozíciója a chart területen (0-1 scale)
+        x_relative = (x_pos - xlim[0]) / (xlim[1] - xlim[0])
+        y_relative = (y_pos - ylim[0]) / (ylim[1] - ylim[0])
+        
+        # Dynamic offset számítás
+        if y_relative > 0.7:  # Felső 30%-ban
+            # Tooltip lefelé
+            offset_y = -80
+            va_align = 'top'
+            print(f"🔽 DEBUG: Wind tooltip lefelé - y_relative: {y_relative:.2f}")
+        else:
+            # Tooltip felfelé (alapértelmezett)
+            offset_y = 50
+            va_align = 'bottom'
+            print(f"🔼 DEBUG: Wind tooltip felfelé - y_relative: {y_relative:.2f}")
+        
+        if x_relative > 0.8:  # Jobb 20%-ban
+            # Tooltip balra
+            offset_x = -120
+            ha_align = 'right'
+            print(f"⬅️ DEBUG: Wind tooltip balra - x_relative: {x_relative:.2f}")
+        else:
+            # Tooltip jobbra (alapértelmezett)
+            offset_x = 40
+            ha_align = 'left'
+            print(f"➡️ DEBUG: Wind tooltip jobbra - x_relative: {x_relative:.2f}")
+        
+        # Current colors
+        current_colors = get_current_colors()
+        
+        # 💨 WIND THEMED TOOLTIP
+        self.tooltip_annotation = self.ax.annotate(
+            tooltip_text,
+            xy=(x_pos, y_pos),
+            xytext=(offset_x, offset_y),  # 🎯 DYNAMIC OFFSET
+            textcoords='offset points',
+            bbox=dict(
+                boxstyle='round,pad=1.0',
+                facecolor='lightblue',  # 💨 Wind theme
+                edgecolor=current_colors.get('border', '#34495E'),
+                linewidth=2,
+                alpha=0.95
+            ),
+            arrowprops=dict(
+                arrowstyle='->',
+                color=current_colors.get('border', '#34495E'),
+                lw=2,
+                alpha=0.8
+            ),
+            fontsize=10,
+            fontweight='bold',
+            ha=ha_align,      # 🎯 DYNAMIC HORIZONTAL ALIGNMENT
+            va=va_align,      # 🎯 DYNAMIC VERTICAL ALIGNMENT  
+            zorder=1000       # Top layer
+        )
+        
+        self._tooltip_visible = True
+        self._tooltip_annotation = self.tooltip_annotation
+        
+        # Canvas frissítése
+        if hasattr(self, 'draw_idle'):
+            self.draw_idle()
+    
+    def _hide_tooltip(self) -> None:
+        """
+        🙈 Tooltip elrejtése - CLEAN HIDING
+        """
+        if hasattr(self, '_tooltip_annotation') and self._tooltip_annotation:
+            try:
+                self._tooltip_annotation.remove()
+            except Exception as e:
+                print(f"⚠️ DEBUG: Wind tooltip remove error: {e}")
+            
+            self._tooltip_annotation = None
+            self._tooltip_visible = False
+            
+            # Canvas frissítése
+            if hasattr(self, 'draw_idle'):
+                self.draw_idle()
