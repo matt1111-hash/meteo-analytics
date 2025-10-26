@@ -46,3 +46,4 @@ scripts/*.zip
 # A scripts kivételek már fentiekben
 !data_explorer.py
 !tools_archi_scan.py
+.aider*

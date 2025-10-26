@@ -5,12 +5,13 @@ Cél: A 'hungarian_settlements.db' adatbázis feltöltése valós GPS koordinát
      az OpenStreetMap Nominatim API segítségével.
 """
 
-import sqlite3
-import requests
-import time
 import logging
+import sqlite3
+import time
 from pathlib import Path
 from typing import Optional
+
+import requests
 
 # Logger beállítása
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 DB_PATH = Path("data/hungarian_settlements.db")
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 HEADERS = {"User-Agent": "GlobalWeatherAnalyzer/1.0 (https://github.com/yourproject)"}
-REQUEST_DELAY_SECONDS = 1.1 
+REQUEST_DELAY_SECONDS = 1.1
 DEFAULT_LAT = 47.4979
 DEFAULT_LON = 19.0402
 
@@ -40,14 +41,14 @@ def get_coordinates_from_osm(session: requests.Session, settlement_name: str, me
         query = f"{settlement_name}, {megye}, Magyarország"
     else:
         query = f"{settlement_name}, Magyarország"
-        
+
     params = {'q': query, 'format': 'json', 'limit': 1}
-    
+
     try:
         response = session.get(NOMINATIM_URL, params=params, headers=HEADERS, timeout=10)
         response.raise_for_status()
         data = response.json()
-        
+
         if data:
             lat = float(data[0]["lat"])
             lon = float(data[0]["lon"])
@@ -80,44 +81,44 @@ def main():
 
     conn = sqlite3.connect(DB_PATH)
     session = requests.Session()
-    
+
     logger.info("📍 Koordináta-pótló szkript elindítva...")
-    
+
     settlements_to_update = get_settlements_to_update(conn)
     total_count = len(settlements_to_update)
-    
+
     if total_count == 0:
         logger.info("✅ Nincs frissítendő település. Az adatbázis naprakész.")
         conn.close()
         return
 
     logger.info(f"Frissítendő települések száma: {total_count}")
-    
+
     success_count = 0
     fail_count = 0
 
     try:
         for i, (settlement_id, name, megye) in enumerate(settlements_to_update):
             print(f"\rFeldolgozás... {i + 1}/{total_count} ({name})", end="", flush=True)
-            
+
             coords = get_coordinates_from_osm(session, name, megye)
-            
+
             if coords:
                 update_settlement_coordinates(conn, settlement_id, coords[0], coords[1])
                 success_count += 1
             else:
                 logger.warning(f"\nNem sikerült koordinátát találni: {name}, {megye}")
                 fail_count += 1
-            
+
             if (i + 1) % 50 == 0:
                 conn.commit()
                 logger.info(f"\nAdatok mentve az adatbázisba ({i+1}/{total_count})...")
 
             time.sleep(REQUEST_DELAY_SECONDS)
-    
+
     except KeyboardInterrupt:
         logger.warning("\nFolyamat megszakítva a felhasználó által.")
-    
+
     finally:
         conn.commit()
         conn.close()
