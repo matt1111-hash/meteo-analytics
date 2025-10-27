@@ -12,7 +12,7 @@ JAVÍTÁS:
 EREDMÉNY: WindyDaysTab 8-98 km/h adatokat kap helyesen!
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 import logging
 
 # 🔥 KRITIKUS JAVÍTÁS: PANDAS IMPORT BIZTOSÍTÁSA
@@ -37,7 +37,7 @@ except ImportError as e:
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, 
-    QLabel, QPushButton, QSizePolicy, QFrame
+    QLabel, QPushButton
 )
 from PySide6.QtCore import QSize, QTimer, Signal
 from PySide6.QtGui import QFont
@@ -155,7 +155,6 @@ except ImportError as e:
 
 # ⚡ VALÓDI ANALYTICS IMPORT
 try:
-    from ...analytics.wind_analysis import analyze_wind_patterns
     _wind_analysis_available = True
     logger.debug("✅ wind_analysis.analyze_wind_patterns import successful")
 except ImportError as e:

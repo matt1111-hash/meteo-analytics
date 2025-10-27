@@ -135,7 +135,6 @@ except ImportError as e:
     # Minimal utility placeholders
     class WindGustsConstants:
         """Placeholder WindGustsConstants."""
-        pass
     
     class DataFrameExtractor:
         """Placeholder DataFrameExtractor."""

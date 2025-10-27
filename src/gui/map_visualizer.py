@@ -22,26 +22,22 @@ Magyar Klímaanalitika MVP - Folium + Leaflet.js Alapú Térképes Megjelenítő
 FÁJL: src/gui/map_visualizer.py
 """
 
-from typing import Dict, List, Optional, Tuple, Any, Union
+from typing import Dict, List, Optional, Tuple, Any
 import os
 import json
 import tempfile
-import threading
-import time
 import socketserver
 import http.server
-from pathlib import Path
 from dataclasses import dataclass, field
-from datetime import datetime, date
+from datetime import datetime
 import uuid
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, 
     QComboBox, QSlider, QCheckBox, QGroupBox, QProgressBar,
-    QFileDialog, QMessageBox, QSplitter, QTextEdit
+    QFileDialog, QMessageBox
 )
-from PySide6.QtCore import Qt, Signal, QUrl, QTimer, QThread
-from PySide6.QtGui import QFont, QPixmap
+from PySide6.QtCore import Qt, Signal, QUrl, QThread
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
 
@@ -49,7 +45,6 @@ from PySide6.QtWebChannel import QWebChannel
 try:
     import folium
     from folium import plugins
-    import branca.colormap as cm
     FOLIUM_AVAILABLE = True
     print("✅ Folium successfully imported")
 except ImportError as e:
@@ -58,8 +53,6 @@ except ImportError as e:
 
 # GeoPandas import
 try:
-    import geopandas as gpd
-    import pandas as pd
     GEOPANDAS_AVAILABLE = True
 except ImportError:
     GEOPANDAS_AVAILABLE = False
@@ -2108,7 +2101,6 @@ def demo_http_server_folium_map_visualizer():
         
         # Demo megyék generálása (egyszerű téglalap geometriákkal)
         import geopandas as gpd
-        import pandas as pd
         from shapely.geometry import Polygon
         
         demo_counties = []

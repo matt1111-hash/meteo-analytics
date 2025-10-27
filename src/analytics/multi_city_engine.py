@@ -42,16 +42,13 @@ Cél: Többváros időjárási elemzés koordinálása
 
 import sqlite3
 import logging
-import asyncio
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any, Union
-from datetime import datetime, date, timedelta
-from dataclasses import dataclass, asdict
+from datetime import datetime
+from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import statistics
 import time
-import json
-import sys
 import os
 
 # 🔧 KRITIKUS JAVÍTÁS: Szabványos modellek importálása a UI kompatibilitáshoz

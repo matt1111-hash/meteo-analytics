@@ -17,19 +17,16 @@ Global Weather Analyzer - Quick Overview Tab Module - DUAL-API CLEAN
 """
 
 import logging
-from typing import Optional, Dict, Any, List, Union, Tuple
+from typing import Optional, Dict, Any, List, Tuple
 import pandas as pd
-from datetime import datetime
 
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QSplitter,
-    QGroupBox, QLabel, QPushButton, QTableWidget, QTableWidgetItem,
-    QProgressBar, QFrame, QScrollArea, QGridLayout, QTextEdit
+    QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QLabel,
+    QPushButton, QGridLayout
 )
-from PySide6.QtCore import Qt, Signal, QTimer
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 
-from ...config import GUIConfig
 
 # 🔧 KRITIKUS JAVÍTÁS: Import hibák kijavítása
 from ..utils import (
@@ -40,7 +37,7 @@ from ..utils import (
 )
 
 from ..theme_manager import get_theme_manager, register_widget_for_theming
-from .utils import WindGustsConstants, DataFrameExtractor, WindGustsAnalyzer
+from .utils import DataFrameExtractor, WindGustsAnalyzer
 
 # Logging konfigurálása
 logger = logging.getLogger(__name__)

@@ -39,19 +39,16 @@ INTEGRÁCIÓ:
 
 import math
 import logging
-from typing import Dict, List, Optional, Any, Tuple, Union
-from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Any, Tuple
+from dataclasses import dataclass
 from enum import Enum
-import json
-from datetime import datetime, timezone
 import statistics
 
 # Math és geographic imports
 import math
-from math import radians, sin, cos, sqrt, atan2, degrees, asin, atan
+from math import radians, sin, cos, sqrt, atan2, degrees, atan
 
 # Config import
-from ..config import MultiCityConfig
 
 # Logging beállítás
 logger = logging.getLogger(__name__)

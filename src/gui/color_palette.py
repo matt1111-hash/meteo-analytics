@@ -24,13 +24,11 @@ Global Weather Analyzer - Color Palette Module - RED THEME VERSION
 from typing import Dict, List, Tuple, Optional, NamedTuple, Union, Any
 from enum import Enum
 import colorsys
-import math
-import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 # ABSOLUTE IMPORTS - Import hibák javítása
-from src.gui.utils import ThemeType, ColorVariant
+from src.gui.utils import ThemeType
 
 
 class ColorFormat(Enum):
@@ -130,7 +128,6 @@ class ColorGenerator(ABC):
         Returns:
             Színvariánsok dictionary-je
         """
-        pass
 
 
 class StandardColorGenerator(ColorGenerator):

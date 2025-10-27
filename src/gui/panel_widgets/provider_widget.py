@@ -21,13 +21,10 @@ FÁJL HELYE: src/gui/panel_widgets/provider_widget.py
 from typing import Optional, Dict, Any
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, 
-    QProgressBar, QGroupBox, QPushButton, QTextEdit,
-    QFrame, QSizePolicy
+    QProgressBar, QGroupBox, QPushButton, QTextEdit
 )
-from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtGui import QFont, QPixmap, QIcon
+from PySide6.QtCore import Signal, QTimer
 
-from ...data.enums import DataProvider
 from ..theme_manager import register_widget_for_theming
 
 

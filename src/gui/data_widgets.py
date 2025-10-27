@@ -25,22 +25,17 @@ FUNKCIÓK MEGTARTVA:
 
 from typing import Optional, Dict, Any, List, Tuple
 import pandas as pd
-import csv
 from datetime import datetime
-from pathlib import Path
 import logging
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,
-    QHeaderView, QPushButton, QLineEdit, QComboBox, QLabel, QCheckBox,
-    QGroupBox, QSpinBox, QFileDialog, QMessageBox, QProgressBar,
-    QAbstractItemView
+    QHeaderView, QPushButton, QLineEdit, QComboBox, QLabel, QGroupBox,
+    QSpinBox, QFileDialog, QMessageBox, QProgressBar
 )
-from PySide6.QtCore import Qt, Signal, QSortFilterProxyModel, QAbstractTableModel, QModelIndex
-from PySide6.QtGui import QFont, QColor
+from PySide6.QtCore import Qt, Signal, QAbstractTableModel, QModelIndex
+from PySide6.QtGui import QColor
 
-from ..config import GUIConfig
-from .utils import GUIConstants
 from .theme_manager import get_theme_manager, register_widget_for_theming
 
 # Logging setup

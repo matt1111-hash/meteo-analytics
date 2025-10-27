@@ -12,16 +12,15 @@ MEGOLDÁS: Egyszerűsített validáció + real widget compatibility
 - ✅ Debug logging fokozás
 """
 
-from typing import Optional, Dict, Any, List, Union
+from typing import Optional, Dict, Any, List
 import logging
 from datetime import datetime, timedelta
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-    QPushButton, QProgressBar, QFrame, QSizePolicy,
-    QGroupBox, QGridLayout, QSpacerItem
+    QPushButton, QProgressBar, QFrame, QGroupBox
 )
-from PySide6.QtCore import Signal, QTimer, QSize, QThread
-from PySide6.QtGui import QFont, QPalette
+from PySide6.QtCore import Signal, QTimer
+from PySide6.QtGui import QFont
 
 # === IMPORT HANDLING ===
 logger = logging.getLogger(__name__)
