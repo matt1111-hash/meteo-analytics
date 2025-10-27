@@ -1,0 +1,1 @@
+Couldn't parse '/home/tibor/PythonProjects/Jules/global_weather_analyzer/src/gui/results_panel/extreme_events_tab.py' as Python source: 'unterminated string literal (detected at line 350)' at line 350

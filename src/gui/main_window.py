@@ -14,33 +14,29 @@ Universal Weather Research Platform - Main Window Module
 🧹 Thread cleanup és worker lifecycle management - ÚJ!
 """
 
-from typing import Optional, Dict, Any, Tuple, List
-import logging
+from typing import Optional, Dict, Any
 from datetime import datetime
-from pathlib import Path
 
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget,
-    QSplitter, QStatusBar, QMenuBar, QMessageBox, QToolBar, QLabel,
-    QSizePolicy
+    QMainWindow, QWidget, QVBoxLayout, QStackedWidget, QSplitter,
+    QStatusBar, QMessageBox, QToolBar, QLabel, QSizePolicy
 )
 from PySide6.QtCore import Qt, QSettings, Signal, QSize, QThread, QTimer
-from PySide6.QtGui import QAction, QIcon, QActionGroup
+from PySide6.QtGui import QAction, QActionGroup
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
-from ..config import AppInfo, GUIConfig
+from ..config import AppInfo
 from .utils import (
-    GUIConstants, ThemeType, get_source_display_name, get_optimal_data_source,
-    format_provider_usage, calculate_provider_costs, get_provider_warning_level,
-    format_provider_status, get_provider_icon, format_cost_summary
+    GUIConstants, ThemeType, get_source_display_name, format_provider_usage,
+    get_provider_warning_level, format_provider_status, get_provider_icon,
+    format_cost_summary
 )
-from .theme_manager import get_theme_manager, register_widget_for_theming, ThemeManager
+from .theme_manager import get_theme_manager, register_widget_for_theming
 from .color_palette import ColorPalette
 from .app_controller import AppController
 from .control_panel import ControlPanel
 from .results_panel import ResultsPanel
 from .data_widgets import WeatherDataTable
-from .workers.data_fetch_worker import WorkerManager
 from .dialogs import ExtremeWeatherDialog
 from .analytics_view import AnalyticsView
 from .map_view import MapView
@@ -49,7 +45,7 @@ from .hungarian_map_tab import HungarianMapTab
 
 # 🗺️ MAGYAR MEGYÉK AUTOMATIKUS INTEGRÁCIÓJA
 try:
-    from ..analytics.hungarian_counties_integration import HungarianCountiesLoader, integrate_hungarian_counties_to_app
+    from ..analytics.hungarian_counties_integration import HungarianCountiesLoader
     HUNGARIAN_COUNTIES_AVAILABLE = True
 except ImportError as e:
     HUNGARIAN_COUNTIES_AVAILABLE = False

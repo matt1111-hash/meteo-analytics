@@ -19,17 +19,14 @@ Fájl helye: src/gui/hungarian_location_selector.py
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 from enum import Enum
-import json
 from pathlib import Path
 import logging
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QComboBox, QLabel, 
-    QGroupBox, QPushButton, QListWidget, QListWidgetItem,
-    QSplitter, QTextEdit, QLineEdit, QProgressBar
+    QGroupBox, QPushButton, QTextEdit, QProgressBar
 )
-from PySide6.QtCore import Qt, Signal, QThread, QTimer
-from PySide6.QtGui import QFont, QPixmap, QIcon
+from PySide6.QtCore import Signal, QThread, QTimer
 
 try:
     import geopandas as gpd
