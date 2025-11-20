@@ -252,70 +252,69 @@ class FoliumMapGenerator(QThread):
         🗺️ Folium interaktív térkép generálása - HTTP SZERVER VERZIÓ.
         """
         try:
-            if not FOLIUM_AVAILABLE:
-                raise ImportError("Folium library not available")
-            
-            self.status_updated.emit("🗺️ Folium térkép inicializálása...")
-            self.progress_updated.emit(5)
-            
-            # === ALAP FOLIUM TÉRKÉP ===
-            
-            map_obj = self._create_base_folium_map()
-            self.progress_updated.emit(20)
-            
-            # === COUNTIES LAYER ===
-            
-            if self.config.show_counties and self.counties_gdf is not None:
-                self.status_updated.emit("🗺️ Megyehatárok hozzáadása...")
-                self._add_counties_layer(map_obj)
-            self.progress_updated.emit(50)
-            
-            # === WEATHER OVERLAY ===
-            
-            if self.config.weather_overlay and self.weather_data:
-                self.status_updated.emit("🌤️ Időjárási overlay...")
-                self._add_weather_overlay(map_obj)
-            self.progress_updated.emit(70)
-            
-            # === JAVASCRIPT BRIDGE ===
-            
-            self.status_updated.emit("🌉 JavaScript interaktivitás...")
-            self._add_javascript_bridge(map_obj)
-            self.progress_updated.emit(85)
-            
-            # === MAP CONTROLS ===
-            
-            self._add_map_controls(map_obj)
-            self.progress_updated.emit(90)
-            
-            # 🔧 KRITIKUS: FÁJL MENTÉS (HTTP szerver miatt)
-            
-            self.status_updated.emit("💾 HTML fájl mentése...")
-            
-            # Folium térkép mentése fájlba
-            map_obj.save(self.output_path)
-            
-            # Fájl létezés ellenőrzése
-            if not os.path.exists(self.output_path):
-                raise FileNotFoundError(f"Generated HTML file not found: {self.output_path}")
-            
-            # Fájl méret ellenőrzése
-            file_size = os.path.getsize(self.output_path)
-            if file_size < 1000:
-                raise ValueError(f"Generated HTML file too small: {file_size} bytes")
-            
-            self.progress_updated.emit(100)
-            self.status_updated.emit("✅ Folium térkép HTTP szerver verzió elkészült!")
-            
-            # 🔧 FILE PATH VISSZAADÁS (nem content!)
-            self.map_generated.emit(self.output_path)
-            
-            print(f"✅ HTTP Server Folium map generated: {self.output_path} ({file_size:,} bytes)")
-            
+            self._generate_map_content()
         except Exception as e:
             import traceback
             error_msg = f"Folium térkép generálási hiba: {e}\n{traceback.format_exc()}"
             self.error_occurred.emit(error_msg)
+
+    def _generate_map_content(self) -> None:
+        """Fő lépések szétbontva az átláthatóságért."""
+        if not FOLIUM_AVAILABLE:
+            raise ImportError("Folium library not available")
+        
+        self.status_updated.emit("🗺️ Folium térkép inicializálása...")
+        self.progress_updated.emit(5)
+        
+        map_obj = self._create_base_folium_map()
+        self.progress_updated.emit(20)
+        
+        self._maybe_add_counties(map_obj)
+        self.progress_updated.emit(50)
+        
+        self._maybe_add_weather_overlay(map_obj)
+        self.progress_updated.emit(70)
+        
+        self.status_updated.emit("🌉 JavaScript interaktivitás...")
+        self._add_javascript_bridge(map_obj)
+        self.progress_updated.emit(85)
+        
+        self._add_map_controls(map_obj)
+        self.progress_updated.emit(90)
+        
+        self._save_and_validate_map(map_obj)
+        self.progress_updated.emit(100)
+        self.status_updated.emit("✅ Folium térkép HTTP szerver verzió elkészült!")
+        
+        print(f"✅ HTTP Server Folium map generated: {self.output_path} ({os.path.getsize(self.output_path):,} bytes)")
+        self.map_generated.emit(self.output_path)
+
+    def _maybe_add_counties(self, map_obj: folium.Map) -> None:
+        if self.config.show_counties and self.counties_gdf is not None:
+            self.status_updated.emit("🗺️ Megyehatárok hozzáadása...")
+            self._add_counties_layer(map_obj)
+
+    def _maybe_add_weather_overlay(self, map_obj: folium.Map) -> None:
+        if self.config.weather_overlay and self.weather_data:
+            self.status_updated.emit("🌤️ Időjárási overlay...")
+            self._add_weather_overlay(map_obj)
+
+    def _save_and_validate_map(self, map_obj: folium.Map) -> None:
+        self.status_updated.emit("💾 HTML fájl mentése...")
+        map_obj.save(self.output_path)
+        if not os.path.exists(self.output_path):
+            raise FileNotFoundError(f"Generated HTML file not found: {self.output_path}")
+        file_size = os.path.getsize(self.output_path)
+        if file_size < 1000:
+            raise ValueError(f"Generated HTML file too small: {file_size} bytes")
+
+        try:
+            host_msg = f"http://{self.config.center_lat}:{self.config.center_lon}"
+            _ = host_msg  # placeholder to keep previous side-effects minimal
+        except Exception:
+            # No previous behavior depended on this; keep silent
+            pass
+
     
     def _create_base_folium_map(self) -> folium.Map:
         """
@@ -461,43 +460,39 @@ class FoliumMapGenerator(QThread):
         """
         try:
             from folium.plugins import HeatMap
-            
-            # Hőmérséklet adatok előkészítése
-            temp_data = []
-            for location, data in self.weather_data.get('temperature', {}).items():
-                if 'coordinates' in data and 'value' in data:
-                    lat, lon = data['coordinates']
-                    temp = data['value']
-                    
-                    # Heatmap pont: [lat, lon, intensity]
-                    # Intensity normalizálás -20°C - +40°C között
-                    intensity = max(0.1, min(1.0, (temp + 20) / 60))
-                    temp_data.append([lat, lon, intensity])
-            
-            if temp_data:
-                # 🔧 DINAMIKUS GRADIENT GENERÁLÁS
-                gradient = self._get_dynamic_gradient('RdYlBu_r', 'temperature')
-                
-                # HeatMap layer létrehozása dinamikus gradienttel
-                heat_map = HeatMap(
-                    temp_data,
-                    name="🌡️ Hőmérséklet",
-                    min_opacity=0.3,
-                    max_zoom=18,
-                    radius=25,
-                    blur=15,
-                    gradient=gradient  # 🔥 DINAMIKUS GRADIENT!
-                )
-                
-                # Hozzáadás a térképhez
-                heat_map.add_to(map_obj)
-                
-                print(f"🌡️ Temperature heatmap added with {len(temp_data)} points (dynamic gradient)")
+            temp_data = self._build_temperature_heatmap_points()
+            if not temp_data:
+                return
+
+            gradient = self._get_dynamic_gradient('RdYlBu_r', 'temperature')
+            heat_map = HeatMap(
+                temp_data,
+                name="🌡️ Hőmérséklet",
+                min_opacity=0.3,
+                max_zoom=18,
+                radius=25,
+                blur=15,
+                gradient=gradient
+            )
+            heat_map.add_to(map_obj)
+            print(f"🌡️ Temperature heatmap added with {len(temp_data)} points (dynamic gradient)")
             
         except ImportError:
             print("⚠️ HeatMap plugin not available")
         except Exception as e:
             print(f"⚠️ Temperature heatmap error: {e}")
+
+    def _build_temperature_heatmap_points(self) -> List[List[float]]:
+        """Heatmap pontok összeállítása normalizált intenzitással."""
+        temp_data: List[List[float]] = []
+        for _, data in self.weather_data.get('temperature', {}).items():
+            if 'coordinates' not in data or 'value' not in data:
+                continue
+            lat, lon = data['coordinates']
+            temp = data['value']
+            intensity = max(0.1, min(1.0, (temp + 20) / 60))
+            temp_data.append([lat, lon, intensity])
+        return temp_data
     
     def _get_dynamic_gradient(self, color_scale: str, overlay_type: str) -> Dict[float, str]:
         """
@@ -1343,37 +1338,39 @@ class HungarianMapVisualizer(QWidget):
         """
         🔄 Folium térkép generálás indítása háttérben - HTTP SZERVER VERZIÓ.
         """
-        if not FOLIUM_AVAILABLE:
-            self._show_folium_error()
+        if not self._can_generate_map():
             return
-        
-        if not self.http_host or not self.http_port:
-            print("⚠️ HTTP server not ready for map generation")
-            return
-        
         if self.map_generator and self.map_generator.isRunning():
             return  # Már fut egy generálás
         
-        # Progress bar megjelenítése
+        self._prepare_progress_bar()
+        self._create_and_start_map_generator()
+
+    def _can_generate_map(self) -> bool:
+        if not FOLIUM_AVAILABLE:
+            self._show_folium_error()
+            return False
+        if not self.http_host or not self.http_port:
+            print("⚠️ HTTP server not ready for map generation")
+            return False
+        return True
+
+    def _prepare_progress_bar(self) -> None:
         self.progress_bar.setVisible(True)
         self.progress_bar.setValue(0)
         self.status_label.setText("🌐 HTTP szerver Folium térkép + Same-Origin Policy fix + Reaktív megyehatárok generálása...")
-        
-        # Worker létrehozása
+
+    def _create_and_start_map_generator(self) -> None:
         self.map_generator = FoliumMapGenerator(
             config=self.map_config,
             counties_gdf=self.counties_gdf,
             weather_data=self.current_weather_data,
             bridge_id=self.js_bridge.bridge_id
         )
-        
-        # Worker signalok
         self.map_generator.progress_updated.connect(self.progress_bar.setValue)
         self.map_generator.status_updated.connect(self.status_label.setText)
         self.map_generator.map_generated.connect(self._on_map_generated)
         self.map_generator.error_occurred.connect(self._on_map_error)
-        
-        # Worker indítása
         self.map_generator.start()
     
     def _on_map_generated(self, file_path: str):
@@ -1874,20 +1871,20 @@ class HungarianMapVisualizer(QWidget):
             # Hőmérséklet
             demo_data['temperature'][city['name']] = {
                 'coordinates': city['coordinates'],
-                'value': random.uniform(-5, 35)
+                'value': random.uniform(-5, 35)  # nosec B311 - demo/preview adat
             }
             
             # Csapadék
             demo_data['precipitation'][city['name']] = {
                 'coordinates': city['coordinates'],
-                'value': random.uniform(0, 25)
+                'value': random.uniform(0, 25)  # nosec B311 - demo/preview adat
             }
             
             # Szélsebesség
             demo_data['wind_speed'][city['name']] = {
                 'coordinates': city['coordinates'],
-                'speed': random.uniform(5, 45),
-                'direction': random.randint(0, 360)
+                'speed': random.uniform(5, 45),  # nosec B311 - demo/preview adat
+                'direction': random.randint(0, 360)  # nosec B311 - demo/preview adat
             }
         
         print(f"🧪 Demo weather data generated: {len(cities)} cities")

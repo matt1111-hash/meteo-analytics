@@ -731,165 +731,13 @@ class ResultsPanel(QWidget):
         logger.info(f"ResultsPanel.update_data() - City: {city_name} (DATAFRAME EXTRACTOR JAVÍTÁS)")
         
         try:
-            # 📧 FIX: Loading indicator automatikus elrejtése
-            if self._is_loading:
-                self.hide_loading_indicator()
-            
+            self._hide_loading_if_needed()
             self.current_data = data
             self.current_city = city_name
-            
-            # Update title
-            if self.title_label:
-                self.title_label.setText(f"📊 Időjárási Adatok - {city_name}")
-            
-            # === TAB FRISSÍTÉSEK ===
-            if self.overview_tab and _quick_overview_available:
-                logger.debug("QuickOverviewTab frissítése...")
-                self.overview_tab.update_data(data, city_name)
-            elif self.overview_tab:
-                logger.debug("QuickOverviewTab fallback frissítése...")
-                
-            if self.charts_tab and _detailed_charts_available:
-                logger.debug("DetailedChartsTab frissítése...")
-                self.charts_tab.update_data(data)
-            elif self.charts_tab:
-                logger.debug("DetailedChartsTab fallback frissítése...")
-            
-            if self.table_tab and _data_table_available:
-                logger.debug("DataTableTab frissítése...")
-                self.table_tab.update_data(data)
-            elif self.table_tab:
-                logger.debug("DataTableTab fallback frissítése...")
-            
-            # 🔥 EXTRÉM ESEMÉNYEK TAB FRISSÍTÉSE
-            if self.extreme_tab and _extreme_events_available:
-                logger.debug("ExtremeEventsTab frissítése...")
-                self.extreme_tab.update_data(data)
-            elif self.extreme_tab:
-                logger.debug("ExtremeEventsTab fallback...")
-            
-            # 🌪️ KRITIKUS VÉGLEGES JAVÍTÁS: SZELES NAPOK TAB FRISSÍTÉSE
-            if self.windy_days_tab and _windy_days_available:
-                logger.info("🌪️ WindyDaysTab frissítése STARTED (DATAFRAME EXTRACTOR JAVÍTÁS)...")
-                
-                # 🚨 ÚJ DEBUG LOGGING - ADATÁRAMLÁS KÖVETÉSE
-                logger.info("🚨 DEBUG: WindyDaysTab frissítés ELKEZDVE")
-                logger.info(f"🚨 DEBUG: windy_days_tab típus: {type(self.windy_days_tab)}")
-                logger.info(f"🚨 DEBUG: _windy_days_available: {_windy_days_available}")
-                
-                # WindyDaysTab expects (weather_data, location) format
-                if hasattr(self.windy_days_tab, 'update_data'):
-                    logger.info("🚨 DEBUG: windy_days_tab.update_data ELÉRHETŐ")
-                    
-                    # 📧 DEBUG: Ellenőrizzük hogy van-e adat
-                    logger.info(f"📧 DEBUG: Data típus: {type(data)}")
-                    logger.info(f"📧 DEBUG: Data kulcsai: {list(data.keys()) if isinstance(data, dict) else 'Nem dict'}")
-                    
-                    # 🔥 VÉGLEGES JAVÍTÁS: DataFrameExtractor használat
-                    logger.info("🔥 VÉGLEGES JAVÍTÁS: WindyDaysTab adatok konvertálása DataFrameExtractor-ral...")
-                    logger.info("🚨 DEBUG: _convert_data_to_dataframe() HÍVÁS ELŐTT")
-                    
-                    try:
-                        weather_df = self._convert_data_to_dataframe(data)
-                        logger.info("🚨 DEBUG: _convert_data_to_dataframe() HÍVÁS SIKERES")
-                        
-                        # Check if we got a valid DataFrame or fallback dict
-                        if hasattr(weather_df, '__len__'):  # Check if it has length (DataFrame or dict)
-                            logger.info(f"⚡ Konvertált adatok: {len(weather_df)} elem")
-                            
-                            # 📧 DEBUG: Részletes DataFrame/dict info
-                            if hasattr(weather_df, 'empty'):  # It's a DataFrame
-                                if not weather_df.empty:
-                                    logger.info(f"📧 DataFrame oszlopok: {list(weather_df.columns)}")
-                                    
-                                    # 🔥 KRITIKUS: wind_speed oszlop ellenőrzése
-                                    if 'wind_speed' in weather_df.columns:
-                                        wind_data = weather_df['wind_speed'].dropna()
-                                        if len(wind_data) > 0:
-                                            valid_winds = wind_data[wind_data > 0]
-                                            if len(valid_winds) > 0:
-                                                logger.info(f"📧 Wind speed range (km/h): {valid_winds.min():.1f} → {valid_winds.max():.1f}")
-                                                logger.info(f"📧 Valid wind records: {len(valid_winds)}/{len(wind_data)}")
-                                                
-                                                # 🔥 KRITIKUS: Source ellenőrzés
-                                                if 'wind_data_source' in weather_df.columns:
-                                                    source = weather_df['wind_data_source'].iloc[0] if not weather_df['wind_data_source'].empty else 'unknown'
-                                                    logger.info(f"🎯 DATAFRAME EXTRACTOR SOURCE: {source}")
-                                                
-                                                # 🚨 KRITIKUS: FELTÉTLENÜL HÍVJUK MEG A WINDYDATATAB.UPDATE_DATA-T!
-                                                logger.info("🚨 KRITIKUS: WindyDaysTab.update_data() HÍVÁS...")
-                                                self.windy_days_tab.update_data(weather_df, city_name)
-                                                logger.info("✅ WindyDaysTab.update_data() SIKERES!")
-                                            else:
-                                                logger.warning("⚠️ Minden szélsebesség 0 vagy invalid!")
-                                                # Create empty DataFrame using pandas if available
-                                                try:
-                                                    import pandas as pd
-                                                    self.windy_days_tab.update_data(pd.DataFrame(), city_name)
-                                                except:
-                                                    self.windy_days_tab.update_data({}, city_name)
-                                        else:
-                                            logger.error("❌ NINCS WIND SPEED ADATOK!")
-                                            # Create empty DataFrame using pandas if available
-                                            try:
-                                                import pandas as pd
-                                                self.windy_days_tab.update_data(pd.DataFrame(), city_name)
-                                            except:
-                                                self.windy_days_tab.update_data({}, city_name)
-                                    else:
-                                        logger.error("❌ NINCS WIND_SPEED OSZLOP!")
-                                        # 🔥 KRITIKUS JAVÍTÁS: Próbáljuk wind_gusts_max-szal
-                                        if 'wind_gusts_max' in weather_df.columns:
-                                            logger.warning("⚠️ EMERGENCY FIX: wind_gusts_max → wind_speed konverzió!")
-                                            weather_df['wind_speed'] = weather_df['wind_gusts_max']
-                                            self.windy_days_tab.update_data(weather_df, city_name)
-                                        else:
-                                            logger.error("❌ NINCS wind_gusts_max OSZLOP SEM!")
-                                            try:
-                                                import pandas as pd
-                                                self.windy_days_tab.update_data(pd.DataFrame(), city_name)
-                                            except:
-                                                self.windy_days_tab.update_data({}, city_name)
-                                else:
-                                    logger.error("❌ ÜRES DataFrame! WindyDaysTab nem fog működni!")
-                                    # Üres DataFrame átadása, hogy a WindyDaysTab tudja kezelni
-                                    try:
-                                        import pandas as pd
-                                        self.windy_days_tab.update_data(pd.DataFrame(), city_name)
-                                    except:
-                                        self.windy_days_tab.update_data({}, city_name)
-                            else:
-                                # It's probably a fallback dict
-                                logger.warning("⚠️ FALLBACK DICT - próbáljuk WindyDaysTab-bal")
-                                self.windy_days_tab.update_data(weather_df, city_name)
-                        else:
-                            logger.error("❌ INVALID RETURN TYPE from _convert_data_to_dataframe!")
-                            try:
-                                import pandas as pd
-                                self.windy_days_tab.update_data(pd.DataFrame(), city_name)
-                            except:
-                                self.windy_days_tab.update_data({}, city_name)
-                    except Exception as convert_error:
-                        logger.error(f"🚨 DEBUG: _convert_data_to_dataframe() VÉGLEGES JAVÍTÁS HIBA: {convert_error}")
-                        import traceback
-                        traceback.print_exc()
-                        # Üres DataFrame átadása hiba esetén
-                        try:
-                            import pandas as pd
-                            self.windy_days_tab.update_data(pd.DataFrame(), city_name)
-                        except:
-                            self.windy_days_tab.update_data({}, city_name)
-                else:
-                    logger.error("❌ WindyDaysTab.update_data metódus nem elérhető")
-                    logger.error(f"🚨 DEBUG: hasattr(self.windy_days_tab, 'update_data') = {hasattr(self.windy_days_tab, 'update_data')}")
-            elif self.windy_days_tab:
-                logger.warning("⚠️ WindyDaysTab fallback frissítése...")
-            else:
-                logger.error("❌ WindyDaysTab nem elérhető!")
-            
-            # Emit data updated signal
+            self._update_title(city_name)
+            self._update_standard_tabs(data, city_name)
+            self._update_windy_days_tab(data, city_name)
             self.data_updated.emit(data, city_name)
-            
             logger.info("ResultsPanel.update_data() VÉGLEGES JAVÍTÁS FRISSÍTÉSE SIKERES!")
             
         except Exception as e:
@@ -906,6 +754,136 @@ class ResultsPanel(QWidget):
                 self.title_label.setText(f"❌ Adatfrissítési hiba: {str(e)[:50]}...")
             
             self.clear_data()
+
+    def _hide_loading_if_needed(self) -> None:
+        if self._is_loading:
+            self.hide_loading_indicator()
+
+    def _update_title(self, city_name: str) -> None:
+        if self.title_label:
+            self.title_label.setText(f"📊 Időjárási Adatok - {city_name}")
+
+    def _update_standard_tabs(self, data: Dict[str, Any], city_name: str) -> None:
+        if self.overview_tab and _quick_overview_available:
+            logger.debug("QuickOverviewTab frissítése...")
+            self.overview_tab.update_data(data, city_name)
+        elif self.overview_tab:
+            logger.debug("QuickOverviewTab fallback frissítése...")
+        
+        if self.charts_tab and _detailed_charts_available:
+            logger.debug("DetailedChartsTab frissítése...")
+            self.charts_tab.update_data(data)
+        elif self.charts_tab:
+            logger.debug("DetailedChartsTab fallback frissítése...")
+        
+        if self.table_tab and _data_table_available:
+            logger.debug("DataTableTab frissítése...")
+            self.table_tab.update_data(data)
+        elif self.table_tab:
+            logger.debug("DataTableTab fallback frissítése...")
+        
+        if self.extreme_tab and _extreme_events_available:
+            logger.debug("ExtremeEventsTab frissítése...")
+            self.extreme_tab.update_data(data)
+        elif self.extreme_tab:
+            logger.debug("ExtremeEventsTab fallback...")
+
+    def _update_windy_days_tab(self, data: Dict[str, Any], city_name: str) -> None:
+        if not self.windy_days_tab:
+            logger.error("❌ WindyDaysTab nem elérhető!")
+            return
+        if not _windy_days_available:
+            logger.warning("⚠️ WindyDaysTab fallback frissítése...")
+            return
+        
+        logger.info("🌪️ WindyDaysTab frissítése STARTED (DATAFRAME EXTRACTOR JAVÍTÁS)...")
+        if not hasattr(self.windy_days_tab, 'update_data'):
+            logger.error("❌ WindyDaysTab.update_data metódus nem elérhető")
+            logger.error(f"🚨 DEBUG: hasattr(self.windy_days_tab, 'update_data') = {hasattr(self.windy_days_tab, 'update_data')}")
+            return
+        
+        logger.info("🚨 DEBUG: WindyDaysTab frissítés ELKEZDVE")
+        logger.info(f"🚨 DEBUG: windy_days_tab típus: {type(self.windy_days_tab)}")
+        logger.info(f"🚨 DEBUG: _windy_days_available: {_windy_days_available}")
+        logger.info(f"📧 DEBUG: Data típus: {type(data)}")
+        logger.info(f"📧 DEBUG: Data kulcsai: {list(data.keys()) if isinstance(data, dict) else 'Nem dict'}")
+        
+        try:
+            weather_df = self._convert_data_to_dataframe(data)
+            logger.info("🚨 DEBUG: _convert_data_to_dataframe() HÍVÁS SIKERES")
+            self._deliver_windy_days_data(weather_df, city_name)
+        except Exception as convert_error:
+            logger.error(f"🚨 DEBUG: _convert_data_to_dataframe() VÉGLEGES JAVÍTÁS HIBA: {convert_error}")
+            import traceback
+            traceback.print_exc()
+            self._deliver_windy_days_data(self._empty_dataframe_fallback(), city_name)
+
+    def _deliver_windy_days_data(self, weather_df: Any, city_name: str) -> None:
+        if not hasattr(weather_df, '__len__'):
+            logger.error("❌ INVALID RETURN TYPE from _convert_data_to_dataframe!")
+            self.windy_days_tab.update_data(self._empty_dataframe_fallback(), city_name)
+            return
+        
+        logger.info(f"⚡ Konvertált adatok: {len(weather_df)} elem")
+        if hasattr(weather_df, 'empty'):
+            self._handle_dataframe_weather_data(weather_df, city_name)
+            return
+        
+        logger.warning("⚠️ FALLBACK DICT - próbáljuk WindyDaysTab-bal")
+        self.windy_days_tab.update_data(weather_df, city_name)
+
+    def _handle_dataframe_weather_data(self, weather_df: Any, city_name: str) -> None:
+        if weather_df.empty:
+            self._update_windy_days_with_empty(city_name, "❌ ÜRES DataFrame! WindyDaysTab nem fog működni!")
+            return
+        
+        logger.info(f"📧 DataFrame oszlopok: {list(weather_df.columns)}")
+        if 'wind_speed' in weather_df.columns:
+            self._process_wind_speed_column(weather_df, city_name)
+            return
+        
+        logger.error("❌ NINCS WIND_SPEED OSZLOP!")
+        if 'wind_gusts_max' in weather_df.columns:
+            logger.warning("⚠️ EMERGENCY FIX: wind_gusts_max → wind_speed konverzió!")
+            weather_df['wind_speed'] = weather_df['wind_gusts_max']
+            self.windy_days_tab.update_data(weather_df, city_name)
+        else:
+            self._update_windy_days_with_empty(city_name, "❌ NINCS wind_gusts_max OSZLOP SEM!")
+
+    def _process_wind_speed_column(self, weather_df: Any, city_name: str) -> None:
+        wind_data = weather_df['wind_speed'].dropna()
+        if len(wind_data) == 0:
+            self._update_windy_days_with_empty(city_name, "❌ NINCS WIND SPEED ADATOK!")
+            return
+        
+        valid_winds = wind_data[wind_data > 0]
+        if len(valid_winds) == 0:
+            logger.warning("⚠️ Minden szélsebesség 0 vagy invalid!")
+            self._update_windy_days_with_empty(city_name, "")
+            return
+        
+        logger.info(f"📧 Wind speed range (km/h): {valid_winds.min():.1f} → {valid_winds.max():.1f}")
+        logger.info(f"📧 Valid wind records: {len(valid_winds)}/{len(wind_data)}")
+        if 'wind_data_source' in weather_df.columns:
+            source = weather_df['wind_data_source'].iloc[0] if not weather_df['wind_data_source'].empty else 'unknown'
+            logger.info(f"🎯 DATAFRAME EXTRACTOR SOURCE: {source}")
+        
+        logger.info("🚨 KRITIKUS: WindyDaysTab.update_data() HÍVÁS...")
+        self.windy_days_tab.update_data(weather_df, city_name)
+        logger.info("✅ WindyDaysTab.update_data() SIKERES!")
+
+    def _update_windy_days_with_empty(self, city_name: str, log_message: str) -> None:
+        if log_message:
+            logger.error(log_message)
+        self.windy_days_tab.update_data(self._empty_dataframe_fallback(), city_name)
+
+    @staticmethod
+    def _empty_dataframe_fallback() -> Any:
+        try:
+            import pandas as pd  # type: ignore
+            return pd.DataFrame()
+        except Exception:
+            return {}
     
     def clear_data(self) -> None:
         """
@@ -1234,8 +1212,8 @@ class ResultsPanel(QWidget):
         """
         try:
             self.cleanup()
-        except:
-            pass
+        except Exception:
+            logger.exception("ResultsPanel cleanup during destruction failed")
 
 
 # === FACTORY FUNCTIONS ===
