@@ -1,0 +1,20 @@
+# Development dependencies for quality gates
+# Install with: pip install -r requirements-dev.txt
+
+# Testing
+pytest>=8.4.0
+pytest-cov>=6.0.0
+pytest-qt>=4.5.0
+pytest-asyncio>=1.1.0
+
+# Code quality
+pylint>=3.0.0
+flake8>=7.0.0
+black>=25.0.0
+mypy>=1.17.0
+
+# Pre-commit hooks (optional)
+pre-commit>=4.0.0
+
+# Code formatting
+ruff>=0.12.0

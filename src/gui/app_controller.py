@@ -265,6 +265,17 @@ class AppController(QObject):
             if not date_range.get('start_date') or not date_range.get('end_date'):
                 self.analysis_failed.emit("Hiányzó dátum tartomány")
                 return False
+            try:
+                start_date_value = datetime.strptime(date_range.get('start_date', ''), "%Y-%m-%d")
+                end_date_value = datetime.strptime(date_range.get('end_date', ''), "%Y-%m-%d")
+            except ValueError as exc:
+                self.analysis_failed.emit(f"Érvénytelen dátum formátum: {exc}")
+                return False
+            if (end_date_value - start_date_value).days > 60 * 365:
+                error_message = "Maximum 60 éves időszak kérdezhető le"
+                self.error_occurred.emit(error_message)
+                self.analysis_failed.emit(error_message)
+                return False
             
             # 🔧 KRITIKUS JAVÍTÁS: Lokáció validálás KOORDINÁTA KULCSOK KOMPATIBILITÁSSAL
             if analysis_type == 'single_location':

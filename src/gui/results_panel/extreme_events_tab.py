@@ -346,5 +346,6 @@ class ExtremeEventsTab(QWidget):
             register_widget_for_theming(self.daily_radio, "chart")
             register_widget_for_theming(self.monthly_radio, "chart")
             register_widget_for_theming(self.yearly_radio, "chart")
-            
-            logger.debug("ExtremeEventsTab - Widgets regisztrál
+            logger.debug("ExtremeEventsTab - Widgets regisztrálva a ThemeManagerben")
+        except Exception as exc:
+            logger.error("ThemeManager regisztráció hiba: %s", exc)

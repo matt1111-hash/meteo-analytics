@@ -20,3 +20,8 @@
 1) Ha kell, további CC-csökkentés a fenti D/C blokkokon (prior: `_calculate_records`, `_convert_data_to_dataframe`).
 2) Biztonsági lint tisztítás a GUI-n túl (ha új Bandit scope nyílik).
 3) Új feladat esetén minőség-gate (mypy/ruff/pytest) ismétlése módosítás után.
+
+## Utolsó állapot frissítés
+- Dátumlimit javítva az AppController-ben: 366 nap helyett 60 év, hibaüzenet frissítve.
+- ExtremeEventsTab theming log befejezve (elszakadt string javítva).
+- Minőség-gate futtatás: mypy elakadt import-problémákon (`src/analytics/multi_city_engine.py` belső `.data.*` importok hiánya; `src/data/weather_client.py` duplikált modulnév `data.weather_client` vs `src.data.weather_client`). Ruff/pytest még nem futott, újra kell indítani az importok rendezése után.
