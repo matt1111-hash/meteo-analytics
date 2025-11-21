@@ -58,6 +58,7 @@ from src.domain.analytics.statistics import (
     safe_stdev as _safe_stdev,
 )
 from src.infrastructure.repositories.city_repository import CityRepository
+from src.domain.analytics.services.region_resolver import RegionResolverService
 from ..data.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
 from ..data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
 
@@ -157,65 +158,6 @@ class MultiCityEngine:
         "Veszprém": ["Veszprém"]
     }
     
-    # 🔧 KRITIKUS JAVÍTÁS: TELJES RÉGIÓ/MEGYE MAPPING HOZZÁADVA!
-    REGION_CODE_MAPPING = {
-        # Alapértelmezett mappingek
-        "HU": "Hungary", 
-        "EU": "Europe", 
-        "GLOBAL": "Global", 
-        "WORLD": "Global",
-        "country": "Hungary", 
-        "continent": "Europe", 
-        "global": "Global",
-        "hungary": "Hungary", 
-        "europe": "Europe", 
-        "magyarország": "Hungary", 
-        "európa": "Europe",
-        
-        # 🔧 KRITIKUS: MAGYAR RÉGIÓK (7 statisztikai régió)
-        "Közép-Magyarország": "Hungary",
-        "Észak-Magyarország": "Hungary",  # ← EZ HIÁNYZOTT! 
-        "Észak-Alföld": "Hungary",
-        "Dél-Alföld": "Hungary", 
-        "Dél-Dunántúl": "Hungary",
-        "Nyugat-Dunántúl": "Hungary",
-        "Közép-Dunántúl": "Hungary",
-        
-        # 🔧 KRITIKUS: MAGYAR MEGYÉK (19 megye + Budapest)
-        "Budapest": "Hungary",
-        "Pest": "Hungary",
-        "Fejér": "Hungary", 
-        "Komárom-Esztergom": "Hungary",
-        "Veszprém": "Hungary",
-        "Győr-Moson-Sopron": "Hungary",
-        "Vas": "Hungary", 
-        "Zala": "Hungary",
-        "Baranya": "Hungary",
-        "Somogy": "Hungary", 
-        "Tolna": "Hungary",
-        "Borsod-Abaúj-Zemplén": "Hungary",
-        "Heves": "Hungary",
-        "Nógrád": "Hungary", 
-        "Hajdú-Bihar": "Hungary",
-        "Jász-Nagykun-Szolnok": "Hungary",
-        "Szabolcs-Szatmár-Bereg": "Hungary",
-        "Bács-Kiskun": "Hungary", 
-        "Békés": "Hungary",
-        "Csongrád-Csanád": "Hungary",
-        
-        # Alternatív írásmódok
-        "közép-magyarország": "Hungary",
-        "észak-magyarország": "Hungary",
-        "észak-alföld": "Hungary", 
-        "dél-alföld": "Hungary",
-        "dél-dunántúl": "Hungary",
-        "nyugat-dunántúl": "Hungary", 
-        "közép-dunántúl": "Hungary",
-        "budapest": "Hungary",
-        "pest megye": "Hungary",
-        "fejér megye": "Hungary"
-    }
-    
     REGIONS = {
         "Hungary": {"name": "Magyarország", "country_codes": ["HU"], "max_cities": 165, "batch_size": 8, "rate_limit_delay": 0.2},
         "Europe": {"name": "Európa", "country_codes": ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "CH", "GB", "NO", "IS", "RS", "BA", "MK", "AL", "MD", "UA", "BY", "RU"], "max_cities": 150, "batch_size": 4, "rate_limit_delay": 0.4},
@@ -259,6 +201,7 @@ class MultiCityEngine:
             self.hungarian_db_path,
         )
         self.city_repository.validate_paths()
+        self.region_resolver = RegionResolverService()
 
         self.max_workers = 8
         self.request_timeout = 90
@@ -870,72 +813,9 @@ class MultiCityEngine:
         """
         🔧 KRITIKUS JAVÍTÁS: Régió név feloldása - TELJES MAGYAR RÉGIÓ/MEGYE TÁMOGATÁSSAL + ERROR HANDLING.
         
-        Támogatott régiók/megyék:
-        - 7 statisztikai régió (pl. "Észak-Magyarország")  
-        - 19 megye + Budapest (pl. "Pest", "Borsod-Abaúj-Zemplén")
-        - Country codes (HU, EU, GLOBAL)
-        - Alternatív írásmódok
-        
-        Args:
-            region_input: Bemeneti régió név (lehet "Észak-Magyarország", "Pest", "HU", stb.)
-            
-        Returns:
-            Mapped régió név ("Hungary", "Europe", "Global")
-            
-        Raises:
-            ValueError: Ha a régió nem ismerhető fel
+        BC wrapper: delegál a RegionResolverService-re.
         """
-        if not region_input:
-            raise ValueError("Üres régió név")
-        
-        # Case-insensitive lookup
-        region_key = region_input.strip()
-        
-        # Első próbálkozás: pontos egyezés (case-sensitive)
-        if region_key in self.REGION_CODE_MAPPING:
-            mapped = self.REGION_CODE_MAPPING[region_key]
-            logger.info(f"✅ Exact region mapping: '{region_input}' → '{mapped}'")
-            return mapped
-        
-        # Második próbálkozás: case-insensitive
-        region_key_lower = region_key.lower()
-        for key, value in self.REGION_CODE_MAPPING.items():
-            if key.lower() == region_key_lower:
-                mapped = value
-                logger.info(f"✅ Case-insensitive region mapping: '{region_input}' → '{mapped}'")
-                return mapped
-        
-        # Harmadik próbálkozás: partial matching magyar régió nevekhez
-        hungarian_regions = [
-            "közép-magyarország", "észak-magyarország", "észak-alföld",
-            "dél-alföld", "dél-dunántúl", "nyugat-dunántúl", "közép-dunántúl"
-        ]
-        
-        region_normalized = region_input.lower().strip()
-        for region in hungarian_regions:
-            if region in region_normalized or region_normalized in region:
-                logger.info(f"✅ Partial region mapping: '{region_input}' → 'Hungary' (matched: {region})")
-                return "Hungary"
-        
-        # Negyedik próbálkozás: magyar megye nevek
-        hungarian_counties = [
-            "budapest", "pest", "fejér", "komárom-esztergom", "veszprém",
-            "győr-moson-sopron", "vas", "zala", "baranya", "somogy", "tolna",
-            "borsod-abaúj-zemplén", "heves", "nógrád", "hajdú-bihar",
-            "jász-nagykun-szolnok", "szabolcs-szatmár-bereg", "bács-kiskun",
-            "békés", "csongrád-csanád"
-        ]
-        
-        for county in hungarian_counties:
-            if county in region_normalized or region_normalized in county:
-                logger.info(f"✅ County region mapping: '{region_input}' → 'Hungary' (matched: {county})")
-                return "Hungary"
-        
-        # Ha semmi sem működött
-        available_regions = list(self.REGION_CODE_MAPPING.keys())[:10]  # Első 10 példa
-        error_msg = f"Ismeretlen régió: {region_input}. Támogatott régiók: {', '.join(available_regions)}..."
-        logger.error(error_msg)
-        raise ValueError(error_msg)
+        return self.region_resolver.resolve_region_name(region_input)
 
 
 # 🧪 TESTING & DEBUG (ABSOLUTE DATABASE PATH FIX + NONE-SAFE + RÉGIÓ MAPPING + RÉGIÓ SZŰRÉS + WINDSPEED METRIC JAVÍTÁS)
