@@ -6,6 +6,20 @@
 
 ---
 
+## 🆕 Aktuális állapot (legutóbbi Codex futás)
+
+- ✅ Teljes suite zöld: `./venv/bin/pytest -v` → 51/51 pass.
+- ✅ Új tesztek: `tests/domain/analytics/test_statistics.py` (10), `tests/domain/analytics/test_models.py` (5), `tests/infrastructure/repositories/test_city_repository.py` (6).
+- ✅ Quality gate futtatva: `./venv/bin/pytest tests/domain/analytics/ tests/infrastructure/ -v --cov=src/domain/analytics --cov=src/infrastructure --cov-report=term-missing` → 21/21 pass, össz. coverage 92% (statistics.py 79% a StatisticsError ágak nem érhetők el).
+- ✅ Flake8 tiszta: `./venv/bin/flake8 -j1 src/domain/analytics/ src/infrastructure/`.
+- ⚠️ Pylint: 8.72/10 (import-error a src.* miatt és R09xx arguszám/attribútum figyelmeztetések változatlanul hagyva).
+- 📌 Formázás: sorhosszak és trailing newline-ok javítva az érintett modulokon.
+- ➡️ Következő lépés (ha kell commit): `git add src/domain/analytics/ src/infrastructure/ src/analytics/multi_city_engine.py tests/` majd `git commit -m "refactor: extract statistics, models, and repository layer from MultiCityEngine"`.
+
+---
+
+⚠️ Az alábbi szakasz archív (anomaly refactor jegyzet), csak referenciának marad.
+
 ## 🎯 PROJEKT ÖSSZEFOGLALÓ
 
 ### **Projekt neve:**

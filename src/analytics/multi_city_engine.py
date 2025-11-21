@@ -31,7 +31,7 @@ Cél: Többváros időjárási elemzés koordinálása
 - ✅ ADAT TRANSZFORMÁCIÓS HIBA JAVÍTVA: A motor most már a UI által várt `AnalyticsResult` és `CityWeatherResult` objektumokat adja vissza.
 - ✅ 0.0°C HIBA JAVÍTVA: A helyes metrika érték (`temperature_2m_max` stb.) most már bekerül a `value` mezőbe.
 - ✅ STATISZTIKAI HIBA JAVÍTVA: A statisztikák a teljes, sikeresen feldolgozott adathalmazon számolódnak.
-- ✅ NULL-safe sorting logic 
+- ✅ NULL-safe sorting logic
 - ✅ Type-safe value comparisons
 - ✅ MAX_CITIES PARAMÉTER TÁMOGATÁS HOZZÁADVA - BACKWARD COMPATIBLE!
 - ✅ COUNTRY CODE MAPPING: HU → Hungary, EU → Europe, GLOBAL → Global
@@ -40,126 +40,71 @@ Cél: Többváros időjárási elemzés koordinálása
 - 🔥 WINDSPEED METRIC JAVÍTÁS: windgusts_10m_max → windspeed_10m_max (ROBUSZTUSABB!)
 """
 
-import sqlite3
-import logging
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any, Union
-from datetime import datetime
-from dataclasses import dataclass
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import statistics
-import time
-import os
+from __future__ import annotations
 
-# 🔧 KRITIKUS JAVÍTÁS: Szabványos modellek importálása a UI kompatibilitáshoz
-from ..data.models import AnalyticsResult, CityWeatherResult, AnalyticsQuestion
-from ..data.enums import RegionScope, AnalyticsMetric, QuestionType, DataSource
+import logging
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+from src.domain.analytics.models import CityWeatherData, MultiCityQuery
+from src.domain.analytics.repositories import CityRepositoryProtocol
+from src.domain.analytics.statistics import (
+    safe_mean as _safe_mean,
+    safe_median as _safe_median,
+    safe_min_max as _safe_min_max,
+    safe_stdev as _safe_stdev,
+)
+from src.infrastructure.repositories.city_repository import CityRepository
+from ..data.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
+from ..data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
+
+Number = float | int
+NumberOrNone = Number | None
 
 # Logging beállítás
 logger = logging.getLogger(__name__)
 
 
+# 🔧 BACKWARD-COMPATIBILITY EXPORTS FOR LEGACY TESTS
+def safe_mean(values: List[NumberOrNone]) -> Optional[float]:
+    """Legacy wrapper → domain safe_mean."""
+    return _safe_mean(values)
+
+
+def safe_statistics_mean(values: List[NumberOrNone]) -> Optional[float]:
+    """Legacy wrapper → domain safe_mean."""
+    return safe_mean(values)
+
+
+def safe_median(values: List[NumberOrNone]) -> Optional[float]:
+    """Legacy wrapper → domain safe_median."""
+    return _safe_median(values)
+
+
+def safe_statistics_median(values: List[NumberOrNone]) -> Optional[float]:
+    """Legacy wrapper → domain safe_median."""
+    return safe_median(values)
+
+
+def safe_stdev(values: List[NumberOrNone]) -> Optional[float]:
+    """Legacy wrapper → domain safe_stdev."""
+    return _safe_stdev(values)
+
+
+def safe_statistics_stdev(values: List[NumberOrNone]) -> Optional[float]:
+    """Legacy wrapper → domain safe_stdev."""
+    return safe_stdev(values)
+
+
+def safe_min_max(values: List[NumberOrNone]) -> Tuple[Optional[float], Optional[float]]:
+    """Legacy wrapper → domain safe_min_max."""
+    return _safe_min_max(values)
+
+
 # 🔧 NONE-SAFE HELPER FÜGGVÉNYEK (MULTI-CITY ENGINE VERZIÓJA)
-def safe_statistics_mean(values: List[Union[float, int, None]]) -> Optional[float]:
-    """None-safe statistics.mean replacement"""
-    if not values:
-        return None
-    clean_values = [v for v in values if v is not None and isinstance(v, (int, float))]
-    if not clean_values:
-        return None
-    try:
-        return statistics.mean(clean_values)
-    except statistics.StatisticsError:
-        return None
-
-
-def safe_statistics_median(values: List[Union[float, int, None]]) -> Optional[float]:
-    """None-safe statistics.median replacement"""
-    if not values:
-        return None
-    clean_values = [v for v in values if v is not None and isinstance(v, (int, float))]
-    if not clean_values:
-        return None
-    try:
-        return statistics.median(clean_values)
-    except statistics.StatisticsError:
-        return None
-
-
-def safe_statistics_stdev(values: List[Union[float, int, None]]) -> Optional[float]:
-    """None-safe statistics.stdev replacement"""
-    if not values:
-        return None
-    clean_values = [v for v in values if v is not None and isinstance(v, (int, float))]
-    if len(clean_values) < 2:
-        return 0.0
-    try:
-        return statistics.stdev(clean_values)
-    except statistics.StatisticsError:
-        return 0.0
-
-
-def safe_min_max(values: List[Union[float, int, None]]) -> Tuple[Optional[float], Optional[float]]:
-    """None-safe min és max számítás egyben"""
-    if not values:
-        return None, None
-    clean_values = [v for v in values if v is not None and isinstance(v, (int, float))]
-    if not clean_values:
-        return None, None
-    try:
-        return min(clean_values), max(clean_values)
-    except (ValueError, TypeError):
-        return None, None
-
-
-@dataclass
-class MultiCityQuery:
-    """
-    ✅ Multi-city analytics query struktúra.
-    
-    Analytics panel által használt query objektum multi-city elemzésekhez.
-    """
-    query_type: str
-    region: str
-    date: str
-    max_cities: int = 50
-    limit: Optional[int] = None
-    
-    # 🔧 KRITIKUS JAVÍTÁS: AnalyticsQuestion objektum tárolása
-    question: Optional[AnalyticsQuestion] = None
-    region_scope: Optional[RegionScope] = None
-
-
-@dataclass
-class CityWeatherData:
-    """Egy város időjárási adatai (DUAL-API KOMPATIBILIS) - BELSŐ HASZNÁLATRA"""
-    city: str
-    country: str
-    country_code: str
-    lat: float
-    lon: float
-    population: Optional[int] = None
-    
-    date: Optional[str] = None
-    temperature_2m_max: Optional[float] = None
-    temperature_2m_min: Optional[float] = None
-    temperature_2m_mean: Optional[float] = None
-    precipitation_sum: Optional[float] = None
-    windspeed_10m_max: Optional[float] = None
-    windgusts_10m_max: Optional[float] = None
-    
-    meteostat_station_id: Optional[str] = None
-    data_quality_score: Optional[float] = None # 🔧 FIX: int -> float
-    
-    data_source: str = "dual-api"
-    fetch_timestamp: Optional[str] = None
-    fetch_success: bool = True
-    error_message: Optional[str] = None
-    retry_count: int = 0
-    
-    temperature_range: Optional[float] = None
-
-
 class MultiCityEngine:
     """
     Multi-city időjárás elemzés koordinátor (ABSOLUTE DATABASE PATH FIX v2.8.2 + DUAL-API CLEAN + NULL-SAFE + DATA TRANSFORM FIXED + RÉGIÓ/MEGYE MAPPING TELJES + RÉGIÓ SZŰRÉS JAVÍTVA + WINDSPEED METRIC JAVÍTVA!)
@@ -291,78 +236,34 @@ class MultiCityEngine:
         "temperature_range": {"name": "Legnagyobb hőingás", "metric": "temperature_range", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legnagyobb hőingás {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_RANGE}
     }
     
-    def __init__(self, db_path: Optional[str] = None, hungarian_db_path: Optional[str] = None):
+    def __init__(
+        self,
+        db_path: Optional[str] = None,
+        hungarian_db_path: Optional[str] = None,
+        city_repository: Optional[CityRepositoryProtocol] = None,
+    ):
         """
-        🔧 ABSOLUTE DATABASE PATH FIX v2.8.2!
-        
-        MultiCityEngine inicializálása ABSZOLÚT database path-okkal.
-        Working directory független működés!
-        
-        Args:
-            db_path: Global cities.db elérési út (opcionális)
-            hungarian_db_path: Hungarian settlements.db elérési út (opcionális)
+        MultiCityEngine inicializálása repository injekcióval.
         """
-        
-        # 🔧 KRITIKUS JAVÍTÁS v2.8.2: ABSZOLÚT PATH HASZNÁLATA
-        if db_path is None:
-            # Projekt root megkeresése: src/analytics/multi_city_engine.py → project_root
-            project_root = Path(__file__).parent.parent.parent  # src/analytics → src → project_root
-            self.db_path = project_root / "data" / "cities.db"
-        else:
-            self.db_path = Path(db_path)
-        
-        if hungarian_db_path is None:
-            project_root = Path(__file__).parent.parent.parent
-            self.hungarian_db_path = project_root / "data" / "hungarian_settlements.db"
-        else:
-            self.hungarian_db_path = Path(hungarian_db_path)
-        
-        # 🔧 FALLBACK PATH LOGIKA: ha az abszolút path nem működik
-        if not self.db_path.exists():
-            # Fallback: aktuális working directory-ből
-            fallback_db = Path.cwd() / "data" / "cities.db"
-            if fallback_db.exists():
-                self.db_path = fallback_db
-                logger.info(f"🔧 FALLBACK: Using working directory path for cities.db")
-            else:
-                # Fallback 2: környezeti változó vagy config alapján
-                env_data_dir = os.environ.get("WEATHER_ANALYZER_DATA_DIR")
-                if env_data_dir:
-                    env_db = Path(env_data_dir) / "cities.db"
-                    if env_db.exists():
-                        self.db_path = env_db
-                        logger.info(f"🔧 FALLBACK: Using env variable path for cities.db")
-        
-        if not self.hungarian_db_path.exists():
-            fallback_hungarian_db = Path.cwd() / "data" / "hungarian_settlements.db"
-            if fallback_hungarian_db.exists():
-                self.hungarian_db_path = fallback_hungarian_db
-                logger.info(f"🔧 FALLBACK: Using working directory path for hungarian_settlements.db")
-            else:
-                env_data_dir = os.environ.get("WEATHER_ANALYZER_DATA_DIR")
-                if env_data_dir:
-                    env_hungarian_db = Path(env_data_dir) / "hungarian_settlements.db"
-                    if env_hungarian_db.exists():
-                        self.hungarian_db_path = env_hungarian_db
-                        logger.info(f"🔧 FALLBACK: Using env variable path for hungarian_settlements.db")
-        
+        project_root = Path(__file__).parent.parent.parent
+        default_db = project_root / "data" / "cities.db"
+        default_hu_db = project_root / "data" / "hungarian_settlements.db"
+
+        self.db_path = Path(db_path) if db_path else default_db
+        self.hungarian_db_path = (
+            Path(hungarian_db_path) if hungarian_db_path else default_hu_db
+        )
+
+        self.city_repository: CityRepositoryProtocol = city_repository or CityRepository(
+            self.db_path,
+            self.hungarian_db_path,
+        )
+        self.city_repository.validate_paths()
+
         self.max_workers = 8
         self.request_timeout = 90
         self.max_retries = 2
         self.retry_delay = 3.0
-        
-        # 🔧 RÉSZLETES PATH DEBUGGING v2.8.2
-        logger.info(f"🔧 ABSOLUTE DATABASE PATH FIX v2.8.2:")
-        logger.info(f"   Script file location: {Path(__file__).absolute()}")
-        logger.info(f"   Project root (calculated): {Path(__file__).parent.parent.parent.absolute()}")
-        logger.info(f"   Current working directory: {Path.cwd().absolute()}")
-        logger.info(f"   Global cities DB: {self.db_path.absolute()}")
-        logger.info(f"   Hungarian settlements DB: {self.hungarian_db_path.absolute()}")
-        logger.info(f"   Global DB exists: {self.db_path.exists()}")
-        logger.info(f"   Hungarian DB exists: {self.hungarian_db_path.exists()}")
-        
-        # Database path validálás
-        self._validate_database_paths()
         
         try:
             from src.data.weather_client import WeatherClient
@@ -373,38 +274,6 @@ class MultiCityEngine:
             self.weather_client = None
         
         logger.info("🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)")
-
-    def _validate_database_paths(self) -> None:
-        """
-        🔧 ÚJ METÓDUS: Database path-ok validálása és hibajelentés.
-        """
-        issues = []
-        
-        if not self.db_path.exists():
-            issues.append(f"❌ Global cities database nem található: {self.db_path.absolute()}")
-            issues.append("   🔧 Javítás: Futtasd 'python scripts/populate_cities_db.py'")
-            
-            # További debugging info
-            data_dir = self.db_path.parent
-            if data_dir.exists():
-                files_in_data = list(data_dir.iterdir())
-                issues.append(f"   📁 data/ mappa tartalma: {[f.name for f in files_in_data]}")
-            else:
-                issues.append(f"   📁 data/ mappa nem létezik: {data_dir.absolute()}")
-        
-        if not self.hungarian_db_path.exists():
-            issues.append(f"❌ Magyar települések database nem található: {self.hungarian_db_path.absolute()}")
-            issues.append("   🔧 Javítás: Futtasd 'python scripts/hungarian_settlements_importer.py'")
-        
-        if issues:
-            for issue in issues:
-                logger.error(issue)
-            
-            # Ha egyik sem elérhető, exception
-            if not self.db_path.exists() and not self.hungarian_db_path.exists():
-                raise RuntimeError(f"Egyetlen adatbázis sem elérhető! Ellenőrizd:\n1. {self.db_path.absolute()}\n2. {self.hungarian_db_path.absolute()}\n\nFuttasd a database setup script-eket a projekt root-ból!")
-        else:
-            logger.info("✅ Database path-ok validálva - minden adatbázis elérhető")
 
     def execute_analytics_query(self, query: MultiCityQuery, progress_callback: Optional[callable] = None) -> AnalyticsResult:
         return self.analyze_multi_city(
@@ -448,77 +317,30 @@ class MultiCityEngine:
         logger.info(f"🔧 get_cities_for_region JAVÍTVA: original='{original_region}' → mapped='{mapped_region}', limit={final_limit}")
         
         try:
-            # 🔧 DATABASE PATH JAVÍTÁS: self.hungarian_db_path használata
-            database_path = self.hungarian_db_path if mapped_region == "Hungary" and original_region in self.HUNGARIAN_REGIONAL_MAPPING else self.db_path
-            
-            with sqlite3.connect(database_path) as conn:
-                cursor = conn.cursor()
-                query_str = ""
-                params = []
-                
-                if mapped_region == "Global":
-                    base_select = 'SELECT city, country, country_code, lat, lon, population, meteostat_station_id, data_quality_score FROM cities'
-                    query_str = f'{base_select} WHERE population IS NOT NULL AND population > 100000 ORDER BY population DESC LIMIT ?'
-                    params = [final_limit]
-                    
-                elif mapped_region == "Hungary":
-                    # 🔧 KRITIKUS JAVÍTÁS: REGIONÁLIS SZŰRÉS HOZZÁADÁSA!
-                    
-                    # 1. Ellenőrizzük, hogy az eredeti régió neve megvan-e a mapping-ben
-                    if original_region in self.HUNGARIAN_REGIONAL_MAPPING:
-                        # REGIONÁLIS SZŰRÉS - csak a megadott régió megyéi
-                        target_counties = self.HUNGARIAN_REGIONAL_MAPPING[original_region]
-                        logger.info(f"🎯 REGIONÁLIS SZŰRÉS: '{original_region}' → {target_counties}")
-                        
-                        # Hungarian settlements database használata
-                        base_select = 'SELECT name as city, "Magyarország" as country, "HU" as country_code, latitude as lat, longitude as lon, population, NULL as meteostat_station_id, region_priority as data_quality_score FROM hungarian_settlements'
-                        placeholders = ','.join(['?' for _ in target_counties])
-                        query_str = f'{base_select} WHERE megye IN ({placeholders}) ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
-                        params = target_counties + [final_limit]
-                        
-                    else:
-                        # ORSZÁGOS SZŰRÉS - összes magyar város (eredeti viselkedés)
-                        logger.info(f"🌍 ORSZÁGOS SZŰRÉS: '{original_region}' nincs regionális mapping-ben")
-                        
-                        # Global cities database használata Magyarország számára
-                        database_path = self.db_path
-                        with sqlite3.connect(database_path) as conn:
-                            cursor = conn.cursor()
-                            base_select = 'SELECT city, country, country_code, lat, lon, population, meteostat_station_id, data_quality_score FROM cities'
-                            query_str = f'{base_select} WHERE country_code = "HU" ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
-                            params = [final_limit]
-                        
-                else:  # Europe és egyéb régiók
-                    base_select = 'SELECT city, country, country_code, lat, lon, population, meteostat_station_id, data_quality_score FROM cities'
-                    placeholders = ','.join(['?' for _ in country_codes])
-                    query_str = f'{base_select} WHERE country_code IN ({placeholders}) AND population IS NOT NULL AND population > 50000 ORDER BY CASE WHEN population IS NOT NULL THEN population ELSE 0 END DESC LIMIT ?'
-                    params = country_codes + [final_limit]
-                
-                logger.debug(f"🔧 SQL QUERY: {query_str}")
-                logger.debug(f"🔧 SQL PARAMS: {params}")
-                logger.debug(f"🔧 DATABASE PATH: {database_path}")
-                
-                cursor.execute(query_str, params)
-                results = cursor.fetchall()
-                
-                cities = [{
-                    'city': row[0], 'country': row[1], 'country_code': row[2],
-                    'lat': row[3], 'lon': row[4], 'population': row[5],
-                    'meteostat_station_id': row[6], 'data_quality_score': row[7]
-                } for row in results]
-                
-                if original_region in self.HUNGARIAN_REGIONAL_MAPPING:
-                    logger.info(f"✅ REGIONÁLIS lekérdezés: {len(cities)} város {original_region} régióból ({self.HUNGARIAN_REGIONAL_MAPPING[original_region]})")
-                else:
-                    logger.info(f"✅ ORSZÁGOS lekérdezés: {len(cities)} város {mapped_region} régióból")
-                
-                return cities
-                
+            cities = self.city_repository.get_cities_for_region(
+                mapped_region=mapped_region,
+                original_region=original_region,
+                country_codes=country_codes,
+                limit=final_limit,
+                hungarian_mapping=self.HUNGARIAN_REGIONAL_MAPPING,
+            )
+            if original_region in self.HUNGARIAN_REGIONAL_MAPPING:
+                logger.info(
+                    "✅ REGIONÁLIS lekérdezés: %d város %s régióból (%s)",
+                    len(cities),
+                    original_region,
+                    self.HUNGARIAN_REGIONAL_MAPPING[original_region],
+                )
+            else:
+                logger.info(
+                    "✅ ORSZÁGOS lekérdezés: %d város %s régióból",
+                    len(cities),
+                    mapped_region,
+                )
+            return cities
+
         except Exception as e:
             logger.error(f"⚠ Hiba városok lekérdezésénél: {e}", exc_info=True)
-            logger.error(f"🔧 DATABASE PATH DEBUG: {database_path}")
-            logger.error(f"🔧 QUERY DEBUG: {query_str}")
-            logger.error(f"🔧 PARAMS DEBUG: {params}")
             return []
 
     def analyze_multi_city(self, query_type: str, region: str, date: str, limit: Optional[int] = None, question: Optional[AnalyticsQuestion] = None) -> AnalyticsResult:
@@ -921,7 +743,7 @@ class MultiCityEngine:
         Ez a metódus javítja a hibás statisztikákat azzal, hogy:
         1. A TELJES sikeres adathalmazon számol (nem csak a limitált eredményeken)
         2. A value mezőt használja, ami már a helyes metrika értéket tartalmazza
-        3. ✅ NONE-SAFE: safe_statistics_* függvényeket használ statistics.* helyett
+        3. ✅ NONE-SAFE: safe_* függvényeket használ statistics.* helyett
         
         Args:
             results: Transzformált CityWeatherResult lista
@@ -946,9 +768,9 @@ class MultiCityEngine:
         
         try:
             # 🔧 KRITIKUS JAVÍTÁS: NONE-SAFE statisztikai műveletek
-            mean_val = safe_statistics_mean(all_values)
-            median_val = safe_statistics_median(all_values)
-            stdev_val = safe_statistics_stdev(all_values)
+            mean_val = safe_mean(all_values)
+            median_val = safe_median(all_values)
+            stdev_val = safe_stdev(all_values)
             min_val, max_val = safe_min_max(all_values)
             
             # Build stats dictionary with None checks
