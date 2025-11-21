@@ -57,7 +57,11 @@ from src.domain.analytics.statistics import (
     safe_stdev as _safe_stdev,
 )
 from src.infrastructure.repositories.city_repository import CityRepository
-from src.domain.analytics.services import RegionResolverService, WeatherFetchService
+from src.domain.analytics.services import (
+    AnalyticsTransformService,
+    RegionResolverService,
+    WeatherFetchService,
+)
 from ..data.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
 from ..data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
 
@@ -222,6 +226,7 @@ class MultiCityEngine:
             max_retries=self.max_retries,
             retry_delay=self.retry_delay,
         )
+        self.analytics_transform_service = AnalyticsTransformService(self.QUERY_TYPES)
         
         logger.info("🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)")
 
@@ -422,75 +427,9 @@ class MultiCityEngine:
             logger.error(f"⚠ CRITICAL ERROR in analyze_multi_city: {e}", exc_info=True)
             return self._create_empty_analytics_result(question, f"Kritikus hiba a multi-city elemzésben: {e}")
 
-    def _get_provider_stats(self, weather_data: List[CityWeatherData]) -> Dict[str, int]:
-        """Provider statisztikák kinyerése."""
-        stats = {}
-        for data in weather_data:
-            if data.fetch_success:
-                stats[data.data_source] = stats.get(data.data_source, 0) + 1
-        return stats
-
     def _transform_to_city_weather_result(self, city_data: CityWeatherData, query_type: str) -> CityWeatherResult:
-        """
-        🔧 KRITIKUS ÚJ METÓDUS: Átalakítja a belső CityWeatherData-t a UI-kompatibilis CityWeatherResult-tá.
-        
-        Ez a metódus javítja a "0.0°C" hibát azzal, hogy:
-        1. Kiveszi a specifikus metrika értéket a CityWeatherData-ból
-        2. Behelyezi a `value` mezőbe
-        3. Létrehozza a teljes CityWeatherResult objektumot
-        
-        🔥 WINDSPEED METRIC JAVÍTÁS: windiest_today most windspeed_10m_max-ot használ!
-        
-        Args:
-            city_data: Belső weather data objektum
-            query_type: Lekérdezés típusa
-            
-        Returns:
-            UI kompatibilis CityWeatherResult objektum
-        """
-        query_config = self.QUERY_TYPES[query_type]
-        metric_name = query_config["metric"]
-        metric_enum = query_config["metric_enum"]
-        
-        # A specifikus metrika érték kinyerése
-        if metric_name == "temperature_range":
-            metric_value = city_data.temperature_range
-        else:
-            metric_value = getattr(city_data, metric_name, None)
-        
-        # 🔧 CRITICAL DEBUG: Log what we're getting
-        logger.info(f"🔧 TRANSFORM DEBUG: {city_data.city} - {metric_name}={metric_value} (type: {type(metric_value)})")
-        logger.info(f"🔧 RAW DATA: temp_max={city_data.temperature_2m_max}, temp_min={city_data.temperature_2m_min}, precip={city_data.precipitation_sum}, windspeed={city_data.windspeed_10m_max}")
-        
-        # 🔧 NONE-SAFE value conversion - STRICTER VALIDATION
-        if metric_value is not None and metric_value != 0:
-            final_value = float(metric_value)
-        else:
-            # 🔧 FALLBACK: Try to get ANY valid weather data
-            fallback_value = (city_data.temperature_2m_max or 
-                            city_data.temperature_2m_min or 
-                            city_data.precipitation_sum or 
-                            city_data.windspeed_10m_max or 0.0)
-            final_value = float(fallback_value) if fallback_value is not None else 0.0
-            logger.warning(f"⚠️ NULL metric value for {city_data.city}, using fallback: {fallback_value}")
-        
-        # CityWeatherResult objektum létrehozása
-        result = CityWeatherResult(
-            city_name=city_data.city,
-            country=city_data.country,
-            country_code=city_data.country_code,
-            latitude=city_data.lat,
-            longitude=city_data.lon,
-            value=final_value,  # 🔧 KRITIKUS: Ez javítja a 0.0°C hibát!
-            metric=metric_enum,
-            date=datetime.strptime(city_data.date, "%Y-%m-%d").date(),
-            population=city_data.population,
-            quality_score=city_data.data_quality_score if city_data.data_quality_score is not None else 0.0
-        )
-        
-        logger.info(f"🔧 Transzformáció: {city_data.city} - {metric_name}={metric_value} → value={final_value}")
-        
-        return result
+        """BC wrapper: CityWeatherData → CityWeatherResult."""
+        return self.analytics_transform_service.transform_to_city_weather_result(city_data, query_type)
         
     def _fetch_weather_data_dual_api_batch(self, cities: List[Dict[str, Any]], date: str, region: str) -> List[CityWeatherData]:
         """Párhuzamos időjárás lekérdezés (DUAL-API BATCH PROCESSING) delegálva a service-re."""
@@ -514,136 +453,20 @@ class MultiCityEngine:
         return self.weather_fetch_service.create_empty_city_data(city, error_msg)
 
     def _process_weather_results(self, weather_data: List[CityWeatherData], query_type: str) -> List[CityWeatherData]:
-        """
-        Időjárási eredmények feldolgozása és NULL-safe rendezése.
-        
-        🔥 WINDSPEED METRIC JAVÍTÁS: windiest_today most windspeed_10m_max-ot keresi!
-        """
-        logger.info(f"🔧 WINDSPEED FIX: _process_weather_results called with {len(weather_data)} cities")
-        
-        query_config = self.QUERY_TYPES[query_type]
-        metric = query_config["metric"]
-        sort_desc = query_config["sort_desc"]
-        
-        logger.info(f"🔧 WINDSPEED FIX: Looking for metric '{metric}' in weather data")
-        
-        # Log first few cities' data for debugging
-        for i, city in enumerate(weather_data[:3]):
-            logger.info(f"🔧 CITY {i+1}: {city.city} - success={city.fetch_success}")
-            logger.info(f"    temp_max={city.temperature_2m_max}, temp_min={city.temperature_2m_min}")
-            logger.info(f"    precip={city.precipitation_sum}, windspeed={city.windspeed_10m_max}, windgusts={city.windgusts_10m_max}")
-        
-        # 🔧 NONE-SAFE hőingás számítása a temperature_range query-hez
-        if metric == "temperature_range":
-            for city_data in weather_data:
-                if city_data.fetch_success:
-                    temp_max = city_data.temperature_2m_max
-                    temp_min = city_data.temperature_2m_min
-                    if temp_max is not None and temp_min is not None:
-                        try:
-                            city_data.temperature_range = temp_max - temp_min
-                            logger.info(f"🔧 TEMP RANGE: {city_data.city} = {city_data.temperature_range}")
-                        except (TypeError, ValueError):
-                            city_data.temperature_range = None
-                            logger.warning(f"⚠️ TEMP RANGE calc error for {city_data.city}")
-        
-        # Érvényes adatok szűrése
-        valid_data = [d for d in weather_data if d.fetch_success and getattr(d, metric, None) is not None]
-        
-        logger.info(f"🔧 WINDSPEED FIX: {len(valid_data)} valid cities with metric '{metric}'")
-        
-        if not valid_data:
-            logger.error(f"⚠ NO VALID DATA! All cities missing metric '{metric}'")
-            # Return first few cities anyway for debugging
-            return weather_data[:5]
-        
-        def get_sort_value(city_data: CityWeatherData) -> float:
-            """🔧 NONE-SAFE sort key function"""
-            value = getattr(city_data, metric, None)
-            if value is None: 
-                return float('-inf') if sort_desc else float('inf')
-            try: 
-                return float(value)
-            except (ValueError, TypeError): 
-                return float('-inf') if sort_desc else float('inf')
-        
-        try:
-            sorted_data = sorted(valid_data, key=get_sort_value, reverse=sort_desc)
-        except Exception as e:
-            logger.error(f"⚠ Rendezési hiba: {e}", exc_info=True)
-            sorted_data = valid_data
-        
-        logger.info(f"🔧 Feldolgozott adatok: {len(sorted_data)} érvényes város {metric} alapján rendezve")
-        
-        # 🔥 WINDSPEED DEBUG: Log top 3 cities
-        if query_type == "windiest_today":
-            logger.info("🔥 TOP 3 WINDIEST CITIES:")
-            for i, city in enumerate(sorted_data[:3]):
-                wind_value = getattr(city, metric, None)
-                logger.info(f"  {i+1}. {city.city}: {wind_value} km/h")
-        
-        return sorted_data
+        """BC wrapper: rendezés és hőingás számítás."""
+        return self.analytics_transform_service.process_weather_results(weather_data, query_type)
 
     def _calculate_statistics_for_results_none_safe(self, results: List[CityWeatherResult]) -> Dict[str, float]:
-        """
-        🔧 KRITIKUS JAVÍTÁS: NONE-SAFE statisztikák számítása a transzformált CityWeatherResult listából.
-        
-        Ez a metódus javítja a hibás statisztikákat azzal, hogy:
-        1. A TELJES sikeres adathalmazon számol (nem csak a limitált eredményeken)
-        2. A value mezőt használja, ami már a helyes metrika értéket tartalmazza
-        3. ✅ NONE-SAFE: safe_* függvényeket használ statistics.* helyett
-        
-        Args:
-            results: Transzformált CityWeatherResult lista
-            
-        Returns:
-            Statisztikai értékek (None-safe)
-        """
-        # 🔧 CRITICAL DEBUG: Log all values for debugging
-        logger.info(f"🔧 NONE-SAFE STATS DEBUG: Analyzing {len(results)} results")
-        for i, r in enumerate(results[:5]):  # First 5 for debugging
-            logger.info(f"  {i+1}. {r.city_name}: value={r.value} (type: {type(r.value)})")
-        
-        # 🔧 NONE-SAFE: Collect all values (including None for safety)
-        all_values = [r.value for r in results]
-        
-        # 🔧 DEBUG: Log filtering results
-        logger.info(f"🔧 NONE-SAFE STATS DEBUG: {len(all_values)} total values from {len(results)} results")
-        
-        if not all_values:
-            logger.error(f"⚠ NONE-SAFE STATS DEBUG: No values at all! Results sample: {[(r.city_name, r.value) for r in results[:3]]}")
-            return {}
-        
-        try:
-            # 🔧 KRITIKUS JAVÍTÁS: NONE-SAFE statisztikai műveletek
-            mean_val = safe_mean(all_values)
-            median_val = safe_median(all_values)
-            stdev_val = safe_stdev(all_values)
-            min_val, max_val = safe_min_max(all_values)
-            
-            # Build stats dictionary with None checks
-            stats = {}
-            
-            if mean_val is not None:
-                stats["mean"] = mean_val
-            if median_val is not None:
-                stats["median"] = median_val  
-            if stdev_val is not None:
-                stats["stdev"] = stdev_val
-            if min_val is not None:
-                stats["min"] = min_val
-            if max_val is not None:
-                stats["max"] = max_val
-            if min_val is not None and max_val is not None:
-                stats["range"] = max_val - min_val
-            
-            logger.info(f"📊 NONE-SAFE Statisztikák: {len(all_values)} értékből - átlag: {stats.get('mean', 'N/A')}, tartomány: {stats.get('min', 'N/A')}-{stats.get('max', 'N/A')}")
-            
-            return stats
-            
-        except Exception as e:
-            logger.error(f"⚠ NONE-SAFE Hiba a statisztikák számításánál: {e}", exc_info=True)
-            return {}
+        """BC wrapper: none-safe statisztikák számítása."""
+        return self.analytics_transform_service.calculate_statistics_for_results_none_safe(results)
+
+    def _get_provider_stats(self, weather_data: List[CityWeatherData]) -> Dict[str, int]:
+        """BC wrapper: provider statisztikák."""
+        return self.analytics_transform_service.get_provider_stats(weather_data)
+
+    def _create_empty_analytics_result(self, question: Optional[AnalyticsQuestion], error_msg: str = "Ismeretlen hiba") -> AnalyticsResult:
+        """BC wrapper: üres AnalyticsResult létrehozása."""
+        return self.analytics_transform_service.create_empty_analytics_result(question, error_msg)
 
     def _create_empty_analytics_result(self, question: Optional[AnalyticsQuestion], error_msg: str = "Ismeretlen hiba") -> AnalyticsResult:
         """
