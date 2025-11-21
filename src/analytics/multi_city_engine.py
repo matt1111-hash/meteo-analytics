@@ -44,7 +44,6 @@ from __future__ import annotations
 
 import logging
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -58,7 +57,7 @@ from src.domain.analytics.statistics import (
     safe_stdev as _safe_stdev,
 )
 from src.infrastructure.repositories.city_repository import CityRepository
-from src.domain.analytics.services.region_resolver import RegionResolverService
+from src.domain.analytics.services import RegionResolverService, WeatherFetchService
 from ..data.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
 from ..data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
 
@@ -215,6 +214,14 @@ class MultiCityEngine:
         except ImportError as e:
             logger.warning(f"⚠ WeatherClient import hiba: {e}")
             self.weather_client = None
+
+        self.weather_fetch_service = WeatherFetchService(
+            weather_client=self.weather_client,
+            max_workers=self.max_workers,
+            request_timeout=self.request_timeout,
+            max_retries=self.max_retries,
+            retry_delay=self.retry_delay,
+        )
         
         logger.info("🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)")
 
@@ -486,127 +493,25 @@ class MultiCityEngine:
         return result
         
     def _fetch_weather_data_dual_api_batch(self, cities: List[Dict[str, Any]], date: str, region: str) -> List[CityWeatherData]:
-        """Párhuzamos időjárás lekérdezés (DUAL-API BATCH PROCESSING)."""
-        weather_data = []
-        if not self.weather_client:
-            logger.error("⚠ WeatherClient nem elérhető")
-            return [self._create_empty_city_data(city) for city in cities]
-
+        """Párhuzamos időjárás lekérdezés (DUAL-API BATCH PROCESSING) delegálva a service-re."""
         region_config = self.REGIONS[region]
-        batch_size = region_config["batch_size"]
-        rate_limit_delay = region_config["rate_limit_delay"]
-        
-        batches = [cities[i:i + batch_size] for i in range(0, len(cities), batch_size)]
-        logger.info(f"🔄 Dual-API batch processing: {len(batches)} batch, {batch_size} város/batch")
-        
-        for batch_idx, batch in enumerate(batches):
-            batch_start_time = time.time()
-            print(f"📊 Batch {batch_idx + 1}/{len(batches)}: {len(batch)} város (DUAL-API)...", end="", flush=True)
-            
-            batch_results = self._process_dual_api_batch(batch, date, rate_limit_delay)
-            weather_data.extend(batch_results)
-            
-            batch_time = time.time() - batch_start_time
-            successful_in_batch = len([r for r in batch_results if r.fetch_success])
-            
-            sources_in_batch = self._get_provider_stats(batch_results)
-            source_info = ", ".join([f"{k}: {v}" for k, v in sources_in_batch.items()])
-            print(f" ✅ {successful_in_batch}/{len(batch)} siker ({source_info}) ({batch_time:.1f}s)")
-            
-            if batch_idx < len(batches) - 1:
-                time.sleep(rate_limit_delay)
-        
-        print(f"🎉 Dual-API batch processing befejezve: {len(weather_data)} város")
-        return weather_data
+        return self.weather_fetch_service.fetch_weather_data_dual_api_batch(
+            cities=cities,
+            date=date,
+            region_config=region_config,
+        )
 
     def _process_dual_api_batch(self, batch: List[Dict[str, Any]], date: str, rate_limit_delay: float) -> List[CityWeatherData]:
-        """Batch feldolgozása ThreadPoolExecutor-ral."""
-        batch_results = []
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            futures = {executor.submit(self._fetch_single_city_weather_dual_api, city, date): city for city in batch}
-            
-            for future in as_completed(futures):
-                city = futures[future]
-                try:
-                    city_data = future.result(timeout=self.request_timeout)
-                    batch_results.append(city_data)
-                except Exception as e:
-                    logger.error(f"⚠ Hiba a város feldolgozásánál ({city.get('city')}): {e}", exc_info=True)
-                    batch_results.append(self._create_empty_city_data(city, str(e)))
-        return batch_results
+        """BC wrapper a WeatherFetchService batch feldolgozására."""
+        return self.weather_fetch_service.process_dual_api_batch(batch, date)
 
     def _fetch_single_city_weather_dual_api(self, city: Dict[str, Any], date: str) -> CityWeatherData:
-        """
-        Egyetlen város DUAL-API lekérdezése retry logikával.
-        
-        🔧 JAVÍTÁS: WeatherClient visszatérési értékének helyes kezelése
-        🔥 WINDSPEED METRIC JAVÍTÁS: windspeed_10m_max most már rendelkezésre áll!
-        """
-        last_error = None
-        for attempt in range(self.max_retries):
-            try:
-                # WeatherClient hívás - tuple visszatérési érték kezelése
-                weather_result = self.weather_client.get_weather_data(city['lat'], city['lon'], date, date)
-                
-                # Check if result is tuple (weather_data, source) or just weather_data
-                if isinstance(weather_result, tuple) and len(weather_result) == 2:
-                    weather_data, source = weather_result
-                else:
-                    weather_data = weather_result
-                    source = "auto"
-                
-                if weather_data and len(weather_data) > 0:
-                    daily_data = weather_data[0]
-                    temp_max = daily_data.get('temperature_2m_max')
-                    temp_min = daily_data.get('temperature_2m_min')
-                    
-                    # 🔧 NONE-SAFE hőingás számítás
-                    temp_range = None
-                    if temp_max is not None and temp_min is not None:
-                        try:
-                            temp_range = temp_max - temp_min
-                        except (TypeError, ValueError):
-                            temp_range = None
-
-                    # 🔥 WINDSPEED DEBUG: Log what we're getting
-                    windspeed = daily_data.get('windspeed_10m_max')
-                    windgusts = daily_data.get('windgusts_10m_max')
-                    logger.debug(f"🔧 WINDSPEED DEBUG {city['city']}: windspeed={windspeed}, windgusts={windgusts}")
-
-                    return CityWeatherData(
-                        city=city['city'], country=city['country'], country_code=city['country_code'],
-                        lat=city['lat'], lon=city['lon'], population=city.get('population'),
-                        date=date,
-                        temperature_2m_max=temp_max, temperature_2m_min=temp_min,
-                        temperature_2m_mean=daily_data.get('temperature_2m_mean'),
-                        precipitation_sum=daily_data.get('precipitation_sum'),
-                        windspeed_10m_max=windspeed,  # 🔥 Most már ezt használjuk!
-                        windgusts_10m_max=windgusts,
-                        meteostat_station_id=city.get('meteostat_station_id'),
-                        data_quality_score=city.get('data_quality_score'),
-                        data_source=source,
-                        fetch_timestamp=datetime.now().isoformat(),
-                        fetch_success=True, retry_count=attempt,
-                        temperature_range=temp_range
-                    )
-                else:
-                    last_error = f"Nincs időjárási adat {city['city']}-hoz"
-            except Exception as e:
-                last_error = str(e)
-                logger.warning(f"⚠️ Hiba a(z) {city['city']} lekérdezésekor (próba: {attempt + 1}): {e}")
-                if attempt < self.max_retries - 1:
-                    time.sleep(self.retry_delay)
-        
-        logger.error(f"⚠ Végső hiba a(z) {city['city']} lekérdezésénél: {last_error}")
-        return self._create_empty_city_data(city, last_error)
+        """BC wrapper egyetlen város lekérdezésére."""
+        return self.weather_fetch_service.fetch_single_city_weather_dual_api(city, date)
 
     def _create_empty_city_data(self, city: Dict[str, Any], error_msg: str = "Ismeretlen hiba") -> CityWeatherData:
-        """Üres város adatstruktúra létrehozása hibák esetén."""
-        return CityWeatherData(
-            city=city.get('city', 'Ismeretlen'), country=city.get('country', 'Ismeretlen'),
-            country_code=city.get('country_code', 'XX'), lat=city.get('lat', 0.0), lon=city.get('lon', 0.0),
-            population=city.get('population'), data_source="error", fetch_success=False, error_message=error_msg
-        )
+        """BC wrapper üres CityWeatherData létrehozására."""
+        return self.weather_fetch_service.create_empty_city_data(city, error_msg)
 
     def _process_weather_results(self, weather_data: List[CityWeatherData], query_type: str) -> List[CityWeatherData]:
         """
