@@ -47,3 +47,4 @@ scripts/*.zip
 !data_explorer.py
 !tools_archi_scan.py
 .aider*
+*.coverage
