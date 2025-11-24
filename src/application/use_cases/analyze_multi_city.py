@@ -47,8 +47,13 @@ class AnalyzeMultiCityUseCase:
         self.regions = regions
         self.hungarian_mapping = hungarian_mapping
 
-    def execute(self, query: MultiCityQuery) -> AnalyticsResult:
-        """Execute the multi-city analytics flow."""
+    def execute(self, query: MultiCityQuery, aggregate: bool = True) -> AnalyticsResult:
+        """Execute the multi-city analytics flow.
+
+        Args:
+            query: The multi-city query parameters
+            aggregate: If True, aggregates multi-day data per city. If False, returns all daily records.
+        """
         start_time = time.time()
         try:
             self._validate_query(query)
@@ -58,30 +63,44 @@ class AnalyzeMultiCityUseCase:
             region_config = self._require_region_config(mapped_region)
             city_limit = self._resolve_city_limit(query, region_config)
 
-            cities = self.city_repository.get_cities_for_region(
-                mapped_region=mapped_region,
-                original_region=query.region,
-                country_codes=region_config["country_codes"],
-                limit=city_limit,
-                hungarian_mapping=self.hungarian_mapping,
-            )
+            # Use explicit city names if provided, otherwise query by region
+            if query.cities:
+                cities = self.city_repository.get_cities_by_names(query.cities)
+            else:
+                cities = self.city_repository.get_cities_for_region(
+                    mapped_region=mapped_region,
+                    original_region=query.region,
+                    country_codes=region_config["country_codes"],
+                    limit=city_limit,
+                    hungarian_mapping=self.hungarian_mapping,
+                )
             if not cities:
                 return self._fallback_result(query, "Nincsenek városok a lekérdezéshez")
 
+            # Pass both start_date and end_date to support date ranges
             weather_data = self.weather_fetch_service.fetch_weather_data_dual_api_batch(
                 cities=cities,
                 date=query.date,
                 region_config=region_config,
+                start_date=query.start_date,
+                end_date=query.end_date,
             )
             processed_data = self.analytics_transform_service.process_weather_results(
                 weather_data,
                 query.query_type,
+                aggregate=aggregate,
             )
             transformed_results = self._transform_results(processed_data, query.query_type)
             if not transformed_results:
                 return self._fallback_result(query, "Nincsenek sikeres időjárási eredmények")
 
-            result_limit = query.limit if query.limit is not None else query.max_cities
+            # For daily time series (aggregate=False), don't limit results
+            # For aggregated multi-city (aggregate=True), apply limit
+            if aggregate:
+                result_limit = query.limit if query.limit is not None else query.max_cities
+            else:
+                result_limit = None  # Return ALL daily records without limit
+
             stats = self.analytics_transform_service.calculate_statistics_for_results_none_safe(
                 transformed_results
             )

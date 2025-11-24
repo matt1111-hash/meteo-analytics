@@ -43,11 +43,11 @@ Cél: Többváros időjárási elemzés koordinálása
 from __future__ import annotations
 
 import logging
-import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
+from src.application.use_cases.analyze_multi_city import AnalyzeMultiCityUseCase
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
 from src.domain.analytics.repositories import CityRepositoryProtocol
 from src.domain.analytics.statistics import (
@@ -172,12 +172,14 @@ class MultiCityEngine:
     QUERY_TYPES = {
         "hottest_today": {"name": "Legmelegebb ma", "metric": "temperature_2m_max", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legmelegebb {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MAX},
         "coldest_today": {"name": "Leghidegebb ma", "metric": "temperature_2m_min", "unit": "°C", "sort_desc": False, "question_template": "Hol volt ma a leghidegebb {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MIN},
+        "temperature_mean": {"name": "Átlag hőmérséklet", "metric": "temperature_2m_mean", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legmagasabb átlaghőmérséklet {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MEAN},
         "wettest_today": {"name": "Legcsapadékosabb ma", "metric": "precipitation_sum", "unit": "mm", "sort_desc": True, "question_template": "Hol esett ma a legtöbb csapadék {region}ban?", "metric_enum": AnalyticsMetric.PRECIPITATION_SUM},
-        
+
         # 🔥 KRITIKUS JAVÍTÁS: windgusts_10m_max → windspeed_10m_max
         # A windspeed_10m_max sokkal megbízhatóbban elérhető az API-kban!
         "windiest_today": {"name": "Legszelesebb ma", "metric": "windspeed_10m_max", "unit": "km/h", "sort_desc": True, "question_template": "Hol fújt ma a legerősebb szél {region}ban?", "metric_enum": AnalyticsMetric.WINDSPEED_10M_MAX},
-        
+        "wind_gusts": {"name": "Legerősebb széllökés", "metric": "windgusts_10m_max", "unit": "km/h", "sort_desc": True, "question_template": "Hol fújt ma a legerősebb széllökés {region}ban?", "metric_enum": AnalyticsMetric.WINDGUSTS_10M_MAX},
+
         "temperature_range": {"name": "Legnagyobb hőingás", "metric": "temperature_range", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legnagyobb hőingás {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_RANGE}
     }
     
@@ -227,17 +229,24 @@ class MultiCityEngine:
             retry_delay=self.retry_delay,
         )
         self.analytics_transform_service = AnalyticsTransformService(self.QUERY_TYPES)
+        self.use_case = AnalyzeMultiCityUseCase(
+            region_resolver=self.region_resolver,
+            city_repository=self.city_repository,
+            weather_fetch_service=self.weather_fetch_service,
+            analytics_transform_service=self.analytics_transform_service,
+            query_types=self.QUERY_TYPES,
+            regions=self.REGIONS,
+            hungarian_mapping=self.HUNGARIAN_REGIONAL_MAPPING,
+        )
         
         logger.info("🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)")
 
-    def execute_analytics_query(self, query: MultiCityQuery, progress_callback: Optional[callable] = None) -> AnalyticsResult:
-        return self.analyze_multi_city(
-            query.query_type,
-            query.region,
-            query.date,
-            limit=query.limit or query.max_cities,
-            question=query.question
-        )
+    def execute_analytics_query(
+        self,
+        query: MultiCityQuery,
+        progress_callback: Optional[callable] = None,
+    ) -> AnalyticsResult:
+        return self.use_case.execute(query)
 
     def get_cities_for_region(self, region: str, limit: Optional[int] = None, max_cities: Optional[int] = None) -> List[Dict[str, Any]]:
         """
@@ -298,134 +307,23 @@ class MultiCityEngine:
             logger.error(f"⚠ Hiba városok lekérdezésénél: {e}", exc_info=True)
             return []
 
-    def analyze_multi_city(self, query_type: str, region: str, date: str, limit: Optional[int] = None, question: Optional[AnalyticsQuestion] = None) -> AnalyticsResult:
-        """
-        🔧 KRITIKUS JAVÍTÁS: Multi-city elemzés - TELJES ADAT TRANSZFORMÁCIÓVAL + ERROR HANDLING + NONE-SAFE + RÉGIÓ/MEGYE MAPPING JAVÍTVA + LIMIT TYPE FIX + RÉGIÓ SZŰRÉS JAVÍTVA + WINDSPEED METRIC JAVÍTVA!
-        
-        Args:
-            query_type: Lekérdezés típusa (pl. "windiest_today" most már windspeed_10m_max-ot használ!)
-            region: Régió (most már támogatja az "Észak-Magyarország" stb. régiókat!)
-            date: Dátum
-            limit: Eredmények limitje (int vagy None)
-            question: AnalyticsQuestion objektum
-            
-        Returns:
-            AnalyticsResult objektum (UI kompatibilis) - MINDIG, hiba esetén is!
-        """
-        start_time = time.time()
-        
-        try:
-            if query_type not in self.QUERY_TYPES:
-                logger.error(f"⚠ Ismeretlen lekérdezés típus: {query_type}")
-                return self._create_empty_analytics_result(question, f"Ismeretlen lekérdezés típus: {query_type}")
-            
-            # 🔧 KRITIKUS JAVÍTÁS: Region mapping hibák kezelése
-            try:
-                mapped_region = self.resolve_region_name(region)
-                logger.info(f"✅ Régió mapping sikeres: '{region}' → '{mapped_region}'")
-            except ValueError as e:
-                logger.error(f"⚠ Régió mapping hiba: {e}")
-                return self._create_empty_analytics_result(question, f"Ismeretlen régió: {region}")
-            
-            query_config = self.QUERY_TYPES[query_type]
-            
-            logger.info(f"🚀 Multi-city elemzés kezdése (ABSOLUTE DATABASE PATH FIX v2.8.2): {query_type} - {region} - {date}")
-            logger.info(f"🔥 WINDSPEED FIX: windiest_today most '{query_config['metric']}' metrikát használja!")
-            
-            # 🔧 KRITIKUS JAVÍTÁS: Városok lekérdezése REGIONÁLIS SZŰRÉSSEL!
-            # Az eredeti régió nevet adjuk át, nem a mapped-et!
-            cities = self.get_cities_for_region(region, max_cities=self.REGIONS[mapped_region]["max_cities"])
-            
-            if not cities:
-                logger.error("⚠ Nincsenek városok a lekérdezéshez")
-                return self._create_empty_analytics_result(question, "Nincsenek városok a lekérdezéshez")
-            
-            # Időjárási adatok lekérdezése
-            weather_data = self._fetch_weather_data_dual_api_batch(cities, date, mapped_region)
-            
-            # Eredmények feldolgozása és rendezése
-            processed_data = self._process_weather_results(weather_data, query_type)
-            
-            logger.info(f"🔧 PROCESSED DATA: {len(processed_data)} cities processed")
-            
-            # 🔧 KRITIKUS JAVÍTÁS: Adat transzformáció (CityWeatherData -> CityWeatherResult)
-            transformed_results = []
-            for i, city_data in enumerate(processed_data):
-                if city_data.fetch_success:
-                    try:
-                        result_item = self._transform_to_city_weather_result(city_data, query_type)
-                        result_item.rank = i + 1
-                        transformed_results.append(result_item)
-                    except Exception as e:
-                        logger.error(f"⚠ Transform error for {city_data.city}: {e}")
-                        continue
-
-            logger.info(f"🔧 TRANSFORMED RESULTS: {len(transformed_results)} cities transformed")
-
-            # 🔧 KRITIKUS JAVÍTÁS: Statisztika számítása a TELJES sikeres adathalmazon (NONE-SAFE)
-            stats = self._calculate_statistics_for_results_none_safe(transformed_results)
-
-            # 🔧 KRITIKUS JAVÍTÁS: Helyes AnalyticsResult objektum létrehozása
-            final_question = question
-            if not final_question:
-                try:
-                    final_question = AnalyticsQuestion(
-                        question_text=query_config["question_template"].format(region=self.REGIONS[mapped_region]["name"]),
-                        question_type=QuestionType.WEATHER_COMPARISON,  # 🔥 FIX: SINGLE_LOCATION → WEATHER_COMPARISON
-                        region_scope=RegionScope.COUNTRY if mapped_region == "Hungary" else RegionScope.CONTINENT,
-                        metric=query_config["metric_enum"]
-                    )
-                except Exception as e:
-                    logger.error(f"⚠ Question creation error: {e}")
-                    # Fallback question
-                    final_question = AnalyticsQuestion(
-                        question_text="Multi-city analytics",
-                        question_type=QuestionType.TEMPERATURE_MAX,  # 🔥 FIX: SINGLE_LOCATION → TEMPERATURE_MAX  
-                        region_scope=RegionScope.COUNTRY,
-                        metric=AnalyticsMetric.TEMPERATURE_2M_MAX
-                    )
-
-            # 🔧 KRITIKUS JAVÍTÁS: LIMIT TYPE VALIDATION ÉS SAFE SLICING
-            safe_limit = None
-            if limit is not None:
-                try:
-                    safe_limit = int(limit)  # Type conversion biztosítása
-                    if safe_limit <= 0:
-                        safe_limit = None  # Invalid limit esetén nincs limitálás
-                except (TypeError, ValueError):
-                    logger.warning(f"⚠️ Invalid limit type: {type(limit)}, value: {limit}")
-                    safe_limit = None
-
-            # Safe slicing with proper type checking
-            if safe_limit is not None and safe_limit > 0:
-                limited_results = transformed_results[:safe_limit]
-                logger.info(f"🔧 Limited results: {len(limited_results)}/{len(transformed_results)} (limit: {safe_limit})")
-            else:
-                limited_results = transformed_results
-                logger.info(f"🔧 No limit applied: {len(limited_results)} results")
-
-            try:
-                analytics_result = AnalyticsResult(
-                    question=final_question,
-                    city_results=limited_results,
-                    execution_time=time.time() - start_time,
-                    total_cities_found=len(cities),
-                    data_sources_used=[DataSource.AUTO], # WeatherClient kezeli
-                    statistics=stats,
-                    provider_statistics=self._get_provider_stats(weather_data)
-                )
-                
-                logger.info(f"✅ Multi-city elemzés befejezve (ABSOLUTE DATABASE PATH FIX v2.8.2): {len(limited_results)}/{len(cities)} eredmény, {len(transformed_results)} siker")
-                
-                return analytics_result
-                
-            except Exception as e:
-                logger.error(f"⚠ AnalyticsResult creation error: {e}")
-                return self._create_empty_analytics_result(final_question, f"Eredmény objektum létrehozási hiba: {e}")
-            
-        except Exception as e:
-            logger.error(f"⚠ CRITICAL ERROR in analyze_multi_city: {e}", exc_info=True)
-            return self._create_empty_analytics_result(question, f"Kritikus hiba a multi-city elemzésben: {e}")
+    def analyze_multi_city(
+        self,
+        query_type: str,
+        region: str,
+        date: str,
+        limit: Optional[int] = None,
+        question: Optional[AnalyticsQuestion] = None,
+    ) -> AnalyticsResult:
+        query = MultiCityQuery(
+            query_type=query_type,
+            region=region,
+            date=date,
+            limit=limit,
+            question=question,
+            max_cities=None,
+        )
+        return self.use_case.execute(query)
 
     def _transform_to_city_weather_result(self, city_data: CityWeatherData, query_type: str) -> CityWeatherResult:
         """BC wrapper: CityWeatherData → CityWeatherResult."""

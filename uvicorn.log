@@ -1,0 +1,1712 @@
+INFO:     Will watch for changes in these directories: ['/home/tibor/PythonProjects/Jules/global_weather_analyzer']
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [388303] using WatchFiles
+2025-11-23 17:45:43,650 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:45:43,650 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:45:43,650 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:45:43,650 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:45:43,650 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:45:43,650 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:45:43,650 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:45:43,650 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:45:43,650 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:45:43,650 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:45:43,652 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:45:43,652 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:45:43,652 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:45:43,652 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:45:43,652 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:45:43,652 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:45:43,652 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:45:43,652 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:45:43,652 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:45:43,652 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:45:43,652 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [388314]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:59958 - "GET /api/weather/metrics HTTP/1.1" 200 OK
+2025-11-23 17:46:00,119 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:46:00,119 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:46:00,119 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:46:00,119 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:46:00,119 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:46:00,119 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:46:00,119 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:46:00,119 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:46:00,119 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:46:00,119 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:46:00,119 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     127.0.0.1:59968 - "GET /api/weather/regions HTTP/1.1" 200 OK
+2025-11-23 17:46:00,292 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:46:00,293 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:46:00,293 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:46:00,293 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:46:00,293 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:46:00,293 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:46:00,293 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:46:00,293 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:46:00,293 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:46:00,293 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:46:00,293 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     127.0.0.1:59970 - "GET /api/weather/query-types HTTP/1.1" 200 OK
+2025-11-23 17:46:10,796 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:46:10,810 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:46:10,810 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:46:10,810 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:46:10,810 - src.data.weather_client - INFO -   📅 Időszak: 2025-11-01 → 2025-11-05
+2025-11-23 17:46:10,810 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 4 nap (2025-11-01 → 2025-11-05)
+2025-11-23 17:46:10,812 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 4 nap <= 90 nap limit
+2025-11-23 17:46:11,124 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:46:11,124 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:46:11,124 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 18.0 → 56.5 km/h
+2025-11-23 17:46:11,124 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 9.1 → 30.1 km/h
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 5 records
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO -   📅 Records returned: 5
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO -   📅 Date range: 2025-11-01 → 2025-11-05
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO -   💨 Wind speed range: 9.1 → 30.1 km/h
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO -   📊 Valid wind speed records: 5/5 (100.0%)
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 18.0 → 56.5 km/h
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 5/5 (100.0%)
+2025-11-23 17:46:11,125 - src.data.weather_client - INFO -   🧭 Wind direction range: 98° → 319°
+2025-11-23 17:46:11,126 - src.data.weather_client - INFO -   📊 Valid wind direction records: 5/5 (100.0%)
+2025-11-23 17:46:11,126 - src.data.weather_client - INFO -   🌡️ Temperature range: 13.1°C → 19.6°C
+2025-11-23 17:46:11,126 - src.data.weather_client - INFO -   📊 Valid temp records: 5/5 (100.0%)
+2025-11-23 17:46:11,126 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:46:11,126 - src.data.weather_client - INFO - 🎉 SUCCESS: 5 nap (🌍 Open-Meteo API)
+2025-11-23 17:46:11,127 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 1/1 siker, idő: 0.3s
+2025-11-23 17:46:11,127 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 1 város
+2025-11-23 17:46:11,127 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 1 total records
+2025-11-23 17:46:11,127 - src.domain.analytics.services.analytics_transform_service - INFO - AGGREGATED TO: 1 unique cities
+2025-11-23 17:46:11,127 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Budapest', 14.6)]
+2025-11-23 17:46:11,127 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=14.6 (type: <class 'float'>)
+2025-11-23 17:46:11,127 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.0, temp_min=8.1, precip=0.0, windspeed=14.6
+2025-11-23 17:46:11,128 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 1 results
+2025-11-23 17:46:11,128 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 14.6, 'median': 14.6, 'stdev': 0.0, 'min': 14.6, 'max': 14.6, 'range': 0.0}
+INFO:     127.0.0.1:47372 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57026 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33574 - "GET /openapi.json HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'src/domain/analytics/services/analytics_transform_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [388314]
+2025-11-23 17:49:08,497 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:49:08,497 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:49:08,498 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:49:08,498 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:49:08,498 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:49:08,498 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:49:08,498 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:49:08,498 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:49:08,498 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:49:08,498 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:49:08,499 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:49:08,499 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:49:08,499 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:49:08,499 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:49:08,499 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:49:08,499 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:49:08,499 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:49:08,499 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:49:08,499 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:49:08,500 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:49:08,500 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [398124]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/domain/analytics/services/analytics_transform_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [398124]
+2025-11-23 17:49:24,746 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:49:24,746 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:49:24,746 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:49:24,746 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:49:24,746 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:49:24,746 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:49:24,746 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:49:24,746 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:49:24,746 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:49:24,746 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:49:24,748 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:49:24,748 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:49:24,748 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:49:24,748 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:49:24,748 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:49:24,748 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:49:24,748 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:49:24,748 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:49:24,748 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:49:24,748 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:49:24,748 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [398878]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/application/use_cases/analyze_multi_city.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [398878]
+2025-11-23 17:49:45,907 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:49:45,907 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:49:45,907 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:49:45,907 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:49:45,907 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:49:45,907 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:49:45,907 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:49:45,907 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:49:45,907 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:49:45,907 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:49:45,909 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:49:45,909 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:49:45,909 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:49:45,909 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:49:45,909 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:49:45,909 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:49:45,909 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:49:45,909 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:49:45,909 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:49:45,909 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:49:45,909 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [399877]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/application/use_cases/analyze_multi_city.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [399877]
+2025-11-23 17:49:55,322 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:49:55,323 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:49:55,323 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:49:55,323 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:49:55,323 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:49:55,323 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:49:55,323 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:49:55,323 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:49:55,323 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:49:55,323 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:49:55,324 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:49:55,324 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:49:55,324 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:49:55,324 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:49:55,324 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:49:55,324 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:49:55,325 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:49:55,325 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:49:55,325 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:49:55,325 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:49:55,325 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [400296]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/routes/single_city.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [400296]
+2025-11-23 17:50:08,863 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:50:08,863 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:50:08,863 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:50:08,863 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:50:08,863 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:50:08,863 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:50:08,863 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:50:08,863 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:50:08,863 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:50:08,863 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:50:08,865 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:50:08,866 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:50:08,866 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:50:08,866 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:50:08,866 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:50:08,866 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:50:08,866 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:50:08,866 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:50:08,866 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:50:08,866 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:50:08,866 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [400950]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2025-11-23 17:50:20,407 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:50:20,423 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:50:20,423 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:50:20,424 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:50:20,424 - src.data.weather_client - INFO -   📅 Időszak: 2025-11-01 → 2025-11-23
+2025-11-23 17:50:20,424 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 22 nap (2025-11-01 → 2025-11-23)
+2025-11-23 17:50:20,425 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 22 nap <= 90 nap limit
+2025-11-23 17:50:20,699 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:50:20,699 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:50:20,699 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 16.2 → 61.6 km/h
+2025-11-23 17:50:20,699 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:50:20,699 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 6.5 → 30.1 km/h
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 23 records
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO -   📅 Records returned: 23
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO -   📅 Date range: 2025-11-01 → 2025-11-23
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO -   💨 Wind speed range: 6.5 → 30.1 km/h
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO -   📊 Valid wind speed records: 17/23 (73.9%)
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 16.2 → 61.6 km/h
+2025-11-23 17:50:20,700 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 17/23 (73.9%)
+2025-11-23 17:50:20,701 - src.data.weather_client - INFO -   🧭 Wind direction range: 53° → 319°
+2025-11-23 17:50:20,701 - src.data.weather_client - INFO -   📊 Valid wind direction records: 17/23 (73.9%)
+2025-11-23 17:50:20,701 - src.data.weather_client - INFO -   🌡️ Temperature range: 8.2°C → 19.6°C
+2025-11-23 17:50:20,701 - src.data.weather_client - INFO -   📊 Valid temp records: 17/23 (73.9%)
+2025-11-23 17:50:20,701 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:50:20,701 - src.data.weather_client - INFO - 🎉 SUCCESS: 23 nap (🌍 Open-Meteo API)
+2025-11-23 17:50:20,702 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 1/1 siker, idő: 0.3s
+2025-11-23 17:50:20,702 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 1 város
+2025-11-23 17:50:20,702 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 1 total records (aggregate=False)
+2025-11-23 17:50:20,702 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 1 daily records
+2025-11-23 17:50:20,702 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Budapest', 14.6)]
+2025-11-23 17:50:20,702 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=14.6 (type: <class 'float'>)
+2025-11-23 17:50:20,703 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.0, temp_min=8.1, precip=0.0, windspeed=14.6
+2025-11-23 17:50:20,703 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 1 results
+2025-11-23 17:50:20,703 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 14.6, 'median': 14.6, 'stdev': 0.0, 'min': 14.6, 'max': 14.6, 'range': 0.0}
+INFO:     127.0.0.1:33958 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+2025-11-23 17:50:31,055 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:50:31,068 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:50:31,068 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:50:31,068 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:50:31,068 - src.data.weather_client - INFO -   📅 Időszak: 2025-11-01 → 2025-11-23
+2025-11-23 17:50:31,068 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:50:31,068 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:50:31,068 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:50:31,068 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:50:31,069 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:50:31,069 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:50:31,069 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:50:31,069 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:50:31,069 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 22 nap (2025-11-01 → 2025-11-23)
+2025-11-23 17:50:31,069 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 22 nap <= 90 nap limit
+2025-11-23 17:50:31,121 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:50:31,121 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:50:31,121 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 16.2 → 61.6 km/h
+2025-11-23 17:50:31,121 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:50:31,121 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 6.5 → 30.1 km/h
+2025-11-23 17:50:31,121 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 23 records
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   📅 Records returned: 23
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   📅 Date range: 2025-11-01 → 2025-11-23
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   💨 Wind speed range: 6.5 → 30.1 km/h
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   📊 Valid wind speed records: 17/23 (73.9%)
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 16.2 → 61.6 km/h
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 17/23 (73.9%)
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   🧭 Wind direction range: 53° → 319°
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   📊 Valid wind direction records: 17/23 (73.9%)
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   🌡️ Temperature range: 8.2°C → 19.6°C
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO -   📊 Valid temp records: 17/23 (73.9%)
+2025-11-23 17:50:31,122 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:50:31,122 - src.data.weather_client - INFO - 🎉 SUCCESS: 23 nap (🌍 Open-Meteo API)
+2025-11-23 17:50:31,123 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 1/1 siker, idő: 0.1s
+2025-11-23 17:50:31,123 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 1 város
+2025-11-23 17:50:31,123 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 1 total records (aggregate=False)
+2025-11-23 17:50:31,123 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 1 daily records
+2025-11-23 17:50:31,123 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Budapest', 14.6)]
+2025-11-23 17:50:31,123 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=14.6 (type: <class 'float'>)
+2025-11-23 17:50:31,123 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.0, temp_min=8.1, precip=0.0, windspeed=14.6
+2025-11-23 17:50:31,123 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 1 results
+2025-11-23 17:50:31,123 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 14.6, 'median': 14.6, 'stdev': 0.0, 'min': 14.6, 'max': 14.6, 'range': 0.0}
+INFO:     127.0.0.1:39086 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'src/domain/analytics/services/weather_fetch_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [400950]
+2025-11-23 17:51:05,642 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:51:05,643 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:51:05,643 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:51:05,643 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:51:05,643 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:51:05,643 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:51:05,643 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:51:05,643 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:51:05,643 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:51:05,643 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:51:05,644 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:51:05,644 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:51:05,644 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:51:05,645 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:51:05,645 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:51:05,645 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:51:05,645 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:51:05,645 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:51:05,645 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:51:05,645 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:51:05,645 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [403551]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/domain/analytics/services/weather_fetch_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [403551]
+2025-11-23 17:51:22,990 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:51:22,990 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:51:22,990 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:51:22,990 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:51:22,990 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:51:22,990 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:51:22,990 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:51:22,990 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:51:22,990 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:51:22,990 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:51:22,992 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:51:22,992 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:51:22,992 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:51:22,992 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:51:22,992 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:51:22,992 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:51:22,992 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:51:22,992 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:51:22,992 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:51:22,992 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:51:22,992 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [404382]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/domain/analytics/services/weather_fetch_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [404382]
+2025-11-23 17:51:32,322 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:51:32,322 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:51:32,322 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:51:32,322 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:51:32,322 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:51:32,322 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:51:32,322 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:51:32,322 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:51:32,322 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:51:32,322 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:51:32,324 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:51:32,324 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:51:32,324 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:51:32,324 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:51:32,324 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:51:32,324 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:51:32,324 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:51:32,324 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:51:32,324 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:51:32,324 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:51:32,324 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [404791]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/domain/analytics/services/weather_fetch_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [404791]
+2025-11-23 17:51:45,680 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:51:45,680 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:51:45,680 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:51:45,680 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:51:45,680 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:51:45,680 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:51:45,680 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:51:45,680 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:51:45,680 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:51:45,680 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:51:45,682 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:51:45,682 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:51:45,682 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:51:45,682 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:51:45,682 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:51:45,682 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:51:45,682 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:51:45,682 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:51:45,682 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:51:45,682 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:51:45,682 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [405384]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2025-11-23 17:52:01,693 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:52:01,708 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:52:01,708 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:52:01,708 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:52:01,708 - src.data.weather_client - INFO -   📅 Időszak: 2025-11-01 → 2025-11-23
+2025-11-23 17:52:01,708 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 22 nap (2025-11-01 → 2025-11-23)
+2025-11-23 17:52:01,710 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 22 nap <= 90 nap limit
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 16.2 → 61.6 km/h
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 6.5 → 30.1 km/h
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 23 records
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO -   📅 Records returned: 23
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO -   📅 Date range: 2025-11-01 → 2025-11-23
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO -   💨 Wind speed range: 6.5 → 30.1 km/h
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO -   📊 Valid wind speed records: 17/23 (73.9%)
+2025-11-23 17:52:01,995 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 16.2 → 61.6 km/h
+2025-11-23 17:52:01,996 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 17/23 (73.9%)
+2025-11-23 17:52:01,996 - src.data.weather_client - INFO -   🧭 Wind direction range: 53° → 319°
+2025-11-23 17:52:01,996 - src.data.weather_client - INFO -   📊 Valid wind direction records: 17/23 (73.9%)
+2025-11-23 17:52:01,996 - src.data.weather_client - INFO -   🌡️ Temperature range: 8.2°C → 19.6°C
+2025-11-23 17:52:01,996 - src.data.weather_client - INFO -   📊 Valid temp records: 17/23 (73.9%)
+2025-11-23 17:52:01,996 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:52:01,996 - src.data.weather_client - INFO - 🎉 SUCCESS: 23 nap (🌍 Open-Meteo API)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 23/1 siker, idő: 0.3s
+2025-11-23 17:52:01,996 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 23 város
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 23 total records (aggregate=False)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 23 daily records
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Budapest', 30.1), ('Budapest', 27.0), ('Budapest', 16.0)]
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=30.1 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.7, precip=2.2, windspeed=30.1
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=27.0 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=16.1, temp_min=5.3, precip=6.5, windspeed=27.0
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=16.0 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.6, temp_min=8.8, precip=0.0, windspeed=16.0
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=15.0 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.1, temp_min=4.9, precip=0.0, windspeed=15.0
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=14.6 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.0, temp_min=8.1, precip=0.0, windspeed=14.6
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=12.3 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.3, temp_min=6.4, precip=0.0, windspeed=12.3
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=10.6 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.3, temp_min=8.7, precip=0.3, windspeed=10.6
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=10.4 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.0, temp_min=2.2, precip=0.0, windspeed=10.4
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.8 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=8.2, temp_min=5.2, precip=0.1, windspeed=9.8
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.4 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.0, temp_min=4.2, precip=1.2, windspeed=9.4
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.1 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.4, temp_min=3.4, precip=0.0, windspeed=9.1
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.7 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.9, temp_min=7.4, precip=0.2, windspeed=8.7
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.6 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.1, temp_min=4.2, precip=0.0, windspeed=8.6
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.5 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.0, temp_min=1.7, precip=0.0, windspeed=8.5
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.5 (type: <class 'float'>)
+2025-11-23 17:52:01,996 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.1, temp_min=4.4, precip=0.0, windspeed=8.5
+2025-11-23 17:52:01,997 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=7.6 (type: <class 'float'>)
+2025-11-23 17:52:01,997 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=11.9, temp_min=2.0, precip=0.0, windspeed=7.6
+2025-11-23 17:52:01,997 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=6.5 (type: <class 'float'>)
+2025-11-23 17:52:01,997 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.0, temp_min=5.2, precip=1.4, windspeed=6.5
+2025-11-23 17:52:01,997 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 17 results
+2025-11-23 17:52:01,997 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 12.511764705882353, 'median': 9.8, 'stdev': 6.619562141197594, 'min': 6.5, 'max': 30.1, 'range': 23.6}
+INFO:     127.0.0.1:42388 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+2025-11-23 17:52:47,126 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:52:47,139 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:52:47,139 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO -   📅 Időszak: 2025-11-01 → 2025-11-23
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 22 nap (2025-11-01 → 2025-11-23)
+2025-11-23 17:52:47,140 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 22 nap <= 90 nap limit
+2025-11-23 17:52:47,192 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:52:47,192 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:52:47,192 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 16.2 → 61.6 km/h
+2025-11-23 17:52:47,192 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:52:47,192 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 6.5 → 30.1 km/h
+2025-11-23 17:52:47,192 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 23 records
+2025-11-23 17:52:47,192 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:52:47,192 - src.data.weather_client - INFO -   📅 Records returned: 23
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   📅 Date range: 2025-11-01 → 2025-11-23
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   💨 Wind speed range: 6.5 → 30.1 km/h
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   📊 Valid wind speed records: 17/23 (73.9%)
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 16.2 → 61.6 km/h
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 17/23 (73.9%)
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   🧭 Wind direction range: 53° → 319°
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   📊 Valid wind direction records: 17/23 (73.9%)
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   🌡️ Temperature range: 8.2°C → 19.6°C
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO -   📊 Valid temp records: 17/23 (73.9%)
+2025-11-23 17:52:47,193 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:52:47,193 - src.data.weather_client - INFO - 🎉 SUCCESS: 23 nap (🌍 Open-Meteo API)
+2025-11-23 17:52:47,193 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 23/1 siker, idő: 0.1s
+2025-11-23 17:52:47,193 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 23 város
+2025-11-23 17:52:47,193 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 23 total records (aggregate=False)
+2025-11-23 17:52:47,193 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 23 daily records
+2025-11-23 17:52:47,193 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Budapest', 30.1), ('Budapest', 27.0), ('Budapest', 16.0)]
+2025-11-23 17:52:47,193 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=30.1 (type: <class 'float'>)
+2025-11-23 17:52:47,193 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.7, precip=2.2, windspeed=30.1
+2025-11-23 17:52:47,193 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=27.0 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=16.1, temp_min=5.3, precip=6.5, windspeed=27.0
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=16.0 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.6, temp_min=8.8, precip=0.0, windspeed=16.0
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=15.0 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.1, temp_min=4.9, precip=0.0, windspeed=15.0
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=14.6 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.0, temp_min=8.1, precip=0.0, windspeed=14.6
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=12.3 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.3, temp_min=6.4, precip=0.0, windspeed=12.3
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=10.6 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.3, temp_min=8.7, precip=0.3, windspeed=10.6
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=10.4 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.0, temp_min=2.2, precip=0.0, windspeed=10.4
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.8 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=8.2, temp_min=5.2, precip=0.1, windspeed=9.8
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.4 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.0, temp_min=4.2, precip=1.2, windspeed=9.4
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.1 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.4, temp_min=3.4, precip=0.0, windspeed=9.1
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.7 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.9, temp_min=7.4, precip=0.2, windspeed=8.7
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.6 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.1, temp_min=4.2, precip=0.0, windspeed=8.6
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.5 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.0, temp_min=1.7, precip=0.0, windspeed=8.5
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.5 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.1, temp_min=4.4, precip=0.0, windspeed=8.5
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=7.6 (type: <class 'float'>)
+2025-11-23 17:52:47,194 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=11.9, temp_min=2.0, precip=0.0, windspeed=7.6
+2025-11-23 17:52:47,195 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=6.5 (type: <class 'float'>)
+2025-11-23 17:52:47,195 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.0, temp_min=5.2, precip=1.4, windspeed=6.5
+2025-11-23 17:52:47,195 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 17 results
+2025-11-23 17:52:47,195 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 12.511764705882353, 'median': 9.8, 'stdev': 6.619562141197594, 'min': 6.5, 'max': 30.1, 'range': 23.6}
+INFO:     127.0.0.1:34616 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'src/application/use_cases/analyze_multi_city.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [405384]
+2025-11-23 17:53:22,285 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:53:22,285 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:53:22,285 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:53:22,285 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:53:22,285 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:53:22,285 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:53:22,285 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:53:22,285 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:53:22,285 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:53:22,285 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:53:22,286 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:53:22,286 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:53:22,286 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:53:22,287 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:53:22,287 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:53:22,287 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:53:22,287 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:53:22,287 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:53:22,287 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:53:22,287 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:53:22,287 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [409924]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2025-11-23 17:53:32,641 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:53:32,654 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:53:32,655 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:53:32,655 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:53:32,655 - src.data.weather_client - INFO -   📅 Időszak: 2025-11-01 → 2025-11-23
+2025-11-23 17:53:32,655 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 22 nap (2025-11-01 → 2025-11-23)
+2025-11-23 17:53:32,657 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 22 nap <= 90 nap limit
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 16.2 → 61.6 km/h
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 6.5 → 30.1 km/h
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 23 records
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   📅 Records returned: 23
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   📅 Date range: 2025-11-01 → 2025-11-23
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   💨 Wind speed range: 6.5 → 30.1 km/h
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   📊 Valid wind speed records: 17/23 (73.9%)
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 16.2 → 61.6 km/h
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 17/23 (73.9%)
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   🧭 Wind direction range: 53° → 319°
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   📊 Valid wind direction records: 17/23 (73.9%)
+2025-11-23 17:53:32,919 - src.data.weather_client - INFO -   🌡️ Temperature range: 8.2°C → 19.6°C
+2025-11-23 17:53:32,920 - src.data.weather_client - INFO -   📊 Valid temp records: 17/23 (73.9%)
+2025-11-23 17:53:32,920 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:53:32,920 - src.data.weather_client - INFO - 🎉 SUCCESS: 23 nap (🌍 Open-Meteo API)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 23/1 siker, idő: 0.3s
+2025-11-23 17:53:32,920 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 23 város
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 23 total records (aggregate=False)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 23 daily records
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Budapest', 30.1), ('Budapest', 27.0), ('Budapest', 16.0)]
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=30.1 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.7, precip=2.2, windspeed=30.1
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=27.0 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=16.1, temp_min=5.3, precip=6.5, windspeed=27.0
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=16.0 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.6, temp_min=8.8, precip=0.0, windspeed=16.0
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=15.0 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.1, temp_min=4.9, precip=0.0, windspeed=15.0
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=14.6 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.0, temp_min=8.1, precip=0.0, windspeed=14.6
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=12.3 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.3, temp_min=6.4, precip=0.0, windspeed=12.3
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=10.6 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.3, temp_min=8.7, precip=0.3, windspeed=10.6
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=10.4 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.0, temp_min=2.2, precip=0.0, windspeed=10.4
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.8 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=8.2, temp_min=5.2, precip=0.1, windspeed=9.8
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.4 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.0, temp_min=4.2, precip=1.2, windspeed=9.4
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.1 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.4, temp_min=3.4, precip=0.0, windspeed=9.1
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.7 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.9, temp_min=7.4, precip=0.2, windspeed=8.7
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.6 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.1, temp_min=4.2, precip=0.0, windspeed=8.6
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.5 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.0, temp_min=1.7, precip=0.0, windspeed=8.5
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.5 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.1, temp_min=4.4, precip=0.0, windspeed=8.5
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=7.6 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=11.9, temp_min=2.0, precip=0.0, windspeed=7.6
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=6.5 (type: <class 'float'>)
+2025-11-23 17:53:32,920 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.0, temp_min=5.2, precip=1.4, windspeed=6.5
+2025-11-23 17:53:32,921 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 17 results
+2025-11-23 17:53:32,921 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 12.511764705882353, 'median': 9.8, 'stdev': 6.619562141197594, 'min': 6.5, 'max': 30.1, 'range': 23.6}
+INFO:     127.0.0.1:38826 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+2025-11-23 17:53:52,942 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:53:52,955 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:53:52,955 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:53:52,955 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:53:52,955 - src.data.weather_client - INFO -   📅 Időszak: 2025-11-01 → 2025-11-23
+2025-11-23 17:53:52,955 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:53:52,955 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:53:52,955 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:53:52,956 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:53:52,956 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:53:52,956 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:53:52,956 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:53:52,956 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:53:52,956 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 22 nap (2025-11-01 → 2025-11-23)
+2025-11-23 17:53:52,956 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 22 nap <= 90 nap limit
+2025-11-23 17:53:53,007 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:53:53,007 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:53:53,007 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 16.2 → 61.6 km/h
+2025-11-23 17:53:53,007 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 17/23 érvényes értékek
+2025-11-23 17:53:53,007 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 6.5 → 30.1 km/h
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 23 records
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   📅 Records returned: 23
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   📅 Date range: 2025-11-01 → 2025-11-23
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   💨 Wind speed range: 6.5 → 30.1 km/h
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   📊 Valid wind speed records: 17/23 (73.9%)
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 16.2 → 61.6 km/h
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 17/23 (73.9%)
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   🧭 Wind direction range: 53° → 319°
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   📊 Valid wind direction records: 17/23 (73.9%)
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   🌡️ Temperature range: 8.2°C → 19.6°C
+2025-11-23 17:53:53,008 - src.data.weather_client - INFO -   📊 Valid temp records: 17/23 (73.9%)
+2025-11-23 17:53:53,008 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:53:53,009 - src.data.weather_client - INFO - 🎉 SUCCESS: 23 nap (🌍 Open-Meteo API)
+2025-11-23 17:53:53,010 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 23/1 siker, idő: 0.1s
+2025-11-23 17:53:53,010 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 23 város
+2025-11-23 17:53:53,010 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 23 total records (aggregate=False)
+2025-11-23 17:53:53,010 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 23 daily records
+2025-11-23 17:53:53,010 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Budapest', 30.1), ('Budapest', 27.0), ('Budapest', 16.0)]
+2025-11-23 17:53:53,010 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=30.1 (type: <class 'float'>)
+2025-11-23 17:53:53,010 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.7, precip=2.2, windspeed=30.1
+2025-11-23 17:53:53,010 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=27.0 (type: <class 'float'>)
+2025-11-23 17:53:53,010 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=16.1, temp_min=5.3, precip=6.5, windspeed=27.0
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=16.0 (type: <class 'float'>)
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.6, temp_min=8.8, precip=0.0, windspeed=16.0
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=15.0 (type: <class 'float'>)
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.1, temp_min=4.9, precip=0.0, windspeed=15.0
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=14.6 (type: <class 'float'>)
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=19.0, temp_min=8.1, precip=0.0, windspeed=14.6
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=12.3 (type: <class 'float'>)
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.3, temp_min=6.4, precip=0.0, windspeed=12.3
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=10.6 (type: <class 'float'>)
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.3, temp_min=8.7, precip=0.3, windspeed=10.6
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=10.4 (type: <class 'float'>)
+2025-11-23 17:53:53,011 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.0, temp_min=2.2, precip=0.0, windspeed=10.4
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.8 (type: <class 'float'>)
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=8.2, temp_min=5.2, precip=0.1, windspeed=9.8
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.4 (type: <class 'float'>)
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.0, temp_min=4.2, precip=1.2, windspeed=9.4
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=9.1 (type: <class 'float'>)
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.4, temp_min=3.4, precip=0.0, windspeed=9.1
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.7 (type: <class 'float'>)
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.9, temp_min=7.4, precip=0.2, windspeed=8.7
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.6 (type: <class 'float'>)
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.1, temp_min=4.2, precip=0.0, windspeed=8.6
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.5 (type: <class 'float'>)
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.0, temp_min=1.7, precip=0.0, windspeed=8.5
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=8.5 (type: <class 'float'>)
+2025-11-23 17:53:53,012 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.1, temp_min=4.4, precip=0.0, windspeed=8.5
+2025-11-23 17:53:53,013 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=7.6 (type: <class 'float'>)
+2025-11-23 17:53:53,013 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=11.9, temp_min=2.0, precip=0.0, windspeed=7.6
+2025-11-23 17:53:53,013 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=6.5 (type: <class 'float'>)
+2025-11-23 17:53:53,013 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=10.0, temp_min=5.2, precip=1.4, windspeed=6.5
+2025-11-23 17:53:53,013 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 17 results
+2025-11-23 17:53:53,013 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 12.511764705882353, 'median': 9.8, 'stdev': 6.619562141197594, 'min': 6.5, 'max': 30.1, 'range': 23.6}
+INFO:     127.0.0.1:51268 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+2025-11-23 17:54:04,977 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:54:04,990 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-10
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:54:04,990 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:54:04,991 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:54:04,991 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 9 nap (2025-10-01 → 2025-10-10)
+2025-11-23 17:54:04,991 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 9 nap <= 90 nap limit
+2025-11-23 17:54:05,052 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 10/10 érvényes értékek
+2025-11-23 17:54:05,052 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 10/10 érvényes értékek
+2025-11-23 17:54:05,052 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 27.0 → 47.2 km/h
+2025-11-23 17:54:05,052 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 10/10 érvényes értékek
+2025-11-23 17:54:05,052 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 11.0 → 27.3 km/h
+2025-11-23 17:54:05,052 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 10 records
+2025-11-23 17:54:05,052 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:54:05,052 - src.data.weather_client - INFO -   📅 Records returned: 10
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-10
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   💨 Wind speed range: 11.0 → 27.3 km/h
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   📊 Valid wind speed records: 10/10 (100.0%)
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 27.0 → 47.2 km/h
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 10/10 (100.0%)
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   🧭 Wind direction range: 9° → 337°
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   📊 Valid wind direction records: 10/10 (100.0%)
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   🌡️ Temperature range: 12.6°C → 17.8°C
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO -   📊 Valid temp records: 10/10 (100.0%)
+2025-11-23 17:54:05,053 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:54:05,053 - src.data.weather_client - INFO - 🎉 SUCCESS: 10 nap (🌍 Open-Meteo API)
+2025-11-23 17:54:05,053 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 10/1 siker, idő: 0.1s
+2025-11-23 17:54:05,053 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 10 város
+2025-11-23 17:54:05,053 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 10 total records (aggregate=False)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 10 daily records
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Budapest', 27.3), ('Budapest', 21.6), ('Budapest', 19.0)]
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=27.3 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=16.2, temp_min=10.8, precip=0.3, windspeed=27.3
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=21.6 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.1, temp_min=7.4, precip=1.2, windspeed=21.6
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=19.0 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=15.8, temp_min=8.2, precip=1.7, windspeed=19.0
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=17.9 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.6, temp_min=5.5, precip=0.1, windspeed=17.9
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=17.9 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.9, precip=2.5, windspeed=17.9
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=17.8 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.5, temp_min=5.5, precip=0.0, windspeed=17.8
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=15.4 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.6, temp_min=2.9, precip=0.0, windspeed=15.4
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=13.9 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=17.8, temp_min=8.9, precip=0.5, windspeed=13.9
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=12.9 (type: <class 'float'>)
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=17.7, temp_min=8.0, precip=0.0, windspeed=12.9
+2025-11-23 17:54:05,054 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=11.0 (type: <class 'float'>)
+2025-11-23 17:54:05,055 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.8, temp_min=6.0, precip=2.2, windspeed=11.0
+2025-11-23 17:54:05,055 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 10 results
+2025-11-23 17:54:05,055 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 17.47, 'median': 17.85, 'stdev': 4.670010706625843, 'min': 11.0, 'max': 27.3, 'range': 16.3}
+INFO:     127.0.0.1:52252 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'src/api/routes/weather.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [409924]
+2025-11-23 17:54:25,730 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:54:25,730 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:54:25,730 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:54:25,730 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:54:25,730 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:54:25,730 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:54:25,730 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:54:25,730 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:54:25,730 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:54:25,730 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:54:25,731 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:54:25,731 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:54:25,731 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:54:25,732 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:54:25,732 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:54:25,732 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:54:25,732 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:54:25,732 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:54:25,732 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:54:25,732 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:54:25,732 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [412918]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/routes/weather.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [412918]
+2025-11-23 17:54:34,668 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:54:34,668 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:54:34,668 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:54:34,668 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:54:34,668 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:54:34,668 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:54:34,668 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:54:34,668 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:54:34,668 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:54:34,668 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:54:34,670 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:54:34,670 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:54:34,670 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:54:34,670 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:54:34,670 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:54:34,670 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:54:34,670 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:54:34,670 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:54:34,670 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:54:34,670 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:54:34,670 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [413337]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2025-11-23 17:54:48,752 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:54:48,770 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:54:48,770 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:54:48,770 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:54:48,770 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:48,770 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:54:48,770 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:54:48,770 - src.data.weather_client - INFO -   📍 Koordináták: 48.2083, 16.3725
+2025-11-23 17:54:48,771 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:48,771 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:54:48,771 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:54:48,771 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:54:48,771 - src.data.weather_client - INFO -   📍 Koordináták: 50.0875, 14.4214
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 4 nap (2025-10-01 → 2025-10-05)
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:54:48,772 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 4 nap (2025-10-01 → 2025-10-05)
+2025-11-23 17:54:48,773 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 4 nap <= 90 nap limit
+2025-11-23 17:54:48,773 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:54:48,773 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 4 nap <= 90 nap limit
+2025-11-23 17:54:48,773 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:54:48,774 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 4 nap (2025-10-01 → 2025-10-05)
+2025-11-23 17:54:48,774 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 4 nap <= 90 nap limit
+2025-11-23 17:54:49,066 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,066 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,066 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 31.3 → 56.9 km/h
+2025-11-23 17:54:49,066 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,066 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 15.1 → 28.2 km/h
+2025-11-23 17:54:49,066 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 5 records
+2025-11-23 17:54:49,066 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:54:49,066 - src.data.weather_client - INFO -   📅 Records returned: 5
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   💨 Wind speed range: 15.1 → 28.2 km/h
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   📊 Valid wind speed records: 5/5 (100.0%)
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 31.3 → 56.9 km/h
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 5/5 (100.0%)
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   🧭 Wind direction range: 182° → 355°
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   📊 Valid wind direction records: 5/5 (100.0%)
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   🌡️ Temperature range: 11.6°C → 15.5°C
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO -   📊 Valid temp records: 5/5 (100.0%)
+2025-11-23 17:54:49,067 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:54:49,067 - src.data.weather_client - INFO - 🎉 SUCCESS: 5 nap (🌍 Open-Meteo API)
+2025-11-23 17:54:49,092 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,092 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,092 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 30.6 → 41.0 km/h
+2025-11-23 17:54:49,092 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,092 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 11.0 → 17.9 km/h
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 5 records
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   📅 Records returned: 5
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   💨 Wind speed range: 11.0 → 17.9 km/h
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   📊 Valid wind speed records: 5/5 (100.0%)
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 30.6 → 41.0 km/h
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 5/5 (100.0%)
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   🧭 Wind direction range: 9° → 283°
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   📊 Valid wind direction records: 5/5 (100.0%)
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   🌡️ Temperature range: 12.6°C → 14.6°C
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO -   📊 Valid temp records: 5/5 (100.0%)
+2025-11-23 17:54:49,093 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:54:49,093 - src.data.weather_client - INFO - 🎉 SUCCESS: 5 nap (🌍 Open-Meteo API)
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 13.3 → 47.9 km/h
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 8.1 → 24.5 km/h
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 5 records
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   📅 Records returned: 5
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   💨 Wind speed range: 8.1 → 24.5 km/h
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   📊 Valid wind speed records: 5/5 (100.0%)
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 13.3 → 47.9 km/h
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 5/5 (100.0%)
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   🧭 Wind direction range: 1° → 247°
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   📊 Valid wind direction records: 5/5 (100.0%)
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   🌡️ Temperature range: 11.8°C → 14.8°C
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO -   📊 Valid temp records: 5/5 (100.0%)
+2025-11-23 17:54:49,095 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:54:49,095 - src.data.weather_client - INFO - 🎉 SUCCESS: 5 nap (🌍 Open-Meteo API)
+2025-11-23 17:54:49,095 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 15/3 siker, idő: 0.3s
+2025-11-23 17:54:49,095 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 15 város
+2025-11-23 17:54:49,095 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 15 total records (aggregate=True)
+2025-11-23 17:54:49,095 - src.domain.analytics.services.analytics_transform_service - INFO - AGGREGATED TO: 3 unique cities
+2025-11-23 17:54:49,095 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Vienna', 28.2), ('Prague', 24.5), ('Budapest', 17.9)]
+2025-11-23 17:54:49,096 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Vienna - windspeed_10m_max=28.2 (type: <class 'float'>)
+2025-11-23 17:54:49,096 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.5, temp_min=9.5, precip=2.0, windspeed=28.2
+2025-11-23 17:54:49,096 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=24.5 (type: <class 'float'>)
+2025-11-23 17:54:49,096 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.8, precip=1.0, windspeed=24.5
+2025-11-23 17:54:49,096 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=17.9 (type: <class 'float'>)
+2025-11-23 17:54:49,096 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.6, temp_min=5.5, precip=0.1, windspeed=17.9
+2025-11-23 17:54:49,096 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 3 results
+2025-11-23 17:54:49,096 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 23.53333333333333, 'median': 24.5, 'stdev': 5.2175984258405075, 'min': 17.9, 'max': 28.2, 'range': 10.3}
+INFO:     127.0.0.1:39408 - "POST /api/weather/multi-city?aggregate=true HTTP/1.1" 200 OK
+2025-11-23 17:54:49,308 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:54:49,326 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO -   📍 Koordináták: 48.2083, 16.3725
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO -   📍 Koordináták: 50.0875, 14.4214
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,326 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 4 nap (2025-10-01 → 2025-10-05)
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 4 nap <= 90 nap limit
+2025-11-23 17:54:49,327 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:54:49,328 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 4 nap (2025-10-01 → 2025-10-05)
+2025-11-23 17:54:49,328 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 4 nap (2025-10-01 → 2025-10-05)
+2025-11-23 17:54:49,328 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 4 nap <= 90 nap limit
+2025-11-23 17:54:49,328 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 4 nap <= 90 nap limit
+2025-11-23 17:54:49,377 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,377 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,378 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 30.6 → 41.0 km/h
+2025-11-23 17:54:49,378 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,379 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,379 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,379 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 11.0 → 17.9 km/h
+2025-11-23 17:54:49,379 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 13.3 → 47.9 km/h
+2025-11-23 17:54:49,379 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 5 records
+2025-11-23 17:54:49,379 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,379 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:54:49,380 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 8.1 → 24.5 km/h
+2025-11-23 17:54:49,380 - src.data.weather_client - INFO -   📅 Records returned: 5
+2025-11-23 17:54:49,380 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 5 records
+2025-11-23 17:54:49,380 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,380 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:54:49,380 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:54:49,380 - src.data.weather_client - INFO -   💨 Wind speed range: 11.0 → 17.9 km/h
+2025-11-23 17:54:49,381 - src.data.weather_client - INFO -   📅 Records returned: 5
+2025-11-23 17:54:49,382 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,382 - src.data.weather_client - INFO -   📊 Valid wind speed records: 5/5 (100.0%)
+2025-11-23 17:54:49,383 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,383 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,383 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 30.6 → 41.0 km/h
+2025-11-23 17:54:49,383 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:54:49,383 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 31.3 → 56.9 km/h
+2025-11-23 17:54:49,383 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 5/5 (100.0%)
+2025-11-23 17:54:49,384 - src.data.weather_client - INFO -   💨 Wind speed range: 8.1 → 24.5 km/h
+2025-11-23 17:54:49,384 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 5/5 érvényes értékek
+2025-11-23 17:54:49,384 - src.data.weather_client - INFO -   🧭 Wind direction range: 9° → 283°
+2025-11-23 17:54:49,384 - src.data.weather_client - INFO -   📊 Valid wind speed records: 5/5 (100.0%)
+2025-11-23 17:54:49,384 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 15.1 → 28.2 km/h
+2025-11-23 17:54:49,384 - src.data.weather_client - INFO -   📊 Valid wind direction records: 5/5 (100.0%)
+2025-11-23 17:54:49,384 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 13.3 → 47.9 km/h
+2025-11-23 17:54:49,385 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 5 records
+2025-11-23 17:54:49,385 - src.data.weather_client - INFO -   🌡️ Temperature range: 12.6°C → 14.6°C
+2025-11-23 17:54:49,385 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 5/5 (100.0%)
+2025-11-23 17:54:49,385 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:54:49,385 - src.data.weather_client - INFO -   📊 Valid temp records: 5/5 (100.0%)
+2025-11-23 17:54:49,385 - src.data.weather_client - INFO -   🧭 Wind direction range: 1° → 247°
+2025-11-23 17:54:49,385 - src.data.weather_client - INFO -   📅 Records returned: 5
+2025-11-23 17:54:49,386 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:54:49,386 - src.data.weather_client - INFO -   📊 Valid wind direction records: 5/5 (100.0%)
+2025-11-23 17:54:49,386 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-05
+2025-11-23 17:54:49,386 - src.data.weather_client - INFO - 🎉 SUCCESS: 5 nap (🌍 Open-Meteo API)
+2025-11-23 17:54:49,386 - src.data.weather_client - INFO -   🌡️ Temperature range: 11.8°C → 14.8°C
+2025-11-23 17:54:49,386 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:54:49,387 - src.data.weather_client - INFO -   📊 Valid temp records: 5/5 (100.0%)
+2025-11-23 17:54:49,387 - src.data.weather_client - INFO -   💨 Wind speed range: 15.1 → 28.2 km/h
+2025-11-23 17:54:49,387 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:54:49,387 - src.data.weather_client - INFO -   📊 Valid wind speed records: 5/5 (100.0%)
+2025-11-23 17:54:49,387 - src.data.weather_client - INFO - 🎉 SUCCESS: 5 nap (🌍 Open-Meteo API)
+2025-11-23 17:54:49,387 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 31.3 → 56.9 km/h
+2025-11-23 17:54:49,388 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 5/5 (100.0%)
+2025-11-23 17:54:49,388 - src.data.weather_client - INFO -   🧭 Wind direction range: 182° → 355°
+2025-11-23 17:54:49,388 - src.data.weather_client - INFO -   📊 Valid wind direction records: 5/5 (100.0%)
+2025-11-23 17:54:49,388 - src.data.weather_client - INFO -   🌡️ Temperature range: 11.6°C → 15.5°C
+2025-11-23 17:54:49,388 - src.data.weather_client - INFO -   📊 Valid temp records: 5/5 (100.0%)
+2025-11-23 17:54:49,388 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:54:49,388 - src.data.weather_client - INFO - 🎉 SUCCESS: 5 nap (🌍 Open-Meteo API)
+2025-11-23 17:54:49,389 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 15/3 siker, idő: 0.1s
+2025-11-23 17:54:49,389 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 15 város
+2025-11-23 17:54:49,389 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 15 total records (aggregate=False)
+2025-11-23 17:54:49,389 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 15 daily records
+2025-11-23 17:54:49,390 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Vienna', 28.2), ('Prague', 24.5), ('Vienna', 23.3)]
+2025-11-23 17:54:49,390 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Vienna - windspeed_10m_max=28.2 (type: <class 'float'>)
+2025-11-23 17:54:49,390 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.5, temp_min=9.5, precip=2.0, windspeed=28.2
+2025-11-23 17:54:49,390 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=24.5 (type: <class 'float'>)
+2025-11-23 17:54:49,390 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.8, precip=1.0, windspeed=24.5
+2025-11-23 17:54:49,390 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Vienna - windspeed_10m_max=23.3 (type: <class 'float'>)
+2025-11-23 17:54:49,391 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=15.5, temp_min=1.2, precip=2.3, windspeed=23.3
+2025-11-23 17:54:49,391 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=22.7 (type: <class 'float'>)
+2025-11-23 17:54:49,391 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.8, temp_min=3.0, precip=1.7, windspeed=22.7
+2025-11-23 17:54:49,391 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Vienna - windspeed_10m_max=20.1 (type: <class 'float'>)
+2025-11-23 17:54:49,391 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=11.6, temp_min=4.5, precip=0.2, windspeed=20.1
+2025-11-23 17:54:49,391 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Vienna - windspeed_10m_max=19.5 (type: <class 'float'>)
+2025-11-23 17:54:49,391 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.7, temp_min=5.8, precip=1.5, windspeed=19.5
+2025-11-23 17:54:49,392 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=17.9 (type: <class 'float'>)
+2025-11-23 17:54:49,392 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.6, temp_min=5.5, precip=0.1, windspeed=17.9
+2025-11-23 17:54:49,392 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=17.9 (type: <class 'float'>)
+2025-11-23 17:54:49,392 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.9, precip=2.5, windspeed=17.9
+2025-11-23 17:54:49,392 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=17.8 (type: <class 'float'>)
+2025-11-23 17:54:49,392 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.5, temp_min=5.5, precip=0.0, windspeed=17.8
+2025-11-23 17:54:49,392 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=15.4 (type: <class 'float'>)
+2025-11-23 17:54:49,392 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.6, temp_min=2.9, precip=0.0, windspeed=15.4
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Vienna - windspeed_10m_max=15.1 (type: <class 'float'>)
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.0, temp_min=1.5, precip=0.0, windspeed=15.1
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=12.2 (type: <class 'float'>)
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.1, temp_min=4.2, precip=0.2, windspeed=12.2
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=11.8 (type: <class 'float'>)
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=11.8, temp_min=4.9, precip=1.1, windspeed=11.8
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Budapest - windspeed_10m_max=11.0 (type: <class 'float'>)
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.8, temp_min=6.0, precip=2.2, windspeed=11.0
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=8.1 (type: <class 'float'>)
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.1, temp_min=1.7, precip=0.0, windspeed=8.1
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 15 results
+2025-11-23 17:54:49,393 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 17.7, 'median': 17.9, 'stdev': 5.58121850495033, 'min': 8.1, 'max': 28.2, 'range': 20.1}
+INFO:     127.0.0.1:39416 - "POST /api/weather/multi-city?aggregate=false HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'src/api/routes/anomalies.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [413337]
+2025-11-23 17:56:42,710 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:56:42,710 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:56:42,710 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:56:42,710 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:56:42,710 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:56:42,710 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:56:42,710 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:56:42,710 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:56:42,710 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:56:42,710 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:56:42,712 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:56:42,712 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:56:42,712 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:56:42,712 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:56:42,712 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:56:42,712 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:56:42,712 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:56:42,712 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:56:42,712 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:56:42,712 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:56:42,712 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [419251]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/routes/anomalies.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [419251]
+2025-11-23 17:57:03,865 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:03,865 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:03,865 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:03,865 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:03,865 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:03,865 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:03,865 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:03,865 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:03,865 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:03,865 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:03,867 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:03,867 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:03,867 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:03,867 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:03,867 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:03,867 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:03,867 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:03,867 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:03,867 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:03,867 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:03,867 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [420256]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [420256]
+2025-11-23 17:57:12,199 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:12,199 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:12,199 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:12,199 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:12,199 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:12,199 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:12,199 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:12,199 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:12,199 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:12,199 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:12,201 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:12,201 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:12,201 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:12,201 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:12,201 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:12,201 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:12,201 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:12,201 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:12,201 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:12,201 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:12,201 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:12,204 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:12,204 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:12,204 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:12,204 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:12,204 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:12,204 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:12,204 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:12,204 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:12,204 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:12,204 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:12,204 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [420620]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [420620]
+2025-11-23 17:57:17,221 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:17,222 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:17,222 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:17,222 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:17,222 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:17,222 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:17,222 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:17,222 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:17,222 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:17,222 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:17,224 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:17,224 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:17,224 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:17,224 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:17,224 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:17,224 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:17,224 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:17,224 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:17,224 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:17,224 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:17,224 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:17,227 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:17,227 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:17,227 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:17,227 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:17,227 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:17,227 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:17,227 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:17,227 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:17,227 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:17,227 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:17,227 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [420843]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/routes/anomalies.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [420843]
+2025-11-23 17:57:37,264 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:37,264 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:37,264 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:37,264 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:37,264 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:37,264 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:37,264 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:37,264 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:37,264 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:37,264 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:37,266 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:37,266 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:37,266 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:37,266 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:37,266 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:37,266 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:37,266 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:37,267 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:37,267 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:37,267 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:37,267 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:37,270 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:37,270 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:37,270 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:37,270 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:37,270 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:37,270 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:37,270 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:37,270 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:37,270 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:37,270 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:37,270 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [421785]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/routes/anomalies.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [421785]
+2025-11-23 17:57:44,589 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:44,590 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:44,590 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:44,590 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:44,590 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:44,590 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:44,590 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:44,590 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:44,590 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:44,590 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:44,592 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:44,592 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:44,592 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:44,592 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:44,592 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:44,592 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:44,592 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:44,592 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:44,592 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:44,592 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:44,592 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:44,596 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:44,596 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:44,596 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:44,596 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:44,596 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:44,596 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:44,596 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:44,596 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:44,596 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:44,596 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:44,596 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [422120]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'src/api/routes/anomalies.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [422120]
+2025-11-23 17:57:53,412 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:53,412 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:53,412 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:53,412 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:53,412 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:53,412 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:53,412 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:53,412 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:53,412 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:53,412 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:53,414 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:53,414 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:53,414 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:53,414 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:53,414 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:53,414 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:53,414 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:53,414 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:53,414 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:53,414 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:53,414 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+2025-11-23 17:57:53,417 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:57:53,417 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:57:53,418 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:57:53,418 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:57:53,418 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:57:53,418 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:57:53,418 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:57:53,418 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:57:53,418 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:57:53,418 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:57:53,418 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     Started server process [422538]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2025-11-23 17:58:04,870 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:58:04,870 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:58:04,870 - src.data.weather_client - INFO -   📍 Koordináták: 47.4925, 19.0514
+2025-11-23 17:58:04,871 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-31
+2025-11-23 17:58:04,871 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 30 nap (2025-10-01 → 2025-10-31)
+2025-11-23 17:58:04,872 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 30 nap <= 90 nap limit
+2025-11-23 17:58:05,149 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 31/31 érvényes értékek
+2025-11-23 17:58:05,149 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 31/31 érvényes értékek
+2025-11-23 17:58:05,149 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 14.4 → 60.8 km/h
+2025-11-23 17:58:05,149 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 31/31 érvényes értékek
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 7.1 → 28.7 km/h
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 31 records
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   📅 Records returned: 31
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-31
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   💨 Wind speed range: 7.1 → 28.7 km/h
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   📊 Valid wind speed records: 31/31 (100.0%)
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 14.4 → 60.8 km/h
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 31/31 (100.0%)
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   🧭 Wind direction range: 9° → 337°
+2025-11-23 17:58:05,150 - src.data.weather_client - INFO -   📊 Valid wind direction records: 31/31 (100.0%)
+2025-11-23 17:58:05,151 - src.data.weather_client - INFO -   🌡️ Temperature range: 11.4°C → 20.1°C
+2025-11-23 17:58:05,151 - src.data.weather_client - INFO -   📊 Valid temp records: 31/31 (100.0%)
+2025-11-23 17:58:05,151 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:58:05,151 - src.data.weather_client - INFO - 🎉 SUCCESS: 31 nap (🌍 Open-Meteo API)
+2025-11-23 17:58:05,152 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 31/1 siker, idő: 0.3s
+2025-11-23 17:58:05,152 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 31 város
+INFO:     127.0.0.1:58968 - "POST /api/weather/anomalies HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50544 - "GET /health HTTP/1.1" 200 OK
+2025-11-23 17:58:37,560 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:58:37,573 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:58:37,573 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO -   📍 Koordináták: 51.5072, -0.1275
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-15 → 2025-10-20
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO -   📍 Koordináták: 48.8567, 2.3522
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-15 → 2025-10-20
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 5 nap (2025-10-15 → 2025-10-20)
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 5 nap <= 90 nap limit
+2025-11-23 17:58:37,574 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:58:37,575 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:58:37,575 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:58:37,575 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 5 nap (2025-10-15 → 2025-10-20)
+2025-11-23 17:58:37,575 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 5 nap <= 90 nap limit
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 23.4 → 47.2 km/h
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 9.8 → 23.5 km/h
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 6 records
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   📅 Records returned: 6
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   📅 Date range: 2025-10-15 → 2025-10-20
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   💨 Wind speed range: 9.8 → 23.5 km/h
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   📊 Valid wind speed records: 6/6 (100.0%)
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 23.4 → 47.2 km/h
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 6/6 (100.0%)
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   🧭 Wind direction range: 19° → 197°
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   📊 Valid wind direction records: 6/6 (100.0%)
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   🌡️ Temperature range: 13.9°C → 15.8°C
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO -   📊 Valid temp records: 6/6 (100.0%)
+2025-11-23 17:58:37,865 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:58:37,865 - src.data.weather_client - INFO - 🎉 SUCCESS: 6 nap (🌍 Open-Meteo API)
+2025-11-23 17:58:37,894 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 32.8 → 61.2 km/h
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 15.8 → 29.1 km/h
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 6 records
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   📅 Records returned: 6
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   📅 Date range: 2025-10-15 → 2025-10-20
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   💨 Wind speed range: 15.8 → 29.1 km/h
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   📊 Valid wind speed records: 6/6 (100.0%)
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 32.8 → 61.2 km/h
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 6/6 (100.0%)
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   🧭 Wind direction range: 40° → 209°
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   📊 Valid wind direction records: 6/6 (100.0%)
+2025-11-23 17:58:37,895 - src.data.weather_client - INFO -   🌡️ Temperature range: 15.2°C → 17.1°C
+2025-11-23 17:58:37,896 - src.data.weather_client - INFO -   📊 Valid temp records: 6/6 (100.0%)
+2025-11-23 17:58:37,896 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:58:37,896 - src.data.weather_client - INFO - 🎉 SUCCESS: 6 nap (🌍 Open-Meteo API)
+2025-11-23 17:58:37,896 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 12/2 siker, idő: 0.3s
+2025-11-23 17:58:37,896 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 12 város
+2025-11-23 17:58:37,896 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 12 total records (aggregate=True)
+2025-11-23 17:58:37,896 - src.domain.analytics.services.analytics_transform_service - INFO - AGGREGATED TO: 2 unique cities
+2025-11-23 17:58:37,896 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Paris', 29.1), ('London', 23.5)]
+2025-11-23 17:58:37,896 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Paris - windspeed_10m_max=29.1 (type: <class 'float'>)
+2025-11-23 17:58:37,896 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=17.1, temp_min=13.2, precip=7.0, windspeed=29.1
+2025-11-23 17:58:37,896 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: London - windspeed_10m_max=23.5 (type: <class 'float'>)
+2025-11-23 17:58:37,896 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=15.8, temp_min=10.9, precip=5.8, windspeed=23.5
+2025-11-23 17:58:37,896 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 2 results
+2025-11-23 17:58:37,897 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 26.3, 'median': 26.3, 'stdev': 3.959797974644667, 'min': 23.5, 'max': 29.1, 'range': 5.600000000000001}
+INFO:     127.0.0.1:50556 - "POST /api/weather/multi-city?aggregate=true HTTP/1.1" 200 OK
+2025-11-23 17:58:38,121 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:58:38,134 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:58:38,134 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:58:38,134 - src.data.weather_client - INFO -   📍 Koordináták: 51.5072, -0.1275
+2025-11-23 17:58:38,134 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-15 → 2025-10-20
+2025-11-23 17:58:38,134 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:58:38,134 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:58:38,135 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:58:38,135 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:58:38,135 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:58:38,135 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:58:38,135 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:58:38,135 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:58:38,135 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 5 nap (2025-10-15 → 2025-10-20)
+2025-11-23 17:58:38,135 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 5 nap <= 90 nap limit
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 23.4 → 47.2 km/h
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 6/6 érvényes értékek
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 9.8 → 23.5 km/h
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 6 records
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO -   📅 Records returned: 6
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO -   📅 Date range: 2025-10-15 → 2025-10-20
+2025-11-23 17:58:38,188 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO -   💨 Wind speed range: 9.8 → 23.5 km/h
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO -   📊 Valid wind speed records: 6/6 (100.0%)
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 23.4 → 47.2 km/h
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 6/6 (100.0%)
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO -   🧭 Wind direction range: 19° → 197°
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO -   📊 Valid wind direction records: 6/6 (100.0%)
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO -   🌡️ Temperature range: 13.9°C → 15.8°C
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO -   📊 Valid temp records: 6/6 (100.0%)
+2025-11-23 17:58:38,189 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:58:38,189 - src.data.weather_client - INFO - 🎉 SUCCESS: 6 nap (🌍 Open-Meteo API)
+2025-11-23 17:58:38,190 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 6/1 siker, idő: 0.1s
+2025-11-23 17:58:38,190 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 6 város
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 6 total records (aggregate=False)
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 6 daily records
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('London', 23.5), ('London', 22.3), ('London', 17.1)]
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: London - windspeed_10m_max=23.5 (type: <class 'float'>)
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=15.8, temp_min=10.9, precip=5.8, windspeed=23.5
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: London - windspeed_10m_max=22.3 (type: <class 'float'>)
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.1, temp_min=11.6, precip=4.2, windspeed=22.3
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: London - windspeed_10m_max=17.1 (type: <class 'float'>)
+2025-11-23 17:58:38,190 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.9, temp_min=9.8, precip=0.0, windspeed=17.1
+2025-11-23 17:58:38,191 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: London - windspeed_10m_max=13.4 (type: <class 'float'>)
+2025-11-23 17:58:38,191 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.9, temp_min=10.7, precip=0.0, windspeed=13.4
+2025-11-23 17:58:38,191 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: London - windspeed_10m_max=11.7 (type: <class 'float'>)
+2025-11-23 17:58:38,191 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=15.4, temp_min=10.0, precip=0.0, windspeed=11.7
+2025-11-23 17:58:38,191 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: London - windspeed_10m_max=9.8 (type: <class 'float'>)
+2025-11-23 17:58:38,191 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.9, temp_min=8.2, precip=0.0, windspeed=9.8
+2025-11-23 17:58:38,191 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 6 results
+2025-11-23 17:58:38,191 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 16.3, 'median': 15.25, 'stdev': 5.662155066756826, 'min': 9.8, 'max': 23.5, 'range': 13.7}
+INFO:     127.0.0.1:50560 - "POST /api/weather/multi-city?aggregate=false HTTP/1.1" 200 OK
+2025-11-23 17:58:38,415 - src.domain.analytics.services.region_resolver - INFO - Case-insensitive region mapping: 'Global' → 'Global'
+2025-11-23 17:58:38,429 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO -   📍 Koordináták: 50.0875, 14.4214
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-07
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:58:38,429 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 6 nap (2025-10-01 → 2025-10-07)
+2025-11-23 17:58:38,430 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 6 nap <= 90 nap limit
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 7/7 érvényes értékek
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 7/7 érvényes értékek
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 13.3 → 47.9 km/h
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 7/7 érvényes értékek
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 8.1 → 24.5 km/h
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 7 records
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO -   📅 Records returned: 7
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-07
+2025-11-23 17:58:38,686 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO -   💨 Wind speed range: 8.1 → 24.5 km/h
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO -   📊 Valid wind speed records: 7/7 (100.0%)
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 13.3 → 47.9 km/h
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 7/7 (100.0%)
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO -   🧭 Wind direction range: 1° → 311°
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO -   📊 Valid wind direction records: 7/7 (100.0%)
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO -   🌡️ Temperature range: 11.8°C → 14.8°C
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO -   📊 Valid temp records: 7/7 (100.0%)
+2025-11-23 17:58:38,687 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:58:38,687 - src.data.weather_client - INFO - 🎉 SUCCESS: 7 nap (🌍 Open-Meteo API)
+2025-11-23 17:58:38,687 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 7/1 siker, idő: 0.3s
+2025-11-23 17:58:38,687 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 7 város
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - WEATHER RESULT PROCESSING: 7 total records (aggregate=False)
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - NO AGGREGATION: Returning all 7 daily records
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - TOP WINDIEST CITIES: [('Prague', 24.5), ('Prague', 22.7), ('Prague', 22.4)]
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=24.5 (type: <class 'float'>)
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.6, temp_min=8.8, precip=1.0, windspeed=24.5
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=22.7 (type: <class 'float'>)
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.8, temp_min=3.0, precip=1.7, windspeed=22.7
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=22.4 (type: <class 'float'>)
+2025-11-23 17:58:38,687 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=13.8, temp_min=9.2, precip=6.3, windspeed=22.4
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=17.1 (type: <class 'float'>)
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=14.7, temp_min=10.6, precip=0.5, windspeed=17.1
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=12.2 (type: <class 'float'>)
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.1, temp_min=4.2, precip=0.2, windspeed=12.2
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=11.8 (type: <class 'float'>)
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=11.8, temp_min=4.9, precip=1.1, windspeed=11.8
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - TRANSFORM DEBUG: Prague - windspeed_10m_max=8.1 (type: <class 'float'>)
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - RAW DATA: temp_max=12.1, temp_min=1.7, precip=0.0, windspeed=8.1
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - NONE-SAFE STATS: 7 results
+2025-11-23 17:58:38,688 - src.domain.analytics.services.analytics_transform_service - INFO - STATS RESULT: {'mean': 16.97142857142857, 'median': 17.1, 'stdev': 6.418648426191266, 'min': 8.1, 'max': 24.5, 'range': 16.4}
+INFO:     127.0.0.1:50564 - "POST /api/weather/single-city HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50574 - "GET /api/weather/metrics HTTP/1.1" 200 OK
+2025-11-23 17:58:39,206 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:58:39,206 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:58:39,206 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:58:39,206 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:58:39,206 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:58:39,206 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:58:39,206 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:58:39,207 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:58:39,207 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:58:39,207 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:58:39,207 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     127.0.0.1:50590 - "GET /api/weather/regions HTTP/1.1" 200 OK
+2025-11-23 17:58:39,457 - src.infrastructure.repositories.city_repository - INFO - CityRepository database paths validated.
+2025-11-23 17:58:39,457 - src.data.weather_client - INFO - Weather provider inicializálva: 🌍 Open-Meteo API
+2025-11-23 17:58:39,457 - src.data.weather_client - INFO - 🔥 OpenMeteoProvider - 55 ÉVES RATE LIMIT OPTIMALIZÁLÁS aktiválva
+2025-11-23 17:58:39,457 - src.data.weather_client - INFO - 📅 Max days/request: 90 (rate limit optimalizált)
+2025-11-23 17:58:39,457 - src.data.weather_client - INFO - ⏱️ Batch delay: 0.6s (100 batch/min limit)
+2025-11-23 17:58:39,458 - src.data.weather_client - INFO - 📊 55 év ≈ 223 batch × 0.6s ≈ 2.2 perc lekérdezés
+2025-11-23 17:58:39,458 - src.data.weather_client - INFO - Weather provider inicializálva: 💎 Meteostat API
+2025-11-23 17:58:39,458 - src.data.weather_client - INFO - 💎 MeteostatProvider - MAX 10 év/request
+2025-11-23 17:58:39,458 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WeatherClient v4.7 inicializálva (API PARAMÉTER FIX)
+2025-11-23 17:58:39,458 - src.analytics.multi_city_engine - INFO - ✅ WeatherClient dual-API integráció sikeres
+2025-11-23 17:58:39,458 - src.analytics.multi_city_engine - INFO - 🚀 Multi-city engine inicializálva (ABSOLUTE DATABASE PATH FIX v2.8.2)
+INFO:     127.0.0.1:50598 - "GET /api/weather/query-types HTTP/1.1" 200 OK
+2025-11-23 17:58:56,272 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing: 1 batch, 8 város/batch
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 🔥 MULTI-YEAR WEATHER REQUEST v4.7:
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO -   📍 Koordináták: 48.2083, 16.3725
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO -   📅 Időszak: 2025-10-01 → 2025-10-31
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO -   🎛️ Provider override: None
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 🤖 AUTO SELECTED: open-meteo
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 🎯 SELECTED PROVIDER: open-meteo
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 🔄 FALLBACK CHAIN: ['open-meteo']
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 🔍 TRYING PROVIDER: open-meteo (🌍 Open-Meteo API)
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - ✅ PROVIDER VALIDATED: open-meteo
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 🔄 STARTING RETRY SEQUENCE for open-meteo
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 🔄 ATTEMPT 1/3
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 📊 Lekérdezési időszak: 30 nap (2025-10-01 → 2025-10-31)
+2025-11-23 17:58:56,272 - src.data.weather_client - INFO - 📅 SINGLE REQUEST: 30 nap <= 90 nap limit
+2025-11-23 17:58:56,357 - src.data.weather_client - INFO - 🌪️ Szélirány adatok feldolgozva: 31/31 érvényes értékek
+2025-11-23 17:58:56,357 - src.data.weather_client - INFO - 🌪️ Széllökés adatok feldolgozva: 31/31 érvényes értékek
+2025-11-23 17:58:56,357 - src.data.weather_client - INFO - 🌪️ Széllökés tartomány: 11.9 → 67.7 km/h
+2025-11-23 17:58:56,357 - src.data.weather_client - INFO - 💨 Szélsebesség adatok feldolgozva: 31/31 érvényes értékek
+2025-11-23 17:58:56,357 - src.data.weather_client - INFO - 💨 Szélsebesség tartomány: 6.7 → 33.8 km/h
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO - ✅ ATTEMPT SUCCESS: 31 records
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO - 📊 PROVIDER RESPONSE ANALYSIS:
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   📅 Records returned: 31
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   📅 Date range: 2025-10-01 → 2025-10-31
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   🌍 Data sources: {'open-meteo'}
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   💨 Wind speed range: 6.7 → 33.8 km/h
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   📊 Valid wind speed records: 31/31 (100.0%)
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   🌪️ Wind gusts range: 11.9 → 67.7 km/h
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   📊 Valid wind gusts records: 31/31 (100.0%)
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   🧭 Wind direction range: 89° → 355°
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   📊 Valid wind direction records: 31/31 (100.0%)
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   🌡️ Temperature range: 10.6°C → 19.7°C
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO -   📊 Valid temp records: 31/31 (100.0%)
+2025-11-23 17:58:56,358 - src.gui.utils - INFO - PROVIDER USAGE: 🌍 Open-Meteo API for weather_data - SUCCESS
+2025-11-23 17:58:56,358 - src.data.weather_client - INFO - 🎉 SUCCESS: 31 nap (🌍 Open-Meteo API)
+2025-11-23 17:58:56,359 - src.domain.analytics.services.weather_fetch_service - INFO - Batch 1/1: 31/1 siker, idő: 0.1s
+2025-11-23 17:58:56,360 - src.domain.analytics.services.weather_fetch_service - INFO - Dual-API batch processing befejezve: 31 város
+INFO:     127.0.0.1:39168 - "POST /api/weather/anomalies HTTP/1.1" 200 OK

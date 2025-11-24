@@ -43,6 +43,8 @@ scripts/*.zip
 */
 !src/
 !scripts/
+!frontend/
+!frontend/**
 # A scripts kivételek már fentiekben
 !data_explorer.py
 !tools_archi_scan.py

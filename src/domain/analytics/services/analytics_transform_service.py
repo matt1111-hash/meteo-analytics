@@ -76,13 +76,21 @@ class AnalyticsTransformService:
             quality_score=city_data.data_quality_score if city_data.data_quality_score is not None else 0.0,
         )
 
-    def process_weather_results(self, weather_data: List[CityWeatherData], query_type: str) -> List[CityWeatherData]:
-        """Sort and enrich weather data with computed temperature range."""
-        logger.info("WEATHER RESULT PROCESSING: %d cities", len(weather_data))
+    def process_weather_results(
+        self, weather_data: List[CityWeatherData], query_type: str, aggregate: bool = True
+    ) -> List[CityWeatherData]:
+        """Sort and enrich weather data with computed temperature range.
+
+        Args:
+            aggregate: If True, aggregates multi-day data per city by taking max value.
+                      If False, returns all daily records without aggregation.
+        """
+        logger.info("WEATHER RESULT PROCESSING: %d total records (aggregate=%s)", len(weather_data), aggregate)
         query_config = self._require_query_config(query_type)
         metric = query_config["metric"]
         sort_desc = query_config["sort_desc"]
 
+        # Compute temperature_range for all records
         for city_data in weather_data:
             if metric == "temperature_range" and city_data.fetch_success:
                 temp_max = city_data.temperature_2m_max
@@ -93,8 +101,30 @@ class AnalyticsTransformService:
                     except (TypeError, ValueError):
                         city_data.temperature_range = None
 
+        # Conditionally aggregate multi-day data per city
+        if aggregate:
+            city_aggregates: Dict[str, CityWeatherData] = {}
+            for city_data in weather_data:
+                city_key = city_data.city
+                current_value = getattr(city_data, metric, None)
+
+                if city_key not in city_aggregates:
+                    city_aggregates[city_key] = city_data
+                else:
+                    # Compare and keep the record with higher metric value (for max aggregation)
+                    existing_value = getattr(city_aggregates[city_key], metric, None)
+                    if current_value is not None and (existing_value is None or current_value > existing_value):
+                        city_aggregates[city_key] = city_data
+
+            aggregated_data = list(city_aggregates.values())
+            logger.info("AGGREGATED TO: %d unique cities", len(aggregated_data))
+        else:
+            # No aggregation - return all daily records
+            aggregated_data = weather_data
+            logger.info("NO AGGREGATION: Returning all %d daily records", len(aggregated_data))
+
         valid_data = [
-            d for d in weather_data if d.fetch_success and getattr(d, metric, None) is not None
+            d for d in aggregated_data if d.fetch_success and getattr(d, metric, None) is not None
         ]
         if not valid_data:
             logger.error("NO VALID DATA for metric '%s'", metric)

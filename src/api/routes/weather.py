@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from src.api.adapters.weather_adapter import to_multi_city_query
 from src.api.dto.weather_request import WeatherAnalysisRequest
@@ -43,11 +43,23 @@ use_case = _build_use_case()
 
 
 @router.post("/multi-city")
-async def analyze_multi_city(request: WeatherAnalysisRequest) -> dict:
-    """Run multi-city analysis with defaults derived from request."""
+async def analyze_multi_city(
+    request: WeatherAnalysisRequest,
+    aggregate: bool = Query(
+        default=True,
+        description="Aggregate multi-day data per city (True) or return daily time series (False)",
+    ),
+) -> dict:
+    """Run multi-city analysis with defaults derived from request.
+
+    Args:
+        request: Weather analysis request parameters
+        aggregate: If True (default), aggregates multi-day data per city.
+                  If False, returns all daily records as time series.
+    """
     try:
         query = to_multi_city_query(request)
-        result = use_case.execute(query)
+        result = use_case.execute(query, aggregate=aggregate)
         return result.to_dict()
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

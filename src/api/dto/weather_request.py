@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class WeatherAnalysisRequest(BaseModel):
@@ -14,17 +14,23 @@ class WeatherAnalysisRequest(BaseModel):
         ...,
         description="Date descriptor with 'date' or 'start'/'end' keys.",
     )
+    metric: Optional[str] = Field(
+        default="temperature_2m_max",
+        description="Weather metric to analyze (temperature_2m_max, windspeed_10m_max, etc.)",
+    )
 
-    @validator("cities")
-    def validate_cities(cls, values: List[str]) -> List[str]:
-        if not values:
+    @field_validator("cities")
+    @classmethod
+    def validate_cities(cls, value: List[str]) -> List[str]:
+        if not value:
             raise ValueError("Legalább egy város kötelező.")
-        normalized = [v.strip() for v in values if v and v.strip()]
+        normalized = [v.strip() for v in value if v and v.strip()]
         if not normalized:
             raise ValueError("Üres városnevek nem engedélyezettek.")
         return normalized
 
-    @validator("date_range")
+    @field_validator("date_range")
+    @classmethod
     def validate_date_range(cls, value: Dict[str, Any]) -> Dict[str, Any]:
         if not isinstance(value, dict):
             raise ValueError("date_range objektum kell legyen.")
@@ -32,8 +38,4 @@ class WeatherAnalysisRequest(BaseModel):
             raise ValueError("date_range tartalmazzon 'date' vagy 'start'/'end' kulcsot.")
         return value
 
-    class Config:
-        """Pydantic config."""
-
-        allow_mutation = False
-        frozen = True
+    model_config = ConfigDict(frozen=True)
