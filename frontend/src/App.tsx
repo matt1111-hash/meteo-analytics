@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import MultiCityView from './pages/MultiCityView';
 import SingleCityView from './pages/SingleCityView';
 import AnomalyView from './pages/AnomalyView';
+import HeatmapView from './pages/HeatmapView';
 import './App.css';
 
 function Navigation() {
@@ -28,6 +29,12 @@ function Navigation() {
       >
         🔍 Anomaly Detection
       </Link>
+      <Link
+        to="/heatmap"
+        className={`nav-link ${location.pathname === '/heatmap' ? 'active' : ''}`}
+      >
+        🗺️ Heatmap View
+      </Link>
     </nav>
   );
 }
@@ -49,6 +56,7 @@ function App() {
             <Route path="/" element={<MultiCityView />} />
             <Route path="/single-city" element={<SingleCityView />} />
             <Route path="/anomalies" element={<AnomalyView />} />
+            <Route path="/heatmap" element={<HeatmapView />} />
           </Routes>
         </main>
       </div>

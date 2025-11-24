@@ -123,6 +123,14 @@ class AnalyticsTransformService:
             aggregated_data = weather_data
             logger.info("NO AGGREGATION: Returning all %d daily records", len(aggregated_data))
 
+        # DEBUG: Log filtered out records
+        for d in aggregated_data:
+            if not d.fetch_success or getattr(d, metric, None) is None:
+                logger.warning(
+                    "FILTERED OUT: date=%s city=%s fetch_success=%s %s=%s",
+                    d.date, d.city, d.fetch_success, metric, getattr(d, metric, None)
+                )
+
         valid_data = [
             d for d in aggregated_data if d.fetch_success and getattr(d, metric, None) is not None
         ]

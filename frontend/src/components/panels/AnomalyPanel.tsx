@@ -177,13 +177,13 @@ const AnomalyPanel: React.FC<AnomalyPanelProps> = ({
                       <div className="detail-row">
                         <span className="detail-label">Value:</span>
                         <span className="detail-value">
-                          {anomaly.measured_value.toFixed(1)}
+                          {anomaly.measured_value !== null ? anomaly.measured_value.toFixed(1) : 'N/A'}
                         </span>
                       </div>
                       <div className="detail-row">
                         <span className="detail-label">Threshold:</span>
                         <span className="detail-value">
-                          {anomaly.threshold.toFixed(1)}
+                          {anomaly.threshold !== null ? anomaly.threshold.toFixed(1) : 'N/A'}
                         </span>
                       </div>
                       <div className="detail-row">
