@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExtremeRecord } from '../utils/extremeCalculator';
+import { ExtremeRecord } from '../utils/extremeCalculator/index';
 import './ExtremeRecordsTable.css';
 
 interface ExtremeRecordsTableProps {

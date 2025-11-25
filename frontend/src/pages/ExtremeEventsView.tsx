@@ -9,7 +9,7 @@ import {
   calculateExtremes,
   detectAnomalies,
   generateTextSummary,
-} from '../utils/extremeCalculator';
+} from '../utils/extremeCalculator/index';
 import { CityWeatherResult } from '../types/weather';
 import './ExtremeEventsView.css';
 
