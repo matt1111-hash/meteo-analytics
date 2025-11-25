@@ -4,6 +4,7 @@ import MultiCityView from './pages/MultiCityView';
 import SingleCityView from './pages/SingleCityView';
 import AnomalyView from './pages/AnomalyView';
 import HeatmapView from './pages/HeatmapView';
+import ExtremeEventsView from './pages/ExtremeEventsView';
 import './App.css';
 
 function Navigation() {
@@ -35,6 +36,12 @@ function Navigation() {
       >
         🗺️ Heatmap View
       </Link>
+      <Link
+        to="/extreme-events"
+        className={`nav-link ${location.pathname === '/extreme-events' ? 'active' : ''}`}
+      >
+        ⚡ Extreme Events
+      </Link>
     </nav>
   );
 }
@@ -57,6 +64,7 @@ function App() {
             <Route path="/single-city" element={<SingleCityView />} />
             <Route path="/anomalies" element={<AnomalyView />} />
             <Route path="/heatmap" element={<HeatmapView />} />
+            <Route path="/extreme-events" element={<ExtremeEventsView />} />
           </Routes>
         </main>
       </div>
