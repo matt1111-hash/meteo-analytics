@@ -3,30 +3,30 @@
  * Re-exports all types and functions
  */
 
+// Imports first (alphabetical order)
+import { calculateDailyRecords } from './dailyRecords';
+import { calculateMonthlyRecords } from './monthlyRecords';
+import { AggregationType, DailyWeatherData, ExtremeRecord } from './types';
+import { calculateYearlyRecords } from './yearlyRecords';
+
 // Re-export types
 export type {
-  ExtremeRecord,
-  DailyWeatherData,
-  AnomalyStatus,
   AggregationType,
+  AnomalyStatus,
+  DailyWeatherData,
+  ExtremeRecord,
   MonthlyAggregate,
   YearlyAggregate,
 } from './types';
 
 // Re-export constants and utility functions
 export {
-  WIND_THRESHOLDS,
-  WIND_CATEGORIES,
   categorizeWindGust,
   detectAnomalies,
   generateTextSummary,
+  WIND_CATEGORIES,
+  WIND_THRESHOLDS,
 } from './types';
-
-// Import calculation functions
-import { calculateDailyRecords } from './dailyRecords';
-import { calculateMonthlyRecords } from './monthlyRecords';
-import { calculateYearlyRecords } from './yearlyRecords';
-import { DailyWeatherData, AggregationType, ExtremeRecord } from './types';
 
 // Re-export individual calculators
 export { calculateDailyRecords } from './dailyRecords';
