@@ -13,5 +13,6 @@ Usage:
 
 from ._map_tab import HungarianMapTab
 from .map_analytics_sync import MapAnalyticsSyncMixin
+from .map_tab_ui import MapTabUIMixin
 
-__all__ = ["HungarianMapTab", "MapAnalyticsSyncMixin"]
+__all__ = ["HungarianMapTab", "MapAnalyticsSyncMixin", "MapTabUIMixin"]
