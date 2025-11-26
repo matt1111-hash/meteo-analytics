@@ -27,8 +27,8 @@ import colorsys
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
-# ABSOLUTE IMPORTS - Import hibák javítása
-from src.gui.utils import ThemeType
+# Import from gui.types (breaks circular dependency with utils)
+from src.gui.types import ThemeType
 
 
 class ColorFormat(Enum):

@@ -32,7 +32,9 @@ from PySide6.QtCore import QObject, Signal, QSettings
 from PySide6.QtGui import QPalette, QColor
 
 # ColorPalette integration - ABSOLUTE IMPORTS
-from src.gui.color_palette import ColorPalette, create_color_palette, create_weather_palette, ThemeType
+from src.gui.color_palette import ColorPalette, create_color_palette, create_weather_palette
+# Import ThemeType from gui.types (breaks circular dependency)
+from src.gui.types import ThemeType
 
 # PROFESSIONAL THEME LIBRARY - opcionális
 try:

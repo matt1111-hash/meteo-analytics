@@ -50,8 +50,10 @@ Architektúra: Moduláris design, centralizált konstansok, DUAL-API powered
 """
 
 import logging
-from typing import Dict, List, Tuple, Any, Optional
-from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
+
+# Import shared types from gui.types (breaks circular dependency)
+from src.gui.types import ColorVariant, ThemeType
 
 # Logging konfigurálása
 logger = logging.getLogger(__name__)
@@ -146,22 +148,8 @@ class GUIConstants:
     ON_SURFACE_DARK = "#f9fafb"    # Dark mode szöveg
 
 
-class ThemeType(Enum):
-    """Téma típusok enum - JÖVŐBELI BŐVÍTÉSHEZ"""
-    LIGHT = "light"
-    DARK = "dark"
-    AUTO = "auto"    # Rendszer beállítás követése
-    HIGH_CONTRAST = "high_contrast"  # Akadálymentesség
-
-
-class ColorVariant(Enum):
-    """Szín variánsok enum - DINAMIKUS SZÍNKEZELÉSHEZ"""
-    BASE = "base"           # Alapszín
-    LIGHT = "light"         # Világosabb változat
-    DARK = "dark"           # Sötétebb változat
-    HOVER = "hover"         # Hover állapot
-    PRESSED = "pressed"     # Pressed állapot
-    DISABLED = "disabled"   # Letiltott állapot
+# ThemeType and ColorVariant are now imported from src.gui.types
+# Re-exported above for backward compatibility
 
 
 class StyleSheets:
