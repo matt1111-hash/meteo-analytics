@@ -12,5 +12,6 @@ Usage:
 """
 
 from ._map_tab import HungarianMapTab
+from .map_analytics_sync import MapAnalyticsSyncMixin
 
-__all__ = ["HungarianMapTab"]
+__all__ = ["HungarianMapTab", "MapAnalyticsSyncMixin"]
