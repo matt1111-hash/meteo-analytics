@@ -4,8 +4,12 @@ import WeatherForm from '../components/WeatherForm';
 import WeatherResults from '../components/WeatherResults';
 import MetricSelector from '../components/MetricSelector';
 import MultiCityChart from '../components/MultiCityChart';
+import HeatmapChart from '../components/HeatmapChart';
+import MapView from '../components/MapView';
 import { WeatherAnalysisRequest, WeatherAnalysisResponse } from '../types/weather';
 import './MultiCityView.css';
+
+type ViewTab = 'chart' | 'heatmap' | 'map';
 
 const API_BASE_URL = 'http://localhost:8001';
 
@@ -15,6 +19,7 @@ const MultiCityView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedMetric, setSelectedMetric] = useState<string>('temperature_2m_max');
   const [aggregate, setAggregate] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<ViewTab>('chart');
 
   const handleMetricChange = (metric: string) => {
     setSelectedMetric(metric);
@@ -111,15 +116,57 @@ const MultiCityView: React.FC = () => {
         )}
 
         {results && (
-          <>
-            <MultiCityChart
-              data={results.city_results}
-              aggregate={aggregate}
-              metricName={getMetricDisplayInfo(selectedMetric).name}
-              metricUnit={getMetricDisplayInfo(selectedMetric).unit}
-            />
+          <div className="results-section">
+            <div className="tab-selector">
+              <button
+                className={`tab-btn ${activeTab === 'chart' ? 'active' : ''}`}
+                onClick={() => setActiveTab('chart')}
+              >
+                📊 Chart
+              </button>
+              <button
+                className={`tab-btn ${activeTab === 'heatmap' ? 'active' : ''}`}
+                onClick={() => setActiveTab('heatmap')}
+              >
+                🔥 Heatmap
+              </button>
+              <button
+                className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+                onClick={() => setActiveTab('map')}
+              >
+                🗺️ Map
+              </button>
+            </div>
+
+            <div className="tab-content">
+              {activeTab === 'chart' && (
+                <MultiCityChart
+                  data={results.city_results}
+                  aggregate={aggregate}
+                  metricName={getMetricDisplayInfo(selectedMetric).name}
+                  metricUnit={getMetricDisplayInfo(selectedMetric).unit}
+                />
+              )}
+
+              {activeTab === 'heatmap' && (
+                <HeatmapChart
+                  data={results.city_results}
+                  metric={selectedMetric}
+                  unit={getMetricDisplayInfo(selectedMetric).unit}
+                />
+              )}
+
+              {activeTab === 'map' && (
+                <MapView
+                  data={results.city_results}
+                  metric={selectedMetric}
+                  unit={getMetricDisplayInfo(selectedMetric).unit}
+                />
+              )}
+            </div>
+
             <WeatherResults data={results} />
-          </>
+          </div>
         )}
       </div>
     </div>
