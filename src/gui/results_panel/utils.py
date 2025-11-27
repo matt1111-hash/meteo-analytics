@@ -16,6 +16,10 @@ import logging
 from typing import Dict, List, Any, Optional
 import pandas as pd
 
+# Interface imports (breaks circular dependency)
+from src.gui.interfaces import IConstantsProvider, IWindspeedConstants
+from src.gui.constants_provider import ConstantsProvider, WindspeedConstantsAdapter
+
 # Logging konfigurálása
 logger = logging.getLogger(__name__)
 
@@ -264,47 +268,56 @@ class DataFrameExtractor:
 
 class WindGustsAnalyzer:
     """
-    🌪️ Széllökés elemzéséért felelős utility osztály.
-    🚀 SOLID: Single Responsibility Principle
+    🌪️ Széllökés elemzéséért felelős utility osztály - Dependency Injection Friendly
+    🚀 SOLID: Single Responsibility Principle + Dependency Injection
     🌪️ METEOROLÓGIAI STANDARDOK: Beaufort skála alapú kategorizálás
     """
-    
-    @staticmethod
-    def categorize_wind_gust(wind_speed: float, data_source: str = 'wind_gusts_max') -> str:
+
+    def __init__(self, constants_provider: Optional[IConstantsProvider] = None):
+        """Initialize with dependency injection constants provider."""
+        self.constants_provider = constants_provider or ConstantsProvider()
+        self.windspeed_constants = WindspeedConstantsAdapter()
+
+    def categorize_wind_gust(self, wind_speed: float, data_source: str = 'wind_gusts_max') -> str:
         """
-        Széllökés kategorizálása élethű értékek alapján.
-        🌪️ METEOROLÓGIAI KALIBRÁLÁS: Beaufort skála szerinti kategóriák
-        
+        Széllökés kategorizálása élethű értékek alapján - Dependency Injection Frissítve
+        🌪️ METEOROLÓGIAI KALIBRÁLÁS: Beaufort skála szerinti kategóriák - DI Pattern
+
         Args:
             wind_speed: Szélsebesség km/h-ban
             data_source: Adatforrás típusa ('wind_gusts_max' vagy 'windspeed_10m_max')
-            
+
         Returns:
             str: Kategória neve ('moderate', 'strong', 'extreme', 'hurricane')
         """
         if wind_speed is None or wind_speed < 0:
             return 'moderate'  # Default safe category
-        
+
         try:
             if data_source in ['wind_gusts_max', 'wind_gusts_10m_max']:
-                # ÉLETHŰ SZÉLLÖKÉS KÜSZÖBÖK (wind_gusts_max)
-                if wind_speed >= WindGustsConstants.HURRICANE_THRESHOLD:
+                # ÉLETHŰ SZÉLLÖKÉS KÜSZÖBÖK (wind_gusts_max) - Dependency Injection
+                hurricane_threshold = WindGustsConstants.HURRICANE_THRESHOLD
+                extreme_threshold = WindGustsConstants.EXTREME_THRESHOLD
+                strong_threshold = WindGustsConstants.STRONG_THRESHOLD
+                moderate_threshold = WindGustsConstants.MODERATE_THRESHOLD
+
+                if wind_speed >= hurricane_threshold:
                     return 'hurricane'    # ≥120 km/h - Hurrikán (Beaufort 12)
-                elif wind_speed >= WindGustsConstants.EXTREME_THRESHOLD:
+                elif wind_speed >= extreme_threshold:
                     return 'extreme'      # ≥100 km/h - Extrém vihar (Beaufort 10-11)
-                elif wind_speed >= WindGustsConstants.STRONG_THRESHOLD:
+                elif wind_speed >= strong_threshold:
                     return 'strong'       # ≥70 km/h - Erős vihar (Beaufort 8-9)
-                elif wind_speed >= WindGustsConstants.MODERATE_THRESHOLD:
+                elif wind_speed >= moderate_threshold:
                     return 'strong'       # ≥50 km/h - Erős szél (Beaufort 7-8)
                 else:
                     return 'moderate'     # <50 km/h - Mérsékelt (Beaufort 1-6)
-            
+
             else:
-                # WINDSPEED_10M_MAX KÜSZÖBÖK (alacsonyabbak)
-                # Import from parent utils for backward compatibility
-                from ..utils import AnomalyConstants
-                
-                if wind_speed >= AnomalyConstants.WIND_HIGH_THRESHOLD:  # ≥70 km/h
+                # WINDSPEED_10M_MAX KÜSZÖBÖK (alacsonyabbak) - Dependency Injection
+                # Use injected windspeed constants for clean architecture
+                high_threshold = self.windspeed_constants.HIGH
+
+                if wind_speed >= high_threshold:
                     return 'strong'
                 else:
                     return 'moderate'
