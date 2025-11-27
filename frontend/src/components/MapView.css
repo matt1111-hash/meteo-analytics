@@ -1,0 +1,156 @@
+/**
+ * MapView styles - Leaflet map container and controls
+ */
+
+.mapview-container {
+  background: linear-gradient(135deg, #1a2a3a 0%, #0d1b2a 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.mapview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mapview-header h3 {
+  color: #e0e6ed;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.mapview-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+.legend-label {
+  color: #a0aec0;
+  font-size: 0.85rem;
+}
+
+.legend-gradient {
+  width: 100px;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg,
+    #2166ac 0%,
+    #67a9cf 33%,
+    #fdae61 66%,
+    #d73027 100%
+  );
+}
+
+.legend-values {
+  color: #718096;
+  font-size: 0.75rem;
+  margin-left: 4px;
+}
+
+.mapview-map {
+  width: 100%;
+  height: 450px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Leaflet popup styling */
+.marker-popup h4 {
+  margin: 0 0 8px 0;
+  color: #1a2a3a;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 4px;
+}
+
+.marker-popup p {
+  margin: 4px 0;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.popup-country {
+  color: #718096 !important;
+  font-style: italic;
+}
+
+.popup-value {
+  background: #edf2f7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 8px !important;
+}
+
+.popup-rank {
+  color: #3b82f6 !important;
+}
+
+/* Stats bar */
+.mapview-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-label {
+  color: #718096;
+  font-size: 0.85rem;
+}
+
+.stat-value {
+  color: #e0e6ed;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Empty state */
+.mapview-empty {
+  background: linear-gradient(135deg, #1a2a3a 0%, #0d1b2a 100%);
+  border-radius: 12px;
+  padding: 60px 20px;
+  text-align: center;
+  color: #a0aec0;
+}
+
+.mapview-empty p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mapview-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mapview-map {
+    height: 350px;
+  }
+
+  .mapview-stats {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
