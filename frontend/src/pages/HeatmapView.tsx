@@ -5,10 +5,22 @@ import MetricSelector from '../components/MetricSelector';
 import HeatmapChart from '../components/HeatmapChart';
 import './HeatmapView.css';
 
+// Calculate dynamic default dates
+const getDefaultDates = () => {
+  const today = new Date();
+  const thirtyDaysAgo = new Date(today);
+  thirtyDaysAgo.setDate(today.getDate() - 30);
+  return {
+    start: thirtyDaysAgo.toISOString().split('T')[0],
+    end: today.toISOString().split('T')[0],
+  };
+};
+
 const HeatmapView: React.FC = () => {
+  const defaultDates = getDefaultDates();
   const [cities, setCities] = useState<string>('Budapest, London, Paris, Berlin, Rome');
-  const [startDate, setStartDate] = useState<string>('2025-11-01');
-  const [endDate, setEndDate] = useState<string>('2025-11-07');
+  const [startDate, setStartDate] = useState<string>(defaultDates.start);
+  const [endDate, setEndDate] = useState<string>(defaultDates.end);
   const [selectedMetric, setSelectedMetric] = useState<string>('temperature_2m_max');
   const [metricUnit, setMetricUnit] = useState<string>('°C');
   const [loading, setLoading] = useState<boolean>(false);
