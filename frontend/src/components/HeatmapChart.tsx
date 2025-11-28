@@ -100,9 +100,11 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({ data, metric, unit }) => {
           const cellDate = new Date(firstDate);
           cellDate.setDate(firstDate.getDate() + w * 7 + d);
           const dateStr = cellDate.toISOString().split('T')[0];
+          const currentMonth = cellDate.getMonth();
 
-          if (d === 0 && cellDate.getMonth() !== lastMonth) {
-            lastMonth = cellDate.getMonth();
+          // Track month change on ANY day, place label at that week
+          if (currentMonth !== lastMonth) {
+            lastMonth = currentMonth;
             months.push({
               label: cellDate.toLocaleDateString('hu-HU', { month: 'short' }),
               weekIndex: w
