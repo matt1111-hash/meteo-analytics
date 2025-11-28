@@ -1,4 +1,8 @@
-import React from 'react';
+/**
+ * CalendarHeatmap - GitHub contribution graph style heatmap
+ * Y-axis: Days of week (Mon-Sun), X-axis: Weeks, Cells: colored by value
+ */
+import React, { useState, useMemo } from 'react';
 import { CityWeatherResult } from '../types/weather';
 import './HeatmapChart.css';
 
@@ -8,126 +12,190 @@ interface HeatmapChartProps {
   unit: string;
 }
 
-interface HeatmapCell {
-  value: number | null;
+interface DayCell {
   date: string;
+  value: number | null;
+  dayOfWeek: number; // 0=Mon, 6=Sun
+  weekIndex: number;
 }
 
-interface CityRow {
-  cityName: string;
-  cells: HeatmapCell[];
+interface TooltipData {
+  x: number;
+  y: number;
+  date: string;
+  value: number | null;
+  visible: boolean;
 }
+
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const HeatmapChart: React.FC<HeatmapChartProps> = ({ data, metric, unit }) => {
-  // Extract unique dates and sort them
-  const uniqueDates = Array.from(new Set(data.map(d => d.date))).sort();
-
-  // Extract unique cities
-  const uniqueCities = Array.from(new Set(data.map(d => d.city_name)));
-
-  // Build matrix: cities × dates
-  const matrix: CityRow[] = uniqueCities.map(cityName => {
-    const cells: HeatmapCell[] = uniqueDates.map(date => {
-      const result = data.find(d => d.city_name === cityName && d.date === date);
-      return {
-        value: result ? result.value : null,
-        date: date
-      };
-    });
-    return { cityName, cells };
+  const [tooltip, setTooltip] = useState<TooltipData>({
+    x: 0, y: 0, date: '', value: null, visible: false
   });
 
   // Calculate min/max for color scale
-  const values = data.map(d => d.value).filter(v => v !== null && !isNaN(v));
-  const minValue = Math.min(...values);
-  const maxValue = Math.max(...values);
+  const { minValue, maxValue } = useMemo(() => {
+    const values = data.map(d => d.value).filter(v => v !== null && !isNaN(v));
+    return {
+      minValue: values.length > 0 ? Math.min(...values) : 0,
+      maxValue: values.length > 0 ? Math.max(...values) : 100
+    };
+  }, [data]);
 
-  // Color scale function: min (blue) → max (red)
+  // Group data by city and organize into calendar grid
+  const cityCalendars = useMemo(() => {
+    const cities = Array.from(new Set(data.map(d => d.city_name)));
+    return cities.map(cityName => {
+      const cityData = data.filter(d => d.city_name === cityName);
+      const dateMap = new Map(cityData.map(d => [d.date, d.value]));
+      const dates = cityData.map(d => new Date(d.date)).sort((a, b) => a.getTime() - b.getTime());
+
+      if (dates.length === 0) return { cityName, cells: [], weeks: 0, months: [] };
+
+      // Find first Monday before/on the earliest date
+      const firstDate = new Date(dates[0]);
+      const dayOffset = (firstDate.getDay() + 6) % 7; // Convert Sun=0 to Mon=0
+      firstDate.setDate(firstDate.getDate() - dayOffset);
+
+      // Find last date and calculate weeks
+      const lastDate = dates[dates.length - 1];
+      const totalDays = Math.ceil((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24)) + 7;
+      const weeks = Math.ceil(totalDays / 7);
+
+      // Build cells grid
+      const cells: DayCell[] = [];
+      const months: { label: string; weekIndex: number }[] = [];
+      let lastMonth = -1;
+
+      for (let w = 0; w < weeks; w++) {
+        for (let d = 0; d < 7; d++) {
+          const cellDate = new Date(firstDate);
+          cellDate.setDate(firstDate.getDate() + w * 7 + d);
+          const dateStr = cellDate.toISOString().split('T')[0];
+
+          // Track month changes for labels
+          if (d === 0 && cellDate.getMonth() !== lastMonth) {
+            lastMonth = cellDate.getMonth();
+            months.push({
+              label: cellDate.toLocaleDateString('en-US', { month: 'short' }),
+              weekIndex: w
+            });
+          }
+
+          cells.push({
+            date: dateStr,
+            value: dateMap.get(dateStr) ?? null,
+            dayOfWeek: d,
+            weekIndex: w
+          });
+        }
+      }
+      return { cityName, cells, weeks, months };
+    });
+  }, [data]);
+
+  // Color scale: blue → cyan → yellow → orange → red
   const getColor = (value: number | null): string => {
-    if (value === null || isNaN(value)) return '#f0f0f0'; // Gray for missing data
+    if (value === null) return '#ebedf0';
+    const range = maxValue - minValue;
+    if (range === 0) return '#3b82f6';
+    const norm = (value - minValue) / range;
 
-    const normalized = (value - minValue) / (maxValue - minValue);
-
-    // 5-tier color scale: blue → cyan → green → yellow → orange → red
-    if (normalized < 0.2) return `rgba(33, 102, 172, ${0.5 + normalized * 2.5})`; // Blue
-    if (normalized < 0.4) return `rgba(103, 169, 207, ${0.5 + (normalized - 0.2) * 2.5})`; // Cyan
-    if (normalized < 0.6) return `rgba(209, 229, 240, ${0.5 + (normalized - 0.4) * 2.5})`; // Light blue
-    if (normalized < 0.8) return `rgba(253, 219, 199, ${0.5 + (normalized - 0.6) * 2.5})`; // Light orange
-    return `rgba(239, 101, 72, ${0.5 + (normalized - 0.8) * 2.5})`; // Red
+    if (norm < 0.25) return '#3b82f6'; // Blue
+    if (norm < 0.5) return '#22d3ee';  // Cyan
+    if (norm < 0.75) return '#facc15'; // Yellow
+    return '#ef4444';                   // Red
   };
 
-  // Format date for display (Nov 1, Nov 2, etc.)
+  const formatValue = (v: number | null): string =>
+    v === null ? 'N/A' : `${v.toFixed(1)}${unit}`;
+
   const formatDate = (dateStr: string): string => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
   };
 
-  // Format value with unit
-  const formatValue = (value: number | null): string => {
-    if (value === null || isNaN(value)) return 'N/A';
-    return `${value.toFixed(1)}${unit}`;
+  const handleMouseEnter = (e: React.MouseEvent, cell: DayCell) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setTooltip({
+      x: rect.left + rect.width / 2,
+      y: rect.top - 10,
+      date: cell.date,
+      value: cell.value,
+      visible: true
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTooltip(prev => ({ ...prev, visible: false }));
   };
 
   if (data.length === 0) {
-    return <div className="heatmap-empty">No data available for heatmap</div>;
+    return <div className="calendar-empty">No data available for heatmap</div>;
   }
 
   return (
-    <div className="heatmap-container">
-      <div className="heatmap-header">
-        <h3>Weather Heatmap: {metric.replace(/_/g, ' ')}</h3>
-        <div className="heatmap-legend">
-          <span className="legend-label">Low</span>
-          <div className="legend-gradient"></div>
-          <span className="legend-label">High</span>
-          <span className="legend-values">({minValue.toFixed(1)} - {maxValue.toFixed(1)}{unit})</span>
-        </div>
+    <div className="calendar-container">
+      <div className="calendar-header">
+        <h3>{metric.replace(/_/g, ' ')}</h3>
       </div>
 
-      <div className="heatmap-scroll">
-        <table className="heatmap-table">
-          <thead>
-            <tr>
-              <th className="city-header">City</th>
-              {uniqueDates.map(date => (
-                <th key={date} className="date-header">{formatDate(date)}</th>
+      {cityCalendars.map(({ cityName, cells, weeks, months }) => (
+        <div key={cityName} className="city-calendar">
+          <div className="city-label">{cityName}</div>
+          <div className="calendar-wrapper">
+            <div className="day-labels">
+              {DAYS.map((day, i) => (
+                <div key={day} className="day-label">{i % 2 === 0 ? day : ''}</div>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {matrix.map((row, rowIdx) => (
-              <tr key={rowIdx}>
-                <td className="city-cell">{row.cityName}</td>
-                {row.cells.map((cell, cellIdx) => (
-                  <td
-                    key={cellIdx}
-                    className="value-cell"
-                    style={{ backgroundColor: getColor(cell.value) }}
-                    title={`${row.cityName} - ${formatDate(cell.date)}: ${formatValue(cell.value)}`}
-                  >
-                    {formatValue(cell.value)}
-                  </td>
+            </div>
+            <div className="calendar-grid-wrapper">
+              <div className="month-labels">
+                {months.map(({ label, weekIndex }, i) => (
+                  <div key={i} className="month-label" style={{ gridColumn: weekIndex + 1 }}>
+                    {label}
+                  </div>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </div>
+              <div className="calendar-grid" style={{ gridTemplateColumns: `repeat(${weeks}, 12px)` }}>
+                {cells.map((cell, i) => (
+                  <div
+                    key={i}
+                    className="calendar-cell"
+                    style={{
+                      backgroundColor: getColor(cell.value),
+                      gridRow: cell.dayOfWeek + 1,
+                      gridColumn: cell.weekIndex + 1
+                    }}
+                    onMouseEnter={(e) => handleMouseEnter(e, cell)}
+                    onMouseLeave={handleMouseLeave}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div className="calendar-legend">
+        <span className="legend-label">Low</span>
+        <div className="legend-scale">
+          <div className="legend-color" style={{ backgroundColor: '#3b82f6' }} />
+          <div className="legend-color" style={{ backgroundColor: '#22d3ee' }} />
+          <div className="legend-color" style={{ backgroundColor: '#facc15' }} />
+          <div className="legend-color" style={{ backgroundColor: '#ef4444' }} />
+        </div>
+        <span className="legend-label">High</span>
+        <span className="legend-range">({minValue.toFixed(1)} - {maxValue.toFixed(1)}{unit})</span>
       </div>
 
-      <div className="heatmap-stats">
-        <div className="stat-item">
-          <span className="stat-label">Cities:</span>
-          <span className="stat-value">{uniqueCities.length}</span>
+      {tooltip.visible && (
+        <div className="calendar-tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
+          <div className="tooltip-date">{formatDate(tooltip.date)}</div>
+          <div className="tooltip-value">{formatValue(tooltip.value)}</div>
         </div>
-        <div className="stat-item">
-          <span className="stat-label">Days:</span>
-          <span className="stat-value">{uniqueDates.length}</span>
-        </div>
-        <div className="stat-item">
-          <span className="stat-label">Data Points:</span>
-          <span className="stat-value">{data.length}</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
