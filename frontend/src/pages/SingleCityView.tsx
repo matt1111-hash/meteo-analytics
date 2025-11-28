@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import axios from 'axios';
 import MetricSelector from '../components/MetricSelector';
 import TimeSeriesChart from '../components/TimeSeriesChart';
 import WindChart from '../components/WindChart';
 import PrecipitationChart from '../components/PrecipitationChart';
+import MapView from '../components/MapView';
 import { CityWeatherResult } from '../types/weather';
 import './SingleCityView.css';
+
+type ViewTab = 'chart' | 'map';
 
 const API_BASE_URL = 'http://localhost:8001';
 
@@ -36,6 +39,22 @@ const SingleCityView: React.FC = () => {
     wind: Array<{ date: string; windspeed: number | null; windgusts: number | null }>;
     precipitation: Array<{ date: string; precipitation: number | null }>;
   } | null>(null);
+  const [activeTab, setActiveTab] = useState<ViewTab>('chart');
+
+  // Aggregate time series data to single point for map view
+  const mapData = useMemo((): CityWeatherResult[] => {
+    if (results.length === 0) return [];
+    const first = results[0];
+    const validValues = results.map(r => r.value).filter(v => v !== null && !isNaN(v));
+    const avgValue = validValues.length > 0
+      ? validValues.reduce((sum, v) => sum + v, 0) / validValues.length
+      : 0;
+    return [{
+      ...first,
+      value: avgValue,
+      date: `${formData.startDate} - ${formData.endDate}`,
+    }];
+  }, [results, formData.startDate, formData.endDate]);
 
   const handleChange = (field: keyof SingleCityFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -249,12 +268,41 @@ const SingleCityView: React.FC = () => {
         )}
 
         {results.length > 0 && viewMode === 'simple' && (
-          <TimeSeriesChart
-            data={results}
-            metric={formData.metric}
-            metricName={metricInfo.name}
-            metricUnit={metricInfo.unit}
-          />
+          <div className="results-section">
+            <div className="tab-selector">
+              <button
+                className={`tab-btn ${activeTab === 'chart' ? 'active' : ''}`}
+                onClick={() => setActiveTab('chart')}
+              >
+                📊 Chart
+              </button>
+              <button
+                className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+                onClick={() => setActiveTab('map')}
+              >
+                🗺️ Map
+              </button>
+            </div>
+
+            <div className="tab-content">
+              {activeTab === 'chart' && (
+                <TimeSeriesChart
+                  data={results}
+                  metric={formData.metric}
+                  metricName={metricInfo.name}
+                  metricUnit={metricInfo.unit}
+                />
+              )}
+
+              {activeTab === 'map' && (
+                <MapView
+                  data={mapData}
+                  metric={formData.metric}
+                  unit={metricInfo.unit}
+                />
+              )}
+            </div>
+          </div>
         )}
 
         {results.length > 0 && viewMode === 'detailed' && detailedData && (
