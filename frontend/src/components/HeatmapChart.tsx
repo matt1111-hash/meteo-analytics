@@ -30,6 +30,9 @@ interface TooltipData {
 // Hungarian day labels - Sunday at TOP (index 0), Monday at BOTTOM (index 6)
 const DAYS_HU = ['V', 'Szo', 'P', 'Cs', 'Sze', 'K', 'H'];
 
+// Hungarian month names (index 0 unused, 1-12 = Jan-Dec)
+const MONTHS_HU = ['', 'Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún', 'Júl', 'Aug', 'Sze', 'Okt', 'Nov', 'Dec'];
+
 // Color stops: blue → cyan → green → yellow → orange → red
 const COLOR_STOPS = [
   { pos: 0.0, r: 59, g: 130, b: 246 },
@@ -77,18 +80,20 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({ data, metric, unit }) => {
       const weeks = Math.ceil(totalDays / 7);
 
       const cells: DayCell[] = [];
-      const monthPositions: Map<string, { start: number; end: number }> = new Map();
+      const monthPositions: Map<string, { start: number; end: number; month: number; year: number }> = new Map();
 
       for (let w = 0; w < weeks; w++) {
         for (let d = 0; d < 7; d++) {
           const cellDate = new Date(firstDate);
           cellDate.setDate(firstDate.getDate() + w * 7 + d);
           const dateStr = cellDate.toISOString().split('T')[0];
-          const monthKey = cellDate.toLocaleDateString('hu-HU', { month: 'short', year: 'numeric' });
+          const year = cellDate.getFullYear();
+          const month = cellDate.getMonth() + 1; // 1-12
+          const monthKey = `${year}-${month}`;
 
           // Track month positions for centered labels
           if (!monthPositions.has(monthKey)) {
-            monthPositions.set(monthKey, { start: w, end: w });
+            monthPositions.set(monthKey, { start: w, end: w, month, year });
           } else {
             monthPositions.get(monthKey)!.end = w;
           }
@@ -97,9 +102,10 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({ data, metric, unit }) => {
         }
       }
 
-      // Calculate centered month labels
-      const months = Array.from(monthPositions.entries()).map(([label, pos]) => ({
-        label: label.split(' ')[0], // Just month name
+      // Calculate centered month labels using Hungarian month names
+      const firstYear = dates[0].getFullYear();
+      const months = Array.from(monthPositions.entries()).map(([, pos]) => ({
+        label: pos.year !== firstYear ? `${MONTHS_HU[pos.month]}\n${pos.year}` : MONTHS_HU[pos.month],
         weekIndex: Math.floor((pos.start + pos.end) / 2)
       }));
 
