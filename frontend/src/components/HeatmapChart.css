@@ -19,16 +19,25 @@
   text-transform: capitalize;
 }
 
-/* Horizontal scroll wrapper */
+/* Grid wrapper for city calendars - full width */
 .calendar-scroll-wrapper {
-  overflow-x: auto;
-  padding-bottom: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  width: 100%;
 }
 
-/* Each city's calendar */
+/* Each city's calendar - fill available width */
 .city-calendar {
-  margin-bottom: 40px;
-  min-width: max-content;
+  min-width: 0;
+  overflow-x: auto;
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .city-label {
@@ -36,6 +45,7 @@
   font-weight: 600;
   color: #374151;
   margin-bottom: 12px;
+  align-self: flex-start;
 }
 
 /* Main layout: day labels | grid | color scale */
@@ -43,6 +53,8 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  width: 100%;
+  justify-content: center;
 }
 
 /* Day labels on the left (V, Szo, P, Cs, Sze, K, H) */

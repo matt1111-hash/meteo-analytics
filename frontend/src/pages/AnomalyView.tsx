@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AnomalyPanel from '../components/panels/AnomalyPanel';
+import CitySelector from '../components/CitySelector';
 import './AnomalyView.css';
 
 interface FormData {
@@ -73,14 +74,11 @@ const AnomalyView: React.FC = () => {
             <h3>Location & Date Range</h3>
 
             <div className="form-group">
-              <label htmlFor="city">City Name</label>
-              <input
+              <CitySelector
                 id="city"
-                type="text"
                 value={formData.city}
-                onChange={(e) => handleChange('city', e.target.value)}
-                placeholder="e.g., Budapest, London, Paris"
-                style={{ color: '#000000', backgroundColor: '#ffffff' }}
+                onChange={(city) => handleChange('city', city)}
+                label="Város"
               />
             </div>
 

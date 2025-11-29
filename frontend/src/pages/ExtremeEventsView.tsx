@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import ExtremeRecordsTable from '../components/ExtremeRecordsTable';
+import CitySelector from '../components/CitySelector';
 import {
   ExtremeRecord,
   AnomalyStatus,
@@ -189,16 +190,12 @@ const ExtremeEventsView: React.FC = () => {
         <form className="extreme-form" onSubmit={handleSubmit}>
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="city-input">City Name</label>
-              <input
+              <CitySelector
                 id="city-input"
-                type="text"
-                placeholder="e.g., Budapest, London, Paris"
                 value={formData.city}
-                onChange={(e) => handleChange('city', e.target.value)}
+                onChange={(city) => handleChange('city', city)}
                 disabled={loading}
-                className="form-input"
-                style={{ color: '#1f2937', backgroundColor: '#ffffff' }}
+                label="Város"
               />
             </div>
 

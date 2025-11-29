@@ -3,6 +3,7 @@ import axios from 'axios';
 import { CityWeatherResult, MetricsResponse } from '../types/weather';
 import MetricSelector from '../components/MetricSelector';
 import HeatmapChart from '../components/HeatmapChart';
+import { HUNGARIAN_CITIES, EUROPEAN_CITIES } from '../constants/cities';
 import './HeatmapView.css';
 
 // Calculate dynamic default dates
@@ -105,7 +106,30 @@ const HeatmapView: React.FC = () => {
       <form onSubmit={handleSubmit} className="heatmap-form">
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="cities">Cities (comma-separated)</label>
+            <label htmlFor="cities">Városok (vesszővel elválasztva)</label>
+            <div className="preset-buttons">
+              <button
+                type="button"
+                onClick={() => setCities(HUNGARIAN_CITIES.map(c => c.name).join(', '))}
+                className="preset-btn"
+              >
+                Magyar városok
+              </button>
+              <button
+                type="button"
+                onClick={() => setCities(EUROPEAN_CITIES.map(c => c.name).join(', '))}
+                className="preset-btn"
+              >
+                Európai városok
+              </button>
+              <button
+                type="button"
+                onClick={() => setCities([...HUNGARIAN_CITIES, ...EUROPEAN_CITIES].map(c => c.name).join(', '))}
+                className="preset-btn"
+              >
+                Mind
+              </button>
+            </div>
             <textarea
               id="cities"
               value={cities}

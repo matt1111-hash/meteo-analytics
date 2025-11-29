@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   BarChart,
   Bar,
@@ -38,6 +38,22 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
   metricName,
   metricUnit,
 }) => {
+  // Track which cities are visible (all visible by default)
+  const [hiddenCities, setHiddenCities] = useState<Set<string>>(new Set());
+
+  // Toggle city visibility
+  const handleLegendClick = useCallback((cityName: string) => {
+    setHiddenCities((prev) => {
+      const next = new Set(prev);
+      if (next.has(cityName)) {
+        next.delete(cityName);
+      } else {
+        next.add(cityName);
+      }
+      return next;
+    });
+  }, []);
+
   if (!data || data.length === 0) {
     return (
       <div className="chart-empty">
@@ -107,6 +123,35 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
     return dataPoint;
   });
 
+  // Custom legend renderer with click handlers
+  const renderLegend = () => (
+    <div className="custom-legend">
+      {cities.map((city, index) => {
+        const isHidden = hiddenCities.has(city);
+        const color = CITY_COLORS[index % CITY_COLORS.length];
+        return (
+          <button
+            key={city}
+            type="button"
+            className={`legend-item ${isHidden ? 'legend-item--hidden' : ''}`}
+            onClick={() => handleLegendClick(city)}
+            style={{
+              '--legend-color': color,
+            } as React.CSSProperties}
+          >
+            <span
+              className="legend-color"
+              style={{ backgroundColor: isHidden ? '#d1d5db' : color }}
+            />
+            <span className={`legend-label ${isHidden ? 'legend-label--hidden' : ''}`}>
+              {city}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div className="multi-city-chart">
       <div className="chart-header">
@@ -114,6 +159,7 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
         <p className="chart-subtitle">
           {metricName} over {dates.length} days • {cities.length} {cities.length === 1 ? 'city' : 'cities'}
         </p>
+        <p className="chart-hint">Kattints a város nevére a vonal elrejtéséhez/megjelenítéséhez</p>
       </div>
 
       <ResponsiveContainer width="100%" height={400}>
@@ -138,7 +184,7 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
               padding: '12px',
             }}
           />
-          <Legend wrapperStyle={{ paddingTop: '20px' }} />
+          <Legend content={renderLegend} />
           {cities.map((city, index) => (
             <Line
               key={city}
@@ -149,6 +195,7 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
               dot={{ r: 4 }}
               activeDot={{ r: 6 }}
               name={city}
+              hide={hiddenCities.has(city)}
             />
           ))}
         </LineChart>

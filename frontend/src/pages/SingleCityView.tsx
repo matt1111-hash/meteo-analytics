@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import axios from 'axios';
 import MetricSelector from '../components/MetricSelector';
+import CitySelector from '../components/CitySelector';
 import TimeSeriesChart from '../components/TimeSeriesChart';
 import WindChart from '../components/WindChart';
 import PrecipitationChart from '../components/PrecipitationChart';
@@ -200,16 +201,12 @@ const SingleCityView: React.FC = () => {
 
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="city-input">City Name</label>
-              <input
+              <CitySelector
                 id="city-input"
-                type="text"
-                placeholder="e.g., Budapest, London, Paris"
                 value={formData.city}
-                onChange={(e) => handleChange('city', e.target.value)}
+                onChange={(city) => handleChange('city', city)}
                 disabled={loading}
-                className="form-input bg-white text-gray-900"
-                style={{ color: '#1f2937' }}
+                label="Város"
               />
             </div>
 

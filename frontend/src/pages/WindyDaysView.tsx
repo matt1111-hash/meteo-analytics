@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import CitySelector from '../components/CitySelector';
 import './WindyDaysView.css';
 
 interface WindDataPoint {
@@ -133,14 +134,11 @@ const WindyDaysView: React.FC = () => {
       <form onSubmit={handleSubmit} className="windy-form">
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="city">Város</label>
-            <input
-              type="text"
+            <CitySelector
               id="city"
               value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="Budapest"
-              required
+              onChange={(newCity) => setCity(newCity)}
+              label="Város"
             />
           </div>
           <div className="form-group">

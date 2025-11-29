@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FormData, WeatherAnalysisRequest, DateRange } from '../types/weather';
+import { HUNGARIAN_CITIES, EUROPEAN_CITIES } from '../constants/cities';
 import './WeatherForm.css';
 
 interface WeatherFormProps {
@@ -83,7 +84,33 @@ const WeatherForm: React.FC<WeatherFormProps> = ({ onSubmit, loading = false }) 
   return (
     <form className="weather-form" onSubmit={handleSubmit}>
       <div className="form-group">
-        <label htmlFor="cities">Cities</label>
+        <label htmlFor="cities">Városok</label>
+        <div className="preset-buttons">
+          <button
+            type="button"
+            onClick={() => handleChange('cities', HUNGARIAN_CITIES.map(c => c.name).join(', '))}
+            disabled={loading}
+            className="preset-btn"
+          >
+            Magyar városok
+          </button>
+          <button
+            type="button"
+            onClick={() => handleChange('cities', EUROPEAN_CITIES.map(c => c.name).join(', '))}
+            disabled={loading}
+            className="preset-btn"
+          >
+            Európai városok
+          </button>
+          <button
+            type="button"
+            onClick={() => handleChange('cities', [...HUNGARIAN_CITIES, ...EUROPEAN_CITIES].map(c => c.name).join(', '))}
+            disabled={loading}
+            className="preset-btn"
+          >
+            Mind
+          </button>
+        </div>
         <textarea
           id="cities"
           value={formData.cities}
@@ -93,7 +120,7 @@ const WeatherForm: React.FC<WeatherFormProps> = ({ onSubmit, loading = false }) 
           disabled={loading}
           style={{ color: '#000000', backgroundColor: '#ffffff' }}
         />
-        <span className="form-hint">Comma-separated city names</span>
+        <span className="form-hint">Vesszővel elválasztott városnevek</span>
       </div>
 
       <div className="form-group">
