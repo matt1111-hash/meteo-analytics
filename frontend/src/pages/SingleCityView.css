@@ -220,6 +220,62 @@
   min-height: 400px;
 }
 
+/* Results header with tabs and export button */
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Export CSV button - green style */
+.export-csv-btn {
+  padding: 0.625rem 1.25rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.export-csv-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.export-csv-btn:active {
+  transform: translateY(0);
+}
+
+/* Detailed results section */
+.detailed-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detailed-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.detailed-results-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
 @media (max-width: 768px) {
   .single-city-view {
     padding: 1rem;
@@ -245,5 +301,20 @@
   .tab-btn {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .export-csv-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .detailed-results-header {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

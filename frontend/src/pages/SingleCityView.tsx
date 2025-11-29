@@ -42,6 +42,41 @@ const SingleCityView: React.FC = () => {
   } | null>(null);
   const [activeTab, setActiveTab] = useState<ViewTab>('chart');
 
+  // CSV Export handler
+  const handleExportCSV = (): void => {
+    if (results.length === 0) return;
+
+    // Build CSV content
+    const headers = ['date', 'metric', 'value', 'city'];
+    const rows = results.map((r) => [
+      r.date,
+      formData.metric,
+      r.value?.toString() ?? '',
+      r.city_name,
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) => row.join(',')),
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    // Filename: {city}_{metric}_{startDate}_{endDate}.csv
+    const sanitizedCity = formData.city.replace(/[^a-zA-Z0-9]/g, '_');
+    const filename = `${sanitizedCity}_${formData.metric}_${formData.startDate}_${formData.endDate}.csv`;
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   // Aggregate time series data to single point for map view
   const mapData = useMemo((): CityWeatherResult[] => {
     if (results.length === 0) return [];
@@ -266,18 +301,27 @@ const SingleCityView: React.FC = () => {
 
         {results.length > 0 && viewMode === 'simple' && (
           <div className="results-section">
-            <div className="tab-selector">
+            <div className="results-header">
+              <div className="tab-selector">
+                <button
+                  className={`tab-btn ${activeTab === 'chart' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('chart')}
+                >
+                  📊 Chart
+                </button>
+                <button
+                  className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('map')}
+                >
+                  🗺️ Map
+                </button>
+              </div>
               <button
-                className={`tab-btn ${activeTab === 'chart' ? 'active' : ''}`}
-                onClick={() => setActiveTab('chart')}
+                className="export-csv-btn"
+                onClick={handleExportCSV}
+                title="Export data to CSV"
               >
-                📊 Chart
-              </button>
-              <button
-                className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
-                onClick={() => setActiveTab('map')}
-              >
-                🗺️ Map
+                ⬇️ Export CSV
               </button>
             </div>
 
@@ -303,7 +347,17 @@ const SingleCityView: React.FC = () => {
         )}
 
         {results.length > 0 && viewMode === 'detailed' && detailedData && (
-          <>
+          <div className="detailed-results">
+            <div className="detailed-results-header">
+              <h3>Detailed Analysis Results</h3>
+              <button
+                className="export-csv-btn"
+                onClick={handleExportCSV}
+                title="Export temperature data to CSV"
+              >
+                ⬇️ Export CSV
+              </button>
+            </div>
             <TimeSeriesChart
               data={results}
               metric="temperature_2m_mean"
@@ -318,7 +372,7 @@ const SingleCityView: React.FC = () => {
               data={detailedData.precipitation}
               city={formData.city}
             />
-          </>
+          </div>
         )}
       </div>
     </div>
