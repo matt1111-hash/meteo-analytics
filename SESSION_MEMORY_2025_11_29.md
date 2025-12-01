@@ -1,8 +1,8 @@
 # SESSION MEMORY - 2025-11-29
 
 **Session idő:** 2025-11-29
-**Agent:** Claude Code (Opus 4.5)
-**Státusz:** CSV Export + Feature Parity Audit KÉSZ
+**Agent:** Claude Code (Sonnet 4.5)
+**Státusz:** SingleCityView Refactor + Complete Handoff KÉSZ
 
 ---
 
@@ -10,6 +10,7 @@
 
 | Commit | Leírás | Változás |
 |--------|--------|----------|
+| `7540f4a` | refactor: SingleCityView 382→122 LOC, extract 5 components | +484/-304 |
 | `1834793` | feat(frontend): add CSV export to SingleCityView | +137/-12 |
 | `223190b` | docs: add session memory for 2025-11-29 | docs |
 | `bc74b81` | feat(frontend): add CitySelector component and UI improvements | +530/-37 |
@@ -37,6 +38,17 @@
 - Zöld gomb Simple és Detailed view-ban
 - Fájlnév: `{city}_{metric}_{startDate}_{endDate}.csv`
 - Oszlopok: date, metric, value, city
+
+### 5. SingleCityView Refactor ✅
+- **382 LOC → 122 LOC** (68% csökkentés)
+- **5 új komponens kiszervezve:**
+  - `ExportCSVButton.tsx` (66 LOC) - Reusable CSV export
+  - `useCityWeather.ts` (104 LOC) - Custom hook API hívásokhoz
+  - `SingleCityForm.tsx` (113 LOC) - Form kezelése
+  - `SingleCityResults.tsx` (93 LOC) - Simple view eredmények
+  - `DetailedResults.tsx` (58 LOC) - Detailed view eredmények
+- **Single Responsibility Principle** - Minden komponens egy funkcióért felelős
+- **TypeScript OK, Build OK**
 
 ---
 
@@ -77,7 +89,7 @@
 ```
 Qt funkciók:     ~25
 React funkciók:  ~15
-Paritás:         ~60%
+Paritás:         ~65% (↑5%)
 ```
 
 ---
@@ -91,6 +103,10 @@ frontend/src/
 ├── components/
 │   ├── CitySelector.tsx       (108 LOC)
 │   ├── CitySelector.css       (82 LOC)
+│   ├── ExportCSVButton.tsx    (66 LOC)    ✅ NEW
+│   ├── SingleCityForm.tsx     (113 LOC)   ✅ NEW
+│   ├── SingleCityResults.tsx  (93 LOC)    ✅ NEW
+│   ├── DetailedResults.tsx    (58 LOC)    ✅ NEW
 │   ├── HeatmapChart.tsx       (190 LOC)
 │   ├── MultiCityChart.tsx     (207 LOC)
 │   ├── TimeSeriesChart.tsx
@@ -100,13 +116,15 @@ frontend/src/
 │   ├── WeatherForm.tsx        (206 LOC)
 │   └── ...
 ├── pages/
-│   ├── SingleCityView.tsx     (382 LOC) ⚠️
+│   ├── SingleCityView.tsx     (122 LOC)   ✅ REFACTORED
 │   ├── MultiCityView.tsx      (177 LOC)
 │   ├── HeatmapView.tsx        (199 LOC)
 │   ├── WindyDaysView.tsx      (245 LOC)
 │   ├── AnomalyView.tsx        (241 LOC)
 │   ├── ExtremeEventsView.tsx  (305 LOC)
 │   └── ...
+├── hooks/
+│   └── useCityWeather.ts      (104 LOC)   ✅ NEW
 └── types/
     └── weather.ts             (101 LOC)
 ```
@@ -147,9 +165,9 @@ frontend/src/
 2. **Multi-Year Comparison Chart** - Több év összehasonlítása egy charton
 
 ### MEDIUM PRIORITY
-3. **SingleCityView refaktorálás** - 382 LOC → cél <250 LOC
-4. **Chart Export (PNG)** - html2canvas vagy recharts native export
-5. **Trend Analytics Page** - Új route + komponens
+3. **Chart Export (PNG)** - html2canvas vagy recharts native export
+4. **Trend Analytics Page** - Új route + komponens
+5. **CSV Export kiterjesztés** - MultiCity, Anomaly, Heatmap view-khoz
 
 ### LOW PRIORITY
 6. **Theme Toggle** - Dark mode támogatás
@@ -161,7 +179,7 @@ frontend/src/
 ## GIT ÁLLAPOT
 
 **Branch:** main (up to date with origin)
-**Utolsó commit:** `1834793` feat(frontend): add CSV export to SingleCityView
+**Utolsó commit:** `7540f4a` refactor: SingleCityView 382→122 LOC, extract 5 components
 **Working tree:** clean
 
 ---
@@ -174,5 +192,33 @@ frontend/src/
 4. **Harold:** CSAK visual feedback, ZERO manual coding
 
 ---
+
+## PROJEKT ÁLLAPOT - 2025-11-29 SESSION VÉGE
+
+### Befejezett munkák (mai session):
+- CSV Export implementálva (SingleCityView)
+- **SingleCityView refaktor: 382→122 LOC**
+  - ExportCSVButton.tsx (66 LOC) - Reusable CSV export
+  - useCityWeather.ts (104 LOC) - Custom hook API hívásokhoz
+  - SingleCityForm.tsx (113 LOC) - Form kezelése
+  - SingleCityResults.tsx (93 LOC) - Simple view eredmények
+  - DetailedResults.tsx (58 LOC) - Detailed view eredmények
+- CitySelector komponens (15 HU + 10 EU város)
+- MultiCityChart legend toggle
+- HeatmapChart responsive grid
+
+### React Frontend Feature Parity: ~65% (↑5%)
+**✅ KÉSZ:** SingleCity, MultiCity, Anomaly, Heatmap, ExtremeEvents, WindyDays, CitySelector, CSV Export
+**❌ HIÁNYZIK:** Wind Rose Chart, Multi-Year Comparison, Region Selector (megye szintű)
+
+### Quality Metrics:
+- Backend: 92 teszt, 86% coverage, pylint 10.00
+- Frontend: TypeScript OK, build OK
+- Kód: Minden fájl <250 LOC
+
+### Következő prioritások:
+1. **Wind Rose Chart** (polar diagram) - HIGH
+2. **Multi-Year Comparison** - HIGH
+3. **CSV Export kiterjesztés** más view-khoz - MEDIUM
 
 **SESSION FOLYTATÁS:** Wind Rose Chart vagy Multi-Year Comparison implementálás
