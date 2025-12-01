@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import MultiCityView from './pages/MultiCityView';
 import SingleCityView from './pages/SingleCityView';
+import MultiYearView from './pages/MultiYearView';
 import AnomalyView from './pages/AnomalyView';
 import HeatmapView from './pages/HeatmapView';
 import ExtremeEventsView from './pages/ExtremeEventsView';
@@ -24,6 +25,12 @@ function Navigation() {
         className={`nav-link ${location.pathname === '/single-city' ? 'active' : ''}`}
       >
         📍 Single City Time Series
+      </Link>
+      <Link
+        to="/multi-year"
+        className={`nav-link ${location.pathname === '/multi-year' ? 'active' : ''}`}
+      >
+        📊 Multi-Year Comparison
       </Link>
       <Link
         to="/anomalies"
@@ -69,6 +76,7 @@ function App() {
           <Routes>
             <Route path="/" element={<MultiCityView />} />
             <Route path="/single-city" element={<SingleCityView />} />
+            <Route path="/multi-year" element={<MultiYearView />} />
             <Route path="/anomalies" element={<AnomalyView />} />
             <Route path="/heatmap" element={<HeatmapView />} />
             <Route path="/extreme-events" element={<ExtremeEventsView />} />
