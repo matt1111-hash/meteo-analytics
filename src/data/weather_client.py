@@ -410,6 +410,23 @@ class OpenMeteoProvider(WeatherProvider):
         for key, values in daily_data.items():
             if key != "time" and isinstance(values, list):
                 metrics[key] = values
+
+        # 🔍 DEBUG: Log metrics info
+        logger.info(f"🔍 OPENMETEO RESPONSE DEBUG:")
+        logger.info(f"  - dates length: {len(dates)}")
+        logger.info(f"  - metrics keys: {list(metrics.keys())}")
+        if "precipitation_sum" in metrics:
+            precipitation_data = metrics["precipitation_sum"]
+            valid_precipitation = [p for p in precipitation_data if p is not None]
+            logger.info(f"  - precipitation_sum length: {len(precipitation_data)}")
+            logger.info(f"  - precipitation_sum values: {precipitation_data[:10]}")
+            if valid_precipitation:
+                logger.info(f"  - precipitation_sum sum: {sum(valid_precipitation)}")
+                logger.info(f"  - precipitation_sum max: {max(valid_precipitation)}")
+            else:
+                logger.warning(f"  - precipitation_sum: no valid (non-None) values found")
+        else:
+            logger.warning(f"  - precipitation_sum NOT FOUND in metrics!")
         
         # 🌪️ SZÉLIRÁNY ELLENŐRZÉS
         if "winddirection_10m_dominant" in metrics:
