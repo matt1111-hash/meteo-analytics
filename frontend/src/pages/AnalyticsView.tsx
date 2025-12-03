@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import TemperatureTab from '../components/analytics/TemperatureTab';
+import PrecipitationTab from '../components/analytics/PrecipitationTab';
+import WindTab from '../components/analytics/WindTab';
+import WindGustTab from '../components/analytics/WindGustTab';
+import CityAutocomplete from '../components/common/CityAutocomplete';
 import './AnalyticsView.css';
 
 interface TabConfig {
@@ -10,6 +14,38 @@ interface TabConfig {
 
 const AnalyticsView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('temperature');
+
+  // Calculate default date range (last 30 days)
+  const getDateString = (daysBack: number): string => {
+    const date = new Date();
+    date.setDate(date.getDate() - daysBack);
+    return date.toISOString().split('T')[0];
+  };
+
+  const [city, setCity] = useState<string>('Budapest');
+  const [startDate, setStartDate] = useState<string>(getDateString(30));
+  const [endDate, setEndDate] = useState<string>(getDateString(0));
+  const [isCustomMode, setIsCustomMode] = useState<boolean>(false);
+
+  const handleDatePreset = (days: number) => {
+    setIsCustomMode(false);
+    setStartDate(getDateString(days));
+    setEndDate(getDateString(0));
+  };
+
+  const handleCustomMode = () => {
+    setIsCustomMode(true);
+  };
+
+  const handleDateChange = (field: 'start' | 'end', value: string) => {
+    if (field === 'start') {
+      setStartDate(value);
+      setIsCustomMode(true);
+    } else {
+      setEndDate(value);
+      setIsCustomMode(true);
+    }
+  };
 
   const tabs: TabConfig[] = [
     { id: 'temperature', label: 'Temperature', icon: '🌡️' },
@@ -23,40 +59,34 @@ const AnalyticsView: React.FC = () => {
       case 'temperature':
         return (
           <TemperatureTab
-            city="Budapest"
-            startDate="2023-01-01"
-            endDate="2023-12-31"
+            city={city}
+            startDate={startDate}
+            endDate={endDate}
           />
         );
       case 'precipitation':
         return (
-          <div className="tab-placeholder">
-            <h3>🌧️ Precipitation Analysis</h3>
-            <p>Precipitation heatmap with meteorological color scale (0mm = white)</p>
-            <div className="placeholder-grid">
-              <div className="placeholder-item">Loading precipitation heatmap...</div>
-            </div>
-          </div>
+          <PrecipitationTab
+            city={city}
+            startDate={startDate}
+            endDate={endDate}
+          />
         );
       case 'wind':
         return (
-          <div className="tab-placeholder">
-            <h3>💨 Wind Analysis</h3>
-            <p>Wind speed heatmap with BEAUFORT scale visualization</p>
-            <div className="placeholder-grid">
-              <div className="placeholder-item">Loading wind heatmap...</div>
-            </div>
-          </div>
+          <WindTab
+            city={city}
+            startDate={startDate}
+            endDate={endDate}
+          />
         );
       case 'wind-gust':
         return (
-          <div className="tab-placeholder">
-            <h3>🌪️ Wind Gust Analysis</h3>
-            <p>Maximum wind gusts with BEAUFORT 13-level scale</p>
-            <div className="placeholder-grid">
-              <div className="placeholder-item">Loading wind gust heatmap...</div>
-            </div>
-          </div>
+          <WindGustTab
+            city={city}
+            startDate={startDate}
+            endDate={endDate}
+          />
         );
       default:
         return null;
@@ -68,6 +98,85 @@ const AnalyticsView: React.FC = () => {
       <div className="analytics-header">
         <h1>📊 Analytics View</h1>
         <p>Multi-city weather analysis with detailed meteorological visualizations</p>
+      </div>
+
+      <div className="analytics-controls">
+        <div className="control-group">
+          <label className="control-label">City:</label>
+          <CityAutocomplete
+            value={city}
+            onChange={setCity}
+            placeholder="Search for any city..."
+            className="analytics-city-selector"
+          />
+        </div>
+
+        <div className="control-group">
+          <label className="control-label">Date Range:</label>
+          <div className="date-presets">
+            <button
+              className={`preset-btn ${!isCustomMode && startDate === getDateString(30) ? 'active' : ''}`}
+              onClick={() => handleDatePreset(30)}
+            >
+              30 Days
+            </button>
+            <button
+              className={`preset-btn ${!isCustomMode && startDate === getDateString(90) ? 'active' : ''}`}
+              onClick={() => handleDatePreset(90)}
+            >
+              90 Days
+            </button>
+            <button
+              className={`preset-btn ${!isCustomMode && startDate === getDateString(365) ? 'active' : ''}`}
+              onClick={() => handleDatePreset(365)}
+            >
+              1 Year
+            </button>
+            <button
+              className={`preset-btn ${isCustomMode ? 'active' : ''}`}
+              onClick={handleCustomMode}
+            >
+              Custom
+            </button>
+          </div>
+        </div>
+
+        {isCustomMode && (
+          <div className="control-group custom-date-inputs">
+            <label className="control-label">Custom Dates:</label>
+            <div className="date-inputs">
+              <div className="date-input-group">
+                <label htmlFor="start-date" className="date-input-label">Start:</label>
+                <input
+                  id="start-date"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => handleDateChange('start', e.target.value)}
+                  className="date-input"
+                  max={endDate}
+                />
+              </div>
+              <div className="date-input-group">
+                <label htmlFor="end-date" className="date-input-label">End:</label>
+                <input
+                  id="end-date"
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => handleDateChange('end', e.target.value)}
+                  className="date-input"
+                  min={startDate}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="control-group">
+          <label className="control-label">Period:</label>
+          <span className="period-display">
+            {city} • {startDate} to {endDate}
+          </span>
+        </div>
       </div>
 
       <div className="analytics-content">

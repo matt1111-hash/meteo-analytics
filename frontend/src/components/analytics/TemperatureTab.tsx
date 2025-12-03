@@ -16,15 +16,15 @@ interface TemperatureStats {
 }
 
 interface TemperatureTabProps {
-  city?: string;
-  startDate?: string;
-  endDate?: string;
+  city: string;
+  startDate: string;
+  endDate: string;
 }
 
 const TemperatureTab: React.FC<TemperatureTabProps> = ({
-  city = 'Budapest',
-  startDate = '2023-01-01',
-  endDate = '2023-12-31'
+  city,
+  startDate,
+  endDate
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,7 +86,7 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
           .map((item: any) => ({
             date: item.date,
             value: item.value,
-            location: item.location || city
+            location: item.city_name || city
           }));
 
         setTemperatureData(processedData);
@@ -107,6 +107,7 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
 
   useEffect(() => {
     fetchTemperatureData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, startDate, endDate]);
 
   const handleRetry = () => {

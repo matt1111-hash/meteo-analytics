@@ -11,6 +11,7 @@ from src.api.routes.single_city import router as single_city_router
 from src.api.routes.detailed_city import router as detailed_city_router
 from src.api.routes.metadata import router as metadata_router
 from src.api.routes.anomalies import router as anomalies_router
+from src.api.routes.cities import router as cities_router
 
 logging.basicConfig(level=logging.INFO)
 
@@ -37,3 +38,4 @@ app.include_router(single_city_router)
 app.include_router(detailed_city_router)
 app.include_router(metadata_router)
 app.include_router(anomalies_router)
+app.include_router(cities_router)

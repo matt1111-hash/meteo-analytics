@@ -10,6 +10,85 @@
   margin-bottom: 2rem;
 }
 
+.analytics-controls {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e9ecef;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+}
+
+.control-label {
+  font-weight: 600;
+  color: #495057;
+  min-width: 100px;
+}
+
+.city-selector {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.city-selector:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.date-presets {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.preset-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: white;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.preset-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.preset-btn.active:hover {
+  background: #5a6fd8;
+}
+
+.period-display {
+  font-weight: 600;
+  color: #495057;
+  font-style: italic;
+}
+
 .analytics-header h1 {
   font-size: 2rem;
   font-weight: 700;
@@ -85,6 +164,24 @@
 
   .analytics-header h1 {
     font-size: 1.5rem;
+  }
+
+  .analytics-controls {
+    padding: 1rem;
+  }
+
+  .control-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .control-label {
+    min-width: auto;
+  }
+
+  .date-presets {
+    flex-wrap: wrap;
   }
 
   .tab-navigation {
@@ -174,4 +271,144 @@
 
 .tab-content {
   animation: fadeInUp 0.3s ease-out;
+}
+
+/* Analytics specific autocomplete styling */
+.analytics-city-selector {
+  flex: 1;
+  max-width: 300px;
+}
+
+.analytics-city-selector .autocomplete-input {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: white;
+  transition: border-color 0.3s ease;
+}
+
+.analytics-city-selector .autocomplete-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.analytics-city-selector .autocomplete-suggestions {
+  border-radius: 0 0 6px 6px;
+  border-color: #ced4da;
+  border-top: none;
+  margin-top: -1px;
+}
+
+/* Custom date input styling */
+.custom-date-inputs {
+  margin-top: 1rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.date-inputs {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.date-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.date-input-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #495057;
+  margin: 0;
+}
+
+.date-input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.date-input:hover {
+  border-color: #adb5bd;
+}
+
+/* Animation for custom date inputs */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+  }
+}
+
+/* Responsive design for date inputs */
+@media (max-width: 768px) {
+  .date-inputs {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .date-input-group {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .date-input {
+    width: 100%;
+  }
+}
+
+/* Enhanced preset button styling for custom mode */
+.preset-btn {
+  transition: all 0.3s ease;
+}
+
+.preset-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.preset-btn:not(.active):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode support for date inputs */
+@media (prefers-color-scheme: dark) {
+  .date-input {
+    background: #2c3e50;
+    border-color: #495057;
+    color: white;
+  }
+
+  .date-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+  }
+
+  .date-input-label {
+    color: #adb5bd;
+  }
 }

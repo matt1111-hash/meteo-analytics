@@ -13,6 +13,13 @@ interface FeatureCard {
 const HomePage: React.FC = () => {
   const features: FeatureCard[] = [
     {
+      id: 'analytics',
+      title: 'Analytics',
+      description: 'Detailed Analysis',
+      icon: '📊',
+      path: '/analytics'
+    },
+    {
       id: 'multi-city',
       title: 'Multi-City',
       description: 'Analysis',
@@ -30,7 +37,7 @@ const HomePage: React.FC = () => {
       id: 'multi-year',
       title: 'Multi-Year',
       description: 'Comparison',
-      icon: '📊',
+      icon: '📈',
       path: '/multi-year'
     },
     {

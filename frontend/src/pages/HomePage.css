@@ -108,31 +108,31 @@
   line-height: 1.4;
 }
 
-/* Special layout for windy days card */
-.feature-card:nth-child(7) {
+/* Special layout for windy days card (now 8th card) */
+.feature-card:nth-child(8) {
   grid-column: span 3;
   background: linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%);
   color: white;
 }
 
-.feature-card:nth-child(7) .card-text h3,
-.feature-card:nth-child(7) .card-text p {
+.feature-card:nth-child(8) .card-text h3,
+.feature-card:nth-child(8) .card-text p {
   color: white;
 }
 
-.feature-card:nth-child(7):hover {
+.feature-card:nth-child(8):hover {
   background: linear-gradient(135deg, #4ab3e8 0%, #2573e6 100%);
 }
 
 /* Responsive for special card */
 @media (max-width: 768px) {
-  .feature-card:nth-child(7) {
+  .feature-card:nth-child(8) {
     grid-column: span 2;
   }
 }
 
 @media (max-width: 480px) {
-  .feature-card:nth-child(7) {
+  .feature-card:nth-child(8) {
     grid-column: span 1;
   }
 }
@@ -161,3 +161,4 @@
 .feature-card:nth-child(5) { animation-delay: 0.5s; }
 .feature-card:nth-child(6) { animation-delay: 0.6s; }
 .feature-card:nth-child(7) { animation-delay: 0.7s; }
+.feature-card:nth-child(8) { animation-delay: 0.8s; }
