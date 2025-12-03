@@ -130,6 +130,10 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({ data, metric, unit }) => {
 
   if (data.length === 0) return <div className="calendar-empty">No data available</div>;
 
+  // Calculate dynamic cell size based on available width with fallback
+  const maxWeeks = cityCalendars.length > 0 ? Math.max(...cityCalendars.map(c => c.weeks)) : 52;
+  const cellSize = Math.max(12, Math.min(20, Math.floor(800 / maxWeeks)));
+
   return (
     <div className="calendar-container">
       <div className="calendar-header">
@@ -145,7 +149,7 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({ data, metric, unit }) => {
                 {DAYS_HU.map((day, i) => <div key={i} className="day-label">{day}</div>)}
               </div>
               <div className="calendar-grid-area">
-                <div className="calendar-grid" style={{ gridTemplateColumns: `repeat(${weeks}, 20px)` }}>
+                <div className="calendar-grid" style={{ gridTemplateColumns: `repeat(${weeks}, ${cellSize}px)` }}>
                   {cells.map((cell, i) => (
                     <div
                       key={i}
@@ -153,14 +157,16 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({ data, metric, unit }) => {
                       style={{
                         backgroundColor: getColor(cell.value),
                         gridRow: 7 - cell.dayOfWeek, // Sunday(6)→row1, Monday(0)→row7
-                        gridColumn: cell.weekIndex + 1
+                        gridColumn: cell.weekIndex + 1,
+                        width: `${cellSize}px`,
+                        height: `${Math.max(10, cellSize - 6)}px`
                       }}
                       onMouseEnter={(e) => handleMouseEnter(e, cell)}
                       onMouseLeave={() => setTooltip(prev => ({ ...prev, visible: false }))}
                     />
                   ))}
                 </div>
-                <div className="month-labels" style={{ gridTemplateColumns: `repeat(${weeks}, 20px)` }}>
+                <div className="month-labels" style={{ gridTemplateColumns: `repeat(${weeks}, ${cellSize}px)` }}>
                   {months.map(({ label, weekIndex }, i) => (
                     <div key={i} className="month-label" style={{ gridColumn: weekIndex + 1 }}>{label}</div>
                   ))}

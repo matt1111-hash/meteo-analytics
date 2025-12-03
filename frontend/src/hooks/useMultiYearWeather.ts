@@ -109,29 +109,8 @@ export const useMultiYearWeather = () => {
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
       ];
 
-      // Check which months actually have data in the current year
+      // Show all months - the backend provides actual data or null
       let months = allMonths;
-
-      if (params.years.includes(new Date().getFullYear())) {
-        // Find the latest month with actual data
-        let latestMonthWithIndex = -1;
-
-        Object.keys(yearlyData).forEach(year => {
-          if (parseInt(year) === new Date().getFullYear()) {
-            const yearData = yearlyData[parseInt(year)];
-            allMonths.forEach((month, index) => {
-              if (yearData[month] !== null && yearData[month] !== undefined) {
-                latestMonthWithIndex = index;
-              }
-            });
-          }
-        });
-
-        // Only show months up to the latest month with actual data
-        if (latestMonthWithIndex >= 0) {
-          months = allMonths.slice(0, latestMonthWithIndex + 1);
-        }
-      }
 
       const chartData: ChartData[] = months.map((month) => {
         const dataPoint: ChartData = { month };

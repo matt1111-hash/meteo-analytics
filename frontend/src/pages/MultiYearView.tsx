@@ -16,11 +16,11 @@ const MultiYearView: React.FC = () => {
   const [formData, setFormData] = useState<MultiYearFormData>({
     city: '',
     years: [2023, 2024, 2025], // Default to recent 3 years
-    metric: 'temperature_2m_mean',
+    metric: 'temperature_2m_max',
   });
 
   const [metricInfo, setMetricInfo] = useState<{ name: string; unit: string }>({
-    name: 'Mean Temperature',
+    name: 'Maximum Temperature',
     unit: '°C',
   });
 

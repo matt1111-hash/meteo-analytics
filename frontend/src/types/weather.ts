@@ -91,6 +91,21 @@ export interface MetricsResponse {
 // UI FORM DATA
 // ============================================================================
 
+// ============================================================================
+// DETAILED VIEW RESPONSE TYPES
+// ============================================================================
+
+export interface DetailedData {
+  temperature_data: CityWeatherResult[];
+  wind_data: CityWeatherResult[];
+  wind_gusts_data: CityWeatherResult[];
+  precipitation_data: CityWeatherResult[];
+}
+
+// ============================================================================
+// UI FORM DATA
+// ============================================================================
+
 export interface FormData {
   cities: string;        // Comma-separated city names
   dateType: 'single' | 'range';

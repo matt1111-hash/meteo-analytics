@@ -31,11 +31,13 @@ const PrecipitationChart: React.FC<PrecipitationChartProps> = ({ data, city }) =
     );
   }
 
-  // Filter out null values
-  const chartData = data.map((point) => ({
-    ...point,
-    precipitation: point.precipitation || 0,
-  }));
+  // Filter out null values and sort by date
+  const chartData = data
+    .map((point) => ({
+      ...point,
+      precipitation: point.precipitation || 0,
+    }))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   // Calculate statistics
   const totalPrecipitation = chartData.reduce((sum, d) => sum + d.precipitation, 0);
@@ -43,15 +45,7 @@ const PrecipitationChart: React.FC<PrecipitationChartProps> = ({ data, city }) =
   const maxPrecipitation = Math.max(...chartData.map((d) => d.precipitation));
   const avgPrecipitation = totalPrecipitation / chartData.length;
 
-  // Determine bar color based on precipitation amount
-  const getBarColor = (value: number) => {
-    if (value === 0) return '#e5e7eb';
-    if (value < 5) return '#93c5fd';
-    if (value < 15) return '#3b82f6';
-    if (value < 30) return '#1d4ed8';
-    return '#1e3a8a';
-  };
-
+  
   return (
     <div className="precipitation-chart">
       <div className="chart-header">
@@ -131,15 +125,7 @@ const PrecipitationChart: React.FC<PrecipitationChartProps> = ({ data, city }) =
             fill="#3b82f6"
             radius={[4, 4, 0, 0]}
             name="Daily Precipitation"
-          >
-            {chartData.map((entry, index) => (
-              <Bar
-                key={`bar-${index}`}
-                dataKey="precipitation"
-                fill={getBarColor(entry.precipitation)}
-              />
-            ))}
-          </Bar>
+          />
         </BarChart>
       </ResponsiveContainer>
 

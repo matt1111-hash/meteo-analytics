@@ -53,15 +53,21 @@ class AnalyticsTransformService:
         if metric_value is not None and metric_value != 0:
             final_value = float(metric_value)
         else:
-            fallback_value = (
-                city_data.temperature_2m_max
-                or city_data.temperature_2m_min
-                or city_data.precipitation_sum
-                or city_data.windspeed_10m_max
-                or 0.0
-            )
+            # Use metric-specific fallback - NEVER use temperature for precipitation!
+            if metric_enum == WeatherMetricType.PRECIPITATION_SUM:
+                # For precipitation, prefer zero over wrong temperature data
+                fallback_value = 0.0
+            else:
+                # For temperature metrics, use fallback chain
+                fallback_value = (
+                    city_data.temperature_2m_max
+                    or city_data.temperature_2m_min
+                    or city_data.windspeed_10m_max
+                    or 0.0
+                )
+                logger.warning("NULL metric value for %s, using fallback: %s", city_data.city, fallback_value)
+
             final_value = float(fallback_value) if fallback_value is not None else 0.0
-            logger.warning("NULL metric value for %s, using fallback: %s", city_data.city, fallback_value)
 
         return CityWeatherResult(
             city_name=city_data.city,

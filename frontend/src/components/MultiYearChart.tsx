@@ -146,8 +146,8 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({
               }}
               domain={['auto', 'auto']}
             />
-            <Tooltip />
-            <Legend />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend content={<CustomLegend />} />
 
           {(() => {
         const visibleYears = years.filter(year => !hiddenYears.has(year));

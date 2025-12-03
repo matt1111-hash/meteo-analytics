@@ -1,0 +1,150 @@
+.record-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  min-width: 0; /* Allows text wrapping */
+}
+
+.record-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+}
+
+.record-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 3rem;
+  text-align: center;
+}
+
+.record-content {
+  flex: 1;
+  min-width: 0; /* Prevents overflow */
+}
+
+.record-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.record-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.value-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1;
+}
+
+.value-unit {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.record-date {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .record-card {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .record-icon {
+    font-size: 1.5rem;
+    width: 2.5rem;
+  }
+
+  .record-title {
+    font-size: 0.85rem;
+  }
+
+  .value-number {
+    font-size: 1.5rem;
+  }
+
+  .value-unit {
+    font-size: 0.9rem;
+  }
+
+  .record-date {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .record-card {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .record-value {
+    justify-content: center;
+  }
+}
+
+/* Card variants */
+.record-card.highlight {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.record-card.highlight .record-title {
+  color: white;
+}
+
+.record-card.highlight .value-number {
+  color: white;
+}
+
+.record-card.highlight .value-unit {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.record-card.highlight .record-date {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.record-card.warning {
+  border-color: #ffc107;
+  background: rgba(255, 193, 7, 0.05);
+}
+
+.record-card.danger {
+  border-color: #dc3545;
+  background: rgba(220, 53, 69, 0.05);
+}
+
+.record-card.success {
+  border-color: #28a745;
+  background: rgba(40, 167, 69, 0.05);
+}
+
+.record-card.info {
+  border-color: #17a2b8;
+  background: rgba(23, 162, 184, 0.05);
+}

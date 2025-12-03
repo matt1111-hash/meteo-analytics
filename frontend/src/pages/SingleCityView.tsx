@@ -106,14 +106,21 @@ const SingleCityView: React.FC = () => {
           />
         )}
 
-        {results.length > 0 && viewMode === 'detailed' && detailedData && (
-          <DetailedResults
-            temperatureData={results}
-            detailedData={detailedData}
-            city={formData.city}
-            startDate={formData.startDate}
-            endDate={formData.endDate}
-          />
+        {detailedData && viewMode === 'detailed' && (
+          <>
+            <div style={{ color: 'red', fontWeight: 'bold' }}>
+              DEBUG: Detailed view branch REACHED
+            </div>
+            <DetailedResults
+              temperatureData={detailedData?.temperature_data || []}
+              windData={detailedData?.wind_data || []}
+              windGustsData={detailedData?.wind_gusts_data || []}
+              precipitationData={detailedData?.precipitation_data || []}
+              city={formData.city}
+              startDate={formData.startDate}
+              endDate={formData.endDate}
+            />
+          </>
         )}
       </div>
     </div>

@@ -32,10 +32,10 @@ const WindChart: React.FC<WindChartProps> = ({ data, city }) => {
     );
   }
 
-  // Filter out invalid data points
-  const chartData = data.filter(
-    (point) => point.windspeed !== null || point.windgusts !== null
-  );
+  // Filter out invalid data points and sort by date
+  const chartData = data
+    .filter((point) => point.windspeed !== null || point.windgusts !== null)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   if (chartData.length === 0) {
     return (

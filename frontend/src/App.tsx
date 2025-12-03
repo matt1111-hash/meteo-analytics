@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import AnalyticsView from './pages/AnalyticsView';
 import MultiCityView from './pages/MultiCityView';
 import SingleCityView from './pages/SingleCityView';
 import MultiYearView from './pages/MultiYearView';
@@ -12,13 +14,24 @@ import './App.css';
 function Navigation() {
   const location = useLocation();
 
+  // Don't show navigation on home page
+  if (location.pathname === '/') {
+    return null;
+  }
+
   return (
     <nav className="app-nav">
       <Link
         to="/"
         className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
       >
-        🌍 Multi-City Analysis
+        🏠 Home
+      </Link>
+      <Link
+        to="/analytics"
+        className={`nav-link ${location.pathname === '/analytics' ? 'active' : ''}`}
+      >
+        📊 Analytics
       </Link>
       <Link
         to="/single-city"
@@ -74,7 +87,9 @@ function App() {
 
         <main className="app-main">
           <Routes>
-            <Route path="/" element={<MultiCityView />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/analytics" element={<AnalyticsView />} />
+            <Route path="/multi-city" element={<MultiCityView />} />
             <Route path="/single-city" element={<SingleCityView />} />
             <Route path="/multi-year" element={<MultiYearView />} />
             <Route path="/anomalies" element={<AnomalyView />} />

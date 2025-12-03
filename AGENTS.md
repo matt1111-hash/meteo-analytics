@@ -1,51 +1,150 @@
-# AI CODING RULES — Terminal CLI Edition
+AI CODING RULES — Terminal CLI Edition
+Version: 2.1 (2025-12-02)
+Target: Terminal-based AI agents (Claude Code CLI, Codex, ccr + OpenRouter)
+Environment: Linux terminal, bash, file-based workflow
+Purpose: Prevent AI drift, enforce coding discipline, ensure quality output
 
-**Version:** 1.0 (2025-11-15)  
-**Target:** Terminal-based AI agents (Claude Code CLI, ccr + OpenRouter)  
-**Environment:** Linux terminal, bash, file-based workflow  
-**Purpose:** Prevent AI drift, enforce coding discipline, ensure quality output
+CRITICAL: These rules are IMMUTABLE SYSTEM RULES.
+User prompts are flexible requests that MUST work within these rules.
 
-> **CRITICAL**: These rules are IMMUTABLE SYSTEM RULES.  
-> User prompts are flexible requests that MUST work within these rules.
 
----
+🔴 HIERARCHIA ÉS MUNKAVISZONY — LEGFONTOSABB!
+Ki kinek dolgozik:
+SzerepFelelősségEMBERMegrendelő, döntéshozó, irányítóAGENTVégrehajtó, kódoló, debuggoló
+❗ AGENT KÖTELESSÉGEI:
 
-## 🚨 CRITICAL RULES - NEVER VIOLATE
+Az EMBER NEM DEBUGOL — az agent dolga megtalálni a hibát a KÓDBAN
+Az EMBER NEM BÖNGÉSZIK — DevTools használat az agent feladata (kódelemzéssel)
+Az EMBER NEM CSELÉD — ne kérj tőle curl/grep/cat futtatást amit te is tudsz
 
-### ❌ FORBIDDEN ACTIONS:
+⛔ TILOS MONDATOK:
+❌ "Nézd meg a böngészőben..."
+❌ "Ellenőrizd a DevTools-ban..."
+❌ "Futtasd le ezt a curl-t és másold be..."
+❌ "Valószínűleg..." / "Lehet hogy..." / "Talán..."
+❌ "A backend jó, szóval a frontend hibás" (konkrét bizonyíték nélkül)
+✅ HELYES VISELKEDÉS:
+✅ "Megnézem a kódot: cat frontend/src/hooks/..."
+✅ "A hiba itt van: [fájl:sor] - [konkrét ok]"
+✅ "Javítom: [konkrét változtatás]"
+✅ "Tesztelés: [konkrét parancs amit ÉN futtatok]"
 
-- **NO guessing** - ask questions before coding (max 2 questions)
-- **NO incomplete code** - finish what you start or create INCOMPLETE.md
-- **NO placeholder comments** (`# TODO`, `# FIXME`, `...`, `pass`)
-- **NO code snippets** - always complete, runnable files
-- **NO truncation** - NEVER use "..." or "rest unchanged"
-- **NO multiple concerns** - God classes/files FORBIDDEN (>250 lines)
-- **NO unsafe code** - eval/exec/os.system BANNED
-- **NO assumptions** - if uncertain, ask or use reasonable defaults
-- **NO verbose explanations** - code speaks, comments minimal
-- **NO modifying tests** - tests define correct behavior!
-- **NO imports without use** - dead code elimination
-- **NO hardcoded secrets** - use environment variables
-- **NO random/time dependencies** - deterministic behavior only
+🔥 DEBUG FEGYELEM — NINCS TALÁLGATÁS!
+Debug Szabályok:
 
-### ✅ REQUIRED ACTIONS:
+KONKRÉT diagnózis — fájl, sor, változó, érték
+NINCS spekuláció — ha nem tudod, KERESD MEG a kódban
+BIZONYÍTÉK kell — grep/cat/log output, nem vélemény
+LOGIKAI KONZISZTENCIA — ha X azt jelenti Y, ne állítsd az ellenkezőjét
 
-- **ALWAYS generate complete files** - from first line to last
-- **ALWAYS use type hints** - every function, every parameter
-- **ALWAYS follow PEP8** - max 100 characters/line
-- **ALWAYS create working directory files** - no output to stdout
-- **ALWAYS validate inputs** - None, empty, bounds, edge cases
-- **ALWAYS use logging** - never print() for production code
-- **ALWAYS write to disk** - terminal workflow = file-based
-- **ALWAYS signal completion** - "File complete: path/to/file.py"
+Debug Workflow (KÖTELEZŐ):
+bash# 1. LOKALIZÁLÁS - hol a hiba?
+grep -rn "hibaüzenet" src/
+cat [gyanús fájl] | head -100
 
----
+# 2. DATA FLOW KÖVETÉS - honnan jön az adat?
+grep -n "setResults\|useState\|fetch" [fájl]
 
-## 📂 TERMINAL WORKFLOW PRINCIPLES
+# 3. INTERFACE EGYEZÉS - típusok stimmelnek?
+cat src/types/*.ts | grep -A10 "interface [Név]"
 
-### File-Based Output:
-```bash
-# Working directory structure
+# 4. KONKRÉT DIAGNÓZIS
+# "A hiba: [fájl]:[sor] - [interface] nem egyezik [response]-zal"
+
+# 5. JAVÍTÁS
+# Konkrét kódváltoztatás, nem "valószínűleg ez a baj"
+⛔ TILOS Debug Anti-Pattern-ek:
+❌ "A backend működik, szóval frontend a hiba" → HOVA TŰNT az adat?
+❌ "Compile OK = minden OK" → Runtime error lehet!
+❌ "Cache/timezone/rounding hiba" → BIZONYÍTSD vagy ne mondd!
+❌ "Újraindítás megoldja" → MI VOLT a root cause?
+
+🔥 GIT HIGIÉNIA — KÖTELEZŐ MINDEN AGENTNEK
+❗ SOHA NE FELEJTSD EL:
+
+Új mappa létrehozása után AZONNAL:
+
+bash   git status
+
+Ellenőrizd, hogy az új mappa NEM ignorált
+Ha ?? helyett nincs semmi → .gitignore probléma!
+
+
+Minden "KÉSZ" / "Sprint vége" / "Task done" ELŐTT:
+
+bash   git status
+   git add -A
+   git diff --cached --stat
+
+Csak EZUTÁN írhatsz "✅ KÉSZ" státuszt
+Ha nincs commit → NEM KÉSZ!
+
+
+.gitignore módosításakor:
+
+TILOS: */ vagy bármilyen általános wildcard a repo gyökerében
+Módosítás után KÖTELEZŐ: git status
+Ellenőrizd, hogy nem tűnt el egész mappa
+
+
+AGENT NEM COMMITOL ÖNÁLLÓAN:
+
+Javasolhatsz commit üzenetet és parancsot
+A tényleges git commit-ot MINDIG az ember futtatja
+
+
+
+⛔ TILOS PATTERN-EK .gitignore-ban:
+gitignore# ❌ TILOS - mindent lenyel
+*/
+**/
+
+# ✅ HELYES - konkrét minták
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+.venv/
+.idea/
+.vscode/
+
+🚨 CRITICAL RULES - NEVER VIOLATE
+❌ FORBIDDEN ACTIONS:
+
+NO guessing - ask questions before coding (max 2 questions)
+NO incomplete code - finish what you start or create INCOMPLETE.md
+NO placeholder comments (# TODO, // FIXME, ..., pass)
+NO code snippets - always complete, runnable files
+NO truncation - NEVER use "..." or "rest unchanged"
+NO multiple concerns - God classes/files FORBIDDEN (>250 lines)
+NO unsafe code - eval/exec/os.system BANNED
+NO assumptions - if uncertain, ask or use reasonable defaults
+NO verbose explanations - code speaks, comments minimal
+NO modifying tests - tests define correct behavior!
+NO imports without use - dead code elimination
+NO hardcoded secrets - use environment variables
+NO "KÉSZ" without commit - verify with git status first!
+NO delegating debug to human - YOU find the bug in CODE!
+NO speculative diagnosis - PROVE it or search more!
+
+✅ REQUIRED ACTIONS:
+
+ALWAYS generate complete files - from first line to last
+ALWAYS use type hints - every function, every parameter
+ALWAYS verify git status - after creating new folders
+ALWAYS create working directory files - no output to stdout
+ALWAYS validate inputs - None, empty, bounds, edge cases
+ALWAYS use logging - never print() for production code
+ALWAYS write to disk - terminal workflow = file-based
+ALWAYS signal completion - "File complete: path/to/file"
+ALWAYS trace data flow - from source to render
+ALWAYS show evidence - grep/cat output for diagnosis
+
+
+📂 TERMINAL WORKFLOW PRINCIPLES
+File-Based Output:
+bash# Working directory structure
 ./
 ├── src/              # Source code
 ├── tests/            # Test files
@@ -53,366 +152,191 @@
 ├── PLAN.md           # Current task plan
 ├── REVIEW.md         # Optional review notes
 └── INCOMPLETE.md     # Blocked tasks
-```
+Session Management:
 
-### Session Management:
-- **NO web Projects** - working directory IS the context
-- **NO memory systems** - state in files (PLAN.md, STATUS.md)
-- **Context = files in current directory** - always explicit
-- **Clear state**: Start each session by reading relevant files
+NO web Projects - working directory IS the context
+NO memory systems - state in files (PLAN.md, STATUS.md)
+Context = files in current directory - always explicit
+Clear state: Start each session by reading relevant files
+Git check: FIRST thing in session = git status
 
-### Output Format:
-```bash
-# Agent creates files, not stdout chatter
+Output Format:
+bash# Agent creates files, not stdout chatter
 write → src/module.py
 write → tests/test_module.py
-write → REVIEW.md
-signal → "Implementation complete. 3 files created."
-```
+signal → "Implementation complete. 2 files created."
+git status → verify files visible to git
 
----
+🎯 SINGLE-FILE vs MULTI-FILE DECISION
+✅ Single-file (all in one):
 
-## 🎯 SINGLE-FILE vs MULTI-FILE DECISION
+Script <300 lines total
+1-2 classes max
+Simple CLI tool
+Utility module
 
-### ✅ Single-file (all in one .py):
-- Script <300 lines total
-- 1-2 classes max
-- Simple CLI tool
-- Utility module
+✅ Multi-file REQUIRED when:
 
-### ✅ Multi-file REQUIRED when:
-- Total project >300 lines
-- 3+ classes
-- GUI with 3+ widgets
-- Separate layers needed (data/logic/ui)
+Total project >300 lines
+3+ classes
+GUI with 3+ widgets
+Separate layers needed (data/logic/ui)
 
-### Multi-file Rules:
-- **Max 250 lines per file**
-- **Dependency order**: models → database → logic → ui → main
-- **Each file complete and runnable** (where applicable)
-- **Clear separation**: 1 file = 1 responsibility
+Multi-file Rules:
 
----
-
-## 🔧 CODE QUALITY STANDARDS
-
-### Structure:
-```python
-"""Module doing X. One-line description."""
-from __future__ import annotations
-
-import stdlib_modules
-from typing import Protocol, Any
-
-import third_party
-from project import internal
+Max 250 lines per file
+Dependency order: models → database → logic → ui → main
+Each file complete and runnable (where applicable)
+Clear separation: 1 file = 1 responsibility
 
 
-class Thing:
-    """Brief class purpose."""
-    
-    def method(self, param: str) -> int:
-        """Brief method purpose. Returns count."""
-        return len(param)
+🔧 CODE QUALITY STANDARDS
+Mandatory Elements:
 
+Full type hints (params, returns, class attributes)
+Module docstring (1-2 lines max)
+Function docstrings (1 sentence, returns documented)
+Class docstrings (brief purpose)
+Alphabetical imports (stdlib → third-party → internal)
 
-def helper(data: list[str]) -> str:
-    """Brief helper purpose."""
-    return ",".join(data)
+Code Metrics (Target):
 
+Lines per function: ≤50
+Lines per class: ≤200
+Lines per file: ≤250
+Cyclomatic complexity: <8 per function
+Import count: <15 per file
+Nesting depth: ≤3 levels
 
-if __name__ == "__main__":
-    # CLI entry point or self-test
-    result = helper(["a", "b"])
-    print(result)
-```
+⚠️ NULL/UNDEFINED CHECKS - MINDIG:
+python# ❌ CRASH
+return value.some_method()
 
-### Mandatory Elements:
-- `from __future__ import annotations` (Python 3.10+)
-- Full type hints (params, returns, class attributes)
-- Module docstring (1-2 lines max)
-- Function docstrings (1 sentence, returns documented)
-- Class docstrings (brief purpose)
-- Alphabetical imports (stdlib → third-party → internal)
-- `if __name__ == "__main__":` guard for runnable modules
+# ✅ SAFE
+return value.some_method() if value else default
+typescript// ❌ CRASH
+return value.toFixed(2)
 
-### Code Metrics (Target):
-- **Lines per function**: ≤50
-- **Lines per class**: ≤200
-- **Lines per file**: ≤250
-- **Cyclomatic complexity**: <8 per function
-- **Import count**: <15 per file
-- **Nesting depth**: ≤3 levels
+// ✅ SAFE
+return value?.toFixed(2) ?? 'N/A'
 
----
-
-## 🏗️ CLEAN ARCHITECTURE (NOT MICROSERVICES!)
-
-### Layer Separation:
-```
+🏗️ CLEAN ARCHITECTURE (NOT MICROSERVICES!)
+Layer Separation:
 src/
 ├── domain/          # Business logic, entities (no I/O!)
 ├── application/     # Use cases, orchestration
 ├── infrastructure/  # DB, APIs, external services
-└── presentation/    # CLI, GUI (PySide6)
-```
+└── presentation/    # CLI, GUI, Web UI
+Principles:
 
-### Principles:
-- **SRP** (Single Responsibility Principle)
-- **DIP** (Dependency Inversion) - depend on abstractions
-- **OCP** (Open/Closed) - extend without modifying
-- **ISP** (Interface Segregation) - small, focused interfaces
+SRP (Single Responsibility Principle)
+DIP (Dependency Inversion) - depend on abstractions
+OCP (Open/Closed) - extend without modifying
+ISP (Interface Segregation) - small, focused interfaces
 
-### NOT Microservices:
-- ✅ Modular monolith - clean boundaries
-- ✅ In-process communication
-- ✅ Shared memory, single deployment
-- ❌ NO network calls between modules
-- ❌ NO separate processes
-- ❌ NO over-engineering
+NOT Microservices:
 
----
+✅ Modular monolith - clean boundaries
+✅ In-process communication
+✅ Shared memory, single deployment
+❌ NO network calls between modules
+❌ NO separate processes
+❌ NO over-engineering
 
-## 🔒 SECURITY RULES
 
-### Input Validation:
-```python
-def process(data: str | None) -> str:
-    """Process data with validation."""
-    if not data:
-        raise ValueError("Data required")
-    if len(data) > 1000:
-        raise ValueError("Data too long")
-    # Process validated input
-    return data.upper()
-```
+🔒 SECURITY RULES
+Input Validation:
 
-### SQL Safety:
-```python
-# ✅ CORRECT - parameterized
+Always validate before processing
+Check for None/null, empty, bounds, edge cases
+Raise/throw explicit errors for invalid input
+
+SQL Safety:
+python# ✅ CORRECT - parameterized
 cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
 
 # ❌ FORBIDDEN - SQL injection risk
 cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")
-```
+Secrets:
 
-### Secrets:
-```python
-import os
-from pathlib import Path
+✅ Environment variables
+❌ NEVER hardcode API keys, passwords, tokens
 
-# ✅ CORRECT - environment variables
-API_KEY = os.getenv("API_KEY")
-if not API_KEY:
-    raise ValueError("API_KEY not set")
 
-# ❌ FORBIDDEN - hardcoded
-API_KEY = "sk-1234567890abcdef"  # NEVER!
-```
-
----
-
-## 📋 PRE-GENERATION CHECKLIST
-
+📋 PRE-GENERATION CHECKLIST
 Before generating any code, verify:
 
-- [ ] **Requirement clear?** - If not, ask max 2 questions
-- [ ] **Single or multi-file?** - Based on size/complexity
-- [ ] **Dependencies known?** - stdlib preferred, document externals
-- [ ] **Edge cases identified?** - None, empty, bounds, errors
-- [ ] **Output path decided?** - Where to write files?
-- [ ] **Type hints complete?** - Every function signature
-- [ ] **Tests needed?** - If yes, create test_*.py
-- [ ] **Clean architecture?** - Proper layer separation
-
----
-
-## 🚫 ANTI-PATTERNS (STRICTLY FORBIDDEN)
-
-### Code Smells:
-- ❌ **God class** - single class >200 lines with 5+ responsibilities
-- ❌ **God file** - everything in one file >300 lines
-- ❌ **Deep nesting** - >3 levels of if/for/while
-- ❌ **Long functions** - >50 lines doing multiple things
-- ❌ **Primitive obsession** - use dataclasses, not dicts
-- ❌ **Mutable defaults** - `def func(data: list = []):`
-
-### Development Smells:
-- ❌ **TODO comments** - implement or don't mention
-- ❌ **Commented code** - delete it, use git history
-- ❌ **Wildcard imports** - `from module import *`
-- ❌ **Circular imports** - restructure your modules
-- ❌ **Global state** - use dependency injection
-- ❌ **Magic numbers** - use named constants
-
----
-
-## 🧪 TESTING REQUIREMENTS
-
-### Test Structure:
-```python
-"""Tests for module_name."""
-import pytest
-from src.module_name import function_name
+ Requirement clear? - If not, ask max 2 questions
+ Single or multi-file? - Based on size/complexity
+ Dependencies known? - stdlib preferred, document externals
+ Edge cases identified? - None, empty, bounds, errors
+ Output path decided? - Where to write files?
+ Type hints complete? - Every function signature
+ Tests needed? - If yes, create test files
+ Clean architecture? - Proper layer separation
+ Git status checked? - New folders visible?
 
 
-def test_happy_path():
-    """Test normal operation."""
-    result = function_name("valid input")
-    assert result == "expected output"
-    assert isinstance(result, str)
+🚫 ANTI-PATTERNS (STRICTLY FORBIDDEN)
+Code Smells:
+
+❌ God class - single class >200 lines with 5+ responsibilities
+❌ God file - everything in one file >300 lines
+❌ Deep nesting - >3 levels of if/for/while
+❌ Long functions - >50 lines doing multiple things
+❌ Primitive obsession - use dataclasses/interfaces, not dicts
+❌ Mutable defaults - def func(data: list = []):
+
+Development Smells:
+
+❌ TODO comments - implement or don't mention
+❌ Commented code - delete it, use git history
+❌ Wildcard imports - from module import *
+❌ Circular imports - restructure your modules
+❌ Global state - use dependency injection
+❌ Magic numbers - use named constants
+❌ Uncommitted "KÉSZ" - git status FIRST!
+
+Debug Smells:
+
+❌ Spekulatív diagnózis - "valószínűleg", "talán", "lehet"
+❌ Delegálás embernek - "nézd meg a böngészőben"
+❌ Lazy conclusion - "backend OK = frontend hiba"
+❌ Excuse-making - "cache", "timezone", "race condition" bizonyíték nélkül
 
 
-def test_edge_case_empty():
-    """Test empty input handling."""
-    with pytest.raises(ValueError, match="Data required"):
-        function_name("")
+🧪 TESTING REQUIREMENTS
+Testing Rules:
+
+Coverage target: >80%
+One test = one behavior
+Arrange-Act-Assert pattern
+Test file mirrors source - src/foo.py → tests/test_foo.py
+No test modification - tests define spec, code must conform
 
 
-def test_edge_case_none():
-    """Test None input handling."""
-    with pytest.raises(ValueError):
-        function_name(None)
-```
+📐 QUALITY METRICS (ENFORCEMENT)
+Quality Gates:
 
-### Testing Rules:
-- **Coverage target**: >80% (pytest-cov)
-- **One test = one behavior**
-- **Arrange-Act-Assert** pattern
-- **Test file mirrors source** - `src/foo.py` → `tests/test_foo.py`
-- **No test modification** - tests define spec, code must conform
+✅ Formatting: Code formatted (no changes needed)
+✅ Linting: No linting errors
+✅ Types: No type errors
+✅ Quality Score: ≥8.0/10
+✅ Coverage: ≥80%
+✅ Complexity: CC <8 per function
+✅ Security: No security issues
+✅ Git: All changes tracked and visible
 
----
 
-## 📐 QUALITY METRICS (ENFORCEMENT)
+🎯 AGENT BEHAVIOR RULES
+Communication Style:
 
-### Automated Checks:
-```bash
-# Must pass before commit
-black src/ --check           # Formatting
-ruff check src/             # Linting
-mypy src/                   # Type checking
-pylint src/ --fail-under=8.0 # Code quality >8.0
-flake8 src/                 # PEP8 violations = 0
-pytest --cov=src --cov-fail-under=80  # Coverage >80%
-radon cc src/ -a            # Complexity <8
-bandit -r src/              # Security scan
-```
+Language: Hungarian, informal (tegeződés)
+Verbosity: Minimal - let code speak
+Questions: Max 2 before proceeding with defaults
+Status updates: Brief file creation signals
 
-### Quality Gates:
-- ✅ **Black**: Code formatted (no changes needed)
-- ✅ **Ruff**: No linting errors
-- ✅ **MyPy**: No type errors
-- ✅ **Pylint**: Score ≥8.0/10
-- ✅ **Flake8**: 0 violations
-- ✅ **Pytest**: Coverage ≥80%
-- ✅ **Radon**: CC <8 per function
-- ✅ **Bandit**: No security issues
-
----
-
-## 📦 DEPENDENCY MANAGEMENT
-
-### Stdlib First:
-```python
-# ✅ PREFERRED - stdlib only
-from pathlib import Path
-from typing import Protocol
-from dataclasses import dataclass
-import json
-import sqlite3
-import logging
-
-# ⚠️ ONLY IF NECESSARY - external
-import pyside6  # For GUI
-import requests  # For HTTP (prefer urllib)
-import pandas   # For data analysis
-```
-
-### External Libraries:
-- **Justify need** - can stdlib do it?
-- **Document why** - comment or DEPENDENCIES.md
-- **Pin versions** - requirements.txt with exact versions
-- **Minimize count** - fewer dependencies = fewer problems
-
----
-
-## 🔄 TERMINAL WORKFLOW PATTERN
-
-### 1. Plan First (PLAN.md):
-```markdown
-# Task: Implement CSV parser
-
-## Goal:
-Parse CSV files with validation and statistics.
-
-## Files to Create:
-- src/parser.py (CSV parsing logic)
-- tests/test_parser.py (unit tests)
-
-## Dependencies:
-- stdlib: csv, pathlib, typing
-- external: none
-
-## Edge Cases:
-- Empty file
-- Missing columns
-- Invalid data types
-- Large files (streaming)
-
-## Validation:
-- pytest coverage >80%
-- pylint score >8.0
-- All quality gates pass
-```
-
-### 2. Generate Code:
-```bash
-# Agent creates files directly
-src/parser.py created (187 lines)
-tests/test_parser.py created (94 lines)
-```
-
-### 3. Review (Optional REVIEW.md):
-```markdown
-# Review: CSV Parser
-
-## Integrity: ✅
-- All functions implemented
-- No TODO/placeholders
-- Type hints complete
-
-## PEP8: ✅
-- Black formatted
-- Max 100 chars/line
-- Proper spacing
-
-## Architecture: ✅
-- Single responsibility
-- Clean separation
-- Testable design
-```
-
-### 4. Validation:
-```bash
-# Run quality checks
-pytest --cov=src --cov-fail-under=80
-pylint src/ --fail-under=8.0
-mypy src/
-```
-
----
-
-## 🎯 AGENT BEHAVIOR RULES
-
-### Communication Style:
-- **Language**: Hungarian, informal (tegeződés)
-- **Verbosity**: Minimal - let code speak
-- **Questions**: Max 2 before proceeding with defaults
-- **Status updates**: Brief file creation signals
-
-### Output Pattern:
-```
+Output Pattern:
 # ❌ BAD - verbose explanation
 "I will now create a parser module that handles CSV files.
 The module will have the following classes..."
@@ -420,245 +344,89 @@ The module will have the following classes..."
 # ✅ GOOD - direct action
 Creating src/parser.py...
 Creating tests/test_parser.py...
+git status → files visible ✅
 Files complete. Ready for validation.
-```
+Debug Output Pattern:
+# ❌ BAD - spekuláció
+"A frontend valószínűleg nem kapja meg az adatokat.
+Lehet cache probléma vagy CORS. Nézd meg DevTools-ban."
 
-### Error Handling:
-```python
-# If uncertain or blocked:
-# 1. Create INCOMPLETE.md with details
-# 2. Ask specific questions (max 2)
-# 3. Document assumptions made
-# 4. Never generate partial/broken code
-```
+# ✅ GOOD - konkrét
+cat frontend/src/hooks/useCityWeather.ts | grep -A5 "setResults"
+→ Sor 75: setResults(response.data.temperature_data)
+→ Interface: DetailedData nem tartalmaz temperature_data property-t
+→ Javítás: frontend/src/types/weather.ts - DetailedData bővítése
+Session Start - KÖTELEZŐ:
+bash# 1. Hol vagyok?
+pwd
 
----
+# 2. Mi a git állapot?
+git status
 
-## 🚀 QUICK REFERENCE
+# 3. Mi van itt?
+ls -la
 
-### Before Every Code Generation:
-1. ✅ Read requirements carefully
-2. ✅ Check if single-file or multi-file needed
-3. ✅ Plan file structure and dependencies
-4. ✅ Identify edge cases
-5. ✅ Verify type hints strategy
-6. ✅ Confirm output paths
+# 4. Context beolvasás
+cat PLAN.md 2>/dev/null || echo "No PLAN.md"
+cat STATUS.md 2>/dev/null || echo "No STATUS.md"
+cat SESSION_MEMORY.md 2>/dev/null || echo "No SESSION_MEMORY.md"
 
-### During Code Generation:
-1. ✅ Complete files only (no truncation)
-2. ✅ Type hints on everything
-3. ✅ Docstrings brief but present
-4. ✅ Edge case validation
-5. ✅ Security checks (SQL, secrets, input)
-6. ✅ Follow PEP8 strictly
+🚀 QUICK REFERENCE
+Before Every Code Generation:
 
-### After Code Generation:
-1. ✅ Signal file completion
-2. ✅ List all files created
-3. ✅ Note any assumptions made
-4. ✅ Suggest validation commands
-5. ✅ Wait for feedback before next step
+✅ Read requirements carefully
+✅ git status - check current state
+✅ Check if single-file or multi-file needed
+✅ Plan file structure and dependencies
+✅ Identify edge cases
+✅ Confirm output paths
 
----
+During Code Generation:
 
-## 📊 METRIC TARGETS
+✅ Complete files only (no truncation)
+✅ Type hints on everything
+✅ Docstrings brief but present
+✅ Null/edge case validation
+✅ Security checks (SQL, secrets, input)
 
-| Metric | Target | Tool |
-|--------|--------|------|
-| Code Coverage | >80% | pytest-cov |
-| Pylint Score | >8.0 | pylint |
-| Flake8 Errors | 0 | flake8 |
-| Type Coverage | 100% | mypy |
-| Cyclomatic Complexity | <8/function | radon |
-| Security Issues | 0 | bandit |
-| Line Length | ≤100 chars | black |
-| Function Length | ≤50 lines | manual |
-| Class Length | ≤200 lines | manual |
-| File Length | ≤250 lines | manual |
+After Code Generation:
 
----
+✅ Signal file completion
+✅ List all files created
+✅ git status - verify files visible
+✅ Suggest validation commands
+✅ Wait for feedback before next step
+✅ ONLY mark "KÉSZ" if committed or staged
 
-## 🔍 COMMON SCENARIOS
+During Debug:
 
-### Scenario 1: Simple Script
-```
-Input: "Create a CSV to JSON converter"
-Output:
-- src/converter.py (180 lines, complete, type hints, tests)
-- Run: python src/converter.py input.csv output.json
-```
+✅ READ the code first (cat/grep)
+✅ TRACE the data flow
+✅ IDENTIFY exact file:line
+✅ PROVE with evidence (output, not opinion)
+✅ FIX with concrete change
+✅ VERIFY the fix works
 
-### Scenario 2: Multi-Module Project
-```
-Input: "Create a data analysis tool with SQLite storage"
-Output:
-- src/models.py (data classes)
-- src/database.py (SQLite operations)
-- src/analyzer.py (analysis logic)
-- src/main.py (CLI entry point)
-- tests/test_*.py (one per module)
-```
 
-### Scenario 3: Refactoring God Class
-```
-Input: "Refactor ui/main_window.py god class"
-Plan:
-1. Identify responsibilities (6 found)
-2. Extract to separate classes
-3. Maintain backward compatibility
-4. Create migration guide
-Output:
-- ui/main_window.py (now 150 lines)
-- ui/data_handler.py (new)
-- ui/validation.py (new)
-- ui/export_manager.py (new)
-- MIGRATION.md (guide)
-```
+📊 METRIC TARGETS
+MetricTargetNotesCode Coverage>80%pytest-cov / jestQuality Score>8.0pylint / eslintLinting Errors0flake8 / eslintType Coverage100%mypy / tscCyclomatic Complexity<8/functionradon / complexitySecurity Issues0bandit / npm auditLine Length≤100 charsformatterFunction Length≤50 linesmanualClass Length≤200 linesmanualFile Length≤250 linesmanualGit StatusClean or Stagedgit status
 
----
+🏁 TL;DR
+Terminal AI agents must:
 
-## 🎓 REASONING PRINCIPLES
+🔴 WORK FOR THE HUMAN - not delegate debug to them!
+🔥 CHECK git status after new folders - FIRST PRIORITY!
+📝 Write complete files to disk
+🎯 Follow clean architecture (modular, not microservices)
+✅ Pass all quality gates (>80% coverage, >8.0 quality)
+🔒 Enforce security (no eval, parameterized SQL)
+📐 Respect limits (≤250 lines/file, ≤50 lines/function)
+🚫 Avoid anti-patterns (God classes, TODO, wildcards)
+💬 Communicate minimally (Hungarian, informal)
+📂 Maintain state in files (PLAN.md, STATUS.md)
+🔄 NEVER say "KÉSZ" without git status verification
+🔍 DEBUG IN CODE - never ask human to check browser!
+📊 PROVE diagnosis - grep/cat evidence, not speculation!
 
-### When to Split Files:
-- **Cohesion test**: Do all parts change together?
-- **Import test**: Are imports from 5+ different areas?
-- **Test test**: Do tests require complex setup?
-- **Length test**: Is file >250 lines?
-
-### When to Create Abstraction:
-- **Rule of 3**: Same pattern appears 3+ times
-- **Change test**: Will this vary independently?
-- **Test test**: Does it help testing?
-- **NOT prematurely**: Only when needed now
-
-### When to Refactor:
-- **Pain test**: Is adding features painful?
-- **Test test**: Are tests brittle?
-- **Understand test**: Do new devs struggle?
-- **NOT cosmetically**: Only if it solves real problems
-
----
-
-## 💡 TERMINAL-SPECIFIC TIPS
-
-### File Management:
-```bash
-# Agent works in current directory
-pwd  # Know where you are
-ls -la  # See what exists
-cat PLAN.md  # Read context
-
-# Agent creates files with clear signals
-echo "Creating src/module.py"
-# ... generates code ...
-echo "✓ src/module.py complete (187 lines)"
-```
-
-### Session Continuity:
-```markdown
-# At session start, create STATUS.md:
-## Current State:
-- Last completed: database.py
-- Next: UI layer
-- Blocked: None
-
-## Files Modified:
-- src/database.py (new)
-- tests/test_database.py (new)
-
-## Quality Status:
-- Tests passing: ✅
-- Coverage: 85%
-- Pylint: 8.2
-```
-
-### Context Management:
-```bash
-# Agent reads relevant files at session start
-cat STATUS.md
-cat PLAN.md
-ls -R src/
-
-# Agent maintains state in files, not memory
-# Each session is atomic based on file state
-```
-
----
-
-## 🎯 SUCCESS CRITERIA
-
-A terminal AI agent session is successful when:
-
-1. ✅ All generated files are complete (no truncation)
-2. ✅ Code runs without errors
-3. ✅ All quality gates pass (pytest, pylint, mypy, etc.)
-4. ✅ Type hints are complete
-5. ✅ Documentation is present but minimal
-6. ✅ No anti-patterns present
-7. ✅ Clean architecture maintained
-8. ✅ Files written to disk, not stdout
-9. ✅ Session state documented in files
-10. ✅ Ready for immediate use or next iteration
-
----
-
-## 📚 APPENDIX: PYTHON 3.10+ FEATURES
-
-### Modern Type Hints:
-```python
-from __future__ import annotations
-
-# Union types
-def process(data: str | int) -> str:
-    return str(data)
-
-# Optional types
-def maybe(val: str | None = None) -> str:
-    return val or "default"
-
-# Generic types
-def first[T](items: list[T]) -> T | None:
-    return items[0] if items else None
-```
-
-### Dataclasses:
-```python
-from dataclasses import dataclass, field
-
-@dataclass(frozen=True)
-class Config:
-    """Immutable configuration."""
-    api_url: str
-    timeout: int = 30
-    headers: dict[str, str] = field(default_factory=dict)
-```
-
-### Pattern Matching:
-```python
-def handle(command: str) -> str:
-    match command.split():
-        case ["add", x, y]:
-            return str(int(x) + int(y))
-        case ["quit"]:
-            return "Goodbye"
-        case _:
-            return "Unknown command"
-```
-
----
-
-## 🏁 TL;DR
-
-**Terminal AI agents must:**
-- 📝 Write complete files to disk
-- 🎯 Follow clean architecture (modular, not microservices)
-- ✅ Pass all quality gates (>80% coverage, >8.0 pylint)
-- 🔒 Enforce security (no eval, parameterized SQL)
-- 📐 Respect limits (≤250 lines/file, ≤50 lines/function)
-- 🚫 Avoid anti-patterns (God classes, TODO, wildcards)
-- 💬 Communicate minimally (Hungarian, informal)
-- 📂 Maintain state in files (PLAN.md, STATUS.md)
-- 🔄 Support iteration (one task per session)
-- 🎓 Think modular, implement pragmatic
-
-**Remember: Code is written once, read many times. Make it count.** 🚀
+Remember: Code is written once, read many times. Git tracks everything - or it doesn't exist. 🚀
+Remember: YOU work for the human. Find bugs in CODE, not in their browser. 💼
