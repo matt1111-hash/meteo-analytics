@@ -135,6 +135,7 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
 
   // Handle city selection
   const handleCityClick = (city: City) => {
+    console.log('City clicked:', city.name);
     onChange(city.name);
     setIsOpen(false);
     setHighlightedIndex(-1);
@@ -153,6 +154,10 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
   // Handle click outside
   const handleClickOutside = useCallback((e: MouseEvent) => {
     if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
+      // Don't close if clicking on the suggestions list
+      if (listRef.current && listRef.current.contains(e.target as Node)) {
+        return;
+      }
       setIsOpen(false);
       setHighlightedIndex(-1);
     }
@@ -160,9 +165,9 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
 
   // Set up click outside listener
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, [handleClickOutside]);
 
@@ -229,12 +234,15 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
             <li
               key={`${city.name}-${city.country}-${index}`}
               className={`suggestion-item ${index === highlightedIndex ? 'highlighted' : ''}`}
-              onClick={() => handleCityClick(city)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCityClick(city);
+              }}
               role="option"
               aria-selected={index === highlightedIndex}
             >
               <div className="suggestion-main">
-                <span className="city-name">{city.name}</span>
+                <span className="city-name" style={{ color: '#000000', fontWeight: 'bold' }}>{city.name}</span>
                 <span className="country-name">{city.country}</span>
               </div>
               {city.coordinates && (

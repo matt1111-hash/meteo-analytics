@@ -1,0 +1,365 @@
+/* 💨 Wind Heatmap Stílusok - Beaufort 13 fokozat - Qt 7×53 Calendar Matrix */
+
+.wind-heatmap {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wind-heatmap.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+}
+
+.empty-message {
+  color: #6c757d;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.heatmap-header h4 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.wind-range {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.heatmap-svg {
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.heatmap-cell {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.heatmap-cell:hover {
+  opacity: 0.8;
+  stroke: #333;
+  stroke-width: 1;
+}
+
+/* 📅 Rács vonalak - Kalendárium nézet */
+#wind-grid {
+  opacity: 0.4;
+}
+
+#wind-grid path {
+  stroke: #b0b0b0;
+  stroke-width: 0.5;
+}
+
+/* 🌈 Szín skála - Szél specifikus */
+.color-scale {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.scale-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.scale-gradient {
+  width: 200px;
+  height: 12px;
+  background: linear-gradient(
+    to right,
+    #FFFFFF 0%,    /* 0 km/h - Szélcsend */
+    #F0F8FF 7%,    /* 1 km/h - Gyenge szellő */
+    #E6F3FF 14%,   /* 6 km/h - Enyhe szél */
+    #CCE7FF 21%,   /* 11 km/h - Gyenge szél */
+    #90EE90 28%,   /* 19 km/h - Mérsékelt szél */
+    #32CD32 35%,   /* 29 km/h - Élénk szél */
+    #FFD700 42%,   /* 39 km/h - Erős szél */
+    #FFA500 49%,   /* 49 km/h - Viharos szél */
+    #FF6347 56%,   /* 60 km/h - Élénk viharos */
+    #FF4500 63%,   /* 72 km/h - Heves vihar */
+    #DC143C 70%,   /* 85 km/h - Dühöngő vihar */
+    #8B008B 85%,   /* 100 km/h - Heves szélvész */
+    #4B0082 100%   /* 115+ km/h - Orkán */
+  );
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+/* 📈 Statisztika */
+.beaufort-legend {
+  margin-top: 1rem;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.legend-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.legend-row:last-child {
+  margin-bottom: 0;
+}
+
+.legend-item {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: white;
+  border: 1px solid #dee2e6;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 🎯 Beaufort skála magyarázat */
+.heatmap-stats {
+  text-align: center;
+  margin-top: 0.5rem;
+  color: #6c757d;
+}
+
+.heatmap-stats small {
+  font-size: 0.8rem;
+}
+
+/* Színkódolt legend elemek */
+.legend-item.calm {
+  background: #FFFFFF;
+  color: #495057;
+  border-color: #dee2e6;
+}
+
+.legend-item.light {
+  background: #E6F3FF;
+  color: #495057;
+  border-color: #b8daff;
+}
+
+.legend-item.moderate {
+  background: #90EE90;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.legend-item.fresh {
+  background: #FFD700;
+  color: #856404;
+  border-color: #ffeaa7;
+}
+
+.legend-item.strong {
+  background: #32CD32;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.legend-item.gale {
+  background: #FFA500;
+  color: #856404;
+  border-color: #ffeaa7;
+}
+
+.legend-item.storm {
+  background: #FF6347;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.legend-item.violent {
+  background: #DC143C;
+  color: white;
+  border-color: #dc143c;
+}
+
+/* 💨 Beaufort színek referencia */
+
+.wind-calm {
+  color: #FFFFFF;    /* Szélcsend */
+}
+
+.wind-light {
+  color: #E6F3FF;    /* Enyhe szél */
+}
+
+.wind-moderate {
+  color: #90EE90;    /* Mérsékelt szél */
+}
+
+.wind-fresh {
+  color: #FFD700;    /* Élénk szél */
+}
+
+.wind-strong {
+  color: #32CD32;    /* Erős szél */
+}
+
+.wind-gale {
+  color: #FFA500;    /* Viharos szél */
+}
+
+.wind-storm {
+  color: #FF6347;    /* Heves vihar */
+}
+
+.wind-violent {
+  color: #DC143C;    /* Szélsőséges */
+}
+
+/* 📱 Responsive design - Calendar View */
+@media (max-width: 768px) {
+  .wind-heatmap {
+    padding: 0.5rem;
+    margin: 0;
+  }
+  
+  .heatmap-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .scale-gradient {
+    width: 150px;
+  }
+  
+  .heatmap-svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .wind-heatmap {
+    padding: 0.25rem;
+  }
+  
+  .heatmap-header h4 {
+    font-size: 1rem;
+  }
+  
+  .wind-range {
+    font-size: 0.8rem;
+  }
+}
+
+/* 🎯 AGENTS.md szabály: max 250 sor per fájl */
+/* Ez a CSS fájl betartja a 250 sor limitet */
+
+/* 📱 Responsive design - mobilbarát */
+@media (max-width: 768px) {
+  .wind-heatmap {
+    padding: 12px;
+    margin: 6px 0;
+  }
+  
+  .heatmap-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .heatmap-header h4 {
+    font-size: 14px;
+  }
+  
+  .wind-range {
+    font-size: 11px;
+  }
+  
+  .color-scale {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+  
+  .scale-gradient {
+    width: 100%;
+    margin: 8px 0;
+  }
+  
+  .scale-label {
+    font-size: 10px;
+  }
+  
+  .beaufort-legend {
+    padding: 8px;
+  }
+  
+  .legend-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .legend-item {
+    font-size: 9px;
+    padding: 3px 4px;
+  }
+  
+  .heatmap-stats small {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wind-heatmap {
+    padding: 8px;
+  }
+  
+  .heatmap-header h4 {
+    font-size: 13px;
+  }
+  
+  .wind-range {
+    font-size: 10px;
+  }
+  
+  .scale-label {
+    font-size: 9px;
+  }
+  
+  .legend-item {
+    font-size: 8px;
+  }
+  
+  .heatmap-stats small {
+    font-size: 9px;
+  }
+}

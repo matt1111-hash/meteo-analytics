@@ -130,6 +130,24 @@
   margin-bottom: 2rem;
 }
 
+/* 🌧️ Heatmap szekció - Qt kompatibilis */
+.heatmap-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.heatmap-section h4 {
+  font-size: 1.1rem;
+  color: #495057;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  font-weight: 600;
+}
+
 /* Data summary */
 .data-summary {
   margin-top: 2rem;

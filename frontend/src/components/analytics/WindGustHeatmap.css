@@ -1,0 +1,278 @@
+/* 🌪️ Wind Gust Heatmap Stílusok - Beaufort 13 fokozat - Qt 7×53 Calendar Matrix */
+
+.windgust-heatmap {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 8px 0;
+}
+
+.windgust-heatmap.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: #f8f9fa;
+}
+
+.empty-message {
+  color: #6c757d;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.heatmap-header h4 {
+  margin: 0;
+  color: #495057;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.windgust-range {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.heatmap-svg {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.heatmap-cell {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.heatmap-cell:hover {
+  opacity: 0.8;
+  stroke: #333;
+  stroke-width: 1;
+}
+
+/* 🌈 Szín skála - Széllökés specifikus */
+.color-scale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 8px 0;
+}
+
+.scale-label {
+  font-size: 11px;
+  color: #6c757d;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.scale-gradient {
+  flex: 1;
+  height: 12px;
+  margin: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+/* 🌪️ Beaufort gradient - Qt get_wind_colormap() szerint */
+.windgust-gradient {
+  background: linear-gradient(
+    to right,
+    #FFFFFF 0%,    /* 0 km/h - Szélcsend */
+    #F0F8FF 7%,    /* 1 km/h - Gyenge szellő */
+    #E6F3FF 14%,   /* 6 km/h - Enyhe szél */
+    #CCE7FF 21%,   /* 11 km/h - Gyenge szél */
+    #90EE90 28%,   /* 19 km/h - Mérsékelt szél */
+    #32CD32 35%,   /* 29 km/h - Élénk szél */
+    #FFD700 42%,   /* 39 km/h - Erős szél */
+    #FFA500 49%,   /* 49 km/h - Viharos szél */
+    #FF6347 56%,   /* 60 km/h - Élénk viharos */
+    #FF4500 63%,   /* 72 km/h - Heves vihar */
+    #DC143C 70%,   /* 85 km/h - Dühöngő vihar */
+    #8B008B 85%,   /* 100 km/h - Heves szélvész */
+    #4B0082 100%   /* 115+ km/h - Orkán */
+  );
+}
+
+/* 🎯 Beaufort skála magyarázat */
+.beaufort-legend {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.legend-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.legend-row:last-child {
+  margin-bottom: 0;
+}
+
+.legend-item {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: white;
+  border: 1px solid #dee2e6;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Színkódolt legend elemek */
+.legend-item.calm {
+  background: #FFFFFF;
+  color: #495057;
+  border-color: #dee2e6;
+}
+
+.legend-item.light {
+  background: #E6F3FF;
+  color: #495057;
+  border-color: #b8daff;
+}
+
+.legend-item.moderate {
+  background: #90EE90;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.legend-item.fresh {
+  background: #FFD700;
+  color: #856404;
+  border-color: #ffeaa7;
+}
+
+.legend-item.strong {
+  background: #32CD32;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.legend-item.gale {
+  background: #FFA500;
+  color: #856404;
+  border-color: #ffeaa7;
+}
+
+.legend-item.storm {
+  background: #FF6347;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.legend-item.violent {
+  background: #DC143C;
+  color: white;
+  border-color: #dc143c;
+}
+
+.heatmap-stats {
+  text-align: center;
+  margin-top: 8px;
+  color: #6c757d;
+}
+
+.heatmap-stats small {
+  font-size: 11px;
+}
+
+/* 📱 Responsive design - mobilbarát */
+@media (max-width: 768px) {
+  .windgust-heatmap {
+    padding: 12px;
+    margin: 6px 0;
+  }
+  
+  .heatmap-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .heatmap-header h4 {
+    font-size: 14px;
+  }
+  
+  .windgust-range {
+    font-size: 11px;
+  }
+  
+  .color-scale {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+  
+  .scale-gradient {
+    width: 100%;
+    margin: 8px 0;
+  }
+  
+  .scale-label {
+    font-size: 10px;
+  }
+  
+  .beaufort-legend {
+    padding: 8px;
+  }
+  
+  .legend-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .legend-item {
+    font-size: 9px;
+    padding: 3px 4px;
+  }
+  
+  .heatmap-stats small {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .windgust-heatmap {
+    padding: 8px;
+  }
+  
+  .heatmap-header h4 {
+    font-size: 13px;
+  }
+  
+  .windgust-range {
+    font-size: 10px;
+  }
+  
+  .scale-label {
+    font-size: 9px;
+  }
+  
+  .legend-item {
+    font-size: 8px;
+  }
+  
+  .heatmap-stats small {
+    font-size: 9px;
+  }
+}

@@ -78,12 +78,12 @@
   z-index: 1000;
 }
 
-.autocomplete-suggestions {
+.city-autocomplete .autocomplete-suggestions {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
+  background: #ffffff !important;
   border: 1px solid #e9ecef;
   border-top: none;
   border-radius: 0 0 8px 8px;
@@ -109,7 +109,7 @@
 
 .suggestion-item:hover,
 .suggestion-item.highlighted {
-  background: #f8f9fa;
+  background: #f1f3f4;
 }
 
 .suggestion-item.highlighted {
@@ -123,14 +123,14 @@
   margin-bottom: 4px;
 }
 
-.city-name {
-  font-weight: 600;
-  color: #2c3e50;
-  font-size: 14px;
+.city-autocomplete .city-name {
+  font-weight: 600 !important;
+  color: #333333 !important;
+  font-size: 14px !important;
 }
 
 .country-name {
-  color: #6c757d;
+  color: #495057;
   font-size: 12px;
   font-weight: 500;
 }
@@ -139,11 +139,11 @@
   display: flex;
   gap: 12px;
   font-size: 11px;
-  color: #6c757d;
+  color: #495057;
 }
 
 .coordinates {
-  color: #495057;
+  color: #6c757d;
 }
 
 .population {
@@ -198,6 +198,7 @@
   .suggestion-details {
     flex-direction: column;
     gap: 4px;
+    color: #ced4da;
   }
 }
 
@@ -218,31 +219,31 @@
     color: #adb5bd;
   }
 
-  .autocomplete-suggestions {
-    background: #2c3e50;
+  .city-autocomplete .autocomplete-suggestions {
+    background: #2c3e50 !important;
     border-color: #495057;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   }
 
   .suggestion-item:hover,
   .suggestion-item.highlighted {
-    background: #34495e;
+    background: #3a4b5c;
   }
 
   .suggestion-item.highlighted {
     background: rgba(102, 126, 234, 0.2);
   }
 
-  .city-name {
-    color: white;
+  .city-autocomplete .city-name {
+    color: #f8f9fa !important;
   }
 
   .country-name {
-    color: #adb5bd;
+    color: #e9ecef;
   }
 
   .coordinates {
-    color: #ced4da;
+    color: #adb5bd;
   }
 
   .population {

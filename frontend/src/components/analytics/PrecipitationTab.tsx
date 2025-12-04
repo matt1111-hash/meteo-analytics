@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
+import PrecipitationHeatmap from './PrecipitationHeatmap';
 import './PrecipitationTab.css';
+import './PrecipitationHeatmap.css';
 
 interface PrecipitationData {
   date: string;
@@ -198,6 +200,16 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
           date={`${stats.dryDays} dry days`}
           unit="days"
           className="highlight"
+        />
+      </div>
+
+      {/* 🌧️ Qt kompatibilis heatmap vizualizáció */}
+      <div className="heatmap-section">
+        <h4>📊 Daily Precipitation Heatmap</h4>
+        <PrecipitationHeatmap 
+          data={precipitationData}
+          width={1000}
+          height={400}
         />
       </div>
 

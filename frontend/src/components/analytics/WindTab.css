@@ -1,3 +1,5 @@
+/* 💨 Wind Tab Stílusok - Beaufort skálával */
+
 .wind-tab {
   padding: 1rem;
   min-height: 400px;
@@ -17,7 +19,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #28a745;
+  border-top: 4px solid #17a2b8;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -52,6 +54,7 @@
 .wind-tab.error h3 {
   color: #dc3545;
   margin: 0;
+  font-size: 1.2rem;
 }
 
 .wind-tab.error p {
@@ -61,20 +64,21 @@
 }
 
 .retry-button {
-  background: #28a745;
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 1rem;
 }
 
 .retry-button:hover {
-  background: #218838;
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
 }
 
 /* Empty state */
@@ -91,12 +95,14 @@
 
 .empty-icon {
   font-size: 3rem;
-  color: #6c757d;
+  color: #17a2b8;
+  opacity: 0.7;
 }
 
 .wind-tab.empty h3 {
   color: #495057;
   margin: 0;
+  font-size: 1.2rem;
 }
 
 .wind-tab.empty p {
@@ -130,6 +136,24 @@
   margin-bottom: 2rem;
 }
 
+/* 💨 Heatmap szekció */
+.heatmap-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.heatmap-section h4 {
+  font-size: 1.1rem;
+  color: #495057;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  font-weight: 600;
+}
+
 /* Wind summary */
 .wind-summary {
   margin-top: 2rem;
@@ -145,78 +169,92 @@
   margin: 0 0 1rem 0;
 }
 
-.wind-scale {
+.distribution-bar {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.scale-item {
+.calm-section {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  border-radius: 8px;
-  background: white;
-  border: 1px solid #e9ecef;
+  justify-content: center;
+  color: #1565c0;
+  font-weight: 500;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
 }
 
-.scale-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.scale-item.calm {
-  border-left: 4px solid #17a2b8;
-}
-
-.scale-item.moderate {
-  border-left: 4px solid #ffc107;
-}
-
-.scale-item.windy {
-  border-left: 4px solid #fd7e14;
-}
-
-.scale-icon {
-  font-size: 1.5rem;
-  margin-right: 1rem;
-}
-
-.scale-label {
-  flex: 1;
+.moderate-section {
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2e7d32;
   font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.strong-section {
+  background: linear-gradient(135deg, #ffcc02 0%, #ff9800 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e65100;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.calm-section:hover,
+.moderate-section:hover,
+.strong-section:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.section-label {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.distribution-legend {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
   color: #495057;
 }
 
-.scale-count {
-  font-weight: 700;
-  font-size: 1.1rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  min-width: 60px;
-  text-align: center;
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.scale-item.calm .scale-count {
-  background: rgba(23, 162, 184, 0.1);
-  color: #17a2b8;
-  border-color: #17a2b8;
+.calm-color {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
 }
 
-.scale-item.moderate .scale-count {
-  background: rgba(255, 193, 7, 0.1);
-  color: #856404;
-  border-color: #ffc107;
+.moderate-color {
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
 }
 
-.scale-item.windy .scale-count {
-  background: rgba(253, 126, 20, 0.1);
-  color: #fd7e14;
-  border-color: #fd7e14;
+.strong-color {
+  background: linear-gradient(135deg, #ffcc02 0%, #ff9800 100%);
 }
 
 /* Responsive design */
@@ -224,71 +262,67 @@
   .wind-tab {
     padding: 0.5rem;
   }
-
+  
   .tab-header {
     margin-bottom: 1.5rem;
   }
-
+  
   .tab-header h3 {
     font-size: 1.3rem;
   }
-
+  
   .period-info {
     font-size: 0.8rem;
   }
-
+  
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-
-  .wind-scale {
-    gap: 0.5rem;
+  
+  .heatmap-section {
+    padding: 1rem;
+    margin: 1.5rem 0;
   }
-
-  .scale-item {
-    padding: 0.75rem;
-  }
-
-  .scale-icon {
-    font-size: 1.2rem;
-    margin-right: 0.75rem;
-  }
-
-  .scale-label {
-    font-size: 0.9rem;
-  }
-
-  .scale-count {
-    font-size: 1rem;
-    min-width: 50px;
-  }
-}
-
-@media (max-width: 480px) {
+  
   .wind-summary {
     padding: 1rem;
     margin-top: 1.5rem;
   }
+  
+  .distribution-bar {
+    height: 30px;
+  }
+  
+  .section-label {
+    font-size: 0.8rem;
+  }
+  
+  .distribution-legend {
+    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+  }
+}
 
+@media (max-width: 480px) {
   .wind-tab.error,
   .wind-tab.empty {
     padding: 1rem;
   }
-
+  
   .error-icon,
   .empty-icon {
     font-size: 2rem;
   }
-
-  .scale-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.5rem;
+  
+  .distribution-legend {
+    font-size: 0.8rem;
   }
-
-  .scale-icon {
-    margin-right: 0;
+  
+  .legend-color {
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -303,23 +337,45 @@
 .stats-grid > *:nth-child(3) { animation-delay: 0.3s; }
 .stats-grid > *:nth-child(4) { animation-delay: 0.4s; }
 
-/* Animation for scale items */
-.scale-item {
-  animation: slideInFromRight 0.4s ease-out;
-  animation-fill-mode: both;
-}
-
-.scale-item.calm { animation-delay: 0.5s; }
-.scale-item.moderate { animation-delay: 0.7s; }
-.scale-item.windy { animation-delay: 0.9s; }
-
-@keyframes slideInFromRight {
+/* Distribution bar animation */
+@keyframes slideInFromLeft {
   from {
-    transform: translateX(30px);
+    width: 0;
     opacity: 0;
   }
   to {
-    transform: translateX(0);
     opacity: 1;
   }
+}
+
+.calm-section {
+  animation: slideInFromLeft 0.8s ease-out 0.5s both;
+}
+
+@keyframes slideInFromCenter {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.moderate-section {
+  animation: slideInFromCenter 0.8s ease-out 0.7s both;
+}
+
+@keyframes slideInFromRight {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.strong-section {
+  animation: slideInFromRight 0.8s ease-out 0.9s both;
 }

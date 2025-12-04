@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
+import TemperatureHeatmap from './TemperatureHeatmap';
 import './TemperatureTab.css';
 
 interface TemperatureData {
@@ -205,6 +206,20 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
           </div>
           <div className="range-max">{stats.max.value}°C</div>
         </div>
+      </div>
+
+      {/* 🌡️ Temperature Heatmap - Qt funkcionalitás implementálása */}
+      <div className="heatmap-section">
+        <h4>📅 Daily Temperature Heatmap</h4>
+        <p className="heatmap-description">
+          365-day calendar view showing daily temperature variations. 
+          Each rectangle represents one day, colored by temperature.
+        </p>
+        <TemperatureHeatmap 
+          data={temperatureData} 
+          width={1000} 
+          height={400} 
+        />
       </div>
     </div>
   );

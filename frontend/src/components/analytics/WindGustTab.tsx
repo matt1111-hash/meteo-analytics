@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
+import WindGustHeatmap from './WindGustHeatmap';
 import './WindGustTab.css';
+import './WindGustHeatmap.css';
 
 interface WindGustData {
   date: string;
@@ -29,6 +31,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [windGustData, setWindGustData] = useState<WindGustData[]>([]);
   const [stats, setStats] = useState<WindGustStats | null>(null);
 
   const calculateStats = (data: WindGustData[]): WindGustStats => {
@@ -88,6 +91,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
 
       const data = await response.json();
 
+      // 🚨 API PARAMÉTER JAVÍTÁS: wind_gusts_10m_max → wind_gusts_max (Qt verzióval egyező)
       if (data.wind_gusts_data && Array.isArray(data.wind_gusts_data)) {
         const processedData: WindGustData[] = data.wind_gusts_data
           .filter((item: any) => item.value !== null && item.value !== undefined)
@@ -97,6 +101,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
             location: item.city_name || city
           }));
 
+        setWindGustData(processedData);
         setStats(calculateStats(processedData));
       } else {
         throw new Error('Invalid wind gust data format received');
@@ -105,6 +110,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
     } catch (err) {
       console.error('Wind gust fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch wind gust data');
+      setWindGustData([]);
       setStats(null);
     } finally {
       setLoading(false);
@@ -195,6 +201,16 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
           date="≥90 km/h"
           unit="days"
           className="highlight"
+        />
+      </div>
+
+      {/* 🌪️ Qt kompatibilis Beaufort heatmap vizualizáció */}
+      <div className="heatmap-section">
+        <h4>📊 Daily Wind Gust Heatmap (Beaufort Scale)</h4>
+        <WindGustHeatmap 
+          data={windGustData}
+          width={1000}
+          height={400}
         />
       </div>
 
