@@ -617,7 +617,7 @@ def check_environment() -> Dict[str, Any]:
             test_file.write_text("test")
             test_file.unlink()
             env_status["write_permissions"] = True
-        except:
+        except Exception:
             pass
 
         # Check cache availability

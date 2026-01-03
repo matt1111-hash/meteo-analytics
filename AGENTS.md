@@ -430,3 +430,51 @@ Terminal AI agents must:
 
 Remember: Code is written once, read many times. Git tracks everything - or it doesn't exist. 🚀
 Remember: YOU work for the human. Find bugs in CODE, not in their browser. 💼
+# Quality Gate Instructions for AI Agents
+
+## MANDATORY: Quality Gate Execution
+
+Before completing ANY task, you MUST run the quality gate:
+
+```bash
+./quality_gate.sh
+```
+
+### Requirements
+- **ALL checks must PASS** before declaring work complete
+- Coverage: >= 95%
+- Pylint score: >= 9.0
+- Max file size: 250 lines
+- Type hints: Required (mypy clean)
+
+### If Quality Gate Fails
+
+1. **DO NOT** ask for permission to fix
+2. **DO** fix all issues automatically
+3. **RE-RUN** quality gate until ALL PASS
+4. **ONLY THEN** report completion
+
+### Configuration
+
+Project-specific settings in `.quality_gate.conf`:
+```bash
+COVERAGE_THRESHOLD=95
+PYLINT_MIN_SCORE=9.0
+MAX_FILE_LINES=250
+```
+
+### Common Fixes
+
+| Issue | Fix |
+|-------|-----|
+| Coverage < 95% | Add tests for uncovered lines |
+| Pylint < 9.0 | Fix warnings, add docstrings |
+| File too large | Split into smaller modules |
+| Type errors | Add/fix type hints |
+
+### Clean Architecture Rules
+
+- No circular imports
+- Dependencies point inward only
+- One class per file (< 250 lines)
+- Tests mirror source structure

@@ -22,7 +22,7 @@ from typing import Optional
 
 # PySide6 import with error handling
 try:
-    from PySide6.QtCore import Qt
+    from PySide6.QtCore import Qt  # noqa: F401
     from PySide6.QtGui import QIcon
     from PySide6.QtWidgets import QApplication, QMessageBox
 except ImportError as e:
@@ -249,7 +249,7 @@ def check_requirements() -> bool:
 
     try:
         # ✅ JAVÍTOTT: Results panel moduláris import teszt
-        from src.gui.results_panel import QuickOverviewTab, ResultsPanel
+        from src.gui.results_panel import QuickOverviewTab, ResultsPanel  # noqa: F401
         print("✅ Results panel moduláris architektúra: OK")
 
     except ImportError as e:

@@ -1,24 +1,30 @@
+# =============================================================================
+# pyproject.toml - Quality Tools Configuration
+# =============================================================================
+# Másold/merge-öld a projekt pyproject.toml-jába
+# =============================================================================
+
 [project]
-name = "global-weather-analyzer"
-version = "1.0.0"
-description = "Global Weather Analyzer - Open-Meteo historical weather data analysis"
-authors = [{name = "Tibor", email = "tibor@example.com"}]
-requires-python = ">=3.12"
-license = {text = "MIT"}
+# ... projekt specifikus részek ...
 
-[build-system]
-requires = ["setuptools>=68.0"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["src*"]
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.5.0",
+    "coverage[toml]>=7.4.0",
+    "pylint>=3.0.0",
+    "ruff>=0.3.0",
+    "mypy>=1.8.0",
+    "bandit>=1.7.7",
+    "pre-commit>=3.6.0",
+]
 
 # =============================================================================
-# RUFF - Fast linter & formatter
+# RUFF - Fast linter & formatter (replaces flake8, isort, black)
 # =============================================================================
 [tool.ruff]
-target-version = "py312"
+target-version = "py38"
 line-length = 100
 src = ["src", "tests"]
 
@@ -40,10 +46,9 @@ select = [
     "RUF",    # Ruff-specific rules
 ]
 ignore = [
-    "E501",    # line too long (handled by formatter)
+    "E501",   # line too long (handled by formatter)
     "PLR0913", # too many arguments
     "PLR2004", # magic value comparison
-    "F401",    # unused imports (availability checks)
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -52,7 +57,6 @@ ignore = [
     "ARG",    # unused arguments (fixtures)
     "PLR2004", # magic values OK in tests
 ]
-"**/meteo_gui_starter.py" = ["F401", "ARG002", "RUF001", "UP036", "PLC0415"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -60,11 +64,11 @@ indent-style = "space"
 docstring-code-format = true
 
 # =============================================================================
-# PYLINT - Comprehensive linting
+# PYLINT - Comprehensive linting (9.0+ target)
 # =============================================================================
 [tool.pylint.main]
-py-version = "3.12"
-jobs = 0
+py-version = "3.8"
+jobs = 0  # auto-detect CPU cores
 load-plugins = [
     "pylint.extensions.docparams",
     "pylint.extensions.mccabe",
@@ -72,7 +76,7 @@ load-plugins = [
 
 [tool.pylint.messages_control]
 disable = [
-    "C0114",  # missing-module-docstring
+    "C0114",  # missing-module-docstring (project-specific)
     "R0903",  # too-few-public-methods
     "W1203",  # logging-fstring-interpolation
 ]
@@ -96,7 +100,7 @@ max-module-lines = 250
 # MYPY - Static type checking
 # =============================================================================
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.8"
 warn_return_any = true
 warn_unused_ignores = true
 warn_redundant_casts = true
@@ -117,7 +121,6 @@ disallow_untyped_defs = false
 # PYTEST - Testing
 # =============================================================================
 [tool.pytest.ini_options]
-pythonpath = ["."]
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_functions = ["test_*"]
@@ -125,7 +128,7 @@ addopts = [
     "-v",
     "--tb=short",
     "--strict-markers",
-    "-ra",
+    "-ra",  # show summary of all except passed
 ]
 markers = [
     "slow: marks tests as slow",
@@ -137,7 +140,7 @@ filterwarnings = [
 ]
 
 # =============================================================================
-# COVERAGE - Test coverage
+# COVERAGE - Test coverage (95%+ target)
 # =============================================================================
 [tool.coverage.run]
 source = ["src"]
@@ -146,7 +149,7 @@ parallel = true
 omit = [
     "*/tests/*",
     "*/__pycache__/*",
-    "venv/*",
+    "*/migrations/*",
 ]
 
 [tool.coverage.report]
@@ -170,30 +173,29 @@ directory = "htmlcov"
 # =============================================================================
 [tool.bandit]
 exclude_dirs = ["tests", "venv", ".venv"]
-skips = ["B101"]
+skips = ["B101"]  # assert_used (OK in non-production code)
 
 # =============================================================================
-# BLACK - Code formatter (fallback)
+# BLACK - Code formatter (ha nem ruff format-ot használsz)
 # =============================================================================
 [tool.black]
 line-length = 100
-target-version = ["py312"]
+target-version = ["py38"]
 include = '\.pyi?$'
 extend-exclude = '''
 /(
     \.git
     | \.venv
-    | venv
     | __pycache__
-    | frontend
+    | migrations
 )/
 '''
 
 # =============================================================================
-# ISORT - Import sorting (fallback)
+# ISORT - Import sorting (ha nem ruff-ot használsz)
 # =============================================================================
 [tool.isort]
 profile = "black"
 line_length = 100
 known_first_party = ["src"]
-skip = [".venv", "venv", "__pycache__", "frontend"]
+skip = [".venv", "venv", "__pycache__"]
