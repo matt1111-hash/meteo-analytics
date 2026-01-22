@@ -54,7 +54,7 @@ class AnalyticsTransformService:
             final_value = float(metric_value)
         else:
             # Use metric-specific fallback - NEVER use temperature for precipitation!
-            if metric_enum == WeatherMetricType.PRECIPITATION_SUM:
+            if metric_enum == AnalyticsMetric.PRECIPITATION_SUM:
                 # For precipitation, prefer zero over wrong temperature data
                 fallback_value = 0.0
             else:

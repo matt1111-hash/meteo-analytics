@@ -69,6 +69,7 @@ class FakeWeatherFetchService:
         cities: List[Dict[str, Any]],
         date: str,
         region_config: Dict[str, Any],
+        **kwargs: Any,
     ) -> List[CityWeatherData]:
         return self.weather_data
 

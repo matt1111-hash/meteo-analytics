@@ -112,18 +112,21 @@ class WeatherFetchService:
         return batch_results
 
     def fetch_single_city_weather_dual_api(
-        self, city: Dict[str, Any], start_date: str, end_date: str
+        self, city: Dict[str, Any], start_date: str, end_date: Optional[str] = None
     ) -> List[CityWeatherData]:
         """Fetch one city's weather with retry logic and safe transforms.
 
         Returns:
             List of CityWeatherData, one per day in the date range.
         """
+        # Handle optional end_date by defaulting to start_date (single day query)
+        effective_end = end_date if end_date else start_date
+
         last_error: Optional[str] = None
         for attempt in range(self.max_retries):
             try:
                 weather_result = self.weather_client.get_weather_data(
-                    city["lat"], city["lon"], start_date, end_date
+                    city["lat"], city["lon"], start_date, effective_end
                 )
                 if isinstance(weather_result, tuple) and len(weather_result) == 2:
                     weather_data, source = weather_result

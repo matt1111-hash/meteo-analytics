@@ -78,7 +78,7 @@ def test_process_weather_results_sorts_and_computes_temp_range() -> None:
     a = _city(windspeed=5.0, temp_max=18.0, temp_min=12.0)
     b = _city(windspeed=15.0, temp_max=25.0, temp_min=5.0)
 
-    processed = service.process_weather_results([a, b], "windiest_today")
+    processed = service.process_weather_results([a, b], "windiest_today", aggregate=False)
 
     assert [c.city for c in processed] == ["Test", "Test"]  # same name, order matters by windspeed desc
     assert processed[0].windspeed_10m_max == 15.0

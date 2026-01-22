@@ -85,5 +85,5 @@ def test_fetch_single_city_weather_dual_api_returns_empty_after_retries(monkeypa
 
     result = service.fetch_single_city_weather_dual_api(city, "2024-01-01")
 
-    assert result.fetch_success is False
-    assert "client error" in (result.error_message or "")
+    assert result[0].fetch_success is False
+    assert "client error" in (result[0].error_message or "")
