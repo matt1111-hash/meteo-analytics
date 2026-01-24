@@ -1,8 +1,8 @@
 # SPIKE STATUS - Anomaly Refactor
 
 ## Current
-- Session: Day 1
-- Task: Domain entities + value objects
+- Session: Day 2 (Completed)
+- Task: Domain entities + value objects + domain service
 - Blocked: None
 
 ## Files Created
@@ -14,6 +14,9 @@
 - [x] tests/domain/test_anomaly_detector_service.py
 
 ## Quality
-- Tests: Not run in this session
-- Coverage: Pending (target >85%)
-- Pylint: Pending (target >8.0)
+- Tests: 31 passed
+- Coverage:
+  - climate_anomaly.py: 96%
+  - anomaly_threshold.py: 100%
+  - anomaly_detector.py: 100%
+- Pylint: 10.0/10

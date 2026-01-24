@@ -40,13 +40,24 @@ scripts/*.zip
 
 # 📁 Csak src mappa tartalma legyen a repo-ban (struktúrával)
 # Exclude minden mást a gyökéren, kivéve src/** és a fenti scripts kivételeket
-*/
-!src/
-!scripts/
-!frontend/
-!frontend/**
+/*
+!/src/
+!/scripts/
+!/frontend/
+!/frontend/**
 # A scripts kivételek már fentiekben
-!data_explorer.py
-!tools_archi_scan.py
+!/data_explorer.py
+!/tools_archi_scan.py
 .aider*
 *.coverage
+!/.gitignore
+!/README.md
+!/pyproject.toml
+!/ruff.toml
+!/STATUS.md
+!/PLAN.md
+!/GEMINI.md
+!/AGENTS-1.md
+!/quality_gate.sh
+!/requirements.txt
+!/requirements-dev.txt

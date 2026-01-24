@@ -96,6 +96,22 @@ def test_detect_drought() -> None:
     assert result.measured_value < 5.0
 
 
+def test_detect_normal_precipitation() -> None:
+    """Detect normal precipitation when within thresholds."""
+    thresholds = AnomalyThresholdSet(precip_high=100.0, precip_low=5.0)
+    service = AnomalyDetectorService(thresholds)
+
+    result = service.detect_precipitation_anomaly(
+        location_name="Siófok",
+        analysis_date=date(2024, 5, 20),
+        precipitation_values=[10.0, 15.0, 8.0],
+    )
+
+    assert result is not None
+    assert result.category == "normal"
+    assert result.severity == "success"
+
+
 def test_detect_hurricane_wind() -> None:
     """Detect hurricane wind when max exceeds hurricane threshold."""
     thresholds = AnomalyThresholdSet(wind_hurricane=120.0)
@@ -111,6 +127,70 @@ def test_detect_hurricane_wind() -> None:
     assert result.category == "hurricane"
     assert result.severity == "error"
     assert result.measured_value == 135.5
+
+
+def test_detect_extreme_wind() -> None:
+    """Detect extreme wind when max exceeds extreme threshold."""
+    thresholds = AnomalyThresholdSet(wind_extreme=100.0, wind_hurricane=120.0)
+    service = AnomalyDetectorService(thresholds)
+
+    result = service.detect_wind_anomaly(
+        location_name="Pápa",
+        analysis_date=date(2024, 4, 15),
+        wind_speeds=[105.0, 85.0, 25.0],
+    )
+
+    assert result is not None
+    assert result.category == "extreme_wind"
+    assert result.severity == "error"
+
+
+def test_detect_strong_wind() -> None:
+    """Detect strong wind when max exceeds strong threshold."""
+    thresholds = AnomalyThresholdSet(wind_strong=70.0, wind_extreme=100.0)
+    service = AnomalyDetectorService(thresholds)
+
+    result = service.detect_wind_anomaly(
+        location_name="Győr",
+        analysis_date=date(2024, 4, 15),
+        wind_speeds=[75.0, 65.0, 25.0],
+    )
+
+    assert result is not None
+    assert result.category == "strong_wind"
+    assert result.severity == "warning"
+
+
+def test_detect_moderate_wind() -> None:
+    """Detect moderate wind when max exceeds normal threshold."""
+    thresholds = AnomalyThresholdSet(wind_normal=50.0, wind_strong=70.0)
+    service = AnomalyDetectorService(thresholds)
+
+    result = service.detect_wind_anomaly(
+        location_name="Sopron",
+        analysis_date=date(2024, 4, 15),
+        wind_speeds=[55.0, 45.0, 25.0],
+    )
+
+    assert result is not None
+    assert result.category == "moderate_wind"
+    assert result.severity == "warning"
+
+
+def test_detect_calm_wind() -> None:
+    """Detect calm wind when max below normal threshold."""
+    thresholds = AnomalyThresholdSet(wind_normal=50.0)
+    service = AnomalyDetectorService(thresholds)
+
+    result = service.detect_wind_anomaly(
+        location_name="Eger",
+        analysis_date=date(2024, 4, 15),
+        wind_speeds=[10.0, 15.0, 5.0],
+    )
+
+    assert result is not None
+    assert result.category == "calm"
+    assert result.severity == "success"
 
 
 def test_handle_none_and_negative_values() -> None:
