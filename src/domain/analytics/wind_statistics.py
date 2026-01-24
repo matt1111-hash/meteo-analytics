@@ -6,7 +6,7 @@ import logging
 
 import pandas as pd
 
-from domain.analytics.wind_models import MONTHS_HU, WindyDayStats
+from src.domain.analytics.wind_models import MONTHS_HU, WindyDayStats
 
 logger = logging.getLogger(__name__)
 

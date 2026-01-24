@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from domain.analytics.wind_models import WindAnalysisResult, WindChartData
+from src.domain.analytics.wind_models import WindAnalysisResult, WindChartData
 
 logger = logging.getLogger(__name__)
 

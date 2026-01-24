@@ -7,9 +7,9 @@ import logging
 
 import pandas as pd
 
-from domain.analytics.wind_extractors import extract_daily_wind_data, identify_windy_days
-from domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH, WindAnalysisResult
-from domain.analytics.wind_statistics import calculate_monthly_windy_stats
+from src.domain.analytics.wind_extractors import extract_daily_wind_data, identify_windy_days
+from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH, WindAnalysisResult
+from src.domain.analytics.wind_statistics import calculate_monthly_windy_stats
 
 logger = logging.getLogger(__name__)
 

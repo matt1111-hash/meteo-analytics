@@ -6,7 +6,7 @@ import logging
 
 import pandas as pd
 
-from domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
+from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 
 logger = logging.getLogger(__name__)
 
