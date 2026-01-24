@@ -1,0 +1,82 @@
+{
+  "profiles": {
+    "default": {
+      "temp_hot": 35.0,
+      "temp_cold": -10.0,
+      "precip_high": 100.0,
+      "precip_low": 5.0,
+      "wind_high": 70.0,
+      "wind_normal": 50.0,
+      "wind_strong": 70.0,
+      "wind_extreme": 100.0,
+      "wind_hurricane": 120.0,
+      "profile_name": "default",
+      "created_at": "2025-01-01T00:00:00.000000",
+      "modified_at": "2025-01-01T00:00:00.000000",
+      "description": "Általános klímájú régiókhoz optimalizált beállítások"
+    },
+    "tropical": {
+      "temp_hot": 40.0,
+      "temp_cold": 10.0,
+      "precip_high": 200.0,
+      "precip_low": 2.0,
+      "wind_high": 70.0,
+      "wind_normal": 50.0,
+      "wind_strong": 70.0,
+      "wind_extreme": 100.0,
+      "wind_hurricane": 150.0,
+      "profile_name": "tropical",
+      "created_at": "2025-01-01T00:00:00.000000",
+      "modified_at": "2025-01-01T00:00:00.000000",
+      "description": "Tropikus klímájú régiókhoz optimalizált beállítások"
+    },
+    "arctic": {
+      "temp_hot": 25.0,
+      "temp_cold": -30.0,
+      "precip_high": 50.0,
+      "precip_low": 1.0,
+      "wind_high": 70.0,
+      "wind_normal": 50.0,
+      "wind_strong": 70.0,
+      "wind_extreme": 80.0,
+      "wind_hurricane": 100.0,
+      "profile_name": "arctic",
+      "created_at": "2025-01-01T00:00:00.000000",
+      "modified_at": "2025-01-01T00:00:00.000000",
+      "description": "Sarkvidéki klímájú régiókhoz optimalizált beállítások"
+    },
+    "continental": {
+      "temp_hot": 38.0,
+      "temp_cold": -20.0,
+      "precip_high": 120.0,
+      "precip_low": 3.0,
+      "wind_high": 70.0,
+      "wind_normal": 50.0,
+      "wind_strong": 80.0,
+      "wind_extreme": 110.0,
+      "wind_hurricane": 120.0,
+      "profile_name": "continental",
+      "created_at": "2025-01-01T00:00:00.000000",
+      "modified_at": "2025-01-01T00:00:00.000000",
+      "description": "Kontinentális klímájú régiókhoz optimalizált beállítások"
+    },
+    "mediterranean": {
+      "temp_hot": 42.0,
+      "temp_cold": 0.0,
+      "precip_high": 80.0,
+      "precip_low": 1.0,
+      "wind_high": 70.0,
+      "wind_normal": 40.0,
+      "wind_strong": 60.0,
+      "wind_extreme": 100.0,
+      "wind_hurricane": 120.0,
+      "profile_name": "mediterranean",
+      "created_at": "2025-01-01T00:00:00.000000",
+      "modified_at": "2025-01-01T00:00:00.000000",
+      "description": "Mediterrán klímájú régiókhoz optimalizált beállítások"
+    }
+  },
+  "active_profile": "default",
+  "created_at": "2025-01-01T00:00:00.000000",
+  "version": "1.0"
+}

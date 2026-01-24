@@ -67,6 +67,13 @@ const HomePage: React.FC = () => {
       description: 'Wind Analysis',
       icon: '🌬️',
       path: '/windy-days'
+    },
+    {
+      id: 'data-table',
+      title: 'Data Table',
+      description: 'Raw Weather Data',
+      icon: '📋',
+      path: '/data-table'
     }
   ];
 

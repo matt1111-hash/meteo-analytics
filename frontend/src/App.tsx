@@ -9,6 +9,7 @@ import AnomalyView from './pages/AnomalyView';
 import HeatmapView from './pages/HeatmapView';
 import ExtremeEventsView from './pages/ExtremeEventsView';
 import WindyDaysView from './pages/WindyDaysView';
+import DataTableView from './pages/DataTableView';
 import './App.css';
 
 function Navigation() {
@@ -69,6 +70,12 @@ function Navigation() {
       >
         🌪️ Windy Days
       </Link>
+      <Link
+        to="/data-table"
+        className={`nav-link ${location.pathname === '/data-table' ? 'active' : ''}`}
+      >
+        📋 Data Table
+      </Link>
     </nav>
   );
 }
@@ -96,6 +103,7 @@ function App() {
             <Route path="/heatmap" element={<HeatmapView />} />
             <Route path="/extreme-events" element={<ExtremeEventsView />} />
             <Route path="/windy-days" element={<WindyDaysView />} />
+            <Route path="/data-table" element={<DataTableView />} />
           </Routes>
         </main>
       </div>

@@ -21,6 +21,9 @@ data/
 logs/
 exports/
 
+# Exception: src/data source files are tracked
+!src/data/
+
 # 🔎 Scripts-ből csak a fő python fájlokat engedjük át
 scripts/__pycache__/
 scripts/logs/

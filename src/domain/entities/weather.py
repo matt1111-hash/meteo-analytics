@@ -2,8 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional
 from datetime import date, datetime
 
-# Temporary imports until Enums are moved
-from src.data.enums import AnalyticsMetric, DataSource, AnomalySeverity, AnomalyType, get_metric_unit, get_severity_color
+from src.domain.value_objects.enums import AnalyticsMetric, DataSource, AnomalySeverity, AnomalyType, get_metric_unit, get_severity_color
 
 @dataclass
 class CityWeatherResult:
@@ -54,41 +53,7 @@ class CityWeatherResult:
     def get_coordinates(self) -> tuple[float, float]:
         """Koordináták tuple-ként."""
         return (self.latitude, self.longitude)
-    
-    @property
-    def city(self) -> Any:
-        """
-        🔧 FIX: UI Compatibility - VALÓDI City objektum generálása.
-        
-        A UI city_manager.City class-t várja, nem CityInfo-t!
-        Ez a root cause minden compatibility hibának.
-        
-        Returns:
-            city_manager.City objektum a meglévő adatokból
-        """
-        # Import here to avoid circular dependency
-        from src.data.city_manager import City
-        
-        # Create City object with matching structure
-        city_obj = City(
-            id=0,  # Placeholder, nem használt
-            city=self.city_name,
-            lat=self.latitude,
-            lon=self.longitude,
-            country=self.country,
-            country_code=self.country_code,
-            population=self.population,
-            continent=None,  # Nem elérhető
-            admin_name=self.admin_name,
-            capital=None,    # Nem elérhető
-            timezone=self.timezone
-        )
-        
-        # Trigger __post_init__ to generate display_name
-        city_obj.__post_init__()
-        
-        return city_obj
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Dictionary konverzió."""
         return {
