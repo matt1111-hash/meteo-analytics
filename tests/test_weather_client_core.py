@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Dict, List, Tuple
 
 import pytest
+import time
 
 from src.data import weather_client as weather_client_module
 
@@ -46,13 +47,13 @@ def test_rate_limit_check_triggers_sleep(monkeypatch: pytest.MonkeyPatch) -> Non
     provider.last_request_time = 5.0
     provider.min_request_interval = 1.0
 
-    monkeypatch.setattr(weather_client_module.time, "time", lambda: 5.5)
+    monkeypatch.setattr(time, "time", lambda: 5.5)
     slept: Dict[str, float] = {}
 
     def fake_sleep(delay: float) -> None:
         slept["value"] = delay
 
-    monkeypatch.setattr(weather_client_module.time, "sleep", fake_sleep)
+    monkeypatch.setattr(time, "sleep", fake_sleep)
     provider._rate_limit_check()
     assert slept["value"] == pytest.approx(0.5)
 

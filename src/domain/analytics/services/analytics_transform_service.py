@@ -8,7 +8,7 @@ from typing import Any, Dict, Iterable, List, Optional
 from src.domain.analytics.statistics import safe_mean, safe_median, safe_min_max, safe_stdev
 from src.domain.analytics.models import CityWeatherData
 from src.domain.value_objects.enums import AnalyticsMetric, QuestionType, RegionScope
-from src.domain.entities.analysis import AnalyticsQuestion, AnalyticsResult
+from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
 from src.domain.entities.weather import CityWeatherResult
 
 logger = logging.getLogger(__name__)
