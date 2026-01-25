@@ -1,7 +1,8 @@
 # CLEAN ARCHITECTURE REFACTORING PLAN
 **Project:** meteo-analytics
 **Date:** 2026-01-25
-**Version:** 3.0 (UPDATED WITH SCAN RESULTS)
+**Version:** 3.1 (UPDATED WITH COMPLETE CODEBASE SCAN)
+**Last Scan:** 2026-01-25 (Agent: Very Thorough)
 
 ---
 
@@ -44,7 +45,8 @@ src/
 │   └── config_validation.py # Validation functions
 │
 ├── api/             # FastAPI REST API
-├── gui/             # PySide6 GUI (30+ files >250 lines - P1)
+├── gui/             # PySide6 GUI (43 files - P1: needs move to presentation/)
+├── presentation/    # Empty (should contain gui/)
 └── scripts/         # Utility scripts
 ```
 
@@ -87,22 +89,48 @@ Fixed imports after domain layer split:
 
 ## ❌ REMAINING VIOLATIONS
 
+### 📋 STATISTICS (2026-01-25 SCAN)
+- **Total Python files**: ~125
+- **Violating files**: ~40 (32%)
+- **GUI files**: 43 (79.5% of violations)
+
+### 🔴 PRIORITY 1 - Architecture Violations
+
 | # | Violation | Files | Priority |
 |---|-----------|-------|----------|
-| 1 | GUI files >250 lines | 30+ files | **P1** (optional) |
-| 2 | GUI in `src/gui/` instead of `src/presentation/gui/` | ALL GUI | **P1** |
-| 3 | Config files slightly over CI target | 2 files | **P2** (minor) |
+| 1 | GUI in wrong location (`src/gui/` instead of `src/presentation/gui/`) | 43 files | **P1** |
+| 2 | GUI god classes (>1000 lines) | 8 files | **P1** |
+| 3 | GUI files >300 lines | 28 files | **P1** |
+
+### 🟡 PRIORITY 2 - Backend Violations
+
+| # | Violation | Files | Priority |
+|---|-----------|-------|----------|
+| 4 | Backend files >300 lines | 3 files | **P2** |
+
+### 📋 GOD CLASSES (>1000 LINES) - ALL GUI
+
+| Rank | File | Lines | Multiple of Target (300) |
+|------|------|-------|--------------------------|
+| 1 | `src/gui/map_visualizer.py` | **2,279** | **7.6x** 🚨 |
+| 2 | `src/gui/main_window.py` | **1,922** | **6.4x** 🚨 |
+| 3 | `src/gui/utils.py` | **1,825** | **6.1x** 🚨 |
+| 4 | `src/gui/analytics_view.py` | **1,778** | **5.9x** 🚨 |
+| 5 | `src/gui/app_controller.py` | **1,640** | **5.5x** 🚨 |
+| 6 | `src/gui/trend_analytics_tab.py` | **1,552** | **5.2x** 🚨 |
+| 7 | `src/gui/results_panel.py` | **1,483** | **4.9x** 🚨 |
+| 8 | `src/gui/hungarian_location_selector.py` | **1,165** | **3.9x** 🚨 |
 
 ### 📋 FILES OVER 250 LINES (BACKEND)
 
 | File | Lines | CI Target (250) | Local Target (300) | Status |
 |------|-------|-----------------|-------------------|--------|
+| `src/data/anomaly_profile.py` | 401 | ⚠️ 151 over | ⚠️ 101 over | **Needs split** |
 | `src/analytics/multi_city_engine_core.py` | 288 | ⚠️ 38 over | ✅ UNDER | Acceptable |
-| `src/data/anomaly_profile.py` | 401 | ⚠️ 151 over | ⚠️ 101 over | Needs split |
 | `src/config/usage_config.py` | 288 | ⚠️ 38 over | ✅ UNDER | Acceptable |
 | `src/config/provider_config.py` | 251 | ⚠️ 1 over | ✅ UNDER | Acceptable |
 
-**Note:** For local development (300 line target), all files are compliant. Only CI target (250) has minor exceedions.
+**Note:** For local development (300 line target), only 1 backend file exceeds target.
 
 ---
 
@@ -112,15 +140,48 @@ Fixed imports after domain layer split:
 |--------|-------|---------|--------|--------|
 | Domain files >250 lines | 3 | **0** | 0 | ✅ DONE |
 | Backend god classes >1000 | 3 | **0** | 0 | ✅ DONE |
-| Backend files >300 lines | ? | **1** | 0 | ⚠️ 1 file over 300 |
+| Backend files >300 lines | ? | **1** | 0 | ⚠️ 1 file (anomaly_profile.py) |
 | Backend files >250 lines | 10+ | **3** | ~0 | 🔄 95% |
-| GUI files >250 lines | 30+ | **30+** | 0 | ⏳ P1 |
+| **GUI god classes >1000** | ? | **8** | 0 | ❌ **CRITICAL** |
+| **GUI files >300 lines** | ? | **28** | 0 | ❌ **MAJOR** |
+| GUI in wrong location | Yes | **Yes** | No | ❌ **PRIORITY** |
 | src.data imports from domain | Yes | **0** | 0 | ✅ DONE |
 | Tests passing | 105 | **105** | 105 | ✅ DONE |
+
+### 📈 CA PLAN COMPLETION: ~70%
+
+| Layer | Completion | Notes |
+|-------|-----------|-------|
+| Domain | ✅ 100% | All files <250 lines |
+| Application | ✅ 100% | All files <250 lines |
+| Infrastructure | ✅ 100% | All files <250 lines |
+| Data | ✅ 95% | 1 file >300 lines |
+| Config | ✅ 95% | 2 files slightly over CI target |
+| API | ✅ 100% | All files <250 lines |
+| **GUI** | ❌ **0%** | **Wrong location, 8 god classes** |
 
 ---
 
 ## 📅 WORK LOG
+
+### 2026-01-25 - SESSION 3 (COMPLETE SCAN)
+
+**Comprehensive Codebase Scan (Very Thorough):**
+- **Total Python files**: ~125 files
+- **GUI files**: 43 files (previously reported as 30+)
+- **God classes discovered**: 8 GUI files >1000 lines
+- **Largest file**: `map_visualizer.py` at 2,279 lines (7.6x target)
+
+**Key Findings:**
+- ✅ Quality Gate: PASS (105/105 tests)
+- ✅ Import errors: RESOLVED
+- ❌ GUI location: STILL WRONG (`src/gui/` → needs `src/presentation/gui/`)
+- ❌ GUI god classes: 8 files need immediate splitting
+
+**Comparison with CA_FELTERKEPES_JELENTES.md:**
+- Import errors report was OUTDATED - already fixed
+- GUI file count: 43 (not 35 as reported)
+- God classes count: 8 (confirmed accurate)
 
 ### 2026-01-25 - SESSION 2
 
@@ -155,17 +216,41 @@ Fixed imports after domain layer split:
 
 ## 🎯 NEXT STEPS
 
-### OPTIONAL (P1): GUI Refactoring
-- Move `src/gui/` → `src/presentation/gui/`
-- Split large GUI files (>1000 lines)
-- Lower priority, can be deferred
+### 🔴 P1 - CRITICAL (Architecture)
 
-### MINOR (P2): Fine-tuning
-- `src/data/anomaly_profile.py` (401 lines) - Split if needed
-- Config files - Currently acceptable (under 300 line target)
+**1. GUI Location Fix:**
+- Move ALL 43 GUI files: `src/gui/` → `src/presentation/gui/`
+- Update all import statements across codebase
+- Verify all tests still pass
+
+**2. Backend Anomaly Profile Split:**
+- Split `src/data/anomaly_profile.py` (401 lines) into focused modules
+
+### 🟡 P2 - HIGH PRIORITY (God Classes)
+
+**GUI God Class Refactoring (8 files >1000 lines):**
+1. `map_visualizer.py` (2,279 lines) - EMERGENCY
+2. `main_window.py` (1,922 lines)
+3. `utils.py` (1,825 lines)
+4. `analytics_view.py` (1,778 lines)
+5. `app_controller.py` (1,640 lines)
+6. `trend_analytics_tab.py` (1,552 lines)
+7. `results_panel.py` (1,483 lines)
+8. `hungarian_location_selector.py` (1,165 lines)
+
+### 🟢 P3 - MEDIUM (GUI Files >300 lines)
+
+Split remaining 20 GUI files exceeding 300 lines target.
+
+### 🔵 P4 - LOW (Optional Fine-tuning)
+
+- Config files - Currently acceptable (under 300 line local target)
+- Further code quality improvements
 
 ---
 
 **Document updated:** 2026-01-25
-**Status:** Phase 2b SUBSTANTIALLY COMPLETE (95%)
+**Version:** 3.1
+**Status:** Backend ~95% COMPLETE | GUI 0% COMPLETE | Overall ~70%
 **Tests:** 105/105 passing ✅
+**Quality Gate:** PASS ✅
