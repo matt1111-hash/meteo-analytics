@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Anomaly Profile Manager
-Main manager class for anomaly profile CRUD operations
+Main manager class for anomaly profile CRUD operations.
 """
 
 from __future__ import annotations
@@ -12,8 +12,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .anomaly_types import AnomalyProfileSettings
-from .anomaly_storage import AnomalyProfileStorage
+from ..anomaly_types import AnomalyProfileSettings
+from ..anomaly_storage import AnomalyProfileStorage
+from .default_profiles import create_profiles_data
+from .profile_actions import ProfileActions
+
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +44,24 @@ class AnomalyProfileManager:
         self._profiles_cache: Optional[Dict[str, Dict[str, Any]]] = None
         self._active_profile: Optional[str] = None
 
+        # CRUD actions
+        self._actions = ProfileActions(
+            save_func=self.save_profile,
+            load_func=self.load_profile,
+            get_available_func=self.get_available_profiles,
+            get_cache_func=self._get_profiles_cache,
+            active_profile_getter=self.get_active_profile,
+            active_profile_setter=self._set_active_profile
+        )
+
         # Inicializálás
         self._load_or_create_profiles()
 
         logger.info("📁 AnomalyProfileManager inicializálva")
+
+    def _set_active_profile(self, profile_name: str) -> None:
+        """Aktív profil beállítása (belső)."""
+        self._active_profile = profile_name
 
     def _load_or_create_profiles(self) -> None:
         """Profilok betöltése vagy létrehozása."""
@@ -58,65 +75,10 @@ class AnomalyProfileManager:
 
     def _create_default_profiles(self) -> None:
         """Alapértelmezett profilok létrehozása."""
-        default_profiles = {
-            "default": AnomalyProfileSettings(
-                profile_name="default",
-                description="Általános klímájú régiókhoz optimalizált beállítások"
-            ).to_dict(),
-
-            "tropical": AnomalyProfileSettings(
-                profile_name="tropical",
-                temp_hot=40.0,
-                temp_cold=10.0,
-                precip_high=200.0,
-                precip_low=2.0,
-                wind_hurricane=150.0,
-                description="Tropikus klímájú régiókhoz optimalizált beállítások"
-            ).to_dict(),
-
-            "arctic": AnomalyProfileSettings(
-                profile_name="arctic",
-                temp_hot=25.0,
-                temp_cold=-30.0,
-                precip_high=50.0,
-                precip_low=1.0,
-                wind_extreme=80.0,
-                wind_hurricane=100.0,
-                description="Sarkvidéki klímájú régiókhoz optimalizált beállítások"
-            ).to_dict(),
-
-            "continental": AnomalyProfileSettings(
-                profile_name="continental",
-                temp_hot=38.0,
-                temp_cold=-20.0,
-                precip_high=120.0,
-                precip_low=3.0,
-                wind_strong=80.0,
-                wind_extreme=110.0,
-                description="Kontinentális klímájú régiókhoz optimalizált beállítások"
-            ).to_dict(),
-
-            "mediterranean": AnomalyProfileSettings(
-                profile_name="mediterranean",
-                temp_hot=42.0,
-                temp_cold=0.0,
-                precip_high=80.0,
-                precip_low=1.0,
-                wind_normal=40.0,
-                wind_strong=60.0,
-                description="Mediterrán klímájú régiókhoz optimalizált beállítások"
-            ).to_dict()
-        }
-
-        profiles_data = {
-            "profiles": default_profiles,
-            "active_profile": "default",
-            "created_at": datetime.now().isoformat(),
-            "version": "1.0"
-        }
+        profiles_data = create_profiles_data()
 
         self.storage.save_profiles(profiles_data)
-        self._profiles_cache = default_profiles
+        self._profiles_cache = profiles_data["profiles"]
         self._active_profile = "default"
 
         logger.info("📁 Alapértelmezett profilok létrehozva")
@@ -249,135 +211,22 @@ class AnomalyProfileManager:
             logger.error(f"📁 Profil mentési hiba: {e}")
             return False
 
+    # CRUD műveletek delegálása a ProfileActions-ra
     def create_profile(self, profile_name: str, base_profile: str = "default") -> bool:
-        """
-        Új profil létrehozása.
-
-        Args:
-            profile_name: Új profil neve
-            base_profile: Alap profil (másolás alapja)
-
-        Returns:
-            bool: Sikeres volt-e a létrehozás
-        """
-        if profile_name in self.get_available_profiles():
-            logger.warning(f"📁 Profil már létezik: {profile_name}")
-            return False
-
-        try:
-            # Alap profil betöltése
-            base_settings = self.load_profile(base_profile)
-
-            # Új profil létrehozása
-            new_settings = AnomalyProfileSettings.from_dict(base_settings)
-            new_settings.profile_name = profile_name
-            new_settings.description = f"Egyedi profil - {base_profile} alapján"
-            new_settings.created_at = datetime.now().isoformat()
-            new_settings.modified_at = datetime.now().isoformat()
-
-            # Mentés
-            return self.save_profile(profile_name, new_settings.to_dict())
-
-        except Exception as e:
-            logger.error(f"📁 Profil létrehozási hiba: {e}")
-            return False
+        """Új profil létrehozása."""
+        return self._actions.create_profile(profile_name, base_profile)
 
     def delete_profile(self, profile_name: str) -> bool:
-        """
-        Profil törlése.
-
-        Args:
-            profile_name: Törölendő profil neve
-
-        Returns:
-            bool: Sikeres volt-e a törlés
-        """
-        if profile_name == "default":
-            logger.warning("📁 Az alapértelmezett profil nem törölhető")
-            return False
-
-        if profile_name not in self.get_available_profiles():
-            logger.warning(f"📁 Profil nem található: {profile_name}")
-            return False
-
-        try:
-            profiles = self._get_profiles_cache()
-            del profiles[profile_name]
-
-            # Ha ez volt az aktív, akkor default-ra váltás
-            if self._active_profile == profile_name:
-                self._active_profile = "default"
-
-            # Mentés
-            data = {
-                "profiles": profiles,
-                "active_profile": self._active_profile,
-                "modified_at": datetime.now().isoformat(),
-                "version": "1.0"
-            }
-
-            success = self.storage.save_profiles(data)
-            if success:
-                logger.info(f"📁 Profil törölve: {profile_name}")
-
-            return success
-
-        except Exception as e:
-            logger.error(f"📁 Profil törlési hiba: {e}")
-            return False
+        """Profil törlése."""
+        return self._actions.delete_profile(profile_name, self.storage)
 
     def rename_profile(self, old_name: str, new_name: str) -> bool:
-        """
-        Profil átnevezése.
-
-        Args:
-            old_name: Régi profil neve
-            new_name: Új profil neve
-
-        Returns:
-            bool: Sikeres volt-e az átnevezés
-        """
-        if old_name == "default":
-            logger.warning("📁 Az alapértelmezett profil nem nevezhető át")
-            return False
-
-        if new_name in self.get_available_profiles():
-            logger.warning(f"📁 Profil már létezik: {new_name}")
-            return False
-
-        try:
-            # Profil másolása új névvel
-            settings = self.load_profile(old_name)
-            settings["profile_name"] = new_name
-            settings["modified_at"] = datetime.now().isoformat()
-
-            if self.save_profile(new_name, settings):
-                # Régi profil törlése
-                return self.delete_profile(old_name)
-
-            return False
-
-        except Exception as e:
-            logger.error(f"📁 Profil átnevezési hiba: {e}")
-            return False
+        """Profil átnevezése."""
+        return self._actions.rename_profile(old_name, new_name)
 
     def reset_profile_to_defaults(self, profile_name: str) -> bool:
-        """
-        Profil visszaállítása alapértékekre.
-
-        Args:
-            profile_name: Profil neve
-
-        Returns:
-            bool: Sikeres volt-e a visszaállítás
-        """
-        try:
-            default_settings = AnomalyProfileSettings(profile_name=profile_name).to_dict()
-            return self.save_profile(profile_name, default_settings)
-
-        except Exception as e:
-            logger.error(f"📁 Profil alapértékre állítási hiba: {e}")
-            return False
+        """Profil visszaállítása alapértékekre."""
+        return self._actions.reset_profile_to_defaults(profile_name)
 
     def get_current_settings(self) -> Dict[str, Any]:
         """

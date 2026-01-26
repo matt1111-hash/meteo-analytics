@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from src.application.use_cases.detect_anomalies import DetectAnomaliesUseCase
-from src.gui.utils import AnomalyConstants
+from src.presentation.gui.utils import AnomalyConstants
 
 logger = logging.getLogger(__name__)
 

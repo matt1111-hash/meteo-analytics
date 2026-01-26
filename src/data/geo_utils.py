@@ -27,7 +27,7 @@ from src.data.geo_types import GeoPoint
 """
 
 # Re-export all types
-from src.data.geo_types import (
+from .geo_types import (
     DistanceUnit,
     CoordinateSystem,
     GeoPoint,
@@ -36,15 +36,15 @@ from src.data.geo_types import (
 )
 
 # Re-export calculator
-from src.data.distance_calculator import DistanceCalculator
+from .distance_calculator import DistanceCalculator
 
 # Re-export GeoUtils classes
-from src.data.geo_utils_core import GeoUtils
-from src.data.geo_utils_region import GeoUtilsRegion
-from src.data.geo_utils_analytics import GeoUtilsAnalytics
+from .geo_utils_core import GeoUtils
+from .geo_utils_region import GeoUtilsRegion
+from .geo_utils_analytics import GeoUtilsAnalytics
 
 # Re-export demo function
-from src.data.geo_demo import demo_geo_utils
+from .geo_demo import demo_geo_utils
 
 __all__ = [
     # Types

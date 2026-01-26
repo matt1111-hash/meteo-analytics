@@ -45,11 +45,11 @@ from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
 
 # GUI modules (absolute imports for package compatibility)
-from src.gui.hungarian_location_selector import HungarianLocationSelector
-from src.gui.map_visualizer import HungarianMapVisualizer
-from src.gui.theme_manager import register_widget_for_theming
-from src.gui.color_palette import ColorPalette
-from src.gui.weather_data_bridge import WeatherDataBridge, WeatherOverlayData
+from src.presentation.gui.hungarian_location_selector import HungarianLocationSelector
+from src.presentation.gui.map_visualizer import HungarianMapVisualizer
+from src.presentation.gui.theme_manager import register_widget_for_theming
+from src.presentation.gui.color_palette import ColorPalette
+from src.presentation.gui.weather_data_bridge import WeatherDataBridge, WeatherOverlayData
 
 # Analytics and data modules
 from src.analytics.multi_city_engine import MultiCityEngine

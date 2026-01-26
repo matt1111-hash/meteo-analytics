@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Global Weather Analyzer - Anomaly Profile Package
+Anomália profilok menedzsmentje.
+"""
+
+from .manager import AnomalyProfileManager
+from .default_profiles import create_default_profiles, create_profiles_data
+
+
+__all__ = [
+    'AnomalyProfileManager',
+    'create_default_profiles',
+    'create_profiles_data'
+]

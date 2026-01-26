@@ -8,7 +8,7 @@ Provides the HungarianMapTab widget for displaying Hungarian weather maps.
 Refactored from single file to package structure for better maintainability.
 
 Usage:
-    from src.gui.hungarian_map_tab import HungarianMapTab
+    from src.presentation.gui.hungarian_map_tab import HungarianMapTab
 """
 
 from ._map_tab import HungarianMapTab

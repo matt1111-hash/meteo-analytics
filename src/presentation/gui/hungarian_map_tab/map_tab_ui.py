@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from src.gui.theme_manager import register_widget_for_theming
+from src.presentation.gui.theme_manager import register_widget_for_theming
 
 
 class MapTabUIMixin:
@@ -215,7 +215,7 @@ class MapTabUIMixin:
     def _create_left_panel(self) -> QWidget:
         """Create left panel with location selector."""
         # Import here to avoid circular imports at module level
-        from src.gui.hungarian_location_selector import HungarianLocationSelector
+        from src.presentation.gui.hungarian_location_selector import HungarianLocationSelector
 
         left_panel = QWidget()
         left_panel.setMinimumWidth(350)
@@ -233,7 +233,7 @@ class MapTabUIMixin:
     def _create_right_panel(self) -> QWidget:
         """Create right panel with map visualizer."""
         # Import here to avoid circular imports at module level
-        from src.gui.map_visualizer import HungarianMapVisualizer
+        from src.presentation.gui.map_visualizer import HungarianMapVisualizer
 
         right_panel = QWidget()
         right_panel.setMinimumWidth(600)

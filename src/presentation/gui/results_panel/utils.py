@@ -17,8 +17,8 @@ from typing import Dict, List, Any, Optional
 import pandas as pd
 
 # Interface imports (breaks circular dependency)
-from src.gui.interfaces import IConstantsProvider, IWindspeedConstants
-from src.gui.constants_provider import ConstantsProvider, WindspeedConstantsAdapter
+from src.presentation.gui.interfaces import IConstantsProvider, IWindspeedConstants
+from src.presentation.gui.constants_provider import ConstantsProvider, WindspeedConstantsAdapter
 
 # Logging konfigurálása
 logger = logging.getLogger(__name__)

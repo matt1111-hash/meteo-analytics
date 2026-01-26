@@ -28,7 +28,7 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 # Import from gui.types (breaks circular dependency with utils)
-from src.gui.types import ThemeType
+from src.presentation.gui.types import ThemeType
 
 
 class ColorFormat(Enum):

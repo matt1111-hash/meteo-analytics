@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Global Weather Analyzer - Central Configuration
-Központi konfigurációs modul minden útvonal és beállítás számára
+Global Weather Analyzer - Central Configuration (Legacy Re-export)
 
-This module re-exports all configuration from focused sub-modules.
-For backward compatibility, all original symbols remain available.
+This file provides backward compatibility by re-exporting everything
+from the modular config package.
+
+New code should import directly from src.config instead.
 """
 
-# ============================================================================
-# PATHS AND DIRECTORIES
-# ============================================================================
-from .config_paths import (
+# Re-export everything from the config package
+from src.config import (
+    # API and data
+    APIConfig,
+    DataConstants,
+    APIConstants,
+    validate_api_keys,
+    get_active_data_sources,
+
+    # Paths
     PROJECT_ROOT,
     DATA_DIR,
     CACHE_DIR,
@@ -24,64 +31,28 @@ from .config_paths import (
     WEATHER_DB_PATH,
     CACHE_DB_PATH,
     LEGACY_DB_PATH,
-    ensure_directories
-)
+    ensure_directories,
+    validate_paths,
+    get_project_info,
 
-# ============================================================================
-# API CONFIGURATION
-# ============================================================================
-from .config_api import (
-    APIConfig,
-    validate_api_keys
-)
-
-# ============================================================================
-# DATA CONSTANTS
-# ============================================================================
-from .config_data import (
-    DataConstants
-)
-
-# ============================================================================
-# PROVIDER CONFIGURATION
-# ============================================================================
-from .config_provider import (
-    ProviderConfig
-)
-
-# ============================================================================
-# USER PREFERENCES AND USAGE TRACKING
-# ============================================================================
-from .config_usage import (
+    # Provider
+    ProviderConfig,
     UserPreferences,
-    UsageTracker
-)
+    get_resolved_provider,
+    validate_provider_selection,
 
-# ============================================================================
-# GUI AND HARDWARE CONFIGURATION
-# ============================================================================
-from .config_gui import (
+    # Usage
+    UsageTracker,
+
+    # GUI/Hardware
     GUIConfig,
     HardwareConfig,
     MultiCityConfig,
-    AppInfo
-)
+    AppInfo,
 
-# ============================================================================
-# UTILITY FUNCTIONS
-# ============================================================================
-from .config_utils import (
+    # Utils
     check_environment,
     validate_config,
-    get_active_data_sources,
-    get_resolved_provider
-)
-
-# ============================================================================
-# LEGACY COMPATIBILITY ALIASES
-# ============================================================================
-from .config_legacy import (
-    APIConstants,
     get_optimal_data_source,
     get_source_display_name,
     validate_api_source_available,
@@ -90,6 +61,13 @@ from .config_legacy import (
 
 
 __all__ = [
+    # API and data
+    'APIConfig',
+    'DataConstants',
+    'APIConstants',
+    'validate_api_keys',
+    'get_active_data_sources',
+
     # Paths
     'PROJECT_ROOT',
     'DATA_DIR',
@@ -104,19 +82,16 @@ __all__ = [
     'CACHE_DB_PATH',
     'LEGACY_DB_PATH',
     'ensure_directories',
-
-    # API
-    'APIConfig',
-    'validate_api_keys',
-
-    # Data
-    'DataConstants',
+    'validate_paths',
+    'get_project_info',
 
     # Provider
     'ProviderConfig',
+    'UserPreferences',
+    'get_resolved_provider',
+    'validate_provider_selection',
 
     # Usage
-    'UserPreferences',
     'UsageTracker',
 
     # GUI/Hardware
@@ -128,17 +103,11 @@ __all__ = [
     # Utils
     'check_environment',
     'validate_config',
-    'get_active_data_sources',
-    'get_resolved_provider',
-
-    # Legacy
-    'APIConstants',
     'get_optimal_data_source',
     'get_source_display_name',
     'validate_api_source_available',
     'get_fallback_source_chain'
 ]
-
 
 # Initialize on import (backward compatibility)
 ensure_directories()

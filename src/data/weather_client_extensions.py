@@ -8,7 +8,7 @@ Part of the weather_client refactoring - split into focused modules.
 
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from ..gui.utils import get_source_display_name
+from src.config import get_source_display_name
 from .weather_client_core import WeatherClient
 
 

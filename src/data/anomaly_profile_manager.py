@@ -32,7 +32,7 @@ from .anomaly_storage import AnomalyProfileStorage
 # ============================================================================
 # MANAGER
 # ============================================================================
-from .anomaly_profile import AnomalyProfileManager
+from .anomaly_profile.manager import AnomalyProfileManager
 
 # ============================================================================
 # DEMO

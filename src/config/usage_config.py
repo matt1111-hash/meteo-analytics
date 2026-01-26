@@ -12,12 +12,12 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, TypeVar, cast
 
-from src.config.api_config import APIConfig
-from src.config.paths_config import (
+from .api_config import APIConfig
+from .paths_config import (
     USAGE_TRACKING_FILE as DEFAULT_USAGE_TRACKING_FILE,
     ensure_directories as default_ensure_directories,
 )
-from src.config.provider_config import ProviderConfig
+from .provider_config import ProviderConfig
 
 LOGGER = logging.getLogger(__name__)
 T = TypeVar("T")

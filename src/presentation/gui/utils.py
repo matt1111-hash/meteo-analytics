@@ -53,7 +53,7 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 # Import shared types from gui.types (breaks circular dependency)
-from src.gui.types import ColorVariant, ThemeType
+from src.presentation.gui.types import ColorVariant, ThemeType
 
 # Logging konfigurálása
 logger = logging.getLogger(__name__)
@@ -148,7 +148,7 @@ class GUIConstants:
     ON_SURFACE_DARK = "#f9fafb"    # Dark mode szöveg
 
 
-# ThemeType and ColorVariant are now imported from src.gui.types
+# ThemeType and ColorVariant are now imported from src.presentation.gui.types
 # Re-exported above for backward compatibility
 
 

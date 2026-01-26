@@ -13,7 +13,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Dict, Mapping, Optional, TypeVar, cast
 
-from src.config.paths_config import (
+from .paths_config import (
     PROVIDER_PREFS_FILE as DEFAULT_PROVIDER_PREFS_FILE,
     ensure_directories as default_ensure_directories,
 )

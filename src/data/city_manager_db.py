@@ -14,7 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from ..config import DATA_DIR
+from src.config import DATA_DIR
 from .city_types import City, CityDatabaseError
 
 

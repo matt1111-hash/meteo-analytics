@@ -7,7 +7,7 @@ Constants Provider - Dependency Injection Implementation
 """
 
 from typing import Dict, Any
-from src.gui.interfaces import IConstantsProvider, IAnomalyConstants, IWindspeedConstants
+from src.presentation.gui.interfaces import IConstantsProvider, IAnomalyConstants, IWindspeedConstants
 
 class ConstantsProvider(IConstantsProvider):
     """Concrete implementation of constants provider."""

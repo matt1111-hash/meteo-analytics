@@ -8,8 +8,8 @@ Global Weather Analyzer - Geo Utils Demo
 Part of the geo_utils refactoring - split into focused modules.
 """
 
-from src.data.distance_calculator import DistanceCalculator
-from src.data.geo_utils_analytics import GeoUtilsAnalytics
+from .distance_calculator import DistanceCalculator
+from .geo_utils_analytics import GeoUtilsAnalytics
 
 
 def demo_geo_utils():

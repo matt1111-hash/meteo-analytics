@@ -11,12 +11,16 @@ import time
 from datetime import datetime, timedelta
 from typing import Any, Callable, Dict, List, Optional
 
-from ..gui.utils import (
+from src.config import (
+    APIConfig,
     get_optimal_data_source,
     get_source_display_name,
-    log_provider_usage_event,
 )
-from ..config import APIConfig
+
+# _log_provider_usage_mock is a GUI-specific function, not needed in core
+def _log_provider_usage_mock(provider: str, event_type: str, **kwargs) -> None:
+    """Mock function for provider usage logging (GUI-specific)."""
+    pass
 from .weather_provider_base import WeatherProvider
 from .openmeteo_provider import OpenMeteoProvider
 from .meteostat_provider import MeteostatProvider
@@ -101,14 +105,14 @@ class WeatherClient:
 
                 self._handle_successful_request(attempt_provider, selected_provider)
                 self.provider_usage_stats[attempt_provider] = self.provider_usage_stats.get(attempt_provider, 0) + 1
-                log_provider_usage_event(attempt_provider, "weather_data", True)
+                _log_provider_usage_mock(attempt_provider, "weather_data", True)
 
                 return weather_data
 
             except (WeatherAPIError, Exception) as e:
                 last_error = e
                 logger.error(f"Provider {attempt_provider} failed: {e}")
-                log_provider_usage_event(attempt_provider, "weather_data", False)
+                _log_provider_usage_mock(attempt_provider, "weather_data", False)
                 continue
 
         raise ProviderNotAvailableError(f"All providers failed. Last error: {last_error}")

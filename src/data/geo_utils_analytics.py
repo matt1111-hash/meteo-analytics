@@ -12,7 +12,7 @@ import logging
 import statistics
 from typing import Any, Dict, List
 
-from src.data.geo_utils_region import GeoUtilsRegion
+from .geo_utils_region import GeoUtilsRegion
 
 
 logger = logging.getLogger(__name__)

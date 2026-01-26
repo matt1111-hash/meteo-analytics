@@ -7,7 +7,7 @@ Demo function for testing anomaly profile manager
 
 from pathlib import Path
 
-from .anomaly_profile import AnomalyProfileManager
+from .anomaly_profile_manager import AnomalyProfileManager
 
 
 def demo_anomaly_profile_manager() -> None:

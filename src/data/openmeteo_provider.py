@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Tuple
 
 import requests
 
-from ..config import APIConfig
+from src.config import APIConfig
 from .weather_provider_base import WeatherProvider
 from .weather_types import WeatherAPIError
 

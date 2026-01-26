@@ -247,7 +247,7 @@ class ExtremeEventsTab(QWidget):
 
     def _on_anomaly_settings_clicked(self) -> None:
         try:
-            from src.gui.dialogs.anomaly_settings_dialog import AnomalySettingsDialog
+            from src.presentation.gui.dialogs.anomaly_settings_dialog import AnomalySettingsDialog
             dialog = AnomalySettingsDialog(self)
             if dialog.exec():
                 if self.current_data:

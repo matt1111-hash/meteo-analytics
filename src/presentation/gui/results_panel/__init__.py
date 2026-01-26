@@ -19,9 +19,9 @@ Clean modular exports for the results panel components.
 ✅ Utility Classes - Közös segédosztályok
 
 🎯 IMPORT PATTERN:
-from src.gui.results_panel import ResultsPanel, QuickOverviewTab, WindyDaysTab
+from src.presentation.gui.results_panel import ResultsPanel, QuickOverviewTab, WindyDaysTab
 # vagy
-from src.gui.results_panel import *  # Összes komponens
+from src.presentation.gui.results_panel import *  # Összes komponens
 """
 
 import logging
