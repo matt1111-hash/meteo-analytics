@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional, Tuple
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from PySide6.QtCore import QObject, Signal
 
-from src.presentation.gui.map_visualizer import HungarianMapVisualizer
+from src.presentation.gui.map import HungarianMapVisualizer
 from src.presentation.gui.weather_data_bridge import WeatherDataBridge
 from src.data.models import AnalyticsResult
 

@@ -10,7 +10,7 @@ Kiszervezi a MainWindowból a signal összekötési logikát a jobb szervezetts�
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .main_window import MainWindow
+    from .windows.main_window import MainWindow
 
 
 class SignalManager:

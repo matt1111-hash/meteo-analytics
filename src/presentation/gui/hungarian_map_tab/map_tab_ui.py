@@ -233,7 +233,7 @@ class MapTabUIMixin:
     def _create_right_panel(self) -> QWidget:
         """Create right panel with map visualizer."""
         # Import here to avoid circular imports at module level
-        from src.presentation.gui.map_visualizer import HungarianMapVisualizer
+        from src.presentation.gui.map import HungarianMapVisualizer
 
         right_panel = QWidget()
         right_panel.setMinimumWidth(600)

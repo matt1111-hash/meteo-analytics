@@ -46,7 +46,7 @@ from PySide6.QtGui import QFont
 
 # GUI modules (absolute imports for package compatibility)
 from src.presentation.gui.hungarian_location_selector import HungarianLocationSelector
-from src.presentation.gui.map_visualizer import HungarianMapVisualizer
+from src.presentation.gui.map import HungarianMapVisualizer
 from src.presentation.gui.theme_manager import register_widget_for_theming
 from src.presentation.gui.color_palette import ColorPalette
 from src.presentation.gui.weather_data_bridge import WeatherDataBridge, WeatherOverlayData

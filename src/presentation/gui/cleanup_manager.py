@@ -10,7 +10,7 @@ A MainWindowból kiszervezve a jobb szervezettség és karbantarthatóság érde
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .main_window import MainWindow
+    from .windows.main_window import MainWindow
 
 
 class CleanupManager:
