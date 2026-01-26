@@ -23,7 +23,7 @@ from ...config import AppInfo
 from ..utils import GUIConstants, ThemeType
 from ..theme_manager import get_theme_manager, register_widget_for_theming
 from ..color_palette import ColorPalette
-from ..app_controller import AppController
+from ..controller import AppController
 from ..control_panel import ControlPanel
 from ..results_panel import ResultsPanel
 from ..dialogs import ExtremeWeatherDialog
