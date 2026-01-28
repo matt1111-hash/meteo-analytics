@@ -19,7 +19,7 @@ class ExternalHandlersMixin:
 
     def _auto_reset_fetch_state(self) -> None:
         """🔧 AUTO-RESET: Fetch state reset timeout esetére."""
-        if self.query_control_widget._is_fetching:
+        if self.query_control_widget._state.is_fetching:
             print("🔧 DEBUG: Auto-resetting fetch state after timeout")
             self.query_control_widget.set_fetching_state(False)
             # 🔥 KRITIKUS FIX: set_progress_text → update_progress
