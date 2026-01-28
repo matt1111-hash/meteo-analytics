@@ -19,19 +19,19 @@ try:
     from .extreme_weather_dialog import ExtremeWeatherDialog
 except ImportError:
     # Ha nem létezik, placeholder osztályt hozunk létre
-    from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QMessageBox
-    
+    from PySide6.QtWidgets import QDialog, QLabel, QMessageBox, QPushButton, QVBoxLayout
+
     class ExtremeWeatherDialog(QDialog):
         """🔄 PLACEHOLDER: ExtremeWeatherDialog kompatibilitáshoz."""
-        
+
         def __init__(self, parent=None):
             super().__init__(parent)
             self.setWindowTitle("⚡ Extrém Időjárási Események")
             self.setModal(True)
             self.resize(400, 300)
-            
+
             layout = QVBoxLayout(self)
-            
+
             info_label = QLabel("🚧 ExtremeWeatherDialog fejlesztés alatt...\n\n"
                                "📊 Jelenlegi funkciók:\n"
                                "• Anomália detektálás az ExtremeEventsTab-ban\n"
@@ -39,7 +39,7 @@ except ImportError:
                                "• 📁 Profil menedzsment\n\n"
                                "🔄 Ez a dialog hamarosan teljes funkcionalitással!")
             layout.addWidget(info_label)
-            
+
             close_btn = QPushButton("✅ Rendben")
             close_btn.clicked.connect(self.accept)
             layout.addWidget(close_btn)
@@ -56,5 +56,6 @@ __description__ = "GUI Dialog Components"
 
 # Logging setup
 import logging
+
 logger = logging.getLogger(__name__)
 logger.info("🎨 GUI Dialogs package betöltve")

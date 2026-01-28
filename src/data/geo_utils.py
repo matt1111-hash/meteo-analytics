@@ -27,24 +27,23 @@ from src.data.geo_types import GeoPoint
 """
 
 # Re-export all types
-from .geo_types import (
-    DistanceUnit,
-    CoordinateSystem,
-    GeoPoint,
-    BoundingBox,
-    GeographicRegion
-)
-
 # Re-export calculator
 from .distance_calculator import DistanceCalculator
+
+# Re-export demo function
+from .geo_demo import demo_geo_utils
+from .geo_types import (
+    BoundingBox,
+    CoordinateSystem,
+    DistanceUnit,
+    GeographicRegion,
+    GeoPoint,
+)
+from .geo_utils_analytics import GeoUtilsAnalytics
 
 # Re-export GeoUtils classes
 from .geo_utils_core import GeoUtils
 from .geo_utils_region import GeoUtilsRegion
-from .geo_utils_analytics import GeoUtilsAnalytics
-
-# Re-export demo function
-from .geo_demo import demo_geo_utils
 
 __all__ = [
     # Types

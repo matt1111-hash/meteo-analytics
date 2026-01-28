@@ -12,9 +12,8 @@ import logging
 import math
 from typing import Any, Dict, List, Optional
 
-from .geo_types import BoundingBox, GeoPoint, GeographicRegion
+from .geo_types import BoundingBox, GeographicRegion, GeoPoint
 from .geo_utils_core import GeoUtils
-
 
 logger = logging.getLogger(__name__)
 

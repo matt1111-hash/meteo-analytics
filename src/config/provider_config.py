@@ -15,6 +15,8 @@ from typing import Any, Dict, Mapping, Optional, TypeVar, cast
 
 from .paths_config import (
     PROVIDER_PREFS_FILE as DEFAULT_PROVIDER_PREFS_FILE,
+)
+from .paths_config import (
     ensure_directories as default_ensure_directories,
 )
 

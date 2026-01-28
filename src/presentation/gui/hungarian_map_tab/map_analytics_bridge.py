@@ -1,16 +1,19 @@
 from __future__ import annotations
-from typing import Any, Dict, Optional
+
 from datetime import datetime
+from typing import Any, Dict
+
 from PySide6.QtCore import QObject, Signal
 
 from .interfaces import IMapAnalyticsBridge
+
 
 class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
     """
     Bridge for synchronizing analytics data with the map.
     Handles parameter updates and triggers map refreshes.
     """
-    
+
     # Signals to communicate status updates back to the UI
     analytics_sync_completed = Signal(str)  # type of sync
     sync_error_occurred = Signal(str)       # error message
@@ -22,12 +25,12 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
         self.location_selector = None
         self.multi_city_engine = None
         self.sync_in_progress = False
-        
+
         # State memory
         self.last_analysis_parameters: Dict[str, Any] = {}
         self.last_weather_parameters: Dict[str, Any] = {}
         self.last_date_parameters: Dict[str, Any] = {}
-        
+
         self.current_analytics_result = None
         self.current_weather_overlay = None
         self.auto_weather_refresh_enabled = True
@@ -67,7 +70,7 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
             # Trigger weather refresh if enabled
             if self.auto_weather_refresh_enabled and self.current_analytics_result:
                 # This would typically trigger a callback or signal in the main tab
-                pass 
+                pass
 
             self._emit_status("analysis", "success")
             self.analytics_sync_completed.emit("analysis_parameters")

@@ -8,7 +8,11 @@ WCAG accessibility compliance checking és color blindness simulation.
 
 from typing import Dict, Optional, Union
 
-from src.presentation.gui.color_palette.types import HSLColor, ColorMetrics, ColorBlindnessType
+from src.presentation.gui.color_palette.types import (
+    ColorBlindnessType,
+    ColorMetrics,
+    HSLColor,
+)
 
 
 def calculate_contrast_ratio(

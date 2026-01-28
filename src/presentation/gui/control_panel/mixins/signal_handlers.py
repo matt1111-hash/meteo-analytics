@@ -6,8 +6,7 @@ Control Panel - Widget Signal Handlers Mixin
 Kezeli az összes widget signal routingot a ControlPanel-ben.
 """
 
-from typing import Dict, Any
-from PySide6.QtCore import QTimer
+from typing import Any, Dict
 
 
 class SignalHandlersMixin:

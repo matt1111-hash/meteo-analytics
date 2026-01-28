@@ -6,9 +6,9 @@ Color Palette Factory Module
 Factory functions ColorPalette instance-ok létrehozásához.
 """
 
-from src.presentation.gui.types import ThemeType
 from src.presentation.gui.color_palette.core import ColorPalette
 from src.presentation.gui.color_palette.generators import MaterialColorGenerator
+from src.presentation.gui.types import ThemeType
 
 
 def create_color_palette(preset_name: str = "red", theme_type: ThemeType = ThemeType.LIGHT) -> ColorPalette:

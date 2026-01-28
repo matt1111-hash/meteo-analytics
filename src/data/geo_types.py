@@ -10,7 +10,7 @@ Part of the geo_utils refactoring - split into focused modules.
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
 
 
 class DistanceUnit(Enum):

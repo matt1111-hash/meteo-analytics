@@ -6,7 +6,7 @@ Control Panel - Public API Mixin
 Public API methods and legacy compatibility.
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Any, Dict, List, Optional
 
 
 class PublicAPIMixin:

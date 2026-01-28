@@ -4,13 +4,20 @@ UI builder for QueryControlWidget.
 Ez a modul felelős a QueryControlWidget UI elemek felépítéséért.
 """
 
-from typing import Optional
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QProgressBar, QFrame, QGroupBox
-)
-from PySide6.QtGui import QFont
 import logging
+from typing import Optional
+
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QFrame,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QProgressBar,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 logger = logging.getLogger(__name__)
 

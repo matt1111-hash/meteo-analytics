@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 from src.domain.analytics.wind_analysis_service import analyze_wind_patterns
-from src.domain.analytics.wind_extractors import extract_daily_wind_data, identify_windy_days
+from src.domain.analytics.wind_extractors import (
+    extract_daily_wind_data,
+    identify_windy_days,
+)
 from src.domain.analytics.wind_models import (
     MONTHS_HU,
     WINDY_DAY_THRESHOLD_KMH,

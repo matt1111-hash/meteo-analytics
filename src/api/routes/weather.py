@@ -5,6 +5,7 @@ import logging
 
 from fastapi import APIRouter, HTTPException, Query
 
+from src.analytics.multi_city_engine import MultiCityEngine
 from src.api.adapters.weather_adapter import to_multi_city_query
 from src.api.dto.weather_request import WeatherAnalysisRequest
 from src.application.use_cases import AnalyzeMultiCityUseCase
@@ -14,7 +15,6 @@ from src.domain.analytics.services import (
     WeatherFetchService,
 )
 from src.infrastructure.repositories.city_repository import CityRepository
-from src.analytics.multi_city_engine import MultiCityEngine
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather"])

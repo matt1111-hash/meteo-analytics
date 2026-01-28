@@ -10,7 +10,7 @@ a fallback stratégiákat az Open-Meteo és Meteostat között.
 
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 
 class ProviderRouting:
@@ -87,7 +87,7 @@ class ProviderRouting:
             # Nagy dátum tartomány (3+ hónap)
             is_large_request = days_requested > 90
 
-            self._logger.info(f"🌐 Request analysis:")
+            self._logger.info("🌐 Request analysis:")
             self._logger.info(f"🌐 - Days requested: {days_requested}")
             self._logger.info(f"🌐 - Is historical: {is_historical}")
             self._logger.info(f"🌐 - Is large request: {is_large_request}")

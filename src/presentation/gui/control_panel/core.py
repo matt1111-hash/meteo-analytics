@@ -30,30 +30,31 @@ SIGNAL AGGREGATOR PATTERN - FETCH_BUTTON FIX BEFEJEZVE!
 """
 
 from typing import Optional
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QFrame, QSizePolicy
-from PySide6.QtCore import Signal, Qt
+
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
+
+from src.data.city_manager import CityManager
 
 # Refaktorált widget komponensek
 from ..panel_widgets.analysis_type_widget import AnalysisTypeWidget
+from ..panel_widgets.api_settings_widget import ApiSettingsWidget
+from ..panel_widgets.date_range_widget import DateRangeWidget
 from ..panel_widgets.location_widget import LocationWidget
 from ..panel_widgets.multi_city_widget import MultiCityWidget  # 🏙️ ÚJ: Multi-City Widget
-from ..panel_widgets.date_range_widget import DateRangeWidget
 from ..panel_widgets.provider_widget import ProviderWidget
-from ..panel_widgets.api_settings_widget import ApiSettingsWidget
 from ..panel_widgets.query_control_widget import QueryControlWidget
-
-from ..workers import WorkerManager
 from ..theme_manager import get_theme_manager
-from src.data.city_manager import CityManager
+from ..workers import WorkerManager
 
 # Mixins
 from .mixins import (
+    ExternalHandlersMixin,
+    FetchValidationMixin,
+    PublicAPIMixin,
+    RequestBuilderMixin,
     SignalHandlersMixin,
     UIManagerMixin,
-    FetchValidationMixin,
-    RequestBuilderMixin,
-    PublicAPIMixin,
-    ExternalHandlersMixin,
 )
 
 

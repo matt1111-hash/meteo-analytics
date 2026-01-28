@@ -7,12 +7,12 @@ Main Window Actions - Akciókezelők a MainWindow számára.
 FÁJL: src/presentation/gui/windows/main_window_actions.py
 """
 
-from typing import TYPE_CHECKING, Optional
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from PySide6.QtCore import Qt, QThread, QTimer
-from PySide6.QtWidgets import QMessageBox, QFileDialog
+from PySide6.QtCore import QThread, QTimer
 from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWidgets import QMessageBox
 
 if TYPE_CHECKING:
     from .main_window import MainWindow
@@ -190,7 +190,6 @@ def handle_export_request(window: 'MainWindow', format: str) -> None:
     """
     try:
         from ..data_widgets import WeatherDataTable
-        from ..utils import format_provider_status
 
         if window.results_panel and hasattr(window.results_panel, 'data_table'):
             data_table: WeatherDataTable = window.results_panel.data_table

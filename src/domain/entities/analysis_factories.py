@@ -2,12 +2,12 @@
 from datetime import date, datetime
 from typing import List, Union
 
-from src.domain.entities.universal_location import UniversalLocation
-from src.domain.entities.universal_time_range import UniversalTimeRange
-from src.domain.entities.time_granularity import TimeGranularity
 from src.domain.entities.analysis_type import AnalysisType
 from src.domain.entities.analytics_models import AnalyticsQuestion
-from src.domain.value_objects.enums import QuestionType, RegionScope, AnalyticsMetric
+from src.domain.entities.time_granularity import TimeGranularity
+from src.domain.entities.universal_location import UniversalLocation
+from src.domain.entities.universal_time_range import UniversalTimeRange
+from src.domain.value_objects.enums import AnalyticsMetric, QuestionType, RegionScope
 
 
 def create_universal_time_range(

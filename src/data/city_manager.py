@@ -24,25 +24,18 @@ from src.data.city_types import City, CityDatabaseError
 """
 
 # Re-export types
-from .city_types import (
-    RegionType,
-    CitySort,
-    City,
-    CityQuery,
-    CityDatabaseError
-)
-
-# Re-export main class (with all functionality)
-from .city_manager_stats import CityManagerStats as CityManager
+# Also export individual classes for those who want partial functionality
+from .city_manager_db import CityManagerDB
 
 # Re-export demo function
 from .city_manager_demo import demo_dual_database_city_manager
-
-# Also export individual classes for those who want partial functionality
-from .city_manager_db import CityManagerDB
 from .city_manager_hungarian import CityManagerHungarian
 from .city_manager_search import CityManagerSearch
 from .city_manager_stats import CityManagerStats
+
+# Re-export main class (with all functionality)
+from .city_manager_stats import CityManagerStats as CityManager
+from .city_types import City, CityDatabaseError, CityQuery, CitySort, RegionType
 
 __all__ = [
     # Types

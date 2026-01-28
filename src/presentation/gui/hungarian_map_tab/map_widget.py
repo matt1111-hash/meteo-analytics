@@ -1,20 +1,23 @@
 from __future__ import annotations
-from typing import Any, Dict, Optional, Tuple
-from PySide6.QtWidgets import QWidget, QVBoxLayout
-from PySide6.QtCore import QObject, Signal
 
+from typing import Any, Dict, Optional
+
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QVBoxLayout, QWidget
+
+from src.data.models import AnalyticsResult
 from src.presentation.gui.map import HungarianMapVisualizer
 from src.presentation.gui.weather_data_bridge import WeatherDataBridge
-from src.data.models import AnalyticsResult
 
 from .interfaces import IMapWidget
+
 
 class MapWidget(QWidget, IMapWidget):
     """
     Wrapper around HungarianMapVisualizer to implement IMapWidget.
     Handles rendering logic and weather overlay generation.
     """
-    
+
     # Signals forwarded from visualizer
     map_ready = Signal()
     county_clicked = Signal(str)
@@ -28,20 +31,20 @@ class MapWidget(QWidget, IMapWidget):
         super().__init__(parent)
         self._layout = QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
-        
+
         if visualizer:
             self.map_visualizer = visualizer
             # Re-parenting logic if needed, but usually visualizer is already in a layout
-            # If visualizer is passed, we assume it's already part of the UI, 
+            # If visualizer is passed, we assume it's already part of the UI,
             # or we add it here if it has no parent layout.
             if self.map_visualizer.parent() is None:
                  self._layout.addWidget(self.map_visualizer)
         else:
             self.map_visualizer = HungarianMapVisualizer()
             self._layout.addWidget(self.map_visualizer)
-        
+
         self.weather_bridge = WeatherDataBridge()
-        
+
         self._connect_signals()
 
     def _connect_signals(self):
@@ -89,7 +92,7 @@ class MapWidget(QWidget, IMapWidget):
         """
         if not analytics_result:
             return None
-            
+
         try:
             # WeatherDataBridge handles the complexity of data conversion
             overlay_data = self.weather_bridge.create_overlay_from_analytics(analytics_result)
@@ -102,11 +105,11 @@ class MapWidget(QWidget, IMapWidget):
         """Force refresh of the map."""
         if hasattr(self.map_visualizer, "refresh_map"):
             self.map_visualizer.refresh_map()
-    
+
     def update_map_bounds(self, bounds):
         """Update map bounds."""
         self.map_visualizer.update_map_bounds(bounds)
-        
+
     def set_selected_county(self, county_name):
         """Set selected county."""
         self.map_visualizer.set_selected_county(county_name)

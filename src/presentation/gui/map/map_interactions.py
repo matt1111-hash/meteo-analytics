@@ -7,9 +7,9 @@
 FÁJL: src/presentation/gui/map/map_interactions.py
 """
 
+import http.server
 import os
 import socketserver
-import http.server
 import tempfile
 import uuid
 

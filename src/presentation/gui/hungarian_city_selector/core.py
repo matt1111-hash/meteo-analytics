@@ -10,17 +10,28 @@ import logging
 from pathlib import Path
 from typing import List
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout
 from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QVBoxLayout
 
+from src.presentation.gui.hungarian_city_selector.database_loader import (
+    HungarianCityDatabaseLoader,
+)
+from src.presentation.gui.hungarian_city_selector.event_handlers import (
+    HungarianCityEventHandlersMixin,
+)
+from src.presentation.gui.hungarian_city_selector.public_api import (
+    HungarianCityPublicAPIMixin,
+)
+from src.presentation.gui.hungarian_city_selector.search_filter import (
+    HungarianCitySearchFilter,
+)
+from src.presentation.gui.hungarian_city_selector.theme_handler import (
+    HungarianCityThemeHandler,
+)
 from src.presentation.gui.hungarian_city_selector.types import HungarianCity
-from src.presentation.gui.hungarian_city_selector.database_loader import HungarianCityDatabaseLoader
-from src.presentation.gui.hungarian_city_selector.search_filter import HungarianCitySearchFilter
-from src.presentation.gui.hungarian_city_selector.ui_builder import HungarianCityUIBuilder
-from src.presentation.gui.hungarian_city_selector.theme_handler import HungarianCityThemeHandler
-from src.presentation.gui.hungarian_city_selector.event_handlers import HungarianCityEventHandlersMixin
-from src.presentation.gui.hungarian_city_selector.public_api import HungarianCityPublicAPIMixin
-
+from src.presentation.gui.hungarian_city_selector.ui_builder import (
+    HungarianCityUIBuilder,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -8,8 +8,9 @@ FÁJL: src/presentation/gui/windows/menu_builder.py
 """
 
 from typing import TYPE_CHECKING
-from PySide6.QtWidgets import QMenuBar
+
 from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QMenuBar
 
 if TYPE_CHECKING:
     from .main_window import MainWindow

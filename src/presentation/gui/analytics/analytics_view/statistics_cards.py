@@ -6,13 +6,11 @@ Analytics View - Statistics Cards Module
 Statisztika kártyák létrehozása az AnalyticsViewhoz.
 """
 
-from typing import Dict, Any, List, TYPE_CHECKING
 import logging
+from typing import TYPE_CHECKING, Any, Dict, List
 
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QFrame, QScrollArea
-)
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
 
 from src.presentation.gui.analytics.analytics_statistics import AnalyticsStatistics
 
@@ -115,9 +113,9 @@ class AnalyticsViewStatisticsCards:
                 [
                     f"• Időtartam: {stats.get('start_date', 'N/A')} - {stats.get('end_date', 'N/A')}",
                     f"• Napok száma: {stats.get('total_days', 0)} nap",
-                    f"• Konstans felbontás: 365 bin",
+                    "• Konstans felbontás: 365 bin",
                     f"• Bin méret: ~{stats.get('bin_size', 1)} nap/téglalap",
-                    f"• Beaufort 13 fokozat színek"
+                    "• Beaufort 13 fokozat színek"
                 ]
             )
             layout.addWidget(period_card)

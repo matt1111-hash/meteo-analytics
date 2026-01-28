@@ -22,12 +22,10 @@ For backward compatibility, all original symbols remain available.
 # ============================================================================
 # TYPES
 # ============================================================================
-from .anomaly_types import AnomalyProfileSettings
-
 # ============================================================================
-# STORAGE
+# DEMO
 # ============================================================================
-from .anomaly_storage import AnomalyProfileStorage
+from .anomaly_demo import demo_anomaly_profile_manager
 
 # ============================================================================
 # MANAGER
@@ -35,10 +33,10 @@ from .anomaly_storage import AnomalyProfileStorage
 from .anomaly_profile.manager import AnomalyProfileManager
 
 # ============================================================================
-# DEMO
+# STORAGE
 # ============================================================================
-from .anomaly_demo import demo_anomaly_profile_manager
-
+from .anomaly_storage import AnomalyProfileStorage
+from .anomaly_types import AnomalyProfileSettings
 
 __all__ = [
     'AnomalyProfileSettings',

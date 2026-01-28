@@ -12,11 +12,11 @@ import logging
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from src.config import DATA_DIR
-from .city_types import City, CityDatabaseError
 
+from .city_types import CityDatabaseError
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class CityManagerDB:
         self.hungarian_query_count = 0
         self.last_query_time: Optional[datetime] = None
 
-        logger.info(f"Dual Database initialization:")
+        logger.info("Dual Database initialization:")
         logger.info(f"   Global cities: {self.db_path}")
         logger.info(f"   Hungarian settlements: {self.hungarian_db_path}")
 

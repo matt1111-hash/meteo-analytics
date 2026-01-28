@@ -6,7 +6,7 @@ Control Panel - External Handlers Mixin
 External signal handlers, geocoding, progress updates.
 """
 
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 class ExternalHandlersMixin:

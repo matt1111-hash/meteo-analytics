@@ -7,11 +7,11 @@
 FÁJL: src/presentation/gui/map/folium_renderer.py
 """
 
-from typing import Optional, Dict, TYPE_CHECKING
 import os
 import tempfile
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import TYPE_CHECKING, Dict, Optional
 
 from PySide6.QtCore import QThread, Signal
 
@@ -21,15 +21,15 @@ try:
 except ImportError:
     FOLIUM_AVAILABLE = False
 
-from .map_state import FoliumMapConfig
-from .layer_builder import LayerBuilder
-from .overlay_manager import OverlayManager
 from .html_generator import (
+    create_general_legend,
+    create_precipitation_legend,
     create_temperature_legend,
     create_wind_legend,
-    create_precipitation_legend,
-    create_general_legend,
 )
+from .layer_builder import LayerBuilder
+from .map_state import FoliumMapConfig
+from .overlay_manager import OverlayManager
 
 if TYPE_CHECKING:
     import geopandas as gpd

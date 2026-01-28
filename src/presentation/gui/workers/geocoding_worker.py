@@ -8,8 +8,9 @@ Település keresést végző worker OpenMeteo Geocoding API használatával.
 """
 
 import json
+from typing import Any, Dict, List, Optional
+
 import httpx
-from typing import Dict, List, Any, Optional
 from PySide6.QtCore import Signal
 
 from .base_worker import BaseWorkerThread

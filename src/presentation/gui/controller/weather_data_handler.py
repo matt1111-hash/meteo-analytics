@@ -9,11 +9,11 @@ mentését az adatbázisba.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
 from datetime import datetime
-import pandas as pd
+from typing import Any, Dict, List, Optional
 
-from PySide6.QtCore import QObject, Slot, Signal
+import pandas as pd
+from PySide6.QtCore import QObject, Signal, Slot
 
 
 class WeatherDataHandler(QObject):
@@ -64,7 +64,7 @@ class WeatherDataHandler(QObject):
         Args:
             data: API válasz adatok
         """
-        self._logger.info(f"🌐🌪️ on_weather_data_completed called (backwards compatibility)")
+        self._logger.info("🌐🌪️ on_weather_data_completed called (backwards compatibility)")
 
         try:
             # Provider információ kinyerése az adatokból
@@ -109,7 +109,7 @@ class WeatherDataHandler(QObject):
             )
 
             # Eredmények továbbítása a GUI komponenseknek
-            self._logger.info(f"📡 Emitting weather_data_ready signal...")
+            self._logger.info("📡 Emitting weather_data_ready signal...")
             self.weather_data_ready.emit(processed_data)
 
             self._logger.info(f"✅ Weather data befejezve: {record_count} napi rekord (backwards compatibility)")
@@ -132,10 +132,10 @@ class WeatherDataHandler(QObject):
             Feldolgozott adatok vagy None
         """
         try:
-            self._logger.info(f"🌪️🌹 Processing weather data (COMPLETE WIND DATA + WIND DIRECTION FIX)...")
+            self._logger.info("🌪️🌹 Processing weather data (COMPLETE WIND DATA + WIND DIRECTION FIX)...")
 
             if not raw_data or 'daily' not in raw_data:
-                self._logger.warning(f"⚠️ Invalid weather data structure")
+                self._logger.warning("⚠️ Invalid weather data structure")
                 return None
 
             daily_data = raw_data['daily']
@@ -163,9 +163,9 @@ class WeatherDataHandler(QObject):
                     self._logger.info(f"🌹 Found wind direction data: {len(valid_directions)} valid values")
                     self._logger.info(f"🌹 Wind direction range: {min(valid_directions):.0f}° → {max(valid_directions):.0f}°")
                 else:
-                    self._logger.warning(f"🌹 No valid wind direction data found!")
+                    self._logger.warning("🌹 No valid wind direction data found!")
             else:
-                self._logger.warning(f"🌹 No winddirection_10m_dominant field found in daily_data!")
+                self._logger.warning("🌹 No winddirection_10m_dominant field found in daily_data!")
 
             # Óránkénti széllökések → napi maximum számítás
             daily_wind_gusts_max = self._calculate_daily_max_wind_gusts(
@@ -198,7 +198,7 @@ class WeatherDataHandler(QObject):
                 'windspeed_10m_max'  # EZ A HIÁNYZÓ LÁNCSZEM!
             ]
 
-            self._logger.info(f"🌪️ Explicit copying of daily fields...")
+            self._logger.info("🌪️ Explicit copying of daily fields...")
             for field in required_daily_fields:
                 if field in daily_data:
                     processed['daily'][field] = daily_data[field]
@@ -239,7 +239,7 @@ class WeatherDataHandler(QObject):
                     else:
                         self._logger.info(f"✅ Mérsékelt széllökés: {max_gust:.1f} km/h")
             else:
-                self._logger.warning(f"⚠️ Nincs széllökés adat az óránkénti adatokban")
+                self._logger.warning("⚠️ Nincs széllökés adat az óránkénti adatokban")
 
             # KRITIKUS ELLENŐRZÉS: Szélsebesség adat jelenlét validálása
             if 'windspeed_10m_max' in processed['daily']:
@@ -248,14 +248,14 @@ class WeatherDataHandler(QObject):
                 if valid_speeds:
                     max_speed = max(valid_speeds)
                     avg_speed = sum(valid_speeds) / len(valid_speeds)
-                    self._logger.info(f"🌪️ Szélsebesség adatok sikeresen feldolgozva:")
+                    self._logger.info("🌪️ Szélsebesség adatok sikeresen feldolgozva:")
                     self._logger.info(f"🌪️ - Maximum szélsebesség: {max_speed:.1f} km/h")
                     self._logger.info(f"🌪️ - Átlagos szélsebesség: {avg_speed:.1f} km/h")
                     self._logger.info(f"🌪️ - Érvényes napok: {len(valid_speeds)}/{len(wind_speeds)}")
                 else:
-                    self._logger.warning(f"⚠️ Szélsebesség adatok üresek vagy nullák!")
+                    self._logger.warning("⚠️ Szélsebesség adatok üresek vagy nullák!")
             else:
-                self._logger.error(f"❌ KRITIKUS: windspeed_10m_max NEM került át a feldolgozott adatokba!")
+                self._logger.error("❌ KRITIKUS: windspeed_10m_max NEM került át a feldolgozott adatokba!")
                 self._logger.error(f"❌ Available daily fields: {list(processed['daily'].keys())}")
                 self._logger.error(f"❌ Original daily fields: {list(daily_data.keys())}")
 
@@ -290,13 +290,13 @@ class WeatherDataHandler(QObject):
             Napi maximum széllökések listája
         """
         try:
-            self._logger.info(f"🌪️ Calculating daily max wind gusts...")
+            self._logger.info("🌪️ Calculating daily max wind gusts...")
             self._logger.info(f"🌪️ Hourly gusts count: {len(hourly_gusts)}")
             self._logger.info(f"🌪️ Hourly times count: {len(hourly_times)}")
             self._logger.info(f"🌪️ Daily times count: {len(daily_times)}")
 
             if not hourly_gusts or not hourly_times or not daily_times:
-                self._logger.warning(f"⚠️ Missing data for wind gusts calculation")
+                self._logger.warning("⚠️ Missing data for wind gusts calculation")
                 return []
 
             # Óránkénti adatok DataFrame-be konvertálása
@@ -348,7 +348,7 @@ class WeatherDataHandler(QObject):
                 max_overall = max(valid_gusts)
                 avg_gusts = sum(valid_gusts) / len(valid_gusts)
 
-                self._logger.info(f"🌪️ Daily wind gusts calculation complete:")
+                self._logger.info("🌪️ Daily wind gusts calculation complete:")
                 self._logger.info(f"🌪️ - Valid days: {len(valid_gusts)}/{len(daily_max_gusts)}")
                 self._logger.info(f"🌪️ - Maximum overall: {max_overall:.1f} km/h")
                 self._logger.info(f"🌪️ - Average gusts: {avg_gusts:.1f} km/h")
@@ -364,7 +364,7 @@ class WeatherDataHandler(QObject):
                     self._logger.info(f"✅ Mérsékelt széllökés: {max_overall:.1f} km/h")
 
             else:
-                self._logger.warning(f"⚠️ Nincs érvényes széllökés adat")
+                self._logger.warning("⚠️ Nincs érvényes széllökés adat")
 
             return daily_max_gusts
 

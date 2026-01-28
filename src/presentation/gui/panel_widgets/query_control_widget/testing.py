@@ -4,10 +4,18 @@ Testing support for QueryControlWidget.
 Ez a modul tartalmazza a QueryControlWidget tesztelési támogatását.
 """
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton
-from PySide6.QtCore import QTimer
-import sys
 import logging
+import sys
+
+from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QMainWindow,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 logger = logging.getLogger(__name__)
 

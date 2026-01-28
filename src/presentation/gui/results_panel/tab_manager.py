@@ -9,10 +9,10 @@ Kezeli a tabok létrehozását, frissítését, váltását
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 from PySide6.QtCore import QObject, Signal
-from PySide6.QtWidgets import QTabWidget, QLabel, QPushButton, QWidget
+from PySide6.QtWidgets import QLabel, QTabWidget, QWidget
 
 
 class TabManager(QObject):

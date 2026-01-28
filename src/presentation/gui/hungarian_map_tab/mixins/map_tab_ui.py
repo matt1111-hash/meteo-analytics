@@ -12,26 +12,29 @@ Usage:
         ...
 """
 
-from .ui_components import MapTabUIComponents
-from .ui_handlers import MapTabUIHandlers
 from ..actions import (
-    _on_auto_sync_toggled, _on_auto_weather_refresh_toggled,
-    _reset_map_view, _export_map, _refresh_folium_map,
+    _export_map,
+    _on_auto_sync_toggled,
+    _on_auto_weather_refresh_toggled,
+    _refresh_folium_map,
+    _reset_map_view,
 )
-from ..weather_integration import _refresh_weather_overlay
 from ..folium_handlers import (
-    on_error_occurred,
     on_county_selected,
-    on_map_update_requested,
-    on_location_selected,
-    on_folium_map_ready,
-    on_folium_county_clicked,
-    on_folium_map_moved,
-    on_folium_county_hovered,
-    on_folium_coordinates_clicked,
+    on_error_occurred,
     on_export_completed,
+    on_folium_coordinates_clicked,
+    on_folium_county_clicked,
+    on_folium_county_hovered,
+    on_folium_map_moved,
+    on_folium_map_ready,
+    on_location_selected,
+    on_map_update_requested,
     on_selection_changed,
 )
+from ..weather_integration import _refresh_weather_overlay
+from .ui_components import MapTabUIComponents
+from .ui_handlers import MapTabUIHandlers
 
 
 class MapTabActions:

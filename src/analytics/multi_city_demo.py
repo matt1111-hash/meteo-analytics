@@ -23,7 +23,7 @@ def demo_multi_city_engine() -> None:
         engine = MultiCityEngine()
         today = datetime.now().strftime("%Y-%m-%d")
 
-        print(f"\n🔧 Calculated paths:")
+        print("\n🔧 Calculated paths:")
         print(f"   Global cities DB: {engine.db_path.absolute()}")
         print(f"   Hungarian settlements DB: {engine.hungarian_db_path.absolute()}")
         print(f"   Global DB exists: {engine.db_path.exists()}")
@@ -53,7 +53,7 @@ def demo_multi_city_engine() -> None:
                 print(f"  {i+1}. {city.city_name}: {city.value} km/h")
 
             non_zero_count = len([c for c in result_wind.city_results if c.value > 0])
-            print(f"\n🔧 WINDSPEED CHECK:")
+            print("\n🔧 WINDSPEED CHECK:")
             print(f"   Non-zero wind speed values: {non_zero_count}/{len(result_wind.city_results)}")
 
             if non_zero_count > 0:
@@ -66,11 +66,11 @@ def demo_multi_city_engine() -> None:
             import traceback
             traceback.print_exc()
 
-        print(f"\n🔧 DEMO COMPLETE")
+        print("\n🔧 DEMO COMPLETE")
 
     except Exception as e:
         print(f"❌ CRITICAL ERROR during engine initialization: {e}")
-        print(f"🔧 Debugging info:")
+        print("🔧 Debugging info:")
         print(f"   Current working dir: {Path.cwd().absolute()}")
         print(f"   Script location: {Path(__file__).absolute()}")
 

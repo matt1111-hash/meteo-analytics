@@ -6,10 +6,10 @@ Color Palette - Data I/O Module
 Import/export metódusok ColorPalette osztályhoz.
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
 
-from src.presentation.gui.types import ThemeType
 from src.presentation.gui.color_palette.types import HSLColor
+from src.presentation.gui.types import ThemeType
 
 
 class DataIOMixin:

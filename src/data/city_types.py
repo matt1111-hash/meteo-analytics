@@ -10,7 +10,6 @@ Part of the city_manager refactoring - split into focused modules.
 
 import sqlite3
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 

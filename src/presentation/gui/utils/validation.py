@@ -16,9 +16,9 @@ Validációs és tisztító függvények.
 
 import logging
 import re
-from typing import Any, Dict, Tuple
+from typing import Dict, Tuple
 
-from .constants import APIConstants, AnomalyConstants, DataConstants, GUIConstants
+from .constants import AnomalyConstants, APIConstants, DataConstants, GUIConstants
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ def validate_date_range(start_date: str, end_date: str) -> Tuple[bool, str]:
     Returns:
         (valid, error_message) tuple
     """
-    from datetime import datetime, timedelta
+    from datetime import datetime
 
     try:
         start = datetime.strptime(start_date, "%Y-%m-%d")

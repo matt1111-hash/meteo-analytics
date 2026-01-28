@@ -9,12 +9,14 @@ Magyar városok betöltése cities.db adatbázisból.
 import logging
 import sqlite3
 from pathlib import Path
-from typing import List, Callable
+from typing import Callable, List
 
 from PySide6.QtCore import Signal
 
-from src.presentation.gui.hungarian_city_selector.types import HungarianCity, HungarianRegions
-
+from src.presentation.gui.hungarian_city_selector.types import (
+    HungarianCity,
+    HungarianRegions,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -134,12 +136,12 @@ class HungarianCityDatabaseLoader:
                 population_count += 1
 
         # Statisztika szöveg összeállítása
-        stats_text = f"📊 MAGYAR VÁROSOK STATISZTIKA:\n"
+        stats_text = "📊 MAGYAR VÁROSOK STATISZTIKA:\n"
         stats_text += f"  • Összes város: {total_cities}\n"
         stats_text += f"  • Összlakosság: {population_sum:,} fő ({population_count} városban)\n"
         stats_text += f"  • Átlaglakosság: {population_sum // population_count if population_count > 0 else 0:,} fő\n\n"
 
-        stats_text += f"📍 RÉGIÓK SZERINTI MEGOSZLÁS:\n"
+        stats_text += "📍 RÉGIÓK SZERINTI MEGOSZLÁS:\n"
         for region, count in sorted(region_stats.items(), key=lambda x: x[1], reverse=True):
             percentage = (count / total_cities) * 100
             display_name = HungarianRegions.REGION_DISPLAY_NAMES.get(region, f"❓ {region}")

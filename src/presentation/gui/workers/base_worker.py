@@ -9,7 +9,8 @@ minden worker thread számára.
 """
 
 from typing import Optional
-from PySide6.QtCore import QThread, Signal, QObject, QTimer
+
+from PySide6.QtCore import QObject, QThread, QTimer, Signal
 
 
 class BaseWorkerThread(QThread):

@@ -13,9 +13,8 @@ import math
 import statistics
 from typing import List, Optional, Tuple
 
-from .geo_types import BoundingBox, GeoPoint
 from .distance_calculator import DistanceCalculator
-
+from .geo_types import BoundingBox, GeoPoint
 
 logger = logging.getLogger(__name__)
 

@@ -10,14 +10,14 @@ import logging
 import os
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 import requests
 
 from src.config import APIConfig
-from .weather_provider_base import WeatherProvider
-from .weather_types import WeatherAPIError, ProviderValidationError
 
+from .weather_provider_base import WeatherProvider
+from .weather_types import ProviderValidationError, WeatherAPIError
 
 logger = logging.getLogger(__name__)
 

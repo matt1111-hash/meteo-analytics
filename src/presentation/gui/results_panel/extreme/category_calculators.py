@@ -7,7 +7,7 @@ Extreme Weather Calculator - Category Calculators
 """
 
 import logging
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
 
 from .extreme_records import ExtremeRecord
 

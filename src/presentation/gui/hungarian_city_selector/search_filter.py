@@ -7,12 +7,14 @@ Keresés és szűrés logika magyar városokhoz.
 """
 
 import logging
-from typing import List, Optional
+from typing import List
 
 from PySide6.QtCore import QTimer, Signal
 
-from src.presentation.gui.hungarian_city_selector.types import HungarianCity, HungarianRegions
-
+from src.presentation.gui.hungarian_city_selector.types import (
+    HungarianCity,
+    HungarianRegions,
+)
 
 logger = logging.getLogger(__name__)
 

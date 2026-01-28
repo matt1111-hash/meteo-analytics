@@ -6,8 +6,8 @@ Analytics View - Multi-City Handler Module
 Multi-City régió elemzés logika és signal kibocsátás.
 """
 
-from typing import Dict, TYPE_CHECKING
 import logging
+from typing import TYPE_CHECKING, Dict
 
 if TYPE_CHECKING:
     from src.presentation.gui.analytics.analytics_view.core import AnalyticsView

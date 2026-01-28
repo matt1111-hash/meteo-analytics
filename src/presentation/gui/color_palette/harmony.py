@@ -8,7 +8,7 @@ Színharmónia generálás - complementary, triadic, analogous, stb.
 
 from typing import Dict
 
-from src.presentation.gui.color_palette.types import HSLColor, ColorHarmony
+from src.presentation.gui.color_palette.types import ColorHarmony, HSLColor
 
 
 def generate_harmony(

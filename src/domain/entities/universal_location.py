@@ -2,8 +2,8 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from src.domain.entities.location_types import LocationType
 from src.domain.entities.location import Location
+from src.domain.entities.location_types import LocationType
 
 
 @dataclass

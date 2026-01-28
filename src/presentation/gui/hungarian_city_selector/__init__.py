@@ -21,13 +21,12 @@ Hungarian City Selector Widget - Magyar Klímaanalitika MVP
 """
 
 # Re-export types
-from src.presentation.gui.hungarian_city_selector.types import (
-    HungarianCity,
-    HungarianRegions
-)
-
 # Re-export core
 from src.presentation.gui.hungarian_city_selector.core import HungarianCitySelector
+from src.presentation.gui.hungarian_city_selector.types import (
+    HungarianCity,
+    HungarianRegions,
+)
 
 __all__ = [
     'HungarianCitySelector',

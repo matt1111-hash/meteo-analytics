@@ -12,8 +12,7 @@ import logging
 import math
 from typing import Any, Dict, List, Optional, Tuple
 
-from .geo_types import DistanceUnit, GeoPoint
-
+from .geo_types import DistanceUnit
 
 logger = logging.getLogger(__name__)
 

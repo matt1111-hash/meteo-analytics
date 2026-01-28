@@ -8,16 +8,22 @@ Color harmony, accessibility, és weather-specifikus metódusok.
 
 from typing import Dict, List, Optional, Union
 
-from src.presentation.gui.color_palette.types import (
-    HSLColor, ColorMetrics, ColorHarmony, ColorBlindnessType
-)
 from src.presentation.gui.color_palette.accessibility import (
-    calculate_contrast_ratio, get_color_metrics,
-    suggest_accessible_variants, simulate_color_blindness
+    calculate_contrast_ratio,
+    get_color_metrics,
+    simulate_color_blindness,
+    suggest_accessible_variants,
 )
 from src.presentation.gui.color_palette.harmony import generate_harmony
+from src.presentation.gui.color_palette.types import (
+    ColorBlindnessType,
+    ColorHarmony,
+    ColorMetrics,
+    HSLColor,
+)
 from src.presentation.gui.color_palette.weather import (
-    generate_weather_palette, generate_alert_gradient
+    generate_alert_gradient,
+    generate_weather_palette,
 )
 
 

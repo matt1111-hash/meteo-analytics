@@ -6,8 +6,10 @@ Constants Provider - Dependency Injection Implementation
 🎯 Single Responsibility Principle
 """
 
-from typing import Dict, Any
-from src.presentation.gui.interfaces import IConstantsProvider, IAnomalyConstants, IWindspeedConstants
+from typing import Dict
+
+from src.presentation.gui.interfaces import IConstantsProvider, IWindspeedConstants
+
 
 class ConstantsProvider(IConstantsProvider):
     """Concrete implementation of constants provider."""

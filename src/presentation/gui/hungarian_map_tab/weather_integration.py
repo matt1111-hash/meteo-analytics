@@ -30,7 +30,7 @@ def set_analytics_result(self, analytics_result) -> None:
     """
     🌤️ Analytics eredmény fogadása paraméter továbbításával.
     """
-    print(f"🌤️ DEBUG: Analytics result received")
+    print("🌤️ DEBUG: Analytics result received")
     print(f"🧠 DEBUG: Current stored parameter: {self.current_analytics_parameter}")
 
     self.current_analytics_result = analytics_result
@@ -60,7 +60,7 @@ def _generate_weather_overlay_from_analytics(self, analytics_result) -> None:
             self._on_error_occurred(error_msg)
             return
 
-        print(f"🔄 DEBUG: Generating weather overlay from analytics result...")
+        print("🔄 DEBUG: Generating weather overlay from analytics result...")
 
         self.loading_status.setText("🌤️ Weather overlay generálása...")
 

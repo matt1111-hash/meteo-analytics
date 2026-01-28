@@ -8,9 +8,10 @@ FÁJL: src/presentation/gui/windows/toolbar_manager.py
 """
 
 from typing import TYPE_CHECKING
-from PySide6.QtWidgets import QToolBar
-from PySide6.QtCore import Qt, QSize
+
+from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QAction, QActionGroup
+from PySide6.QtWidgets import QToolBar
 
 if TYPE_CHECKING:
     from .main_window import MainWindow

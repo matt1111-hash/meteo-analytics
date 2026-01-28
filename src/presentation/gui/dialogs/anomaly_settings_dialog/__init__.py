@@ -8,7 +8,9 @@ Anomaly Settings Dialog Module
 """
 
 # Re-export core
-from src.presentation.gui.dialogs.anomaly_settings_dialog.core import AnomalySettingsDialog
+from src.presentation.gui.dialogs.anomaly_settings_dialog.core import (
+    AnomalySettingsDialog,
+)
 
 __all__ = ['AnomalySettingsDialog']
 
@@ -17,6 +19,7 @@ __all__ = ['AnomalySettingsDialog']
 def demo_anomaly_settings_dialog():
     """Demo: Anomália beállítások dialog tesztelése."""
     import sys
+
     from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
 
     app = QApplication(sys.argv)
@@ -30,7 +33,9 @@ def demo_anomaly_settings_dialog():
     open_btn = QPushButton("⚙️ Anomália Beállítások Megnyitása")
 
     def open_dialog():
-        from src.presentation.gui.dialogs.anomaly_settings_dialog import AnomalySettingsDialog
+        from src.presentation.gui.dialogs.anomaly_settings_dialog import (
+            AnomalySettingsDialog,
+        )
         dialog = AnomalySettingsDialog(main_window)
         dialog.settings_changed.connect(lambda settings: print(f"🔧 Beállítások változtak: {settings}"))
         dialog.profile_changed.connect(lambda profile: print(f"📁 Profil váltva: {profile}"))

@@ -5,6 +5,7 @@ Ez a modul tartalmazza a komponensek inicializálását.
 """
 
 import logging
+
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QMessageBox
 
@@ -16,8 +17,8 @@ def initialize_weather_components(self) -> None:
     🌤️ Weather integráció komponensek inicializálása.
     """
     try:
-        from src.presentation.gui.weather_data_bridge import WeatherDataBridge
         from src.analytics.multi_city_engine import MultiCityEngine
+        from src.presentation.gui.weather_data_bridge import WeatherDataBridge
 
         self.weather_bridge = WeatherDataBridge()
         print("✅ DEBUG: WeatherDataBridge initialized")

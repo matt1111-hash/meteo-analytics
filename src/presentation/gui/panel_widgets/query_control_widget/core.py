@@ -4,10 +4,11 @@ QueryControlWidget - Core implementation.
 Ez a modul tartalmazza a QueryControlWidget fő osztályát.
 """
 
-from typing import Optional, Dict, Any
-from PySide6.QtWidgets import QWidget
-from PySide6.QtCore import Signal
 import logging
+from typing import Optional
+
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget
 
 logger = logging.getLogger(__name__)
 
@@ -36,16 +37,18 @@ except ImportError:
     _theme_manager_available = False
     get_theme_manager = None
 
-from .fallback_widgets import (
-    FallbackLocationSelector, FallbackDateRangeWidget,
-    FallbackParametersWidget, FallbackProviderWidget
-)
-from .widget_factory import WidgetFactory
-from .ui_builder import QueryControlUIBuilder
-from .validation import QueryValidator
-from .state_manager import QueryControlStateManager
 from .event_handlers import QueryControlEventHandlers
 from .external_api import QueryControlExternalAPI
+from .fallback_widgets import (
+    FallbackDateRangeWidget,
+    FallbackLocationSelector,
+    FallbackParametersWidget,
+    FallbackProviderWidget,
+)
+from .state_manager import QueryControlStateManager
+from .ui_builder import QueryControlUIBuilder
+from .validation import QueryValidator
+from .widget_factory import WidgetFactory
 
 
 class QueryControlWidget(QWidget):

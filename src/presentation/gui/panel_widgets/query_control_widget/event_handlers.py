@@ -4,10 +4,11 @@ Event handlers for QueryControlWidget.
 Ez a modul tartalmazza a QueryControlWidget eseménykezelőit.
 """
 
-from typing import Optional, Dict, Any
-from datetime import datetime
-from PySide6.QtCore import Signal
 import logging
+from datetime import datetime
+from typing import Any, Dict, Optional
+
+from PySide6.QtCore import Signal
 
 logger = logging.getLogger(__name__)
 

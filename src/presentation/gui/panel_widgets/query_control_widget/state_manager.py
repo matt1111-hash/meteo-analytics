@@ -4,10 +4,11 @@ State management for QueryControlWidget.
 Ez a modul felelős a QueryControlWidget állapotkezelésért.
 """
 
-from typing import Optional
-from datetime import datetime
-from PySide6.QtCore import QTimer, Signal
 import logging
+from datetime import datetime
+from typing import Optional
+
+from PySide6.QtCore import QTimer, Signal
 
 logger = logging.getLogger(__name__)
 

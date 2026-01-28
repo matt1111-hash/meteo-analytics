@@ -7,8 +7,8 @@
 FÁJL: src/presentation/gui/map/layer_builder.py
 """
 
-from typing import TYPE_CHECKING
 import json
+from typing import TYPE_CHECKING
 
 try:
     import folium
@@ -17,13 +17,12 @@ try:
 except ImportError:
     FOLIUM_AVAILABLE = False
 
-from .map_state import FoliumMapConfig
 from .map_constants import (
-    COUNTY_STYLE_DEFAULT,
-    COUNTY_STYLE_SELECTED,
     COUNTY_STYLE_HIGHLIGHTED,
     COUNTY_STYLE_HOVER,
+    COUNTY_STYLE_SELECTED,
 )
+from .map_state import FoliumMapConfig
 
 if TYPE_CHECKING:
     import geopandas as gpd

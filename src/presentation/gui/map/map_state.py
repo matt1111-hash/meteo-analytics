@@ -8,7 +8,7 @@ FÁJL: src/presentation/gui/map/map_state.py
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import List, Optional
 
 from .map_constants import COUNTY_STYLE_DEFAULT
 

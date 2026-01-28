@@ -6,8 +6,8 @@ Color Palette - Theme Management Module
 Theme management és semantic preset kezelő metódusok.
 """
 
-from src.presentation.gui.types import ThemeType
 from src.presentation.gui.color_palette.presets import get_preset
+from src.presentation.gui.types import ThemeType
 
 
 class ThemeManagementMixin:
@@ -49,6 +49,6 @@ class ThemeManagementMixin:
 
             # 🎨 KRITIKUS JAVÍTÁS: Piros téma alkalmazás logolása
             if preset_name == "red":
-                print(f"🎨 PIROS TÉMA AKTIVÁLVA: primary = #C43939 (user request)")
+                print("🎨 PIROS TÉMA AKTIVÁLVA: primary = #C43939 (user request)")
         else:
             print(f"❌ DEBUG: Unknown preset: {preset_name}")

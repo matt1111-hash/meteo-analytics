@@ -14,7 +14,6 @@ from typing import List, Optional
 from .city_manager_db import CityManagerDB
 from .city_types import City
 
-
 logger = logging.getLogger(__name__)
 
 

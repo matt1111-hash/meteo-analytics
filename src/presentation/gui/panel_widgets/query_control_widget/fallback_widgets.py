@@ -5,11 +5,12 @@ Ez a modul tartalmazza a fallback widget implementációkat,
 amikor a valós widgetek nem elérhetőek.
 """
 
-from typing import Optional
-from datetime import timedelta, date
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
-from PySide6.QtCore import Signal
 import logging
+from datetime import date, timedelta
+from typing import Optional
+
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 

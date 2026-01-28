@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import date, datetime
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from src.domain.analytics.models import CityWeatherData

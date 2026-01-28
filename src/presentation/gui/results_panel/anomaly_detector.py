@@ -7,7 +7,6 @@ GUI wrapper around domain anomaly detection, backward-compatible interface.
 from __future__ import annotations
 
 # pylint: disable=import-error
-
 import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional

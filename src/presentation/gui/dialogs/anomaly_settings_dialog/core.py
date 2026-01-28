@@ -7,17 +7,16 @@ Fő AnomalySettingsDialog osztály.
 """
 
 import logging
-from typing import Optional
 
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QMessageBox
-from PySide6.QtCore import Qt, Signal, QTimer
+from PySide6.QtCore import Qt, QTimer, Signal
+from PySide6.QtWidgets import QDialog, QMessageBox, QVBoxLayout
 
 from src.data.anomaly_profile_manager import AnomalyProfileManager
-from ...theme_manager import get_theme_manager, register_widget_for_theming
-from .ui_builder import AnomalySettingsUIBuilder
-from .profile_handler import AnomalySettingsProfileHandler
-from .preview_handler import AnomalySettingsPreviewHandler
 
+from ...theme_manager import get_theme_manager, register_widget_for_theming
+from .preview_handler import AnomalySettingsPreviewHandler
+from .profile_handler import AnomalySettingsProfileHandler
+from .ui_builder import AnomalySettingsUIBuilder
 
 logger = logging.getLogger(__name__)
 

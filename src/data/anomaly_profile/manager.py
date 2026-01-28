@@ -12,11 +12,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from ..anomaly_types import AnomalyProfileSettings
 from ..anomaly_storage import AnomalyProfileStorage
+from ..anomaly_types import AnomalyProfileSettings
 from .default_profiles import create_profiles_data
 from .profile_actions import ProfileActions
-
 
 logger = logging.getLogger(__name__)
 

@@ -18,20 +18,20 @@ FÁJL: src/presentation/gui/map/__init__.py
 """
 
 # Re-export public API
-from .map_visualizer import HungarianMapVisualizer
-from .map_state import FoliumMapConfig
-from .map_interactions import JavaScriptBridge, LocalHttpServerThread
 from .folium_renderer import FoliumMapGenerator
 
 # Constants (optional re-export)
 from .map_constants import (
-    HUNGARY_CENTER,
     COLOR_SCALE_GRADIENTS,
+    HUNGARY_CENTER,
     OVERLAY_COLOR_MAPPING,
     get_beaufort_color,
-    get_precipitation_color,
     get_gradient_for_overlay,
+    get_precipitation_color,
 )
+from .map_interactions import JavaScriptBridge, LocalHttpServerThread
+from .map_state import FoliumMapConfig
+from .map_visualizer import HungarianMapVisualizer
 
 __all__ = [
     # Main widget

@@ -9,8 +9,9 @@ Időjárási adatok lekérését végző worker provider routing
 """
 
 import json
+from typing import Any, Dict, Optional
+
 import httpx
-from typing import Dict, Any, Optional
 from PySide6.QtCore import Signal
 
 from .base_worker import BaseWorkerThread
@@ -18,9 +19,12 @@ from .base_worker import BaseWorkerThread
 # Provider routing imports
 try:
     from ...utils import (
-        get_optimal_data_source, validate_api_source_available,
-        get_fallback_source_chain, get_source_display_name,
-        log_provider_usage_event, APIConstants
+        APIConstants,
+        get_fallback_source_chain,
+        get_optimal_data_source,
+        get_source_display_name,
+        log_provider_usage_event,
+        validate_api_source_available,
     )
 except ImportError:
     # Fallback ha utils nem elérhető
@@ -384,6 +388,6 @@ class WeatherDataWorker(BaseWorkerThread):
                 else:
                     print(f"✅ DEBUG: Realistic széllökés értékek: {max_gust:.1f} km/h")
             else:
-                print(f"❌ DEBUG: Nincs érvényes széllökés adat!")
+                print("❌ DEBUG: Nincs érvényes széllökés adat!")
         else:
-            print(f"❌ DEBUG: Nincs széllökés adat az API válaszban!")
+            print("❌ DEBUG: Nincs széllökés adat az API válaszban!")

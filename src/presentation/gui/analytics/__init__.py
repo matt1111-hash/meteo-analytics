@@ -22,26 +22,24 @@ Multi-city régió elemzések dashboard modul.
 """
 
 # Main AnalyticsView class
-from .analytics_view.core import AnalyticsView
-
 # Color maps
 from .analytics_helpers import MeteorologicalColorMaps
-
-# Widgets
-from .analytics_widgets import RecordCard, RecordSummaryCard
-
-# Tabs
-from .analytics_tabs import (
-    TemperatureTabWidget,
-    PrecipitationTabWidget,
-    WindTabWidget,
-    WindGustTabWidget,
-    ClimateTabWidget,
-)
 
 # Statistics
 from .analytics_statistics import AnalyticsStatistics
 
+# Tabs
+from .analytics_tabs import (
+    ClimateTabWidget,
+    PrecipitationTabWidget,
+    TemperatureTabWidget,
+    WindGustTabWidget,
+    WindTabWidget,
+)
+from .analytics_view.core import AnalyticsView
+
+# Widgets
+from .analytics_widgets import RecordCard, RecordSummaryCard
 
 __all__ = [
     # Main class

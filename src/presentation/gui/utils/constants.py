@@ -26,7 +26,6 @@ GUI konstansok: API, GUI, Anomália és Adatkezelés konstansai.
 ✅ Type hints: Minden érték explicit típussal
 """
 
-from typing import Any, Dict
 
 # Import types from parent module
 from src.presentation.gui.types import ColorVariant, ThemeType

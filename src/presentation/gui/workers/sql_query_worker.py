@@ -9,10 +9,11 @@ védelemmel és cancellation support-tal.
 """
 
 import sqlite3
-from typing import Dict, List, Optional, Any, Union
 from pathlib import Path
+from typing import Any, Optional, Union
 
 from PySide6.QtCore import Signal
+
 from .base_worker import BaseWorkerThread
 
 

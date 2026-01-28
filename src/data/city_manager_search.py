@@ -14,7 +14,6 @@ from typing import List, Optional, Tuple
 from .city_manager_hungarian import CityManagerHungarian
 from .city_types import City
 
-
 logger = logging.getLogger(__name__)
 
 

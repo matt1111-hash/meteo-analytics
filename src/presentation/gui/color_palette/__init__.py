@@ -22,61 +22,60 @@ Color Palette Module - RED THEME VERSION
 """
 
 # Re-export types
-from src.presentation.gui.color_palette.types import (
-    ColorFormat,
-    ColorHarmony,
-    ColorBlindnessType,
-    ColorMetrics,
-    HSLColor
-)
-
-# Re-export generators
-from src.presentation.gui.color_palette.generators import (
-    ColorGenerator,
-    StandardColorGenerator,
-    MaterialColorGenerator
+# Re-export accessibility
+from src.presentation.gui.color_palette.accessibility import (
+    calculate_contrast_ratio,
+    get_color_metrics,
+    simulate_color_blindness,
+    suggest_accessible_variants,
 )
 
 # Re-export core
 from src.presentation.gui.color_palette.core import ColorPalette
 
-# Re-export presets
-from src.presentation.gui.color_palette.presets import (
-    get_semantic_presets,
-    get_preset,
-    is_valid_preset
+# Re-export factory functions
+from src.presentation.gui.color_palette.factory import (
+    create_color_palette,
+    create_material_palette,
+    create_weather_palette,
 )
 
-# Re-export accessibility
-from src.presentation.gui.color_palette.accessibility import (
-    calculate_contrast_ratio,
-    get_color_metrics,
-    suggest_accessible_variants,
-    simulate_color_blindness
+# Re-export generators
+from src.presentation.gui.color_palette.generators import (
+    ColorGenerator,
+    MaterialColorGenerator,
+    StandardColorGenerator,
 )
 
 # Re-export harmony
 from src.presentation.gui.color_palette.harmony import generate_harmony
 
-# Re-export weather
-from src.presentation.gui.color_palette.weather import (
-    generate_weather_palette,
-    generate_alert_gradient
+# Re-export presets
+from src.presentation.gui.color_palette.presets import (
+    get_preset,
+    get_semantic_presets,
+    is_valid_preset,
 )
-
-# Re-export factory functions
-from src.presentation.gui.color_palette.factory import (
-    create_color_palette,
-    create_material_palette,
-    create_weather_palette
+from src.presentation.gui.color_palette.types import (
+    ColorBlindnessType,
+    ColorFormat,
+    ColorHarmony,
+    ColorMetrics,
+    HSLColor,
 )
 
 # Re-export utility functions
 from src.presentation.gui.color_palette.utils import (
-    hex_to_hsl,
     calculate_color_contrast,
     generate_color_variants,
-    generate_weather_color_scheme
+    generate_weather_color_scheme,
+    hex_to_hsl,
+)
+
+# Re-export weather
+from src.presentation.gui.color_palette.weather import (
+    generate_alert_gradient,
+    generate_weather_palette,
 )
 
 __all__ = [

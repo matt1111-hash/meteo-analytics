@@ -205,7 +205,9 @@ class MapTabUIComponents:
 
     def _create_left_panel(self) -> QWidget:
         """Create left panel with location selector."""
-        from src.presentation.gui.hungarian_location_selector import HungarianLocationSelector
+        from src.presentation.gui.hungarian_location_selector import (
+            HungarianLocationSelector,
+        )
 
         left_panel = QWidget()
         left_panel.setMinimumWidth(350)

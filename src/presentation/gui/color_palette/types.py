@@ -6,10 +6,10 @@ Color Palette Types Module
 Enumok, NamedTuple és dataclass típusdefiníciók.
 """
 
-from typing import Tuple, NamedTuple
-from enum import Enum
 import colorsys
 from dataclasses import dataclass
+from enum import Enum
+from typing import NamedTuple, Tuple
 
 
 class ColorFormat(Enum):

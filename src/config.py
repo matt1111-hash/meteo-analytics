@@ -11,54 +11,48 @@ New code should import directly from src.config instead.
 
 # Re-export everything from the config package
 from src.config import (
-    # API and data
-    APIConfig,
-    DataConstants,
-    APIConstants,
-    validate_api_keys,
-    get_active_data_sources,
-
-    # Paths
-    PROJECT_ROOT,
-    DATA_DIR,
+    CACHE_DB_PATH,
     CACHE_DIR,
     CLIMATE_CACHE_DIR,
+    DATA_DIR,
     EXPORTS_DIR,
+    LEGACY_DB_PATH,
     LOGS_DIR,
-    USER_PREFS_DIR,
+    # Paths
+    PROJECT_ROOT,
     PROVIDER_PREFS_FILE,
     USAGE_TRACKING_FILE,
+    USER_PREFS_DIR,
     WEATHER_DB_PATH,
-    CACHE_DB_PATH,
-    LEGACY_DB_PATH,
-    ensure_directories,
-    validate_paths,
-    get_project_info,
-
-    # Provider
-    ProviderConfig,
-    UserPreferences,
-    get_resolved_provider,
-    validate_provider_selection,
-
-    # Usage
-    UsageTracker,
-
+    # API and data
+    APIConfig,
+    APIConstants,
+    AppInfo,
+    DataConstants,
     # GUI/Hardware
     GUIConfig,
     HardwareConfig,
     MultiCityConfig,
-    AppInfo,
-
+    # Provider
+    ProviderConfig,
+    # Usage
+    UsageTracker,
+    UserPreferences,
     # Utils
     check_environment,
-    validate_config,
+    ensure_directories,
+    get_active_data_sources,
+    get_fallback_source_chain,
     get_optimal_data_source,
+    get_project_info,
+    get_resolved_provider,
     get_source_display_name,
+    validate_api_keys,
     validate_api_source_available,
-    get_fallback_source_chain
+    validate_config,
+    validate_paths,
+    validate_provider_selection,
 )
-
 
 __all__ = [
     # API and data

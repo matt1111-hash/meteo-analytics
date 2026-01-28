@@ -3,10 +3,10 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
+from src.domain.entities.analysis_type import AnalysisType
 from src.domain.entities.location_types import LocationType
 from src.domain.entities.universal_location import UniversalLocation
 from src.domain.entities.universal_time_range import UniversalTimeRange
-from src.domain.entities.analysis_type import AnalysisType
 from src.domain.value_objects.enums import AnomalySeverity, DataSource
 
 

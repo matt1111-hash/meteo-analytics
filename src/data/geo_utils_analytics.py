@@ -14,7 +14,6 @@ from typing import Any, Dict, List
 
 from .geo_utils_region import GeoUtilsRegion
 
-
 logger = logging.getLogger(__name__)
 
 

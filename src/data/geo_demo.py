@@ -31,7 +31,7 @@ def demo_geo_utils():
         budapest[0], budapest[1], berlin[0], berlin[1]
     )
 
-    print(f"Budapest-Berlin distance:")
+    print("Budapest-Berlin distance:")
     print(f"  Haversine: {haversine_dist:.2f} km")
     print(f"  Vincenty:  {vincenty_dist:.2f} km")
     print(f"  Difference: {abs(haversine_dist - vincenty_dist):.3f} km")
@@ -52,7 +52,7 @@ def demo_geo_utils():
     coordinates = [(city["lat"], city["lon"]) for city in test_cities]
     bbox = geo_utils.calculate_bounding_box(coordinates, padding_degrees=0.1)
 
-    print(f"Hungarian cities bounding box:")
+    print("Hungarian cities bounding box:")
     print(f"  Lat: {bbox.min_latitude:.4f} - {bbox.max_latitude:.4f}")
     print(f"  Lon: {bbox.min_longitude:.4f} - {bbox.max_longitude:.4f}")
 
@@ -62,7 +62,7 @@ def demo_geo_utils():
 
     # Region calculation
     region = geo_utils.calculate_region_from_cities(test_cities, "Magyarország")
-    print(f"Hungary region:")
+    print("Hungary region:")
     print(f"  Area: {region.area_km2:.0f} km²")
     print(f"  Population: {region.population:,}")
     print(f"  Cities: {region.cities_count}")

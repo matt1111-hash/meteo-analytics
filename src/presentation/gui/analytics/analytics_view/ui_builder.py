@@ -6,15 +6,21 @@ Analytics View - UI Builder Module
 UI komponensek létrehozása az AnalyticsViewhoz.
 """
 
-from typing import List, TYPE_CHECKING
 import logging
+from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QGroupBox, QScrollArea, QComboBox, QPushButton
-)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QComboBox,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QScrollArea,
+    QVBoxLayout,
+    QWidget,
+)
 
 if TYPE_CHECKING:
     from src.presentation.gui.analytics.analytics_view.core import AnalyticsView
@@ -210,8 +216,8 @@ class AnalyticsViewUIBuilder:
         layout.setSpacing(4)
 
         # Import a widgetekhez
-        from ..analytics_widgets import RecordSummaryCard
         from ..analytics_tabs import ClimateTabWidget
+        from ..analytics_widgets import RecordSummaryCard
 
         # Rekord summary kártya (kompakt)
         self.view.record_summary = RecordSummaryCard()

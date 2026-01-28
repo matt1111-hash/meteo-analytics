@@ -3,14 +3,13 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Tuple
 
+from src.domain.entities.weather import AnomalyResult, CityWeatherResult
 from src.domain.value_objects.enums import (
     AnalyticsMetric,
-    AnomalySeverity,
     DataSource,
     QuestionType,
     RegionScope,
 )
-from src.domain.entities.weather import CityWeatherResult, AnomalyResult
 
 
 @dataclass

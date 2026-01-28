@@ -4,7 +4,6 @@ Multi-City Analytics Engine - Types and Constants
 Type aliases, constants, and configuration mappings
 """
 
-from typing import List, Optional, Tuple
 
 Number = float | int
 NumberOrNone = Number | None

@@ -17,8 +17,8 @@ except ImportError:
     FOLIUM_AVAILABLE = False
 
 from .map_constants import (
-    get_gradient_for_overlay,
     get_beaufort_color,
+    get_gradient_for_overlay,
     get_precipitation_color,
 )
 

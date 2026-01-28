@@ -9,14 +9,13 @@ Téma kezelési logika a HungarianCitySelector widgethez.
 import logging
 from typing import List
 
-from PySide6.QtWidgets import QWidget, QPushButton
+from PySide6.QtWidgets import QPushButton, QWidget
 
 from src.presentation.gui.theme_manager import (
+    get_current_colors,
     get_theme_manager,
     register_widget_for_theming,
-    get_current_colors
 )
-
 
 logger = logging.getLogger(__name__)
 

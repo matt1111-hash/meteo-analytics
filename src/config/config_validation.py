@@ -6,15 +6,14 @@ Environment checking, configuration validation, and utility functions
 """
 
 import os
-from typing import Optional
 
 # Import from sibling modules
 from .api_config import APIConfig, DataConstants, validate_api_keys
 from .paths_config import (
-    DATA_DIR,
     CACHE_DIR,
-    USER_PREFS_DIR,
+    DATA_DIR,
     LEGACY_DB_PATH,
+    USER_PREFS_DIR,
     ensure_directories,
 )
 

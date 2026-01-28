@@ -27,10 +27,11 @@
 Fájl helye: src/gui/charts/tooltip_mixin.py
 """
 
-from typing import Optional, Dict, Any, Tuple
-import numpy as np
-import matplotlib.dates as mdates
 import datetime
+from typing import Any, Dict, Optional
+
+import matplotlib.dates as mdates
+import numpy as np
 
 from ..theme_manager import get_current_colors
 
@@ -54,7 +55,7 @@ class WeatherTooltipMixin:
             self.enable_tooltips()  # OPT-IN aktiválás
     ```
     """
-    
+
     def __init__(self):
         """
         🔧 Mixin inicializálás - KONZERVATÍV
@@ -67,10 +68,10 @@ class WeatherTooltipMixin:
         self._tooltip_annotation = None
         self._last_tooltip_point = None
         self._hover_tolerance = 15  # pixel távolság
-        
+
         # Event connection tracking
         self._tooltip_event_connections = []
-    
+
     def enable_tooltips(self, hover_tolerance: int = 15) -> None:
         """
         🎯 TOOLTIP AKTIVÁLÁS - OPT-IN RENDSZER
@@ -81,31 +82,31 @@ class WeatherTooltipMixin:
         if self._tooltip_enabled:
             print("⚠️ DEBUG: Tooltips már aktiválva")
             return
-            
+
         self._hover_tolerance = hover_tolerance
         self._tooltip_enabled = True
-        
+
         # Event handlers kapcsolása
         self._connect_tooltip_events()
-        
+
         print(f"✅ DEBUG: Tooltips aktiválva - {hover_tolerance}px tolerance")
-    
+
     def disable_tooltips(self) -> None:
         """
         🛑 TOOLTIP KIKAPCSOLÁS - CLEAN SHUTDOWN
         """
         if not self._tooltip_enabled:
             return
-            
+
         # Event handlers lekapcsolása
         self._disconnect_tooltip_events()
-        
+
         # Tooltip elrejtése
         self._hide_tooltip()
-        
+
         self._tooltip_enabled = False
         print("🛑 DEBUG: Tooltips kikapcsolva")
-    
+
     def _connect_tooltip_events(self) -> None:
         """
         🔗 EVENT HANDLERS KAPCSOLÁSA - WORKING PROTOTÍPUS ALAPJÁN
@@ -113,42 +114,42 @@ class WeatherTooltipMixin:
         if not hasattr(self, 'mpl_connect'):
             print("⚠️ DEBUG: mpl_connect nem elérhető - tooltip events skipped")
             return
-        
+
         # Event connections tárolása a clean disconnect-hez
         connections = [
             self.mpl_connect('motion_notify_event', self._on_tooltip_mouse_move),
             self.mpl_connect('figure_leave_event', self._on_tooltip_figure_leave),
             self.mpl_connect('button_press_event', self._on_tooltip_mouse_click)
         ]
-        
+
         self._tooltip_event_connections.extend(connections)
         print(f"🔗 DEBUG: {len(connections)} tooltip event handler kapcsolva")
-    
+
     def _disconnect_tooltip_events(self) -> None:
         """
         🔌 EVENT HANDLERS LEKAPCSOLÁSA - CLEAN DISCONNECT
         """
         if not hasattr(self, 'mpl_disconnect'):
             return
-            
+
         for connection in self._tooltip_event_connections:
             try:
                 self.mpl_disconnect(connection)
             except Exception as e:
                 print(f"⚠️ DEBUG: Event disconnect hiba: {e}")
-        
+
         self._tooltip_event_connections.clear()
         print("🔌 DEBUG: Tooltip event handlers lekapcsolva")
-    
+
     def _on_tooltip_figure_leave(self, event) -> None:
         """
         🖱️ Egér elhagyja a figure-t - tooltip elrejtése
         """
         if not self._tooltip_enabled:
             return
-            
+
         self._hide_tooltip()
-    
+
     def _on_tooltip_mouse_move(self, event) -> None:
         """
         🖱️ TOOLTIP HOVER LOGIC - WORKING PROTOTÍPUS ALAPJÁN
@@ -160,53 +161,53 @@ class WeatherTooltipMixin:
         """
         if not self._tooltip_enabled:
             return
-            
+
         if not hasattr(self, 'ax') or event.inaxes != self.ax:
             self._hide_tooltip()
             return
-        
+
         if event.xdata is None or event.ydata is None:
             self._hide_tooltip()
             return
-        
+
         # Legközelebbi adatpont keresése
         closest_point = self._find_closest_chart_point(event)
-        
+
         if closest_point:
             print(f"🎯 DEBUG: Tooltip FOUND point - index: {closest_point.get('index')}")
-            
+
             # Új pont esetén tooltip update
-            if (not self._last_tooltip_point or 
+            if (not self._last_tooltip_point or
                 self._last_tooltip_point.get('index') != closest_point.get('index')):
-                
-                print(f"🎯 DEBUG: Tooltip megjelenítés indul...")
+
+                print("🎯 DEBUG: Tooltip megjelenítés indul...")
                 self._show_tooltip(event, closest_point)
-                print(f"🎯 DEBUG: Tooltip megjelenítés kész!")
+                print("🎯 DEBUG: Tooltip megjelenítés kész!")
                 self._last_tooltip_point = closest_point
             else:
-                print(f"🔄 DEBUG: Tooltip ugyanaz a pont - skip update")
+                print("🔄 DEBUG: Tooltip ugyanaz a pont - skip update")
         else:
-            print(f"🚫 DEBUG: Tooltip nincs közeli pont")
+            print("🚫 DEBUG: Tooltip nincs közeli pont")
             # Nincs közeli pont - tooltip elrejtése
             if self._tooltip_visible:
-                print(f"🙈 DEBUG: Tooltip elrejtése...")
+                print("🙈 DEBUG: Tooltip elrejtése...")
                 self._hide_tooltip()
                 self._last_tooltip_point = None
-    
+
     def _on_tooltip_mouse_click(self, event) -> None:
         """
         👆 CLICK EVENT - részletes információ konzolra
         """
         if not self._tooltip_enabled:
             return
-            
+
         if not hasattr(self, 'ax') or event.inaxes != self.ax:
             return
-        
+
         closest_point = self._find_closest_chart_point(event)
         if closest_point:
             self._log_detailed_point_info(closest_point)
-    
+
     def _find_closest_chart_point(self, event) -> Optional[Dict[str, Any]]:
         """
         🎯 LEGKÖZELEBBI PONT ALGORITMUS - WORKING PROTOTÍPUS ALAPJÁN
@@ -221,11 +222,11 @@ class WeatherTooltipMixin:
         """
         if not hasattr(self, 'ax') or not hasattr(self, 'current_data'):
             return None
-            
+
         # Chart-specifikus implementáció szükséges
         # Ez a metódus felüldefiniálandó a specifikus chart osztályokban
         return self._find_closest_temperature_point(event)
-    
+
     def _find_closest_temperature_point(self, event) -> Optional[Dict[str, Any]]:
         """
         🌡️ TEMPERATURE CHART SPECIFIKUS PONT KERESÉS
@@ -238,46 +239,46 @@ class WeatherTooltipMixin:
         try:
             if not hasattr(self, 'current_data') or self.current_data is None or self.current_data.empty:
                 return None
-            
+
             df = self.current_data
-            
+
             # Matplotlib dátum koordináták
             if 'date' not in df.columns:
                 return None
-                
+
             plot_dates = mdates.date2num(df['date'])
-            
+
             # Elérhető hőmérséklet oszlopok
             temp_columns = [col for col in ['temp_mean', 'temp_max', 'temp_min'] if col in df.columns]
             if not temp_columns:
                 return None
-            
+
             # Elsődleges hőmérséklet oszlop (mean > max > min)
             primary_temp_col = temp_columns[0]
             temperatures = df[primary_temp_col]
-            
+
             # Mouse pozíció display koordinátákban
             mouse_x_display, mouse_y_display = self.ax.transData.transform((event.xdata, event.ydata))
-            
+
             closest_idx = None
             min_distance = float('inf')
-            
+
             # Minden adatponthoz távolság számítás
             for i, (x_val, y_val) in enumerate(zip(plot_dates, temperatures)):
                 # Adatpont display koordinátái
                 point_x_display, point_y_display = self.ax.transData.transform((x_val, y_val))
-                
+
                 # Pixel távolság
-                distance = np.sqrt((mouse_x_display - point_x_display)**2 + 
+                distance = np.sqrt((mouse_x_display - point_x_display)**2 +
                                  (mouse_y_display - point_y_display)**2)
-                
+
                 if distance < min_distance:
                     min_distance = distance
                     closest_idx = i
-            
+
             # Tolerance check
             if closest_idx is not None and min_distance <= self._hover_tolerance:
-                
+
                 # Pont adatok összeállítása
                 point_data = {
                     'index': closest_idx,
@@ -286,19 +287,19 @@ class WeatherTooltipMixin:
                     'primary_temp_column': primary_temp_col,
                     'pixel_distance': min_distance
                 }
-                
+
                 # További hőmérséklet oszlopok hozzáadása
                 for col in temp_columns:
                     if col != primary_temp_col:
                         point_data[col] = df.iloc[closest_idx][col]
-                
+
                 return point_data
-        
+
         except Exception as e:
             print(f"⚠️ DEBUG: Point calculation error: {e}")
-        
+
         return None
-    
+
     def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
         """
         💬 TOOLTIP MEGJELENÍTÉS - WORKING PROTOTÍPUS DESIGN + BUGFIX
@@ -315,36 +316,36 @@ class WeatherTooltipMixin:
         """
         if not hasattr(self, 'ax'):
             return
-            
+
         # Előző tooltip törlése
         self._hide_tooltip()
-        
+
         # Tooltip szöveg formázása
         tooltip_text = self._format_tooltip_text(point_data)
-        
+
         # 🚨 BUGFIX: FLEXIBLE Y KOORDINÁTA POZICIONÁLÁS
         # Koordináták meghatározása chart-típus független módon
-        
+
         # X koordináta (dátum)
         if 'date' in point_data:
             x_pos = mdates.date2num(point_data['date'])
         else:
             print("⚠️ DEBUG: Nincs 'date' kulcs a point_data-ban")
             return
-        
+
         # Y koordináta - FLEXIBLE KULCS KERESÉS
         y_pos = None
-        
+
         # 1. Temperature chart: 'primary_temp'
         if 'primary_temp' in point_data:
             y_pos = point_data['primary_temp']
             print(f"🌡️ DEBUG: Temperature chart Y pozíció: {y_pos}")
-            
+
         # 2. Heatmap/Wind/Precipitation: 'value'
         elif 'value' in point_data:
             y_pos = point_data['value']
             print(f"📊 DEBUG: Generic chart Y pozíció: {y_pos}")
-            
+
         # 3. Fallback: első numerikus érték
         else:
             for key, value in point_data.items():
@@ -352,18 +353,18 @@ class WeatherTooltipMixin:
                     y_pos = value
                     print(f"🔍 DEBUG: Fallback Y pozíció ({key}): {y_pos}")
                     break
-        
+
         # Y koordináta validálás
         if y_pos is None:
             print("❌ DEBUG: Nem találtunk érvényes Y koordinátát!")
             print(f"📋 DEBUG: point_data kulcsok: {list(point_data.keys())}")
             return
-        
+
         print(f"🎯 DEBUG: Tooltip koordináták: x={x_pos}, y={y_pos}")
-        
+
         # Current colors
         current_colors = get_current_colors()
-        
+
         # ENHANCED TOOLTIP ANNOTATION
         try:
             self.tooltip_annotation = self.ax.annotate(
@@ -390,42 +391,42 @@ class WeatherTooltipMixin:
                 va='bottom',
                 zorder=1000  # Top layer
             )
-            
+
             self._tooltip_visible = True
             self._tooltip_annotation = self.tooltip_annotation
-            
-            print(f"✅ DEBUG: Tooltip annotation létrehozva!")
+
+            print("✅ DEBUG: Tooltip annotation létrehozva!")
             print(f"📍 DEBUG: Tooltip visible: {self._tooltip_visible}")
-            
+
             # FORCE CANVAS REFRESH - TÖBB MÓDSZER
             try:
-                # 1. draw_idle() 
+                # 1. draw_idle()
                 if hasattr(self, 'draw_idle'):
                     self.draw_idle()
-                    print(f"🔄 DEBUG: draw_idle() hívva")
-                
+                    print("🔄 DEBUG: draw_idle() hívva")
+
                 # 2. draw() force
                 if hasattr(self, 'draw'):
                     self.draw()
-                    print(f"🔄 DEBUG: draw() force hívva")
-                
+                    print("🔄 DEBUG: draw() force hívva")
+
                 # 3. Figure refresh
                 if hasattr(self.figure, 'canvas') and hasattr(self.figure.canvas, 'draw'):
                     self.figure.canvas.draw()
-                    print(f"🔄 DEBUG: figure.canvas.draw() hívva")
-                
+                    print("🔄 DEBUG: figure.canvas.draw() hívva")
+
                 # 4. Qt widget update
                 if hasattr(self, 'update'):
                     self.update()
-                    print(f"🔄 DEBUG: widget.update() hívva")
-                    
+                    print("🔄 DEBUG: widget.update() hívva")
+
             except Exception as refresh_error:
                 print(f"⚠️ DEBUG: Canvas refresh hiba: {refresh_error}")
-                
+
         except Exception as e:
             print(f"❌ DEBUG: Tooltip annotation létrehozási hiba: {e}")
             return
-    
+
     def _hide_tooltip(self) -> None:
         """
         🙈 Tooltip elrejtése - CLEAN HIDING
@@ -435,14 +436,14 @@ class WeatherTooltipMixin:
                 self._tooltip_annotation.remove()
             except Exception as e:
                 print(f"⚠️ DEBUG: Tooltip remove error: {e}")
-            
+
             self._tooltip_annotation = None
             self._tooltip_visible = False
-            
+
             # Canvas frissítése
             if hasattr(self, 'draw_idle'):
                 self.draw_idle()
-    
+
     def _format_tooltip_text(self, point_data: Dict[str, Any]) -> str:
         """
         📝 TOOLTIP SZÖVEG FORMÁZÁS - WEATHER SPECIFIC + FLEXIBLE
@@ -458,20 +459,20 @@ class WeatherTooltipMixin:
         else:
             # Általános formázás other chart-oknak
             return self._format_generic_tooltip(point_data)
-    
+
     def _format_temperature_tooltip(self, point_data: Dict[str, Any]) -> str:
         """
         🌡️ TEMPERATURE CHART SPECIFIKUS TOOLTIP FORMÁZÁS
         """
         date = point_data['date']
         primary_temp = point_data['primary_temp']
-        
+
         # Dátum formázás
         if isinstance(date, datetime.date):
             date_str = date.strftime('%Y-%m-%d (%A)')
         else:
             date_str = str(date)
-        
+
         # Hőmérséklet kategória és ikon
         if primary_temp > 30:
             temp_icon = "🔥"
@@ -488,33 +489,33 @@ class WeatherTooltipMixin:
         else:
             temp_icon = "🌡️"
             category = "Mérsékelt nap"
-        
+
         # Alap tooltip szöveg
         tooltip_lines = [
             f"📅 {date_str}",
             f"{temp_icon} {point_data['primary_temp_column'].replace('temp_', '').replace('_', ' ').title()}: {primary_temp:.1f}°C"
         ]
-        
+
         # További hőmérséklet oszlopok hozzáadása
         for key, value in point_data.items():
             if key.startswith('temp_') and key != point_data['primary_temp_column']:
                 column_name = key.replace('temp_', '').replace('_', ' ').title()
                 tooltip_lines.append(f"🌡️ {column_name}: {value:.1f}°C")
-        
+
         # Kategória hozzáadása
         tooltip_lines.extend([
             "",  # Üres sor
             f"🏷️ {category}"
         ])
-        
+
         return '\n'.join(tooltip_lines)
-    
+
     def _format_generic_tooltip(self, point_data: Dict[str, Any]) -> str:
         """
         📊 ÁLTALÁNOS TOOLTIP FORMÁZÁS - más chart típusokhoz
         """
         tooltip_lines = []
-        
+
         # Dátum hozzáadása ha van
         if 'date' in point_data:
             date = point_data['date']
@@ -523,12 +524,12 @@ class WeatherTooltipMixin:
             else:
                 date_str = str(date)
             tooltip_lines.append(f"📅 {date_str}")
-        
+
         # Érték hozzáadása
         if 'value' in point_data:
             parameter = point_data.get('parameter', 'Ismeretlen')
             value = point_data['value']
-            
+
             # Parameter alapú ikon és egység
             if 'temperature' in parameter:
                 icon = "🌡️"
@@ -542,26 +543,26 @@ class WeatherTooltipMixin:
             else:
                 icon = "📊"
                 unit = ""
-            
+
             tooltip_lines.append(f"{icon} Érték: {value:.1f} {unit}")
             tooltip_lines.append(f"📋 Parameter: {parameter}")
-        
+
         # Ha nincsenek felismert kulcsok, minden kulcs-érték pair megjelenítése
         if not tooltip_lines:
             for key, value in point_data.items():
                 if key not in ['index', 'pixel_distance']:
                     tooltip_lines.append(f"{key}: {value}")
-        
+
         return '\n'.join(tooltip_lines) if tooltip_lines else "📊 Chart adat"
-    
+
     def _log_detailed_point_info(self, point_data: Dict[str, Any]) -> None:
         """
         📋 RÉSZLETES PONT INFORMÁCIÓ KONZOLRA - DEBUG CÉLRA + FLEXIBLE
         """
         print("\n" + "="*60)
-        print(f"🎯 TOOLTIP CLICK - RÉSZLETES ADATOK")
+        print("🎯 TOOLTIP CLICK - RÉSZLETES ADATOK")
         print("="*60)
-        
+
         for key, value in point_data.items():
             if key == 'date':
                 print(f"📅 Dátum: {value}")
@@ -577,7 +578,7 @@ class WeatherTooltipMixin:
                 print(f"📊 Index: {value}")
             else:
                 print(f"🔧 {key}: {value}")
-        
+
         print("="*60 + "\n")
 
 

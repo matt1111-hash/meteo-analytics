@@ -2,8 +2,6 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional, Tuple
 
-from src.domain.entities.location_types import LocationType
-
 
 @dataclass
 class Location:
@@ -162,7 +160,6 @@ class Location:
         Returns:
             Location object
         """
-        from src.domain.entities.city_info import CityInfo
 
         return cls(
             identifier=city_info.city,

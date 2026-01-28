@@ -14,10 +14,10 @@ Modul struktúra:
 - data_processor: DataFrame konverzió és adatfeldolgozás
 """
 
-from .results_panel import ResultsPanel
-from .progress_manager import ProgressManager
-from .tab_manager import TabManager
 from .data_processor import DataProcessor
+from .progress_manager import ProgressManager
+from .results_panel import ResultsPanel
+from .tab_manager import TabManager
 
 __all__ = [
     "ResultsPanel",

@@ -14,17 +14,15 @@ Heatmap tab widgetek az analytics view számára.
 """
 
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QTabWidget
-from PySide6.QtCore import Qt
-
-from .analytics_helpers import MeteorologicalColorMaps
+from PySide6.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 
 # Chart imports
 from ..charts.heatmap_chart import HeatmapCalendarChart
 from ..charts.wind_chart import WindChart
 from ..charts.wind_rose_chart import WindRoseChart
+from .analytics_helpers import MeteorologicalColorMaps
 
 logger = logging.getLogger(__name__)
 

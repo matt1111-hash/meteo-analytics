@@ -8,54 +8,47 @@ Universal Weather Research Platform - Main Window
 FÁJL: src/presentation/gui/windows/main_window.py
 """
 
-from typing import Optional, Dict, Any
-from datetime import datetime
+from typing import Any, Dict, Optional
 
-from PySide6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QSplitter,
-    QStatusBar, QToolBar, QLabel, QSizePolicy, QMessageBox
-)
-from PySide6.QtCore import Qt, QSettings, Signal, QSize, QThread, QTimer
-from PySide6.QtGui import QAction, QActionGroup
+from PySide6.QtCore import QSettings, Qt, QThread, QTimer, Signal
 from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWidgets import (
+    QMainWindow,
+    QSplitter,
+)
 
 from src.config import AppInfo
-from ..utils import GUIConstants, ThemeType
-from ..theme_manager import get_theme_manager, register_widget_for_theming
+
+from ..analytics import AnalyticsView
 from ..color_palette import ColorPalette
 from ..controller import AppController
-from ..control_panel import ControlPanel
-from ..results_panel import ResultsPanel
-from ..dialogs import ExtremeWeatherDialog
-from ..analytics import AnalyticsView
-from ..trend_analytics import TrendAnalyticsTab
-from ..hungarian_map_tab import HungarianMapTab
-
+from ..theme_manager import get_theme_manager, register_widget_for_theming
+from ..utils import ThemeType
+from .main_window_actions import (
+    cleanup_all_threads,
+    cleanup_all_timers,
+    cleanup_all_web_engines,
+    cleanup_all_workers,
+    handle_analytics_view_query,
+    handle_export_request,
+    handle_multi_city_weather_request,
+    map_query_type_to_parameter,
+    register_thread,
+    register_timer,
+    register_web_view,
+    register_worker,
+    show_about,
+    show_error,
+    show_extreme_weather,
+    switch_view,
+)
 from .main_window_state import MainWindowState
 from .menu_builder import create_menu_bar
 from .toolbar_manager import create_navigation_toolbar
 from .window_layout import (
-    setup_window,
     create_stacked_views,
     create_status_bar_provider_widgets,
-)
-from .main_window_actions import (
-    switch_view,
-    handle_analytics_view_query,
-    handle_multi_city_weather_request,
-    map_query_type_to_parameter,
-    handle_export_request,
-    show_extreme_weather,
-    show_about,
-    show_error,
-    register_thread,
-    register_worker,
-    register_web_view,
-    register_timer,
-    cleanup_all_threads,
-    cleanup_all_workers,
-    cleanup_all_web_engines,
-    cleanup_all_timers,
+    setup_window,
 )
 
 

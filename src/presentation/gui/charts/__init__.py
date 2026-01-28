@@ -44,14 +44,14 @@ from .charts.wind_chart import WindChart
 
 # Base chart osztály
 from .base_chart import WeatherChart
+from .comparison_chart import MultiYearComparisonChart
+from .heatmap_chart import HeatmapCalendarChart
+from .precipitation_chart import PrecipitationChart
 
 # Specifikus chart típusok
 from .temperature_chart import EnhancedTemperatureChart
-from .precipitation_chart import PrecipitationChart
 from .wind_chart import WindChart
 from .wind_rose_chart import WindRoseChart
-from .heatmap_chart import HeatmapCalendarChart
-from .comparison_chart import MultiYearComparisonChart
 
 # === PACKAGE METADATA ===
 
@@ -64,10 +64,10 @@ __description__ = "Professional weather chart widgets with ColorPalette integrat
 __all__ = [
     # Base chart
     'WeatherChart',
-    
+
     # Specific chart types
     'EnhancedTemperatureChart',
-    'PrecipitationChart', 
+    'PrecipitationChart',
     'WindChart',
     'WindRoseChart',
     'HeatmapCalendarChart',
@@ -113,7 +113,7 @@ def create_chart(chart_type: str, parent=None):
     if chart_type not in CHART_TYPES:
         available = ', '.join(CHART_TYPES.keys())
         raise ValueError(f"Ismeretlen chart típus: {chart_type}. Elérhető: {available}")
-    
+
     chart_class = CHART_TYPES[chart_type]
     return chart_class(parent=parent)
 
@@ -132,7 +132,7 @@ def get_chart_info():
             'features': ['trend_lines', 'zones', 'annotations', 'statistics']
         },
         'precipitation': {
-            'class': 'PrecipitationChart', 
+            'class': 'PrecipitationChart',
             'description': 'Csapadék oszlopdiagram színkódolással',
             'icon': '🌧️',
             'features': ['color_coding', 'statistics', 'bar_chart']
@@ -166,7 +166,7 @@ def get_chart_info():
 # === DEBUG INFORMÁCIÓK ===
 
 print(f"✅ DEBUG: Charts package loaded - {len(__all__)} chart types available")
-print(f"🎨 DEBUG: All charts support ColorPalette API + Piros (#C43939) téma")
-print(f"🔧 DEBUG: Duplikáció bugfix applied to all charts")
-print(f"🌪️ DEBUG: Wind gusts support: WindChart + WindRoseChart")
+print("🎨 DEBUG: All charts support ColorPalette API + Piros (#C43939) téma")
+print("🔧 DEBUG: Duplikáció bugfix applied to all charts")
+print("🌪️ DEBUG: Wind gusts support: WindChart + WindRoseChart")
 print(f"📈 DEBUG: Available chart types: {', '.join(get_available_chart_types())}")

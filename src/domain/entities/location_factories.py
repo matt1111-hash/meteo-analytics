@@ -1,10 +1,9 @@
 """Factory functions for location entities."""
 from typing import Optional, Tuple, Union
 
-from src.domain.entities.location_types import LocationType
 from src.domain.entities.location import Location
+from src.domain.entities.location_types import LocationType
 from src.domain.entities.universal_location import UniversalLocation
-from src.domain.entities.city_info import CityInfo
 
 
 def create_universal_location(

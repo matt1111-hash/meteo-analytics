@@ -16,10 +16,14 @@ Fájl: src/presentation/gui/trend_analytics/__init__.py
 """
 
 # Re-export all classes for backward compatibility
-from .trend_data_processor import TrendDataProcessor
-from .trend_widgets import DashboardStatsCard, InteractiveTrendChart, EnhancedStatisticsPanel
-from .trend_worker import TrendAnalyticsWorker
 from .trend_analytics_tab import TrendAnalyticsTab, register_trend_analytics_theme
+from .trend_data_processor import TrendDataProcessor
+from .trend_widgets import (
+    DashboardStatsCard,
+    EnhancedStatisticsPanel,
+    InteractiveTrendChart,
+)
+from .trend_worker import TrendAnalyticsWorker
 
 __all__ = [
     "TrendDataProcessor",

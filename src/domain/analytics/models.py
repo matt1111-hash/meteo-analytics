@@ -4,8 +4,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
-from src.domain.value_objects.enums import RegionScope
 from src.domain.entities.analytics_models import AnalyticsQuestion
+from src.domain.value_objects.enums import RegionScope
 
 
 @dataclass

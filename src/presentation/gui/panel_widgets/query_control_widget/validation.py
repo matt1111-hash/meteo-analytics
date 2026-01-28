@@ -4,7 +4,6 @@ Validation logic for QueryControlWidget.
 Ez a modul tartalmazza a lekérdezés validációs logikát.
 """
 
-from typing import Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,7 +40,7 @@ class QueryValidator:
             bool: True ha minden adat valid
         """
         try:
-            print(f"🔍 DEBUG: Starting query validation...")
+            print("🔍 DEBUG: Starting query validation...")
 
             # Location validation
             if not self._validate_location():

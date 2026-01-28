@@ -20,7 +20,7 @@ def demo_dual_database_city_manager():
     try:
         with CityManagerStats() as manager:
             stats = manager.get_database_statistics()
-            print(f"DUAL DATABASE STATISTICS:")
+            print("DUAL DATABASE STATISTICS:")
             print(f"   Global cities: {stats['global_cities']:,}")
             print(f"   Hungarian settlements: {stats['hungarian_settlements']:,}")
             print(f"   Total searchable locations: {stats['total_searchable_locations']:,}")
@@ -39,13 +39,13 @@ def demo_dual_database_city_manager():
                     lat, lon = coords
                     print(f"   Coordinates: {lat:.4f}, {lon:.4f}")
                 else:
-                    print(f"   Not found")
+                    print("   Not found")
                 print()
 
             # Hungarian statistics
             if stats['hungarian_settlements'] > 0:
                 hu_stats = manager.get_hungarian_statistics()
-                print(f"HUNGARIAN SETTLEMENTS DETAILS:")
+                print("HUNGARIAN SETTLEMENTS DETAILS:")
                 print(f"   Types: {hu_stats['by_settlement_type']}")
                 print(f"   Top counties: {dict(list(hu_stats['top_counties'].items())[:3])}")
                 print(f"   100k+ population: {hu_stats['population_stats']['large_cities_100k_plus']}")
@@ -63,7 +63,7 @@ def demo_dual_database_city_manager():
             print()
 
             # Query statistics
-            print(f"QUERY STATISTICS:")
+            print("QUERY STATISTICS:")
             print(f"   Global queries: {manager.query_count}")
             print(f"   Hungarian queries: {manager.hungarian_query_count}")
             print(f"   Total queries: {manager.query_count + manager.hungarian_query_count}")

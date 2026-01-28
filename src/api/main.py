@@ -6,12 +6,12 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.api.routes.weather import router as weather_router
-from src.api.routes.single_city import router as single_city_router
-from src.api.routes.detailed_city import router as detailed_city_router
-from src.api.routes.metadata import router as metadata_router
 from src.api.routes.anomalies import router as anomalies_router
 from src.api.routes.cities import router as cities_router
+from src.api.routes.detailed_city import router as detailed_city_router
+from src.api.routes.metadata import router as metadata_router
+from src.api.routes.single_city import router as single_city_router
+from src.api.routes.weather import router as weather_router
 
 logging.basicConfig(level=logging.INFO)
 

@@ -8,16 +8,15 @@ Központi worker management osztály - kezeli az összes worker
 thread életciklusát, signalokat és provider routinget.
 """
 
-from typing import Dict, List, Any, Optional
 from datetime import datetime
-from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from PySide6.QtCore import QObject, Signal, QMutex, QWaitCondition, QThread
+from PySide6.QtCore import QMutex, QObject, QThread, QWaitCondition, Signal
 
 from .base_worker import BaseWorkerThread
 from .geocoding_worker import GeocodingWorker
-from .weather_data_worker import WeatherDataWorker
 from .sql_query_worker import SQLQueryWorker
+from .weather_data_worker import WeatherDataWorker
 
 
 class WorkerManager(QObject):

@@ -11,19 +11,24 @@ külön handler osztályokra bontva a funkcionális területek szerint.
 """
 
 import logging
-from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-from src.config import DATA_DIR, APIConfig, ProviderConfig, UserPreferences, UsageTracker
+from src.config import (
+    DATA_DIR,
+    ProviderConfig,
+    UsageTracker,
+    UserPreferences,
+)
+
 from ..workers import WorkerManager
 from ..workers.analysis_worker import AnalysisWorker
-from .database_manager import DatabaseManager
-from .provider_routing import ProviderRouting
-from .geocoding_handler import GeocodingHandler
-from .weather_data_handler import WeatherDataHandler
 from .analysis_handler import AnalysisHandler
+from .database_manager import DatabaseManager
+from .geocoding_handler import GeocodingHandler
+from .provider_routing import ProviderRouting
+from .weather_data_handler import WeatherDataHandler
 
 
 class AppController(QObject):

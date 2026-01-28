@@ -13,8 +13,9 @@ Status: READY - Magyar MVP alapja
 """
 
 # Multi-City Analytics Engine - Magyar MVP alapja
-from .multi_city_engine import MultiCityEngine
 from src.domain.analytics.models import MultiCityQuery
+
+from .multi_city_engine import MultiCityEngine
 
 __all__ = [
     # Multi-City Analytics - 3200+ magyar település támogatás

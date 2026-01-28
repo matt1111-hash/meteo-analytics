@@ -15,14 +15,15 @@ Fájl: src/presentation/gui/trend_analytics/trend_data_processor.py
 """
 
 import logging
-from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timedelta
-import pandas as pd
+from typing import Dict, List, Optional, Tuple
+
 import numpy as np
+import pandas as pd
+from PySide6.QtCore import QObject, Signal
 from scipy import stats
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
-from PySide6.QtCore import QObject, Signal
 
 from ....data.city_manager import CityManager
 from ....data.weather_client import WeatherClient

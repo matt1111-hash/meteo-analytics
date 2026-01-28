@@ -1,7 +1,7 @@
 """None-safe statistical helper functions for multi-city analytics."""
 from __future__ import annotations
 
-from statistics import mean, median, stdev, StatisticsError
+from statistics import StatisticsError, mean, median, stdev
 from typing import List, Optional, Tuple, Union
 
 Number = Union[float, int]

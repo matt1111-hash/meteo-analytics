@@ -9,8 +9,8 @@ Színgeneráló stratégiák - StandardColorGenerator és MaterialColorGenerator
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from src.presentation.gui.types import ThemeType
 from src.presentation.gui.color_palette.types import HSLColor
+from src.presentation.gui.types import ThemeType
 
 
 class ColorGenerator(ABC):

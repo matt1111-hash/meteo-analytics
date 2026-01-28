@@ -6,8 +6,8 @@ Control Panel - Request Builder Mixin
 Analysis request building and validation logic.
 """
 
-from typing import Dict, Any
 from datetime import datetime
+from typing import Any, Dict
 
 
 class RequestBuilderMixin:

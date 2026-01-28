@@ -1,8 +1,16 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional
 from datetime import date, datetime
+from typing import Any, Dict, Optional
 
-from src.domain.value_objects.enums import AnalyticsMetric, DataSource, AnomalySeverity, AnomalyType, get_metric_unit, get_severity_color
+from src.domain.value_objects.enums import (
+    AnalyticsMetric,
+    AnomalySeverity,
+    AnomalyType,
+    DataSource,
+    get_metric_unit,
+    get_severity_color,
+)
+
 
 @dataclass
 class CityWeatherResult:
@@ -16,40 +24,40 @@ class CityWeatherResult:
     country_code: str
     latitude: float
     longitude: float
-    
+
     # Weather data
     value: float                    # Fő metrika értéke
     metric: AnalyticsMetric        # Metrika típusa
     date: date                     # Adat dátuma
     rank: Optional[int] = None     # 🔧 FIX: UI compatibility - eredmény rangsor
-    
+
     # Additional data
     additional_data: Dict[str, Any] = field(default_factory=dict)
-    
+
     # Metadata
     data_source: DataSource = DataSource.AUTO
     quality_score: float = 1.0     # 0.0-1.0 adat minőség
     confidence: float = 1.0        # 0.0-1.0 megbízhatóság
-    
+
     # Geographical context
     population: Optional[int] = None
     elevation: Optional[float] = None
     timezone: Optional[str] = None
     admin_name: Optional[str] = None  # Régió/állam
-    
+
     def __str__(self) -> str:
         """String reprezentáció."""
         unit = self._get_metric_unit()
         return f"{self.city_name}: {self.value:.1f}{unit}"
-    
+
     def _get_metric_unit(self) -> str:
         """Metrika mértékegység lekérdezése."""
         return get_metric_unit(self.metric)
-    
+
     def get_display_name(self) -> str:
         """Teljes display név."""
         return f"{self.city_name}, {self.country}"
-    
+
     def get_coordinates(self) -> tuple[float, float]:
         """Koordináták tuple-ként."""
         return (self.latitude, self.longitude)
@@ -90,27 +98,27 @@ class AnomalyResult:
     deviation: float                # Standard deviáció
     severity: AnomalySeverity
     anomaly_type: AnomalyType      # HIGH/LOW
-    
+
     # Context
     description: str
     confidence: float = 1.0
-    
+
     # Statistical context
     percentile: Optional[float] = None
     z_score: Optional[float] = None
-    
+
     # Metadata
     detected_at: datetime = field(default_factory=datetime.now)
     detection_method: str = "statistical"
-    
+
     def __str__(self) -> str:
         """String reprezentáció."""
         return f"{self.date}: {self.description}"
-    
+
     def get_severity_color(self) -> str:
         """Súlyosság színkód."""
         return get_severity_color(self.severity)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Dictionary konverzió."""
         return {

@@ -13,8 +13,8 @@ Modulok:
 - extreme_calculator: Fő API osztály
 """
 
-from .extreme_records import ExtremeRecord, RecordsTextSummary
 from .extreme_calculator import ExtremeCalculator
+from .extreme_records import ExtremeRecord, RecordsTextSummary
 
 __all__ = [
     'ExtremeRecord',

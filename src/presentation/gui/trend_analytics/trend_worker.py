@@ -13,6 +13,7 @@ Fájl: src/presentation/gui/trend_analytics/trend_worker.py
 """
 
 import logging
+
 from PySide6.QtCore import QThread, Signal
 
 from .trend_data_processor import TrendDataProcessor

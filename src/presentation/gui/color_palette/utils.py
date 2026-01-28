@@ -8,9 +8,9 @@ Globális convenience függvények színműveletekhez.
 
 from typing import Dict
 
-from src.presentation.gui.types import ThemeType
 from src.presentation.gui.color_palette.core import ColorPalette
 from src.presentation.gui.color_palette.types import HSLColor
+from src.presentation.gui.types import ThemeType
 
 
 def hex_to_hsl(hex_color: str) -> HSLColor:

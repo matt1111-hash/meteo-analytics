@@ -4,25 +4,29 @@ HungarianMapTab - Core implementation.
 Ez a modul tartalmazza a HungarianMapTab fő osztályát és a signalokat.
 """
 
-from typing import Optional, Dict, Any
-from PySide6.QtWidgets import QWidget
-from PySide6.QtCore import Signal
 import logging
+from typing import Any, Dict, Optional
+
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget
 
 logger = logging.getLogger(__name__)
 
 # Mixins
-from .mixins import MapTabUIMixin, MapAnalyticsSyncMixin
+# Analytics and data modules
+from src.analytics.multi_city_engine import MultiCityEngine
+from src.data.models import AnalyticsResult
+from src.presentation.gui.color_palette import ColorPalette
 
 # GUI modules
 from src.presentation.gui.hungarian_location_selector import HungarianLocationSelector
 from src.presentation.gui.map import HungarianMapVisualizer
-from src.presentation.gui.color_palette import ColorPalette
-from src.presentation.gui.weather_data_bridge import WeatherDataBridge, WeatherOverlayData
+from src.presentation.gui.weather_data_bridge import (
+    WeatherDataBridge,
+    WeatherOverlayData,
+)
 
-# Analytics and data modules
-from src.analytics.multi_city_engine import MultiCityEngine
-from src.data.models import AnalyticsResult
+from .mixins import MapAnalyticsSyncMixin, MapTabUIMixin
 
 
 class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
@@ -99,23 +103,38 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
         self.auto_sync_enabled = True
 
         # Import the other modules
-        from .initialization import initialize_weather_components, initialize_components_steps
-        from .folium_handlers import (
-            on_county_selected, on_map_update_requested, on_location_selected,
-            on_selection_changed, on_folium_map_ready, on_folium_county_clicked,
-            on_folium_coordinates_clicked, on_folium_map_moved,
-            on_folium_county_hovered, on_export_completed, on_error_occurred
-        )
-        from .weather_integration import (
-            set_analytics_parameter, set_analytics_result,
-            _refresh_weather_overlay, _generate_weather_overlay_from_analytics,
-            load_weather_data_from_analytics
-        )
         from .actions import (
-            _on_auto_sync_toggled, _on_auto_weather_refresh_toggled,
-            _reset_map_view, _export_map, _refresh_folium_map
+            _export_map,
+            _on_auto_sync_toggled,
+            _on_auto_weather_refresh_toggled,
+            _refresh_folium_map,
+            _reset_map_view,
+        )
+        from .folium_handlers import (
+            on_county_selected,
+            on_error_occurred,
+            on_export_completed,
+            on_folium_coordinates_clicked,
+            on_folium_county_clicked,
+            on_folium_county_hovered,
+            on_folium_map_moved,
+            on_folium_map_ready,
+            on_location_selected,
+            on_map_update_requested,
+            on_selection_changed,
+        )
+        from .initialization import (
+            initialize_components_steps,
+            initialize_weather_components,
         )
         from .public_api import create_public_api_methods
+        from .weather_integration import (
+            _generate_weather_overlay_from_analytics,
+            _refresh_weather_overlay,
+            load_weather_data_from_analytics,
+            set_analytics_parameter,
+            set_analytics_result,
+        )
 
         # UI építés
         self._setup_ui()

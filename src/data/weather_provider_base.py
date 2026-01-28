@@ -13,7 +13,6 @@ from typing import Any, Dict, List
 
 import requests
 
-
 logger = logging.getLogger(__name__)
 
 

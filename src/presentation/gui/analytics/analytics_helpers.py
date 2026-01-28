@@ -16,8 +16,9 @@ Segédfüggvények és színskálák az analytics view számára.
 """
 
 import logging
+from typing import List, Optional, Union
+
 import matplotlib.colors as mcolors
-from typing import List, Union, Optional, Dict, Any
 
 logger = logging.getLogger(__name__)
 

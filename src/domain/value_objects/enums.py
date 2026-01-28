@@ -197,19 +197,18 @@ class AnalyticsMode(Enum):
 # Re-export utility functions for backward compatibility
 from src.domain.value_objects.enum_utils import (
     get_analysis_type_display_name,
+    get_available_metrics_for_question_type,
     get_data_provider_display_name,
     get_metric_display_name,
     get_metric_unit,
-    get_region_scope_display_name,
     get_question_type_display_name,
+    get_region_scope_display_name,
     get_severity_color,
     validate_analysis_type,
-    validate_data_provider,
     validate_analytics_metric,
+    validate_data_provider,
     validate_region_scope,
-    get_available_metrics_for_question_type
 )
-
 
 # EXPORT API
 __all__ = [

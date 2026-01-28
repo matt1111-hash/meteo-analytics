@@ -7,8 +7,8 @@ Main Window State - Állapotkezelés a MainWindow számára.
 FÁJL: src/presentation/gui/windows/main_window_state.py
 """
 
-from typing import Optional, Dict, Any
 from dataclasses import dataclass, field
+from typing import Any, Dict, Optional
 
 try:
     from ..utils import ThemeType, get_provider_warning_level

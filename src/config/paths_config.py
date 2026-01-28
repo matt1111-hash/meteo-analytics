@@ -8,7 +8,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-
 # Project root directory (one level up from src/)
 PROJECT_ROOT: Path = Path(__file__).parent.parent.parent
 

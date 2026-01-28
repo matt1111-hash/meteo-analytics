@@ -7,7 +7,8 @@ GUI Component Interfaces - Dependency Injection Pattern
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from typing import Dict
+
 
 class IAnomalyConstants(ABC):
     """Abstract interface for anomaly constants."""

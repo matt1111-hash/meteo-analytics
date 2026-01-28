@@ -18,9 +18,9 @@ Extreme Weather Calculator - Main API
 import logging
 from typing import Dict, List
 
+from .category_calculators import CategoryCalculators
 from .extreme_records import ExtremeRecord, RecordsTextSummary
 from .period_calculators import PeriodCalculators
-from .category_calculators import CategoryCalculators
 from .text_generators import TextGenerators
 
 logger = logging.getLogger(__name__)

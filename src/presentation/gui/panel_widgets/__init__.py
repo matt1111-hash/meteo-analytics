@@ -26,10 +26,10 @@ Minden widget interface:
 
 # Widget komponensek
 from .analysis_type_widget import AnalysisTypeWidget
-from .location_widget import LocationWidget
-from .date_range_widget import DateRangeWidget
-from .provider_widget import ProviderWidget
 from .api_settings_widget import ApiSettingsWidget
+from .date_range_widget import DateRangeWidget
+from .location_widget import LocationWidget
+from .provider_widget import ProviderWidget
 from .query_control_widget import QueryControlWidget  # MEGLÉVŐ widget
 
 # Package információk
@@ -39,7 +39,7 @@ __author__ = "Universal Weather Research Platform Team"
 # Exportált komponensek
 __all__ = [
     "AnalysisTypeWidget",
-    "LocationWidget", 
+    "LocationWidget",
     "DateRangeWidget",
     "ProviderWidget",
     "ApiSettingsWidget",
@@ -102,7 +102,7 @@ def get_all_widget_states(*widgets) -> dict:
             states[widget_name] = widget.get_state()
         else:
             states[f"widget_{i}"] = None
-    
+
     return states
 
 # Debug helper

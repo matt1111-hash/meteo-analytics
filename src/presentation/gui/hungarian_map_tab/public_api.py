@@ -5,7 +5,7 @@ Ez a modul tartalmazza a publikus API metódusokat.
 """
 
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,6 @@ def create_public_api_methods(self) -> None:
         if self.counties_gdf is None:
             return False
         try:
-            import geopandas as gpd
             county_row = self.counties_gdf[self.counties_gdf['megye'] == county_name]
             if county_row.empty:
                 return False

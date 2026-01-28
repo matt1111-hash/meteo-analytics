@@ -8,7 +8,10 @@ Publikus API metódusok a HungarianCitySelector osztályhoz.
 
 from typing import List, Optional
 
-from src.presentation.gui.hungarian_city_selector.types import HungarianCity, HungarianRegions
+from src.presentation.gui.hungarian_city_selector.types import (
+    HungarianCity,
+    HungarianRegions,
+)
 
 
 class HungarianCityPublicAPIMixin:

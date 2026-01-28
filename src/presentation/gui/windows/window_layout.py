@@ -8,10 +8,15 @@ FÁJL: src/presentation/gui/windows/window_layout.py
 """
 
 from typing import TYPE_CHECKING
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QStackedWidget, QSplitter,
-    QSizePolicy, QLabel
+    QLabel,
+    QSizePolicy,
+    QSplitter,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
 )
 
 if TYPE_CHECKING:
@@ -26,8 +31,9 @@ def setup_window(window: 'MainWindow') -> None:
         window: MainWindow példány
     """
     from src.config import AppInfo
-    from ..utils import GUIConstants
+
     from ..theme_manager import register_widget_for_theming
+    from ..utils import GUIConstants
 
     window.setWindowTitle(f"{AppInfo.NAME} - THREAD CLEANUP FIX")
     window.setGeometry(
@@ -87,9 +93,9 @@ def create_stacked_views(window: 'MainWindow') -> QStackedWidget:
 
 def create_single_city_view(window: 'MainWindow') -> QWidget:
     """Single City View létrehozása."""
-    from ..theme_manager import register_widget_for_theming
     from ..control_panel import ControlPanel
     from ..results_panel import ResultsPanel
+    from ..theme_manager import register_widget_for_theming
 
     view = QWidget()
     register_widget_for_theming(view, "container")
@@ -133,8 +139,8 @@ def create_single_city_view(window: 'MainWindow') -> QWidget:
 
 def create_analytics_view(window: 'MainWindow') -> QWidget:
     """Analytics View létrehozása."""
-    from ..theme_manager import register_widget_for_theming
     from ..analytics import AnalyticsView
+    from ..theme_manager import register_widget_for_theming
 
     window.analytics_panel = AnalyticsView()
     register_widget_for_theming(window.analytics_panel, "container")
@@ -153,8 +159,8 @@ def create_trend_analysis_view(window: 'MainWindow') -> QWidget:
 
 def create_hungarian_map_view(window: 'MainWindow') -> QWidget:
     """Hungarian Map view létrehozása."""
-    from ..theme_manager import register_widget_for_theming
     from ..hungarian_map_tab import HungarianMapTab
+    from ..theme_manager import register_widget_for_theming
 
     window.hungarian_map_tab = HungarianMapTab()
     register_widget_for_theming(window.hungarian_map_tab, "container")

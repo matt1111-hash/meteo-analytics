@@ -8,8 +8,14 @@ from typing import List, Optional, Tuple
 
 from src.domain.analytics.statistics import (
     safe_mean as _safe_mean,
+)
+from src.domain.analytics.statistics import (
     safe_median as _safe_median,
+)
+from src.domain.analytics.statistics import (
     safe_min_max as _safe_min_max,
+)
+from src.domain.analytics.statistics import (
     safe_stdev as _safe_stdev,
 )
 

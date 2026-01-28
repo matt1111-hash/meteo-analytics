@@ -7,8 +7,8 @@ Worker Utilities - Helper functions for the workers module
 Validációs és segédfüggvények a worker-ekhez.
 """
 
-from typing import Dict, Any, List
 from datetime import datetime
+from typing import Any, Dict
 
 
 def validate_coordinates(latitude: float, longitude: float) -> bool:

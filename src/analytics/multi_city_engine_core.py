@@ -7,7 +7,6 @@ Main MultiCityEngine class for multi-city weather analytics
 from __future__ import annotations
 
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -20,9 +19,9 @@ from src.domain.analytics.services import (
     WeatherFetchService,
 )
 from src.infrastructure.repositories.city_repository import CityRepository
-from ..data.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
-from ..data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
 
+from ..data.enums import AnalyticsMetric, QuestionType, RegionScope
+from ..data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
 from .multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS
 
 logger = logging.getLogger(__name__)

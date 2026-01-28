@@ -18,25 +18,10 @@ For backward compatibility, all original symbols remain available.
 # ============================================================================
 # TYPES AND CONSTANTS
 # ============================================================================
-from .multi_city_types import (
-    Number,
-    NumberOrNone,
-    HUNGARIAN_REGIONAL_MAPPING,
-    REGIONS
-)
-
 # ============================================================================
-# LEGACY WRAPPERS
+# DEMO
 # ============================================================================
-from .multi_city_legacy import (
-    safe_mean,
-    safe_statistics_mean,
-    safe_median,
-    safe_statistics_median,
-    safe_stdev,
-    safe_statistics_stdev,
-    safe_min_max
-)
+from .multi_city_demo import demo_multi_city_engine
 
 # ============================================================================
 # CORE ENGINE
@@ -44,10 +29,18 @@ from .multi_city_legacy import (
 from .multi_city_engine_core import MultiCityEngine
 
 # ============================================================================
-# DEMO
+# LEGACY WRAPPERS
 # ============================================================================
-from .multi_city_demo import demo_multi_city_engine
-
+from .multi_city_legacy import (
+    safe_mean,
+    safe_median,
+    safe_min_max,
+    safe_statistics_mean,
+    safe_statistics_median,
+    safe_statistics_stdev,
+    safe_stdev,
+)
+from .multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS, Number, NumberOrNone
 
 __all__ = [
     # Types

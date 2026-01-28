@@ -13,7 +13,6 @@ from typing import Any, Callable, Dict
 
 from ..anomaly_types import AnomalyProfileSettings
 
-
 logger = logging.getLogger(__name__)
 
 

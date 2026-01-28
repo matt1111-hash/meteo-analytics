@@ -54,42 +54,47 @@ logger = logging.getLogger(__name__)
 # === SUBMODULE IMPORTS ===
 
 # Constants
+# API helpers
+from .api_helpers import (
+    calculate_provider_costs,
+    format_cost_summary,
+    format_provider_status,
+    format_provider_usage,
+    get_fallback_source_chain,
+    get_optimal_data_source,
+    get_provider_icon,
+    get_provider_recommendation,
+    get_provider_warning_level,
+    get_source_display_name,
+    log_api_source_selection,
+    log_provider_usage_event,
+    validate_api_source_available,
+    validate_provider_selection,
+)
 from .constants import (
-    APIConstants,
-    GUIConstants,
     AnomalyConstants,
-    DataConstants,
-    ThemeType,
+    APIConstants,
     ColorVariant,
+    DataConstants,
+    GUIConstants,
+    ThemeType,
 )
 
 # Formatting
 from .formatting import (
-    format_temperature,
-    format_precipitation,
-    format_wind_speed,
-    format_wind_gusts,
-    get_wind_gusts_category,
-    is_wind_gusts_extreme,
-    is_wind_gusts_hurricane,
-    is_wind_gusts_catastrophic,
-    get_weather_icon,
-    get_wind_gusts_icon,
-    get_wind_gusts_color,
     calculate_statistics,
     calculate_wind_gusts_statistics,
-)
-
-# Validation
-from .validation import (
-    validate_date_range,
-    sanitize_filename,
-    validate_color_hex,
-    get_contrast_ratio,
-    validate_gui_constants,
-    validate_wind_gusts_constants,
-    validate_dual_api_constants,
-    validate_anomaly_constants,
+    format_precipitation,
+    format_temperature,
+    format_wind_gusts,
+    format_wind_speed,
+    get_weather_icon,
+    get_wind_gusts_category,
+    get_wind_gusts_color,
+    get_wind_gusts_icon,
+    is_wind_gusts_catastrophic,
+    is_wind_gusts_extreme,
+    is_wind_gusts_hurricane,
 )
 
 # Theme helpers
@@ -99,24 +104,17 @@ from .theme_helpers import (
     log_wind_gusts_event,
 )
 
-# API helpers
-from .api_helpers import (
-    get_optimal_data_source,
-    get_source_display_name,
-    validate_api_source_available,
-    get_fallback_source_chain,
-    log_api_source_selection,
-    format_provider_usage,
-    calculate_provider_costs,
-    get_provider_warning_level,
-    format_provider_status,
-    get_provider_icon,
-    validate_provider_selection,
-    get_provider_recommendation,
-    format_cost_summary,
-    log_provider_usage_event,
+# Validation
+from .validation import (
+    get_contrast_ratio,
+    sanitize_filename,
+    validate_anomaly_constants,
+    validate_color_hex,
+    validate_date_range,
+    validate_dual_api_constants,
+    validate_gui_constants,
+    validate_wind_gusts_constants,
 )
-
 
 # === DUAL-API PROJEKT ÖSSZEFOGLALÓJA ===
 
@@ -387,10 +385,10 @@ if __name__ == "__main__":
     print()
 
     print("🔧 BACKWARD COMPATIBILITY ALIASES:")
-    print(f"  ✅ get_display_name_for_source → get_source_display_name")
-    print(f"  ✅ SOURCE_DISPLAY_NAMES")
-    print(f"  ✅ OPEN_METEO_BASE")
-    print(f"  ✅ METEOSTAT_BASE")
+    print("  ✅ get_display_name_for_source → get_source_display_name")
+    print("  ✅ SOURCE_DISPLAY_NAMES")
+    print("  ✅ OPEN_METEO_BASE")
+    print("  ✅ METEOSTAT_BASE")
     print()
 
     print("🔍 RÉSZLETES DEMONSTRÁCIÓK:")

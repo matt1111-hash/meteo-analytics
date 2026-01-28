@@ -9,10 +9,10 @@ Kezeli a geocoding kéréseket, eredmények feldolgozását
 """
 
 import logging
-from typing import Dict, Any, List, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from PySide6.QtCore import QObject, Slot, Signal
+from PySide6.QtCore import QObject, Signal, Slot
 
 
 class GeocodingHandler(QObject):
@@ -109,7 +109,7 @@ class GeocodingHandler(QObject):
         try:
             if not results:
                 msg = "Nem található település ezzel a névvel"
-                self._logger.info(f"🔍 No results found")
+                self._logger.info("🔍 No results found")
                 self.status_updated.emit(msg)
                 self.geocoding_results_ready.emit([])
                 return
@@ -126,7 +126,7 @@ class GeocodingHandler(QObject):
             self._logger.info(f"🔍 Status updated: {status_msg}")
 
             # Eredmények továbbítása a GUI-nak
-            self._logger.info(f"📡 Emitting geocoding_results_ready signal...")
+            self._logger.info("📡 Emitting geocoding_results_ready signal...")
             self.geocoding_results_ready.emit(processed_results)
 
             self._logger.info(f"✅ Geocoding befejezve: {len(processed_results)} találat")
@@ -185,7 +185,7 @@ class GeocodingHandler(QObject):
 
         # Rendezés relevancia szerint
         processed.sort(key=lambda x: x['search_rank'])
-        self._logger.info(f"🔍 Results sorted by relevance")
+        self._logger.info("🔍 Results sorted by relevance")
 
         return processed
 

@@ -8,24 +8,23 @@ Part of the weather_client refactoring - split into focused modules.
 
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional
 
 from src.config import (
     APIConfig,
     get_optimal_data_source,
-    get_source_display_name,
 )
+
 
 # _log_provider_usage_mock is a GUI-specific function, not needed in core
 def _log_provider_usage_mock(provider: str, event_type: str, **kwargs) -> None:
     """Mock function for provider usage logging (GUI-specific)."""
     pass
-from .weather_provider_base import WeatherProvider
-from .openmeteo_provider import OpenMeteoProvider
 from .meteostat_provider import MeteostatProvider
-from .weather_types import WeatherAPIError, ProviderNotAvailableError
-
+from .openmeteo_provider import OpenMeteoProvider
+from .weather_provider_base import WeatherProvider
+from .weather_types import ProviderNotAvailableError, WeatherAPIError
 
 logger = logging.getLogger(__name__)
 
@@ -160,7 +159,7 @@ class WeatherClient:
                 result = provider.get_weather_data(latitude, longitude, start_date, end_date)
                 return result
 
-            except WeatherAPIError as e:
+            except WeatherAPIError:
                 if attempt < self.max_retries - 1:
                     delay = self.retry_delay * (attempt + 1)
                     time.sleep(delay)

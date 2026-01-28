@@ -13,8 +13,8 @@ Rekord kártya widgetek az analytics view számára.
 import logging
 from typing import Dict
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 

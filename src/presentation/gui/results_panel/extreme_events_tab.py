@@ -7,16 +7,26 @@ Global Weather Analyzer - Extreme Events Tab Module (FACADE PATTERN - FINAL)
 
 import logging
 from dataclasses import dataclass
-from typing import Optional, Dict, Any, List
-from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QLabel, QPushButton, 
-    QTableWidget, QTableWidgetItem, QTextEdit, QButtonGroup, QRadioButton, 
-    QHeaderView, QMessageBox, QGridLayout
-)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QButtonGroup,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QHeaderView,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QRadioButton,
+    QTableWidget,
+    QTableWidgetItem,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 # Application imports
 from src.application.use_cases.detect_anomalies import DetectAnomaliesUseCase
@@ -29,7 +39,7 @@ except ImportError:
         pass
 
 try:
-    from ..utils import GUIConstants, AnomalyConstants
+    from ..utils import AnomalyConstants, GUIConstants
 except ImportError:
     class GUIConstants:
         pass
@@ -74,30 +84,30 @@ class ExtremeEventsTab(QWidget):
     ⚡ Extrém Események Tab.
     Közvetlenül használja az Application Use Case-t az anomáliák kimutatásához.
     """
-    
+
     extreme_weather_requested = Signal()
-    
+
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
-        
+
         self.theme_manager = get_theme_manager()
         self.profile_manager = AnomalyProfileManager() if _profile_manager_available else None
         self.use_case = DetectAnomaliesUseCase()
         self.extreme_calculator = ExtremeCalculator() if _extreme_calculator_available else None
-        
+
         self.current_data: Optional[Dict[str, Any]] = None
         self.period_type: str = "daily"
-        
+
         # UI komponensek
         self.temp_anomaly: Optional[QLabel] = None
         self.precip_anomaly: Optional[QLabel] = None
         self.wind_anomaly: Optional[QLabel] = None
         self.records_text: Optional[QTextEdit] = None
         self.extreme_table: Optional[QTableWidget] = None
-        
+
         self._init_ui()
         self._register_widgets_for_theming()
-        
+
         logger.info("ExtremeEventsTab inicializálva (Clean Architecture)")
 
     def _init_ui(self) -> None:
@@ -105,7 +115,7 @@ class ExtremeEventsTab(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(15, 15, 15, 15)
         layout.setSpacing(15)
-        
+
         # Cím
         self.title_label = QLabel("⚡ Extrém Időjárási Események")
         title_font = QFont()
@@ -114,68 +124,68 @@ class ExtremeEventsTab(QWidget):
         self.title_label.setFont(title_font)
         self.title_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.title_label)
-        
+
         # Anomália beállítások gomb
         self.settings_btn = QPushButton("⚙️ ANOMÁLIA BEÁLLÍTÁSOK MEGNYITÁSA")
         self.settings_btn.setMinimumHeight(40)
         self.settings_btn.clicked.connect(self._on_anomaly_settings_clicked)
         layout.addWidget(self.settings_btn)
-        
+
         # Anomália szekció
         self.anomaly_section = self._create_anomaly_section()
         layout.addWidget(self.anomaly_section)
-        
+
         # Rekordok szekció
         self.records_section = self._create_records_section()
         layout.addWidget(self.records_section)
-        
+
         # Akciók
         self.detailed_btn = QPushButton("🔍 Részletes Extrém Elemzés")
         self.detailed_btn.clicked.connect(self._on_detailed_analysis_clicked)
         layout.addWidget(self.detailed_btn)
-        
+
         layout.addStretch()
 
     def _create_anomaly_section(self) -> QGroupBox:
         section = QGroupBox("🔍 Anomália Detektálás")
         layout = QGridLayout(section)
-        
+
         self.temp_anomaly = QLabel("🌡️ Hőmérséklet: -")
         self.precip_anomaly = QLabel("🌧️ Csapadék: -")
         self.wind_anomaly = QLabel("🌪️ Szél: -")
-        
+
         layout.addWidget(self.temp_anomaly, 0, 0)
         layout.addWidget(self.precip_anomaly, 0, 1)
         layout.addWidget(self.wind_anomaly, 0, 2)
-        
+
         return section
 
     def _create_records_section(self) -> QGroupBox:
         section = QGroupBox("🏆 Rekordok és Szélsőértékek")
         layout = QVBoxLayout(section)
-        
+
         # Periódus választó
         period_layout = QHBoxLayout()
         self.period_group = QButtonGroup(self)
-        
+
         self.daily_radio = QRadioButton("Napi")
         self.monthly_radio = QRadioButton("Havi")
         self.yearly_radio = QRadioButton("Éves")
-        
+
         self.daily_radio.setChecked(True)
         for rb in [self.daily_radio, self.monthly_radio, self.yearly_radio]:
             self.period_group.addButton(rb)
             period_layout.addWidget(rb)
             rb.toggled.connect(self._on_period_type_changed)
-            
+
         layout.addLayout(period_layout)
-        
+
         self.extreme_table = QTableWidget()
         self.extreme_table.setColumnCount(4)
         self.extreme_table.setHorizontalHeaderLabels(["Kategória", "Típus", "Érték", "Dátum"])
         self.extreme_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         layout.addWidget(self.extreme_table)
-        
+
         return section
 
     def update_data(self, data: Dict[str, Any], city_name: str = "") -> None:
@@ -183,7 +193,7 @@ class ExtremeEventsTab(QWidget):
         if not data:
             return
         self.current_data = data
-        
+
         # Use Case hívása
         try:
             thresholds = self._get_thresholds()
@@ -202,7 +212,7 @@ class ExtremeEventsTab(QWidget):
         """Beállítások lekérése a profil menedzsertől."""
         if self.profile_manager:
             return self.profile_manager.get_current_settings()
-        
+
         # Fallback
         return {
             "temp_hot": 35.0, "temp_cold": -10.0,
@@ -218,7 +228,7 @@ class ExtremeEventsTab(QWidget):
             "precipitation": self.precip_anomaly,
             "wind": self.wind_anomaly
         }
-        
+
         for cat, label in mapping.items():
             anomaly = anomalies.get(cat)
             if not anomaly:
@@ -247,7 +257,9 @@ class ExtremeEventsTab(QWidget):
 
     def _on_anomaly_settings_clicked(self) -> None:
         try:
-            from src.presentation.gui.dialogs.anomaly_settings_dialog import AnomalySettingsDialog
+            from src.presentation.gui.dialogs.anomaly_settings_dialog import (
+                AnomalySettingsDialog,
+            )
             dialog = AnomalySettingsDialog(self)
             if dialog.exec():
                 if self.current_data:

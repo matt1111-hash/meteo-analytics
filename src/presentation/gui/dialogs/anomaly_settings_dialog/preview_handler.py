@@ -6,15 +6,16 @@ Anomaly Settings Dialog - Preview Handler Module
 Előnézet és teszt logika az AnomalySettingsDialoghoz.
 """
 
-from typing import Dict, TYPE_CHECKING
 import logging
+from typing import TYPE_CHECKING, Dict
 
-from PySide6.QtWidgets import QInputDialog, QColorDialog
-from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QColorDialog, QInputDialog
 
 if TYPE_CHECKING:
-    from src.presentation.gui.dialogs.anomaly_settings_dialog.core import AnomalySettingsDialog
+    from src.presentation.gui.dialogs.anomaly_settings_dialog.core import (
+        AnomalySettingsDialog,
+    )
 
 
 logger = logging.getLogger(__name__)

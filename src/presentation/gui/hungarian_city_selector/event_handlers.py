@@ -7,14 +7,14 @@ Event handler metódusok a HungarianCitySelector osztályhoz.
 """
 
 import logging
-from typing import Optional
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QListWidgetItem
 
+from src.presentation.gui.hungarian_city_selector.database_loader import (
+    HungarianCityDatabaseLoader,
+)
 from src.presentation.gui.hungarian_city_selector.types import HungarianCity
-from src.presentation.gui.hungarian_city_selector.database_loader import HungarianCityDatabaseLoader
-
 
 logger = logging.getLogger(__name__)
 

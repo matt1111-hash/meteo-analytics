@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Optional
 
-
 _VALID_PARAMETERS = {"temperature", "precipitation", "wind"}
 _VALID_SEVERITIES = {"success", "warning", "error", "disabled"}
 

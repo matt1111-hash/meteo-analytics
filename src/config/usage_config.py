@@ -15,6 +15,8 @@ from typing import Any, Callable, TypeVar, cast
 from .api_config import APIConfig
 from .paths_config import (
     USAGE_TRACKING_FILE as DEFAULT_USAGE_TRACKING_FILE,
+)
+from .paths_config import (
     ensure_directories as default_ensure_directories,
 )
 from .provider_config import ProviderConfig

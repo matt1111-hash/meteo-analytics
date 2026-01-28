@@ -7,8 +7,8 @@
 FÁJL: src/presentation/gui/map/map_debug.py
 """
 
-from typing import Dict, Any, Optional
 import os
+from typing import Any, Dict, Optional
 
 
 def generate_demo_weather_data() -> Dict[str, Any]:

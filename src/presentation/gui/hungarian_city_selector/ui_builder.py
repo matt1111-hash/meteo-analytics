@@ -7,18 +7,28 @@ UI komponensek létrehozása a HungarianCitySelector widgethez.
 """
 
 import logging
-from typing import List, Optional, Callable
+from typing import Callable, List, Optional
 
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-    QGroupBox, QLabel, QLineEdit, QComboBox, QListWidget,
-    QListWidgetItem, QPushButton
-)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QComboBox,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
-from src.presentation.gui.hungarian_city_selector.types import HungarianCity, HungarianRegions
-
+from src.presentation.gui.hungarian_city_selector.types import (
+    HungarianCity,
+    HungarianRegions,
+)
 
 logger = logging.getLogger(__name__)
 

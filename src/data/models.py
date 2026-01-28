@@ -10,38 +10,36 @@ from src.domain.entities.analysis import AnalyticsResult
 """
 
 # Re-export from Data Layer (City - data layer entity)
-from src.data.city_types import City, CityQuery, CityDatabaseError
-
-# Re-export from Domain Layer
-from src.domain.entities.location_types import LocationType
-from src.domain.entities.location import Location
-from src.domain.entities.universal_location import UniversalLocation
-from src.domain.entities.city_info import CityInfo
-from src.domain.entities.location_factories import (
-    create_location,
-    create_location_from_coordinates,
-    create_universal_location
+from src.data.city_types import City, CityDatabaseError, CityQuery
+from src.domain.entities.analysis_factories import (
+    create_analytics_question,
+    create_universal_query,
+    create_universal_time_range,
 )
-
-from src.domain.entities.weather import (
-    CityWeatherResult,
-    AnomalyResult,
-    create_city_weather_result
-)
-
-from src.domain.entities.time_granularity import TimeGranularity
 from src.domain.entities.analysis_type import AnalysisType
-from src.domain.entities.universal_time_range import UniversalTimeRange
-from src.domain.entities.universal_query import UniversalQuery
 from src.domain.entities.analytics_models import (
     AnalyticsQuestion,
     AnalyticsResult,
-    QueryResults
+    QueryResults,
 )
-from src.domain.entities.analysis_factories import (
-    create_universal_time_range,
-    create_universal_query,
-    create_analytics_question
+from src.domain.entities.city_info import CityInfo
+from src.domain.entities.location import Location
+from src.domain.entities.location_factories import (
+    create_location,
+    create_location_from_coordinates,
+    create_universal_location,
+)
+
+# Re-export from Domain Layer
+from src.domain.entities.location_types import LocationType
+from src.domain.entities.time_granularity import TimeGranularity
+from src.domain.entities.universal_location import UniversalLocation
+from src.domain.entities.universal_query import UniversalQuery
+from src.domain.entities.universal_time_range import UniversalTimeRange
+from src.domain.entities.weather import (
+    AnomalyResult,
+    CityWeatherResult,
+    create_city_weather_result,
 )
 
 # Export all symbols

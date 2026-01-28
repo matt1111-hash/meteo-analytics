@@ -4,9 +4,10 @@ External API methods for QueryControlWidget.
 Ez a modul tartalmazza a QueryControlWidget külső API metódusait.
 """
 
-from typing import Optional, Dict, Any
-from PySide6.QtCore import QTimer
 import logging
+from typing import Any, Dict, Optional
+
+from PySide6.QtCore import QTimer
 
 logger = logging.getLogger(__name__)
 

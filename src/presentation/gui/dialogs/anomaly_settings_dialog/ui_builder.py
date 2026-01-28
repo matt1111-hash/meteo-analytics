@@ -6,21 +6,33 @@ Anomaly Settings Dialog - UI Builder Module
 UI komponensek létrehozása az AnomalySettingsDialoghoz.
 """
 
-from typing import Dict, TYPE_CHECKING
 import logging
+from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-    QGroupBox, QLabel, QPushButton, QComboBox, QDoubleSpinBox,
-    QSpinBox, QLineEdit, QTextEdit, QTabWidget
-)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QComboBox,
+    QDoubleSpinBox,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QSpinBox,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ...utils import AnomalyConstants
 
 if TYPE_CHECKING:
-    from src.presentation.gui.dialogs.anomaly_settings_dialog.core import AnomalySettingsDialog
+    from src.presentation.gui.dialogs.anomaly_settings_dialog.core import (
+        AnomalySettingsDialog,
+    )
 
 
 logger = logging.getLogger(__name__)

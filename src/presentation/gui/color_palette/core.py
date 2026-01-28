@@ -8,13 +8,16 @@ Fő ColorPalette osztály - színpaletta kezelő rendszer.
 
 from typing import Optional
 
-from src.presentation.gui.types import ThemeType
-from src.presentation.gui.color_palette.generators import ColorGenerator, StandardColorGenerator
-from src.presentation.gui.color_palette.color_management import ColorManagementMixin
-from src.presentation.gui.color_palette.theme_management import ThemeManagementMixin
 from src.presentation.gui.color_palette.advanced_features import AdvancedFeaturesMixin
+from src.presentation.gui.color_palette.color_management import ColorManagementMixin
 from src.presentation.gui.color_palette.data_io import DataIOMixin
+from src.presentation.gui.color_palette.generators import (
+    ColorGenerator,
+    StandardColorGenerator,
+)
+from src.presentation.gui.color_palette.theme_management import ThemeManagementMixin
 from src.presentation.gui.color_palette.utility_methods import UtilityMethodsMixin
+from src.presentation.gui.types import ThemeType
 
 
 class ColorPalette(

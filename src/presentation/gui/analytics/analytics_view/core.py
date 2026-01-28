@@ -7,20 +7,24 @@ Fő AnalyticsView widget osztály.
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QGroupBox, QScrollArea, QFrame, QSplitter
-)
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QLabel,
+    QSplitter,
+    QVBoxLayout,
+    QWidget,
+)
 
-from ...theme_manager import get_theme_manager, register_widget_for_theming, get_current_colors
-from .ui_builder import AnalyticsViewUIBuilder
+from ...theme_manager import (
+    get_current_colors,
+    get_theme_manager,
+    register_widget_for_theming,
+)
 from .multi_city_handler import AnalyticsViewMultiCityHandler
 from .statistics_cards import AnalyticsViewStatisticsCards
-
+from .ui_builder import AnalyticsViewUIBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -169,7 +173,7 @@ class AnalyticsView(QWidget):
             dates = daily_data.get('time', [])
             total_days = len(dates)
 
-            logger.info(f"🎯 KONSTANS AGGREGÁCIÓ - BEAUFORT + MAX SZÉLLÖKÉS:")
+            logger.info("🎯 KONSTANS AGGREGÁCIÓ - BEAUFORT + MAX SZÉLLÖKÉS:")
             logger.info(f"  📊 {total_days} nap → 365 téglalap minden tab-nál")
 
             # 🚨 KRITIKUS JAVÍTÁS: Bal oldali statisztikák frissítése

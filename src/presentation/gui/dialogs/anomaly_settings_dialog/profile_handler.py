@@ -6,13 +6,15 @@ Anomaly Settings Dialog - Profile Handler Module
 Profil menedzsment logika az AnomalySettingsDialoghoz.
 """
 
-from typing import Dict, Any, TYPE_CHECKING
 import logging
+from typing import TYPE_CHECKING, Any, Dict
 
-from PySide6.QtWidgets import QMessageBox, QInputDialog
+from PySide6.QtWidgets import QInputDialog, QMessageBox
 
 if TYPE_CHECKING:
-    from src.presentation.gui.dialogs.anomaly_settings_dialog.core import AnomalySettingsDialog
+    from src.presentation.gui.dialogs.anomaly_settings_dialog.core import (
+        AnomalySettingsDialog,
+    )
 
 
 logger = logging.getLogger(__name__)

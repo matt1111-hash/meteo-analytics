@@ -6,7 +6,6 @@ Control Panel - UI Manager Mixin
 UI state management, visibility control, mode switching.
 """
 
-from typing import Dict, Any
 from PySide6.QtCore import QTimer
 
 
