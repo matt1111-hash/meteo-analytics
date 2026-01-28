@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Trend Analytics Tab - Demo
+
+🧪 Standalone testing kód
+
+Fájl: src/presentation/gui/trend_analytics/trend_analytics_tab/demo.py
+"""
+
+import sys
+
+
+def run_demo():
+    """
+    Standalone testing - futtatható demo.
+    """
+    from PySide6.QtWidgets import QApplication
+
+    from .core import TrendAnalyticsTab
+
+    app = QApplication(sys.argv)
+
+    # Test window
+    window = TrendAnalyticsTab()
+    window.setWindowTitle("🚀 Enhanced Trend Analytics v4.2 - KPI DASHBOARD KÉSZ!")
+    window.resize(1600, 1000)
+    window.show()
+
+    sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    run_demo()
