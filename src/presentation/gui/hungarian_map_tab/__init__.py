@@ -11,8 +11,7 @@ Usage:
     from src.presentation.gui.hungarian_map_tab import HungarianMapTab
 """
 
-from ._map_tab import HungarianMapTab
-from .map_analytics_sync import MapAnalyticsSyncMixin
-from .map_tab_ui import MapTabUIMixin
+from .core import HungarianMapTab
+from .mixins import MapAnalyticsSyncMixin, MapTabUIMixin
 
 __all__ = ["HungarianMapTab", "MapAnalyticsSyncMixin", "MapTabUIMixin"]

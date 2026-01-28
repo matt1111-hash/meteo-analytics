@@ -227,7 +227,7 @@ def show_about(window: 'MainWindow') -> None:
     Args:
         window: MainWindow példány
     """
-    from ..config import AppInfo
+    from src.config import AppInfo
 
     QMessageBox.about(
         window,

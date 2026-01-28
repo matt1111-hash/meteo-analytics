@@ -12,6 +12,7 @@ import sqlite3
 from typing import Dict, List, Optional, Any, Union
 from pathlib import Path
 
+from PySide6.QtCore import Signal
 from .base_worker import BaseWorkerThread
 
 

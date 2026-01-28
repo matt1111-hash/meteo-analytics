@@ -22,8 +22,8 @@ from PySide6.QtGui import QFont
 # 🔧 JAVÍTOTT IMPORT - Helyes útvonal!
 from ..universal_location_selector import UniversalLocationSelector
 from ..theme_manager import get_theme_manager, register_widget_for_theming
-from ...data.city_manager import CityManager
-from ...data.models import UniversalLocation
+from src.data.city_manager import CityManager
+from src.data.models import UniversalLocation
 
 
 class LocationWidget(QWidget):

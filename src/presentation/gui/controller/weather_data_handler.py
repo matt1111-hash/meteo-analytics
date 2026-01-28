@@ -13,10 +13,10 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 import pandas as pd
 
-from PySide6.QtCore import Slot, Signal
+from PySide6.QtCore import QObject, Slot, Signal
 
 
-class WeatherDataHandler:
+class WeatherDataHandler(QObject):
     """
     Időjárási adat feldolgozás kezelése.
 
@@ -33,13 +33,15 @@ class WeatherDataHandler:
     error_occurred = Signal(str)
     status_updated = Signal(str)
 
-    def __init__(self, database_manager):
+    def __init__(self, database_manager, parent=None):
         """
         WeatherDataHandler inicializálása.
 
         Args:
             database_manager: DatabaseManager példány
+            parent: Szülő QObject
         """
+        super().__init__(parent)
         self.database_manager = database_manager
         self._logger = logging.getLogger(__name__)
         self.current_city_data: Optional[Dict[str, Any]] = None
@@ -98,7 +100,7 @@ class WeatherDataHandler:
                     wind_gusts_info = f", max széllökés: {max_gust:.1f} km/h"
 
             # Provider info a státuszban
-            from ..config import ProviderConfig
+            from src.config import ProviderConfig
             provider_config = ProviderConfig()
             provider_display = provider_config.PROVIDERS.get(used_provider, {}).get('name', used_provider)
 

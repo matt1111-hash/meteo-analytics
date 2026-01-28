@@ -35,9 +35,9 @@ from PySide6.QtWidgets import QApplication
 
 # Analytics imports
 try:
-    from ...analytics.multi_city_engine import MultiCityEngine
-    from ...data.weather_client import WeatherClient
-    from ...data.enums import AnalysisType, DataProvider
+    from src.analytics.multi_city_engine import MultiCityEngine
+    from src.data.weather_client import WeatherClient
+    from src.data.enums import AnalysisType, DataProvider
     IMPORTS_OK = True
     print("✅ AnalysisWorker imports successful")
 except ImportError as e:

@@ -8,6 +8,7 @@ FÁJL: src/presentation/gui/windows/window_layout.py
 """
 
 from typing import TYPE_CHECKING
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QStackedWidget, QSplitter,
     QSizePolicy, QLabel
@@ -24,7 +25,7 @@ def setup_window(window: 'MainWindow') -> None:
     Args:
         window: MainWindow példány
     """
-    from ..config import AppInfo
+    from src.config import AppInfo
     from ..utils import GUIConstants
     from ..theme_manager import register_widget_for_theming
 
@@ -133,7 +134,7 @@ def create_single_city_view(window: 'MainWindow') -> QWidget:
 def create_analytics_view(window: 'MainWindow') -> QWidget:
     """Analytics View létrehozása."""
     from ..theme_manager import register_widget_for_theming
-    from ..analytics_view import AnalyticsView
+    from ..analytics import AnalyticsView
 
     window.analytics_panel = AnalyticsView()
     register_widget_for_theming(window.analytics_panel, "container")

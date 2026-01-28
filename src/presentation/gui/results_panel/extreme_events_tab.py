@@ -51,7 +51,7 @@ except ImportError:
     _profile_manager_available = False
 
 try:
-    from .extreme_calculator import ExtremeCalculator
+    from .extreme import ExtremeCalculator
     _extreme_calculator_available = True
 except ImportError:
     _extreme_calculator_available = False

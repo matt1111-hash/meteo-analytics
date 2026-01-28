@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (
 )
 
 # Relatív importok
-from ...analytics.wind_analysis import (
+from src.analytics.wind_analysis import (
     analyze_wind_patterns, 
     format_wind_analysis_summary,
     get_chart_data_for_monthly_windy_days,

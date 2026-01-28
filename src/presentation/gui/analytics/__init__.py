@@ -22,7 +22,7 @@ Multi-city régió elemzések dashboard modul.
 """
 
 # Main AnalyticsView class
-from .analytics_view import AnalyticsView
+from .analytics_view.core import AnalyticsView
 
 # Color maps
 from .analytics_helpers import MeteorologicalColorMaps

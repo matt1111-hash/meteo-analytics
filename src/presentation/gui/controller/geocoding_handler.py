@@ -12,10 +12,10 @@ import logging
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 
-from PySide6.QtCore import Slot, Signal
+from PySide6.QtCore import QObject, Slot, Signal
 
 
-class GeocodingHandler:
+class GeocodingHandler(QObject):
     """
     Geocoding kezelése.
 
@@ -32,14 +32,16 @@ class GeocodingHandler:
     error_occurred = Signal(str)
     status_updated = Signal(str)
 
-    def __init__(self, worker_manager, database_manager):
+    def __init__(self, worker_manager, database_manager, parent=None):
         """
         GeocodingHandler inicializálása.
 
         Args:
             worker_manager: WorkerManager példány
             database_manager: DatabaseManager példány
+            parent: Szülő QObject
         """
+        super().__init__(parent)
         self.worker_manager = worker_manager
         self.database_manager = database_manager
         self._logger = logging.getLogger(__name__)

@@ -35,7 +35,7 @@ except ImportError as e:
 # Project imports
 try:
     from src.config import AppInfo, ensure_directories
-    from src.gui.main_window import MainWindow
+    from src.presentation.gui.windows import MainWindow
 except ImportError as e:
     print("❌ Modul import hiba!")
     print("Ellenőrizze a projekt struktúrát és a PYTHONPATH-t.")
@@ -215,23 +215,13 @@ def check_requirements() -> bool:
 
     project_root = Path(__file__).parent
 
-    # ✅ JAVÍTOTT: Moduláris results_panel struktúra ellenőrzése
+    # Required paths - updated for presentation structure
     required_paths = [
         project_root / "src",
-        project_root / "src" / "gui",
         project_root / "src" / "config.py",
-        project_root / "src" / "gui" / "main_window.py",
-        project_root / "src" / "gui" / "app_controller.py",
-        project_root / "src" / "gui" / "control_panel.py",
-        # ✅ JAVÍTOTT: Moduláris results_panel mappa és fájlok ellenőrzése
-        project_root / "src" / "gui" / "results_panel",
-        project_root / "src" / "gui" / "results_panel" / "__init__.py",
-        project_root / "src" / "gui" / "results_panel" / "results_panel.py",
-        project_root / "src" / "gui" / "results_panel" / "quick_overview_tab.py",
-        project_root / "src" / "gui" / "results_panel" / "detailed_charts_tab.py",
-        project_root / "src" / "gui" / "results_panel" / "data_table_tab.py",
-        project_root / "src" / "gui" / "results_panel" / "extreme_events_tab.py",
-        project_root / "src" / "gui" / "results_panel" / "utils.py"
+        project_root / "src" / "presentation" / "gui",
+        project_root / "src" / "presentation" / "gui" / "windows" / "main_window.py",
+        project_root / "src" / "presentation" / "gui" / "controller" / "app_controller.py",
     ]
 
     missing_files = []
@@ -245,16 +235,14 @@ def check_requirements() -> bool:
             print(f"   - {file}")
         return False
 
-    # === MODULÁRIS RESULTS PANEL VALIDÁCIÓ ===
+    # === GUI MODULE VALIDÁCIÓ ===
 
     try:
-        # ✅ JAVÍTOTT: Results panel moduláris import teszt
-        from src.gui.results_panel import QuickOverviewTab, ResultsPanel  # noqa: F401
-        print("✅ Results panel moduláris architektúra: OK")
-
+        from src.presentation.gui.windows import MainWindow
+        from src.presentation.gui.controller import AppController  # noqa: F401
+        print("✅ GUI modul struktúra: OK")
     except ImportError as e:
-        print(f"❌ Results panel import hiba: {e}")
-        print("A moduláris results_panel struktúra hibás!")
+        print(f"❌ GUI modul import hiba: {e}")
         return False
 
     # === REQUIREMENTS ELLENŐRZÉSE ===

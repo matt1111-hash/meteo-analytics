@@ -16,9 +16,9 @@ from typing import Dict, Any, Optional
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-from ..config import DATA_DIR, APIConfig, ProviderConfig, UserPreferences, UsageTracker
-from .workers.data_fetch_worker import WorkerManager
-from .workers.analysis_worker import AnalysisWorker
+from src.config import DATA_DIR, APIConfig, ProviderConfig, UserPreferences, UsageTracker
+from ..workers import WorkerManager
+from ..workers.analysis_worker import AnalysisWorker
 from .database_manager import DatabaseManager
 from .provider_routing import ProviderRouting
 from .geocoding_handler import GeocodingHandler
@@ -104,12 +104,12 @@ class AppController(QObject):
         self._logger.info("✅ WorkerManager created")
 
         # 4. Geocoding Handler
-        self.geocoding_handler = GeocodingHandler(self.worker_manager, self.database_manager)
+        self.geocoding_handler = GeocodingHandler(self.worker_manager, self.database_manager, self)
         self._connect_geocoding_signals()
         self._logger.info("✅ GeocodingHandler initialized")
 
         # 5. Weather Data Handler
-        self.weather_data_handler = WeatherDataHandler(self.database_manager)
+        self.weather_data_handler = WeatherDataHandler(self.database_manager, self)
         self._connect_weather_data_signals()
         self._logger.info("✅ WeatherDataHandler initialized")
 

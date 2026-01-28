@@ -32,8 +32,8 @@ from PySide6.QtGui import QFont
 from typing import Dict, List, Optional, Any
 import logging
 
-from ..data.models import UniversalLocation, LocationType
-from ..data.city_manager import CityManager, City
+from src.data.models import UniversalLocation, LocationType
+from src.data.city_manager import CityManager, City
 from .theme_manager import register_widget_for_theming
 
 logger = logging.getLogger(__name__)

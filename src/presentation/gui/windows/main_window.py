@@ -19,7 +19,7 @@ from PySide6.QtCore import Qt, QSettings, Signal, QSize, QThread, QTimer
 from PySide6.QtGui import QAction, QActionGroup
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
-from ...config import AppInfo
+from src.config import AppInfo
 from ..utils import GUIConstants, ThemeType
 from ..theme_manager import get_theme_manager, register_widget_for_theming
 from ..color_palette import ColorPalette
@@ -27,7 +27,7 @@ from ..controller import AppController
 from ..control_panel import ControlPanel
 from ..results_panel import ResultsPanel
 from ..dialogs import ExtremeWeatherDialog
-from ..analytics_view import AnalyticsView
+from ..analytics import AnalyticsView
 from ..trend_analytics import TrendAnalyticsTab
 from ..hungarian_map_tab import HungarianMapTab
 
@@ -138,24 +138,10 @@ class MainWindow(QMainWindow):
 
     def _load_hungarian_counties(self) -> None:
         """🗺️ Magyar megyék automatikus betöltése."""
-        try:
-            from ...analytics.hungarian_counties_integration import HungarianCountiesLoader
-
-            counties_loader = HungarianCountiesLoader()
-            self.state.hungarian_counties.geodataframe = counties_loader.load_counties_geodataframe()
-
-            if self.state.hungarian_counties.geodataframe is not None:
-                self.state.hungarian_counties.loaded = True
-
-                # Automatikus konfiguráció ha a HungarianMapTab létezik
-                if self.hungarian_map_tab and hasattr(self.hungarian_map_tab, 'map_visualizer'):
-                    map_visualizer = self.hungarian_map_tab.map_visualizer
-                    if hasattr(map_visualizer, 'set_counties_geodataframe'):
-                        map_visualizer.set_counties_geodataframe(self.state.hungarian_counties.geodataframe)
-
-        except ImportError:
-            self.state.hungarian_counties.loaded = False
-            self.state.hungarian_counties.geodataframe = None
+        # TODO: Implement counties loading from proper location
+        # The hungarian_counties_integration module was removed during refactoring
+        self.state.hungarian_counties.loaded = False
+        self.state.hungarian_counties.geodataframe = None
 
     def _connect_mvc_signals(self) -> None:
         """MVC signal összekötések."""

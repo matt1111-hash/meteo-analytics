@@ -22,7 +22,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Signal, Qt
 
 from ..theme_manager import get_theme_manager, register_widget_for_theming
-from ...data.city_manager import CityManager
+from src.data.city_manager import CityManager
 
 
 class MultiCityWidget(QWidget):

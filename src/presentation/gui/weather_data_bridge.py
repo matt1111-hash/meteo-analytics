@@ -32,8 +32,8 @@ from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime, date
 from dataclasses import dataclass
 
-from ..data.models import AnalyticsResult, CityWeatherResult, AnalyticsQuestion
-from ..data.enums import AnalyticsMetric
+from src.data.models import AnalyticsResult, CityWeatherResult, AnalyticsQuestion
+from src.data.enums import AnalyticsMetric
 
 logger = logging.getLogger(__name__)
 
@@ -549,8 +549,8 @@ if __name__ == "__main__":
         print(f"   {key}: {value}")
     
     # Mock AnalyticsResult létrehozása teszteléshez
-    from ..data.models import AnalyticsQuestion
-    from ..data.enums import QuestionType, RegionScope
+    from src.data.models import AnalyticsQuestion
+    from src.data.enums import QuestionType, RegionScope
     
     # WINDSPEED teszt
     print("\n💨 WINDSPEED METRIC TESZT:")
