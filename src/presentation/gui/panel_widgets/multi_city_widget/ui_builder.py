@@ -28,7 +28,7 @@ from PySide6.QtWidgets import (
 
 if TYPE_CHECKING:
 
-    from ..theme_manager import ThemeManager
+    from src.presentation.gui.theme_manager import ThemeManager
 
 
 def create_multi_city_ui(parent_widget: QWidget, theme_manager: "ThemeManager") -> dict:
@@ -111,7 +111,7 @@ def register_widget_for_theming(
         clear_btn: Clear button
         info_label: Info label
     """
-    from ..theme_manager import register_widget_for_theming
+    from src.presentation.gui.theme_manager import register_widget_for_theming
 
     register_widget_for_theming(widget, "container")
     register_widget_for_theming(group, "container")
@@ -149,5 +149,5 @@ def apply_label_styling(
     css = f"QLabel {{ color: {color}; font-size: {font_size}; }}"
     label.setStyleSheet(css)
 
-    from ..theme_manager import register_widget_for_theming
+    from src.presentation.gui.theme_manager import register_widget_for_theming
     register_widget_for_theming(label, "text")

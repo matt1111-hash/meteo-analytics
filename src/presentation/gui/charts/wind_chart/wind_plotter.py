@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 import pandas as pd
 
-from ..theme_manager import get_current_colors
+from src.presentation.gui.theme_manager import get_current_colors
 from .wind_categories import HUNGARIAN_WIND_THRESHOLDS, get_wind_category, calculate_y_axis_max
 
 if TYPE_CHECKING:

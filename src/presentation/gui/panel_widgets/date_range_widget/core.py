@@ -20,7 +20,7 @@ from typing import Optional
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
 
-from ..theme_manager import get_theme_manager
+from src.presentation.gui.theme_manager import get_theme_manager
 from .date_handlers import DateHandlerMixin
 from .public_api import DateRangeWidgetPublicAPI
 from .ui_builder import (

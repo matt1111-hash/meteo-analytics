@@ -30,7 +30,7 @@ def start_local_server(self) -> None:
     if self.local_server and self.local_server.running:
         return
 
-    from .map_interactions import LocalHttpServerThread
+    from ..map_interactions import LocalHttpServerThread
     self.local_server = LocalHttpServerThread(self)
     self.local_server.server_ready.connect(self._on_server_ready)
     self.local_server.server_error.connect(self._on_server_error)

@@ -5,7 +5,7 @@
 WeatherTooltipMixin Point Finder - Find closest chart point.
 """
 
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 import matplotlib.dates as mdates
 import numpy as np

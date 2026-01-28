@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..theme_manager import get_theme_manager, register_widget_for_theming
+from src.presentation.gui.theme_manager import get_theme_manager, register_widget_for_theming
 
 
 class AnalysisTypeWidget(QWidget):

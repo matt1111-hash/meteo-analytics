@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 
 import statistics
 
-from ...constants import AnomalyConstants
+from src.presentation.gui.utils.constants import AnomalyConstants
 
 logger = logging.getLogger(__name__)
 

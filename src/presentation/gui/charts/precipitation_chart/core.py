@@ -19,7 +19,7 @@ from typing import Optional
 from PySide6.QtWidgets import QWidget
 
 from ..tooltip_mixin import WeatherTooltipMixin
-from .base_chart import WeatherChart
+from ..base_chart import WeatherChart
 
 
 class PrecipitationChart(WeatherChart, WeatherTooltipMixin):

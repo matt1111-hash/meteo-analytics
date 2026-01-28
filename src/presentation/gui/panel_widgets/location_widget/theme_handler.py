@@ -7,7 +7,7 @@ Location Widget - Theme styling.
 
 from PySide6.QtWidgets import QLabel
 
-from ..theme_manager import register_widget_for_theming
+from src.presentation.gui.theme_manager import register_widget_for_theming
 
 
 class ThemeHandler:

@@ -31,7 +31,7 @@ from PySide6.QtWidgets import (
 )
 
 if TYPE_CHECKING:
-    from ..theme_manager import ThemeManager
+    from src.presentation.gui.theme_manager import ThemeManager
 
 
 def create_time_range_group(parent_widget: QWidget) -> dict:
@@ -228,7 +228,7 @@ def register_for_theming(
         buttons: Quick buttons list
         computed_dates_info: Computed dates info label
     """
-    from ..theme_manager import register_widget_for_theming
+    from src.presentation.gui.theme_manager import register_widget_for_theming
 
     register_widget_for_theming(parent_widget, "container")
     register_widget_for_theming(time_range_group, "container")
@@ -264,7 +264,7 @@ def apply_label_styling(
         label: QLabel widget
         style_type: "secondary" vagy "primary"
     """
-    from ..theme_manager import register_widget_for_theming
+    from src.presentation.gui.theme_manager import register_widget_for_theming
 
     color_palette = theme_manager.get_color_scheme()
     if not color_palette:

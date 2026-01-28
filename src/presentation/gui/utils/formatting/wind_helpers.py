@@ -7,7 +7,7 @@ Formatting Module - Wind Helpers - Wind-specific formatting.
 
 from typing import Any, Dict, Optional
 
-from ...constants import AnomalyConstants
+from src.presentation.gui.utils.constants import AnomalyConstants
 
 
 def format_wind_gusts(value: float, unit: str = "km/h", include_category: bool = False) -> str:

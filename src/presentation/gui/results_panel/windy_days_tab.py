@@ -40,7 +40,7 @@ from src.analytics.wind_analysis import (
 )
 
 from ..charts.windy_days_chart import WindyDaysChart
-from ..theme_manager import ProfessionalThemeManager
+from src.presentation.gui.theme_manager import ProfessionalThemeManager
 
 logger = logging.getLogger(__name__)
 

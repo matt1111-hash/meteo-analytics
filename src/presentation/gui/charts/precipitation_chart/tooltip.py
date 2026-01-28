@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 if TYPE_CHECKING:
     pass
 
-from ..theme_manager import get_current_colors
+from src.presentation.gui.theme_manager import get_current_colors
 
 
 def _find_closest_chart_point(self, event) -> Optional[Dict[str, Any]]:

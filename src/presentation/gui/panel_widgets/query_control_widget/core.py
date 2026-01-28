@@ -30,7 +30,7 @@ except ImportError:
     DateRangeWidget = ParametersWidget = ProviderWidget = None
 
 try:
-    from ..theme_manager import get_theme_manager
+    from src.presentation.gui.theme_manager import get_theme_manager
     _theme_manager_available = True
     logger.debug("✅ ThemeManager import successful")
 except ImportError:

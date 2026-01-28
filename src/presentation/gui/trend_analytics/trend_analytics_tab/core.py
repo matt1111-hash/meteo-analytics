@@ -19,7 +19,7 @@ import logging
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
 
-from ..theme_manager import ThemeManager
+from src.presentation.gui.theme_manager import ThemeManager
 from ..trend_data_processor import TrendDataProcessor
 from .analysis_handlers import TrendAnalysisHandlerMixin
 from .public_api import TrendAnalyticsPublicAPIMixin
@@ -90,6 +90,7 @@ class TrendAnalyticsTab(
     def setup_ui(self) -> None:
         """🎨 UI SETUP - Enhanced Dashboard Layout v4.2"""
         main_layout = QVBoxLayout()
+        self.setLayout(main_layout)
 
         # Header
         create_header(self)
@@ -112,8 +113,6 @@ class TrendAnalyticsTab(
 
         # 🔧 QSplitter implementáció
         setup_content_splitter(self, chart_container, stats_area)
-
-        self.setLayout(main_layout)
 
         logger.info("✅ Enhanced Dashboard layout beállítva: KPI kártyák dinamikus frissítéssel")
 

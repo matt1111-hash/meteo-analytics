@@ -5,7 +5,7 @@
 WeatherTooltipMixin Tooltip Display - Show/hide tooltip annotations.
 """
 
-from typing import Any, Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 import matplotlib.dates as mdates
 

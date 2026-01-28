@@ -18,11 +18,12 @@ Fájl: src/presentation/gui/map/map_visualizer/core.py
 
 from PySide6.QtCore import Signal
 from PySide6.QtWebChannel import QWebChannel
+from PySide6.QtWidgets import QWidget
 
-from ..color_palette import ColorPalette
-from ..theme_manager import register_widget_for_theming
-from .map_interactions import JavaScriptBridge
-from .map_state import FoliumMapConfig
+from src.presentation.gui.color_palette import ColorPalette
+from src.presentation.gui.theme_manager import register_widget_for_theming
+from ..map_interactions import JavaScriptBridge
+from ..map_state import FoliumMapConfig
 from .server_handler import _show_folium_error, start_local_server
 from .signal_handlers import connect_signals
 
@@ -36,10 +37,60 @@ except ImportError:
     FOLIUM_AVAILABLE = False
 
 
-class HungarianMapVisualizer(
-    # Mixin classes
-    object
-):
+# Import signal handler methods and attach to class
+from .signal_handlers import (
+    _on_style_changed,
+    _on_counties_toggled,
+    _on_weather_toggled,
+    _on_zoom_changed,
+    _on_js_county_clicked,
+    _on_js_coordinates_clicked,
+    _on_js_map_moved,
+    _on_js_county_hovered,
+    _refresh_map,
+    _export_map,
+    _on_map_loaded,
+)
+
+# Import public API methods
+from .public_api import (
+    set_active_overlay_parameter,
+    clear_active_overlay_parameter,
+    get_active_overlay_parameter,
+    set_counties_geodataframe,
+    set_weather_data,
+    update_map_bounds,
+    get_map_config,
+    reset_map_view,
+    set_map_style,
+    toggle_counties,
+    toggle_weather_overlay,
+    set_selected_county,
+    highlight_counties,
+    is_folium_available,
+    get_javascript_bridge,
+    get_current_map_file,
+)
+
+# Import map generation methods
+from .map_generation import (
+    _generate_default_map,
+    _start_map_generation,
+    _on_map_generated,
+    _load_map_from_http_url,
+    _on_map_error,
+)
+
+# Import server handler methods
+from .server_handler import (
+    start_local_server,
+    _on_server_ready,
+    _on_server_error,
+    _show_folium_error,
+)
+
+
+class HungarianMapVisualizer(QWidget):
     """
     🗺️ Magyar Folium térkép vizualizáló widget - HELYI HTTP SZERVER VERZIÓ v3.0
 
@@ -85,3 +136,45 @@ class HungarianMapVisualizer(
 
         if not FOLIUM_AVAILABLE:
             _show_folium_error(self)
+
+
+# Attach imported methods as class methods
+HungarianMapVisualizer._on_style_changed = _on_style_changed
+HungarianMapVisualizer._on_counties_toggled = _on_counties_toggled
+HungarianMapVisualizer._on_weather_toggled = _on_weather_toggled
+HungarianMapVisualizer._on_zoom_changed = _on_zoom_changed
+HungarianMapVisualizer._on_js_county_clicked = _on_js_county_clicked
+HungarianMapVisualizer._on_js_coordinates_clicked = _on_js_coordinates_clicked
+HungarianMapVisualizer._on_js_map_moved = _on_js_map_moved
+HungarianMapVisualizer._on_js_county_hovered = _on_js_county_hovered
+HungarianMapVisualizer._refresh_map = _refresh_map
+HungarianMapVisualizer._export_map = _export_map
+HungarianMapVisualizer._on_map_loaded = _on_map_loaded
+
+HungarianMapVisualizer.set_active_overlay_parameter = set_active_overlay_parameter
+HungarianMapVisualizer.clear_active_overlay_parameter = clear_active_overlay_parameter
+HungarianMapVisualizer.get_active_overlay_parameter = get_active_overlay_parameter
+HungarianMapVisualizer.set_counties_geodataframe = set_counties_geodataframe
+HungarianMapVisualizer.set_weather_data = set_weather_data
+HungarianMapVisualizer.update_map_bounds = update_map_bounds
+HungarianMapVisualizer.get_map_config = get_map_config
+HungarianMapVisualizer.reset_map_view = reset_map_view
+HungarianMapVisualizer.set_map_style = set_map_style
+HungarianMapVisualizer.toggle_counties = toggle_counties
+HungarianMapVisualizer.toggle_weather_overlay = toggle_weather_overlay
+HungarianMapVisualizer.set_selected_county = set_selected_county
+HungarianMapVisualizer.highlight_counties = highlight_counties
+HungarianMapVisualizer.is_folium_available = is_folium_available
+HungarianMapVisualizer.get_javascript_bridge = get_javascript_bridge
+HungarianMapVisualizer.get_current_map_file = get_current_map_file
+
+HungarianMapVisualizer._generate_default_map = _generate_default_map
+HungarianMapVisualizer._start_map_generation = _start_map_generation
+HungarianMapVisualizer._on_map_generated = _on_map_generated
+HungarianMapVisualizer._load_map_from_http_url = _load_map_from_http_url
+HungarianMapVisualizer._on_map_error = _on_map_error
+
+HungarianMapVisualizer.start_local_server = start_local_server
+HungarianMapVisualizer._on_server_ready = _on_server_ready
+HungarianMapVisualizer._on_server_error = _on_server_error
+HungarianMapVisualizer._show_folium_error = _show_folium_error

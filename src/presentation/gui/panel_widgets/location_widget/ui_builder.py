@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from ..theme_manager import register_widget_for_theming
+from src.presentation.gui.theme_manager import register_widget_for_theming
 from ...universal_location_selector import UniversalLocationSelector
 
 

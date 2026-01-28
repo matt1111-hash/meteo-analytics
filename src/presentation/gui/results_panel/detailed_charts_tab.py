@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional
 from PySide6.QtWidgets import QVBoxLayout, QWidget
 
 from ..chart_container import ChartsContainer
-from ..theme_manager import get_theme_manager, register_widget_for_theming
+from src.presentation.gui.theme_manager import get_theme_manager, register_widget_for_theming
 
 # Logging konfigurálása
 logger = logging.getLogger(__name__)

@@ -135,7 +135,7 @@ def setup_web_view(self) -> None:
     Args:
         self: HungarianMapVisualizer instance
     """
-    from PySide6.QtWidgets import QWebEngineView
+    from PySide6.QtWebEngineWidgets import QWebEngineView
 
     layout = self.layout()
 

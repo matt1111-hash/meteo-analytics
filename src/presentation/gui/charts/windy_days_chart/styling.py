@@ -38,7 +38,7 @@ def _get_bar_colors(self, counts: List[int]) -> List[str]:
     Returns:
         Lista hex színkódokkal
     """
-    from ..theme_manager import ProfessionalThemeManager
+    from src.presentation.gui.theme_manager import ProfessionalThemeManager
 
     try:
         if not counts:

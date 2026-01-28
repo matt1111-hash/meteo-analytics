@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     pass
 
-from ..theme_manager import get_current_colors
+from src.presentation.gui.theme_manager import get_current_colors
 
 
 def _plot_precipitation(self, df) -> None:

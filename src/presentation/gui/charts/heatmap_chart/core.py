@@ -21,9 +21,9 @@ import numpy as np
 import pandas as pd
 from PySide6.QtWidgets import QWidget
 
-from ..theme_manager import get_current_colors
+from src.presentation.gui.theme_manager import get_current_colors
 from .axes_formatter import format_period_text, setup_axes_and_labels
-from .base_chart import WeatherChart
+from ..base_chart import WeatherChart
 from .calendar_builder import build_calendar_matrix
 from .colorbar_handler import create_colorbar
 from .colormap_handler import get_colormap_and_norm

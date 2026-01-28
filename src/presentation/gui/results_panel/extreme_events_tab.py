@@ -47,7 +47,7 @@ except ImportError:
         pass
 
 try:
-    from ..theme_manager import get_theme_manager, register_widget_for_theming
+    from src.presentation.gui.theme_manager import get_theme_manager, register_widget_for_theming
 except ImportError:
     def get_theme_manager():
         return None

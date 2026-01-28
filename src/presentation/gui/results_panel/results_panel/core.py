@@ -24,7 +24,7 @@ from PySide6.QtWidgets import QWidget
 from ..data_processor import DataProcessor
 from ..progress_manager import ProgressManagerWithTimeout
 from ..tab_manager import TabManager
-from ..theme_manager import get_theme_manager
+from src.presentation.gui.theme_manager import get_theme_manager
 from .public_api import (
     apply_theme,
     apply_theme_by_name,

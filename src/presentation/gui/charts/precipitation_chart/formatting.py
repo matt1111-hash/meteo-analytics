@@ -20,7 +20,7 @@ from matplotlib.dates import DateFormatter, MonthLocator
 if TYPE_CHECKING:
     pass
 
-from ..theme_manager import get_current_colors
+from src.presentation.gui.theme_manager import get_current_colors
 
 
 def _format_precipitation_chart(self, df) -> None:

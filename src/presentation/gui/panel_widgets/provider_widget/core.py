@@ -20,7 +20,7 @@ from typing import Optional
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QComboBox, QLabel, QProgressBar, QTextEdit, QWidget
 
-from ...theme_manager import register_widget_for_theming
+from src.presentation.gui.theme_manager import register_widget_for_theming
 from .monitoring import _update_usage_display
 from .provider_data import get_default_warning_thresholds, get_status_messages
 

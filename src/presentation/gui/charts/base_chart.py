@@ -28,7 +28,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
 from ..color_palette import ColorPalette
-from ..theme_manager import (
+from src.presentation.gui.theme_manager import (
     get_current_colors,
     get_theme_manager,
     register_widget_for_theming,

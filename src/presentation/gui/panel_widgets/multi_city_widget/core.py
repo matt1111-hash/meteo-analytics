@@ -22,7 +22,7 @@ from PySide6.QtWidgets import QWidget
 
 from src.data.city_manager import CityManager
 
-from ..theme_manager import get_theme_manager
+from src.presentation.gui.theme_manager import get_theme_manager
 from .combo_handler import ComboHandler
 from .public_api import MultiCityWidgetPublicAPI
 from .regional_data import get_hungarian_regions

@@ -13,7 +13,7 @@ from PySide6.QtWidgets import QWidget
 from src.data.city_manager import CityManager
 from src.data.models import UniversalLocation
 
-from ..theme_manager import get_theme_manager
+from src.presentation.gui.theme_manager import get_theme_manager
 
 
 class LocationWidget(QWidget):

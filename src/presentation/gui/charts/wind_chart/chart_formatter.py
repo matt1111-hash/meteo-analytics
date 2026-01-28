@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 import pandas as pd
 from matplotlib.dates import DateFormatter, MonthLocator
 
-from ..theme_manager import get_current_colors
+from src.presentation.gui.theme_manager import get_current_colors
 from .wind_categories import calculate_y_axis_max
 
 if TYPE_CHECKING:
