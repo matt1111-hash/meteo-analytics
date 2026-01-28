@@ -83,7 +83,7 @@ class DataConstants:
             "rich_params": False
         },
         "meteostat": {
-            "historical True,
+            "historical": True,
             "real_time": False,
             "multi_city": True,
             "station_based": True,
