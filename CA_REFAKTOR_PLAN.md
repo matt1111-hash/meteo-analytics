@@ -1,6 +1,7 @@
 # Clean Architecture Refactor Plan (CA_REFAKTOR_PLAN)
-**Verzió:** 4.0 | **Progress:** 0% | **Utolsó frissítés:** 2026-01-29
+**Verzió:** 4.1 | **Progress:** 10% | **Utolsó frissítés:** 2026-01-29
 **Analízis forrás:** CA_ANALYSIS_ACCURATE.md (2026-01-29)
+**Last Session:** Phase 1 completed (Ports created)
 
 ---
 
@@ -297,12 +298,13 @@ class LocationWidget:
 
 | # | Port fájl | Implementálja | Státusz |
 |---|-----------|---------------|---------|
-| 1 | `domain/ports/data_ports.py` | `data/enums/*.py` | ⏳ |
-| 2 | `domain/ports/repository_ports.py` | `infrastructure/repositories/` | ⏳ |
-| 3 | `domain/ports/weather_ports.py` | `data/weather_client.py` | ⏳ |
-| 4 | `analytics/ports/engine_ports.py` | `analytics/multi_city_engine*.py` | ⏳ |
-| 5 | `analytics/ports/wind_ports.py` | `analytics/wind_analysis.py` | ⏳ |
-| 6 | `application/ports/analytics_ports.py` | `application/use_cases/` | ⏳ |
+| 1 | `domain/ports/__init__.py` | `data/enums/*.py`, `data/city_manager*.py`, `data/weather_client*.py` | ✅ **KÉSZ** |
+| 2 | `domain/ports/__init__.py` | `infrastructure/repositories/` | ✅ **KÉSZ** |
+| 3 | `domain/ports/__init__.py` | `data/weather_client.py` | ✅ **KÉSZ** |
+| 4 | `analytics/ports/__init__.py` | `analytics/multi_city_engine*.py` | ✅ **KÉSZ** |
+| 5 | `analytics/ports/__init__.py` | `analytics/wind_analysis.py` | ✅ **KÉSZ** |
+| 6 | `analytics/ports/__init__.py` | `application/use_cases/` | ⏳ |
+| **Összesen** | 2 fájl (627 sor) | 6+ port Protocol | **10%** |
 
 ### FÁZIS 2: Infrastructure/Data Implementációk
 
@@ -465,8 +467,9 @@ print('GUI ELINDULT')
 
 | Verzió | Dátum | Változás |
 |--------|-------|----------|
-| 3.33 | 2026-01-28 | ~85% progress - GUI indult, fájlok bontva |
+| 4.1 | 2026-01-29 | **FÁZIS 1 KÉSZ** - Ports layer (627 sor, 6+ port) |
 | 4.0 | 2026-01-29 | **TELJES ÚJRAÍRÁS** - CA violations javítása |
+| 3.33 | 2026-01-28 | ~85% progress - GUI indult, fájlok bontva |
 
 ---
 

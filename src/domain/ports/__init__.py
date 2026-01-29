@@ -29,7 +29,6 @@ from src.domain.value_objects.enums import (
 )
 from src.domain.value_objects.enums import QuestionType as DomainQuestionType
 
-
 # =============================================================================
 # City Manager Port
 # =============================================================================
@@ -362,6 +361,7 @@ def get_city_repository_port() -> CityRepositoryPort:
         CityRepositoryPort implementation from Infrastructure Layer
     """
     from pathlib import Path
+
     from src.infrastructure.repositories.city_repository import CityRepository
 
     project_root = Path(__file__).parent.parent.parent

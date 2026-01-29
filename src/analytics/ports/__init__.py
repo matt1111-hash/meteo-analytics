@@ -18,16 +18,15 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Protocol
 
+from src.domain.analytics.models import MultiCityQuery
 from src.domain.entities.analytics_models import (
     AnalyticsQuestion,
     AnalyticsResult,
 )
-from src.domain.analytics.models import MultiCityQuery
 from src.domain.ports import (
     CityRepositoryPort,
     WeatherClientPort,
 )
-
 
 # =============================================================================
 # Multi-City Engine Port
@@ -96,6 +95,7 @@ def get_multi_city_engine_port(
         MultiCityEnginePort implementation
     """
     from pathlib import Path
+
     from src.analytics.multi_city_engine_core import MultiCityEngine
 
     project_root = Path(__file__).parent.parent.parent
