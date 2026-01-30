@@ -1,5 +1,5 @@
 # Clean Architecture Refactor Plan (CA_REFAKTOR_PLAN)
-**Verzió:** 6.0 | **Progress:** 100% ✅ | **Utolsó frissítés:** 2026-01-30
+**Verzió:** 7.0 | **Progress:** 100% ✅ | **Utolsó frissítés:** 2026-01-30
 
 ---
 
@@ -15,6 +15,43 @@
 | Analytics → infra/data | 2 | 0 | ✅ **KÉSZ** |
 | Presentation → data/analytics | 31 | 0 | ✅ **KÉSZ** |
 | **Összesen** | **47** | **0** | **100% KÉSZ** |
+
+---
+
+## ⚠️ KATASTRÓFA: 300 LOC Refaktorálás (ROLLBACK)
+
+### 2026-01-30: Failed refactoring attempt - BEÉRTETLEN
+
+**Cél:** 5 fájl 300 sor alá bontása (AGENTS.md szabály)
+
+**Eredmény:** ❌ ROLLBACK - Túl kockázatos
+
+#### Miért ment rosszúl?
+
+| Probléma | Leírás |
+|----------|--------|
+| **Import path hell** | Relative importok (`..` → `...`) törtek |
+| **Implicit dependencies** | Függőségek nem voltak dokumentálva |
+| **Circular import风险** | Split után circular importok jöttek elő |
+| **Testing gap** | Új modulokhoz nem volt teszt |
+| **GUI megállt** | Lokáció kereső nem működött |
+
+#### Rollback commit:
+```
+git reset --hard c06b5e5
+```
+
+#### Tanulság:
+
+1. **300 LOC szabály NEM abszolút** - Facade/struct fájloknál elfogadható a 300-400 sor
+2. **Refaktorálás ELŐTT:**
+   - Fully tesztelni az új struktúrát
+   - Import graphot ellenőrizni
+   - Circular importokat szűrni
+3. **IDEA:** Fájlok bontása CSAK akkor, ha:
+   - Egyértelmű felelősség elválasztás van
+   - Nincs implicit dependency a részek között
+   - Tesztek lefedik az új modulokat
 
 ---
 
@@ -138,6 +175,7 @@ src/core/di_container.py
 
 | Verzió | Dátum | Változás |
 |--------|-------|----------|
+| 7.0 | 2026-01-30 | **KATASTRÓFA** - 300 LOC refaktorálás rollback, tanulságok |
 | 6.0 | 2026-01-30 | **100% KÉSZ** - CA refaktorálás teljesen kész, plan egyszerűsítve |
 | 5.0 | 2026-01-30 | **100% KÉSZ** - Presentation layer refaktorálás kész |
 | 4.2 | 2026-01-30 | **60% KÉSZ** - Application, API, Analytics violations tiszták |
@@ -156,4 +194,32 @@ src/core/di_container.py
 
 ---
 
-*"A Clean Architecture nem csak elv, hanem karbantarthatóság."* ✅
+## 🚨 MEGÁLLÍTOTT: 300 LOC Refaktorálás (RÉMÁLM)
+
+### Kísérlet: 5 fájl bontása 2 részre
+
+| Eredeti fájl | Eredeti | Tervezett bontás | Státusz |
+|--------------|---------|-----------------|---------|
+| precipitation_chart/tooltip.py | 325 | tooltip_data.py + tooltip_display.py | ❌ ROLLBACK |
+| weather_data_bridge/core.py | 316 | core.py + folium_formatter.py | ❌ ROLLBACK |
+| analytics_view/core.py | 316 | core.py + data_handler.py | ❌ ROLLBACK |
+| temperature_chart/tooltip_handler.py | 311 | 3 fájl | ❌ ROLLBACK |
+| utils/theme_helpers.py | 309 | stylesheets.py + theme_helpers.py | ❌ ROLLBACK |
+
+### Hiba lépések:
+
+1. **Import hiba**: `from ..trend_widgets` → `from ...trend_widgets` (két szint!)
+2. **Search handler bug**: City objektum → dict normalizáció hiányzott
+3. **Vizuális bug**: QListWidget items színkontraszt hiány
+
+### Tanulság:
+
+> **"A 300 LOC szabály nem abszolút - a funkcionalitás és a karbantarthatóság előbb."**
+>
+> - Facade/struct fájloknál elfogadható a 300-400 sor
+> - Csak akkor bontunk, ha egyértelmű felelősség elválasztás van
+> - MINDEN refaktorálás előtt: teljes teszt + import graph check
+
+---
+
+*"A Clean Architecture nem csak elv, hanem karbantarthatóság. És a karbantarthatóság = működő kód."* ✅
