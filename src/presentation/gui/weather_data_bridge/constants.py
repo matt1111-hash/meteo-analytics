@@ -1,5 +1,5 @@
 """Bridge constants and configurations."""
-from src.data.enums import AnalyticsMetric
+from src.domain.value_objects.enums import AnalyticsMetric
 
 
 # 🔧 KRITIKUS: METRIC_MAP - AnalyticsMetric → Display Parameter Mapping

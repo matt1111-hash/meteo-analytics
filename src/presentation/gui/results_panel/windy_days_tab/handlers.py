@@ -17,9 +17,9 @@ from typing import TYPE_CHECKING, Optional
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QFileDialog
 
-from src.analytics.wind_analysis import (
-    WINDY_DAY_THRESHOLD_KMH,
-    analyze_wind_patterns,
+from src.domain.analytics.wind_analysis_service import analyze_wind_patterns
+from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
+from src.domain.analytics.wind_reporting import (
     format_wind_analysis_summary,
     get_chart_data_for_monthly_windy_days,
 )

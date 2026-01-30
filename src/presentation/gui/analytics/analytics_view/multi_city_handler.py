@@ -62,7 +62,7 @@ class AnalyticsViewMultiCityHandler:
             }
 
             # Metric alapú fake data generálás
-            from src.data.enums import AnalyticsMetric
+            from src.domain.value_objects.enums import AnalyticsMetric
             metric_type = question.metric if question else AnalyticsMetric.TEMPERATURE_2M_MAX
 
             for i in range(365):

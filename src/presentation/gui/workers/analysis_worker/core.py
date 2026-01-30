@@ -13,17 +13,17 @@ from .data_converter import DataConverter
 from .interrupt_handler import InterruptHandler
 
 
-# Import checks
+# Import checks (CA compliant - uses ports and Domain layer)
 try:
-    from src.analytics.multi_city_engine import MultiCityEngine
-    from src.data.enums import AnalysisType, DataProvider
-    from src.data.weather_client import WeatherClient
+    from src.analytics.ports import get_multi_city_engine_port
+    from src.domain.ports import get_weather_client_port
+    from src.domain.value_objects.enums import AnalysisType, DataProvider
     IMPORTS_OK = True
 except ImportError as e:
     print(f"❌ AnalysisWorker import error: {e}")
     IMPORTS_OK = False
-    MultiCityEngine = None
-    WeatherClient = None
+    get_multi_city_engine_port = None
+    get_weather_client_port = None
 
 
 class AnalysisWorker(QThread):

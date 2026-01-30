@@ -34,7 +34,7 @@ from typing import Optional
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
 
-from src.data.city_manager import CityManager
+from src.domain.ports import CityManagerPort, get_city_manager_port
 
 # Refaktorált widget komponensek
 from ..panel_widgets.analysis_type_widget import AnalysisTypeWidget
@@ -111,9 +111,9 @@ class ControlPanel(
         """
         super().__init__(parent)
 
-        # Dependencies
+        # Dependencies (CA compliant - uses port)
         self.worker_manager = worker_manager
-        self.city_manager = CityManager()
+        self.city_manager: CityManagerPort = get_city_manager_port()
         self.theme_manager = get_theme_manager()
 
         # 🔧 WIDGET STATE PRESERVATION

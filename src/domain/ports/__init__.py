@@ -182,6 +182,7 @@ class CityRepositoryPort(Protocol):
         hungarian_mapping: Dict[str, str],
     ) -> List[Dict[str, Any]]: ...
     def search_cities(self, query: str, limit: int = 20) -> List[Dict[str, Any]]: ...
+    def autocomplete_city_name(self, query: str, limit: int = 20) -> List[Dict[str, Any]]: ...
     def get_city_by_id(self, city_id: int) -> Optional[Dict[str, Any]]: ...
     def get_city_by_coordinates(
         self,
@@ -369,3 +370,14 @@ def get_city_repository_port() -> CityRepositoryPort:
     hungarian_db_path = project_root / "data" / "hungarian_settlements.db"
 
     return CityRepository(db_path, hungarian_db_path)
+
+
+def get_anomaly_profile_port() -> AnomalyProfilePort:
+    """
+    Factory function to get AnomalyProfilePort implementation.
+
+    Returns:
+        AnomalyProfilePort implementation from Data Layer
+    """
+    from src.data.anomaly_profile.manager import AnomalyProfileManager
+    return AnomalyProfileManager()

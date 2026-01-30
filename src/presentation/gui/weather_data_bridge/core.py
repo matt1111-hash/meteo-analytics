@@ -3,8 +3,9 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from src.data.enums import AnalyticsMetric
-from src.data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
+from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
+from src.domain.entities.weather import CityWeatherResult
+from src.domain.value_objects.enums import AnalyticsMetric
 
 from src.presentation.gui.weather_data_bridge.constants import (
     DISPLAY_PARAMETER_MAP,

@@ -20,7 +20,7 @@ from typing import Optional
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from src.data.city_manager import CityManager
+from src.domain.ports import CityManagerPort, get_city_manager_port
 
 from src.presentation.gui.theme_manager import get_theme_manager
 from .combo_handler import ComboHandler
@@ -54,12 +54,12 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
     # === KIMENŐ SIGNAL ===
     selection_changed = Signal(dict)  # {"mode": "region", "selected": "Közép-Magyarország", "is_valid": True}
 
-    def __init__(self, city_manager: CityManager, parent: Optional[QWidget] = None):
+    def __init__(self, city_manager: CityManagerPort, parent: Optional[QWidget] = None):
         """
-        MultiCityWidget inicializálása.
+        MultiCityWidget inicializálása (CA compliant - uses CityManagerPort).
 
         Args:
-            city_manager: CityManager instance (magyar adatok lekérdezéshez)
+            city_manager: CityManagerPort instance (magyar adatok lekérdezéshez)
             parent: Szülő widget
         """
         super().__init__(parent)

@@ -10,8 +10,8 @@ from typing import Any, Dict, Optional
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from src.data.city_manager import CityManager
-from src.data.models import UniversalLocation
+from src.domain.entities.universal_location import UniversalLocation
+from src.domain.ports import CityManagerPort
 
 from src.presentation.gui.theme_manager import get_theme_manager
 
@@ -40,7 +40,7 @@ class LocationWidget(QWidget):
     location_changed = Signal(object)  # UniversalLocation object
     city_selected = Signal(str, float, float, dict)  # name, lat, lon, metadata (compatibility)
 
-    def __init__(self, city_manager: CityManager, parent: Optional[QWidget] = None):
+    def __init__(self, city_manager: CityManagerPort, parent: Optional[QWidget] = None):
         """
         LocationWidget inicializálása.
 

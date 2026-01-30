@@ -5,17 +5,15 @@ import logging
 
 from fastapi import APIRouter, HTTPException, Query
 
-from src.analytics.multi_city_engine import MultiCityEngine
-from src.infrastructure.repositories.city_repository import CityRepository
+from src.domain.ports import CityRepositoryPort, get_city_repository_port
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/cities", tags=["cities"])
 
 
-def _get_city_repository() -> CityRepository:
-    """Get city repository instance."""
-    engine = MultiCityEngine()
-    return CityRepository(engine.db_path, engine.hungarian_db_path)
+def _get_city_repository() -> CityRepositoryPort:
+    """Get city repository instance through port (CA compliant)."""
+    return get_city_repository_port()
 
 
 @router.get("/search")

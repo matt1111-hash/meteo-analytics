@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 # Mixins
 # Analytics and data modules
-from src.analytics.multi_city_engine import MultiCityEngine
-from src.data.models import AnalyticsResult
+from src.analytics.ports import get_multi_city_engine_port
+from src.domain.entities.analytics_models import AnalyticsResult
 from src.presentation.gui.color_palette import ColorPalette
 
 # GUI modules

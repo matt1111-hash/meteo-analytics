@@ -20,7 +20,9 @@ from typing import List
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QLabel, QLineEdit, QListWidget, QListWidgetItem
 
-from src.data.city_manager import City, CityManager
+from typing import Dict, Any
+
+from src.domain.ports import CityManagerPort
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +39,7 @@ class SearchHandler:
 
     def __init__(
         self,
-        city_manager: CityManager,
+        city_manager: CityManagerPort,
         search_input: QLineEdit,
         status_label: QLabel,
         results_list: QListWidget,
@@ -112,7 +114,7 @@ class SearchHandler:
             logger.error(f"Keresési hiba: {e}")
             self.status_label.setText("❌ Keresési hiba történt")
 
-    def _display_results(self, results: List[City]) -> None:
+    def _display_results(self, results: List[Dict[str, Any]]) -> None:
         """
         Keresési eredmények megjelenítése MAGYAR PRIORITÁSSAL
 
@@ -124,10 +126,10 @@ class SearchHandler:
         for city in results[:20]:  # Első 20 eredmény
             try:
                 # Alap adatok
-                name = city.city
-                lat = city.lat
-                lon = city.lon
-                is_hungarian = city.is_hungarian
+                name = city.get('city', city.get('name', 'Unknown'))
+                lat = city.get('lat', 0.0)
+                lon = city.get('lon', 0.0)
+                is_hungarian = city.get('is_hungarian', False)
 
                 # MAGYAR SPECIFIKUS FORMATTING
                 if is_hungarian:
@@ -138,14 +140,13 @@ class SearchHandler:
 
                 # List item létrehozása
                 item = QListWidgetItem(display_text)
-                city_dict = city.to_dict()
-                item.setData(Qt.UserRole, city_dict)
+                item.setData(Qt.UserRole, city)
                 self.results_list.addItem(item)
 
             except Exception as e:
                 logger.warning(f"Eredmény feldolgozási hiba: {e}")
 
-    def _format_hungarian_city(self, city: City, name: str, lat: float, lon: float) -> str:
+    def _format_hungarian_city(self, city: Dict[str, Any], name: str, lat: float, lon: float) -> str:
         """
         Magyar város formázása.
 
@@ -161,24 +162,27 @@ class SearchHandler:
         flag = "🇭🇺"
 
         # Display név: "Kiskunhalas, Bács-Kiskun megye"
-        if city.megye:
-            display_name = f"{name}, {city.megye} megye"
+        megye = city.get('megye', '')
+        if megye:
+            display_name = f"{name}, {megye} megye"
         else:
             display_name = name
 
         # Settlement type info
         settlement_info = ""
-        if city.settlement_type:
-            settlement_info = f" ({city.settlement_type})"
+        settlement_type = city.get('settlement_type')
+        if settlement_type:
+            settlement_info = f" ({settlement_type})"
 
         # Population info
         pop_info = ""
-        if city.population:
-            pop_info = f"\n👥 {city.population:,} lakos"
+        population = city.get('population')
+        if population:
+            pop_info = f"\n👥 {population:,} lakos"
 
         return f"{flag} {display_name}{settlement_info}{pop_info}\n🗺️ [{lat:.3f}, {lon:.3f}]"
 
-    def _format_global_city(self, city: City, name: str, lat: float, lon: float) -> str:
+    def _format_global_city(self, city: Dict[str, Any], name: str, lat: float, lon: float) -> str:
         """
         Globális város formázása.
 
@@ -192,8 +196,8 @@ class SearchHandler:
             Formázott szöveg
         """
         flag = "🌍"
-        country = city.country or ''
-        region = city.admin_name or ''
+        country = city.get('country', '') or ''
+        region = city.get('admin_name', '') or ''
 
         display_text = f"{flag} {name}"
         if region and region != name:

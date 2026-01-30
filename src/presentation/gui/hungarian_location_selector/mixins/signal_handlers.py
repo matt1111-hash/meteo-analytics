@@ -217,7 +217,7 @@ class SignalHandlersMixin:
         """
         📍 Lokáció információk frissítése.
         """
-        from src.data.models import Location
+        from src.domain.entities.location import Location
 
         if self.current_county is None:
             self.lat_label.setText("Szélesség: -")

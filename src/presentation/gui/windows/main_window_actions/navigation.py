@@ -76,8 +76,8 @@ def handle_multi_city_weather_request(
             if hasattr(window.hungarian_map_tab, 'set_analytics_parameter'):
                 window.hungarian_map_tab.set_analytics_parameter(display_parameter)
 
-        from src.analytics.multi_city_engine import MultiCityEngine
-        engine = MultiCityEngine()
+        from src.analytics.ports import get_multi_city_engine_port
+        engine = get_multi_city_engine_port()
         result = engine.analyze_multi_city(query_type, region_id, start_date, limit=limit)
 
         if not hasattr(result, 'city_results'):

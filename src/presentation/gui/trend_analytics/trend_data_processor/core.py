@@ -4,8 +4,7 @@ from typing import Dict, Optional
 
 from PySide6.QtCore import QObject, Signal
 
-from src.data.city_manager import CityManager
-from src.data.weather_client import WeatherClient
+from src.domain.ports import CityManagerPort, WeatherClientPort, get_city_manager_port, get_weather_client_port
 
 from src.presentation.gui.trend_analytics.trend_data_processor.calculator import calculate_trend_statistics
 from src.presentation.gui.trend_analytics.trend_data_processor.constants import (
@@ -40,8 +39,8 @@ class TrendDataProcessor(QObject):
 
     def __init__(self) -> None:
         super().__init__()
-        self.city_manager = CityManager()
-        self.weather_client = WeatherClient(preferred_provider="auto")
+        self.city_manager = get_city_manager_port()
+        self.weather_client = get_weather_client_port()
         self.trend_parameters = TREND_PARAMETERS
         self.time_ranges = TIME_RANGES
 

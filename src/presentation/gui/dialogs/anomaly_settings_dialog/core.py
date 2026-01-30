@@ -11,7 +11,7 @@ import logging
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import QDialog, QMessageBox, QVBoxLayout
 
-from src.data.anomaly_profile_manager import AnomalyProfileManager
+from src.domain.ports import AnomalyProfilePort, get_anomaly_profile_port
 
 from ...theme_manager import get_theme_manager, register_widget_for_theming
 from .preview_handler import AnomalySettingsPreviewHandler
@@ -31,11 +31,11 @@ class AnomalySettingsDialog(QDialog):
     profile_changed = Signal(str)
 
     def __init__(self, parent=None):
-        """Anomália beállítások dialog inicializálása."""
+        """Anomália beállítások dialog inicializálása (CA compliant - uses port)."""
         super().__init__(parent)
 
         self.theme_manager = get_theme_manager()
-        self.profile_manager = AnomalyProfileManager()
+        self.profile_manager: AnomalyProfilePort = get_anomaly_profile_port()
 
         # Belső állapot
         self.current_profile: str = "default"

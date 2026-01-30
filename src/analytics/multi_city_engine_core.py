@@ -18,10 +18,11 @@ from src.domain.analytics.services import (
     RegionResolverService,
     WeatherFetchService,
 )
-from src.infrastructure.repositories.city_repository import CityRepository
+from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
+from src.domain.entities.weather import CityWeatherResult
+from src.domain.ports import CityRepositoryPort, get_city_repository_port, get_weather_client_port
+from src.domain.value_objects.enums import AnalyticsMetric, QuestionType, RegionScope
 
-from ..data.enums import AnalyticsMetric, QuestionType, RegionScope
-from ..data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
 from .multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS
 
 logger = logging.getLogger(__name__)
@@ -60,7 +61,7 @@ class MultiCityEngine:
         hungarian_db_path: Optional[str] = None,
         city_repository: Optional[CityRepositoryProtocol] = None,
     ):
-        """MultiCityEngine inicializálása repository injekcióval."""
+        """MultiCityEngine inicializálása repository injekcióval (CA compliant - uses ports)."""
         project_root = Path(__file__).parent.parent.parent
         default_db = project_root / "data" / "cities.db"
         default_hu_db = project_root / "data" / "hungarian_settlements.db"
@@ -70,10 +71,8 @@ class MultiCityEngine:
             Path(hungarian_db_path) if hungarian_db_path else default_hu_db
         )
 
-        self.city_repository: CityRepositoryProtocol = city_repository or CityRepository(
-            self.db_path,
-            self.hungarian_db_path,
-        )
+        # Use port for city repository (CA compliant)
+        self.city_repository: CityRepositoryProtocol = city_repository or get_city_repository_port()
         self.city_repository.validate_paths()
         self.region_resolver = RegionResolverService()
 
@@ -82,10 +81,10 @@ class MultiCityEngine:
         self.max_retries = 2
         self.retry_delay = 3.0
 
+        # Use port for weather client (CA compliant)
         try:
-            from src.data.weather_client import WeatherClient
-            self.weather_client = WeatherClient()
-            logger.info("✅ WeatherClient dual-api integráció sikeres")
+            self.weather_client = get_weather_client_port()
+            logger.info("✅ WeatherClient dual-api integráció sikeres (port-based)")
         except ImportError as e:
             logger.warning(f"⚠ WeatherClient import hiba: {e}")
             self.weather_client = None

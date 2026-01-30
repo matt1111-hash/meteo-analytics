@@ -18,7 +18,7 @@ import pandas as pd
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QCheckBox, QVBoxLayout, QWidget
 
-from src.analytics.wind_analysis import WINDY_DAY_THRESHOLD_KMH
+from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 from src.presentation.gui.charts.windy_days_chart import WindyDaysChart
 from src.presentation.gui.theme_manager import ProfessionalThemeManager, register_widget_for_theming
 

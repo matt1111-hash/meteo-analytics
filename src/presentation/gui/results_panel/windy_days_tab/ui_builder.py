@@ -28,7 +28,7 @@ from PySide6.QtWidgets import (
 )
 
 if TYPE_CHECKING:
-    from src.analytics.wind_analysis import WINDY_DAY_THRESHOLD_KMH
+    from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 
 
 def create_header_section() -> tuple[QFrame, QLabel, QLabel]:

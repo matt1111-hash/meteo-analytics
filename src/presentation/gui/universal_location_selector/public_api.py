@@ -20,7 +20,7 @@ from typing import Optional
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QLabel, QLineEdit, QListWidget, QPushButton
 
-from src.data.models import UniversalLocation
+from src.domain.entities.universal_location import UniversalLocation
 
 from .location_card import LocationCard
 

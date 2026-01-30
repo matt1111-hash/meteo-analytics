@@ -6,7 +6,8 @@ import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from src.analytics.multi_city_engine import MultiCityEngine
+from src.analytics.multi_city_types import REGIONS
+from src.analytics.multi_city_engine_core import MultiCityEngine, QUERY_TYPES
 from src.api.adapters.weather_adapter import to_multi_city_query
 from src.api.dto.weather_request import WeatherAnalysisRequest
 from src.application.use_cases import AnalyzeMultiCityUseCase
@@ -15,7 +16,7 @@ from src.domain.analytics.services import (
     RegionResolverService,
     WeatherFetchService,
 )
-from src.infrastructure.repositories.city_repository import CityRepository
+from src.domain.ports import CityRepositoryPort, get_city_repository_port
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather"])
@@ -30,11 +31,12 @@ class DetailedCityRequest(BaseModel):
 
 
 def _build_use_case() -> AnalyzeMultiCityUseCase:
-    """Build use case with dependencies."""
+    """Build use case with dependencies (CA compliant - uses ports)."""
     engine = MultiCityEngine()
+    city_repo: CityRepositoryPort = get_city_repository_port()
     return AnalyzeMultiCityUseCase(
         region_resolver=RegionResolverService(),
-        city_repository=CityRepository(engine.db_path, engine.hungarian_db_path),
+        city_repository=city_repo,
         weather_fetch_service=WeatherFetchService(
             weather_client=engine.weather_client,
             max_workers=engine.max_workers,
@@ -42,9 +44,9 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
             max_retries=engine.max_retries,
             retry_delay=engine.retry_delay,
         ),
-        analytics_transform_service=AnalyticsTransformService(engine.QUERY_TYPES),
-        query_types=engine.QUERY_TYPES,
-        regions=engine.REGIONS,
+        analytics_transform_service=AnalyticsTransformService(QUERY_TYPES),
+        query_types=QUERY_TYPES,
+        regions=REGIONS,
         hungarian_mapping=engine.HUNGARIAN_REGIONAL_MAPPING,
     )
 

@@ -55,7 +55,7 @@ except ImportError:
         pass
 
 try:
-    from src.data.anomaly_profile_manager import AnomalyProfileManager
+    from src.domain.ports import get_anomaly_profile_port
     _profile_manager_available = True
 except ImportError:
     _profile_manager_available = False
@@ -91,7 +91,7 @@ class ExtremeEventsTab(QWidget):
         super().__init__(parent)
 
         self.theme_manager = get_theme_manager()
-        self.profile_manager = AnomalyProfileManager() if _profile_manager_available else None
+        self.profile_manager = get_anomaly_profile_port() if _profile_manager_available else None
         self.use_case = DetectAnomaliesUseCase()
         self.extreme_calculator = ExtremeCalculator() if _extreme_calculator_available else None
 

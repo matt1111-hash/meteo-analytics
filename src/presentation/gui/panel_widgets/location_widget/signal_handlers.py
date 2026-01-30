@@ -7,7 +7,7 @@ Location Widget - Signal handlers.
 
 from typing import Any, Dict
 
-from src.data.models import UniversalLocation
+from src.domain.entities.universal_location import UniversalLocation
 
 
 class SignalHandlers:

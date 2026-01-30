@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Optional
 
 import pandas as pd
 
-from src.analytics.wind_analysis import WINDY_DAY_THRESHOLD_KMH
+from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 
 if TYPE_CHECKING:
     from PySide6.QtWidgets import QWidget

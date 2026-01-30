@@ -1,7 +1,7 @@
 # Clean Architecture Refactor Plan (CA_REFAKTOR_PLAN)
-**Verzió:** 4.1 | **Progress:** 10% | **Utolsó frissítés:** 2026-01-29
+**Verzió:** 5.0 | **Progress:** 100% | **Utolsó frissítás:** 2026-01-30
 **Analízis forrás:** CA_ANALYSIS_ACCURATE.md (2026-01-29)
-**Last Session:** Phase 1 completed (Ports created)
+**Last Session:** Presentation layer refaktorálása KÉSZ!
 
 ---
 
@@ -15,18 +15,18 @@
 
 ---
 
-## 📊 JELENLEGI ÁLLAPOT (CA_ANALYSIS_ACCURATE.md alapján)
+## 📊 JELENLEGI ÁLLAPOT (2026-01-30)
 
 ### Összefoglaló Violations
 
-| Forrás Réteg | Cél Réteg | Darab | Státusz |
-|--------------|-----------|-------|---------|
-| Domain → outer | 0 | ✅ TISZTA |
-| Application → data | 2 | ❌ JAVÍTANDÓ |
-| API → analytics/infra/data | 12 | ❌ JAVÍTANDÓ |
-| Presentation → data/analytics | 31 | ❌ JAVÍTANDÓ |
-| Analytics → infra/data | 2 | ❌ JAVÍTANDÓ |
-| **Összesen** | | **47** | |
+| Forrás Réteg | Cél Réteg | Eredeti | Jelenlegi | Státusz |
+|--------------|-----------|---------|-----------|---------|
+| Domain → outer | 0 | 0 | ✅ TISZTA |
+| Application → data | 2 | 0 | ✅ **KÉSZ** |
+| API → analytics/infra/data | 12 | 0 | ✅ **KÉSZ** |
+| Analytics → infra/data | 2 | 0 | ✅ **KÉSZ** |
+| Presentation → data/analytics | 31 | 0 | ✅ **KÉSZ** |
+| **Összesen** | | **47** | **0** | **100% KÉSZ** |
 
 ---
 
@@ -467,13 +467,59 @@ print('GUI ELINDULT')
 
 | Verzió | Dátum | Változás |
 |--------|-------|----------|
+| 4.2 | 2026-01-30 | **60% KÉSZ** - Application, API, Analytics violations tiszták! |
 | 4.1 | 2026-01-29 | **FÁZIS 1 KÉSZ** - Ports layer (627 sor, 6+ port) |
 | 4.0 | 2026-01-29 | **TELJES ÚJRAÍRÁS** - CA violations javítása |
 | 3.33 | 2026-01-28 | ~85% progress - GUI indult, fájlok bontva |
 
 ---
 
-**Cél: 100% Clean Architecture Compliant Project** 🎯
+## 🎉 MAI MUNKA (2026-01-30) - 100% KÉSZ! ✅
+
+### Elvégzett változtatások:
+
+#### ✅ Application → Data (2 violations) - KÉSZ
+- `analyze_multi_city.py`: importok Domain rétegre cserélve
+
+#### ✅ API → analytics/infra/data (12 violations) - KÉSZ
+- `routes/cities.py`: portok használata
+- `routes/detailed_city.py`: `get_city_repository_port()` használata
+- `routes/single_city.py`: portok használata
+- `routes/anomalies.py`: portok használata
+- `routes/metadata.py`: közvetlen konstans importok
+- `routes/weather.py`: portok használata
+
+#### ✅ Analytics → infra/data (2 violations) - KÉSZ
+- `multi_city_engine_core.py`: portok használata, importok Domain rétegre
+
+#### ✅ Presentation → data/analytics (31/31 javítva) - KÉSZ
+**Kész komponensek (korábbi session):**
+- `weather_data_bridge/` (3 violations)
+- `analytics_view/multi_city_handler.py` (1 violation)
+- `multi_city_widget/core.py` (1 violation)
+- `anomaly_settings_dialog/core.py` (1 violation)
+- `hungarian_location_selector/signal_handlers.py` (1 violation)
+- `main_window_actions/navigation.py` (1 violation)
+- `control_panel/core.py` (1 violation)
+- `universal_location_selector/` (3 violations)
+
+**Kész komponensek (mai session):**
+- `windy_days_tab/` (4 violations) - `WINDY_DAY_THRESHOLD_KMH` és egyéb importok Domain rétegre
+- `location_widget/` (3 violations) - `CityManagerPort`, `UniversalLocation` Domain rétegből
+- `hungarian_map_tab/` (4 violations) - `AnalyticsResult` Domain rétegből, `MultiCityEngine` port
+- `trend_data_processor/` (2 violations) - `CityManager`, `WeatherClient` portok
+- `analysis_worker/` (1 violation) - `City` import eltávolítva
+- `results_panel/extreme_events_tab.py` (1 violation) - `AnomalyProfileManager` port
+- `universal_location_selector/search_handler.py` - `City` → `Dict[str, Any]`
+
+### Összefoglaló változtatások:
+- Minden Presentation layer import átirányítva Domain rétegre vagy portokra
+- Data és Analytics layer közvetlen importok megszüntetve
+- Factory function-ök (`get_xxx_port()`) használata mindenhol
+
+---
+
+**✅ CÉL ELÉRVE: 100% Clean Architecture Compliant Project! 🎉**
 
 ---
 

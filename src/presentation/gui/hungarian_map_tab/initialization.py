@@ -17,13 +17,13 @@ def initialize_weather_components(self) -> None:
     🌤️ Weather integráció komponensek inicializálása.
     """
     try:
-        from src.analytics.multi_city_engine import MultiCityEngine
+        from src.analytics.ports import get_multi_city_engine_port
         from src.presentation.gui.weather_data_bridge import WeatherDataBridge
 
         self.weather_bridge = WeatherDataBridge()
         print("✅ DEBUG: WeatherDataBridge initialized")
 
-        self.multi_city_engine = MultiCityEngine()
+        self.multi_city_engine = get_multi_city_engine_port()
         print("✅ DEBUG: MultiCityEngine initialized")
 
     except Exception as e:

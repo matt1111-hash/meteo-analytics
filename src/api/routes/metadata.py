@@ -3,8 +3,9 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from src.analytics.multi_city_engine import MultiCityEngine
-from src.data.enums import AnalyticsMetric
+from src.analytics.multi_city_engine_core import QUERY_TYPES
+from src.analytics.multi_city_types import REGIONS
+from src.domain.value_objects.enums import AnalyticsMetric
 
 router = APIRouter(prefix="/api/weather", tags=["metadata"])
 
@@ -68,12 +69,9 @@ async def get_available_regions() -> dict:
     Returns:
         Dictionary with region names and metadata.
     """
-    engine = MultiCityEngine()
-    regions = engine.REGIONS
-
     # Transform to frontend-friendly format
     formatted_regions = {}
-    for region_key, region_config in regions.items():
+    for region_key, region_config in REGIONS.items():
         formatted_regions[region_key] = {
             "name": region_config.get("name", region_key),
             "max_cities": region_config.get("max_cities", 50),
@@ -83,7 +81,7 @@ async def get_available_regions() -> dict:
     return {
         "regions": formatted_regions,
         "total_count": len(formatted_regions),
-        "region_keys": list(regions.keys()),
+        "region_keys": list(REGIONS.keys()),
     }
 
 
@@ -94,12 +92,9 @@ async def get_query_types() -> dict:
     Returns:
         Dictionary with query type names and configurations.
     """
-    engine = MultiCityEngine()
-    query_types = engine.QUERY_TYPES
-
     # Transform to frontend-friendly format
     formatted_types = {}
-    for query_key, query_config in query_types.items():
+    for query_key, query_config in QUERY_TYPES.items():
         formatted_types[query_key] = {
             "question_template": query_config.get("question_template", ""),
             "metric": query_config.get("metric", ""),
@@ -110,5 +105,5 @@ async def get_query_types() -> dict:
     return {
         "query_types": formatted_types,
         "total_count": len(formatted_types),
-        "query_keys": list(query_types.keys()),
+        "query_keys": list(QUERY_TYPES.keys()),
     }

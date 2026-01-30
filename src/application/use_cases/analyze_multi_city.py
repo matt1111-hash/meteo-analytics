@@ -5,8 +5,9 @@ import logging
 import time
 from typing import Any, Dict, List, Optional
 
-from src.data.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
-from src.data.models import AnalyticsQuestion, AnalyticsResult, CityWeatherResult
+from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
+from src.domain.entities.weather import CityWeatherResult
+from src.domain.value_objects.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
 from src.domain.analytics.repositories import CityRepositoryProtocol
 from src.domain.analytics.services import (
