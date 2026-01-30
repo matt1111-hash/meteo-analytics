@@ -111,9 +111,11 @@ class ChartManager:
     def _debug_final_status(self) -> None:
         """Debug final chart status."""
         if hasattr(self._container.wind_chart, 'current_data'):
-            status = "VAN" if self._container.wind_chart.current_data else "NINCS"
+            data = self._container.wind_chart.current_data
+            status = "VAN" if data is not None and not (hasattr(data, 'empty') and data.empty) else "NINCS"
             print(f"🌪️ FINAL DEBUG: wind_chart.current_data: {status}")
 
         if hasattr(self._container.windrose_chart, 'current_data'):
-            status = "VAN" if self._container.windrose_chart.current_data else "NINCS"
+            data = self._container.windrose_chart.current_data
+            status = "VAN" if data is not None and not (hasattr(data, 'empty') and data.empty) else "NINCS"
             print(f"🌹 FINAL DEBUG: windrose_chart.current_data: {status}")
