@@ -219,6 +219,7 @@ def _get_results_list_style() -> str:
         }
         QListWidget::item {
             background: #FFFFFF;
+            color: #1E293B;
             border: 1px solid #F1F5F9;
             border-radius: 6px;
             padding: 12px;
@@ -229,6 +230,7 @@ def _get_results_list_style() -> str:
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                 stop:0 #F8FAFC, stop:1 #F1F5F9);
             border: 1px solid #CBD5E1;
+            color: #1E293B;
         }
         QListWidget::item:selected {
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
