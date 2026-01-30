@@ -31,7 +31,7 @@ def create_plotly_chart_container(parent_widget: QWidget) -> QWidget:
     chart_title.setAlignment(Qt.AlignCenter)
     layout.addWidget(chart_title)
 
-    from ..trend_widgets import InteractiveTrendChart
+    from ...trend_widgets import InteractiveTrendChart
     chart = InteractiveTrendChart()
     layout.addWidget(chart)
 
@@ -60,7 +60,7 @@ def create_dashboard_statistics_area(parent_widget: QWidget) -> QWidget:
     stats_layout = QVBoxLayout()
     stats_layout.setContentsMargins(10, 10, 10, 10)
 
-    from ..trend_widgets import EnhancedStatisticsPanel
+    from ...trend_widgets import EnhancedStatisticsPanel
     statistics_panel = EnhancedStatisticsPanel()
     stats_layout.addWidget(statistics_panel, stretch=1)
 

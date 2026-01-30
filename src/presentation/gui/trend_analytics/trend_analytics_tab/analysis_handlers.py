@@ -21,7 +21,7 @@ from typing import TYPE_CHECKING, Dict
 from PySide6.QtCore import Signal
 
 if TYPE_CHECKING:
-    from ..trend_widgets import EnhancedStatisticsPanel, InteractiveTrendChart
+    from ...trend_widgets import EnhancedStatisticsPanel, InteractiveTrendChart
 
 
 logger = logging.getLogger(__name__)
