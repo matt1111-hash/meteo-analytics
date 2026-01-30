@@ -22,7 +22,7 @@ def update_standard_tabs(self, data: dict, city_name: str) -> None:
     # ExtremeEventsTab
     if self.extreme_tab and self._extreme_available:
         self._logger.debug("ExtremeEventsTab frissítése...")
-        self.extreme_tab.update_data(data)
+        self.extreme_tab.update_data(data, city_name)
 
 
 def update_windy_days_tab(self, data: Any, city_name: str, weather_df: Any) -> None:
