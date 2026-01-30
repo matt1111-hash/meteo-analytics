@@ -15,12 +15,10 @@ Fájl: src/presentation/gui/universal_location_selector/search_handler.py
 """
 
 import logging
-from typing import List
+from typing import Any, Callable, Dict, Iterable, List, Optional
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QLabel, QLineEdit, QListWidget, QListWidgetItem
-
-from typing import Dict, Any
 
 from src.domain.ports import CityManagerPort
 
@@ -43,7 +41,7 @@ class SearchHandler:
         search_input: QLineEdit,
         status_label: QLabel,
         results_list: QListWidget,
-        search_requested_callback
+        search_requested_callback: Callable[[str], None],
     ):
         """
         SearchHandler inicializálása.
@@ -92,7 +90,8 @@ class SearchHandler:
             self.search_requested_callback(query)
 
             # KULCS VÁLTOZÁS: search_unified() hívása
-            results = self.city_manager.search_unified(query, limit=20, hungarian_priority=True)
+            raw_results = self.city_manager.search_unified(query, limit=20, hungarian_priority=True)
+            results = self._normalize_results(raw_results)
 
             self._display_results(results)
 
@@ -100,7 +99,7 @@ class SearchHandler:
                 self.status_label.setText(f"❌ Nincs találat a '{query}' keresésre")
             else:
                 # Eredmény típusok számlálása
-                hungarian_count = sum(1 for city in results if city.is_hungarian)
+                hungarian_count = sum(1 for city in results if city.get("is_hungarian"))
                 global_count = len(results) - hungarian_count
 
                 if hungarian_count > 0 and global_count > 0:
@@ -113,6 +112,67 @@ class SearchHandler:
         except Exception as e:
             logger.error(f"Keresési hiba: {e}")
             self.status_label.setText("❌ Keresési hiba történt")
+
+    def _normalize_results(self, results: Iterable[Any]) -> List[Dict[str, Any]]:
+        """
+        Eredmények normalizálása dict formátumra.
+
+        Args:
+            results: Vegyes típusú eredmények (dict vagy objektum)
+
+        Returns:
+            List[Dict[str, Any]]: Normalizált eredmények
+        """
+        normalized: List[Dict[str, Any]] = []
+        for result in results:
+            city_dict = self._normalize_city(result)
+            if city_dict is not None:
+                normalized.append(city_dict)
+            else:
+                logger.warning("Eredmény normalizálása sikertelen: %s", result)
+        return normalized
+
+    def _normalize_city(self, city: Any) -> Optional[Dict[str, Any]]:
+        """
+        Egyetlen város objektum normalizálása dict formátumra.
+
+        Args:
+            city: City objektum vagy dict
+
+        Returns:
+            Normalizált dict vagy None
+        """
+        if isinstance(city, dict):
+            return city
+
+        if hasattr(city, "to_dict") and callable(city.to_dict):
+            try:
+                return city.to_dict()
+            except Exception as e:
+                logger.warning("to_dict hiba: %s", e)
+
+        fields = [
+            "city", "name", "lat", "lon", "country", "country_code", "population",
+            "continent", "admin_name", "capital", "timezone", "settlement_type",
+            "megye", "jaras", "climate_zone", "region_priority", "is_hungarian",
+            "terulet_hektar", "lakasok_szama", "display_name"
+        ]
+        city_dict: Dict[str, Any] = {}
+        for field in fields:
+            if hasattr(city, field):
+                city_dict[field] = getattr(city, field)
+
+        if "city" not in city_dict and "name" in city_dict:
+            city_dict["city"] = city_dict["name"]
+
+        if "city" not in city_dict:
+            return None
+
+        city_dict.setdefault("lat", 0.0)
+        city_dict.setdefault("lon", 0.0)
+        city_dict.setdefault("is_hungarian", False)
+
+        return city_dict
 
     def _display_results(self, results: List[Dict[str, Any]]) -> None:
         """
