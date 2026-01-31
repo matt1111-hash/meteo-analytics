@@ -85,6 +85,13 @@ export const useCityWeather = () => {
 
         setDetailedData(detailedDataToSet);
         console.log('DEBUG: DetailedData set complete with', Object.keys(detailedDataToSet).length, 'metric types');
+        
+        // 🔍 DEBUG: Wind gust data details
+        console.log('🔍 DEBUG: Wind gust data in API response:', {
+          length: windGustsData.length,
+          sample: windGustsData.slice(0, 3),
+          values: windGustsData.map(item => item.value).slice(0, 5)
+        });
       }
     } catch (err) {
       console.log('ERROR: Fetch failed:', err);

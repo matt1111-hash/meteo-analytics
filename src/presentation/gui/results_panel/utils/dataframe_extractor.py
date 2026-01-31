@@ -53,12 +53,17 @@ class DataFrameExtractor:
                 logger.warning("Nincs 'daily' adat a válaszban")
                 return pd.DataFrame()
 
-            dates = daily_data.get("time", [])
+            dates = daily_data.get("time", []) or daily_data.get("date", [])
             if not dates:
-                logger.warning("Nincs 'time' adat a daily adatokban")
+                logger.warning("Nincs 'time' vagy 'date' adat a daily adatokban")
                 return pd.DataFrame()
 
             logger.debug(f"Extracting {len(dates)} napok adatai...")
+
+            # 🔍 DEBUG: Show daily keys
+            print(f"🔍 DEBUG DataFrameExtractor - daily_data keys: {list(daily_data.keys())}")
+            print(f"🔍 DEBUG DataFrameExtractor - Has wind_gusts_10m_max: {'wind_gusts_10m_max' in daily_data}")
+            print(f"🔍 DEBUG DataFrameExtractor - Has windspeed_10m_max: {'windspeed_10m_max' in daily_data}")
 
             # === HŐMÉRSÉKLET ADATOK ===
             temp_max = daily_data.get("temperature_2m_max", [])
@@ -69,9 +74,12 @@ class DataFrameExtractor:
             precip = daily_data.get("precipitation_sum", [])
 
             # === 🔥 KRITIKUS JAVÍTÁS: API KONZISZTENS MEZŐNEVEK ===
-            # Az OpenMeteo API ezeket a mezőneveket használja:
-            wind_gusts_10m_max = daily_data.get("wind_gusts_10m_max", [])  # 🌪️ SZÉLLÖKÉSEK (ELSŐDLEGES)
-            windspeed_10m_max = daily_data.get("windspeed_10m_max", [])    # 💨 SZÉLSEBESSÉG (FALLBACK)
+            # OpenMeteo mezőnevek (API válasz) + KOMPATIBILITÁSI KULCSOK (data_converter után)
+            # API returns: wind_gusts_10m_max → Converter creates: wind_gusts_max, windgusts_10m_max
+            # API returns: windspeed_10m_max → Converter creates: wind_speed_max
+            wind_gusts_10m_max = daily_data.get("wind_gusts_10m_max", []) or daily_data.get("windgusts_10m_max", []) or daily_data.get("wind_gusts_max", [])
+            windspeed_10m_max = daily_data.get("windspeed_10m_max", []) or daily_data.get("wind_speed_max", [])
+            winddirection = daily_data.get("winddirection_10m_dominant", []) or daily_data.get("wind_direction_10m_dominant", [])
 
             # Hiányzó temp_mean számítása ha nincs
             if not temp_mean and temp_max and temp_min:
@@ -95,31 +103,74 @@ class DataFrameExtractor:
             if temp_mean:
                 df_data['temp_mean'] = DataFrameExtractor._ensure_length(temp_mean, max_length)
 
-            # === 🔥 KRITIKUS JAVÍTÁS: HELYES SZÉLLÖKÉS PRIORITÁS ===
-            if wind_gusts_10m_max:
-                # 🌪️ ELSŐDLEGES: wind_gusts_10m_max (VALÓDI széllökések 10-87 km/h)
+            # === 🔥 KRITIKUS JAVÍTÁS: SZÉLLÖKÉS ÉS SZÉLSEBESSÉG KÜLÖN ===
+            # 🌪️ VALIDÁCIÓ: Csak érvényes numerikus adatok használata
+            has_valid_wind_gusts = wind_gusts_10m_max and DataFrameExtractor._has_valid_data(wind_gusts_10m_max)
+            
+            # 🔍 DEBUG: Wind gust data validation details
+            print(f"🔍 DEBUG: wind_gusts_10m_max data sample: {wind_gusts_10m_max[:5] if wind_gusts_10m_max else 'EMPTY'}")
+            print(f"🔍 DEBUG: has_valid_wind_gusts = {has_valid_wind_gusts}")
+            
+            # 🔥 KRITIKUS JAVÍTÁS: Ha van wind_gusts_10m_max adat, de a validáció nem talál érvényes értékeket,
+            # akkor is használjuk az adatokat, de figyelmeztetünk
+            if wind_gusts_10m_max and len(wind_gusts_10m_max) > 0:
+                # 🌪️ ELSŐDLEGES: wind_gusts_10m_max (VALÓDI széllökések)
                 df_data['wind_gusts_max'] = DataFrameExtractor._ensure_length(wind_gusts_10m_max, max_length)
                 df_data['wind_data_source'] = ['wind_gusts_10m_max'] * max_length
-                logger.info(f"✅ HELYES SZÉLLÖKÉS FORRÁS: wind_gusts_10m_max ({len(wind_gusts_10m_max)} values)")
-
-            elif windspeed_10m_max:
-                # 💨 FALLBACK: windspeed_10m_max (átlagos szélsebesség 3-41 km/h)
-                df_data['wind_gusts_max'] = DataFrameExtractor._ensure_length(windspeed_10m_max, max_length)
-                df_data['wind_data_source'] = ['windspeed_10m_max'] * max_length
-                logger.warning(f"⚠️ FALLBACK TO SZÉLSEBESSÉG: windspeed_10m_max ({len(windspeed_10m_max)} values)")
+                
+                if has_valid_wind_gusts:
+                    logger.info(f"✅ SZÉLLÖKÉS: wind_gusts_10m_max ({len(wind_gusts_10m_max)} values)")
+                else:
+                    # ⚠️ FIGYELMEZTETÉS: Adatok vannak, de nem érvényes numerikus formátum
+                    logger.warning(f"⚠️ SZÉLLÖKÉS: wind_gusts_10m_max adat van ({len(wind_gusts_10m_max)} values), de nem érvényes numerikus formátum")
+                    logger.warning("⚠️ Az adatok mégis felhasználásra kerülnek (fallback mód)")
 
             else:
-                # ❌ NINCS SZÉL ADAT
-                logger.error("❌ Nincs szél adat sem wind_gusts_10m_max, sem windspeed_10m_max")
+                # ❌ NINCS SZÉLLÖKÉS ADAT
                 df_data['wind_gusts_max'] = [None] * max_length
                 df_data['wind_data_source'] = ['no_data'] * max_length
+                logger.warning("❌ Nincs széllökés adat")
 
-            # BACKWARD COMPATIBILITY: windspeed oszlop is (régi kódok számára)
-            if 'wind_gusts_max' in df_data:
+            # 💨 SZÉLSEBESSÉG KÜLÖN OSZLOP (QuickOverviewTab számára)
+            print(f"🔍 DEBUG: windspeed_10m_max has data: {bool(windspeed_10m_max)}, len={len(windspeed_10m_max) if windspeed_10m_max else 0}")
+            print(f"🔍 DEBUG: wind_gusts_10m_max has data: {bool(wind_gusts_10m_max)}, len={len(wind_gusts_10m_max) if wind_gusts_10m_max else 0}")
+
+            has_valid_windspeed = windspeed_10m_max and DataFrameExtractor._has_valid_data(windspeed_10m_max)
+            has_valid_wind_gusts_for_fallback = wind_gusts_10m_max and DataFrameExtractor._has_valid_data(wind_gusts_10m_max)
+
+            if has_valid_windspeed:
+                df_data['windspeed'] = DataFrameExtractor._ensure_length(windspeed_10m_max, max_length)
+                print(f"✅ SZÉLSEBESSÉG: windspeed_10m_max ({len(windspeed_10m_max)} values)")
+            elif has_valid_wind_gusts_for_fallback:
+                # Fallback: széllökés használata szélsebességként
                 df_data['windspeed'] = df_data['wind_gusts_max']
+                print(f"⚠️ SZÉLSEBESSÉG fallback to széllökés ({len(wind_gusts_10m_max)} values)")
+            else:
+                df_data['windspeed'] = [None] * max_length
+                print("❌ SZÉLSEBESSÉG: NO DATA!")
+
+            # 🧭 SZÉLIRÁNY hozzáadása ha van
+            if winddirection:
+                df_data['winddirection'] = DataFrameExtractor._ensure_length(winddirection, max_length)
+                print(f"🧭 SZÉLIRÁNY: winddirection_10m_dominant ({len(winddirection)} values)")
 
             # DataFrame létrehozása
             df = pd.DataFrame(df_data)
+
+            # 🔍 DEBUG: Ellenőrizzük, hogy létrejött-e a windspeed oszlop
+            print("🔍 DEBUG DataFrame AFTER CREATION:")
+            print(f"  Columns: {list(df.columns)}")
+            print(f"  Has 'windspeed': {'windspeed' in df.columns}")
+            if 'windspeed' in df.columns:
+                print(f"  windspeed not-null count: {df['windspeed'].notna().sum()}")
+                print(f"  windspeed sample: {df['windspeed'].head().tolist()}")
+            else:
+                print("  ❌ 'windspeed' COLUMN MISSING!")
+                print(f"  Available wind columns: {[c for c in df.columns if 'wind' in c.lower()]}")
+                # KLÍMA: Ha nincs windspeed, de van wind_gusts_max, akkor hozzuk létre
+                if 'wind_gusts_max' in df.columns:
+                    print("  🔧 FIX: Creating windspeed from wind_gusts_max!")
+                    df['windspeed'] = df['wind_gusts_max']
 
             logger.info(f"✅ DataFrame extracted successfully: {df.shape} (rows, cols)")
             logger.debug(f"Columns: {list(df.columns)}")
@@ -139,6 +190,61 @@ class DataFrameExtractor:
             import traceback
             traceback.print_exc()
             return pd.DataFrame()
+
+    @staticmethod
+    def _has_valid_data(data_list: list) -> bool:
+        """
+        Check if list contains valid numeric data (not just None values).
+        
+        🔥 KRITIKUS JAVÍTÁS: Bővített validáció, hogy kezelje a különböző adatformátumokat
+        
+        Args:
+            data_list: List to check
+
+        Returns:
+            True if list contains valid numeric data
+        """
+        if not data_list:
+            print(f"🔍 DEBUG: _has_valid_data - EMPTY list")
+            return False
+            
+        # 🔥 KRITIKUS JAVÍTÁS: Bővített validáció, hogy kezelje a különböző számformátumokat
+        valid_count = 0
+        invalid_samples = []
+        
+        for i, x in enumerate(data_list[:10]):  # Check first 10 items for debugging
+            if x is None:
+                continue
+            
+            # 🔥 KRITIKUS JAVÍTÁS: Kiterjesztett típusellenőrzés
+            # Kezeljük a float, int, és string számokat is
+            is_valid = False
+            
+            if isinstance(x, (int, float)):
+                is_valid = True
+            elif isinstance(x, str):
+                try:
+                    # Próbáljuk konvertálni stringet számmá
+                    float(x)
+                    is_valid = True
+                except (ValueError, TypeError):
+                    is_valid = False
+                    invalid_samples.append(f"'{x}' (string, nem konvertálható)")
+            else:
+                invalid_samples.append(f"{type(x).__name__}: {x}")
+                
+            if is_valid:
+                valid_count += 1
+        
+        total_count = len(data_list)
+        print(f"🔍 DEBUG: _has_valid_data - total={total_count}, valid={valid_count}, sample={data_list[:3]}")
+        
+        if invalid_samples:
+            print(f"🔍 DEBUG: _has_valid_data - invalid samples: {invalid_samples[:3]}")
+        
+        # 🔥 KRITIKUS JAVÍTÁS: Ha van legalább 1 érvényes érték, akkor válaszunk True
+        # Ez megakadályozza, hogy az összes adat elveszzen, ha csak néhány érték érvénytelen
+        return valid_count > 0
 
     @staticmethod
     def _ensure_length(lst: List, target: int) -> List:

@@ -41,6 +41,14 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
   console.log('- windGustsData length:', windGustsData?.length);
   console.log('- precipitationData length:', precipitationData?.length);
   console.log('- city:', city);
+  
+  // 🔍 DEBUG: Wind gust data details
+  if (windGustsData && windGustsData.length > 0) {
+    console.log('🔍 DEBUG: Wind gust data sample:', windGustsData.slice(0, 3));
+    console.log('🔍 DEBUG: Wind gust values:', windGustsData.map(item => item.value).slice(0, 5));
+  } else {
+    console.log('❌ DEBUG: No wind gust data available');
+  }
 
   // Early return if all data arrays are empty
   const hasAnyData = temperatureData?.length > 0 ||
