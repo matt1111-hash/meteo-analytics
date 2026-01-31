@@ -12,14 +12,50 @@ Fájl: src/presentation/gui/results_panel/quick_overview_tab/wind_info_stats.py
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 import pandas as pd
 
 if TYPE_CHECKING:
-    from src.presentation.gui.results_panel.quick_overview_tab.core import QuickOverviewTab
+    pass
 
 logger = logging.getLogger(__name__)
+
+
+def _select_wind_column(df: pd.DataFrame, wind_data_source: str) -> Tuple[Optional[str], str]:
+    """Szél oszlop kiválasztása a DataFrame-ből elérhető adatok alapján."""
+    if wind_data_source == 'windspeed':
+        candidates = ['windspeed']
+    elif wind_data_source == 'wind_gusts_10m_max':
+        candidates = ['wind_gusts_10m_max', 'windgusts_10m_max', 'wind_gusts_max']
+    elif wind_data_source == 'no_data':
+        candidates = ['windspeed']
+    else:
+        candidates = ['wind_gusts_10m_max', 'windgusts_10m_max', 'wind_gusts_max', 'windspeed']
+
+    for col in candidates:
+        if col in df.columns:
+            non_null = df[col].dropna()
+            if not non_null.empty:
+                normalized_source = wind_data_source
+                if col in ['wind_gusts_10m_max', 'windgusts_10m_max']:
+                    normalized_source = 'wind_gusts_10m_max'
+                elif col == 'wind_gusts_max':
+                    normalized_source = 'wind_gusts_max'
+                elif col == 'windspeed':
+                    normalized_source = 'windspeed'
+                return col, normalized_source
+
+    for col in candidates:
+        if col in df.columns:
+            if col in ['wind_gusts_10m_max', 'windgusts_10m_max']:
+                return col, 'wind_gusts_10m_max'
+            if col == 'wind_gusts_max':
+                return col, 'wind_gusts_max'
+            if col == 'windspeed':
+                return col, 'windspeed'
+
+    return None, wind_data_source
 
 
 def calculate_wind_stats(self, df: pd.DataFrame) -> None:
@@ -27,21 +63,63 @@ def calculate_wind_stats(self, df: pd.DataFrame) -> None:
     try:
         from ..utils import WindGustsAnalyzer
 
-        if 'windspeed' not in df.columns:
+        print(f"🌪️ DEBUG: calculate_wind_stats() - df.columns: {list(df.columns)}")
+        print(f"🌪️ DEBUG: df.shape: {df.shape}")
+        print(f"🌪️ DEBUG: windspeed in columns: {'windspeed' in df.columns}")
+
+        wind_data_source = 'unknown'
+        if 'wind_data_source' in df.columns and not df['wind_data_source'].empty:
+            wind_data_source = df['wind_data_source'].iloc[0]
+            print(f"🔍 DEBUG: wind_data_source = '{wind_data_source}'")
+
+        wind_column, wind_data_source = _select_wind_column(df, wind_data_source)
+        if wind_data_source == 'wind_gusts_10m_max' and wind_column != 'wind_gusts_10m_max':
+            print(f"⚠️ DEBUG: wind_gusts_10m_max source, fallback column = {wind_column}")
+
+        if wind_column is None:
+            print("❌ DEBUG: NO WIND DATA FOUND in df.columns!")
+            print(f"❌ DEBUG: Available wind columns: {[c for c in df.columns if 'wind' in c.lower()]}")
             _clear_stats_range(self, ['avg_wind', 'max_wind', 'windy_days', 'wind_direction'])
             return
 
-        wind_series = df['windspeed'].dropna()
+        print(f"✅ DEBUG: {wind_column} column FOUND!")
+        print(f"🌪️ DEBUG: {wind_column} sample (first 5): {df[wind_column].head().tolist()}")
+
+        wind_series = df[wind_column].dropna()
+
+        # 🔥 KRITIKUS JAVÍTÁS: Ellenőrizzük, hogy van-e érvényes adat a wind_series-ben
+        if wind_series.empty:
+            print(f"❌ DEBUG: {wind_column} column is EMPTY after dropna()!")
+            print("❌ DEBUG: All values are None or NaN")
+
+            # 🔄 FALLBACK: Ha bármelyik széllökés oszlop üres, próbáljuk a windspeed oszlopot
+            if wind_column in ['wind_gusts_max', 'wind_gusts_10m_max', 'windgusts_10m_max'] and 'windspeed' in df.columns:
+                print("🔄 DEBUG: Trying fallback to 'windspeed' column...")
+                wind_column = 'windspeed'
+                wind_data_source = 'windspeed'
+                wind_series = df[wind_column].dropna()
+
+                if wind_series.empty:
+                    print("❌ DEBUG: 'windspeed' column is also EMPTY!")
+                    _clear_stats_range(self, ['avg_wind', 'max_wind'])
+                    self._stat_labels['windy_days'].setText("0")
+                    return
+                else:
+                    print("✅ DEBUG: Fallback to 'windspeed' SUCCESSFUL!")
+            else:
+                _clear_stats_range(self, ['avg_wind', 'max_wind'])
+                self._stat_labels['windy_days'].setText("0")
+                return
 
         if wind_series.empty:
             _clear_stats_range(self, ['avg_wind', 'max_wind'])
             self._stat_labels['windy_days'].setText("0")
             return
 
-        # Adatforrás
-        wind_data_source = 'unknown'
-        if 'wind_data_source' in df.columns:
-            wind_data_source = df['wind_data_source'].iloc[0]
+        # Adatforrás (már beállítva fentebb)
+        # wind_data_source = 'unknown'
+        # if 'wind_data_source' in df.columns:
+        #     wind_data_source = df['wind_data_source'].iloc[0]
 
         # Átlagos szél
         avg_wind = wind_series.mean()
@@ -59,6 +137,10 @@ def calculate_wind_stats(self, df: pd.DataFrame) -> None:
         windy_threshold = WindGustsAnalyzer.get_windy_days_threshold(wind_data_source)
         windy_days = len(wind_series[wind_series > windy_threshold])
         self._stat_labels['windy_days'].setText(f"{windy_days}")
+
+        # 🧭 Uralkodó szélirány kiszámítása
+        dominant_direction = _calculate_dominant_direction(df)
+        self._stat_labels['wind_direction'].setText(dominant_direction)
 
         logger.info(f"Wind stats - Source: {wind_data_source}, Threshold: {windy_threshold} km/h, Windy days: {windy_days}")
 
@@ -120,7 +202,8 @@ def clear_stats(self) -> None:
 def _log_wind_category(max_wind: float, data_source: str) -> None:
     """Szél kategória logolása."""
     from ..utils import WindGustsAnalyzer
-    category = WindGustsAnalyzer.categorize_wind_gust(max_wind, data_source)
+    analyzer = WindGustsAnalyzer()
+    category = analyzer.categorize_wind_gust(max_wind, data_source)
 
     if category == 'hurricane':
         logger.critical(f"KRITIKUS: Hurrikán erősségű széllökés: {max_wind:.1f} km/h")
@@ -128,6 +211,55 @@ def _log_wind_category(max_wind: float, data_source: str) -> None:
         logger.warning(f"Extrém széllökés: {max_wind:.1f} km/h")
     elif category == 'strong':
         logger.warning(f"Erős széllökés: {max_wind:.1f} km/h")
+
+
+def _calculate_dominant_direction(df: pd.DataFrame) -> str:
+    """
+    Uralkodó szélirány kiszámítása a DataFrame alapján.
+
+    Args:
+        df: DataFrame szélirány adatokkal
+
+    Returns:
+        str: Uralkodó irány (pl. "ÉK", "D") vagy "N/A" ha nincs adat
+    """
+    direction_col = None
+    for col in ['winddirection', 'winddirection_10m_dominant', 'wind_direction_10m_dominant']:
+        if col in df.columns:
+            direction_col = col
+            break
+
+    if direction_col is None:
+        return "N/A"
+
+    direction_series = df[direction_col].dropna()
+    if direction_series.empty:
+        return "N/A"
+
+    # Szélirányok kategorizálása 8 fő irányba
+    # 0° = É, 90° = K, 180° = D, 270° = NY
+    def degrees_to_direction(deg: float) -> str:
+        if pd.isna(deg):
+            return "N/A"
+        # 8 fő irány: É, ÉK, K, DK, D, DN, NY, ÉNY
+        # Határok: 0-22.5, 22.5-67.5, 67.5-112.5, stb.
+        directions = ["É", "ÉK", "K", "DK", "D", "DN", "NY", "ÉNY"]
+        index = round(deg / 45) % 8
+        return directions[index]
+
+    # Minden értéket iránnyá konvertálunk
+    directions = [degrees_to_direction(d) for d in direction_series]
+
+    # Leggyakoribb irány megtalálása (N/A kizárásával)
+    valid_directions = [d for d in directions if d != "N/A"]
+    if not valid_directions:
+        return "N/A"
+
+    from collections import Counter
+    direction_counts = Counter(valid_directions)
+    dominant = direction_counts.most_common(1)[0][0]
+
+    return dominant
 
 
 def _clear_stats_range(self, keys: list) -> None:

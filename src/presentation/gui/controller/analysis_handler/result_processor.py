@@ -40,7 +40,7 @@ def _process_analysis_result(self, result_data: Dict) -> Dict:
 
         processed_result = {
             'analysis_type': analysis_type,
-            'request_params': result_data.get('request_params', {}),
+            'request_data': self.analysis_state.get('request_data', {}),
             'result_data': result_data.get('result_data', {}),
             'metadata': {
                 'provider': result_data.get('provider', 'unknown'),

@@ -123,10 +123,6 @@ class WeatherChart(FigureCanvas):
             print(f"Chart export error: {e}")
             return False
 
-    def _apply_theme_to_chart(self) -> None:
-        """Apply theme to chart axes after figure clear."""
-        apply_theme_to_axis(self.ax, self.theme_manager, self.grid_enabled)
-
     def update_style(self, dark_theme: bool = False) -> None:
         """Update chart style (deprecated, use theme manager)."""
         print("update_style() deprecated - use theme_manager.set_theme() instead")
