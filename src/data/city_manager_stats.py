@@ -179,4 +179,21 @@ class CityManagerStats(CityManagerSearch):
         self.close()
 
 
+    # ========================================================================
+    # PORT IMPLEMENTATION (CityManagerPort)
+    # ========================================================================
+
+    def get_cities_for_hungarian_county(self, county: str) -> List[Dict[str, Any]]:
+        """Get Hungarian settlements by county (Port implementation).
+
+        Args:
+            county: County name (e.g., "Pest", "Bács-Kiskun")
+
+        Returns:
+            List of dictionaries with city data
+        """
+        cities = self.get_hungarian_settlements_by_county(county)
+        return [city.to_dict() for city in cities]
+
+
 __all__ = ['CityManagerStats']

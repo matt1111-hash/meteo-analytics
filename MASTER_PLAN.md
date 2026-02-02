@@ -7,7 +7,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Version** | 1.4 |
+| **Version** | 1.5 |
 | **Updated** | 2026-02-02 |
 | **Timeline** | 5 weeks (25 working days) |
 | **Current Coverage** | **~69%** (+11% total) |
@@ -41,15 +41,33 @@
 
 **Week 2 Summary**: +6% coverage (Charts: 43%→71%)
 
-### 📈 COVERAGE TRACKING
+### 🔄 WEEK 3 - IN PROGRESS (2026-02-02)
 
-| Category | Start | After W1 | After W2 | Target | Delta |
-|----------|-------|----------|----------|--------|-------|
-| Location Selectors | 50% | **100%** | **100%** | 100% | **+50%** ✅ |
-| Theming System | 0% | **100%** | **100%** | 100% | **+100%** ✅ |
-| Main Application | 67% | **100%** | **100%** | 100% | **+33%** ✅ |
-| Chart Components | 43% | 43% | **71%** | 100% | **+28%** ✅ |
-| **OVERALL** | **58%** | **~63%** | **~69%** | **95%** | **+11%** ✅ |
+| Task | Files Created/Modified | Status |
+|------|------------------------|--------|
+| Hungary API endpoints (4 db) | `src/api/routes/hungary.py` (215 sor) | ✅ DONE |
+| Backend port implementation | `src/data/city_manager_stats.py` | ✅ DONE |
+| Router registration | `src/api/main.py` | ✅ DONE |
+| Frontend HungaryService | `frontend/src/services/hungaryService.ts` | ✅ DONE |
+| Backend server running | `http://127.0.0.1:8003` | ✅ RUNNING |
+| Frontend server running | `http://localhost:3000` | ✅ RUNNING |
+| Hungary GeoJSON data | `constants/hungary.ts` | ✅ DONE (73 tests) |
+| HungaryMap component | `components/maps/HungaryMap.tsx` | 🔴 PENDING |
+| HierarchicalSelector | `components/common/HierarchicalSelector.tsx` | 🔴 PENDING |
+
+**Week 3 Progress**: Backend API kész, frontend elindítva, komponensek hiányoznak
+
+---
+
+## 📈 COVERAGE TRACKING
+
+| Category | Start | After W1 | After W2 | After W3 (partial) | Target | Delta |
+|----------|-------|----------|----------|-------------------|--------|-------|
+| Location Selectors | 50% | **100%** | **100%** | **100%** | 100% | **+50%** ✅ |
+| Theming System | 0% | **100%** | **100%** | **100%** | 100% | **+100%** ✅ |
+| Main Application | 67% | **100%** | **100%** | **100%** | 100% | **+33%** ✅ |
+| Chart Components | 43% | 43% | **71%** | **71%** | 100% | **+28%** ✅ |
+| **OVERALL** | **58%** | **~63%** | **~69%** | **~71%** | **95%** | **+13%** ✅ |
 
 ---
 
@@ -65,10 +83,12 @@
 - Beaufort Scale (0-12 levels, Hungarian)
 - Enhanced wind charts
 
-### 🔴 Week 3: Maps + Hierarchical Selector
-- Hungary GeoJSON data
-- County-level map with layers
-- Country→Region→County→City selector
+### 🔄 Week 3: Maps + Hierarchical Selector - IN PROGRESS
+- ✅ Hungary API endpoints (counties, regions, settlements, stations)
+- ✅ Frontend HungaryService
+- 🔴 Hungary GeoJSON data preparation
+- 🔴 HungaryMap component with county boundaries
+- 🔴 HierarchicalSelector component (Country→Region→County→City)
 
 ### 🔴 Week 4: Trend Analytics + Exports
 - TrendAnalyticsView with KPI dashboard
@@ -98,10 +118,16 @@
 - [x] 125/125 tests passing
 - [x] Coverage +6%
 
-### Week 3 - PENDING
-- [ ] Hungary map with counties
-- [ ] Map layers functional
-- [ ] Hierarchical selector
+### Week 3 - IN PROGRESS
+- [x] Hungary API endpoints (4 db)
+- [x] Backend port implementation
+- [x] Frontend HungaryService
+- [x] Backend server running
+- [x] Frontend server running
+- [ ] Hungary GeoJSON data
+- [ ] HungaryMap component
+- [ ] HierarchicalSelector component
+- [ ] Coverage +2% (target: ~71%)
 
 ### Week 4 - PENDING
 - [ ] Trend analytics view
@@ -148,7 +174,7 @@ POST /api/weather/multi-city?aggregate={bool}
 POST /api/weather/detect-anomalies
 ```
 
-### ✅ NEW ENDPOINTS (Week 2)
+### ✅ WEEK 2 - WIND ROSE
 
 ```python
 # Wind Rose data
@@ -156,15 +182,31 @@ POST /api/weather/wind-rose
 → {"directions": [{"direction": int, "speed_buckets": [float*8]}], "calms": float}
 ```
 
+### ✅ WEEK 3 - HUNGARY API (NEW!)
+
+```python
+# Hungarian counties (20 db: Budapest + 19 megye)
+GET /api/hungary/counties
+→ {"count": 20, "counties": ["Baranya", "Budapest", "Pest", ...]}
+
+# Hungarian statistical regions (7 db)
+GET /api/hungary/regions
+→ {"count": 7, "regions": ["Közép-Magyarország", "Észak-Magyarország", ...]}
+
+# Hungarian settlements with filters
+GET /api/hungary/settlements?county={name}&limit={number}
+→ {"count": N, "settlements": [{"name": "Érd", "county": "Pest", ...}]}
+
+# Hungarian weather stations (settlements)
+GET /api/hungary/stations?limit={number}
+→ {"count": N, "stations": [{"id": "HU-2151", "name": "Pécs", ...}]}
+```
+
 ### 🔴 NEEDED ENDPOINTS
 
 ```python
 # Trend Analytics (Week 4)
 POST /api/analytics/trend
-
-# Hungary regions (Week 3)
-GET /api/hungary/regions
-GET /api/hungary/stations
 
 # Providers (Week 5)
 GET /api/weather/providers
@@ -183,14 +225,15 @@ POST /api/export/json
 |------|-------|--------------|----------|--------|
 | 1 | Infrastructure | Theme, City Autocomplete | ~63% (+5%) | ✅ DONE |
 | 2 | Charts | Wind Rose, Beaufort Scale | ~69% (+6%) | ✅ DONE |
-| 3 | Maps | Hungary County Map | 85% (+7%) | 🔴 Pending |
+| 3 | Maps | Hungary API + Map components | ~71% (+2%) | 🔄 IN PROGRESS |
 | 4 | Analytics | Trend View, Exports | 92% (+7%) | 🔴 Pending |
 | 5 | Polish | Providers, Modals, Status Bar | 95% (+3%) | 🔴 Pending |
 
 ---
 
-**Status**: 🔄 **IN PROGRESS** (Week 2 Complete)
-**Coverage Gap to Close**: 26 percentage points
+**Status**: 🔄 **WEEK 3 IN PROGRESS** (Backend API ready, components pending)
+**Coverage Gap to Close**: 24 percentage points
 **Target**: 95% feature parity
+**Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
 
-*Updated: 2026-02-02*
+*Updated: 2026-02-02 (Week 3 progress - Hungary API done)*
