@@ -150,6 +150,7 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
     const config: Partial<Plotly.Config> = {
       responsive: true,
       displayModeBar: false,
+      staticPlot: true,  // Disable drag/zoom - chart is view-only
     };
 
     Plotly.newPlot(chartElement, traces, layout, config);

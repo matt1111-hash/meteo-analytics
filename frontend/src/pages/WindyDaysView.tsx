@@ -4,6 +4,8 @@ import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import CityAutocomplete from '../components/common/CityAutocomplete';
 import WindRoseChart, { WindRoseData } from '../components/charts/WindRoseChart';
+import BeaufortLegend from '../components/charts/BeaufortLegend';
+import { getBeaufortLevel } from '../constants/windConstants';
 import './WindyDaysView.css';
 
 interface WindDataPoint {
@@ -287,6 +289,19 @@ const WindyDaysView: React.FC = () => {
             loading={windRoseLoading}
             error={windRoseError}
             height={500}
+          />
+        </div>
+      )}
+
+      {/* Beaufort Scale Legend - show when we have wind data */}
+      {windData.length > 0 && (
+        <div className="beaufort-section">
+          <h3>🌬️ Beaufort Skála</h3>
+          <BeaufortLegend
+            compact={true}
+            highlightLevel={
+              summary ? getBeaufortLevel(summary.maxWind).level : undefined
+            }
           />
         </div>
       )}
