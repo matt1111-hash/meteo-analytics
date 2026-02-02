@@ -3,8 +3,11 @@ import axios from 'axios';
 import { CityWeatherResult, MetricsResponse } from '../types/weather';
 import MetricSelector from '../components/MetricSelector';
 import HeatmapChart from '../components/HeatmapChart';
-import { HUNGARIAN_CITIES, EUROPEAN_CITIES } from '../constants/cities';
 import './HeatmapView.css';
+
+// Quick preset city lists for heatmap
+const HUNGARIAN_PRESET = 'Budapest, Debrecen, Szeged, Miskolc, Pécs, Győr';
+const EUROPEAN_PRESET = 'Vienna, Prague, Bratislava, Zagreb, Berlin';
 
 // Calculate dynamic default dates
 const getDefaultDates = () => {
@@ -110,21 +113,21 @@ const HeatmapView: React.FC = () => {
             <div className="preset-buttons">
               <button
                 type="button"
-                onClick={() => setCities(HUNGARIAN_CITIES.map(c => c.name).join(', '))}
+                onClick={() => setCities(HUNGARIAN_PRESET)}
                 className="preset-btn"
               >
                 Magyar városok
               </button>
               <button
                 type="button"
-                onClick={() => setCities(EUROPEAN_CITIES.map(c => c.name).join(', '))}
+                onClick={() => setCities(EUROPEAN_PRESET)}
                 className="preset-btn"
               >
                 Európai városok
               </button>
               <button
                 type="button"
-                onClick={() => setCities([...HUNGARIAN_CITIES, ...EUROPEAN_CITIES].map(c => c.name).join(', '))}
+                onClick={() => setCities(`${HUNGARIAN_PRESET}, ${EUROPEAN_PRESET}`)}
                 className="preset-btn"
               >
                 Mind

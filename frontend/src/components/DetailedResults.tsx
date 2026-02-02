@@ -35,21 +35,6 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
   startDate,
   endDate,
 }) => {
-  console.log('DetailedResults Debug:');
-  console.log('- temperatureData length:', temperatureData?.length);
-  console.log('- windData length:', windData?.length);
-  console.log('- windGustsData length:', windGustsData?.length);
-  console.log('- precipitationData length:', precipitationData?.length);
-  console.log('- city:', city);
-  
-  // 🔍 DEBUG: Wind gust data details
-  if (windGustsData && windGustsData.length > 0) {
-    console.log('🔍 DEBUG: Wind gust data sample:', windGustsData.slice(0, 3));
-    console.log('🔍 DEBUG: Wind gust values:', windGustsData.map(item => item.value).slice(0, 5));
-  } else {
-    console.log('❌ DEBUG: No wind gust data available');
-  }
-
   // Early return if all data arrays are empty
   const hasAnyData = temperatureData?.length > 0 ||
                     windData?.length > 0 ||
@@ -57,7 +42,6 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
                     precipitationData?.length > 0;
 
   if (!hasAnyData) {
-    console.log('WARNING: No data available for rendering - early return');
     return (
       <div className="detailed-results">
         <div className="detailed-results-header">
@@ -107,13 +91,6 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
 
   return (
     <div className="detailed-results">
-      <div style={{ color: 'orange', fontWeight: 'bold' }}>
-        DEBUG DetailedResults:
-        temp={temperatureData?.length ?? 0},
-        wind={windData?.length ?? 0},
-        gusts={windGustsData?.length ?? 0},
-        precip={precipitationData?.length ?? 0}
-      </div>
       <div className="detailed-results-header">
         <h3>Detailed Analysis Results</h3>
         <ExportCSVButton

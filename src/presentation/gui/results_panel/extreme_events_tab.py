@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QRadioButton,
+    QSplitter,
     QTableWidget,
     QTableWidgetItem,
     QTextEdit,
@@ -113,21 +114,21 @@ class ExtremeEventsTab(QWidget):
     def _init_ui(self) -> None:
         """🎨 UI inicializálása."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(15, 15, 15, 15)
-        layout.setSpacing(15)
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(5)
 
-        # Cím
+        # Cím - kompakt
         self.title_label = QLabel("⚡ Extrém Időjárási Események")
         title_font = QFont()
         title_font.setBold(True)
-        title_font.setPointSize(16)
+        title_font.setPointSize(13)
         self.title_label.setFont(title_font)
         self.title_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.title_label)
 
-        # Anomália beállítások gomb
-        self.settings_btn = QPushButton("⚙️ ANOMÁLIA BEÁLLÍTÁSOK MEGNYITÁSA")
-        self.settings_btn.setMinimumHeight(40)
+        # Anomália beállítások gomb - kisebb
+        self.settings_btn = QPushButton("⚙️ Anomália beállítások")
+        self.settings_btn.setMaximumHeight(30)
         self.settings_btn.clicked.connect(self._on_anomaly_settings_clicked)
         layout.addWidget(self.settings_btn)
 
@@ -135,16 +136,26 @@ class ExtremeEventsTab(QWidget):
         self.anomaly_section = self._create_anomaly_section()
         layout.addWidget(self.anomaly_section)
 
-        # Rekordok szekció
+        # SPLITTER: felső rész (rekordok) és alsó rész (gomb)
+        self.splitter = QSplitter(Qt.Vertical)
+        self.splitter.setChildrenCollapsible(False)
+
+        # Rekordok szekció (felső) - dinamikus méret
         self.records_section = self._create_records_section()
-        layout.addWidget(self.records_section)
+        self.splitter.addWidget(self.records_section)
 
-        # Akciók
-        self.detailed_btn = QPushButton("🔍 Részletes Extrém Elemzés")
+        # Alsó konténer (gomb) - nincs fix méret
+        bottom_widget = QWidget()
+        bottom_layout = QVBoxLayout(bottom_widget)
+        bottom_layout.setContentsMargins(0, 5, 0, 0)
+        self.detailed_btn = QPushButton("🔍 Részletes elemzés")
+        self.detailed_btn.setMaximumHeight(30)
         self.detailed_btn.clicked.connect(self._on_detailed_analysis_clicked)
-        layout.addWidget(self.detailed_btn)
+        bottom_layout.addWidget(self.detailed_btn)
+        self.splitter.addWidget(bottom_widget)
 
-        layout.addStretch()
+        # Nincs setStretchFactor, nincs setSizes - a felhasználó szabályozza
+        layout.addWidget(self.splitter)
 
     def _create_anomaly_section(self) -> QGroupBox:
         section = QGroupBox("🔍 Anomália Detektálás")
@@ -183,7 +194,22 @@ class ExtremeEventsTab(QWidget):
         self.extreme_table = QTableWidget()
         self.extreme_table.setColumnCount(4)
         self.extreme_table.setHorizontalHeaderLabels(["Kategória", "Típus", "Érték", "Dátum"])
-        self.extreme_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # Egyedi oszlopszélességek - a kategória és típus szövegei hosszabbak
+        self.extreme_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.extreme_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.extreme_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.extreme_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        # De az érték és dátum oszlopok ne legyenek túl szélesek
+        self.extreme_table.horizontalHeader().setMinimumSectionSize(60)
+        self.extreme_table.horizontalHeader().setStretchLastSection(True)
+        # Dinamikus sorok - automatikusan kitölti a helyet
+        self.extreme_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.extreme_table.verticalHeader().setDefaultSectionSize(22)
+        self.extreme_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.extreme_table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        # SizePolicy: expanding, kitölti a rendelkezésre álló helyet
+        from PySide6.QtWidgets import QSizePolicy
+        self.extreme_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.extreme_table)
 
         return section
@@ -205,7 +231,8 @@ class ExtremeEventsTab(QWidget):
 
         # Rekordok
         if self.extreme_calculator:
-            records = self.extreme_calculator.calculate_records_by_period(daily_data, self.period_type)
+            dates = daily_data.get("time", daily_data.get("date", []))
+            records = self.extreme_calculator.calculate_records_by_period(daily_data, dates, self.period_type)
             self._display_records(records)
 
     def _get_thresholds(self) -> Dict[str, float]:

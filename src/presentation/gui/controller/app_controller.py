@@ -166,8 +166,19 @@ class AppController(QObject):
         Args:
             request_data: Teljes elemzési kérés minden paraméterre
         """
+        print("=" * 80)
+        print("🚨 DEBUG: AppController.handle_analysis_request() MEGHÍVVA!")
+        print(f"🚨 DEBUG: Request data: {request_data}")
+        print(f"🚨 DEBUG: Analysis type: {request_data.get('analysis_type', 'unknown')}")
+        print("=" * 80)
+
         def start_analysis_callback(enhanced_request, handler):
             """Callback az analysis worker elindításához."""
+            print("=" * 80)
+            print("🚨 DEBUG: start_analysis_callback() MEGHÍVVA!")
+            print(f"🚨 DEBUG: enhanced_request={enhanced_request}")
+            print("=" * 80)
+
             worker = AnalysisWorker(parent=self)
             handler.set_active_worker(worker)
 
@@ -177,16 +188,29 @@ class AppController(QObject):
             worker.analysis_failed.connect(handler.on_analysis_failed)
             worker.analysis_cancelled.connect(handler.on_analysis_cancelled)
 
-            return worker.start_analysis(enhanced_request)
+            print("🚨 DEBUG: worker.start_analysis() HÍVÁS ELŐTT")
+            result = worker.start_analysis(enhanced_request)
+            print(f"🚨 DEBUG: worker.start_analysis() VISSZATÉRT: result={result}")
+            return result
 
+        print("🚨 DEBUG: analysis_handler.handle_analysis_request() HÍVÁS ELŐTT")
         self.analysis_handler.handle_analysis_request(
             request_data, self.provider_routing, start_analysis_callback
         )
+        print("🚨 DEBUG: analysis_handler.handle_analysis_request() VISSZATÉRT")
 
     @Slot(dict)
     def _on_analysis_completed_forward(self, result_data: dict):
         """Analysis befejezésének továbbítása."""
+        print("=" * 80)
+        print("🚨 DEBUG: AppController._on_analysis_completed_forward() ELEJE")
+        print(f"🚨 DEBUG: result_data keys: {list(result_data.keys())}")
+        print("=" * 80)
+
         analysis_type = self.analysis_handler.analysis_state.get('analysis_type', 'unknown')
+
+        # 🚨 KRITIKUS FIX: Az analysis_completed signal ELMUST, hogy elérjen a MainWindow-ig!
+        self.analysis_completed.emit(result_data)
 
         # Típus-specifikus eredmény továbbítás (backwards compatibility)
         if analysis_type == 'single_location':
@@ -322,7 +346,11 @@ class AppController(QObject):
             self._logger.info("🛑 AppController leállítása...")
 
             self.cancel_all_operations()
-            self.analysis_handler._cleanup_analysis_state()
+
+            # AnalysisHandler cleanup - use the module-level function
+            from .analysis_handler.state_management import _cleanup_analysis_state
+            _cleanup_analysis_state(self.analysis_handler)
+
             self.worker_manager.shutdown()
 
             # Preferences mentése

@@ -39,8 +39,6 @@ export const useCityWeather = () => {
         setDetailedData(null);
       } else {
         // Detailed view: fetch all metrics
-        console.log('DEBUG: Fetching detailed data for', params.city, params.startDate, params.endDate);
-
         const response = await axios.post<{
           temperature_data: CityWeatherResult[];
           wind_data: CityWeatherResult[];
@@ -53,24 +51,12 @@ export const useCityWeather = () => {
           end: params.endDate,
         });
 
-        console.log('DEBUG: API Response keys:', Object.keys(response.data));
-        console.log('DEBUG: temperature_data length:', response.data.temperature_data?.length);
-        console.log('DEBUG: wind_data length:', response.data.wind_data?.length);
-        console.log('DEBUG: wind_gusts_data length:', response.data.wind_gusts_data?.length);
-        console.log('DEBUG: precipitation_data length:', response.data.precipitation_data?.length);
-
         // Validate response structure
         const apiData = response.data;
         const temperatureData = apiData.temperature_data || [];
         const windData = apiData.wind_data || [];
         const windGustsData = apiData.wind_gusts_data || [];
         const precipitationData = apiData.precipitation_data || [];
-
-        console.log('DEBUG: Validated data lengths:');
-        console.log('  - temperature_data:', temperatureData.length);
-        console.log('  - wind_data:', windData.length);
-        console.log('  - wind_gusts_data:', windGustsData.length);
-        console.log('  - precipitation_data:', precipitationData.length);
 
         // Set results based on temperature data (for render condition)
         setResults(temperatureData);
@@ -84,14 +70,6 @@ export const useCityWeather = () => {
         };
 
         setDetailedData(detailedDataToSet);
-        console.log('DEBUG: DetailedData set complete with', Object.keys(detailedDataToSet).length, 'metric types');
-        
-        // 🔍 DEBUG: Wind gust data details
-        console.log('🔍 DEBUG: Wind gust data in API response:', {
-          length: windGustsData.length,
-          sample: windGustsData.slice(0, 3),
-          values: windGustsData.map(item => item.value).slice(0, 5)
-        });
       }
     } catch (err) {
       console.log('ERROR: Fetch failed:', err);

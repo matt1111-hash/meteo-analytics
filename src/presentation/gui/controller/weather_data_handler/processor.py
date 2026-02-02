@@ -71,6 +71,9 @@ def process_weather_data(
         for field in OPTIONAL_DAILY_FIELDS:
             if field in daily_data:
                 processed['daily'][field] = daily_data[field]
+                if field == 'wind_gusts_10m_max':
+                    logger.info(f"🌪️ Wind gusts data copied: {len(daily_data[field])} values")
+                logger.debug(f"Copied optional field: {field}")
 
         # Wind direction compatibility fix
         for src_field, dst_field in WIND_DIRECTION_MAPPING.items():

@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import CitySelector from '../components/CitySelector';
+import CityAutocomplete from '../components/common/CityAutocomplete';
 import './WindyDaysView.css';
 
 interface WindDataPoint {
@@ -134,11 +134,10 @@ const WindyDaysView: React.FC = () => {
       <form onSubmit={handleSubmit} className="windy-form">
         <div className="form-row">
           <div className="form-group">
-            <CitySelector
-              id="city"
+            <CityAutocomplete
               value={city}
               onChange={(newCity) => setCity(newCity)}
-              label="Város"
+              placeholder="Város neve..."
             />
           </div>
           <div className="form-group">

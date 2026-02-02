@@ -48,14 +48,14 @@ class WindDataExtractor:
             print(f"🌪️ DEBUG: daily_data type: {type(daily_data)}")
             print(f"🌪️ DEBUG: daily_data keys: {list(daily_data.keys()) if isinstance(daily_data, dict) else 'NOT DICT'}")
 
-        dates = daily_data.get("time", [])
+        dates = daily_data.get("time", []) or daily_data.get("date", [])
 
         if debug:
             print(f"🌪️ DEBUG: dates: {len(dates) if dates else 0} elems")
 
-        # API KULCSOK KONZISZTENCIA
-        wind_gusts_10m_max = daily_data.get("wind_gusts_10m_max", [])
-        windspeed_10m_max = daily_data.get("windspeed_10m_max", [])
+        # API KULCSOK KONZISZTENCIA - OpenMeteo + KOMPATIBILITÁSI KULCSOK
+        wind_gusts_10m_max = daily_data.get("windgusts_10m_max", []) or daily_data.get("wind_gusts_max", [])
+        windspeed_10m_max = daily_data.get("windspeed_10m_max", []) or daily_data.get("wind_speed_max", [])
 
         if debug:
             print(f"🌪️ DEBUG: wind_gusts_10m_max: {len(wind_gusts_10m_max) if wind_gusts_10m_max else 0} elems")

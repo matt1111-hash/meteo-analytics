@@ -60,11 +60,6 @@ class DataFrameExtractor:
 
             logger.debug(f"Extracting {len(dates)} napok adatai...")
 
-            # 🔍 DEBUG: Show daily keys
-            print(f"🔍 DEBUG DataFrameExtractor - daily_data keys: {list(daily_data.keys())}")
-            print(f"🔍 DEBUG DataFrameExtractor - Has wind_gusts_10m_max: {'wind_gusts_10m_max' in daily_data}")
-            print(f"🔍 DEBUG DataFrameExtractor - Has windspeed_10m_max: {'windspeed_10m_max' in daily_data}")
-
             # === HŐMÉRSÉKLET ADATOK ===
             temp_max = daily_data.get("temperature_2m_max", [])
             temp_min = daily_data.get("temperature_2m_min", [])
@@ -106,11 +101,7 @@ class DataFrameExtractor:
             # === 🔥 KRITIKUS JAVÍTÁS: SZÉLLÖKÉS ÉS SZÉLSEBESSÉG KÜLÖN ===
             # 🌪️ VALIDÁCIÓ: Csak érvényes numerikus adatok használata
             has_valid_wind_gusts = wind_gusts_10m_max and DataFrameExtractor._has_valid_data(wind_gusts_10m_max)
-            
-            # 🔍 DEBUG: Wind gust data validation details
-            print(f"🔍 DEBUG: wind_gusts_10m_max data sample: {wind_gusts_10m_max[:5] if wind_gusts_10m_max else 'EMPTY'}")
-            print(f"🔍 DEBUG: has_valid_wind_gusts = {has_valid_wind_gusts}")
-            
+
             # 🔥 KRITIKUS JAVÍTÁS: Ha van wind_gusts_10m_max adat, de a validáció nem talál érvényes értékeket,
             # akkor is használjuk az adatokat, de figyelmeztetünk
             if wind_gusts_10m_max and len(wind_gusts_10m_max) > 0:
@@ -132,45 +123,37 @@ class DataFrameExtractor:
                 logger.warning("❌ Nincs széllökés adat")
 
             # 💨 SZÉLSEBESSÉG KÜLÖN OSZLOP (QuickOverviewTab számára)
-            print(f"🔍 DEBUG: windspeed_10m_max has data: {bool(windspeed_10m_max)}, len={len(windspeed_10m_max) if windspeed_10m_max else 0}")
-            print(f"🔍 DEBUG: wind_gusts_10m_max has data: {bool(wind_gusts_10m_max)}, len={len(wind_gusts_10m_max) if wind_gusts_10m_max else 0}")
-
             has_valid_windspeed = windspeed_10m_max and DataFrameExtractor._has_valid_data(windspeed_10m_max)
             has_valid_wind_gusts_for_fallback = wind_gusts_10m_max and DataFrameExtractor._has_valid_data(wind_gusts_10m_max)
 
             if has_valid_windspeed:
                 df_data['windspeed'] = DataFrameExtractor._ensure_length(windspeed_10m_max, max_length)
-                print(f"✅ SZÉLSEBESSÉG: windspeed_10m_max ({len(windspeed_10m_max)} values)")
+                logger.debug(f"✅ SZÉLSEBESSÉG: windspeed_10m_max ({len(windspeed_10m_max)} values)")
             elif has_valid_wind_gusts_for_fallback:
                 # Fallback: széllökés használata szélsebességként
                 df_data['windspeed'] = df_data['wind_gusts_max']
-                print(f"⚠️ SZÉLSEBESSÉG fallback to széllökés ({len(wind_gusts_10m_max)} values)")
+                logger.debug(f"⚠️ SZÉLSEBESSÉG fallback to széllökés ({len(wind_gusts_10m_max)} values)")
             else:
                 df_data['windspeed'] = [None] * max_length
-                print("❌ SZÉLSEBESSÉG: NO DATA!")
+                logger.debug("❌ SZÉLSEBESSÉG: NO DATA!")
 
             # 🧭 SZÉLIRÁNY hozzáadása ha van
             if winddirection:
                 df_data['winddirection'] = DataFrameExtractor._ensure_length(winddirection, max_length)
-                print(f"🧭 SZÉLIRÁNY: winddirection_10m_dominant ({len(winddirection)} values)")
+                logger.debug(f"🧭 SZÉLIRÁNY: winddirection_10m_dominant ({len(winddirection)} values)")
 
             # DataFrame létrehozása
             df = pd.DataFrame(df_data)
 
-            # 🔍 DEBUG: Ellenőrizzük, hogy létrejött-e a windspeed oszlop
-            print("🔍 DEBUG DataFrame AFTER CREATION:")
-            print(f"  Columns: {list(df.columns)}")
-            print(f"  Has 'windspeed': {'windspeed' in df.columns}")
-            if 'windspeed' in df.columns:
-                print(f"  windspeed not-null count: {df['windspeed'].notna().sum()}")
-                print(f"  windspeed sample: {df['windspeed'].head().tolist()}")
-            else:
-                print("  ❌ 'windspeed' COLUMN MISSING!")
-                print(f"  Available wind columns: {[c for c in df.columns if 'wind' in c.lower()]}")
-                # KLÍMA: Ha nincs windspeed, de van wind_gusts_max, akkor hozzuk létre
-                if 'wind_gusts_max' in df.columns:
-                    print("  🔧 FIX: Creating windspeed from wind_gusts_max!")
-                    df['windspeed'] = df['wind_gusts_max']
+            # 🔥 KRITIKUS JAVÍTÁS: Típuskonverzió a szél oszlopokhoz
+            # Ez biztosítja, hogy a windspeed, wind_gusts_max oszlopok numerikus típusúak legyenek
+            # és ne tartalmazzanak stringeket, ami '>' összehasonlítási hibát okozna
+            numeric_columns = ['windspeed', 'wind_gusts_max', 'winddirection']
+            for col in numeric_columns:
+                if col in df.columns:
+                    # pd.to_numeric() konvertálja az értékeket, a nem numerikusokat NaN-nak tekinti
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+                    logger.debug(f"✅ Típuskonverzió: {col} → numerikus")
 
             logger.info(f"✅ DataFrame extracted successfully: {df.shape} (rows, cols)")
             logger.debug(f"Columns: {list(df.columns)}")
@@ -212,14 +195,16 @@ class DataFrameExtractor:
         valid_count = 0
         invalid_samples = []
         
-        for i, x in enumerate(data_list[:10]):  # Check first 10 items for debugging
+        # 🔥 KRITIKUS JAVÍTÁS: Ellenőrizzük az összes elemet, ne csak az első 10-et
+        # Ez megakadályozza, hogy az érvényes adatok elvesznek, ha csak a kezdeti elemek érvénytelenek
+        for i, x in enumerate(data_list):
             if x is None:
                 continue
-            
+
             # 🔥 KRITIKUS JAVÍTÁS: Kiterjesztett típusellenőrzés
             # Kezeljük a float, int, és string számokat is
             is_valid = False
-            
+
             if isinstance(x, (int, float)):
                 is_valid = True
             elif isinstance(x, str):
@@ -229,19 +214,15 @@ class DataFrameExtractor:
                     is_valid = True
                 except (ValueError, TypeError):
                     is_valid = False
-                    invalid_samples.append(f"'{x}' (string, nem konvertálható)")
+                    if i < 10:  # Only collect first 10 invalid samples for debugging
+                        invalid_samples.append(f"'{x}' (string, nem konvertálható)")
             else:
-                invalid_samples.append(f"{type(x).__name__}: {x}")
-                
+                if i < 10:  # Only collect first 10 invalid samples for debugging
+                    invalid_samples.append(f"{type(x).__name__}: {x}")
+
             if is_valid:
                 valid_count += 1
-        
-        total_count = len(data_list)
-        print(f"🔍 DEBUG: _has_valid_data - total={total_count}, valid={valid_count}, sample={data_list[:3]}")
-        
-        if invalid_samples:
-            print(f"🔍 DEBUG: _has_valid_data - invalid samples: {invalid_samples[:3]}")
-        
+
         # 🔥 KRITIKUS JAVÍTÁS: Ha van legalább 1 érvényes érték, akkor válaszunk True
         # Ez megakadályozza, hogy az összes adat elveszzen, ha csak néhány érték érvénytelen
         return valid_count > 0

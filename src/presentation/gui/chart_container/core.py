@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from .charts import (
+from ..charts import (
     EnhancedTemperatureChart,
     HeatmapCalendarChart,
     MultiYearComparisonChart,

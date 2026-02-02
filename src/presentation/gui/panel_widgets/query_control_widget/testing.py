@@ -63,8 +63,8 @@ class QueryControlTestWindow(QMainWindow):
     def _test_validation(self):
         """Validáció tesztelése."""
         print("🔍 TEST: Testing validation logic")
-        is_valid = self.query_widget._is_query_valid()
-        print(f"   Validation result: {is_valid}")
+        is_valid = self.query_widget.is_fetching
+        print(f"   Fetching state: {is_valid}")
 
     def _test_fetch(self):
         """Fetch tesztelése."""

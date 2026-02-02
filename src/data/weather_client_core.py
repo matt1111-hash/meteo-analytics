@@ -104,14 +104,14 @@ class WeatherClient:
 
                 self._handle_successful_request(attempt_provider, selected_provider)
                 self.provider_usage_stats[attempt_provider] = self.provider_usage_stats.get(attempt_provider, 0) + 1
-                _log_provider_usage_mock(attempt_provider, "weather_data", True)
+                _log_provider_usage_mock(attempt_provider, "weather_data", success=True)
 
                 return weather_data
 
             except (WeatherAPIError, Exception) as e:
                 last_error = e
                 logger.error(f"Provider {attempt_provider} failed: {e}")
-                _log_provider_usage_mock(attempt_provider, "weather_data", False)
+                _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
                 continue
 
         raise ProviderNotAvailableError(f"All providers failed. Last error: {last_error}")

@@ -34,11 +34,13 @@ class ComponentInitializer:
         if self._worker._interrupt_handler.check("Inicializálás"):
             return False
 
-        # Import ellenőrzés
-        from .core import IMPORTS_OK, WeatherClient, MultiCityEngine
-
-        if not IMPORTS_OK:
-            self._worker._emit_error("Analytics komponensek importálása sikertelen")
+        # Port import ellenőrzés (Clean Architecture)
+        try:
+            from src.domain.ports import get_weather_client_port
+            from src.analytics.ports import get_multi_city_engine_port
+            self._worker._emit_progress("Portok ellenőrzése...", 10)
+        except ImportError as e:
+            self._worker._emit_error(f"Portok importálása sikertelen: {e}")
             return False
 
         try:
@@ -78,40 +80,25 @@ class ComponentInitializer:
 
     def _init_weather_client(self) -> bool:
         """
-        Initialize WeatherClient.
+        Initialize WeatherClient via port (CA compliant).
 
         Returns:
             True if successful
         """
-        from .core import WeatherClient
+        from src.domain.ports import get_weather_client_port
 
-        if WeatherClient is None:
-            self._worker._emit_error("WeatherClient osztály nem elérhető")
-            return False
-
-        provider = self._worker._request_data.get('provider', 'open_meteo')
-        api_settings = self._worker._request_data.get('api_settings', {})
-
-        self._logger.info(f"🔧 WeatherClient inicializálás: provider='{provider}'")
-
-        # Try different initialization methods
         try:
-            self._worker._weather_client = WeatherClient()
-            self._logger.info("✅ WeatherClient default inicializálás sikeres")
-        except Exception as e1:
-            try:
-                self._worker._weather_client = WeatherClient(preferred_provider=provider)
-                self._logger.info("✅ WeatherClient preferred_provider inicializálás sikeres")
-            except Exception as e2:
-                self._logger.error(f"❌ WeatherClient inicializálás sikertelen: {e1}, {e2}")
-                self._worker._emit_error(f"WeatherClient inicializálás sikertelen: {e1}")
-                return False
-
-        return True
+            self._worker._weather_client = get_weather_client_port()
+            self._logger.info("✅ WeatherClient port inicializálás sikeres")
+            return True
+        except Exception as e:
+            self._logger.error(f"❌ WeatherClient port inicializálás sikertelen: {e}")
+            self._worker._emit_error(f"WeatherClient inicializálás sikertelen: {e}")
+            return False
 
     def _init_multi_city_engine(self, global_db_path: Path, hungarian_db_path: Path) -> bool:
         """
-        Initialize MultiCityEngine if needed.
+        Initialize MultiCityEngine via port (CA compliant).
 
         Args:
             global_db_path: Path to global cities database
@@ -120,23 +107,20 @@ class ComponentInitializer:
         Returns:
             True if successful or not needed
         """
-        from .core import MultiCityEngine
+        from src.analytics.ports import get_multi_city_engine_port
 
         analysis_type = self._worker._request_data.get('analysis_type')
 
         if analysis_type not in ['multi_city', 'county_analysis']:
             return True
 
-        self._logger.info("🏙️ MultiCityEngine inicializálása...")
+        self._logger.info("🏙️ MultiCityEngine inicializálása porton keresztül...")
 
-        if MultiCityEngine is None:
-            self._worker._emit_error("MultiCityEngine osztály nem elérhető")
+        try:
+            self._worker._multi_city_engine = get_multi_city_engine_port()
+            self._logger.info("✅ MultiCityEngine port inicializálva")
+            return True
+        except Exception as e:
+            self._logger.error(f"❌ MultiCityEngine port inicializálás sikertelen: {e}")
+            self._worker._emit_error(f"MultiCityEngine inicializálás sikertelen: {e}")
             return False
-
-        self._worker._multi_city_engine = MultiCityEngine(
-            db_path=str(global_db_path.absolute()),
-            hungarian_db_path=str(hungarian_db_path.absolute())
-        )
-
-        self._logger.info("✅ MultiCityEngine inicializálva")
-        return True

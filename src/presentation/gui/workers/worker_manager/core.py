@@ -117,6 +117,10 @@ class WorkerManager(QObject):
         """Alias for cancel_all_workers."""
         self.cancel_all_workers()
 
+    def cancel_all(self) -> None:
+        """Alias for cancel_all_workers (AppController compatibility)."""
+        self.cancel_all_workers()
+
     # Provider management methods (delegated to ProviderManager)
     def get_provider_states(self) -> Dict[str, Dict[str, Any]]:
         """Get provider states."""

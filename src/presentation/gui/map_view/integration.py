@@ -30,7 +30,7 @@ class MapViewIntegrationMixin:
     """
 
     # These will be set when mixed into MapView
-    map_tab: any
+    map_tab: Any
 
     def get_javascript_bridge(self):
         """

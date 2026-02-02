@@ -36,11 +36,16 @@ def _enhance_request_with_provider_routing(self, request_data: Dict[str, Any],
     Returns:
         Gazdagított kérés provider routing információkkal
     """
+    print(f"🚨 DEBUG: _enhance_request_with_provider_routing - input request_data keys: {list(request_data.keys())}")
+    location_data = request_data.get('location_data', {})
+    print(f"🚨 DEBUG: _enhance_request_with_provider_routing - location_data keys: {list(location_data.keys())}")
+
     try:
         enhanced_request = request_data.copy()
 
         # Koordináták kinyerése
         latitude, longitude = _extract_coordinates_from_request(self, request_data)
+        print(f"🚨 DEBUG: _enhance_request_with_provider_routing - after extract, enhanced_request has location_data: {'location_data' in enhanced_request}")
 
         if latitude is not None and longitude is not None:
             # Smart provider selection

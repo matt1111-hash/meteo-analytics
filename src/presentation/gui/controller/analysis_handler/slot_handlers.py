@@ -46,6 +46,11 @@ def on_analysis_completed(self, result_data: Dict) -> None:
         self: AnalysisHandler instance
         result_data: Eredmény adatok
     """
+    print("=" * 80)
+    print("🚨 DEBUG: AnalysisHandler.on_analysis_completed() ELEJE")
+    print(f"🚨 DEBUG: result_data keys: {list(result_data.keys())}")
+    print("=" * 80)
+
     from .result_processor import (
         _calculate_analysis_duration,
         _process_analysis_result,

@@ -1,5 +1,5 @@
 import React from 'react';
-import CitySelector from './CitySelector';
+import CityAutocomplete from './common/CityAutocomplete';
 import MetricSelector from './MetricSelector';
 
 interface SingleCityFormData {
@@ -52,12 +52,11 @@ const SingleCityForm: React.FC<SingleCityFormProps> = ({
 
       <div className="form-grid">
         <div className="form-group">
-          <CitySelector
-            id="city-input"
+          <CityAutocomplete
             value={formData.city}
             onChange={(city) => onFieldChange('city', city)}
             disabled={loading}
-            label="Város"
+            placeholder="Város neve..."
           />
         </div>
 

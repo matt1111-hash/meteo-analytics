@@ -1,6 +1,9 @@
 """Location domain entity."""
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
+
+if TYPE_CHECKING:
+    from src.data.city_types import City as CityInfo
 
 
 @dataclass
@@ -155,7 +158,7 @@ class Location:
         Create Location from CityInfo.
 
         Args:
-            city_info: CityInfo object
+            city_info: CityInfo object (data.city_types.City)
 
         Returns:
             Location object
@@ -163,9 +166,9 @@ class Location:
 
         return cls(
             identifier=city_info.city,
-            display_name=city_info.get_display_name(),
-            latitude=city_info.latitude,
-            longitude=city_info.longitude,
+            display_name=city_info.display_name or city_info.city,
+            latitude=city_info.lat,
+            longitude=city_info.lon,
             country_code=city_info.country_code,
             timezone=city_info.timezone or "Europe/Budapest",
             metadata={

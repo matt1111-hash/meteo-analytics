@@ -46,7 +46,7 @@ class DataProcessor(QObject):
 
         # DataFrameExtractor import
         try:
-            from ..utils import DataFrameExtractor
+            from .utils import DataFrameExtractor
             self.DataFrameExtractor = DataFrameExtractor
             self._dataframe_extractor_available = True
             self._logger.info("✅ DataFrameExtractor import successful")

@@ -5,6 +5,8 @@
 Location Widget - UI initialization.
 """
 
+from typing import TYPE_CHECKING
+
 from PySide6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
@@ -15,6 +17,9 @@ from PySide6.QtWidgets import (
 
 from src.presentation.gui.theme_manager import register_widget_for_theming
 from ...universal_location_selector import UniversalLocationSelector
+
+if TYPE_CHECKING:
+    from .core import LocationWidget
 
 
 class UIInitializer:

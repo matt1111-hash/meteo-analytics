@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Dict
 import pandas as pd
 
 if TYPE_CHECKING:
-    from src.presentation.gui.results_panel.quick_overview_tab.core import QuickOverviewTab
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -27,21 +27,44 @@ def calculate_wind_stats(self, df: pd.DataFrame) -> None:
     try:
         from ..utils import WindGustsAnalyzer
 
-        if 'windspeed' not in df.columns:
+        # 🔥 KRITIKUS JAVÍTÁS: Wind adatforrás meghatározása prioritás szerint
+        # 1. wind_gusts_10m_max (elsődleges - valódi széllökések)
+        # 2. wind_gusts_max (másodlagos - széllökések)
+        # 3. windspeed (harmadlagos - szélsebesség)
+        wind_series = None
+        wind_data_source = 'unknown'
+
+        # 1. ELSŐDLEGES: wind_gusts_10m_max (valódi széllökések)
+        if 'wind_gusts_10m_max' in df.columns:
+            wind_series = df['wind_gusts_10m_max'].dropna()
+            if not wind_series.empty:
+                wind_data_source = 'wind_gusts_10m_max'
+                logger.debug("🌪️ WIND STATS: wind_gusts_10m_max használva")
+
+        # 2. MÁSODLAGOS: wind_gusts_max (széllökések fallback)
+        if (wind_series is None or wind_series.empty) and 'wind_gusts_max' in df.columns:
+            wind_series = df['wind_gusts_max'].dropna()
+            if not wind_series.empty:
+                wind_data_source = 'wind_gusts_max'
+                logger.debug("🌪️ WIND STATS: wind_gusts_max használva")
+
+        # 3. HARMADLAGOS: windspeed (szélsebesség fallback)
+        if (wind_series is None or wind_series.empty) and 'windspeed' in df.columns:
+            wind_series = df['windspeed'].dropna()
+            if not wind_series.empty:
+                wind_data_source = 'windspeed_10m_max'
+                logger.debug("💨 WIND STATS: windspeed használva")
+
+        # Ha még mindig nincs érvényes adat, akkor N/A
+        if wind_series is None or wind_series.empty:
             _clear_stats_range(self, ['avg_wind', 'max_wind', 'windy_days', 'wind_direction'])
             return
 
-        wind_series = df['windspeed'].dropna()
-
-        if wind_series.empty:
-            _clear_stats_range(self, ['avg_wind', 'max_wind'])
-            self._stat_labels['windy_days'].setText("0")
-            return
-
-        # Adatforrás
-        wind_data_source = 'unknown'
+        # Adatforrás felülírása DataFrame-ből ha van
         if 'wind_data_source' in df.columns:
-            wind_data_source = df['wind_data_source'].iloc[0]
+            source_from_df = df['wind_data_source'].iloc[0]
+            if source_from_df and source_from_df != 'unknown':
+                wind_data_source = source_from_df
 
         # Átlagos szél
         avg_wind = wind_series.mean()
@@ -120,7 +143,9 @@ def clear_stats(self) -> None:
 def _log_wind_category(max_wind: float, data_source: str) -> None:
     """Szél kategória logolása."""
     from ..utils import WindGustsAnalyzer
-    category = WindGustsAnalyzer.categorize_wind_gust(max_wind, data_source)
+    # 🔥 JAVÍTÁS: WindGustsAnalyzer instance létrehozása, mert categorize_wind_gust instance metódus
+    analyzer = WindGustsAnalyzer()
+    category = analyzer.categorize_wind_gust(max_wind, data_source)
 
     if category == 'hurricane':
         logger.critical(f"KRITIKUS: Hurrikán erősségű széllökés: {max_wind:.1f} km/h")

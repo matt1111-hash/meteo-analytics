@@ -108,10 +108,22 @@ class DataConverter:
             daily["winddirection"] = daily["winddirection_10m_dominant"]
             self._logger.info("🌹 ✅ Kompatibilitási kulcs: winddirection_10m_dominant → winddirection")
 
-        # windgusts_10m_max → wind_gusts_max (WindChart)
-        if 'windgusts_10m_max' in daily:
-            daily["wind_gusts_max"] = daily["windgusts_10m_max"]
-            self._logger.info("🌹 ✅ Kompatibilitási kulcs: windgusts_10m_max → wind_gusts_max")
+        # wind_gusts_10m_max → wind_gusts_max (WindChart)
+        # wind_gusts_10m_max → windgusts_10m_max (DetectAnomaliesUseCase)
+        # OpenMeteo API returns wind_gusts_10m_max (underscore AFTER "wind")
+        if 'wind_gusts_10m_max' in daily:
+            daily["wind_gusts_max"] = daily["wind_gusts_10m_max"]
+            daily["windgusts_10m_max"] = daily["wind_gusts_10m_max"]
+            self._logger.info("🌹 ✅ Kompatibilitási kulcs: wind_gusts_10m_max → wind_gusts_max")
+            self._logger.info("🌹 ✅ Kompatibilitási kulcs: wind_gusts_10m_max → windgusts_10m_max (Anomaly Detection)")
+
+        # 🌹 windspeed_10m_max → wind_speed_max (WindChart/WindyDaysChart)
+        # 🌹 windspeed_10m_max → wind_speed_10m_max (DetectAnomaliesUseCase)
+        if 'windspeed_10m_max' in daily:
+            daily["wind_speed_max"] = daily["windspeed_10m_max"]
+            daily["wind_speed_10m_max"] = daily["windspeed_10m_max"]
+            self._logger.info("🌹 ✅ Kompatibilitási kulcs: windspeed_10m_max → wind_speed_max")
+            self._logger.info("🌹 ✅ Kompatibilitási kulcs: windspeed_10m_max → wind_speed_10m_max (Anomaly Detection)")
 
         # wind_direction_10m_dominant alias
         if 'winddirection_10m_dominant' in daily:

@@ -82,7 +82,14 @@ class OpenMeteoProvider(WeatherProvider):
                 "precipitation_sum",
                 "windspeed_10m_max",
                 "wind_gusts_10m_max",
-                "winddirection_10m_dominant"
+                "winddirection_10m_dominant",
+                # Extended parameters for extreme events
+                "relative_humidity_2m_max",
+                "relative_humidity_2m_min",
+                "surface_pressure_max",
+                "surface_pressure_min",
+                "sunshine_duration",
+                "uv_index_max"
             ],
             "timezone": "auto",
             "models": "era5_seamless"

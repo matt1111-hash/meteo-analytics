@@ -37,6 +37,11 @@ def handle_analysis_request(self, request_data: Dict[str, Any],
         provider_routing: ProviderRouting példány
         start_analysis_callback: Callback az új analysis indításához
     """
+    print("=" * 80)
+    print("🚨 DEBUG: AnalysisHandler.handle_analysis_request() ELEJE")
+    print(f"🚨 DEBUG: analysis_type={request_data.get('analysis_type')}")
+    print("=" * 80)
+
     from .state_management import stop_current_analysis
 
     logger.info(f"🎯 ANALYSIS REQUEST received: {request_data.get('analysis_type', 'unknown')}")
@@ -72,6 +77,11 @@ def _start_new_analysis(self, request_data: Dict[str, Any],
         provider_routing: ProviderRouting példány
         start_analysis_callback: Callback az analysis worker elindításához
     """
+    print("=" * 80)
+    print("🚨 DEBUG: _start_new_analysis() ELEJE")
+    print(f"🚨 DEBUG: start_analysis_callback={start_analysis_callback}")
+    print("=" * 80)
+
     from .provider_integration import _enhance_request_with_provider_routing
     from .state_management import _cleanup_analysis_state
     from .validator import _validate_analysis_request
@@ -98,7 +108,9 @@ def _start_new_analysis(self, request_data: Dict[str, Any],
         )
 
         # Analysis worker indítása (callback)
+        print(f"🚨 DEBUG: start_analysis_callback() HÍVÁS ELŐTT")
         success = start_analysis_callback(enhanced_request, self)
+        print(f"🚨 DEBUG: start_analysis_callback() VISSZATÉRT: success={success}")
 
         if success:
             self.analysis_started.emit(analysis_type)

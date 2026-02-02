@@ -1,7 +1,7 @@
 """
-External API methods for QueryControlWidget.
+External API methods for QueryControlWidget (SIMPLIFIED).
 
-Ez a modul tartalmazza a QueryControlWidget külső API metódusait.
+Egyszerűsített verzió: csak az állapotkezelő API-k maradnak.
 """
 
 import logging
@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 class QueryControlExternalAPI:
     """
-    QueryControlWidget külső API.
+    QueryControlWidget külső API (egyszerűsített).
 
-    Ezeket a metódusokat külső komponensek hívják (pl. AppController).
+    Csak az állapotkezelő metódusok maradnak.
     """
 
     def __init__(self, state_manager, ui_builder, event_handlers):
@@ -36,8 +36,6 @@ class QueryControlExternalAPI:
         """
         Külső fetching állapot beállítása.
 
-        Ez a metódus az AppController-től jön.
-
         Args:
             is_fetching: Fetching állapot
             message: Opcionális üzenet
@@ -52,7 +50,7 @@ class QueryControlExternalAPI:
             else:
                 self._state.set_state(self._state.STATE_SUCCESS)
 
-        logger.debug(f"External fetching state set: {is_fetching}, message: {message}")
+        logger.debug(f"External fetching state set: {is_fetching}")
 
     def set_error_state(self, error_message: str) -> None:
         """
@@ -83,8 +81,6 @@ class QueryControlExternalAPI:
     def force_reset(self) -> None:
         """
         Kényszerített reset idle állapotba.
-
-        Emergency esetekre.
         """
         logger.warning("QueryControlWidget force reset triggered")
 
@@ -103,8 +99,6 @@ class QueryControlExternalAPI:
     def emergency_cancel(self) -> None:
         """
         Emergency cancel - azonnali megszakítás.
-
-        Ez a metódus Ctrl+Shift+C shortcut-hoz.
         """
         logger.warning("Emergency cancel triggered")
 
@@ -114,128 +108,49 @@ class QueryControlExternalAPI:
         # Force reset after emergency
         QTimer.singleShot(1000, self.force_reset)
 
-    # Public API methods
-
-    def get_current_query_params(self) -> Optional[Dict[str, Any]]:
-        """
-        Jelenlegi query paraméterek lekérdezése.
-
-        Returns:
-            dict: Query paraméterek vagy None
-        """
-        return self._events.last_query_params
-
-    def get_current_location(self) -> Optional[tuple]:
-        """
-        Jelenlegi helység lekérdezése.
-
-        Returns:
-            tuple: (city, country, lat, lon) vagy None
-        """
-        if self._events.location_widget:
-            city = self._events.location_widget.get_current_city()
-            coordinates = self._events.location_widget.get_current_coordinates()
-            return (city, "Hungary", coordinates[0], coordinates[1])
-        return None
-
-    def is_valid(self) -> bool:
-        """
-        Widget validálása.
-
-        Returns:
-            bool: True ha minden adat valid
-        """
-        return self._events._validator.is_query_valid()
+    # === State API ===
 
     def is_fetching(self) -> bool:
-        """
-        Fetching állapot lekérdezése.
-
-        Returns:
-            bool: True ha fetching állapotban
-        """
+        """Fetching állapot lekérdezése."""
         return self._state.is_fetching
 
     def get_state(self) -> str:
-        """
-        Jelenlegi állapot lekérdezése.
-
-        Returns:
-            str: idle/fetching/error/success
-        """
+        """Jelenlegi állapot lekérdezése."""
         return self._state.current_state
 
-    # State persistence
+    def get_last_query_params(self) -> Optional[Dict[str, Any]]:
+        """Utolsó query paraméterek lekérdezése."""
+        return self._events.last_query_params
+
+    def set_last_query_params(self, params: Dict[str, Any]) -> None:
+        """Utolsó query paraméterek beállítása."""
+        self._events.last_query_params = params
 
     def save_state(self) -> Dict[str, Any]:
-        """
-        Állapot mentése.
-
-        Returns:
-            dict: Widget állapot
-        """
-        state = {
+        """Állapot mentése."""
+        return {
             "current_state": self._state.current_state,
             "is_fetching": self._state.is_fetching,
             "last_query_params": self._events.last_query_params,
             "cancel_requested": self._state.cancel_requested
         }
 
-        # Widget states
-        if self._events.location_widget:
-            state["location"] = self._events.location_widget.get_current_city()
-
-        if self._events.date_range_widget:
-            state["date_range"] = self._events.date_range_widget.get_date_range()
-
-        if self._events.parameters_widget:
-            state["parameters"] = self._events.parameters_widget.get_selected_parameters()
-
-        if self._events.provider_widget:
-            state["provider"] = self._events.provider_widget.get_current_provider()
-
-        return state
-
     def restore_state(self, state: Dict[str, Any]) -> bool:
-        """
-        Állapot visszaállítása.
-
-        Args:
-            state: Widget állapot
-
-        Returns:
-            bool: Sikeres volt-e
-        """
+        """Állapot visszaállítása."""
         try:
-            # Restore basic state
             if "current_state" in state:
                 self._state.set_state(state["current_state"])
-
             if "cancel_requested" in state:
                 self._state.cancel_requested = state["cancel_requested"]
-
             if "last_query_params" in state:
                 self._events.last_query_params = state["last_query_params"]
-
-            logger.debug("QueryControlWidget state restored")
             return True
-
         except Exception as e:
-            logger.error(f"QueryControlWidget state restore failed: {e}")
+            logger.error(f"State restore failed: {e}")
             return False
 
-    # Debug support
-
-    def get_debug_info(self, widget_availability: Dict[str, bool]) -> Dict[str, Any]:
-        """
-        Debug információk lekérdezése.
-
-        Args:
-            widget_availability: Widget elérhetőségi info
-
-        Returns:
-            dict: Debug adatok
-        """
+    def get_debug_info(self) -> Dict[str, Any]:
+        """Debug információk lekérdezése."""
         return {
             "state": self._state.current_state,
             "is_fetching": self._state.is_fetching,
@@ -243,7 +158,5 @@ class QueryControlExternalAPI:
             "fetch_start_time": self._state.fetch_start_time.isoformat() if self._state.fetch_start_time else None,
             "auto_reset_timer_active": self._state._auto_reset_timer.isActive() if self._state._auto_reset_timer else False,
             "progress_timer_active": self._state._progress_update_timer.isActive() if self._state._progress_update_timer else False,
-            "last_query_params": self._events.last_query_params,
-            "is_valid": self._events._validator.is_query_valid(),
-            "widget_availability": widget_availability
+            "last_query_params": self._events.last_query_params
         }

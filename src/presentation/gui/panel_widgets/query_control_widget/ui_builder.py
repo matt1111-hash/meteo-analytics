@@ -2,6 +2,7 @@
 UI builder for QueryControlWidget.
 
 Ez a modul felelős a QueryControlWidget UI elemek felépítéséért.
+Csak vezérlőgombokat és progressz kijelzést tartalmaz.
 """
 
 import logging
@@ -10,7 +11,6 @@ from typing import Optional
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QFrame,
-    QGroupBox,
     QHBoxLayout,
     QLabel,
     QProgressBar,
@@ -46,16 +46,9 @@ class QueryControlUIBuilder:
         self.status_label: Optional[QLabel] = None
         self.progress_text_label: Optional[QLabel] = None
 
-    def build_ui(self, location_widget, date_range_widget,
-                 parameters_widget, provider_widget) -> QVBoxLayout:
+    def build_ui(self) -> QVBoxLayout:
         """
         UI felépítése.
-
-        Args:
-            location_widget: Helység választó widget
-            date_range_widget: Dátum tartomány widget
-            parameters_widget: Paraméterek widget
-            provider_widget: Provider widget
 
         Returns:
             QVBoxLayout: A fő layout
@@ -69,18 +62,6 @@ class QueryControlUIBuilder:
 
         # Title
         layout.addWidget(self._create_title_label())
-
-        # Location selection
-        layout.addWidget(self._create_location_group(location_widget))
-
-        # Date range selection
-        layout.addWidget(self._create_date_group(date_range_widget))
-
-        # Parameters selection
-        layout.addWidget(self._create_parameters_group(parameters_widget))
-
-        # Provider selection
-        layout.addWidget(self._create_provider_group(provider_widget))
 
         # Progress section
         layout.addWidget(self._create_progress_frame())
@@ -103,34 +84,6 @@ class QueryControlUIBuilder:
         title_font.setPointSize(12)
         title_label.setFont(title_font)
         return title_label
-
-    def _create_location_group(self, widget) -> QGroupBox:
-        """Helység csoport létrehozása."""
-        location_group = QGroupBox("📍 Helység")
-        location_layout = QVBoxLayout(location_group)
-        location_layout.addWidget(widget)
-        return location_group
-
-    def _create_date_group(self, widget) -> QGroupBox:
-        """Dátum csoport létrehozása."""
-        date_group = QGroupBox("📅 Időszak")
-        date_layout = QVBoxLayout(date_group)
-        date_layout.addWidget(widget)
-        return date_group
-
-    def _create_parameters_group(self, widget) -> QGroupBox:
-        """Paraméterek csoport létrehozása."""
-        params_group = QGroupBox("🌡️ Paraméterek")
-        params_layout = QVBoxLayout(params_group)
-        params_layout.addWidget(widget)
-        return params_group
-
-    def _create_provider_group(self, widget) -> QGroupBox:
-        """Provider csoport létrehozása."""
-        provider_group = QGroupBox("🌐 Adatszolgáltató")
-        provider_layout = QVBoxLayout(provider_group)
-        provider_layout.addWidget(widget)
-        return provider_group
 
     def _create_progress_frame(self) -> QFrame:
         """Progress keret létrehozása."""

@@ -14,15 +14,15 @@ def extract_wind_data(data: Dict[str, Any]) -> pd.DataFrame:
     """
     daily_data = data.get("daily", {})
 
-    dates = daily_data.get("time", [])
-    winddirection = daily_data.get("wind_direction_10m_dominant", [])
+    dates = daily_data.get("time", []) or daily_data.get("date", [])
+    winddirection = daily_data.get("winddirection_10m_dominant", []) or daily_data.get("wind_direction_10m_dominant", [])
 
     # Alapadatok ellenőrzése
     if not dates or not winddirection:
         return pd.DataFrame()
 
-    wind_gusts_max = daily_data.get("wind_gusts_max", [])
-    windspeed_10m_max = daily_data.get("windspeed_10m_max", [])
+    wind_gusts_max = daily_data.get("windgusts_10m_max", []) or daily_data.get("wind_gusts_max", [])
+    windspeed_10m_max = daily_data.get("windspeed_10m_max", []) or daily_data.get("wind_speed_max", [])
 
     def has_valid_data(data_list: list) -> bool:
         """Van-e valódi szám adat a listában."""

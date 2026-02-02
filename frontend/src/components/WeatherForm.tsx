@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { FormData, WeatherAnalysisRequest, DateRange } from '../types/weather';
-import { HUNGARIAN_CITIES, EUROPEAN_CITIES } from '../constants/cities';
 import './WeatherForm.css';
+
+// Quick preset city lists for multi-city analysis
+const HUNGARIAN_PRESET = 'Budapest, Debrecen, Szeged, Miskolc, Pécs, Győr';
+const EUROPEAN_PRESET = 'Vienna, Prague, Bratislava, Zagreb, Berlin';
 
 interface WeatherFormProps {
   onSubmit: (request: WeatherAnalysisRequest) => Promise<void>;
@@ -88,7 +91,7 @@ const WeatherForm: React.FC<WeatherFormProps> = ({ onSubmit, loading = false }) 
         <div className="preset-buttons">
           <button
             type="button"
-            onClick={() => handleChange('cities', HUNGARIAN_CITIES.map(c => c.name).join(', '))}
+            onClick={() => handleChange('cities', HUNGARIAN_PRESET)}
             disabled={loading}
             className="preset-btn"
           >
@@ -96,7 +99,7 @@ const WeatherForm: React.FC<WeatherFormProps> = ({ onSubmit, loading = false }) 
           </button>
           <button
             type="button"
-            onClick={() => handleChange('cities', EUROPEAN_CITIES.map(c => c.name).join(', '))}
+            onClick={() => handleChange('cities', EUROPEAN_PRESET)}
             disabled={loading}
             className="preset-btn"
           >
@@ -104,7 +107,7 @@ const WeatherForm: React.FC<WeatherFormProps> = ({ onSubmit, loading = false }) 
           </button>
           <button
             type="button"
-            onClick={() => handleChange('cities', [...HUNGARIAN_CITIES, ...EUROPEAN_CITIES].map(c => c.name).join(', '))}
+            onClick={() => handleChange('cities', `${HUNGARIAN_PRESET}, ${EUROPEAN_PRESET}`)}
             disabled={loading}
             className="preset-btn"
           >

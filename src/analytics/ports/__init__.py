@@ -106,7 +106,6 @@ def get_multi_city_engine_port(
         db_path=str(db_path),
         hungarian_db_path=str(hungarian_db_path),
         city_repository=city_repository,
-        weather_client=weather_client,
     )
 
 

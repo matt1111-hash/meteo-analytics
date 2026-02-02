@@ -30,8 +30,9 @@ class WindGustsConstants:
     HURRICANE_THRESHOLD = 120.0  # Hurrikán erősségű (Beaufort 12)
 
     # Windy days küszöbök (data source alapján)
-    WINDY_THRESHOLD_GUSTS = 70.0      # wind_gusts_max esetén
-    WINDY_THRESHOLD_WINDSPEED = 20.0  # windspeed_10m_max esetén
+    # 🇭🇺 MAGYAR METEOROLÓGIAI STANDARD: 43 km/h-tól erősen szeles
+    WINDY_THRESHOLD_GUSTS = 43.0      # wind_gusts_max esetén (széllökés)
+    WINDY_THRESHOLD_WINDSPEED = 43.0  # windspeed_10m_max esetén (szélsebesség)
 
     # Kategória címkék - MAGYAR LOKALIZÁCIÓ
     CATEGORIES: Dict[str, str] = {

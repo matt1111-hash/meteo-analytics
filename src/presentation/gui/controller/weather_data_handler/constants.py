@@ -12,6 +12,7 @@ REQUIRED_DAILY_FIELDS = [
 OPTIONAL_DAILY_FIELDS = [
     'windspeed_10m_mean',
     'winddirection_10m_dominant',
+    'wind_gusts_10m_max',  # 🌪️ SZÉLLÖKÉS - kritikus mező a GUI megjelenítéshez
     'apparent_temperature_max',
     'apparent_temperature_min',
     'shortwave_radiation_sum',

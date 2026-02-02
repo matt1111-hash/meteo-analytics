@@ -199,3 +199,24 @@ class HeatmapCalendarChart(WeatherChart):
         self.ax.set_yticks([])
         for spine in self.ax.spines.values():
             spine.set_visible(False)
+
+    def _apply_theme_to_chart(self) -> None:
+        """Theme alkalmazása a chartre (base_chart kompatibilitás)."""
+        try:
+            current_colors = get_current_colors()
+            text_color = current_colors.get('on_surface', '#1f2937')
+            grid_color = current_colors.get('outline', '#e5e7eb')
+
+            if hasattr(self, 'ax') and self.ax:
+                self.ax.tick_params(colors=text_color)
+                self.ax.xaxis.label.set_color(text_color)
+                self.ax.yaxis.label.set_color(text_color)
+                if hasattr(self.ax, 'title'):
+                    self.ax.title.set_color(text_color)
+
+                for spine in self.ax.spines.values():
+                    spine.set_edgecolor(grid_color)
+
+                self.draw()
+        except Exception as e:
+            logger.error(f"HeatmapChart theme apply error: {e}")

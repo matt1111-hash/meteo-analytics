@@ -128,7 +128,8 @@ class CategoryCalculators:
 
                     from ..utils import WindGustsAnalyzer, WindGustsConstants
                     if wind_source == 'wind_gusts_max':
-                        category = WindGustsAnalyzer.categorize_wind_gust(
+                        analyzer = WindGustsAnalyzer()
+                        category = analyzer.categorize_wind_gust(
                             max_wind, wind_source
                         )
                         category_info = WindGustsConstants.CATEGORIES.get(
@@ -170,3 +171,174 @@ class CategoryCalculators:
             return windspeed, "windspeed"
         else:
             return None, "no_data"
+
+    def calculate_wind_speed_records(
+        self,
+        daily_data: Dict[str, List],
+        dates: List[str]
+    ) -> List[ExtremeRecord]:
+        """Átlagszél rekordok (külön a széllökéstől)."""
+        records = []
+
+        try:
+            # windspeed_10m_max vagy windspeed
+            speed_list = daily_data.get('windspeed_10m_max', []) or daily_data.get('windspeed', [])
+            if speed_list and len(speed_list) == len(dates):
+                clean_speed = [(i, s) for i, s in enumerate(speed_list) if s is not None]
+                if clean_speed:
+                    max_idx, max_speed = max(clean_speed, key=lambda x: x[1])
+                    records.append(ExtremeRecord(
+                        category="💨 Átlagszél",
+                        record_type="🌬️ Legszelesebb nap",
+                        value=f"{max_speed:.1f}km/h",
+                        date=dates[max_idx],
+                        raw_value=float(max_speed)
+                    ))
+        except Exception as e:
+            logger.error(f"Átlagszél rekordok hiba: {e}")
+
+        return records
+
+    def calculate_humidity_records(
+        self,
+        daily_data: Dict[str, List],
+        dates: List[str]
+    ) -> List[ExtremeRecord]:
+        """Páratartalom rekordok."""
+        records = []
+
+        try:
+            humidity_max = daily_data.get('relative_humidity_2m_max', [])
+            humidity_min = daily_data.get('relative_humidity_2m_min', [])
+
+            if humidity_max and len(humidity_max) == len(dates):
+                clean_max = [(i, h) for i, h in enumerate(humidity_max) if h is not None]
+                if clean_max:
+                    max_idx, max_hum = max(clean_max, key=lambda x: x[1])
+                    records.append(ExtremeRecord(
+                        category="💧 Páratartalom",
+                        record_type="🌫️ Legmagasabb páratartalom",
+                        value=f"{max_hum:.0f}%",
+                        date=dates[max_idx],
+                        raw_value=float(max_hum)
+                    ))
+
+            if humidity_min and len(humidity_min) == len(dates):
+                clean_min = [(i, h) for i, h in enumerate(humidity_min) if h is not None]
+                if clean_min:
+                    min_idx, min_hum = min(clean_min, key=lambda x: x[1])
+                    records.append(ExtremeRecord(
+                        category="💧 Páratartalom",
+                        record_type="🏜️ Legalacsonyabb páratartalom",
+                        value=f"{min_hum:.0f}%",
+                        date=dates[min_idx],
+                        raw_value=float(min_hum)
+                    ))
+        except Exception as e:
+            logger.error(f"Páratartalom rekordok hiba: {e}")
+
+        return records
+
+    def calculate_pressure_records(
+        self,
+        daily_data: Dict[str, List],
+        dates: List[str]
+    ) -> List[ExtremeRecord]:
+        """Légnyomás rekordok."""
+        records = []
+
+        try:
+            pressure_max = daily_data.get('surface_pressure_max', [])
+            pressure_min = daily_data.get('surface_pressure_min', [])
+
+            if pressure_max and len(pressure_max) == len(dates):
+                clean_max = [(i, p) for i, p in enumerate(pressure_max) if p is not None]
+                if clean_max:
+                    max_idx, max_press = max(clean_max, key=lambda x: x[1])
+                    records.append(ExtremeRecord(
+                        category="🔵 Légnyomás",
+                        record_type="⬆️ Legmagasabb nyomás",
+                        value=f"{max_press:.0f}hPa",
+                        date=dates[max_idx],
+                        raw_value=float(max_press)
+                    ))
+
+            if pressure_min and len(pressure_min) == len(dates):
+                clean_min = [(i, p) for i, p in enumerate(pressure_min) if p is not None]
+                if clean_min:
+                    min_idx, min_press = min(clean_min, key=lambda x: x[1])
+                    records.append(ExtremeRecord(
+                        category="🔵 Légnyomás",
+                        record_type="⬇️ Legalacsonyabb nyomás",
+                        value=f"{min_press:.0f}hPa",
+                        date=dates[min_idx],
+                        raw_value=float(min_press)
+                    ))
+        except Exception as e:
+            logger.error(f"Légnyomás rekordok hiba: {e}")
+
+        return records
+
+    def calculate_sunshine_records(
+        self,
+        daily_data: Dict[str, List],
+        dates: List[str]
+    ) -> List[ExtremeRecord]:
+        """Napsütés rekordok."""
+        records = []
+
+        try:
+            sunshine = daily_data.get('sunshine_duration', [])
+            if sunshine and len(sunshine) == len(dates):
+                clean_sun = [(i, s) for i, s in enumerate(sunshine) if s is not None and s > 0]
+                if clean_sun:
+                    max_idx, max_sun = max(clean_sun, key=lambda x: x[1])
+                    hours = max_sun / 3600  # másodpercből óra
+                    records.append(ExtremeRecord(
+                        category="☀️ Napsütés",
+                        record_type="🌞 Leghosszabb napsütés",
+                        value=f"{hours:.1f}óra",
+                        date=dates[max_idx],
+                        raw_value=float(max_sun)
+                    ))
+        except Exception as e:
+            logger.error(f"Napsütés rekordok hiba: {e}")
+
+        return records
+
+    def calculate_uv_records(
+        self,
+        daily_data: Dict[str, List],
+        dates: List[str]
+    ) -> List[ExtremeRecord]:
+        """UV index rekordok."""
+        records = []
+
+        try:
+            uv_max = daily_data.get('uv_index_max', [])
+            if uv_max and len(uv_max) == len(dates):
+                clean_uv = [(i, u) for i, u in enumerate(uv_max) if u is not None]
+                if clean_uv:
+                    max_idx, max_uv = max(clean_uv, key=lambda x: x[1])
+                    # UV kategória
+                    if max_uv >= 11:
+                        uv_cat = "Extrém"
+                    elif max_uv >= 8:
+                        uv_cat = "Nagyon erős"
+                    elif max_uv >= 6:
+                        uv_cat = "Erős"
+                    elif max_uv >= 3:
+                        uv_cat = "Mérsékelt"
+                    else:
+                        uv_cat = "Gyenge"
+                    records.append(ExtremeRecord(
+                        category="🟡 UV Index",
+                        record_type=f"☀️ Legmagasabb UV ({uv_cat})",
+                        value=f"{max_uv:.1f}",
+                        date=dates[max_idx],
+                        raw_value=float(max_uv)
+                    ))
+        except Exception as e:
+            logger.error(f"UV index rekordok hiba: {e}")
+
+        return records

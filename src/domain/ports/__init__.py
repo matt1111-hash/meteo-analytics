@@ -124,8 +124,8 @@ class WeatherClientPort(Protocol):
 
     def get_weather_data(
         self,
-        lat: float,
-        lon: float,
+        latitude: float,
+        longitude: float,
         start_date: str,
         end_date: str,
         daily_params: Optional[List[str]] = None,
@@ -135,15 +135,15 @@ class WeatherClientPort(Protocol):
 
     def get_current_weather(
         self,
-        lat: float,
-        lon: float,
+        latitude: float,
+        longitude: float,
         provider: Optional[DataProvider] = None,
     ) -> Optional[Dict[str, Any]]: ...
 
     def get_forecast(
         self,
-        lat: float,
-        lon: float,
+        latitude: float,
+        longitude: float,
         days: int = 7,
         provider: Optional[DataProvider] = None,
     ) -> Optional[WeatherDataProtocol]: ...

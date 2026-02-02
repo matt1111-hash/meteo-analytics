@@ -112,7 +112,8 @@ class MonthlyCalculator:
 
                     from ..utils import WindGustsAnalyzer, WindGustsConstants
                     if wind_col == 'wind_gusts_max':
-                        category = WindGustsAnalyzer.categorize_wind_gust(
+                        analyzer = WindGustsAnalyzer()
+                        category = analyzer.categorize_wind_gust(
                             windiest_speed, wind_col
                         )
                         category_info = WindGustsConstants.CATEGORIES.get(

@@ -50,6 +50,8 @@ class RequestBuilderMixin:
             location_state = self.location_widget.get_state()
             if location_state["has_location"]:
                 city_data = location_state["current_city_data"]
+                print(f"🚨 DEBUG: _get_analysis_params - city_data keys: {list(city_data.keys())}")
+                print(f"🚨 DEBUG: _get_analysis_params - city_data: {city_data}")
                 params.update(
                     {
                         "latitude": city_data["latitude"],
@@ -58,6 +60,7 @@ class RequestBuilderMixin:
                         "location_data": city_data,
                     }
                 )
+                print(f"🚨 DEBUG: _get_analysis_params - params['location_data'] keys: {list(params['location_data'].keys())}")
 
         elif analysis_type in ["region", "county"]:
             # 🚨 FIX: Analysis type konverzió AppController kompatibilitáshoz

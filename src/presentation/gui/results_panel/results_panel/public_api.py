@@ -102,6 +102,12 @@ def update_data(self, data: Dict[str, Any], city_name: str) -> None:
         data: OpenMeteo API válasz
         city_name: Város neve
     """
+    print("=" * 80)
+    print("🚨 DEBUG: ResultsPanel.update_data() ELEJE")
+    print(f"🚨 DEBUG: city_name={city_name}")
+    print(f"🚨 DEBUG: data type={type(data)}, keys={list(data.keys()) if isinstance(data, dict) else 'NEM DICT'}")
+    print("=" * 80)
+
     logger.info(f"ResultsPanel.update_data() - City: {city_name} (REFACTORED)")
 
     try:

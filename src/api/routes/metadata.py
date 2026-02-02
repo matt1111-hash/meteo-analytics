@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from src.analytics.multi_city_engine_core import QUERY_TYPES
 from src.analytics.multi_city_types import REGIONS
+from src.analytics.multi_city_engine_core import MultiCityEngine
 from src.domain.value_objects.enums import AnalyticsMetric
 
 router = APIRouter(prefix="/api/weather", tags=["metadata"])
@@ -94,7 +94,7 @@ async def get_query_types() -> dict:
     """
     # Transform to frontend-friendly format
     formatted_types = {}
-    for query_key, query_config in QUERY_TYPES.items():
+    for query_key, query_config in MultiCityEngine.QUERY_TYPES.items():
         formatted_types[query_key] = {
             "question_template": query_config.get("question_template", ""),
             "metric": query_config.get("metric", ""),
@@ -105,5 +105,5 @@ async def get_query_types() -> dict:
     return {
         "query_types": formatted_types,
         "total_count": len(formatted_types),
-        "query_keys": list(QUERY_TYPES.keys()),
+        "query_keys": list(MultiCityEngine.QUERY_TYPES.keys()),
     }

@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
+import ThemeToggle from './components/common/ThemeToggle';
 import HomePage from './pages/HomePage';
 import AnalyticsView from './pages/AnalyticsView';
 import MultiCityView from './pages/MultiCityView';
@@ -10,6 +12,7 @@ import HeatmapView from './pages/HeatmapView';
 import ExtremeEventsView from './pages/ExtremeEventsView';
 import WindyDaysView from './pages/WindyDaysView';
 import DataTableView from './pages/DataTableView';
+import './styles/theme.css';
 import './App.css';
 
 function Navigation() {
@@ -44,7 +47,7 @@ function Navigation() {
         to="/multi-year"
         className={`nav-link ${location.pathname === '/multi-year' ? 'active' : ''}`}
       >
-        📊 Multi-Year Comparison
+        📈 Multi-Year Comparison
       </Link>
       <Link
         to="/anomalies"
@@ -80,33 +83,47 @@ function Navigation() {
   );
 }
 
+/**
+ * Header with Theme Toggle
+ */
+function AppHeader() {
+  return (
+    <header className="app-header">
+      <div className="header-content">
+        <h1 className="app-title">Global Weather Analyzer</h1>
+        <p className="app-subtitle">Multi-city weather analysis powered by Clean Architecture</p>
+      </div>
+      <div className="header-actions">
+        <ThemeToggle className="theme-toggle-header" />
+      </div>
+      <Navigation />
+    </header>
+  );
+}
+
 function App() {
   return (
     <Router>
-      <div className="app">
-        <header className="app-header">
-          <div className="header-content">
-            <h1 className="app-title">Global Weather Analyzer</h1>
-            <p className="app-subtitle">Multi-city weather analysis powered by Clean Architecture</p>
-          </div>
-          <Navigation />
-        </header>
+      <ThemeProvider>
+        <div className="app">
+          <AppHeader />
 
-        <main className="app-main">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/analytics" element={<AnalyticsView />} />
-            <Route path="/multi-city" element={<MultiCityView />} />
-            <Route path="/single-city" element={<SingleCityView />} />
-            <Route path="/multi-year" element={<MultiYearView />} />
-            <Route path="/anomalies" element={<AnomalyView />} />
-            <Route path="/heatmap" element={<HeatmapView />} />
-            <Route path="/extreme-events" element={<ExtremeEventsView />} />
-            <Route path="/windy-days" element={<WindyDaysView />} />
-            <Route path="/data-table" element={<DataTableView />} />
-          </Routes>
-        </main>
-      </div>
+          <main className="app-main">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/analytics" element={<AnalyticsView />} />
+              <Route path="/multi-city" element={<MultiCityView />} />
+              <Route path="/single-city" element={<SingleCityView />} />
+              <Route path="/multi-year" element={<MultiYearView />} />
+              <Route path="/anomalies" element={<AnomalyView />} />
+              <Route path="/heatmap" element={<HeatmapView />} />
+              <Route path="/extreme-events" element={<ExtremeEventsView />} />
+              <Route path="/windy-days" element={<WindyDaysView />} />
+              <Route path="/data-table" element={<DataTableView />} />
+            </Routes>
+          </main>
+        </div>
+      </ThemeProvider>
     </Router>
   );
 }

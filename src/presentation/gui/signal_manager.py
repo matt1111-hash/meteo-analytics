@@ -83,8 +83,8 @@ class SignalManager:
 
         # 🎯 KRITIKUS: Elemzés befejezése (SIKER) - VÁROS ELEMZÉS FIX!
         if hasattr(controller, 'analysis_completed'):
-            controller.analysis_completed.connect(self.mw._on_analysis_completed_with_city_fix)
-            print("🎯 ✅ KRITIKUS: AppController.analysis_completed → MainWindow._on_analysis_completed_with_city_fix CONNECTED")
+            controller.analysis_completed.connect(self.mw._on_analysis_completed)
+            print("🎯 ✅ KRITIKUS: AppController.analysis_completed → MainWindow._on_analysis_completed CONNECTED")
 
         # Elemzés hiba
         if hasattr(controller, 'analysis_failed'):
@@ -98,8 +98,10 @@ class SignalManager:
 
         # Progress frissítések
         if hasattr(controller, 'analysis_progress'):
-            controller.analysis_progress.connect(self.mw._update_progress_clean)
-            print("✅ SignalManager: AppController.analysis_progress → MainWindow._update_progress_clean CONNECTED")
+            def _on_progress(message: str, percentage: int) -> None:
+                self.mw.status_bar.showMessage(f"{message} ({percentage}%)")
+            controller.analysis_progress.connect(_on_progress)
+            print("✅ SignalManager: AppController.analysis_progress → MainWindow._on_progress CONNECTED")
 
     def _connect_analytics_view(self) -> None:
         """AnalyticsView signal-slot kapcsolatok visszaállítása."""

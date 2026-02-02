@@ -98,6 +98,26 @@ class WindyDaysChart(WeatherChart):
         from .styling import _apply_chart_styling
         _apply_chart_styling(self, ax)
 
+    def _apply_theme_to_chart(self) -> None:
+        """Theme alkalmazása a chartre (base_chart kompatibilitás)."""
+        try:
+            current_colors = get_current_colors()
+            text_color = current_colors.get('on_surface', '#1f2937')
+            grid_color = current_colors.get('outline', '#e5e7eb')
+
+            if hasattr(self, 'ax') and self.ax:
+                self.ax.tick_params(colors=text_color)
+                self.ax.xaxis.label.set_color(text_color)
+                self.ax.yaxis.label.set_color(text_color)
+                self.ax.title.set_color(text_color)
+
+                for spine in self.ax.spines.values():
+                    spine.set_edgecolor(grid_color)
+
+                self.draw()
+        except Exception as e:
+            logger.error(f"WindyDaysChart theme apply error: {e}")
+
     def _setup_chart_interactivity(self, bars, months: List[str], counts: List[int], percentages: List[float]) -> None:
         from .interactivity import _setup_chart_interactivity
         _setup_chart_interactivity(self, bars, months, counts, percentages)

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AnomalyPanel from '../components/panels/AnomalyPanel';
-import CitySelector from '../components/CitySelector';
+import CityAutocomplete from '../components/common/CityAutocomplete';
 import './AnomalyView.css';
 
 interface FormData {
@@ -74,11 +74,10 @@ const AnomalyView: React.FC = () => {
             <h3>Location & Date Range</h3>
 
             <div className="form-group">
-              <CitySelector
-                id="city"
+              <CityAutocomplete
                 value={formData.city}
                 onChange={(city) => handleChange('city', city)}
-                label="Város"
+                placeholder="Város neve..."
               />
             </div>
 

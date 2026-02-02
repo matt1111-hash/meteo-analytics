@@ -5,7 +5,10 @@
 Location Widget - Refresh and reactivation handlers.
 """
 
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any, Dict
+
+if TYPE_CHECKING:
+    from .core import LocationWidget
 
 
 class RefreshHandler:

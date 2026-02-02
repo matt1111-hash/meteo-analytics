@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CitySelector from '../components/CitySelector';
+import CityAutocomplete from '../components/common/CityAutocomplete';
 import YearSelector from '../components/YearSelector';
 import MetricSelector from '../components/MetricSelector';
 import MultiYearChart from '../components/MultiYearChart';
@@ -137,12 +137,11 @@ const MultiYearView: React.FC = () => {
         <form className="multi-year-form" onSubmit={handleSubmit}>
           <div className="form-grid">
             <div className="form-group">
-              <CitySelector
-                id="city-input"
+              <CityAutocomplete
                 value={formData.city}
                 onChange={handleCityChange}
                 disabled={loading}
-                label="Város"
+                placeholder="Város neve..."
               />
             </div>
           </div>

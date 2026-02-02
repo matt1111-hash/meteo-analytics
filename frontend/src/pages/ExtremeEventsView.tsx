@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import ExtremeRecordsTable from '../components/ExtremeRecordsTable';
-import CitySelector from '../components/CitySelector';
+import CityAutocomplete from '../components/common/CityAutocomplete';
 import {
   ExtremeRecord,
   AnomalyStatus,
@@ -190,12 +190,11 @@ const ExtremeEventsView: React.FC = () => {
         <form className="extreme-form" onSubmit={handleSubmit}>
           <div className="form-grid">
             <div className="form-group">
-              <CitySelector
-                id="city-input"
+              <CityAutocomplete
                 value={formData.city}
                 onChange={(city) => handleChange('city', city)}
                 disabled={loading}
-                label="Város"
+                placeholder="Város neve..."
               />
             </div>
 

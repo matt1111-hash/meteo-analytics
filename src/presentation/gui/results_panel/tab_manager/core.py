@@ -40,7 +40,7 @@ class TabManager(QObject):
 
         # QuickOverviewTab
         try:
-            from .quick_overview_tab import QuickOverviewTab
+            from ..quick_overview_tab import QuickOverviewTab
             self.overview_tab = QuickOverviewTab()
             self.tab_widget.addTab(self.overview_tab, "📊 Gyors Áttekintés")
             self._overview_available = True
@@ -51,7 +51,7 @@ class TabManager(QObject):
 
         # DetailedChartsTab
         try:
-            from .detailed_charts_tab import DetailedChartsTab
+            from ..detailed_charts_tab import DetailedChartsTab
             self.charts_tab = DetailedChartsTab()
             self.tab_widget.addTab(self.charts_tab, "📈 Részletes Diagramok")
             self._charts_available = True
@@ -62,7 +62,7 @@ class TabManager(QObject):
 
         # DataTableTab
         try:
-            from .data_table_tab import DataTableTab
+            from ..data_table_tab import DataTableTab
             self.table_tab = DataTableTab()
             self.tab_widget.addTab(self.table_tab, "📋 Adattáblázat")
             self._table_available = True
@@ -73,7 +73,7 @@ class TabManager(QObject):
 
         # ExtremeEventsTab
         try:
-            from .extreme_events_tab import ExtremeEventsTab
+            from ..extreme_events_tab import ExtremeEventsTab
             self.extreme_tab = ExtremeEventsTab()
             self.tab_widget.addTab(self.extreme_tab, "⚡ Extrém Események")
             self._extreme_available = True
@@ -84,7 +84,7 @@ class TabManager(QObject):
 
         # WindyDaysTab
         try:
-            from .windy_days_tab import WindyDaysTab
+            from ..windy_days_tab import WindyDaysTab
             self.windy_days_tab = WindyDaysTab()
             self.tab_widget.addTab(self.windy_days_tab, "🌪️ Szeles Napok")
             self._windy_days_available = True

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import CitySelector from '../components/CitySelector';
+import CityAutocomplete from '../components/common/CityAutocomplete';
 import DataTablePanel, { WeatherTableRow } from '../components/panels/DataTablePanel';
 import { CityWeatherResult } from '../types/weather';
 import './DataTableView.css';
@@ -181,12 +181,11 @@ const DataTableView: React.FC = () => {
         <form className="data-table-form" onSubmit={handleSubmit}>
           <div className="form-grid">
             <div className="form-group">
-              <CitySelector
-                id="city-input"
+              <CityAutocomplete
                 value={formData.city}
                 onChange={(city) => handleChange('city', city)}
                 disabled={loading}
-                label="City"
+                placeholder="City name..."
               />
             </div>
 

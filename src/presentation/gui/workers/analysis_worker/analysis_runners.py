@@ -100,13 +100,21 @@ class AnalysisRunners:
         """
         🎯 EGYEDI LOKÁCIÓ ELEMZÉSE - ADATKONVERZIÓS FIX!
         """
+        print("=" * 80)
+        print("🚨 DEBUG: _run_single_location_analysis() ELEJE")
+        print(f"🚨 DEBUG: _worker._request_data keys: {list(self._worker._request_data.keys())}")
+        location_data = self._worker._request_data.get('location_data', {})
+        print(f"🚨 DEBUG: _worker._request_data['location_data'] keys: {list(location_data.keys())}")
+        print("=" * 80)
+
         if self._worker._interrupt_handler.check("Single location elemzés"):
+            print("❌ DEBUG: Interrupt check returned True - returning early")
             return
 
         try:
             self._worker._emit_progress("Egyedi lokáció elemzése...", 50)
 
-            # Extract coordinates
+            # Extract coordinates (re-fetch after debug output)
             location_data = self._worker._request_data.get('location_data', {})
             date_range = self._worker._request_data.get('date_range', {})
 
@@ -123,9 +131,13 @@ class AnalysisRunners:
 
             # Interrupt check before API call
             if self._worker._interrupt_handler.check("Weather API hívás előtt"):
+                print("❌ DEBUG: Interrupt check before API call - returning")
                 return
 
             # Call WeatherClient with correct parameter names
+            print(f"🚨 DEBUG: get_weather_data() HÍVÁS ELŐTT - lat={latitude}, lon={longitude}")
+            print(f"🚨 DEBUG: start_date={date_range.get('start_date')}, end_date={date_range.get('end_date')}")
+
             weather_data = self._worker._weather_client.get_weather_data(
                 latitude=latitude,
                 longitude=longitude,
@@ -133,6 +145,7 @@ class AnalysisRunners:
                 end_date=date_range.get('end_date')
             )
 
+            print(f"🚨 DEBUG: get_weather_data() VISSZATÉRT - típus={type(weather_data)}, elemszám={len(weather_data) if weather_data else 0}")
             self._logger.info("✅ WeatherClient sikeres")
 
             if self._worker._interrupt_handler.check("Single location feldolgozás"):
@@ -155,8 +168,14 @@ class AnalysisRunners:
                 'success': True
             }
 
+            print(f"🚨 DEBUG: analysis_completed.emit() ELŐTT - result keys: {list(result.keys())}")
             self._worker._emit_progress("Egyedi elemzés befejezve", 100)
             self._worker.analysis_completed.emit(result)
+            print("🚨 DEBUG: analysis_completed.emit() UTÁN - signal elküldve")
+
+            print("=" * 80)
+            print("🚨 DEBUG: _run_single_location_analysis() VÉGE - SIKERES")
+            print("=" * 80)
 
         except Exception as e:
             self._logger.error(f"Single location elemzés hiba: {str(e)}")

@@ -164,6 +164,14 @@ class MainWindow(QMainWindow):
         if hasattr(self.control_panel, 'provider_fallback'):
             self.control_panel.provider_fallback.connect(self._on_provider_fallback)
 
+        # 🚨 FIX: Local error signal bekötése - hibaüzenet megjelenítése a felhasználónak
+        if hasattr(self.control_panel, 'local_error_occurred'):
+            self.control_panel.local_error_occurred.connect(self._on_local_error)
+
+        # 🚨 FIX: Analysis requested signal bekötése - forward to controller
+        if hasattr(self.control_panel, 'analysis_requested'):
+            self.control_panel.analysis_requested.connect(self._on_analysis_requested)
+
         # ResultsPanel signalok
         if hasattr(self.results_panel, 'export_requested'):
             self.results_panel.export_requested.connect(self._handle_export_request)
@@ -174,6 +182,37 @@ class MainWindow(QMainWindow):
         # AnalyticsView signalok
         if hasattr(self.analytics_panel, 'query_requested'):
             self.analytics_panel.query_requested.connect(self._handle_analytics_view_query)
+
+    def _on_local_error(self, error_message: str) -> None:
+        """Local hiba kezelése - ControlPanel hibaüzenet."""
+        self.status_bar.showMessage(f"❌ {error_message}", 5000)  # 5 másodpercig látható
+        show_error(self, error_message)
+
+    def _on_analysis_requested(self, request: dict) -> None:
+        """
+        Analysis request handling - forward to controller.
+
+        Args:
+            request: Analysis request dictionary
+        """
+        print("=" * 80)
+        print("🚨 DEBUG: MainWindow._on_analysis_requested() MEGHÍVVA!")
+        print(f"🚨 DEBUG: Request data: {request}")
+        analysis_type = request.get('analysis_type', 'unknown')
+        print(f"🚨 DEBUG: Analysis type: {analysis_type}")
+        print("=" * 80)
+
+        # 🚨 KRITIKUS: Forward to controller!
+        try:
+            print("🚨 DEBUG: Calling controller.handle_analysis_request()...")
+            self.controller.handle_analysis_request(request)
+            print("🚨 DEBUG: controller.handle_analysis_request() returned")
+        except Exception as e:
+            print(f"❌ DEBUG: Exception in controller.handle_analysis_request(): {e}")
+            import traceback
+            traceback.print_exc()
+            self.status_bar.showMessage(f"❌ Hiba: {e}")
+            show_error(self, f"Elemzési hiba: {e}")
 
     # === PROVIDER STATUS KEZELÉS ===
 
@@ -218,10 +257,32 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage(f"🔄 {analysis_type} elemzés indítása...")
 
     def _on_analysis_completed(self, result_data: Dict[str, Any]) -> None:
-        """Elemzés befejezve."""
+        """Elemzés befejezve - adatok átadása a ResultsPanel-nek."""
+        print("=" * 80)
+        print("🚨 DEBUG: MainWindow._on_analysis_completed() ELEJE")
+        print(f"🚨 DEBUG: result_data keys: {list(result_data.keys())}")
+
+        # Extract city name from result_data
+        request_params = result_data.get('request_params', {})
+        print(f"🚨 DEBUG: request_params keys: {list(request_params.keys())}")
+
+        location_data = request_params.get('location_data', {})
+        print(f"🚨 DEBUG: location_data keys: {list(location_data.keys())}")
+        print(f"🚨 DEBUG: location_data: {location_data}")
+
+        city_name = location_data.get('name') or location_data.get('city_name') or location_data.get('display_name') or 'Ismeretlen'
+        print(f"🚨 DEBUG: city_name extracted: '{city_name}'")
+        print("=" * 80)
+
         self.status_bar.showMessage("✅ Elemzés befejezve")
-        if hasattr(self.results_panel, 'update_results'):
-            self.results_panel.update_results(result_data)
+
+        # Extract actual weather data
+        weather_data = result_data.get('result_data', {})
+
+        if hasattr(self.results_panel, 'update_data'):
+            self.results_panel.update_data(weather_data, city_name)
+        else:
+            print(f"⚠️ WARNING: results_panel has no update_data method")
 
     def _on_analysis_failed(self, error_message: str) -> None:
         """Elemzés hiba."""

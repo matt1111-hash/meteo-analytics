@@ -15,8 +15,8 @@ from .interrupt_handler import InterruptHandler
 
 # Import checks (CA compliant - uses ports and Domain layer)
 try:
-    from src.analytics.ports import get_multi_city_engine_port
-    from src.domain.ports import get_weather_client_port
+    from src.analytics.ports import get_multi_city_engine_port, MultiCityEnginePort
+    from src.domain.ports import get_weather_client_port, WeatherClientPort
     from src.domain.value_objects.enums import AnalysisType, DataProvider
     IMPORTS_OK = True
 except ImportError as e:
@@ -24,6 +24,8 @@ except ImportError as e:
     IMPORTS_OK = False
     get_multi_city_engine_port = None
     get_weather_client_port = None
+    MultiCityEnginePort = None
+    WeatherClientPort = None
 
 
 class AnalysisWorker(QThread):
@@ -61,9 +63,9 @@ class AnalysisWorker(QThread):
         self._request_data: Optional[Dict[str, Any]] = None
         self._mutex = QMutex()
 
-        # === ANALYTICS COMPONENTS ===
-        self._multi_city_engine: Optional[MultiCityEngine] = None
-        self._weather_client: Optional[WeatherClient] = None
+        # === ANALYTICS COMPONENTS (using ports - CA compliant) ===
+        self._multi_city_engine: Optional[MultiCityEnginePort] = None
+        self._weather_client: Optional[WeatherClientPort] = None
 
         # === LOGGING ===
         self._logger = logging.getLogger(__name__)

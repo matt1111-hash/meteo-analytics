@@ -1,0 +1,305 @@
+/**
+ * Theme CSS Variables - RED (#C43939) Primary
+ * Matches PySide theme_manager implementation
+ * WCAG AA/AAA compliant color contrasts
+ */
+
+/* ============================================
+   LIGHT THEME COLORS
+   Primary: #C43939 (Red)
+   ============================================ */
+
+:root {
+  /* Primary Color - Red (#C43939) */
+  --color-primary-base: #C43939;
+  --color-primary-light: #D96666;
+  --color-primary-dark: #A32424;
+  --color-primary-hover: #B53030;
+  --color-primary-pressed: #8B1E1E;
+  --color-primary-disabled: #E5B8B8;
+
+  /* Semantic Colors */
+  --color-success-base: #10B981;
+  --color-success-light: #34D399;
+  --color-success-dark: #059669;
+  --color-warning-base: #F59E0B;
+  --color-warning-light: #FBBF24;
+  --color-warning-dark: #D97706;
+  --color-error-base: #EF4444;
+  --color-error-light: #F87171;
+  --color-error-dark: #DC2626;
+  --color-info-base: #3B82F6;
+  --color-info-light: #60A5FA;
+  --color-info-dark: #2563EB;
+
+  /* Surface Colors - Light */
+  --color-background: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-variant: #F1F5F9;
+  --color-card: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-divider: #CBD5E1;
+
+  /* Text Colors - Light */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748B;
+  --color-text-disabled: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+
+  /* Weather Colors - Light Theme */
+  --color-weather-hot: #DC2626;
+  --color-weather-warm: #F97316;
+  --color-weather-mild: #EAB308;
+  --color-weather-cool: #22C55E;
+  --color-weather-cold: #06B6D4;
+  --color-weather-freezing: #3B82F6;
+  --color-weather-humidity: #8B5CF6;
+  --color-weather-wind: #06B6D4;
+  --color-weather-pressure: #6366F1;
+  --color-weather-precipitation: #3B82F6;
+  --color-weather-clouds: #94A3B8;
+
+  /* Chart Colors - Light */
+  --color-chart-grid: #E2E8F0;
+  --color-chart-axis: #94A3B8;
+  --color-chart-tooltip: rgba(15, 23, 42, 0.95);
+  --color-chart-legend: #475569;
+
+  /* Navigation Gradient - Light */
+  --gradient-nav: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+  --gradient-nav-alt: linear-gradient(135deg, #C43939 0%, #A32424 100%);
+}
+
+/* ============================================
+   DARK THEME COLORS
+   Primary: #D96666 (Lighter Red for dark backgrounds)
+   ============================================ */
+
+[data-theme="dark"] {
+  /* Primary Color - Red (adjusted for dark) */
+  --color-primary-base: #D96666;
+  --color-primary-light: #E08080;
+  --color-primary-dark: #C43939;
+  --color-primary-hover: #E07373;
+  --color-primary-pressed: #B53030;
+  --color-primary-disabled: #4A2323;
+
+  /* Semantic Colors - Dark */
+  --color-success-base: #22C55E;
+  --color-success-light: #4ADE80;
+  --color-success-dark: #16A34A;
+  --color-warning-base: #FBBF24;
+  --color-warning-light: #FCD34D;
+  --color-warning-dark: #F59E0B;
+  --color-error-base: #F87171;
+  --color-error-light: #FCA5A5;
+  --color-error-dark: #EF4444;
+  --color-info-base: #60A5FA;
+  --color-info-light: #93C5FD;
+  --color-info-dark: #3B82F6;
+
+  /* Surface Colors - Dark */
+  --color-background: #0F172A;
+  --color-surface: #1E293B;
+  --color-surface-variant: #334155;
+  --color-card: #1E293B;
+  --color-border: #334155;
+  --color-divider: #475569;
+
+  /* Text Colors - Dark */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #CBD5E1;
+  --color-text-tertiary: #94A3B8;
+  --color-text-disabled: #64748B;
+  --color-text-inverse: #0F172A;
+
+  /* Weather Colors - Dark Theme */
+  --color-weather-hot: #F87171;
+  --color-weather-warm: #FB923C;
+  --color-weather-mild: #FACC15;
+  --color-weather-cool: #4ADE80;
+  --color-weather-cold: #22D3EE;
+  --color-weather-freezing: #60A5FA;
+  --color-weather-humidity: #A78BFA;
+  --color-weather-wind: #22D3EE;
+  --color-weather-pressure: #818CF8;
+  --color-weather-precipitation: #60A5FA;
+  --color-weather-clouds: #64748B;
+
+  /* Chart Colors - Dark */
+  --color-chart-grid: #334155;
+  --color-chart-axis: #64748B;
+  --color-chart-tooltip: rgba(241, 245, 249, 0.95);
+  --color-chart-legend: #CBD5E1;
+
+  /* Navigation Gradient - Dark */
+  --gradient-nav: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  --gradient-nav-alt: linear-gradient(135deg, #D96666 0%, #B53030 100%);
+}
+
+/* ============================================
+   THEME APPLICATION
+   Apply CSS variables to common elements
+   ============================================ */
+
+/* Smooth theme transitions */
+* {
+  transition-property: background-color, border-color, color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Skip transitions for theme toggle itself */
+.theme-toggle,
+.theme-toggle *,
+[data-no-transition] {
+  transition: none !important;
+}
+
+/* Base styles with theme variables */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+/* Card styles */
+.card,
+.weather-card,
+.record-card,
+.stat-card {
+  background-color: var(--color-card);
+  border-color: var(--color-border);
+}
+
+/* Button styles with primary color */
+button,
+.btn,
+.btn-primary {
+  background-color: var(--color-primary-base);
+  color: var(--color-text-inverse);
+}
+
+button:hover,
+.btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+button:active,
+.btn:active {
+  background-color: var(--color-primary-pressed);
+}
+
+button:disabled,
+.btn:disabled {
+  background-color: var(--color-primary-disabled);
+  color: var(--color-text-disabled);
+}
+
+/* Input styles */
+input,
+select,
+textarea {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-primary-base);
+  outline: 2px solid var(--color-primary-light);
+}
+
+/* Navigation styles */
+.nav-link {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+}
+
+[data-theme="light"] .nav-link {
+  color: var(--color-text-inverse);
+}
+
+[data-theme="dark"] .nav-link {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-variant);
+  border-color: var(--color-border);
+}
+
+/* Error states */
+.error,
+.app-error {
+  background-color: color-mix(in srgb, var(--color-error-base) 15%, transparent);
+  border-color: var(--color-error-base);
+  color: var(--color-error-light);
+}
+
+/* Success states */
+.success {
+  background-color: color-mix(in srgb, var(--color-success-base) 15%, transparent);
+  border-color: var(--color-success-base);
+  color: var(--color-success-dark);
+}
+
+/* Warning states */
+.warning {
+  background-color: color-mix(in srgb, var(--color-warning-base) 15%, transparent);
+  border-color: var(--color-warning-base);
+  color: var(--color-warning-dark);
+}
+
+/* Responsive table styles */
+table {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+th {
+  background-color: var(--color-surface-variant);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+td {
+  border-color: var(--color-divider);
+}
+
+/* Chart tooltip styles */
+.recharts-tooltip-wrapper,
+.chart-tooltip {
+  background-color: var(--color-chart-tooltip);
+  color: var(--color-text-inverse);
+  border-color: var(--color-border);
+}
+
+/* Legend styles */
+.recharts-legend-item-text,
+.chart-legend {
+  color: var(--color-chart-legend);
+}
+
+/* Grid lines */
+.recharts-cartesian-grid-line,
+.chart-grid-line {
+  stroke: var(--color-chart-grid);
+}
+
+/* Axis styles */
+.recharts-cartesian-axis-tick-value,
+.chart-axis-text {
+  fill: var(--color-chart-axis);
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary-base);
+  animation: spin 1s linear infinite;
+}

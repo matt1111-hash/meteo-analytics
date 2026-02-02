@@ -24,8 +24,6 @@ interface WindChartProps {
 }
 
 const WindChart: React.FC<WindChartProps> = ({ data, city }) => {
-  console.log('🔍 DEBUG WindChart: received data', data);
-  
   if (!data || data.length === 0) {
     return (
       <div className="wind-chart-empty">
@@ -39,8 +37,6 @@ const WindChart: React.FC<WindChartProps> = ({ data, city }) => {
     .filter((point) => point.windspeed !== null || point.windgusts !== null)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  console.log('🔍 DEBUG WindChart: filtered chartData', chartData);
-  
   if (chartData.length === 0) {
     return (
       <div className="wind-chart-empty">
