@@ -1,8 +1,9 @@
-/** WindyDaysView - Szeles napok analízis (táblázat + oszlopdiagram) */
+/** WindyDaysView - Szeles napok analízis (táblázat + oszlopdiagram + szélrózsa) */
 import React, { useState, useMemo } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import CityAutocomplete from '../components/common/CityAutocomplete';
+import WindRoseChart, { WindRoseData } from '../components/charts/WindRoseChart';
 import './WindyDaysView.css';
 
 interface WindDataPoint {
@@ -43,6 +44,12 @@ const WindyDaysView: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [windData, setWindData] = useState<WindDataPoint[]>([]);
+
+  // Wind Rose state
+  const [showWindRose, setShowWindRose] = useState<boolean>(false);
+  const [windRoseData, setWindRoseData] = useState<WindRoseData | null>(null);
+  const [windRoseLoading, setWindRoseLoading] = useState<boolean>(false);
+  const [windRoseError, setWindRoseError] = useState<string>('');
 
   // Havi statisztikák számítása
   const monthlyStats = useMemo((): MonthlyWindyStats[] => {
@@ -97,7 +104,14 @@ const WindyDaysView: React.FC = () => {
     setError('');
     setWindData([]);
 
+    // Also fetch wind rose data if enabled
+    if (showWindRose) {
+      setWindRoseLoading(true);
+      setWindRoseError('');
+    }
+
     try {
+      // Fetch detailed wind data
       const response = await axios.post('http://localhost:8001/api/weather/single-city-detailed', {
         city,
         start: startDate,
@@ -109,9 +123,27 @@ const WindyDaysView: React.FC = () => {
       } else {
         setError('Nincs széllökés adat a válaszban');
       }
+
+      // Fetch wind rose data if enabled
+      if (showWindRose) {
+        try {
+          const windRoseResponse = await axios.post('http://localhost:8001/api/weather/wind-rose', {
+            city,
+            start: startDate,
+            end: endDate,
+          });
+          setWindRoseData(windRoseResponse.data);
+        } catch (wrErr: unknown) {
+          const axiosWrErr = wrErr as { response?: { data?: { detail?: string } }; message?: string };
+          setWindRoseError(axiosWrErr.response?.data?.detail || axiosWrErr.message || 'Wind Rose API hiba');
+        } finally {
+          setWindRoseLoading(false);
+        }
+      }
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { detail?: string } }; message?: string };
       setError(axiosErr.response?.data?.detail || axiosErr.message || 'API hiba');
+      setWindRoseLoading(false);
     } finally {
       setLoading(false);
     }
@@ -150,6 +182,20 @@ const WindyDaysView: React.FC = () => {
               min={10}
               max={100}
             />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                id="showWindRose"
+                checked={showWindRose}
+                onChange={(e) => setShowWindRose(e.target.checked)}
+              />
+              <span>🌹 Szélrózsa diagram mutatása</span>
+            </label>
           </div>
         </div>
 
@@ -230,6 +276,18 @@ const WindyDaysView: React.FC = () => {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* Wind Rose Chart Section */}
+      {showWindRose && (
+        <div className="wind-rose-section">
+          <WindRoseChart
+            data={windRoseData}
+            loading={windRoseLoading}
+            error={windRoseError}
+            height={500}
+          />
         </div>
       )}
 
