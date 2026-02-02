@@ -4,7 +4,6 @@
  */
 import React, { useEffect, useRef } from 'react';
 import Plotly from 'plotly.js-dist-min';
-import type { Data, Layout, Config } from 'plotly.js';
 
 // Wind rose direction data structure
 export interface WindRoseDirection {
@@ -61,7 +60,7 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
 
     // Prepare data for polar bar chart
     // Each speed bucket becomes a separate trace
-    const traces: Data[] = [];
+    const traces: Plotly.Data[] = [];
 
     // Get directions in order
     const directions = data.directions;
@@ -88,10 +87,10 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
           color: SPEED_COLORS[i],
         },
         hovertemplate: `${SPEED_LABELS[i]} km/h: %{r} napok<extra></extra>`,
-      } as Data);
+      });
     }
 
-    const layout: Partial<Layout> = {
+    const layout: Partial<Plotly.Layout> = {
       title: {
         text: `🌹 Szélrózsa - ${data.city}<br>` +
                `<sub>${data.start} ↔ ${data.end} | ` +
@@ -148,7 +147,7 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
       ],
     };
 
-    const config: Partial<Config> = {
+    const config: Partial<Plotly.Config> = {
       responsive: true,
       displayModeBar: false,
     };
