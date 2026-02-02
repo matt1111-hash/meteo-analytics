@@ -12,6 +12,7 @@ from src.api.routes.detailed_city import router as detailed_city_router
 from src.api.routes.metadata import router as metadata_router
 from src.api.routes.single_city import router as single_city_router
 from src.api.routes.weather import router as weather_router
+from src.api.routes.wind_rose import router as wind_rose_router
 
 logging.basicConfig(level=logging.INFO)
 
@@ -36,6 +37,7 @@ async def health_check() -> dict[str, str]:
 app.include_router(weather_router)
 app.include_router(single_city_router)
 app.include_router(detailed_city_router)
+app.include_router(wind_rose_router)
 app.include_router(metadata_router)
 app.include_router(anomalies_router)
 app.include_router(cities_router)
