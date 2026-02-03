@@ -5,7 +5,7 @@ import DataTablePanel, { WeatherTableRow } from '../components/panels/DataTableP
 import { CityWeatherResult } from '../types/weather';
 import './DataTableView.css';
 
-const API_BASE_URL = 'http://localhost:8001';
+const API_BASE_URL = 'http://localhost:8003';
 
 interface FormData {
   city: string;
@@ -34,13 +34,9 @@ const DataTableView: React.FC = () => {
     if (!formData.city.trim()) {
       return 'Please enter a city name';
     }
-    if (!formData.startDate) {
-      return 'Please select a start date';
-    }
-    if (!formData.endDate) {
-      return 'Please select an end date';
-    }
-    if (formData.startDate > formData.endDate) {
+    const startDate = formData.startDate || defaultDates.start;
+    const endDate = formData.endDate || defaultDates.end;
+    if (startDate > endDate) {
       return 'Start date must be before end date';
     }
     return null;
@@ -98,6 +94,9 @@ const DataTableView: React.FC = () => {
       'windgusts_10m_max',
     ];
 
+    const startDate = formData.startDate || defaultDates.start;
+    const endDate = formData.endDate || defaultDates.end;
+
     const results: CityWeatherResult[] = [];
 
     for (const metric of metrics) {
@@ -106,8 +105,8 @@ const DataTableView: React.FC = () => {
           city_results: CityWeatherResult[];
         }>(`${API_BASE_URL}/api/weather/single-city`, {
           city: formData.city.trim(),
-          start: formData.startDate,
-          end: formData.endDate,
+          start: startDate,
+          end: endDate,
           metric,
         });
         results.push(...response.data.city_results);

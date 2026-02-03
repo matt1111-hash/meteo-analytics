@@ -36,7 +36,7 @@ const HeatmapView: React.FC = () => {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await axios.get<MetricsResponse>('http://localhost:8001/api/weather/metrics');
+        const response = await axios.get<MetricsResponse>('http://localhost:8003/api/weather/metrics');
         setMetrics(response.data.metrics);
       } catch (err) {
         console.error('Failed to fetch metrics:', err);
@@ -75,7 +75,7 @@ const HeatmapView: React.FC = () => {
       }
 
       const response = await axios.post(
-        'http://localhost:8001/api/weather/multi-city?aggregate=false',
+        'http://localhost:8003/api/weather/multi-city?aggregate=false',
         {
           cities: cityList,
           date_range: {

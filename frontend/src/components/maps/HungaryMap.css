@@ -1,0 +1,206 @@
+/**
+ * HungaryMap Component Styles
+ */
+
+.hungary-map-container {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #f3f4f6;
+}
+
+.hungary-map-container .leaflet-container {
+  background: #e5e7eb;
+}
+
+/* Dark theme support */
+[data-theme="dark"] .hungary-map-container {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .hungary-map-container .leaflet-container {
+  background: #1f2937;
+}
+
+/* Legend */
+.hungary-map-legend {
+  position: absolute;
+  bottom: 50px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.hungary-map-legend .legend-label {
+  color: #374151;
+  font-weight: 500;
+}
+
+.hungary-map-legend .legend-gradient {
+  width: 80px;
+  height: 12px;
+  background: linear-gradient(to right, #2166ac, #67a9cf, #fdae61, #d73027);
+  border-radius: 2px;
+}
+
+.hungary-map-legend .legend-values {
+  color: #6b7280;
+}
+
+[data-theme="dark"] .hungary-map-legend {
+  background: rgba(31, 41, 55, 0.95);
+}
+
+[data-theme="dark"] .hungary-map-legend .legend-label {
+  color: #e5e7eb;
+}
+
+[data-theme="dark"] .hungary-map-legend .legend-values {
+  color: #9ca3af;
+}
+
+/* Stats bar */
+.hungary-map-stats {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.hungary-map-stats .stat-selected {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.hungary-map-stats .stat-stations {
+  color: #4b5563;
+}
+
+[data-theme="dark"] .hungary-map-stats {
+  background: rgba(31, 41, 55, 0.95);
+}
+
+[data-theme="dark"] .hungary-map-stats .stat-selected {
+  color: #e5e7eb;
+}
+
+[data-theme="dark"] .hungary-map-stats .stat-stations {
+  color: #9ca3af;
+}
+
+/* Popup styles */
+.leaflet-popup-content-wrapper {
+  border-radius: 6px;
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px;
+}
+
+.county-popup h3,
+.station-popup h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.county-popup p,
+.station-popup p {
+  margin: 4px 0;
+  font-size: 12px;
+  color: #4b5563;
+}
+
+[data-theme="dark"] .leaflet-popup-content {
+  background: #1f2937;
+}
+
+[data-theme="dark"] .county-popup h3,
+[data-theme="dark"] .station-popup h4 {
+  color: #e5e7eb;
+}
+
+[data-theme="dark"] .county-popup p,
+[data-theme="dark"] .station-popup p {
+  color: #9ca3af;
+}
+
+/* Loading state */
+.hungary-map-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  color: #6b7280;
+}
+
+.hungary-map-loading .spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty state */
+.hungary-map-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+  color: #6b7280;
+}
+
+.hungary-map-empty p {
+  margin: 0;
+  font-size: 14px;
+}
+
+[data-theme="dark"] .hungary-map-empty {
+  color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .hungary-map-legend {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    font-size: 11px;
+  }
+
+  .hungary-map-stats {
+    top: 10px;
+    left: 10px;
+    right: auto;
+  }
+}

@@ -335,7 +335,7 @@ export const COUNTY_TO_REGION_MAP: Readonly<Record<string, HungarianRegion>> = {
 /**
  * Region to counties mapping
  */
-export const REGION_TO_COUNTIES_MAP: Readonly<Record<HungarianRegion, string[]>> = {
+export const REGION_TO_COUNTIES_MAP: Readonly<Record<HungarianRegion, readonly string[]>> = {
   'Közép-Magyarország': ['Budapest', 'Pest'],
   'Észak-Magyarország': ['Borsod-Abaúj-Zemplén', 'Heves', 'Nógrád'],
   'Észak-Alföld': ['Hajdú-Bihar', 'Jász-Nagykun-Szolnok', 'Szabolcs-Szatmár-Bereg'],
@@ -368,7 +368,7 @@ export function getRegionForCounty(county: string): HungarianRegion | undefined 
  * Get counties for a region
  */
 export function getCountiesForRegion(region: HungarianRegion): string[] {
-  return REGION_TO_COUNTIES_MAP[region] ?? [];
+  return [...(REGION_TO_COUNTIES_MAP[region] ?? [])];
 }
 
 /**

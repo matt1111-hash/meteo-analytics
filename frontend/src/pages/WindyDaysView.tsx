@@ -114,7 +114,7 @@ const WindyDaysView: React.FC = () => {
 
     try {
       // Fetch detailed wind data
-      const response = await axios.post('http://localhost:8001/api/weather/single-city-detailed', {
+      const response = await axios.post('http://localhost:8003/api/weather/single-city-detailed', {
         city,
         start: startDate,
         end: endDate,
@@ -129,7 +129,7 @@ const WindyDaysView: React.FC = () => {
       // Fetch wind rose data if enabled
       if (showWindRose) {
         try {
-          const windRoseResponse = await axios.post('http://localhost:8001/api/weather/wind-rose', {
+          const windRoseResponse = await axios.post('http://localhost:8003/api/weather/wind-rose', {
             city,
             start: startDate,
             end: endDate,

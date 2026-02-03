@@ -9,7 +9,7 @@ interface MetricSelectorProps {
   disabled?: boolean;
 }
 
-const API_BASE_URL = 'http://localhost:8001';
+const API_BASE_URL = 'http://localhost:8003';
 
 const MetricSelector: React.FC<MetricSelectorProps> = ({
   selectedMetric,

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { CityWeatherResult, DetailedData } from '../types/weather';
 
-const API_BASE_URL = 'http://localhost:8001';
+const API_BASE_URL = 'http://localhost:8003';
 
 interface UseCityWeatherParams {
   city: string;

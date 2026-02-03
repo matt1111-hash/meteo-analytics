@@ -11,7 +11,7 @@ import './MultiCityView.css';
 
 type ViewTab = 'chart' | 'heatmap' | 'map';
 
-const API_BASE_URL = 'http://localhost:8001';
+const API_BASE_URL = 'http://localhost:8003';
 
 const MultiCityView: React.FC = () => {
   const [results, setResults] = useState<WeatherAnalysisResponse | null>(null);
