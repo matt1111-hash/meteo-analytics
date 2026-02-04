@@ -1,0 +1,61 @@
+"""Analytics API routes for trend analysis."""
+from __future__ import annotations
+
+import logging
+
+from fastapi import APIRouter, HTTPException
+
+from src.api.dto.trend_request import TrendAnalysisRequest
+from src.application.use_cases.calculate_trend import CalculateTrendUseCase
+
+logger = logging.getLogger(__name__)
+router = APIRouter(prefix="/api/analytics", tags=["analytics"])
+
+
+@router.post("/trend")
+async def calculate_trend(request: TrendAnalysisRequest) -> dict:
+    """Calculate climate trend analysis for a location.
+
+    Provides linear regression trend statistics for multiple time periods
+    (5, 10, 25, 55 years) with confidence intervals and significance testing.
+
+    Request body:
+        location: City name (e.g., "Budapest", "Pécs")
+        metric: Weather metric (temperature_2m_max, precipitation_sum, etc.)
+        time_periods: List of periods in years (default: [5, 10, 25, 55])
+        start_date: Optional start date (YYYY-MM-DD)
+        end_date: Optional end date (YYYY-MM-DD)
+
+    Returns:
+        TrendAnalysisResult with:
+        - Period results: slope, R², p-value, trend direction
+        - Confidence intervals and significance levels
+        - Chart data for visualization
+        - KPI dashboard metrics
+
+    Example:
+        POST /api/analytics/trend
+        {
+            "location": "Budapest",
+            "metric": "temperature_2m_max",
+            "time_periods": [5, 10, 25, 55]
+        }
+    """
+    try:
+        use_case = CalculateTrendUseCase()
+        result = use_case.execute(request)
+        return result.to_dict()
+
+    except ValueError as e:
+        logger.warning("Invalid trend request: %s", e)
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+    except Exception as e:
+        logger.error("Error calculating trend: %s", e, exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Trend calculation failed: {str(e)}"
+        ) from e
+
+
+__all__ = ["router"]

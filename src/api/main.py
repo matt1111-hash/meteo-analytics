@@ -6,6 +6,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.api.routes.analytics import router as analytics_router
 from src.api.routes.anomalies import router as anomalies_router
 from src.api.routes.cities import router as cities_router
 from src.api.routes.detailed_city import router as detailed_city_router
@@ -39,6 +40,7 @@ app.include_router(weather_router)
 app.include_router(single_city_router)
 app.include_router(detailed_city_router)
 app.include_router(wind_rose_router)
+app.include_router(analytics_router)
 app.include_router(metadata_router)
 app.include_router(anomalies_router)
 app.include_router(cities_router)

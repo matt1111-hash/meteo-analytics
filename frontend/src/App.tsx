@@ -12,6 +12,7 @@ import HeatmapView from './pages/HeatmapView';
 import ExtremeEventsView from './pages/ExtremeEventsView';
 import WindyDaysView from './pages/WindyDaysView';
 import DataTableView from './pages/DataTableView';
+import TrendAnalyticsView from './pages/TrendAnalyticsView';
 import './styles/theme.css';
 import './App.css';
 
@@ -79,6 +80,12 @@ function Navigation() {
       >
         📋 Data Table
       </Link>
+      <Link
+        to="/trend-analytics"
+        className={`nav-link ${location.pathname === '/trend-analytics' ? 'active' : ''}`}
+      >
+        📈 Trend Analytics
+      </Link>
     </nav>
   );
 }
@@ -120,6 +127,7 @@ function App() {
               <Route path="/extreme-events" element={<ExtremeEventsView />} />
               <Route path="/windy-days" element={<WindyDaysView />} />
               <Route path="/data-table" element={<DataTableView />} />
+              <Route path="/trend-analytics" element={<TrendAnalyticsView />} />
             </Routes>
           </main>
         </div>
