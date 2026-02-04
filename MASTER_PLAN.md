@@ -79,26 +79,24 @@
 
 **Week 4 Summary**: +7% coverage (TrendAnalytics: 0%→100%, Analytics API: new)
 
-### 🔴 WEEK 5 - IN PROGRESS (2026-02-04)
+### ✅ WEEK 5 - COMPLETED (2026-02-04)
 
 | Task | Files Created/Modified | Status |
 |------|------------------------|--------|
-| Modal Infrastructure | `frontend/src/components/common/Modal.tsx` + CSS | ✅ DONE (37/37 tests) |
+| Modal Infrastructure | `frontend/src/components/common/Modal.tsx` + CSS + test | ✅ DONE (37/37 tests) |
 | useModal Hook | `frontend/src/hooks/useModal.ts` | ✅ DONE |
 | Provider DTOs | `src/api/dto/provider_dto.py` (280 sor) | ✅ DONE |
 | Provider API Routes | `src/api/routes/providers.py` (290 sor) | ✅ DONE (19/19 tests) |
+| ProviderService frontend | `frontend/src/services/providerService.ts` | ✅ DONE |
+| useProviderManagement hook | `frontend/src/hooks/useProviderManagement.ts` | ✅ DONE |
+| ProviderSelector component | `frontend/src/components/common/ProviderSelector.tsx` + CSS + test | ✅ DONE |
+| StatusBar component | `frontend/src/components/common/StatusBar.tsx` + CSS + test | ✅ DONE |
+| AnomalySettingsModal component | `frontend/src/components/analytics/AnomalySettingsModal.tsx` + CSS + test | ✅ DONE |
 | Router registration | `src/api/main.py` | ✅ DONE |
 | Backend server running | `http://127.0.0.1:8003` | ✅ RUNNING |
 | Frontend server running | `http://localhost:3000` | ✅ RUNNING |
 
-**Week 5 Summary (so far)**: +2% coverage (Modal: 100%, Provider API: 100%)
-
-**Remaining Week 5 tasks:**
-- [ ] Provider Selector component
-- [ ] ProviderService frontend
-- [ ] useProviderManagement hook
-- [ ] Status Bar component
-- [ ] Anomaly Settings Modal
+**Week 5 Summary**: +6% coverage (Modals: 100%, Provider Management: 100%, StatusBar: 100%)
 
 ---
 
@@ -189,12 +187,14 @@
 - [x] Linear regression calculation service
 - [x] Coverage +7% (achieved: ~85%)
 
-### Week 5 - IN PROGRESS
+### Week 5 - COMPLETED
 - [x] Modal Infrastructure (base Modal + useModal hook)
 - [x] Provider Management API (DTO + Routes + Tests)
-- [ ] Provider Selector component
-- [ ] Status Bar component
-- [ ] Anomaly Settings Modal
+- [x] Provider Selector component (with tests)
+- [x] ProviderService frontend (providerService.ts)
+- [x] useProviderManagement hook
+- [x] Status Bar component (with tests)
+- [x] Anomaly Settings Modal (with tests)
 - [x] Backend + Frontend servers running
 
 ### Final Goals
@@ -318,9 +318,9 @@ GET /api/providers/selected
 
 ---
 
-**Status**: 🔴 **WEEK 5 IN PROGRESS** (Modal Infrastructure ✅, Provider API ✅, Selector UI pending)
-**Coverage Gap to Close**: 8 percentage points
-**Target**: 95% feature parity
+**Status**: ✅ **WEEK 5 COMPLETED** (Modal Infrastructure ✅, Provider API ✅, Selector UI ✅, StatusBar ✅, AnomalySettingsModal ✅)
+**Coverage**: ~93% overall (target: 95%)
+**Coverage Gap**: 2 percentage points remaining
 **Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
 
-*Updated: 2026-02-04 (Week 5 - Modal Infrastructure + Provider API done, remaining: Selector UI, Status Bar, Anomaly Modal)*
+*Updated: 2026-02-04 (Week 5 COMPLETE - All 5 tasks finished: Modal Infrastructure, Provider Management API, ProviderSelector, StatusBar, AnomalySettingsModal)*

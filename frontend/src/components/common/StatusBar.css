@@ -1,0 +1,323 @@
+/* StatusBar Component Styles */
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.625rem 1rem;
+  background-color: var(--color-bg-secondary, #f8fafc);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-primary, #1e293b);
+  flex-wrap: wrap;
+}
+
+/* Provider section */
+.status-bar-provider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 1rem;
+  border-right: 1px solid var(--color-border, #e2e8f0);
+}
+
+.status-bar-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.status-bar-name {
+  font-weight: 600;
+  color: var(--color-text-primary, #1e293b);
+}
+
+.status-bar-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-bar-status-label {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .status-bar-status-label {
+    display: inline;
+  }
+}
+
+/* Usage statistics section */
+.status-bar-usage {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.status-bar-detailed {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  width: 100%;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--color-border, #e2e8f0);
+}
+
+.status-bar-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.status-bar-stat-label {
+  color: var(--color-text-secondary, #64748b);
+  font-size: 0.75rem;
+}
+
+.status-bar-stat-value {
+  font-weight: 500;
+  color: var(--color-text-primary, #1e293b);
+}
+
+.status-bar-stat-max {
+  color: var(--color-text-secondary, #64748b);
+  font-size: 0.75rem;
+}
+
+.status-bar-stat-time {
+  font-size: 0.75rem;
+}
+
+.status-bar-stat-warning {
+  color: var(--color-warning, #f59e0b);
+}
+
+.status-bar-stat-warning .status-bar-stat-value {
+  color: var(--color-warning, #f59e0b);
+  font-weight: 600;
+}
+
+/* Progress bar */
+.status-bar-stat-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-bar-progress-bar {
+  width: 80px;
+  height: 6px;
+  background-color: var(--color-bg-tertiary, #e2e8f0);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.status-bar-progress-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Refresh button */
+.status-bar-refresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0.375rem;
+  color: var(--color-text-secondary, #64748b);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.status-bar-refresh:hover:not(:disabled) {
+  background-color: var(--color-bg-tertiary, #e2e8f0);
+  color: var(--color-text-primary, #1e293b);
+}
+
+.status-bar-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.status-bar-refresh-icon {
+  font-size: 1.125rem;
+  transition: transform 0.3s ease;
+}
+
+.status-bar-refresh-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading state */
+.status-bar-loading {
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary, #64748b);
+}
+
+.status-bar-spinner {
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--color-border, #e2e8f0);
+  border-top-color: var(--color-primary, #3b82f6);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.status-bar-text {
+  font-size: 0.8125rem;
+}
+
+/* Error state */
+.status-bar-error {
+  justify-content: space-between;
+  color: var(--color-error, #ef4444);
+}
+
+.status-bar-error .status-bar-icon {
+  font-size: 1rem;
+}
+
+.status-bar-retry {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  background-color: var(--color-primary, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.status-bar-retry:hover {
+  background-color: var(--color-primary-dark, #2563eb);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .status-bar {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .status-bar-provider {
+    border-right: none;
+    padding-right: 0;
+  }
+
+  .status-bar-usage {
+    gap: 0.5rem;
+  }
+
+  .status-bar-progress-bar {
+    width: 60px;
+  }
+
+  .status-bar-detailed {
+    gap: 0.5rem;
+  }
+
+  .status-bar-stat-label:not(.status-bar-stat-warning .status-bar-stat-label) {
+    display: none;
+  }
+}
+
+/* Compact variant */
+.status-bar.compact {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.status-bar.compact .status-bar-usage {
+  gap: 0.5rem;
+}
+
+.status-bar.compact .status-bar-progress-bar {
+  width: 50px;
+  height: 4px;
+}
+
+.status-bar.compact .status-bar-refresh {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .status-bar {
+    background-color: var(--color-bg-secondary-dark, #1e293b);
+    border-color: var(--color-border-dark, #334155);
+  }
+
+  .status-bar-provider {
+    border-right-color: var(--color-border-dark, #334155);
+  }
+
+  .status-bar-name {
+    color: var(--color-text-primary-dark, #f1f5f9);
+  }
+
+  .status-bar-stat-value {
+    color: var(--color-text-primary-dark, #f1f5f9);
+  }
+
+  .status-bar-progress-bar {
+    background-color: var(--color-bg-tertiary-dark, #334155);
+  }
+
+  .status-bar-detailed {
+    border-top-color: var(--color-border-dark, #334155);
+  }
+}
+
+/* Theme-aware class support */
+body.dark-theme .status-bar {
+  background-color: var(--color-bg-secondary-dark, #1e293b);
+  border-color: var(--color-border-dark, #334155);
+}
+
+body.dark-theme .status-bar-provider {
+  border-right-color: var(--color-border-dark, #334155);
+}
+
+body.dark-theme .status-bar-name {
+  color: var(--color-text-primary-dark, #f1f5f9);
+}
+
+body.dark-theme .status-bar-stat-value {
+  color: var(--color-text-primary-dark, #f1f5f9);
+}
+
+body.dark-theme .status-bar-progress-bar {
+  background-color: var(--color-bg-tertiary-dark, #334155);
+}
+
+body.dark-theme .status-bar-detailed {
+  border-top-color: var(--color-border-dark, #334155);
+}
