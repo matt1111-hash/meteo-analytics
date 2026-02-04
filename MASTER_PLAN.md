@@ -7,10 +7,10 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Version** | 1.6 |
-| **Updated** | 2026-02-03 |
+| **Version** | 1.7 |
+| **Updated** | 2026-02-04 |
 | **Timeline** | 5 weeks (25 working days) |
-| **Current Coverage** | **~72%** (+14% total) |
+| **Current Coverage** | **~75%** (+17% total) |
 | **Target Coverage** | 95% |
 
 ---
@@ -41,7 +41,7 @@
 
 **Week 2 Summary**: +6% coverage (Charts: 43%→71%)
 
-### 🔄 WEEK 3 - IN PROGRESS (2026-02-03)
+### 🔄 WEEK 3 - IN PROGRESS (2026-02-04)
 
 | Task | Files Created/Modified | Status |
 |------|------------------------|--------|
@@ -53,11 +53,11 @@
 | Frontend server running | `http://localhost:3000` | ✅ RUNNING |
 | Hungary GeoJSON data | `constants/hungary.ts` | ✅ DONE (73 tests) |
 | HungaryMap component | `components/maps/HungaryMap.tsx` (+CSS +GeoJSON) | ✅ DONE |
-| HierarchicalSelector | `components/common/HierarchicalSelector.tsx` | 🔴 PENDING |
+| HierarchicalSelector | `components/common/HierarchicalSelector.tsx` (+CSS +test) | 🟡 17/21 tests passing |
 | API port fixes (8001→8003) | 9 TS/TSX files + package.json | ✅ DONE |
 | DataTable validation fix | `pages/DataTableView.tsx` | ✅ DONE |
 
-**Week 3 Progress**: HungaryMap kész, API portok javítva, HierarchicalSelector hátravan
+**Week 3 Progress**: HierarchicalSelector kész (4 teszt timeout issue miatt buk - javítandó)
 
 ---
 
@@ -69,7 +69,8 @@
 | Theming System | 0% | **100%** | **100%** | **100%** | 100% | **+100%** ✅ |
 | Main Application | 67% | **100%** | **100%** | **100%** | 100% | **+33%** ✅ |
 | Chart Components | 43% | 43% | **71%** | **73%** | 100% | **+30%** ✅ |
-| **OVERALL** | **58%** | **~63%** | **~69%** | **~72%** | **95%** | **+14%** ✅ |
+| Maps & Selectors | 0% | 0% | 0% | **~85%** | 100% | **+85%** ✅ |
+| **OVERALL** | **58%** | **~63%** | **~69%** | **~75%** | **95%** | **+17%** ✅ |
 
 ---
 
@@ -88,9 +89,9 @@
 ### 🔄 Week 3: Maps + Hierarchical Selector - IN PROGRESS
 - ✅ Hungary API endpoints (counties, regions, settlements, stations)
 - ✅ Frontend HungaryService
-- 🔴 Hungary GeoJSON data preparation
-- 🔴 HungaryMap component with county boundaries
-- 🔴 HierarchicalSelector component (Country→Region→County→City)
+- ✅ Hungary GeoJSON data preparation
+- ✅ HungaryMap component with county boundaries
+- 🟡 HierarchicalSelector component (Region→County→Settlement) - 17/21 tests passing, 4 timeout issues
 
 ### 🔴 Week 4: Trend Analytics + Exports
 - TrendAnalyticsView with KPI dashboard
@@ -227,15 +228,15 @@ POST /api/export/json
 |------|-------|--------------|----------|--------|
 | 1 | Infrastructure | Theme, City Autocomplete | ~63% (+5%) | ✅ DONE |
 | 2 | Charts | Wind Rose, Beaufort Scale | ~69% (+6%) | ✅ DONE |
-| 3 | Maps | Hungary API + Map components | ~72% (+3%) | 🔄 IN PROGRESS |
+| 3 | Maps | Hungary API + Map components | ~75% (+3%) | 🔄 IN PROGRESS |
 | 4 | Analytics | Trend View, Exports | 92% (+7%) | 🔴 Pending |
 | 5 | Polish | Providers, Modals, Status Bar | 95% (+3%) | 🔴 Pending |
 
 ---
 
-**Status**: 🔄 **WEEK 3 IN PROGRESS** (HungaryMap done, HierarchicalSelector pending)
-**Coverage Gap to Close**: 23 percentage points
+**Status**: 🔄 **WEEK 3 IN PROGRESS** (HierarchicalSelector 17/21 tests passing, 4 timeout issues)
+**Coverage Gap to Close**: 20 percentage points
 **Target**: 95% feature parity
 **Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
 
-*Updated: 2026-02-03 (Week 3 progress - HungaryMap done, port fixes applied)*
+*Updated: 2026-02-04 (Week 3 - HierarchicalSelector created, test fixes needed)*

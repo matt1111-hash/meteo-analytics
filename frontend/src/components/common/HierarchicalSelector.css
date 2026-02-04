@@ -1,0 +1,300 @@
+.hierarchical-selector {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hierarchical-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.hierarchical-title {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.hierarchical-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.hierarchical-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hierarchical-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hierarchical-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #495057;
+  margin: 0;
+}
+
+.hierarchical-select-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hierarchical-select {
+  width: 100%;
+  padding: 12px 16px;
+  padding-right: 40px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #ffffff;
+  color: #333333;
+  transition: all 0.3s ease;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+}
+
+.hierarchical-select:hover:not(:disabled) {
+  border-color: #adb5bd;
+}
+
+.hierarchical-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.hierarchical-select:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #e9ecef;
+}
+
+.hierarchical-select option {
+  padding: 8px;
+  background: #ffffff;
+  color: #333333;
+}
+
+.hierarchical-spinner {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.spinner-small {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #e9ecef;
+  border-top: 2px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.hierarchical-error {
+  padding: 8px 12px;
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.hierarchical-selected {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.hierarchical-selected-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.hierarchical-selected-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.hierarchical-selected-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.hierarchical-selected-details {
+  font-size: 13px;
+  color: #495057;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .hierarchical-selector {
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .hierarchical-title {
+    font-size: 18px;
+  }
+
+  .hierarchical-subtitle {
+    font-size: 13px;
+  }
+
+  .hierarchical-select {
+    padding: 10px 14px;
+    padding-right: 36px;
+    font-size: 16px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .hierarchical-selector {
+    background: #2c3e50;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .hierarchical-title {
+    color: #f8f9fa;
+  }
+
+  .hierarchical-subtitle {
+    color: #adb5bd;
+  }
+
+  .hierarchical-label {
+    color: #e9ecef;
+  }
+
+  .hierarchical-select {
+    background-color: #3a4b5c;
+    border-color: #495057;
+    color: #f8f9fa;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23adb5bd' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  }
+
+  .hierarchical-select:hover:not(:disabled) {
+    border-color: #6c757d;
+  }
+
+  .hierarchical-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  }
+
+  .hierarchical-select:disabled {
+    background-color: #2c3e50;
+    color: #6c757d;
+  }
+
+  .hierarchical-select option {
+    background: #3a4b5c;
+    color: #f8f9fa;
+  }
+
+  .hierarchical-selected {
+    background: #344454;
+    border-left-color: #667eea;
+  }
+
+  .hierarchical-selected-value {
+    color: #f8f9fa;
+  }
+
+  .hierarchical-selected-details {
+    color: #adb5bd;
+  }
+}
+
+/* Theme-based dark mode */
+.hierarchical-selector[data-theme='dark'] {
+  background: #2c3e50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-title {
+  color: #f8f9fa;
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-subtitle {
+  color: #adb5bd;
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-label {
+  color: #e9ecef;
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-select {
+  background-color: #3a4b5c;
+  border-color: #495057;
+  color: #f8f9fa;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23adb5bd' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-select:hover:not(:disabled) {
+  border-color: #6c757d;
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-select:disabled {
+  background-color: #2c3e50;
+  color: #6c757d;
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-select option {
+  background: #3a4b5c;
+  color: #f8f9fa;
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-selected {
+  background: #344454;
+  border-left-color: #667eea;
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-selected-value {
+  color: #f8f9fa;
+}
+
+.hierarchical-selector[data-theme='dark'] .hierarchical-selected-details {
+  color: #adb5bd;
+}
