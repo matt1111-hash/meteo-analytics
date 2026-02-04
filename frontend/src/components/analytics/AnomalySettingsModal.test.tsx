@@ -4,7 +4,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import userEvent from '@testing-library/user-event';
 import { AnomalySettingsModal, AnomalyThresholds, DetectionMethod } from './AnomalySettingsModal';
 
 // Mock the Modal component
@@ -135,33 +134,32 @@ describe('AnomalySettingsModal', () => {
   });
 
   describe('Preset selection', () => {
-    it('should apply default preset values', async () => {
-      const user = userEvent.setup();
+    it('should apply default preset values', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const defaultButton = screen.getByText('Alapértelmezett');
-      await user.click(defaultButton);
+      fireEvent.click(defaultButton);
 
       expect(screen.getByDisplayValue('35')).toBeInTheDocument();
     });
 
-    it('should apply sensitive preset values', async () => {
-      const user = userEvent.setup();
+    it('should apply sensitive preset values', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const sensitiveButton = screen.getByText('Érzékeny');
-      await user.click(sensitiveButton);
+      fireEvent.click(sensitiveButton);
 
-      expect(screen.getByDisplayValue('30')).toBeInTheDocument(); // Lower temp_hot
-      expect(screen.getByDisplayValue('-5')).toBeInTheDocument(); // Higher temp_cold
+      const tempHotInput = screen.getByLabelText('Forró (°C)') as HTMLInputElement;
+      const tempColdInput = screen.getByLabelText('Hideg (°C)') as HTMLInputElement;
+      expect(tempHotInput.value).toBe('30'); // Lower temp_hot
+      expect(tempColdInput.value).toBe('-5'); // Higher temp_cold
     });
 
-    it('should apply strict preset values', async () => {
-      const user = userEvent.setup();
+    it('should apply strict preset values', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const strictButton = screen.getByText('Szigorú');
-      await user.click(strictButton);
+      fireEvent.click(strictButton);
 
       expect(screen.getByDisplayValue('40')).toBeInTheDocument(); // Higher temp_hot
       expect(screen.getByDisplayValue('-15')).toBeInTheDocument(); // Lower temp_cold
@@ -175,14 +173,13 @@ describe('AnomalySettingsModal', () => {
   });
 
   describe('Detection method selection', () => {
-    it('should update method when changing select', async () => {
-      const user = userEvent.setup();
+    it('should update method when changing select', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
-      const select = screen.getByDisplayValue('Z-score (Statisztikai)');
-      await user.selectOptions(select, 'iqr');
+      const select = screen.getByDisplayValue('Z-score (Statisztikai)') as HTMLSelectElement;
+      fireEvent.change(select, { target: { value: 'iqr' } });
 
-      expect(select).toHaveValue('iqr');
+      expect(select.value).toBe('iqr');
     });
 
     it('should display method hint for zscore', () => {
@@ -205,123 +202,104 @@ describe('AnomalySettingsModal', () => {
   });
 
   describe('Threshold value changes', () => {
-    it('should update temperature hot threshold', async () => {
-      const user = userEvent.setup();
+    it('should update temperature hot threshold', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
-      const input = screen.getByLabelText('Forró (°C)');
-      await user.clear(input);
-      await user.type(input, '40');
+      const input = screen.getByLabelText('Forró (°C)') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '40' } });
 
-      expect(input).toHaveValue(40);
+      expect(input.value).toBe('40');
     });
 
-    it('should update precipitation high threshold', async () => {
-      const user = userEvent.setup();
+    it('should update precipitation high threshold', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
-      const input = screen.getByLabelText('Magas (mm)');
-      await user.clear(input);
-      await user.type(input, '100');
+      const input = screen.getByLabelText('Magas (mm)') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '100' } });
 
-      expect(input).toHaveValue(100);
+      expect(input.value).toBe('100');
     });
 
-    it('should allow empty values', async () => {
-      const user = userEvent.setup();
+    it('should allow empty values', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
-      const input = screen.getByLabelText('Forró (°C)');
-      await user.clear(input);
+      const input = screen.getByLabelText('Forró (°C)') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: '' } });
 
-      expect(input).toHaveValue(null);
+      expect(input.value).toBe('');
     });
   });
 
   describe('Validation', () => {
-    it('should show error for invalid temp_hot range', async () => {
-      const user = userEvent.setup();
+    it('should show error for invalid temp_hot range', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const input = screen.getByLabelText('Forró (°C)');
-      await user.clear(input);
-      await user.type(input, '100');
+      fireEvent.change(input, { target: { value: '100' } });
 
       expect(screen.getByText('Érvénytelen tartomány (-50 to 60°C)')).toBeInTheDocument();
     });
 
-    it('should show error for invalid temp_cold range', async () => {
-      const user = userEvent.setup();
+    it('should show error for invalid temp_cold range', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const input = screen.getByLabelText('Hideg (°C)');
-      await user.clear(input);
-      await user.type(input, '-100');
+      fireEvent.change(input, { target: { value: '-100' } });
 
       expect(screen.getByText('Érvénytelen tartomány (-50 to 40°C)')).toBeInTheDocument();
     });
 
-    it('should show error for invalid precip_high range', async () => {
-      const user = userEvent.setup();
+    it('should show error for invalid precip_high range', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const input = screen.getByLabelText('Magas (mm)');
-      await user.clear(input);
-      await user.type(input, '600');
+      fireEvent.change(input, { target: { value: '600' } });
 
       expect(screen.getByText('Érvénytelen tartomány (0 to 500mm)')).toBeInTheDocument();
     });
 
-    it('should show error for invalid wind_hurricane range', async () => {
-      const user = userEvent.setup();
+    it('should show error for invalid wind_hurricane range', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const input = screen.getByLabelText('Hurrikán (km/h)');
-      await user.clear(input);
-      await user.type(input, '50');
+      fireEvent.change(input, { target: { value: '50' } });
 
       expect(screen.getByText('Érvénytelen tartomány (100 to 200km/h)')).toBeInTheDocument();
     });
 
-    it('should clear error when value becomes valid', async () => {
-      const user = userEvent.setup();
+    it('should clear error when value becomes valid', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const input = screen.getByLabelText('Forró (°C)');
-      await user.clear(input);
-      await user.type(input, '100');
+      fireEvent.change(input, { target: { value: '100' } });
 
       expect(screen.queryByText('Érvénytelen tartomány (-50 to 60°C)')).toBeInTheDocument();
 
-      await user.clear(input);
-      await user.type(input, '35');
+      fireEvent.change(input, { target: { value: '35' } });
 
       expect(screen.queryByText('Érvénytelen tartomány (-50 to 60°C)')).not.toBeInTheDocument();
     });
 
-    it('should disable save button when there are errors', async () => {
-      const user = userEvent.setup();
+    it('should disable save button when there are errors', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const saveButton = screen.getByText('Mentés');
       expect(saveButton).not.toBeDisabled();
 
       const input = screen.getByLabelText('Forró (°C)');
-      await user.clear(input);
-      await user.type(input, '100');
+      fireEvent.change(input, { target: { value: '100' } });
 
       expect(saveButton).toBeDisabled();
     });
   });
 
   describe('Save functionality', () => {
-    it('should call onSave with thresholds and method when clicking save', async () => {
-      const user = userEvent.setup();
+    it('should call onSave with thresholds and method when clicking save', () => {
       const onSave = jest.fn();
       render(<AnomalySettingsModal {...defaultProps} onSave={onSave} />);
 
       const saveButton = screen.getByText('Mentés');
-      await user.click(saveButton);
+      fireEvent.click(saveButton);
 
       expect(onSave).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -332,30 +310,27 @@ describe('AnomalySettingsModal', () => {
       );
     });
 
-    it('should close modal after save', async () => {
-      const user = userEvent.setup();
+    it('should close modal after save', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const saveButton = screen.getByText('Mentés');
-      await user.click(saveButton);
+      fireEvent.click(saveButton);
 
       expect(defaultProps.onClose).toHaveBeenCalled();
     });
 
-    it('should include custom threshold values in save', async () => {
-      const user = userEvent.setup();
+    it('should include custom threshold values in save', () => {
       const onSave = jest.fn();
       render(<AnomalySettingsModal {...defaultProps} onSave={onSave} />);
 
       const tempInput = screen.getByLabelText('Forró (°C)');
-      await user.clear(tempInput);
-      await user.type(tempInput, '38');
+      fireEvent.change(tempInput, { target: { value: '38' } });
 
-      const methodSelect = screen.getByDisplayValue('Z-score (Statisztikai)');
-      await user.selectOptions(methodSelect, 'iqr');
+      const methodSelect = screen.getByDisplayValue('Z-score (Statisztikai)') as HTMLSelectElement;
+      fireEvent.change(methodSelect, { target: { value: 'iqr' } });
 
       const saveButton = screen.getByText('Mentés');
-      await user.click(saveButton);
+      fireEvent.click(saveButton);
 
       expect(onSave).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -367,49 +342,45 @@ describe('AnomalySettingsModal', () => {
   });
 
   describe('Reset functionality', () => {
-    it('should reset to default values when clicking reset', async () => {
-      const user = userEvent.setup();
+    it('should reset to default values when clicking reset', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       // Change a value
       const tempInput = screen.getByLabelText('Forró (°C)');
-      await user.clear(tempInput);
-      await user.type(tempInput, '50');
+      fireEvent.change(tempInput, { target: { value: '50' } });
 
       // Click reset
       const resetButton = screen.getByText('Alaphelyzet');
-      await user.click(resetButton);
+      fireEvent.click(resetButton);
 
       // Should be back to default
       expect(screen.getByDisplayValue('35')).toBeInTheDocument();
     });
 
-    it('should reset method to zscore', async () => {
-      const user = userEvent.setup();
+    it('should reset method to zscore', () => {
       render(<AnomalySettingsModal {...defaultProps} initialMethod="iqr" />);
 
-      const methodSelect = screen.getByDisplayValue('IQR (Interquartile Range)');
-      expect(methodSelect).toHaveValue('iqr');
+      const methodSelect = screen.getByDisplayValue('IQR (Interquartile Range)') as HTMLSelectElement;
+      expect(methodSelect.value).toBe('iqr');
 
       const resetButton = screen.getByText('Alaphelyzet');
-      await user.click(resetButton);
+      fireEvent.click(resetButton);
 
-      expect(methodSelect).toHaveValue('zscore');
+      expect(methodSelect.value).toBe('zscore');
     });
   });
 
   describe('Cancel functionality', () => {
-    it('should call onClose when clicking cancel', async () => {
-      const user = userEvent.setup();
+    it('should call onClose when clicking cancel', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const cancelButton = screen.getByText('Mégse');
-      await user.click(cancelButton);
+      fireEvent.click(cancelButton);
 
       expect(defaultProps.onClose).toHaveBeenCalled();
     });
 
-    it('should call onClose when clicking close button in modal', async () => {
+    it('should call onClose when clicking close button in modal', () => {
       render(<AnomalySettingsModal {...defaultProps} />);
 
       const closeButton = screen.getByLabelText('Close modal');
@@ -420,7 +391,7 @@ describe('AnomalySettingsModal', () => {
   });
 
   describe('Form state on modal open', () => {
-    it('should reset form when modal reopens with new initial values', async () => {
+    it('should reset form when modal reopens with new initial values', () => {
       const { rerender } = render(<AnomalySettingsModal {...defaultProps} />);
 
       // Change a value

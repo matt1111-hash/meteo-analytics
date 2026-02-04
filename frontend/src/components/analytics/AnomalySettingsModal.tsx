@@ -294,8 +294,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
         <h4 className="settings-group-title">🌡️ Hőmérséklet küszöbértékek</h4>
         <div className="settings-row">
           <div className="settings-field">
-            <label className="field-label">Forró (°C)</label>
+            <label className="field-label" htmlFor="temp-hot">Forró (°C)</label>
             <input
+              id="temp-hot"
               type="number"
               className={`settings-input ${errors.temp_hot ? 'input-error' : ''}`}
               value={thresholds.temp_hot ?? ''}
@@ -306,8 +307,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             {errors.temp_hot && <span className="field-error">{errors.temp_hot}</span>}
           </div>
           <div className="settings-field">
-            <label className="field-label">Hideg (°C)</label>
+            <label className="field-label" htmlFor="temp-cold">Hideg (°C)</label>
             <input
+              id="temp-cold"
               type="number"
               className={`settings-input ${errors.temp_cold ? 'input-error' : ''}`}
               value={thresholds.temp_cold ?? ''}
@@ -325,8 +327,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
         <h4 className="settings-group-title">🌧️ Csapadék küszöbértékek</h4>
         <div className="settings-row">
           <div className="settings-field">
-            <label className="field-label">Magas (mm)</label>
+            <label className="field-label" htmlFor="precip-high">Magas (mm)</label>
             <input
+              id="precip-high"
               type="number"
               className={`settings-input ${errors.precip_high ? 'input-error' : ''}`}
               value={thresholds.precip_high ?? ''}
@@ -337,8 +340,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             {errors.precip_high && <span className="field-error">{errors.precip_high}</span>}
           </div>
           <div className="settings-field">
-            <label className="field-label">Alacsony (mm)</label>
+            <label className="field-label" htmlFor="precip-low">Alacsony (mm)</label>
             <input
+              id="precip-low"
               type="number"
               className="settings-input"
               value={thresholds.precip_low ?? ''}
@@ -355,8 +359,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
         <h4 className="settings-group-title">💨 Szélsebesség küszöbértékek</h4>
         <div className="settings-row settings-row-4">
           <div className="settings-field">
-            <label className="field-label">Normál (km/h)</label>
+            <label className="field-label" htmlFor="wind-normal">Normál (km/h)</label>
             <input
+              id="wind-normal"
               type="number"
               className="settings-input"
               value={thresholds.wind_normal ?? ''}
@@ -366,8 +371,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             />
           </div>
           <div className="settings-field">
-            <label className="field-label">Erős (km/h)</label>
+            <label className="field-label" htmlFor="wind-strong">Erős (km/h)</label>
             <input
+              id="wind-strong"
               type="number"
               className="settings-input"
               value={thresholds.wind_strong ?? ''}
@@ -377,8 +383,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             />
           </div>
           <div className="settings-field">
-            <label className="field-label">Extrém (km/h)</label>
+            <label className="field-label" htmlFor="wind-extreme">Extrém (km/h)</label>
             <input
+              id="wind-extreme"
               type="number"
               className="settings-input"
               value={thresholds.wind_extreme ?? ''}
@@ -388,8 +395,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             />
           </div>
           <div className="settings-field">
-            <label className="field-label">Hurrikán (km/h)</label>
+            <label className="field-label" htmlFor="wind-hurricane">Hurrikán (km/h)</label>
             <input
+              id="wind-hurricane"
               type="number"
               className={`settings-input ${errors.wind_hurricane ? 'input-error' : ''}`}
               value={thresholds.wind_hurricane ?? ''}
