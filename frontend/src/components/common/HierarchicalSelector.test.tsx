@@ -8,6 +8,7 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 import HierarchicalSelector from './HierarchicalSelector';
 import { SelectedLocation } from './HierarchicalSelector';
 
@@ -171,8 +172,12 @@ describe('HierarchicalSelector Component', () => {
 
     test('should load counties when region is selected', async () => {
       render(<HierarchicalSelector onLocationSelect={mockOnLocationSelect} />);
+      // Wait for regions to be loaded
+      await waitFor(() => {
+        expect(mockGetHungarianRegions).toHaveBeenCalled();
+      });
       const regionSelect = await screen.findByLabelText('Régió');
-      fireEvent.change(regionSelect, { target: { value: 'Közép-Magyarország' } });
+      await userEvent.selectOptions(regionSelect, 'Közép-Magyarország');
       await waitFor(() => {
         expect(mockGetHungarianCounties).toHaveBeenCalled();
       });
@@ -189,11 +194,16 @@ describe('HierarchicalSelector Component', () => {
 
     test('should load settlements when county is selected', async () => {
       render(<HierarchicalSelector onLocationSelect={mockOnLocationSelect} />);
+      // Wait for regions to be loaded
+      await waitFor(() => {
+        expect(mockGetHungarianRegions).toHaveBeenCalled();
+      });
       const regionSelect = await screen.findByLabelText('Régió');
-      fireEvent.change(regionSelect, { target: { value: 'Közép-Magyarország' } });
-      await screen.findByText('Pest');
+      await userEvent.selectOptions(regionSelect, 'Közép-Magyarország');
+      // Wait for county option to appear (options are inside select, use findByRole)
+      await screen.findByRole('option', { name: 'Pest' });
       const countySelect = screen.getByLabelText('Megye');
-      fireEvent.change(countySelect, { target: { value: 'Pest' } });
+      await userEvent.selectOptions(countySelect, 'Pest');
       await waitFor(() => {
         expect(mockGetHungarianSettlements).toHaveBeenCalledWith({
           county: 'Pest',
@@ -206,14 +216,18 @@ describe('HierarchicalSelector Component', () => {
   describe('Location Selection Callback', () => {
     test('should call onLocationSelect with correct data', async () => {
       render(<HierarchicalSelector onLocationSelect={mockOnLocationSelect} />);
+      // Wait for regions to be loaded
+      await waitFor(() => {
+        expect(mockGetHungarianRegions).toHaveBeenCalled();
+      });
       const regionSelect = await screen.findByLabelText('Régió');
-      fireEvent.change(regionSelect, { target: { value: 'Közép-Magyarország' } });
-      await screen.findByText('Pest');
+      await userEvent.selectOptions(regionSelect, 'Közép-Magyarország');
+      await screen.findByRole('option', { name: 'Pest' });
       const countySelect = screen.getByLabelText('Megye');
-      fireEvent.change(countySelect, { target: { value: 'Pest' } });
-      await screen.findByText('Érd');
+      await userEvent.selectOptions(countySelect, 'Pest');
+      await screen.findByRole('option', { name: 'Érd' });
       const settlementSelect = screen.getByLabelText('Település');
-      fireEvent.change(settlementSelect, { target: { value: 'Érd' } });
+      await userEvent.selectOptions(settlementSelect, 'Érd');
       await waitFor(() => {
         expect(mockOnLocationSelect).toHaveBeenCalledWith({
           region: 'Közép-Magyarország',
@@ -227,14 +241,18 @@ describe('HierarchicalSelector Component', () => {
 
     test('should include coordinates when available', async () => {
       render(<HierarchicalSelector onLocationSelect={mockOnLocationSelect} />);
+      // Wait for regions to be loaded
+      await waitFor(() => {
+        expect(mockGetHungarianRegions).toHaveBeenCalled();
+      });
       const regionSelect = await screen.findByLabelText('Régió');
-      fireEvent.change(regionSelect, { target: { value: 'Közép-Magyarország' } });
-      await screen.findByText('Pest');
+      await userEvent.selectOptions(regionSelect, 'Közép-Magyarország');
+      await screen.findByRole('option', { name: 'Pest' });
       const countySelect = screen.getByLabelText('Megye');
-      fireEvent.change(countySelect, { target: { value: 'Pest' } });
-      await screen.findByText('Budakalász');
+      await userEvent.selectOptions(countySelect, 'Pest');
+      await screen.findByRole('option', { name: 'Budakalász' });
       const settlementSelect = screen.getByLabelText('Település');
-      fireEvent.change(settlementSelect, { target: { value: 'Budakalász' } });
+      await userEvent.selectOptions(settlementSelect, 'Budakalász');
       await waitFor(() => {
         expect(mockOnLocationSelect).toHaveBeenCalled();
         const callArgs = mockOnLocationSelect.mock.calls[0][0];
@@ -244,14 +262,18 @@ describe('HierarchicalSelector Component', () => {
 
     test('should include population when available', async () => {
       render(<HierarchicalSelector onLocationSelect={mockOnLocationSelect} />);
+      // Wait for regions to be loaded
+      await waitFor(() => {
+        expect(mockGetHungarianRegions).toHaveBeenCalled();
+      });
       const regionSelect = await screen.findByLabelText('Régió');
-      fireEvent.change(regionSelect, { target: { value: 'Közép-Magyarország' } });
-      await screen.findByText('Pest');
+      await userEvent.selectOptions(regionSelect, 'Közép-Magyarország');
+      await screen.findByRole('option', { name: 'Pest' });
       const countySelect = screen.getByLabelText('Megye');
-      fireEvent.change(countySelect, { target: { value: 'Pest' } });
-      await screen.findByText('Érd');
+      await userEvent.selectOptions(countySelect, 'Pest');
+      await screen.findByRole('option', { name: 'Érd' });
       const settlementSelect = screen.getByLabelText('Település');
-      fireEvent.change(settlementSelect, { target: { value: 'Érd' } });
+      await userEvent.selectOptions(settlementSelect, 'Érd');
       await waitFor(() => {
         expect(mockOnLocationSelect).toHaveBeenCalled();
         const callArgs = mockOnLocationSelect.mock.calls[0][0];
@@ -286,6 +308,10 @@ describe('HierarchicalSelector Component', () => {
     test('should display error when county API fails', async () => {
       mockGetHungarianCounties.mockRejectedValue(new Error('API Error'));
       render(<HierarchicalSelector onLocationSelect={mockOnLocationSelect} />);
+      // Wait for regions to be loaded
+      await waitFor(() => {
+        expect(mockGetHungarianRegions).toHaveBeenCalled();
+      });
       const regionSelect = await screen.findByLabelText('Régió');
       fireEvent.change(regionSelect, { target: { value: 'Közép-Magyarország' } });
       expect(await screen.findByText(/Nem sikerült betölteni a megyéket/i)).toBeInTheDocument();
@@ -294,11 +320,15 @@ describe('HierarchicalSelector Component', () => {
     test('should display error when settlement API fails', async () => {
       mockGetHungarianSettlements.mockRejectedValue(new Error('API Error'));
       render(<HierarchicalSelector onLocationSelect={mockOnLocationSelect} />);
+      // Wait for regions to be loaded
+      await waitFor(() => {
+        expect(mockGetHungarianRegions).toHaveBeenCalled();
+      });
       const regionSelect = await screen.findByLabelText('Régió');
-      fireEvent.change(regionSelect, { target: { value: 'Közép-Magyarország' } });
-      await screen.findByText('Pest');
+      await userEvent.selectOptions(regionSelect, 'Közép-Magyarország');
+      await screen.findByRole('option', { name: 'Pest' });
       const countySelect = screen.getByLabelText('Megye');
-      fireEvent.change(countySelect, { target: { value: 'Pest' } });
+      await userEvent.selectOptions(countySelect, 'Pest');
       expect(await screen.findByText(/Nem sikerült betölteni a településeket/i)).toBeInTheDocument();
     });
   });

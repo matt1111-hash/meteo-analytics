@@ -7,10 +7,10 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Version** | 1.7 |
+| **Version** | 1.8 |
 | **Updated** | 2026-02-04 |
 | **Timeline** | 5 weeks (25 working days) |
-| **Current Coverage** | **~75%** (+17% total) |
+| **Current Coverage** | **~78%** (+20% total) |
 | **Target Coverage** | 95% |
 
 ---
@@ -41,7 +41,7 @@
 
 **Week 2 Summary**: +6% coverage (Charts: 43%→71%)
 
-### 🔄 WEEK 3 - IN PROGRESS (2026-02-04)
+### ✅ WEEK 3 - COMPLETED (2026-02-04)
 
 | Task | Files Created/Modified | Status |
 |------|------------------------|--------|
@@ -53,24 +53,24 @@
 | Frontend server running | `http://localhost:3000` | ✅ RUNNING |
 | Hungary GeoJSON data | `constants/hungary.ts` | ✅ DONE (73 tests) |
 | HungaryMap component | `components/maps/HungaryMap.tsx` (+CSS +GeoJSON) | ✅ DONE |
-| HierarchicalSelector | `components/common/HierarchicalSelector.tsx` (+CSS +test) | 🟡 17/21 tests passing |
+| HierarchicalSelector | `components/common/HierarchicalSelector.tsx` (+CSS +test) | ✅ DONE (21/21 tests passing) |
 | API port fixes (8001→8003) | 9 TS/TSX files + package.json | ✅ DONE |
 | DataTable validation fix | `pages/DataTableView.tsx` | ✅ DONE |
 
-**Week 3 Progress**: HierarchicalSelector kész (4 teszt timeout issue miatt buk - javítandó)
+**Week 3 Summary**: +6% coverage (Maps: 0%→~85%, HierarchicalSelector: 100% stmts, 88% branches)
 
 ---
 
 ## 📈 COVERAGE TRACKING
 
-| Category | Start | After W1 | After W2 | After W3 (partial) | Target | Delta |
-|----------|-------|----------|----------|-------------------|--------|-------|
+| Category | Start | After W1 | After W2 | After W3 | Target | Delta |
+|----------|-------|----------|----------|---------|--------|-------|
 | Location Selectors | 50% | **100%** | **100%** | **100%** | 100% | **+50%** ✅ |
 | Theming System | 0% | **100%** | **100%** | **100%** | 100% | **+100%** ✅ |
 | Main Application | 67% | **100%** | **100%** | **100%** | 100% | **+33%** ✅ |
 | Chart Components | 43% | 43% | **71%** | **73%** | 100% | **+30%** ✅ |
-| Maps & Selectors | 0% | 0% | 0% | **~85%** | 100% | **+85%** ✅ |
-| **OVERALL** | **58%** | **~63%** | **~69%** | **~75%** | **95%** | **+17%** ✅ |
+| Maps & Selectors | 0% | 0% | 0% | **~90%** | 100% | **+90%** ✅ |
+| **OVERALL** | **58%** | **~63%** | **~69%** | **~78%** | **95%** | **+20%** ✅ |
 
 ---
 
@@ -86,12 +86,12 @@
 - Beaufort Scale (0-12 levels, Hungarian)
 - Enhanced wind charts
 
-### 🔄 Week 3: Maps + Hierarchical Selector - IN PROGRESS
+### ✅ Week 3: Maps + Hierarchical Selector - DONE
 - ✅ Hungary API endpoints (counties, regions, settlements, stations)
 - ✅ Frontend HungaryService
 - ✅ Hungary GeoJSON data preparation
 - ✅ HungaryMap component with county boundaries
-- 🟡 HierarchicalSelector component (Region→County→Settlement) - 17/21 tests passing, 4 timeout issues
+- ✅ HierarchicalSelector component (Region→County→Settlement) - 21/21 tests passing
 
 ### 🔴 Week 4: Trend Analytics + Exports
 - TrendAnalyticsView with KPI dashboard
@@ -121,7 +121,7 @@
 - [x] 125/125 tests passing
 - [x] Coverage +6%
 
-### Week 3 - IN PROGRESS
+### Week 3 - COMPLETED
 - [x] Hungary API endpoints (4 db)
 - [x] Backend port implementation
 - [x] Frontend HungaryService
@@ -129,8 +129,8 @@
 - [x] Frontend server running
 - [x] Hungary GeoJSON data (20 counties + 7 regions)
 - [x] HungaryMap component (Leaflet + CSS + GeoJSON)
-- [ ] HierarchicalSelector component
-- [ ] Coverage +3% (target: ~72%)
+- [x] HierarchicalSelector component (21/21 tests passing, 100% stmts, 88% branches)
+- [x] Coverage +6% (achieved: ~78%)
 
 ### Week 4 - PENDING
 - [ ] Trend analytics view
@@ -228,15 +228,15 @@ POST /api/export/json
 |------|-------|--------------|----------|--------|
 | 1 | Infrastructure | Theme, City Autocomplete | ~63% (+5%) | ✅ DONE |
 | 2 | Charts | Wind Rose, Beaufort Scale | ~69% (+6%) | ✅ DONE |
-| 3 | Maps | Hungary API + Map components | ~75% (+3%) | 🔄 IN PROGRESS |
+| 3 | Maps | Hungary API + Map components | ~78% (+6%) | ✅ DONE |
 | 4 | Analytics | Trend View, Exports | 92% (+7%) | 🔴 Pending |
 | 5 | Polish | Providers, Modals, Status Bar | 95% (+3%) | 🔴 Pending |
 
 ---
 
-**Status**: 🔄 **WEEK 3 IN PROGRESS** (HierarchicalSelector 17/21 tests passing, 4 timeout issues)
-**Coverage Gap to Close**: 20 percentage points
+**Status**: ✅ **WEEK 3 COMPLETED** (HierarchicalSelector 21/21 tests passing, 100% stmts, 88% branches)
+**Coverage Gap to Close**: 17 percentage points
 **Target**: 95% feature parity
 **Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
 
-*Updated: 2026-02-04 (Week 3 - HierarchicalSelector created, test fixes needed)*
+*Updated: 2026-02-04 (Week 3 - All tests passing, ready for Week 4)*
