@@ -12,6 +12,7 @@ from src.api.routes.cities import router as cities_router
 from src.api.routes.detailed_city import router as detailed_city_router
 from src.api.routes.hungary import router as hungary_router
 from src.api.routes.metadata import router as metadata_router
+from src.api.routes.providers import router as providers_router
 from src.api.routes.single_city import router as single_city_router
 from src.api.routes.weather import router as weather_router
 from src.api.routes.wind_rose import router as wind_rose_router
@@ -45,3 +46,4 @@ app.include_router(metadata_router)
 app.include_router(anomalies_router)
 app.include_router(cities_router)
 app.include_router(hungary_router)
+app.include_router(providers_router)

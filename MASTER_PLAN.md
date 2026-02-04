@@ -7,10 +7,10 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Version** | 1.9 |
+| **Version** | 2.0 |
 | **Updated** | 2026-02-04 |
 | **Timeline** | 5 weeks (25 working days) |
-| **Current Coverage** | **~85%** (+27% total) |
+| **Current Coverage** | **~87%** (+29% total) |
 | **Target Coverage** | 95% |
 
 ---
@@ -79,19 +79,41 @@
 
 **Week 4 Summary**: +7% coverage (TrendAnalytics: 0%→100%, Analytics API: new)
 
+### 🔴 WEEK 5 - IN PROGRESS (2026-02-04)
+
+| Task | Files Created/Modified | Status |
+|------|------------------------|--------|
+| Modal Infrastructure | `frontend/src/components/common/Modal.tsx` + CSS | ✅ DONE (37/37 tests) |
+| useModal Hook | `frontend/src/hooks/useModal.ts` | ✅ DONE |
+| Provider DTOs | `src/api/dto/provider_dto.py` (280 sor) | ✅ DONE |
+| Provider API Routes | `src/api/routes/providers.py` (290 sor) | ✅ DONE (19/19 tests) |
+| Router registration | `src/api/main.py` | ✅ DONE |
+| Backend server running | `http://127.0.0.1:8003` | ✅ RUNNING |
+| Frontend server running | `http://localhost:3000` | ✅ RUNNING |
+
+**Week 5 Summary (so far)**: +2% coverage (Modal: 100%, Provider API: 100%)
+
+**Remaining Week 5 tasks:**
+- [ ] Provider Selector component
+- [ ] ProviderService frontend
+- [ ] useProviderManagement hook
+- [ ] Status Bar component
+- [ ] Anomaly Settings Modal
+
 ---
 
 ## 📈 COVERAGE TRACKING
 
-| Category | Start | After W1 | After W2 | After W3 | After W4 | Target | Delta |
-|----------|-------|----------|----------|---------|---------|--------|-------|
-| Location Selectors | 50% | **100%** | **100%** | **100%** | **100%** | 100% | **+50%** ✅ |
-| Theming System | 0% | **100%** | **100%** | **100%** | **100%** | 100% | **+100%** ✅ |
-| Main Application | 67% | **100%** | **100%** | **100%** | **100%** | 100% | **+33%** ✅ |
-| Chart Components | 43% | 43% | **71%** | **73%** | **~85%** | 100% | **+42%** ✅ |
-| Maps & Selectors | 0% | 0% | 0% | **~90%** | **~90%** | 100% | **+90%** ✅ |
-| Trend Analytics | 0% | 0% | 0% | 0% | **100%** | 100% | **+100%** ✅ |
-| **OVERALL** | **58%** | **~63%** | **~69%** | **~78%** | **~85%** | **95%** | **+27%** ✅ |
+| Category | Start | After W1 | After W2 | After W3 | After W4 | After W5 | Target | Delta |
+|----------|-------|----------|----------|---------|---------|---------|--------|-------|
+| Location Selectors | 50% | **100%** | **100%** | **100%** | **100%** | **100%** | 100% | **+50%** ✅ |
+| Theming System | 0% | **100%** | **100%** | **100%** | **100%** | **100%** | 100% | **+100%** ✅ |
+| Main Application | 67% | **100%** | **100%** | **100%** | **100%** | **100%** | 100% | **+33%** ✅ |
+| Chart Components | 43% | 43% | **71%** | **73%** | **~85%** | **~85%** | 100% | **+42%** ✅ |
+| Maps & Selectors | 0% | 0% | 0% | **~90%** | **~90%** | **~90%** | 100% | **+90%** ✅ |
+| Trend Analytics | 0% | 0% | 0% | 0% | **100%** | **100%** | 100% | **+100%** ✅ |
+| Modals & Providers | 0% | 0% | 0% | 0% | 0% | **100%** | 100% | **+100%** ✅ |
+| **OVERALL** | **58%** | **~63%** | **~69%** | **~78%** | **~85%** | **~87%** | **95%** | **+29%** ✅ |
 
 ---
 
@@ -122,11 +144,12 @@
 - ✅ Trend chart with confidence intervals
 - ✅ Backend API: POST /api/analytics/trend
 
-### 🔴 Week 5: Provider Management + Polish
-- Provider Management API
-- Provider Selector UI
-- Status Bar component
-- Anomaly Settings Modal
+### 🔴 Week 5: Provider Management + Polish - IN PROGRESS
+- ✅ Modal Infrastructure (base Modal component) - 37/37 tests
+- ✅ Provider Management API - 19/19 tests
+- [ ] Provider Selector UI
+- [ ] Status Bar component
+- [ ] Anomaly Settings Modal
 
 ---
 
@@ -166,11 +189,13 @@
 - [x] Linear regression calculation service
 - [x] Coverage +7% (achieved: ~85%)
 
-### Week 5 - PENDING
-- [ ] Provider Management API
+### Week 5 - IN PROGRESS
+- [x] Modal Infrastructure (base Modal + useModal hook)
+- [x] Provider Management API (DTO + Routes + Tests)
 - [ ] Provider Selector component
 - [ ] Status Bar component
-- [ ] All modals implemented
+- [ ] Anomaly Settings Modal
+- [x] Backend + Frontend servers running
 
 ### Final Goals
 - [ ] Coverage ≥95%
@@ -256,16 +281,27 @@ POST /api/analytics/trend
   }
 ```
 
-### 🔴 NEEDED ENDPOINTS (Week 5)
+### ✅ WEEK 5 - PROVIDER MANAGEMENT (NEW!)
 
 ```python
-# Providers (Week 5)
-GET /api/weather/providers
-GET /api/providers/status
+# Provider Management
+GET /api/providers/list
+→ {"count": 3, "providers": [...], "default_provider": "auto"}
 
-# Export (could be added later)
-POST /api/export/excel
-POST /api/export/json
+GET /api/providers/status
+→ [{"provider_id": "auto", "name": "Automatikus", "status": "healthy", ...}, ...]
+
+GET /api/providers/{provider_id}/status
+→ {"provider_id": "meteostat", "name": "Meteostat (Prémium)", "status": "healthy", ...}
+
+GET /api/providers/{provider_id}/usage
+→ {"provider_id": "meteostat", "requests_total": 0, "estimated_cost_usd": 0.0, ...}
+
+POST /api/providers/{provider_id}/select
+→ {"success": true, "provider_id": "meteostat", "previous_provider_id": "auto", ...}
+
+GET /api/providers/selected
+→ {"provider_id": "auto", "name": "Automatikus (Smart Routing)", ...}
 ```
 
 ---
@@ -278,13 +314,13 @@ POST /api/export/json
 | 2 | Charts | Wind Rose, Beaufort Scale | ~69% (+6%) | ✅ DONE |
 | 3 | Maps | Hungary API + Map components | ~78% (+6%) | ✅ DONE |
 | 4 | Analytics | Trend View, Exports, KPI Dashboard | ~85% (+7%) | ✅ DONE |
-| 5 | Polish | Providers, Modals, Status Bar | 95% (+10%) | 🔴 Pending |
+| 5 | Polish | Providers, Modals, Status Bar | ~87% (+2%) | 🔴 IN PROGRESS |
 
 ---
 
-**Status**: ✅ **WEEK 4 COMPLETED** (TrendAnalyticsView full implementation, Backend API ready)
-**Coverage Gap to Close**: 10 percentage points
+**Status**: 🔴 **WEEK 5 IN PROGRESS** (Modal Infrastructure ✅, Provider API ✅, Selector UI pending)
+**Coverage Gap to Close**: 8 percentage points
 **Target**: 95% feature parity
 **Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
 
-*Updated: 2026-02-04 (Week 4 - All tasks completed, ready for Week 5)*
+*Updated: 2026-02-04 (Week 5 - Modal Infrastructure + Provider API done, remaining: Selector UI, Status Bar, Anomaly Modal)*
