@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Commit-msg hook: Block commits containing "Claude" in Co-Authored-By lines
+#
+
+COMMIT_MSG_FILE=$1
+
+# Check for Claude references in Co-Authored-By lines
+if grep -qi "Co-Authored-By:.*Claude" "$COMMIT_MSG_FILE" 2>/dev/null; then
+    echo "╔══════════════════════════════════════════════════════════════╗"
+    echo "║  ❌ COMMIT BLOKKOLVA - Claude név a commit messageben      ║"
+    echo "╚══════════════════════════════════════════════════════════════╝"
+    echo ""
+    echo "A commit Co-Authored-By sor 'Claude' hivatkozást tartalmaz."
+    echo "Kérlek távolítsd el ezt a sort a commit messageből."
+    echo ""
+    echo "Hiba: A 'Claude' név nem engedélyezett a Co-Authored-By sorokban."
+    echo ""
+    echo "A commit folytatásához:"
+    echo "  1. git commit --amend"
+    echo "  2. Töröld a Co-Authored-By: Claude... sort"
+    echo "  3. Mentsd el és lépj ki (:wq)"
+    echo ""
+    exit 1
+fi
+
+exit 0
