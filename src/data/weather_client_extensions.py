@@ -6,11 +6,14 @@ Global Weather Analyzer project
 Part of the weather_client refactoring - split into focused modules.
 """
 
+import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 from src.config import get_source_display_name
 
 from .weather_client_core import WeatherClient
+
+logger = logging.getLogger(__name__)
 
 
 class WeatherClientExtensions(WeatherClient):
@@ -89,7 +92,7 @@ class WeatherClientExtensions(WeatherClient):
                                   days_back: int = 7,
                                   user_override_provider: Optional[str] = None) -> Tuple[List[Dict[str, Any]], str]:
         """Get weather for date range (backward compatibility)."""
-        from datetime import timedelta
+        from datetime import datetime, timedelta
 
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=days_back)
