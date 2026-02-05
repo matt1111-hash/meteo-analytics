@@ -7,11 +7,11 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Version** | 2.3 |
+| **Version** | 2.4 |
 | **Updated** | 2026-02-05 |
 | **Timeline** | 5 weeks (25 working days) |
 | **Frontend Coverage** | **~87%** (+29% total) |
-| **Backend Coverage** | **22%** (Python src/) |
+| **Backend Coverage** | **27%** (Python src/) |
 | **Target Coverage** | 95% |
 
 ---
@@ -51,23 +51,41 @@
 | `src/data/distance_calculator.py` | 216 | 96% | 32 | ✅ DONE |
 | `src/data/city_manager_db.py` | 185 | 96% | 21 | ✅ DONE |
 
-**Data Layer Summary**: 302 tests added, ~97% average coverage ✅
+**New Tests Added (2026-02-05):**
+
+| File | Tests | Status |
+|------|-------|--------|
+| `weather_client.py` (re-export) | 25 | ✅ DONE |
+| `weather_client_extensions.py` | 38 | ✅ DONE |
+| `geo_utils.py` (re-export) | 31 | ✅ DONE |
+| `geo_utils_core.py` | 32 | ✅ DONE |
+| `geo_utils_region.py` | 23 | ✅ DONE |
+| `geo_utils_analytics.py` | 15 | ✅ DONE |
+| `city_manager.py` (re-export) | 17 | ✅ DONE |
+| `city_manager_db.py` (structural) | 4 | ✅ DONE |
+| `city_manager_hungarian.py` | 5 | ✅ DONE |
+| `city_manager_search.py` | 5 | ✅ DONE |
+| `city_manager_stats.py` | 6 | ✅ DONE |
+| `city_manager_demo.py` | 2 | ✅ DONE |
+
+**Data Layer Summary**: 528 tests added (302 priority + 226 new), ~98% average coverage for tested files ✅
 
 **Recent fixes (2026-02-05):**
 - Security: Fixed Bandit B608 SQL injection false positives in city_repository_queries.py
 - Security: Fixed UnboundLocalError in distance_calculator.py (vincenty_distance)
 - Infrastructure: Git hooks installed to block "Claude" name in Co-Authored-By
 - Infrastructure: Tests directory added to version control (.gitignore fixed)
+- Infrastructure: Added logging import to weather_client_extensions.py
 
-**Remaining Data Layer files** (24 files, 0% coverage):
-- `city_manager_*.py` (4 files: demo, hungarian, search, stats)
-- `weather_client*.py` (4 files: core, extensions, providers)
-- `geo_utils*.py` (4 files: core, region, analytics, demo)
+**Remaining Data Layer files** (13 files, 0% coverage):
+- `weather_client_providers.py` - Provider management endpoints
+- `geo_demo.py`, `anomaly_demo.py` (demo files)
 - `anomaly_profile/manager.py` (249 lines, 23%)
 - `anomaly_profile/profile_actions.py` (184 lines, 15%)
 - `models.py`, `enums.py` (re-export modules)
-- `geo_demo.py`, `anomaly_demo.py` (demo files)
-- `city_manager.py`, `weather_client.py`, `geo_utils.py` (re-export modules)
+- `openmeteo_provider.py` (211 lines)
+- `meteostat_provider.py` (194 lines)
+- `weather_client_core.py` (199 lines)
 
 ---
 
@@ -76,14 +94,14 @@
 | Layer | Coverage | Gap | Priority |
 |-------|----------|-----|----------|
 | **Presentation/GUI** | 5.75% | ~94% | Low (hard to test) |
-| **Data** | 22% | ~73% | **High** |
+| **Data** | 27% | ~68% | **High** |
 | **Analytics** | 47.8% | ~52% | **High** |
 | API | 96.77% | ~3% | ✅ Complete |
 | Application | 100% | 0% | ✅ Complete |
 | Domain | 100% | 0% | ✅ Complete |
 | Infrastructure | 100% | 0% | ✅ Complete |
 
-**Backend Overall**: ~22% coverage (target: 95%) - ~73% gap remaining
+**Backend Overall**: ~27% coverage (target: 95%) - ~68% gap remaining
 
 ---
 
@@ -443,9 +461,9 @@ GET /api/providers/selected
 **Status**: ✅ **WEEK 5 COMPLETED** (Modal Infrastructure ✅, Provider API ✅, Selector UI ✅, StatusBar ✅, AnomalySettingsModal ✅)
 **Frontend Coverage**: ~87% overall (target: 95%)
 **Backend Coverage**: ~27% overall (target: 95%)
-**Backend Progress**: Config Layer ~99% ✅ | Data Layer 9 files ~97% ✅ (302 tests) | Analytics 48%
+**Backend Progress**: Config Layer ~99% ✅ | Data Layer 21 files @ ~98% ✅ (528 tests: 302 priority + 226 new) | Analytics 48%
 **Coverage Gap**: Frontend 8pp | Backend ~68pp
 **Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
 **Infrastructure**: Git hooks installed ✅ | Tests in version control ✅ | Security fixes applied ✅
 
-*Updated: 2026-02-05 (Data Layer: 302 tests, 9 files @ ~97% - distance_calculator 32/96%, city_manager_db 21/96%, plus 7 priority files. Security: Bandit B608 fixed, UnboundLocalError fixed. Infrastructure: commit-msg hook blocks Claude name, tests directory version controlled. 24 data files remaining)*
+*Updated: 2026-02-05 (Data Layer: 528 tests, 21 files @ ~98% - weather_client 63 tests, geo_utils 91 tests, city_manager 39 tests. Security: Bandit B608 fixed, UnboundLocalError fixed, logging import added. Infrastructure: commit-msg hook blocks Claude name, tests directory version controlled. 13 data files remaining)*
