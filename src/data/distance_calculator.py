@@ -108,11 +108,20 @@ class DistanceCalculator:
         sin_U1, cos_U1 = math.sin(U1), math.cos(U1)
         sin_U2, cos_U2 = math.sin(U2), math.cos(U2)
 
+        # Check for identical points first
+        if L == 0 and lat1_rad == lat2_rad:
+            return 0.0
+
         # Iterative calculation
         lambda_val = L
         lambda_prev = 0
         iteration_limit = 100
         iteration = 0
+        cos2_alpha = 0.0
+        sin_sigma = 0.0
+        cos_sigma = 0.0
+        cos_2sigma_m = 0.0
+        sigma = 0.0
 
         while abs(lambda_val - lambda_prev) > 1e-12 and iteration < iteration_limit:
             sin_lambda = math.sin(lambda_val)
@@ -122,7 +131,7 @@ class DistanceCalculator:
                            (cos_U1 * sin_U2 - sin_U1 * cos_U2 * cos_lambda) ** 2)
 
             if sin_sigma == 0:
-                return 0
+                return 0.0
 
             cos_sigma = sin_U1 * sin_U2 + cos_U1 * cos_U2 * cos_lambda
             sigma = math.atan2(sin_sigma, cos_sigma)
@@ -144,7 +153,8 @@ class DistanceCalculator:
 
             iteration += 1
 
-        if iteration >= iteration_limit:
+        # Handle edge cases where Vincenty fails to converge
+        if iteration == 0 or iteration >= iteration_limit:
             logger.warning("Vincenty iteration failed, Haversine fallback")
             return self.haversine_distance(lat1, lon1, lat2, lon2, unit)
 

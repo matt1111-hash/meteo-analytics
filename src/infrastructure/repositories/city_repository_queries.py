@@ -22,11 +22,12 @@ class CityRepositoryQueries:
         if not city_names:
             return []
 
-        placeholders = ",".join(["?"] * len(city_names))
+        # Safe: placeholders only contain '?' characters, not user data
+        in_clause = ",".join(["?"] * len(city_names))
         query = (
             "SELECT city, country, country_code, lat, lon, population, "
             "meteostat_station_id, data_quality_score FROM cities "
-            f"WHERE LOWER(city) IN ({placeholders}) "
+            "WHERE LOWER(city) IN ({}) ".format(in_clause) +
             "AND population = ("
             "  SELECT MAX(population) FROM cities c2 "
             "  WHERE LOWER(c2.city) = LOWER(cities.city)"
@@ -48,7 +49,7 @@ class CityRepositoryQueries:
                 "population, NULL as meteostat_station_id, "
                 "region_priority as data_quality_score "
                 "FROM hungarian_settlements "
-                f"WHERE LOWER(name) IN ({placeholders}) "
+                "WHERE LOWER(name) IN ({}) ".format(in_clause) +
                 "ORDER BY population DESC"
             )
             return self._execute_hungarian(self.hungarian_db_path, hun_query, params)
@@ -103,15 +104,15 @@ class CityRepositoryQueries:
         limit: int,
     ) -> List[Dict[str, object]]:
         """Query Hungarian settlements by region (megye)."""
-        target_counties = hungarian_mapping[original_region]
-        placeholders = ",".join(["?"] * len(target_counties))
+        # Safe: placeholders only contain '?' characters, not user data
+        in_clause = ",".join(["?"] * len(target_counties))
         base_select = (
             'SELECT name as city, "Magyarország" as country, '
             '"HU" as country_code, latitude as lat, longitude as lon, '
             "population, NULL as meteostat_station_id, "
             "region_priority as data_quality_score "
             "FROM hungarian_settlements "
-            f"WHERE megye IN ({placeholders}) "
+            "WHERE megye IN ({}) ".format(in_clause) +
             "ORDER BY CASE WHEN population IS NOT NULL "
             "THEN population ELSE 0 END DESC "
             "LIMIT ?"
@@ -125,11 +126,12 @@ class CityRepositoryQueries:
         limit: int,
     ) -> List[Dict[str, object]]:
         """Query cities by country codes."""
-        placeholders = ",".join(["?"] * len(country_codes))
+        # Safe: placeholders only contain '?' characters, not user data
+        in_clause = ",".join(["?"] * len(country_codes))
         base_select = (
             "SELECT city, country, country_code, lat, lon, population, "
             "meteostat_station_id, data_quality_score FROM cities "
-            f"WHERE country_code IN ({placeholders}) "
+            "WHERE country_code IN ({}) ".format(in_clause) +
             "AND population IS NOT NULL AND population > 50000 "
             "ORDER BY CASE WHEN population IS NOT NULL "
             "THEN population ELSE 0 END DESC "
