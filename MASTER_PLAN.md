@@ -48,16 +48,23 @@
 | `src/data/weather_types.py` | 73 | 100% | 28 | ✅ DONE |
 | `src/data/city_types.py` | 178 | 100% | 45 | ✅ DONE |
 | `src/data/anomaly_profile/default_profiles.py` | 95 | 100% | 39 | ✅ DONE |
+| `src/data/distance_calculator.py` | 216 | 96% | 32 | ✅ DONE |
+| `src/data/city_manager_db.py` | 185 | 96% | 21 | ✅ DONE |
 
-**Data Layer Priority Files Summary**: 249 tests added, ~98% average coverage ✅
+**Data Layer Summary**: 302 tests added, ~97% average coverage ✅
 
-**Remaining Data Layer files** (26 files, 0% coverage):
-- `city_manager_*.py` (5 files: db, demo, hungarian, search, stats)
+**Recent fixes (2026-02-05):**
+- Security: Fixed Bandit B608 SQL injection false positives in city_repository_queries.py
+- Security: Fixed UnboundLocalError in distance_calculator.py (vincenty_distance)
+- Infrastructure: Git hooks installed to block "Claude" name in Co-Authored-By
+- Infrastructure: Tests directory added to version control (.gitignore fixed)
+
+**Remaining Data Layer files** (24 files, 0% coverage):
+- `city_manager_*.py` (4 files: demo, hungarian, search, stats)
 - `weather_client*.py` (4 files: core, extensions, providers)
 - `geo_utils*.py` (4 files: core, region, analytics, demo)
 - `anomaly_profile/manager.py` (249 lines, 23%)
 - `anomaly_profile/profile_actions.py` (184 lines, 15%)
-- `distance_calculator.py` (215 lines)
 - `models.py`, `enums.py` (re-export modules)
 - `geo_demo.py`, `anomaly_demo.py` (demo files)
 - `city_manager.py`, `weather_client.py`, `geo_utils.py` (re-export modules)
@@ -190,7 +197,7 @@
 | Domain | 100% | 95% | -5% | ✅ Complete |
 | Infrastructure | 100% | 95% | -5% | ✅ Complete |
 | Analytics | 47.8% | 95% | +47.2% | 🔴 Poor |
-| Data | 25.47% | 95% | +69.53% | 🔴 Poor |
+| Data | 27% | 95% | +68% | 🟡 In Progress |
 | Presentation/GUI | 5.75% | 95% | +89.25% | 🔴 Very Poor |
 | **BACKEND** | **~14%** | **95%** | **+81%** | 🔴 Gap |
 
@@ -435,9 +442,10 @@ GET /api/providers/selected
 
 **Status**: ✅ **WEEK 5 COMPLETED** (Modal Infrastructure ✅, Provider API ✅, Selector UI ✅, StatusBar ✅, AnomalySettingsModal ✅)
 **Frontend Coverage**: ~87% overall (target: 95%)
-**Backend Coverage**: ~22% overall (target: 95%)
-**Backend Progress**: Config Layer ~99% ✅ | Data Layer 7 files ~98% ✅ | Analytics 48%
-**Coverage Gap**: Frontend 8pp | Backend ~73pp
+**Backend Coverage**: ~27% overall (target: 95%)
+**Backend Progress**: Config Layer ~99% ✅ | Data Layer 9 files ~97% ✅ (302 tests) | Analytics 48%
+**Coverage Gap**: Frontend 8pp | Backend ~68pp
 **Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
+**Infrastructure**: Git hooks installed ✅ | Tests in version control ✅ | Security fixes applied ✅
 
-*Updated: 2026-02-05 (Data Layer: 249 tests, 7 files @ 100% - weather_types, city_types, default_profiles, geo_types, anomaly_types, weather_provider_base, anomaly_storage. 26 data files remaining)*
+*Updated: 2026-02-05 (Data Layer: 302 tests, 9 files @ ~97% - distance_calculator 32/96%, city_manager_db 21/96%, plus 7 priority files. Security: Bandit B608 fixed, UnboundLocalError fixed. Infrastructure: commit-msg hook blocks Claude name, tests directory version controlled. 24 data files remaining)*
