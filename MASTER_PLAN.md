@@ -7,11 +7,11 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Version** | 2.2 |
+| **Version** | 2.3 |
 | **Updated** | 2026-02-05 |
 | **Timeline** | 5 weeks (25 working days) |
 | **Frontend Coverage** | **~87%** (+29% total) |
-| **Backend Coverage** | **15%** (Python src/) |
+| **Backend Coverage** | **22%** (Python src/) |
 | **Target Coverage** | 95% |
 
 ---
@@ -37,23 +37,30 @@
 
 ### ✅ DATA LAYER - IN PROGRESS (2026-02-05)
 
+**Priority Files - COMPLETED:**
+
 | File | Lines | Coverage | Tests | Status |
 |------|-------|----------|-------|--------|
 | `src/data/geo_types.py` | 167 | 98% | 41 | ✅ DONE |
 | `src/data/anomaly_types.py` | 103 | 100% | 33 | ✅ DONE |
 | `src/data/weather_provider_base.py` | 85 | 100% | 27 | ✅ DONE |
 | `src/data/anomaly_storage.py` | 174 | 90% | 36 | ✅ DONE |
+| `src/data/weather_types.py` | 73 | 100% | 28 | ✅ DONE |
+| `src/data/city_types.py` | 178 | 100% | 45 | ✅ DONE |
+| `src/data/anomaly_profile/default_profiles.py` | 95 | 100% | 39 | ✅ DONE |
 
-**Data Layer Priority Files Summary**: 137 tests added, ~97% average coverage ✅
+**Data Layer Priority Files Summary**: 249 tests added, ~98% average coverage ✅
 
-**Remaining Data Layer files** (30 files, 0% coverage):
+**Remaining Data Layer files** (26 files, 0% coverage):
 - `city_manager_*.py` (5 files: db, demo, hungarian, search, stats)
 - `weather_client*.py` (4 files: core, extensions, providers)
-- `geo_utils*.py` (4 files: core, region, analytics)
-- `anomaly_profile/` (3 files: manager, profile_actions, default_profiles)
+- `geo_utils*.py` (4 files: core, region, analytics, demo)
+- `anomaly_profile/manager.py` (249 lines, 23%)
+- `anomaly_profile/profile_actions.py` (184 lines, 15%)
 - `distance_calculator.py` (215 lines)
-- `models.py`, `enums.py`, `weather_types.py`
-- ... and more
+- `models.py`, `enums.py` (re-export modules)
+- `geo_demo.py`, `anomaly_demo.py` (demo files)
+- `city_manager.py`, `weather_client.py`, `geo_utils.py` (re-export modules)
 
 ---
 
@@ -62,14 +69,14 @@
 | Layer | Coverage | Gap | Priority |
 |-------|----------|-----|----------|
 | **Presentation/GUI** | 5.75% | ~94% | Low (hard to test) |
-| **Data** | 32% | ~63% | **High** |
+| **Data** | 22% | ~73% | **High** |
 | **Analytics** | 47.8% | ~52% | **High** |
 | API | 96.77% | ~3% | ✅ Complete |
 | Application | 100% | 0% | ✅ Complete |
 | Domain | 100% | 0% | ✅ Complete |
 | Infrastructure | 100% | 0% | ✅ Complete |
 
-**Backend Overall**: ~15% coverage (target: 95%) - ~80% gap remaining
+**Backend Overall**: ~22% coverage (target: 95%) - ~73% gap remaining
 
 ---
 
@@ -422,15 +429,15 @@ GET /api/providers/selected
 | 3 | Maps | Hungary API + Map components | ~78% (+6%) | ✅ DONE |
 | 4 | Analytics | Trend View, Exports, KPI Dashboard | ~85% (+7%) | ✅ DONE |
 | 5 | Polish | Providers, Modals, Status Bar | ~87% (+2%) | ✅ DONE |
-| 6 | Backend Testing | Config (183 tests) + Data Layer (137 tests) | Config: ~99%, Data Priority: ~97% | 🔴 IN PROGRESS |
+| 6 | Backend Testing | Config (183) + Data Layer (249 tests) | Config: ~99%, Data Priority: ~98% | 🔴 IN PROGRESS |
 
 ---
 
 **Status**: ✅ **WEEK 5 COMPLETED** (Modal Infrastructure ✅, Provider API ✅, Selector UI ✅, StatusBar ✅, AnomalySettingsModal ✅)
 **Frontend Coverage**: ~87% overall (target: 95%)
-**Backend Coverage**: ~15% overall (target: 95%)
-**Backend Progress**: Config Layer ~99% ✅ | Data Layer Priority Files ~97% ✅ | Analytics 48%
-**Coverage Gap**: Frontend 8pp | Backend ~80pp
+**Backend Coverage**: ~22% overall (target: 95%)
+**Backend Progress**: Config Layer ~99% ✅ | Data Layer 7 files ~98% ✅ | Analytics 48%
+**Coverage Gap**: Frontend 8pp | Backend ~73pp
 **Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
 
-*Updated: 2026-02-05 (Data Layer testing: 137 tests added - geo_types, anomaly_types, weather_provider_base, anomaly_storage. 30 data files remaining)*
+*Updated: 2026-02-05 (Data Layer: 249 tests, 7 files @ 100% - weather_types, city_types, default_profiles, geo_types, anomaly_types, weather_provider_base, anomaly_storage. 26 data files remaining)*
