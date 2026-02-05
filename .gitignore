@@ -45,6 +45,8 @@ scripts/*.zip
 # Exclude minden mást a gyökéren, kivéve src/** és a fenti scripts kivételeket
 /*
 !/src/
+!/tests/
+!/tests/**
 !/scripts/
 !/frontend/
 !/frontend/**
