@@ -7,11 +7,69 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Version** | 2.0 |
-| **Updated** | 2026-02-04 |
+| **Version** | 2.2 |
+| **Updated** | 2026-02-05 |
 | **Timeline** | 5 weeks (25 working days) |
-| **Current Coverage** | **~87%** (+29% total) |
+| **Frontend Coverage** | **~87%** (+29% total) |
+| **Backend Coverage** | **15%** (Python src/) |
 | **Target Coverage** | 95% |
+
+---
+
+## 🐍 PYTHON BACKEND TESTING (Config + Data Layer)
+
+### ✅ CONFIG LAYER - COMPLETED (2026-02-04)
+
+### ✅ CONFIG LAYER - COMPLETED (2026-02-04)
+
+| File | Lines | Coverage | Tests | Status |
+|------|-------|----------|-------|--------|
+| `src/config/api_config.py` | 206 | 100% | 35 | ✅ DONE |
+| `src/config/config_settings.py` | 103 | 100% | 28 | ✅ DONE |
+| `src/config/config_validation.py` | 192 | 97.18% | 35 | ✅ DONE |
+| `src/config/paths_config.py` | 113 | 100% | 35 | ✅ DONE |
+| `src/config/provider_config.py` | 254 | 100% | 51 | ✅ DONE |
+| `src/config/usage_config.py` | 291 | 97.16% | 34 | ✅ DONE |
+
+**Config Layer Summary**: 183 tests added, ~99% average coverage ✅
+
+---
+
+### ✅ DATA LAYER - IN PROGRESS (2026-02-05)
+
+| File | Lines | Coverage | Tests | Status |
+|------|-------|----------|-------|--------|
+| `src/data/geo_types.py` | 167 | 98% | 41 | ✅ DONE |
+| `src/data/anomaly_types.py` | 103 | 100% | 33 | ✅ DONE |
+| `src/data/weather_provider_base.py` | 85 | 100% | 27 | ✅ DONE |
+| `src/data/anomaly_storage.py` | 174 | 90% | 36 | ✅ DONE |
+
+**Data Layer Priority Files Summary**: 137 tests added, ~97% average coverage ✅
+
+**Remaining Data Layer files** (30 files, 0% coverage):
+- `city_manager_*.py` (5 files: db, demo, hungarian, search, stats)
+- `weather_client*.py` (4 files: core, extensions, providers)
+- `geo_utils*.py` (4 files: core, region, analytics)
+- `anomaly_profile/` (3 files: manager, profile_actions, default_profiles)
+- `distance_calculator.py` (215 lines)
+- `models.py`, `enums.py`, `weather_types.py`
+- ... and more
+
+---
+
+### 🔴 PYTHON BACKEND REMAINING GAPS
+
+| Layer | Coverage | Gap | Priority |
+|-------|----------|-----|----------|
+| **Presentation/GUI** | 5.75% | ~94% | Low (hard to test) |
+| **Data** | 32% | ~63% | **High** |
+| **Analytics** | 47.8% | ~52% | **High** |
+| API | 96.77% | ~3% | ✅ Complete |
+| Application | 100% | 0% | ✅ Complete |
+| Domain | 100% | 0% | ✅ Complete |
+| Infrastructure | 100% | 0% | ✅ Complete |
+
+**Backend Overall**: ~15% coverage (target: 95%) - ~80% gap remaining
 
 ---
 
@@ -102,6 +160,8 @@
 
 ## 📈 COVERAGE TRACKING
 
+### Frontend (React/TypeScript)
+
 | Category | Start | After W1 | After W2 | After W3 | After W4 | After W5 | Target | Delta |
 |----------|-------|----------|----------|---------|---------|---------|--------|-------|
 | Location Selectors | 50% | **100%** | **100%** | **100%** | **100%** | **100%** | 100% | **+50%** ✅ |
@@ -111,7 +171,23 @@
 | Maps & Selectors | 0% | 0% | 0% | **~90%** | **~90%** | **~90%** | 100% | **+90%** ✅ |
 | Trend Analytics | 0% | 0% | 0% | 0% | **100%** | **100%** | 100% | **+100%** ✅ |
 | Modals & Providers | 0% | 0% | 0% | 0% | 0% | **100%** | 100% | **+100%** ✅ |
-| **OVERALL** | **58%** | **~63%** | **~69%** | **~78%** | **~85%** | **~87%** | **95%** | **+29%** ✅ |
+| **FRONTEND** | **58%** | **~63%** | **~69%** | **~78%** | **~85%** | **~87%** | **95%** | **+29%** ✅ |
+
+### Backend (Python)
+
+| Layer | Coverage | Target | Gap | Status |
+|-------|----------|--------|-----|--------|
+| Config | **~99%** | 95% | -4% | ✅ Complete |
+| API | 96.77% | 95% | -1.77% | ✅ Excellent |
+| Application | 100% | 95% | -5% | ✅ Complete |
+| Domain | 100% | 95% | -5% | ✅ Complete |
+| Infrastructure | 100% | 95% | -5% | ✅ Complete |
+| Analytics | 47.8% | 95% | +47.2% | 🔴 Poor |
+| Data | 25.47% | 95% | +69.53% | 🔴 Poor |
+| Presentation/GUI | 5.75% | 95% | +89.25% | 🔴 Very Poor |
+| **BACKEND** | **~14%** | **95%** | **+81%** | 🔴 Gap |
+
+---
 
 ---
 
@@ -202,9 +278,40 @@
 - [ ] All features working
 - [ ] Production ready
 
+**Week 5 Summary**: +6% coverage (Modals: 100%, Provider Management: 100%, StatusBar: 100%)
+
 ---
 
-## 🔌 BACKEND API ENDPOINTS
+### 🔴 PYTHON BACKEND TESTING - IN PROGRESS (2026-02-04)
+
+| Task | Files Created/Modified | Status |
+|------|------------------------|--------|
+| Config Layer Tests (6 files) | `tests/test_api_config.py` (35 tests) | ✅ 100% |
+| | `tests/test_config_settings.py` (28 tests) | ✅ 100% |
+| | `tests/test_config_validation.py` (35 tests) | ✅ 97.18% |
+| | `tests/test_paths_config.py` (35 tests) | ✅ 100% |
+| | `tests/test_provider_config.py` (51 tests) | ✅ 100% |
+| | `tests/test_usage_config.py` (34 tests) | ✅ 97.16% |
+| conftest fixture update | `tests/conftest.py` (added FakePath.unlink) | ✅ DONE |
+
+**Config Layer Summary**: 183 tests added, ~99% coverage, all 6 config files tested
+
+### 🔴 PYTHON BACKEND - NEXT STEPS
+
+**Priority 1: Data Layer** (34 files, 2 tested)
+- `weather_provider_base.py` (85 lines) - Base provider interface
+- `geo_types.py` (167 lines) - Geographic domain types
+- `anomaly_types.py` (103 lines) - Anomaly domain types
+- `anomaly_storage.py` (174 lines) - Critical I/O operations
+- `city_manager_stats.py` (199 lines) - Main city manager
+- ... (28 more files)
+
+**Priority 2: Analytics Layer** (47.8% → 95%)
+- `multi_city_engine.py` - Core analytics engine
+- `wind_analysis.py` - Wind analysis functionality
+- Trend calculator services
+
+---
 
 ### ✅ EXISTING ENDPOINTS
 
@@ -314,13 +421,16 @@ GET /api/providers/selected
 | 2 | Charts | Wind Rose, Beaufort Scale | ~69% (+6%) | ✅ DONE |
 | 3 | Maps | Hungary API + Map components | ~78% (+6%) | ✅ DONE |
 | 4 | Analytics | Trend View, Exports, KPI Dashboard | ~85% (+7%) | ✅ DONE |
-| 5 | Polish | Providers, Modals, Status Bar | ~87% (+2%) | 🔴 IN PROGRESS |
+| 5 | Polish | Providers, Modals, Status Bar | ~87% (+2%) | ✅ DONE |
+| 6 | Backend Testing | Config (183 tests) + Data Layer (137 tests) | Config: ~99%, Data Priority: ~97% | 🔴 IN PROGRESS |
 
 ---
 
 **Status**: ✅ **WEEK 5 COMPLETED** (Modal Infrastructure ✅, Provider API ✅, Selector UI ✅, StatusBar ✅, AnomalySettingsModal ✅)
-**Coverage**: ~93% overall (target: 95%)
-**Coverage Gap**: 2 percentage points remaining
+**Frontend Coverage**: ~87% overall (target: 95%)
+**Backend Coverage**: ~15% overall (target: 95%)
+**Backend Progress**: Config Layer ~99% ✅ | Data Layer Priority Files ~97% ✅ | Analytics 48%
+**Coverage Gap**: Frontend 8pp | Backend ~80pp
 **Servers**: Backend `:8003` ✅ | Frontend `:3000` ✅
 
-*Updated: 2026-02-04 (Week 5 COMPLETE - All 5 tasks finished: Modal Infrastructure, Provider Management API, ProviderSelector, StatusBar, AnomalySettingsModal)*
+*Updated: 2026-02-05 (Data Layer testing: 137 tests added - geo_types, anomaly_types, weather_provider_base, anomaly_storage. 30 data files remaining)*

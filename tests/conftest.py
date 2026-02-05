@@ -24,6 +24,10 @@ def fixture_config_fs(monkeypatch: pytest.MonkeyPatch) -> Dict[str, str]:
         def exists(self) -> bool:
             return self.key in store
 
+        def unlink(self) -> None:
+            if self.key in store:
+                del store[self.key]
+
     real_open = builtins.open
 
     def fake_open(path_obj, mode: str = "r", encoding: str | None = None):
