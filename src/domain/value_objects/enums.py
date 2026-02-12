@@ -18,6 +18,7 @@ class AnalysisType(Enum):
 
     For defining analytics and trend analysis types.
     """
+
     SINGLE_CITY = "single_city"
     MULTI_CITY = "multi_city"
     REGIONAL = "regional"
@@ -34,6 +35,7 @@ class RegionScope(Enum):
 
     For defining geographic scope of analytics queries.
     """
+
     COUNTRY = "country"
     CONTINENT = "continent"
     GLOBAL = "global"
@@ -47,6 +49,7 @@ class AnalyticsMetric(Enum):
 
     Standardized names for weather parameters.
     """
+
     # Temperature metrics
     TEMPERATURE_2M_MAX = "temperature_2m_max"
     TEMPERATURE_2M_MIN = "temperature_2m_min"
@@ -88,6 +91,7 @@ class QuestionType(Enum):
 
     For categorizing multi-city analytics questions.
     """
+
     # Temperature questions
     TEMPERATURE_MAX = "temperature_max"
     TEMPERATURE_MIN = "temperature_min"
@@ -124,6 +128,7 @@ class AnomalySeverity(Enum):
 
     For classifying weather anomalies.
     """
+
     LOW = "low"
     MODERATE = "moderate"
     HIGH = "high"
@@ -137,6 +142,7 @@ class AnomalyType(Enum):
 
     For determining anomaly direction.
     """
+
     HIGH = "high"
     LOW = "low"
     BOTH = "both"
@@ -148,6 +154,7 @@ class DataProvider(Enum):
 
     For identifying weather API providers.
     """
+
     OPEN_METEO = "open-meteo"
     METEOSTAT = "meteostat"
     WEATHERAPI = "weatherapi"
@@ -163,6 +170,7 @@ class DataSource(Enum):
 
     For distinguishing weather API sources.
     """
+
     OPEN_METEO = "open-meteo"
     METEOSTAT = "meteostat"
     ECMWF = "ecmwf"
@@ -176,6 +184,7 @@ class RegionType(Enum):
 
     For City Manager database queries.
     """
+
     COUNTRY = "country"
     CONTINENT = "continent"
     ADMINISTRATIVE = "administrative"
@@ -189,13 +198,14 @@ class AnalyticsMode(Enum):
 
     For distinguishing GUI analytics panel modes.
     """
+
     SINGLE_CITY = "single_city"
     MULTI_CITY = "multi_city"
     PARAMETER_BASED = "parameter_based"
 
 
 # Re-export utility functions for backward compatibility
-from src.domain.value_objects.enum_utils import (
+from src.domain.value_objects.enum_utils import (  # noqa: E402
     get_analysis_type_display_name,
     get_available_metrics_for_question_type,
     get_data_provider_display_name,
@@ -212,26 +222,26 @@ from src.domain.value_objects.enum_utils import (
 
 # EXPORT API
 __all__ = [
-    'AnalysisType',
-    'DataProvider',
-    'RegionScope',
-    'AnalyticsMetric',
-    'QuestionType',
-    'AnomalySeverity',
-    'AnomalyType',
-    'DataSource',
-    'RegionType',
-    'AnalyticsMode',
-    'get_analysis_type_display_name',
-    'get_data_provider_display_name',
-    'get_metric_display_name',
-    'get_metric_unit',
-    'get_region_scope_display_name',
-    'get_question_type_display_name',
-    'get_severity_color',
-    'validate_analysis_type',
-    'validate_data_provider',
-    'validate_analytics_metric',
-    'validate_region_scope',
-    'get_available_metrics_for_question_type'
+    "AnalysisType",
+    "DataProvider",
+    "RegionScope",
+    "AnalyticsMetric",
+    "QuestionType",
+    "AnomalySeverity",
+    "AnomalyType",
+    "DataSource",
+    "RegionType",
+    "AnalyticsMode",
+    "get_analysis_type_display_name",
+    "get_data_provider_display_name",
+    "get_metric_display_name",
+    "get_metric_unit",
+    "get_region_scope_display_name",
+    "get_question_type_display_name",
+    "get_severity_color",
+    "validate_analysis_type",
+    "validate_data_provider",
+    "validate_analytics_metric",
+    "validate_region_scope",
+    "get_available_metrics_for_question_type",
 ]

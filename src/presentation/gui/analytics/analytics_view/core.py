@@ -7,7 +7,10 @@ Fő AnalyticsView widget osztály.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
+if TYPE_CHECKING:
+    from src.domain.entities.analytics_models import AnalyticsResult
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
@@ -79,7 +82,9 @@ class AnalyticsView(QWidget):
         self._setup_ui()
         self._setup_theme()
 
-        logger.info("🗂️ AnalyticsView REFAKTORÁLT KONSTANS HEATMAP BEAUFORT + MAX SZÉLLÖKÉS + MULTI-CITY RÉGIÓ + DEDICATED WIND CHARTOK VERZIÓ betöltve")
+        logger.info(
+            "🗂️ AnalyticsView REFAKTORÁLT KONSTANS HEATMAP BEAUFORT + MAX SZÉLLÖKÉS + MULTI-CITY RÉGIÓ + DEDICATED WIND CHARTOK VERZIÓ betöltve"
+        )
 
     def _setup_ui(self) -> None:
         """UI felépítése - konstans heatmap dashboard + refaktorált multi-city + dedicated wind chartok."""
@@ -111,7 +116,9 @@ class AnalyticsView(QWidget):
         layout.addWidget(content_splitter)
 
         # Állapot sáv
-        self.status_label = QLabel("Válasszon lokációt a bal oldali panelen vagy használja a Régió Elemzést")
+        self.status_label = QLabel(
+            "Válasszon lokációt a bal oldali panelen vagy használja a Régió Elemzést"
+        )
         self.status_label.setStyleSheet("color: gray; padding: 2px; font-size: 9px;")
         layout.addWidget(self.status_label)
 
@@ -127,12 +134,12 @@ class AnalyticsView(QWidget):
 
         self.setStyleSheet(f"""
             QWidget {{
-                background-color: {colors.get('surface', '#ffffff')};
-                color: {colors.get('on_surface', '#000000')};
+                background-color: {colors.get("surface", "#ffffff")};
+                color: {colors.get("on_surface", "#000000")};
             }}
             QGroupBox {{
                 font-weight: bold;
-                border: 1px solid {colors.get('border', '#ccc')};
+                border: 1px solid {colors.get("border", "#ccc")};
                 border-radius: 3px;
                 margin-top: 6px;
                 padding-top: 3px;
@@ -141,7 +148,7 @@ class AnalyticsView(QWidget):
                 subcontrol-origin: margin;
                 left: 6px;
                 padding: 0 3px 0 3px;
-                color: {colors.get('primary', '#0066cc')};
+                color: {colors.get("primary", "#0066cc")};
             }}
         """)
 
@@ -163,25 +170,30 @@ class AnalyticsView(QWidget):
         🎯 KONSTANS HEATMAP + DEDICATED WIND CHARTOK adatok frissítése - 6 TAB - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ.
         """
         try:
-            logger.info("🗂️ Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok frissítése")
+            logger.info(
+                "🗂️ Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok frissítése"
+            )
 
             # Adatok tárolása
             self.current_data = data
 
             # Teljes napok számítása
-            daily_data = data.get('daily', {})
-            dates = daily_data.get('time', [])
+            daily_data = data.get("daily", {})
+            dates = daily_data.get("time", [])
             total_days = len(dates)
 
             logger.info("🎯 KONSTANS AGGREGÁCIÓ - BEAUFORT + MAX SZÉLLÖKÉS:")
             logger.info(f"  📊 {total_days} nap → 365 téglalap minden tab-nál")
 
             # 🚨 KRITIKUS JAVÍTÁS: Bal oldali statisztikák frissítése
-            logger.info("🚨 STATISZTIKÁK JAVÍTÁS: _process_and_display_statistics() meghívása")
+            logger.info(
+                "🚨 STATISZTIKÁK JAVÍTÁS: _process_and_display_statistics() meghívása"
+            )
             self.statistics_cards.process_and_display_statistics(data, total_days)
 
             # Rekordok frissítése (mindig napi szinten)
             from .analytics_statistics import AnalyticsStatistics
+
             records = AnalyticsStatistics.calculate_records(data)
             self.record_summary.update_records(records)
 
@@ -190,21 +202,28 @@ class AnalyticsView(QWidget):
                 self.climate_tabs.update_data(data)
 
             # Állapot frissítése
-            self._update_status(f"✅ {total_days} nap → 365 téglalap - Beaufort + Max Széllökés Dashboard + DEDICATED WIND CHARTOK + STATISZTIKÁK")
+            self._update_status(
+                f"✅ {total_days} nap → 365 téglalap - Beaufort + Max Széllökés Dashboard + DEDICATED WIND CHARTOK + STATISZTIKÁK"
+            )
 
             # Signal
             self.analysis_completed.emit()
 
         except Exception as e:
-            logger.error(f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatfrissítési hiba: {e}", exc_info=True)
+            logger.error(
+                f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatfrissítési hiba: {e}",
+                exc_info=True,
+            )
             self.error_occurred.emit(f"Adatfrissítési hiba: {str(e)}")
             self._update_status("❌ Adatfeldolgozási hiba")
 
-    def update_with_multi_city_result(self, result: 'AnalyticsResult'):
+    def update_with_multi_city_result(self, result: "AnalyticsResult"):
         """
         ✅ ÚJ: Frissíti a nézetet a MainWindow-tól kapott elemzési eredménnyel.
         """
-        logger.info(f"✅ ANALYTICS_VIEW: Eredmény fogadva a MainWindow-tól: {len(result.city_results) if result and result.city_results else 0} város.")
+        logger.info(
+            f"✅ ANALYTICS_VIEW: Eredmény fogadva a MainWindow-tól: {len(result.city_results) if result and result.city_results else 0} város."
+        )
 
         try:
             if not result or not result.city_results:
@@ -212,21 +231,31 @@ class AnalyticsView(QWidget):
                 return
 
             # Fake single-city data létrehozása a heatmap-ekhez
-            fake_data = self.multi_city_handler.create_fake_single_city_data_from_multi_city(result)
+            fake_data = (
+                self.multi_city_handler.create_fake_single_city_data_from_multi_city(
+                    result
+                )
+            )
 
             # Heatmap-ek frissítése
             if self.climate_tabs and fake_data:
                 self.climate_tabs.update_data(fake_data)
 
             # Fake rekordok (Multi-City eredményekből)
-            fake_records = self.multi_city_handler.create_fake_records_from_multi_city(result)
+            fake_records = self.multi_city_handler.create_fake_records_from_multi_city(
+                result
+            )
             if self.record_summary:
                 self.record_summary.update_records(fake_records)
 
             # Status frissítése
-            self._update_status(f"✅ Multi-City eredmény feldolgozva: {len(result.city_results)} város")
+            self._update_status(
+                f"✅ Multi-City eredmény feldolgozva: {len(result.city_results)} város"
+            )
 
-            logger.info(f"✅ Multi-City result processed in AnalyticsView: {len(result.city_results)} cities")
+            logger.info(
+                f"✅ Multi-City result processed in AnalyticsView: {len(result.city_results)} cities"
+            )
 
         except Exception as e:
             logger.error(f"❌ Multi-City result processing error: {e}")
@@ -235,7 +264,9 @@ class AnalyticsView(QWidget):
 
     def clear_data(self) -> None:
         """Adatok törlése és UI visszaállítása."""
-        logger.info("Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok törlése")
+        logger.info(
+            "Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok törlése"
+        )
 
         self.current_data = None
         self.current_location = None
@@ -256,7 +287,9 @@ class AnalyticsView(QWidget):
         """)
         self.statistics_area.setWidget(stats_content)
 
-        self._update_status("Válasszon lokációt a bal oldali panelen vagy használja a Régió Elemzést")
+        self._update_status(
+            "Válasszon lokációt a bal oldali panelen vagy használja a Régió Elemzést"
+        )
 
     def on_location_changed(self, location) -> None:
         """Lokáció változás kezelése."""
@@ -265,20 +298,22 @@ class AnalyticsView(QWidget):
             self.current_location = location
 
             # Lokáció info frissítése
-            if hasattr(location, 'display_name'):
+            if hasattr(location, "display_name"):
                 display_name = location.display_name
                 coords = location.coordinates
             elif isinstance(location, dict):
-                display_name = location.get('name', 'Ismeretlen')
-                lat = location.get('latitude', 0.0)
-                lon = location.get('longitude', 0.0)
+                display_name = location.get("name", "Ismeretlen")
+                lat = location.get("latitude", 0.0)
+                lon = location.get("longitude", 0.0)
                 coords = (lat, lon)
             else:
                 display_name = str(location)
                 coords = (0.0, 0.0)
 
             if coords:
-                location_text = f"📍 {display_name}\n🗺️ [{coords[0]:.3f}, {coords[1]:.3f}]"
+                location_text = (
+                    f"📍 {display_name}\n🗺️ [{coords[0]:.3f}, {coords[1]:.3f}]"
+                )
             else:
                 location_text = f"📍 {display_name}"
 
@@ -291,15 +326,21 @@ class AnalyticsView(QWidget):
 
     def on_analysis_start(self) -> None:
         """Elemzés indítása."""
-        logger.info("Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés indítása")
+        logger.info(
+            "Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés indítása"
+        )
         self.analysis_started.emit()
-        self._update_status("⏳ Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés folyamatban...")
+        self._update_status(
+            "⏳ Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés folyamatban..."
+        )
 
     def _update_status(self, message: str) -> None:
         """Állapot üzenet frissítése."""
         if self.status_label:
             self.status_label.setText(message)
-        logger.info(f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK állapot: {message}")
+        logger.info(
+            f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK állapot: {message}"
+        )
 
     # === TÉMA API ===
 

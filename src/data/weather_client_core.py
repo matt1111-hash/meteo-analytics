@@ -21,10 +21,12 @@ from src.config import (
 def _log_provider_usage_mock(provider: str, event_type: str, **kwargs) -> None:
     """Mock function for provider usage logging (GUI-specific)."""
     pass
-from .meteostat_provider import MeteostatProvider
-from .openmeteo_provider import OpenMeteoProvider
-from .weather_provider_base import WeatherProvider
-from .weather_types import ProviderNotAvailableError, WeatherAPIError
+
+
+from .meteostat_provider import MeteostatProvider  # noqa: E402
+from .openmeteo_provider import OpenMeteoProvider  # noqa: E402
+from .weather_provider_base import WeatherProvider  # noqa: E402
+from .weather_types import ProviderNotAvailableError, WeatherAPIError  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +48,7 @@ class WeatherClient:
 
         self.providers: Dict[str, WeatherProvider] = {
             "open-meteo": OpenMeteoProvider(),
-            "meteostat": MeteostatProvider()
+            "meteostat": MeteostatProvider(),
         }
 
         self.max_retries = APIConfig.MAX_RETRIES
@@ -57,17 +59,26 @@ class WeatherClient:
 
         logger.info(f"WeatherClient initialized (preferred: {preferred_provider})")
 
-    def set_provider_change_callback(self, callback: Callable[[str, str], None]) -> None:
+    def set_provider_change_callback(
+        self, callback: Callable[[str, str], None]
+    ) -> None:
         """Set callback for provider changes."""
         self.provider_change_callback = callback
 
-    def set_provider_fallback_callback(self, callback: Callable[[str, str], None]) -> None:
+    def set_provider_fallback_callback(
+        self, callback: Callable[[str, str], None]
+    ) -> None:
         """Set callback for provider fallback."""
         self.provider_fallback_callback = callback
 
-    def get_weather_data(self, latitude: float, longitude: float,
-                        start_date: str, end_date: str,
-                        user_override_provider: Optional[str] = None) -> List[Dict[str, Any]]:
+    def get_weather_data(
+        self,
+        latitude: float,
+        longitude: float,
+        start_date: str,
+        end_date: str,
+        user_override_provider: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
         """
         Get weather data with automatic batching.
 
@@ -79,7 +90,9 @@ class WeatherClient:
         Returns:
             List of daily weather records with data_source in each record
         """
-        logger.info(f"Weather request: {latitude:.4f}, {longitude:.4f} ({start_date} → {end_date})")
+        logger.info(
+            f"Weather request: {latitude:.4f}, {longitude:.4f} ({start_date} → {end_date})"
+        )
 
         self._validate_inputs(latitude, longitude, start_date, end_date)
 
@@ -103,7 +116,9 @@ class WeatherClient:
                 )
 
                 self._handle_successful_request(attempt_provider, selected_provider)
-                self.provider_usage_stats[attempt_provider] = self.provider_usage_stats.get(attempt_provider, 0) + 1
+                self.provider_usage_stats[attempt_provider] = (
+                    self.provider_usage_stats.get(attempt_provider, 0) + 1
+                )
                 _log_provider_usage_mock(attempt_provider, "weather_data", success=True)
 
                 return weather_data
@@ -111,20 +126,30 @@ class WeatherClient:
             except (WeatherAPIError, Exception) as e:
                 last_error = e
                 logger.error(f"Provider {attempt_provider} failed: {e}")
-                _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
+                _log_provider_usage_mock(
+                    attempt_provider, "weather_data", success=False
+                )
                 continue
 
-        raise ProviderNotAvailableError(f"All providers failed. Last error: {last_error}")
+        raise ProviderNotAvailableError(
+            f"All providers failed. Last error: {last_error}"
+        )
 
     def _select_provider(self, user_override: Optional[str] = None) -> Optional[str]:
         """Select the best provider for the request."""
         if user_override:
-            if user_override in self.providers and self.providers[user_override].validate_provider():
+            if (
+                user_override in self.providers
+                and self.providers[user_override].validate_provider()
+            ):
                 return user_override
 
         if self.preferred_provider == "auto":
             optimal = get_optimal_data_source("single_city", prefer_free=True)
-            if optimal in self.providers and self.providers[optimal].validate_provider():
+            if (
+                optimal in self.providers
+                and self.providers[optimal].validate_provider()
+            ):
                 return optimal
 
             for provider_id, provider in self.providers.items():
@@ -141,7 +166,8 @@ class WeatherClient:
     def _get_provider_fallback_chain(self, primary_provider: str) -> List[str]:
         """Get provider fallback chain."""
         available_providers = [
-            provider_id for provider_id, provider in self.providers.items()
+            provider_id
+            for provider_id, provider in self.providers.items()
             if provider.validate_provider()
         ]
 
@@ -151,12 +177,20 @@ class WeatherClient:
 
         return available_providers
 
-    def _retry_weather_request(self, provider: WeatherProvider, latitude: float, longitude: float,
-                              start_date: str, end_date: str) -> List[Dict[str, Any]]:
+    def _retry_weather_request(
+        self,
+        provider: WeatherProvider,
+        latitude: float,
+        longitude: float,
+        start_date: str,
+        end_date: str,
+    ) -> List[Dict[str, Any]]:
         """Retry weather request with exponential backoff."""
         for attempt in range(self.max_retries):
             try:
-                result = provider.get_weather_data(latitude, longitude, start_date, end_date)
+                result = provider.get_weather_data(
+                    latitude, longitude, start_date, end_date
+                )
                 return result
 
             except WeatherAPIError:
@@ -168,18 +202,25 @@ class WeatherClient:
 
         return []
 
-    def _handle_successful_request(self, used_provider: str, requested_provider: str) -> None:
+    def _handle_successful_request(
+        self, used_provider: str, requested_provider: str
+    ) -> None:
         """Handle successful request callbacks."""
         self.current_provider = used_provider
 
         if used_provider != requested_provider and self.provider_fallback_callback:
             self.provider_fallback_callback(requested_provider, used_provider)
 
-        if used_provider != self.preferred_provider and self.preferred_provider != "auto":
+        if (
+            used_provider != self.preferred_provider
+            and self.preferred_provider != "auto"
+        ):
             if self.provider_change_callback:
                 self.provider_change_callback(self.preferred_provider, used_provider)
 
-    def _validate_inputs(self, latitude: float, longitude: float, start_date: str, end_date: str) -> None:
+    def _validate_inputs(
+        self, latitude: float, longitude: float, start_date: str, end_date: str
+    ) -> None:
         """Validate input parameters."""
         if not (-90 <= latitude <= 90):
             raise ValueError("Invalid latitude: must be between -90 and 90")
@@ -196,4 +237,4 @@ class WeatherClient:
             raise ValueError("Start date cannot be after end date")
 
 
-__all__ = ['WeatherClient']
+__all__ = ["WeatherClient"]

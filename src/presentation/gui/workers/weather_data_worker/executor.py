@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class WorkerExecutor:
     """Execute weather data fetch with cancellation support."""
 
-    def __init__(self, worker: 'WeatherDataWorker'):
+    def __init__(self, worker: "WeatherDataWorker"):
         """
         Initialize worker executor.
 
@@ -50,13 +50,20 @@ class WorkerExecutor:
 
             # Build API request
             from ...utils import get_source_display_name
+
             api_url, api_params = self._worker._build_api_request(selected_provider)
 
             self._worker.progress_updated.emit(20)
 
-            print(f"🌍 DEBUG: Provider routing - {get_source_display_name(selected_provider)}")
-            print(f"🌪️ DEBUG: Wind gusts kérés: {self._worker.latitude:.4f}, {self._worker.longitude:.4f}")
-            print(f"📅 DEBUG: Időszak: {self._worker.start_date} - {self._worker.end_date}")
+            print(
+                f"🌍 DEBUG: Provider routing - {get_source_display_name(selected_provider)}"
+            )
+            print(
+                f"🌪️ DEBUG: Wind gusts kérés: {self._worker.latitude:.4f}, {self._worker.longitude:.4f}"
+            )
+            print(
+                f"📅 DEBUG: Időszak: {self._worker.start_date} - {self._worker.end_date}"
+            )
             print(f"🔗 DEBUG: API URL: {api_url}")
 
             # Cancellation check before HTTP requests
@@ -65,7 +72,9 @@ class WorkerExecutor:
                 return
 
             # HTTP request with provider fallback
-            success = self._execute_with_fallback(selected_provider, api_url, api_params)
+            success = self._execute_with_fallback(
+                selected_provider, api_url, api_params
+            )
 
             if not success:
                 self._worker.emit_error("Minden provider API hívás sikertelen")
@@ -99,9 +108,15 @@ class WorkerExecutor:
         """Select optimal provider."""
         return self._provider_selector.select_optimal()
 
-    def _execute_with_fallback(self, selected_provider: str, api_url: str, params) -> bool:
+    def _execute_with_fallback(
+        self, selected_provider: str, api_url: str, params
+    ) -> bool:
         """Execute HTTP requests with provider fallback."""
-        from ...utils import get_fallback_source_chain, get_source_display_name, log_provider_usage_event
+        from ...utils import (
+            get_fallback_source_chain,
+            get_source_display_name,
+            log_provider_usage_event,
+        )
 
         success = False
         fallback_chain = get_fallback_source_chain(selected_provider)
@@ -113,20 +128,30 @@ class WorkerExecutor:
                 return False
 
             try:
-                self._worker.emit_status(f"📡 {get_source_display_name(provider)} API kérés...")
+                self._worker.emit_status(
+                    f"📡 {get_source_display_name(provider)} API kérés..."
+                )
                 self._worker.progress_updated.emit(30 + (provider_index * 20))
 
                 api_url, api_params = self._worker._build_api_request(provider)
-                success = self._worker._execute_api_request(provider, api_url, api_params)
+                success = self._worker._execute_api_request(
+                    provider, api_url, api_params
+                )
 
                 if success:
                     if provider != selected_provider:
-                        print(f"🔄 DEBUG: Provider fallback: {selected_provider} → {provider}")
-                        self._worker.provider_fallback_occurred.emit(selected_provider, provider)
+                        print(
+                            f"🔄 DEBUG: Provider fallback: {selected_provider} → {provider}"
+                        )
+                        self._worker.provider_fallback_occurred.emit(
+                            selected_provider, provider
+                        )
 
                     self._worker.actual_provider = provider
                     log_provider_usage_event(provider, "weather_data", True)
-                    self._worker.emit_status(f"✅ {get_source_display_name(provider)} sikeres")
+                    self._worker.emit_status(
+                        f"✅ {get_source_display_name(provider)} sikeres"
+                    )
                     break
 
             except Exception as e:
@@ -134,11 +159,13 @@ class WorkerExecutor:
                 log_provider_usage_event(provider, "weather_data", False)
 
                 if provider_index < len(fallback_chain) - 1:
-                    self._worker.emit_status(f"⚠️ {get_source_display_name(provider)} sikertelen, fallback...")
+                    self._worker.emit_status(
+                        f"⚠️ {get_source_display_name(provider)} sikertelen, fallback..."
+                    )
                     continue
 
         return success
 
 
 # Import here to avoid circular dependency
-from .provider_selector import ProviderSelector
+from .provider_selector import ProviderSelector  # noqa: E402

@@ -5,14 +5,17 @@
 WorkerManager Core - Main worker management class with signals.
 """
 
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from PySide6.QtCore import QMutex, QObject, QWaitCondition, Signal
 
-from .components.worker_starters import WorkerStarters
-from .components.worker_handlers import WorkerHandlers
+if TYPE_CHECKING:
+    from ..base_worker import BaseWorkerThread
+
 from .components.provider_manager import ProviderManager
 from .components.shutdown import ShutdownManager
+from .components.worker_handlers import WorkerHandlers
+from .components.worker_starters import WorkerStarters
 
 
 class WorkerManager(QObject):
@@ -30,13 +33,13 @@ class WorkerManager(QObject):
     # Központi signalok
     error_occurred = Signal(str)
     progress_updated = Signal(str, int)  # worker_type, progress
-    worker_started = Signal(str)         # worker_type
-    worker_finished = Signal(str)        # worker_type
+    worker_started = Signal(str)  # worker_type
+    worker_finished = Signal(str)  # worker_type
 
     # Explicit completion signalok
-    worker_completed = Signal(str)       # Worker befejezve (success)
-    worker_cancelled = Signal(str)       # Worker megszakítva
-    all_workers_completed = Signal()     # Összes worker befejezve
+    worker_completed = Signal(str)  # Worker befejezve (success)
+    worker_cancelled = Signal(str)  # Worker megszakítva
+    all_workers_completed = Signal()  # Összes worker befejezve
 
     # Specifikus worker signalok
     geocoding_completed = Signal(list)
@@ -49,7 +52,7 @@ class WorkerManager(QObject):
     provider_validation_failed = Signal(str, str)
     provider_usage_tracked = Signal(str, bool)
 
-    def __init__(self, parent: Optional['QObject'] = None):
+    def __init__(self, parent: Optional["QObject"] = None):
         """
         Initialize WorkerManager.
 
@@ -59,7 +62,7 @@ class WorkerManager(QObject):
         super().__init__(parent)
 
         # Aktív worker threadek tárolása
-        self.active_workers: Dict[str, 'BaseWorkerThread'] = {}
+        self.active_workers: Dict[str, "BaseWorkerThread"] = {}
         self.worker_counter = 0
 
         # Provider state tracking
@@ -76,7 +79,9 @@ class WorkerManager(QObject):
         self._provider_manager = ProviderManager(self)
         self._shutdown_manager = ShutdownManager(self)
 
-        print("✅ DEBUG: WorkerManager inicializálva (COMPLETION SIGNAL FIX + PROVIDER ROUTING)")
+        print(
+            "✅ DEBUG: WorkerManager inicializálva (COMPLETION SIGNAL FIX + PROVIDER ROUTING)"
+        )
 
     def _get_worker_id(self, worker_type: str) -> str:
         """
@@ -147,7 +152,9 @@ class WorkerManager(QObject):
         """Check if worker type is active."""
         self.mutex.lock()
         try:
-            return any(wid.startswith(worker_type) for wid in self.active_workers.keys())
+            return any(
+                wid.startswith(worker_type) for wid in self.active_workers.keys()
+            )
         finally:
             self.mutex.unlock()
 

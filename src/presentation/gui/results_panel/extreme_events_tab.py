@@ -36,33 +36,46 @@ from src.application.use_cases.detect_anomalies import DetectAnomaliesUseCase
 try:
     from src.config import GUIConfig
 except ImportError:
+
     class GUIConfig:
         pass
+
 
 try:
     from ..utils import AnomalyConstants, GUIConstants
 except ImportError:
+
     class GUIConstants:
         pass
+
     class AnomalyConstants:
         pass
 
+
 try:
-    from src.presentation.gui.theme_manager import get_theme_manager, register_widget_for_theming
+    from src.presentation.gui.theme_manager import (
+        get_theme_manager,
+        register_widget_for_theming,
+    )
 except ImportError:
+
     def get_theme_manager():
         return None
+
     def register_widget_for_theming(*args, **kwargs):
         pass
 
+
 try:
     from src.domain.ports import get_anomaly_profile_port
+
     _profile_manager_available = True
 except ImportError:
     _profile_manager_available = False
 
 try:
     from .extreme import ExtremeCalculator
+
     _extreme_calculator_available = True
 except ImportError:
     _extreme_calculator_available = False
@@ -70,15 +83,18 @@ except ImportError:
 # Logging
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class AnomalyResult:
     """GUI-barát eredmény az anomália detektáláshoz."""
+
     category: str
     message: str
     status: str  # 'success' | 'warning' | 'error' | 'disabled'
     value: Optional[float] = None
     threshold: Optional[float] = None
     details: Optional[str] = None
+
 
 class ExtremeEventsTab(QWidget):
     """
@@ -92,9 +108,13 @@ class ExtremeEventsTab(QWidget):
         super().__init__(parent)
 
         self.theme_manager = get_theme_manager()
-        self.profile_manager = get_anomaly_profile_port() if _profile_manager_available else None
+        self.profile_manager = (
+            get_anomaly_profile_port() if _profile_manager_available else None
+        )
         self.use_case = DetectAnomaliesUseCase()
-        self.extreme_calculator = ExtremeCalculator() if _extreme_calculator_available else None
+        self.extreme_calculator = (
+            ExtremeCalculator() if _extreme_calculator_available else None
+        )
 
         self.current_data: Optional[Dict[str, Any]] = None
         self.period_type: str = "daily"
@@ -193,22 +213,35 @@ class ExtremeEventsTab(QWidget):
 
         self.extreme_table = QTableWidget()
         self.extreme_table.setColumnCount(4)
-        self.extreme_table.setHorizontalHeaderLabels(["Kategória", "Típus", "Érték", "Dátum"])
+        self.extreme_table.setHorizontalHeaderLabels(
+            ["Kategória", "Típus", "Érték", "Dátum"]
+        )
         # Egyedi oszlopszélességek - a kategória és típus szövegei hosszabbak
-        self.extreme_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.extreme_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.extreme_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        self.extreme_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        self.extreme_table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeToContents
+        )
+        self.extreme_table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeToContents
+        )
+        self.extreme_table.horizontalHeader().setSectionResizeMode(
+            2, QHeaderView.ResizeToContents
+        )
+        self.extreme_table.horizontalHeader().setSectionResizeMode(
+            3, QHeaderView.ResizeToContents
+        )
         # De az érték és dátum oszlopok ne legyenek túl szélesek
         self.extreme_table.horizontalHeader().setMinimumSectionSize(60)
         self.extreme_table.horizontalHeader().setStretchLastSection(True)
         # Dinamikus sorok - automatikusan kitölti a helyet
-        self.extreme_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.extreme_table.verticalHeader().setSectionResizeMode(
+            QHeaderView.ResizeToContents
+        )
         self.extreme_table.verticalHeader().setDefaultSectionSize(22)
         self.extreme_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.extreme_table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         # SizePolicy: expanding, kitölti a rendelkezésre álló helyet
         from PySide6.QtWidgets import QSizePolicy
+
         self.extreme_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.extreme_table)
 
@@ -232,7 +265,9 @@ class ExtremeEventsTab(QWidget):
         # Rekordok
         if self.extreme_calculator:
             dates = daily_data.get("time", daily_data.get("date", []))
-            records = self.extreme_calculator.calculate_records_by_period(daily_data, dates, self.period_type)
+            records = self.extreme_calculator.calculate_records_by_period(
+                daily_data, dates, self.period_type
+            )
             self._display_records(records)
 
     def _get_thresholds(self) -> Dict[str, float]:
@@ -242,10 +277,14 @@ class ExtremeEventsTab(QWidget):
 
         # Fallback
         return {
-            "temp_hot": 35.0, "temp_cold": -10.0,
-            "precip_high": 50.0, "precip_low": 5.0,
-            "wind_normal": 40.0, "wind_strong": 60.0,
-            "wind_extreme": 90.0, "wind_hurricane": 110.0
+            "temp_hot": 35.0,
+            "temp_cold": -10.0,
+            "precip_high": 50.0,
+            "precip_low": 5.0,
+            "wind_normal": 40.0,
+            "wind_strong": 60.0,
+            "wind_extreme": 90.0,
+            "wind_hurricane": 110.0,
         }
 
     def _display_anomalies(self, anomalies: Dict[str, Any]) -> None:
@@ -253,7 +292,7 @@ class ExtremeEventsTab(QWidget):
         mapping = {
             "temperature": self.temp_anomaly,
             "precipitation": self.precip_anomaly,
-            "wind": self.wind_anomaly
+            "wind": self.wind_anomaly,
         }
 
         for cat, label in mapping.items():
@@ -267,7 +306,12 @@ class ExtremeEventsTab(QWidget):
         if not label:
             return
         label.setText(text)
-        colors = {"success": "#10b981", "warning": "#f59e0b", "danger": "#ef4444", "error": "#ef4444"}
+        colors = {
+            "success": "#10b981",
+            "warning": "#f59e0b",
+            "danger": "#ef4444",
+            "error": "#ef4444",
+        }
         color = colors.get(status, "#9ca3af")
         label.setStyleSheet(f"color: {color}; font-weight: bold;")
 
@@ -287,6 +331,7 @@ class ExtremeEventsTab(QWidget):
             from src.presentation.gui.dialogs.anomaly_settings_dialog import (
                 AnomalySettingsDialog,
             )
+
             dialog = AnomalySettingsDialog(self)
             if dialog.exec():
                 if self.current_data:
@@ -295,9 +340,12 @@ class ExtremeEventsTab(QWidget):
             logger.error(f"Settings dialog error: {e}")
 
     def _on_period_type_changed(self) -> None:
-        if self.daily_radio.isChecked(): self.period_type = "daily"
-        elif self.monthly_radio.isChecked(): self.period_type = "monthly"
-        else: self.period_type = "yearly"
+        if self.daily_radio.isChecked():
+            self.period_type = "daily"
+        elif self.monthly_radio.isChecked():
+            self.period_type = "monthly"
+        else:
+            self.period_type = "yearly"
         if self.current_data:
             self.update_data(self.current_data)
 
@@ -308,5 +356,5 @@ class ExtremeEventsTab(QWidget):
         try:
             register_widget_for_theming(self, "container")
             register_widget_for_theming(self.title_label, "text")
-        except:
+        except Exception:
             pass

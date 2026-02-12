@@ -6,11 +6,11 @@ Formatting Module - Statistics - Statistical calculations.
 """
 
 import logging
+import statistics
 from typing import Any, Dict, List
 
-import statistics
-
 from src.presentation.gui.utils.constants import AnomalyConstants
+from src.presentation.gui.utils.formatting.wind_helpers import get_wind_gusts_category
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ def calculate_statistics(data: List[float]) -> Dict[str, float]:
             "mean": statistics.mean(clean_data),
             "median": statistics.median(clean_data),
             "std_dev": statistics.stdev(clean_data) if len(clean_data) > 1 else 0,
-            "sum": sum(clean_data)
+            "sum": sum(clean_data),
         }
     except Exception as e:
         logger.error(f"Statisztikai számítás hiba: {e}")
@@ -53,22 +53,41 @@ def calculate_wind_gusts_statistics(data: List[float]) -> Dict[str, Any]:
     try:
         basic_stats = calculate_statistics(clean_data)
 
-        extreme_days = len([x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_EXTREME])
-        hurricane_days = len([x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_HURRICANE])
-        catastrophic_days = len([x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_CATASTROPHIC])
+        extreme_days = len(
+            [x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_EXTREME]
+        )
+        hurricane_days = len(
+            [x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_HURRICANE]
+        )
+        catastrophic_days = len(
+            [x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_CATASTROPHIC]
+        )
 
         category_distribution = {}
-        for category_name, category_data in AnomalyConstants.WIND_GUSTS_CATEGORIES.items():
-            count = len([x for x in clean_data if category_data["threshold"] <= x < category_data["max"]])
+        for (
+            category_name,
+            category_data,
+        ) in AnomalyConstants.WIND_GUSTS_CATEGORIES.items():
+            count = len(
+                [
+                    x
+                    for x in clean_data
+                    if category_data["threshold"] <= x < category_data["max"]
+                ]
+            )
             category_distribution[category_name] = count
 
-        basic_stats.update({
-            "extreme_days": extreme_days,
-            "hurricane_days": hurricane_days,
-            "catastrophic_days": catastrophic_days,
-            "category_distribution": category_distribution,
-            "max_category": get_wind_gusts_category(max(clean_data)) if clean_data else None
-        })
+        basic_stats.update(
+            {
+                "extreme_days": extreme_days,
+                "hurricane_days": hurricane_days,
+                "catastrophic_days": catastrophic_days,
+                "category_distribution": category_distribution,
+                "max_category": get_wind_gusts_category(max(clean_data))
+                if clean_data
+                else None,
+            }
+        )
 
         return basic_stats
 

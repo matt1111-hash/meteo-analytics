@@ -17,7 +17,8 @@ from PySide6.QtCore import QThread, Signal
 from PySide6.QtWidgets import QWidget
 
 try:
-    import folium
+    import folium  # noqa: F401
+
     FOLIUM_AVAILABLE = True
 except ImportError:
     FOLIUM_AVAILABLE = False
@@ -51,7 +52,9 @@ class LocalHttpServerThread(QThread):
                 def log_message(self, format, *args):
                     pass
 
-            with socketserver.TCPServer((self.host, self.port), QuietHTTPRequestHandler) as httpd:
+            with socketserver.TCPServer(
+                (self.host, self.port), QuietHTTPRequestHandler
+            ) as httpd:
                 self.httpd = httpd
                 self.port = httpd.server_address[1]
                 self.running = True
@@ -118,6 +121,6 @@ class JavaScriptBridge(QWidget):
 
 # Export
 __all__ = [
-    'LocalHttpServerThread',
-    'JavaScriptBridge',
+    "LocalHttpServerThread",
+    "JavaScriptBridge",
 ]

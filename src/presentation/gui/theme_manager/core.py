@@ -9,8 +9,7 @@ ThemeManager Core - ProfessionalThemeManager main class.
 from typing import Any, Dict, Optional
 
 from PySide6.QtCore import QObject, QSettings, Signal
-from PySide6.QtGui import QColor, QPalette
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication
 
 from src.presentation.gui.color_palette import (
     ColorPalette,
@@ -21,16 +20,21 @@ from src.presentation.gui.types import ThemeType
 
 # Professional theme library - optional
 try:
-    import qdarktheme
+    import qdarktheme  # noqa: F401
+
     PROFESSIONAL_THEMES = True
 except ImportError:
     PROFESSIONAL_THEMES = False
 
-from .theme_appliers import apply_qdarktheme_theme, apply_qt6_native_theme, apply_color_palette_theme
-from .css_generator import CSSGenerator
-from .color_helpers import ColorHelper
 from .accessibility import AccessibilityHelper
+from .color_helpers import ColorHelper
+from .css_generator import CSSGenerator
 from .preferences import PreferencesManager
+from .theme_appliers import (
+    apply_color_palette_theme,
+    apply_qdarktheme_theme,
+    apply_qt6_native_theme,
+)
 
 
 class ProfessionalThemeManager(QObject):
@@ -52,16 +56,16 @@ class ProfessionalThemeManager(QObject):
     theme_changed = Signal(str)  # theme_name: "light" | "dark"
     color_scheme_updated = Signal(object)  # ColorPalette instance
 
-    _instance: Optional['ProfessionalThemeManager'] = None
+    _instance: Optional["ProfessionalThemeManager"] = None
 
-    def __new__(cls) -> 'ProfessionalThemeManager':
+    def __new__(cls) -> "ProfessionalThemeManager":
         """Singleton pattern - professional implementation."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self):
-        if hasattr(self, '_initialized'):
+        if hasattr(self, "_initialized"):
             return
 
         super().__init__()
@@ -71,8 +75,12 @@ class ProfessionalThemeManager(QObject):
         self.app = QApplication.instance()
 
         # 🎨 PIROS (#C43939) TÉMA INTEGRÁCIÓ
-        self.color_palette = create_color_palette(preset_name="red", theme_type=ThemeType.LIGHT)
-        self.weather_palette = create_weather_palette(base_temperature="#C43939", theme_type=ThemeType.LIGHT)
+        self.color_palette = create_color_palette(
+            preset_name="red", theme_type=ThemeType.LIGHT
+        )
+        self.weather_palette = create_weather_palette(
+            base_temperature="#C43939", theme_type=ThemeType.LIGHT
+        )
 
         # Qt6.5+ native dark mode detection
         self._qt6_native_available = self._setup_qt6_professional_theming()
@@ -91,7 +99,9 @@ class ProfessionalThemeManager(QObject):
         try:
             from PySide6.QtGui import QGuiApplication, Qt
 
-            if hasattr(Qt, 'ColorScheme') and hasattr(QGuiApplication.styleHints(), 'setColorScheme'):
+            if hasattr(Qt, "ColorScheme") and hasattr(
+                QGuiApplication.styleHints(), "setColorScheme"
+            ):
                 print("✅ Qt6.5+ Professional ColorScheme API available")
                 return True
             else:
@@ -104,7 +114,7 @@ class ProfessionalThemeManager(QObject):
 
         # Professional Fusion style - cross-platform consistency
         if self.app:
-            self.app.setStyle('Fusion')
+            self.app.setStyle("Fusion")
             print("✅ Professional Fusion style applied")
 
     def set_theme(self, theme_name: str) -> bool:
@@ -118,7 +128,9 @@ class ProfessionalThemeManager(QObject):
             Professional theme applied successfully
         """
         if theme_name not in ["light", "dark"]:
-            print(f"❌ Invalid theme: {theme_name}. Professional themes: 'light' or 'dark'")
+            print(
+                f"❌ Invalid theme: {theme_name}. Professional themes: 'light' or 'dark'"
+            )
             return False
 
         old_theme = self.current_theme
@@ -139,7 +151,9 @@ class ProfessionalThemeManager(QObject):
         if success:
             self.theme_changed.emit(theme_name)
             self.color_scheme_updated.emit(self.color_palette)
-            print(f"✅ Professional RED (#C43939) theme successfully applied: {theme_name}")
+            print(
+                f"✅ Professional RED (#C43939) theme successfully applied: {theme_name}"
+            )
         else:
             # Professional rollback
             self.current_theme = old_theme
@@ -174,7 +188,9 @@ class ProfessionalThemeManager(QObject):
         # PRIORITY 3: Professional ColorPalette fallback
         try:
             apply_color_palette_theme(theme_name, self)
-            print(f"✅ Professional ColorPalette RED (#C43939) theme applied: {theme_name}")
+            print(
+                f"✅ Professional ColorPalette RED (#C43939) theme applied: {theme_name}"
+            )
             return True
         except Exception as e:
             print(f"❌ All professional theme methods failed: {e}")
@@ -255,7 +271,9 @@ class ProfessionalThemeManager(QObject):
         """Load professional theme preferences."""
         self._preferences.load()
 
-    def create_weather_specific_palette(self, base_temperature_color: str = "#C43939") -> None:
+    def create_weather_specific_palette(
+        self, base_temperature_color: str = "#C43939"
+    ) -> None:
         """
         🌦️ PROFESSIONAL WEATHER SETUP - PIROS (#C43939) BASE TEMPERATURE.
 
@@ -264,10 +282,14 @@ class ProfessionalThemeManager(QObject):
         """
         self.weather_palette = create_weather_palette(
             base_temperature=base_temperature_color,
-            theme_type=ThemeType.DARK if self.current_theme == "dark" else ThemeType.LIGHT
+            theme_type=ThemeType.DARK
+            if self.current_theme == "dark"
+            else ThemeType.LIGHT,
         )
 
-        print(f"🌦️ Professional weather palette created with RED base: {base_temperature_color}")
+        print(
+            f"🌦️ Professional weather palette created with RED base: {base_temperature_color}"
+        )
 
     def get_accessibility_info(self) -> Dict[str, Any]:
         """
@@ -290,7 +312,7 @@ class ProfessionalThemeManager(QObject):
             "primary_color": self.color_palette.get_color("primary", "base"),
         }
 
-        if hasattr(self, 'weather_palette'):
+        if hasattr(self, "weather_palette"):
             debug_info["weather_palette_info"] = self.weather_palette.get_debug_info()
 
         return debug_info

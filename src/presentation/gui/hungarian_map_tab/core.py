@@ -5,28 +5,32 @@ Ez a modul tartalmazza a HungarianMapTab fő osztályát és a signalokat.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
+
+if TYPE_CHECKING:
+    from src.analytics.multi_city_engine_core import MultiCityEngine
+    from src.domain.entities.analytics_models import AnalyticsResult
 
 logger = logging.getLogger(__name__)
 
 # Mixins
 # Analytics and data modules
-from src.analytics.ports import get_multi_city_engine_port
-from src.domain.entities.analytics_models import AnalyticsResult
-from src.presentation.gui.color_palette import ColorPalette
+from src.presentation.gui.color_palette import ColorPalette  # noqa: E402
 
 # GUI modules
-from src.presentation.gui.hungarian_location_selector import HungarianLocationSelector
-from src.presentation.gui.map import HungarianMapVisualizer
-from src.presentation.gui.weather_data_bridge import (
+from src.presentation.gui.hungarian_location_selector import (  # noqa: E402
+    HungarianLocationSelector,
+)
+from src.presentation.gui.map import HungarianMapVisualizer  # noqa: E402
+from src.presentation.gui.weather_data_bridge import (  # noqa: E402
     WeatherDataBridge,
     WeatherOverlayData,
 )
 
-from .mixins import MapAnalyticsSyncMixin, MapTabUIMixin
+from .mixins import MapAnalyticsSyncMixin, MapTabUIMixin  # noqa: E402
 
 
 class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
@@ -148,28 +152,52 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
         initialize_components_steps(self)
 
         # Bind methods
-        self.set_analytics_parameter = lambda param: set_analytics_parameter(self, param)
+        self.set_analytics_parameter = lambda param: set_analytics_parameter(
+            self, param
+        )
         self.set_analytics_result = lambda result: set_analytics_result(self, result)
         self._refresh_weather_overlay = lambda: _refresh_weather_overlay(self)
-        self._generate_weather_overlay_from_analytics = lambda result: _generate_weather_overlay_from_analytics(self, result)
-        self.load_weather_data_from_analytics = lambda *args, **kwargs: load_weather_data_from_analytics(self, *args, **kwargs)
+        self._generate_weather_overlay_from_analytics = (
+            lambda result: _generate_weather_overlay_from_analytics(self, result)
+        )
+        self.load_weather_data_from_analytics = (
+            lambda *args, **kwargs: load_weather_data_from_analytics(
+                self, *args, **kwargs
+            )
+        )
 
         # Folium handlers
         self._on_county_selected = lambda *args: on_county_selected(self, *args)
-        self._on_map_update_requested = lambda bounds: on_map_update_requested(self, bounds)
-        self._on_location_selected = lambda location: on_location_selected(self, location)
+        self._on_map_update_requested = lambda bounds: on_map_update_requested(
+            self, bounds
+        )
+        self._on_location_selected = lambda location: on_location_selected(
+            self, location
+        )
         self._on_selection_changed = lambda: on_selection_changed(self)
         self._on_folium_map_ready = lambda: on_folium_map_ready(self)
-        self._on_folium_county_clicked = lambda name: on_folium_county_clicked(self, name)
-        self._on_folium_coordinates_clicked = lambda lat, lon: on_folium_coordinates_clicked(self, lat, lon)
-        self._on_folium_map_moved = lambda lat, lon, zoom: on_folium_map_moved(self, lat, lon, zoom)
-        self._on_folium_county_hovered = lambda name: on_folium_county_hovered(self, name)
+        self._on_folium_county_clicked = lambda name: on_folium_county_clicked(
+            self, name
+        )
+        self._on_folium_coordinates_clicked = (
+            lambda lat, lon: on_folium_coordinates_clicked(self, lat, lon)
+        )
+        self._on_folium_map_moved = lambda lat, lon, zoom: on_folium_map_moved(
+            self, lat, lon, zoom
+        )
+        self._on_folium_county_hovered = lambda name: on_folium_county_hovered(
+            self, name
+        )
         self._on_export_completed = lambda path: on_export_completed(self, path)
         self._on_error_occurred = lambda msg: on_error_occurred(self, msg)
 
         # Actions
-        self._on_auto_sync_toggled = lambda enabled: _on_auto_sync_toggled(self, enabled)
-        self._on_auto_weather_refresh_toggled = lambda enabled: _on_auto_weather_refresh_toggled(self, enabled)
+        self._on_auto_sync_toggled = lambda enabled: _on_auto_sync_toggled(
+            self, enabled
+        )
+        self._on_auto_weather_refresh_toggled = (
+            lambda enabled: _on_auto_weather_refresh_toggled(self, enabled)
+        )
         self._reset_map_view = lambda: _reset_map_view(self)
         self._export_map = lambda: _export_map(self)
         self._refresh_folium_map = lambda: _refresh_folium_map(self)

@@ -95,5 +95,5 @@ class ExternalHandlersMixin:
         """Destruktor."""
         try:
             self.cleanup()
-        except:
+        except Exception:
             pass

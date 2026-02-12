@@ -12,7 +12,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any, Optional, Union
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import QObject, Signal
 
 from .base_worker import BaseWorkerThread
 
@@ -31,8 +31,9 @@ class SQLQueryWorker(BaseWorkerThread):
     # Specifikus signalok
     query_completed = Signal(object)  # pandas DataFrame vagy list
 
-    def __init__(self, query: str, db_path: Union[str, Path],
-                 parent: Optional['QObject'] = None):
+    def __init__(
+        self, query: str, db_path: Union[str, Path], parent: Optional["QObject"] = None
+    ):
         super().__init__(parent)
         self.query = query.strip()
         self.db_path = Path(db_path)
@@ -69,7 +70,14 @@ class SQLQueryWorker(BaseWorkerThread):
             self.progress_updated.emit(50)
 
             # Biztonsági ellenőrzés (SQL injection védelem)
-            dangerous_keywords = ['DROP', 'DELETE', 'INSERT', 'UPDATE', 'ALTER', 'CREATE']
+            dangerous_keywords = [
+                "DROP",
+                "DELETE",
+                "INSERT",
+                "UPDATE",
+                "ALTER",
+                "CREATE",
+            ]
             query_upper = self.query.upper()
 
             for keyword in dangerous_keywords:
@@ -90,6 +98,7 @@ class SQLQueryWorker(BaseWorkerThread):
             # Pandas használata a jobb adatkezeléshez
             try:
                 import pandas as pd
+
                 result = pd.read_sql_query(self.query, conn)
                 self.result = result
             except ImportError:
@@ -97,7 +106,7 @@ class SQLQueryWorker(BaseWorkerThread):
                 cursor = conn.cursor()
                 cursor.execute(self.query)
 
-                if self.query.upper().startswith('SELECT'):
+                if self.query.upper().startswith("SELECT"):
                     rows = cursor.fetchall()
                     columns = [description[0] for description in cursor.description]
                     self.result = {"columns": columns, "rows": rows}

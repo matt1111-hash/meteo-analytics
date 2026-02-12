@@ -8,10 +8,13 @@ Település keresést végző worker OpenMeteo Geocoding API használatával.
 """
 
 import json
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 import httpx
-from PySide6.QtCore import Signal
+from PySide6.QtCore import QObject, Signal
+
+if TYPE_CHECKING:
+    pass
 
 from .base_worker import BaseWorkerThread
 
@@ -30,7 +33,7 @@ class GeocodingWorker(BaseWorkerThread):
     # Specifikus signalok
     geocoding_completed = Signal(list)  # List[Dict] - találatok
 
-    def __init__(self, search_query: str, parent: Optional['QObject'] = None):
+    def __init__(self, search_query: str, parent: Optional["QObject"] = None):
         super().__init__(parent)
         self.search_query = search_query.strip()
         self.results: List[Dict[str, Any]] = []
@@ -60,7 +63,7 @@ class GeocodingWorker(BaseWorkerThread):
                 "name": self.search_query,
                 "count": 10,
                 "language": "hu",
-                "format": "json"
+                "format": "json",
             }
 
             self.emit_status(f"🌍 Keresés: {self.search_query}")
@@ -98,7 +101,9 @@ class GeocodingWorker(BaseWorkerThread):
                 if not self.is_cancelled:
                     self.geocoding_completed.emit(self.results)
                     self.emit_status(f"✅ {len(self.results)} találat")
-                    print(f"✅ DEBUG: Geocoding completed - {len(self.results)} results")
+                    print(
+                        f"✅ DEBUG: Geocoding completed - {len(self.results)} results"
+                    )
 
         except httpx.TimeoutException:
             if not self.is_cancelled:

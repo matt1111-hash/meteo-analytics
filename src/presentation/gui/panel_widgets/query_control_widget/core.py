@@ -16,7 +16,6 @@ from .external_api import QueryControlExternalAPI
 from .state_manager import QueryControlStateManager
 from .ui_builder import QueryControlUIBuilder
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -48,7 +47,9 @@ class QueryControlWidget(QWidget):
         self._ui_builder.build_ui()
 
         # State manager
-        self._state_manager = QueryControlStateManager(self._ui_builder, self.state_changed)
+        self._state_manager = QueryControlStateManager(
+            self._ui_builder, self.state_changed
+        )
 
         # Event handlers (egyszerűsített - csak gombokat kezel)
         self._event_handlers = QueryControlEventHandlers(
@@ -62,9 +63,13 @@ class QueryControlWidget(QWidget):
 
         # Connect button signals
         if self._ui_builder.query_button:
-            self._ui_builder.query_button.clicked.connect(self._event_handlers.on_query_clicked)
+            self._ui_builder.query_button.clicked.connect(
+                self._event_handlers.on_query_clicked
+            )
         if self._ui_builder.cancel_button:
-            self._ui_builder.cancel_button.clicked.connect(self._event_handlers.on_cancel_clicked)
+            self._ui_builder.cancel_button.clicked.connect(
+                self._event_handlers.on_cancel_clicked
+            )
 
         # External API
         self._external_api = QueryControlExternalAPI(
@@ -106,7 +111,9 @@ class QueryControlWidget(QWidget):
         """Dinamikus delegálás az external API-hoz."""
         if hasattr(self._external_api, name):
             return getattr(self._external_api, name)
-        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+        raise AttributeError(
+            f"'{type(self).__name__}' object has no attribute '{name}'"
+        )
 
     # === CLEANUP ===
 
@@ -123,5 +130,5 @@ class QueryControlWidget(QWidget):
     def __del__(self):
         try:
             self.cleanup()
-        except:
+        except Exception:
             pass

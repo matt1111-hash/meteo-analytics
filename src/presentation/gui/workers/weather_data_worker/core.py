@@ -5,14 +5,17 @@
 WeatherDataWorker Core - Main WeatherDataWorker class.
 """
 
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import QObject, Signal
+
+if TYPE_CHECKING:
+    pass
 
 from ..base_worker import BaseWorkerThread
-from .executor import WorkerExecutor
 from .api_builder import APIBuilder
 from .api_executor import APIExecutor
+from .executor import WorkerExecutor
 from .wind_validator import WindValidator
 
 
@@ -43,7 +46,7 @@ class WeatherDataWorker(BaseWorkerThread):
         start_date: str,
         end_date: str,
         preferred_provider: str = "auto",
-        parent: Optional['QObject'] = None
+        parent: Optional["QObject"] = None,
     ):
         """
         Initialize WeatherDataWorker.
@@ -94,7 +97,9 @@ class WeatherDataWorker(BaseWorkerThread):
         """Build Meteostat API request."""
         return self._api_builder.build_meteostat_request()
 
-    def _execute_api_request(self, provider: str, api_url: str, params: Dict[str, Any]) -> bool:
+    def _execute_api_request(
+        self, provider: str, api_url: str, params: Dict[str, Any]
+    ) -> bool:
         """Execute API request."""
         return self._api_executor.execute_request(provider, api_url, params)
 

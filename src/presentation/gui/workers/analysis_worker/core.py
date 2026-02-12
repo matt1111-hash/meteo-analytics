@@ -7,17 +7,17 @@ from typing import Any, Dict, Optional
 
 from PySide6.QtCore import QMutex, QMutexLocker, QThread, Signal
 
-from .component_initializer import ComponentInitializer
 from .analysis_runners import AnalysisRunners
+from .component_initializer import ComponentInitializer
 from .data_converter import DataConverter
 from .interrupt_handler import InterruptHandler
 
-
 # Import checks (CA compliant - uses ports and Domain layer)
 try:
-    from src.analytics.ports import get_multi_city_engine_port, MultiCityEnginePort
-    from src.domain.ports import get_weather_client_port, WeatherClientPort
-    from src.domain.value_objects.enums import AnalysisType, DataProvider
+    from src.analytics.ports import MultiCityEnginePort, get_multi_city_engine_port
+    from src.domain.ports import WeatherClientPort, get_weather_client_port
+    from src.domain.value_objects.enums import AnalysisType, DataProvider  # noqa: F401
+
     IMPORTS_OK = True
 except ImportError as e:
     print(f"❌ AnalysisWorker import error: {e}")
@@ -85,7 +85,9 @@ class AnalysisWorker(QThread):
         """
         with QMutexLocker(self._mutex):
             self._request_data = request_data.copy()
-            self._logger.info(f"Worker setup: {request_data.get('analysis_type', 'unknown')}")
+            self._logger.info(
+                f"Worker setup: {request_data.get('analysis_type', 'unknown')}"
+            )
 
     def run(self):
         """FŐSZÁL FUTÁS - Itt történik a tényleges munka"""
@@ -101,12 +103,13 @@ class AnalysisWorker(QThread):
                 return
 
             # === 3. ELEMZÉS TÍPUS ALAPJÁN DISPATCH ===
-            analysis_type = self._request_data.get('analysis_type', '')
+            analysis_type = self._request_data.get("analysis_type", "")
             self._analysis_runners.run_analysis(analysis_type)
 
         except Exception as e:
             self._logger.error(f"Worker kritikus hiba: {str(e)}")
             import traceback
+
             self._logger.error(traceback.format_exc())
             self._emit_error(f"Váratlan hiba: {str(e)}")
 
@@ -120,7 +123,7 @@ class AnalysisWorker(QThread):
                 self._emit_error("Hiányzó kérés adatok")
                 return False
 
-            required_fields = ['analysis_type', 'date_range']
+            required_fields = ["analysis_type", "date_range"]
             for field in required_fields:
                 if field not in self._request_data:
                     self._emit_error(f"Hiányzó kötelező mező: {field}")
@@ -135,6 +138,7 @@ class AnalysisWorker(QThread):
 
         # Qt esemény feldolgozás (responsive UI)
         from PySide6.QtWidgets import QApplication
+
         QApplication.processEvents()
 
     def _emit_error(self, error_message: str):
@@ -169,7 +173,9 @@ class AnalysisWorker(QThread):
             self.requestInterruption()
 
             if not self.wait(5000):
-                self._logger.warning("Worker nem állt le 5 másodperc alatt, terminálás...")
+                self._logger.warning(
+                    "Worker nem állt le 5 másodperc alatt, terminálás..."
+                )
                 self.terminate()
                 self.wait(1000)
 

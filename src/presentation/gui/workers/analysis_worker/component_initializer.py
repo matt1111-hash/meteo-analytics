@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ComponentInitializer:
     """Initialize analytics components with proper path handling."""
 
-    def __init__(self, worker: 'AnalysisWorker'):
+    def __init__(self, worker: "AnalysisWorker"):
         """
         Initialize component initializer.
 
@@ -36,8 +36,9 @@ class ComponentInitializer:
 
         # Port import ellenőrzés (Clean Architecture)
         try:
-            from src.domain.ports import get_weather_client_port
-            from src.analytics.ports import get_multi_city_engine_port
+            from src.analytics.ports import get_multi_city_engine_port  # noqa: F401
+            from src.domain.ports import get_weather_client_port  # noqa: F401
+
             self._worker._emit_progress("Portok ellenőrzése...", 10)
         except ImportError as e:
             self._worker._emit_error(f"Portok importálása sikertelen: {e}")
@@ -96,7 +97,9 @@ class ComponentInitializer:
             self._worker._emit_error(f"WeatherClient inicializálás sikertelen: {e}")
             return False
 
-    def _init_multi_city_engine(self, global_db_path: Path, hungarian_db_path: Path) -> bool:
+    def _init_multi_city_engine(
+        self, global_db_path: Path, hungarian_db_path: Path
+    ) -> bool:
         """
         Initialize MultiCityEngine via port (CA compliant).
 
@@ -109,9 +112,9 @@ class ComponentInitializer:
         """
         from src.analytics.ports import get_multi_city_engine_port
 
-        analysis_type = self._worker._request_data.get('analysis_type')
+        analysis_type = self._worker._request_data.get("analysis_type")
 
-        if analysis_type not in ['multi_city', 'county_analysis']:
+        if analysis_type not in ["multi_city", "county_analysis"]:
             return True
 
         self._logger.info("🏙️ MultiCityEngine inicializálása porton keresztül...")
