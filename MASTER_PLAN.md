@@ -3,12 +3,12 @@
 ## DOCUMENT METADATA
 | Attribute | Value |
 |-----------|-------|
-| Version | 3.3 |
+| Version | 3.4 |
 | Updated | 2026-02-13 |
 | Timeline | 5 weeks (COMPLETED) + Quality Sprint |
 | Frontend Coverage | ~87% (+29% total) ✅ |
 | Backend Coverage | **17.69%** (target: 85% local, 95% CI) 🚨 |
-| Quality Gate | ⚠️ PARTIAL (P0 ✅, P1 DATA ✅, P1 ANALYTICS ✅, P2-P4 PENDING) |
+| Quality Gate | ⚠️ PARTIAL (P0 ✅, P1 DATA ✅, P1 ANALYTICS ✅, P2 ✅, P3-P4 PENDING) |
 
 ---
 
@@ -28,7 +28,7 @@
 
 **Consensus:** Coverage = 15.77%, Risk = CRITICAL
 
-### Quality Gate Status (Updated 2026-02-13 - P1 ANALYTICS DONE)
+### Quality Gate Status (Updated 2026-02-13 - P2 ARCHITECTURE DONE)
 
 | Metrika | Érték | Target | Status |
 |---------|-------|--------|--------|
@@ -38,31 +38,58 @@
 | Mypy Errors | 1254 | 0 (warning) | 🔴 HIGH |
 | Pylint Score | 7.31 | 9.0 | 🟡 WARN |
 | Files >250 LOC | 14 | 0 | 🔴 HIGH |
-| Import-linter | 2 BROKEN | PASS | ⚠️ P2 |
-| Tests | **1444 passed** | - | ✅ OK |
+| Import-linter | PASS | PASS | ✅ OK |
+| Tests | **1476 passed** | - | ✅ OK |
 
 ---
 
 ## 🏗️ CLEAN ARCHITECTURE COMPLIANCE
 
-**Verdict:** ❌ FAILED
+**Verdict:** ✅ PASSED (P2 Fixes Applied)
 
-### Layer Violations
+### P2 Fixes Applied (2026-02-13)
 
-| Source | Import | Target Layer | Severity |
-|--------|--------|--------------|----------|
-| `domain/ports/__init__.py:358` | `CityManagerStats` | data | 🚨 CRITICAL |
-| `domain/ports/__init__.py:370` | `WeatherClientExtensions` | data | 🚨 CRITICAL |
-| `domain/ports/__init__.py:384` | `CityRepository` | infrastructure | 🚨 CRITICAL |
-| `domain/ports/__init__.py:400` | `AnomalyProfileManager` | data | 🚨 CRITICAL |
-| `domain/entities/location.py:7` | `City` (TYPE_CHECKING) | data | 🔴 HIGH |
-| `presentation/gui/*` (31 files) | direct domain imports | domain | 🔴 HIGH |
+| Fix | Description | Status |
+|-----|-------------|--------|
+| Factory functions | Moved from `domain/ports` to `infrastructure/container` | ✅ |
+| CityInfo value object | Created `domain/value_objects/city_info.py` | ✅ |
+| City adapter | Created `infrastructure/adapters/city_adapter.py` | ✅ |
+| Application DTOs | Created `application/dto/` with analytics/location DTOs | ✅ |
+| Application services | Created `application/services/` with port_provider, wind analysis | ✅ |
+| Import-linter | Enhanced domain purity + presentation isolation contracts | ✅ |
+| Tests | 32 new Clean Architecture compliance tests | ✅ |
 
-### Import-linter Status
+### Layer Violations (RESOLVED)
+
+| Source | Import | Target Layer | Status |
+|--------|--------|--------------|--------|
+| ~~`domain/ports/__init__.py`~~ | Factory functions | ~~data/infrastructure~~ | ✅ FIXED |
+| ~~`domain/entities/location.py`~~ | `City` (TYPE_CHECKING) | ~~data~~ | ✅ FIXED |
+| ~~`presentation/gui/*`~~ | factory imports | ~~domain~~ | ✅ FIXED |
+
+### New Structure
 ```
-FAILED: "Missing layer in container 'src': module src.adapters does not exist."
+src/
+├── infrastructure/
+│   ├── container/          # Factory functions (NEW)
+│   │   ├── __init__.py
+│   │   └── factories.py
+│   └── adapters/           # Data→Domain adapters (NEW)
+│       ├── __init__.py
+│       └── city_adapter.py
+├── application/
+│   ├── dto/                # Data Transfer Objects (NEW)
+│   │   ├── __init__.py
+│   │   ├── analytics_dto.py
+│   │   └── location_dto.py
+│   └── services/           # Application services (NEW)
+│       ├── __init__.py
+│       ├── port_provider.py
+│       └── wind_analysis_service.py
+└── domain/
+    └── value_objects/
+        └── city_info.py    # Domain-level CityInfo (NEW)
 ```
-**Fix:** Remove `src.adapters` from `.importlinter` OR create the directory.
 
 ---
 
@@ -218,13 +245,24 @@ FAILED: "Missing layer in container 'src': module src.adapters does not exist."
 - Trend calculator, data processor, statistics - full coverage
 - **+129 new tests** added
 
-### P2 - ARCHITECTURE
+### P2 - ARCHITECTURE ✅ COMPLETED (2026-02-13)
 
-| # | Task | Location |
-|---|------|----------|
-| 7 | Move factories from domain/ports to infrastructure | `domain/ports/__init__.py` |
-| 8 | Create application-layer DTOs for use cases | `application/use_cases/` |
-| 9 | Fix presentation → domain imports | `presentation/gui/*` |
+| # | Task | Location | Status |
+|---|------|----------|--------|
+| 7 | Move factories from domain/ports to infrastructure | `infrastructure/container/` | ✅ |
+| 8 | Create application-layer DTOs for use cases | `application/dto/` | ✅ |
+| 9 | Fix presentation → domain imports | `presentation/gui/*` | ✅ |
+| 10 | Create domain CityInfo value object | `domain/value_objects/city_info.py` | ✅ |
+| 11 | Create data→domain adapter | `infrastructure/adapters/city_adapter.py` | ✅ |
+| 12 | Update import-linter contracts | `.importlinter` | ✅ |
+| 13 | Add architecture compliance tests | `tests/integration/` | ✅ |
+
+**Commits:**
+- `080202c` - refactor(arch): restore Clean Architecture compliance - P2 fixes
+- `6363372` - fix(arch): update remaining factory imports to use infrastructure.container
+
+**Files Created:** 17 new files, 1,656 LOC
+**Tests Added:** 32 (all passing)
 
 ### P3 - SECURITY
 
@@ -251,9 +289,9 @@ FAILED: "Missing layer in container 'src': module src.adapters does not exist."
 |------|--------|--------|
 | Ruff | `ruff.toml` + `pyproject.toml` | ✅ 0 errors |
 | Mypy | `pyproject.toml` | ⚠️ 1254 errors |
-| Pytest | `pyproject.toml` | ✅ **1139 passed** |
+| Pytest | `pyproject.toml` | ✅ **1476 passed** |
 | Pre-commit | `.pre-commit-config.yaml` | ✅ Configured |
-| Import-linter | `.importlinter` | ❌ BROKEN |
+| Import-linter | `.importlinter` | ✅ PASSING |
 | Bandit | - | ⚠️ 5 Medium issues |
 | Radon | - | Avg: A (2.83) |
 | Vulture | - | 19 dead code issues |
@@ -304,6 +342,7 @@ lint-imports
 ---
 
 *Version History:*
+- v3.4 (2026-02-13): P2 Architecture fixes complete - Clean Architecture restored, factory functions moved, DTOs created
 - v3.3 (2026-02-13): P1 Analytics layer complete - 87.27% coverage (+129 tests, 335 total analytics tests)
 - v3.2 (2026-02-13): P1 Data layer complete - 86.57% coverage (+232 tests)
 - v3.0 (2026-02-12): Multi-model audit integration, corrected coverage (59% → 15.77%), added security/complexity findings
