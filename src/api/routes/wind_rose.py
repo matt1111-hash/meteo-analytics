@@ -1,4 +1,5 @@
 """Wind Rose API route - wind direction and speed distribution analysis."""
+
 from __future__ import annotations
 
 import logging
@@ -8,7 +9,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 from src.data.weather_client_core import WeatherClient
-from src.domain.ports import get_city_manager_port
+from src.infrastructure.container import get_city_manager_port
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather", "wind"])
@@ -35,7 +36,7 @@ class DirectionData(BaseModel):
     speed_buckets: List[int] = Field(
         ...,
         description="Count of observations in each speed category: "
-                    "[0-25, 25-50, 50-70, 70-100, 100-120, 120+] km/h"
+        "[0-25, 25-50, 50-70, 70-100, 100-120, 120+] km/h",
     )
 
 
@@ -45,19 +46,62 @@ class WindRoseResponse(BaseModel):
     city: str = Field(..., description="City name")
     start: str = Field(..., description="Start date")
     end: str = Field(..., description="End date")
-    directions: List[DirectionData] = Field(..., description="16 compass directions with speed data")
-    calms_percentage: float = Field(..., description="Percentage of calm winds (< 5 km/h)")
-    total_observations: int = Field(..., description="Total number of wind observations")
-    statistics: Dict[str, Any] = Field(..., description="Additional statistics (avg_speed, max_speed, data_source)")
+    directions: List[DirectionData] = Field(
+        ..., description="16 compass directions with speed data"
+    )
+    calms_percentage: float = Field(
+        ..., description="Percentage of calm winds (< 5 km/h)"
+    )
+    total_observations: int = Field(
+        ..., description="Total number of wind observations"
+    )
+    statistics: Dict[str, Any] = Field(
+        ..., description="Additional statistics (avg_speed, max_speed, data_source)"
+    )
 
 
 # Direction configuration (16 compass points)
-DIRECTION_BINS = [0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5, 360]
-DIRECTION_LABELS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
+DIRECTION_BINS = [
+    0,
+    22.5,
+    45,
+    67.5,
+    90,
+    112.5,
+    135,
+    157.5,
+    180,
+    202.5,
+    225,
+    247.5,
+    270,
+    292.5,
+    315,
+    337.5,
+    360,
+]
+DIRECTION_LABELS = [
+    "N",
+    "NNE",
+    "NE",
+    "ENE",
+    "E",
+    "ESE",
+    "SE",
+    "SSE",
+    "S",
+    "SSW",
+    "SW",
+    "WSW",
+    "W",
+    "WNW",
+    "NW",
+    "NNW",
+]
 
 # Speed buckets (Beaufort-based categories)
 SPEED_BINS = [0, 25, 50, 70, 100, 120, 999]  # Last bucket is 120+
-SPEED_LABELS = ['0-25', '25-50', '50-70', '70-100', '100-120', '120+']
+SPEED_LABELS = ["0-25", "25-50", "50-70", "70-100", "100-120", "120+"]
 
 
 def _process_wind_rose_data(daily_data: dict) -> dict:
@@ -80,8 +124,7 @@ def _process_wind_rose_data(daily_data: dict) -> dict:
     # Validate we have data
     if not dates or not winddirection:
         raise HTTPException(
-            status_code=400,
-            detail="Missing required data: dates or winddirection"
+            status_code=400, detail="Missing required data: dates or winddirection"
         )
 
     # Determine which speed metric to use (wind gusts prioritized)
@@ -94,21 +137,25 @@ def _process_wind_rose_data(daily_data: dict) -> dict:
             windspeed_data = wind_gusts_max
             data_source = "wind_gusts_max"
         elif windspeed_10m_max and len(windspeed_10m_max) == len(dates):
-            if any(isinstance(x, (int, float)) and x is not None for x in windspeed_10m_max):
+            if any(
+                isinstance(x, (int, float)) and x is not None for x in windspeed_10m_max
+            ):
                 windspeed_data = windspeed_10m_max
                 data_source = "windspeed_10m_max"
 
     if not windspeed_data:
         # Fallback to windspeed if no gusts
         if windspeed_10m_max and len(windspeed_10m_max) == len(dates):
-            if any(isinstance(x, (int, float)) and x is not None for x in windspeed_10m_max):
+            if any(
+                isinstance(x, (int, float)) and x is not None for x in windspeed_10m_max
+            ):
                 windspeed_data = windspeed_10m_max
                 data_source = "windspeed_10m_max"
 
     if not windspeed_data:
         raise HTTPException(
             status_code=400,
-            detail="No valid wind speed data available (wind_gusts_10m_max or windspeed_10m_max)"
+            detail="No valid wind speed data available (wind_gusts_10m_max or windspeed_10m_max)",
         )
 
     # Pair up the data and filter out invalid entries
@@ -134,8 +181,7 @@ def _process_wind_rose_data(daily_data: dict) -> dict:
 
     if not paired_data:
         raise HTTPException(
-            status_code=400,
-            detail="No valid wind data after filtering"
+            status_code=400, detail="No valid wind data after filtering"
         )
 
     total_observations = len(paired_data)
@@ -148,7 +194,8 @@ def _process_wind_rose_data(daily_data: dict) -> dict:
 
         # Filter observations for this direction
         direction_observations = [
-            d["speed"] for d in paired_data
+            d["speed"]
+            for d in paired_data
             if d["direction"] >= dir_start and d["direction"] < dir_end
         ]
 
@@ -165,15 +212,19 @@ def _process_wind_rose_data(daily_data: dict) -> dict:
                     if speed >= SPEED_BINS[-2]:
                         speed_buckets[-1] += 1
 
-        direction_counts.append({
-            "direction": DIRECTION_LABELS[i],
-            "angle": (dir_start + dir_end) / 2,
-            "speed_buckets": speed_buckets
-        })
+        direction_counts.append(
+            {
+                "direction": DIRECTION_LABELS[i],
+                "angle": (dir_start + dir_end) / 2,
+                "speed_buckets": speed_buckets,
+            }
+        )
 
     # Calculate calms (wind speed < 5 km/h)
     calms_count = sum(1 for d in paired_data if d["speed"] < 5)
-    calms_percentage = (calms_count / total_observations * 100) if total_observations > 0 else 0
+    calms_percentage = (
+        (calms_count / total_observations * 100) if total_observations > 0 else 0
+    )
 
     # Statistics
     speeds = [d["speed"] for d in paired_data]
@@ -188,8 +239,8 @@ def _process_wind_rose_data(daily_data: dict) -> dict:
             "avg_speed": round(avg_speed, 1),
             "max_speed": round(max_speed, 1),
             "data_source": data_source,
-            "calms_count": calms_count
-        }
+            "calms_count": calms_count,
+        },
     }
 
 
@@ -221,8 +272,7 @@ async def get_wind_rose(request: WindRoseRequest) -> WindRoseResponse:
         coords = _city_manager.find_city_by_name(request.city.strip())
         if not coords:
             raise HTTPException(
-                status_code=404,
-                detail=f"City not found: {request.city}"
+                status_code=404, detail=f"City not found: {request.city}"
             )
 
         latitude, longitude = coords
@@ -233,13 +283,13 @@ async def get_wind_rose(request: WindRoseRequest) -> WindRoseResponse:
             latitude=latitude,
             longitude=longitude,
             start_date=request.start,
-            end_date=request.end
+            end_date=request.end,
         )
 
         if not weather_records:
             raise HTTPException(
                 status_code=404,
-                detail=f"No weather data found for {request.city} in the specified period"
+                detail=f"No weather data found for {request.city} in the specified period",
             )
 
         # Extract daily data from weather records
@@ -253,23 +303,40 @@ async def get_wind_rose(request: WindRoseRequest) -> WindRoseResponse:
         if not daily_data:
             # Try alternate format - some records might be flat
             # In this case, we need to aggregate from individual records
-            dates = list(set([r.get("date") or r.get("time") for r in weather_records if r.get("date") or r.get("time")]))
+            dates = list(
+                set(
+                    [
+                        r.get("date") or r.get("time")
+                        for r in weather_records
+                        if r.get("date") or r.get("time")
+                    ]
+                )
+            )
             dates.sort()
 
             # If no daily data found, check individual records
-            if any("winddirection_10m_dominant" in r for r in weather_records if isinstance(r, dict)):
+            if any(
+                "winddirection_10m_dominant" in r
+                for r in weather_records
+                if isinstance(r, dict)
+            ):
                 # Reconstruct daily data from individual records
                 daily_data = {
                     "time": dates,
-                    "winddirection_10m_dominant": [r.get("winddirection_10m_dominant") for r in weather_records],
-                    "wind_gusts_10m_max": [r.get("wind_gusts_10m_max") for r in weather_records],
-                    "windspeed_10m_max": [r.get("windspeed_10m_max") for r in weather_records],
+                    "winddirection_10m_dominant": [
+                        r.get("winddirection_10m_dominant") for r in weather_records
+                    ],
+                    "wind_gusts_10m_max": [
+                        r.get("wind_gusts_10m_max") for r in weather_records
+                    ],
+                    "windspeed_10m_max": [
+                        r.get("windspeed_10m_max") for r in weather_records
+                    ],
                 }
 
         if not daily_data:
             raise HTTPException(
-                status_code=400,
-                detail="No daily weather data available in response"
+                status_code=400, detail="No daily weather data available in response"
             )
 
         # Process data into wind rose format
@@ -282,7 +349,7 @@ async def get_wind_rose(request: WindRoseRequest) -> WindRoseResponse:
             directions=wind_rose_data["directions"],
             calms_percentage=wind_rose_data["calms_percentage"],
             total_observations=wind_rose_data["total_observations"],
-            statistics=wind_rose_data["statistics"]
+            statistics=wind_rose_data["statistics"],
         )
 
     except HTTPException:

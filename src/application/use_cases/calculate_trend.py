@@ -2,6 +2,7 @@
 
 Orchestrates weather data fetching and trend calculation.
 """
+
 from __future__ import annotations
 
 import logging
@@ -11,7 +12,8 @@ from typing import Any, Dict, List, Optional
 from src.api.dto.trend_request import TrendAnalysisRequest
 from src.domain.analytics.services.trend_calculator import TrendCalculator
 from src.domain.entities.trend_result import TrendAnalysisResult
-from src.domain.ports import WeatherClientPort, get_weather_client_port
+from src.domain.ports import WeatherClientPort
+from src.infrastructure.container import get_weather_client_port
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +57,9 @@ class CalculateTrendUseCase:
         # Determine date range
         max_period = max(request.time_periods) if request.time_periods else 55
         end_date = self._parse_date(request.end_date) or datetime.now()
-        start_date = self._parse_date(request.start_date) or (end_date - timedelta(days=max_period * 365))
+        start_date = self._parse_date(request.start_date) or (
+            end_date - timedelta(days=max_period * 365)
+        )
 
         # Fetch weather data
         weather_data = self._fetch_weather_data(
@@ -85,7 +89,7 @@ class CalculateTrendUseCase:
 
         Uses the city manager to find coordinates by name.
         """
-        from src.domain.ports import get_city_manager_port
+        from src.infrastructure.container import get_city_manager_port
 
         city_manager = get_city_manager_port()
         try:

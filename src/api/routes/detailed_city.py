@@ -1,4 +1,5 @@
 """Detailed single city analysis with multiple metrics API route."""
+
 from __future__ import annotations
 
 import logging
@@ -6,8 +7,8 @@ import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from src.analytics.multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS
 from src.analytics.multi_city_engine_core import MultiCityEngine
+from src.analytics.multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS
 from src.api.adapters.weather_adapter import to_multi_city_query
 from src.api.dto.weather_request import WeatherAnalysisRequest
 from src.application.use_cases import AnalyzeMultiCityUseCase
@@ -16,7 +17,8 @@ from src.domain.analytics.services import (
     RegionResolverService,
     WeatherFetchService,
 )
-from src.domain.ports import CityRepositoryPort, get_city_repository_port
+from src.domain.ports import CityRepositoryPort
+from src.infrastructure.container import get_city_repository_port
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather"])
@@ -44,7 +46,9 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
             max_retries=engine.max_retries,
             retry_delay=engine.retry_delay,
         ),
-        analytics_transform_service=AnalyticsTransformService(MultiCityEngine.QUERY_TYPES),
+        analytics_transform_service=AnalyticsTransformService(
+            MultiCityEngine.QUERY_TYPES
+        ),
         query_types=MultiCityEngine.QUERY_TYPES,
         regions=REGIONS,
         hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
@@ -104,6 +108,7 @@ async def analyze_single_city_detailed(request: DetailedCityRequest) -> dict:
 
             # Override query_type
             from dataclasses import replace
+
             query = replace(query, query_type=query_type)
 
             # Use aggregate=False to get ALL daily records (not just aggregated top results)
@@ -126,5 +131,7 @@ async def analyze_single_city_detailed(request: DetailedCityRequest) -> dict:
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
-        logger.error("Unexpected error in detailed-city analysis: %s", exc, exc_info=True)
+        logger.error(
+            "Unexpected error in detailed-city analysis: %s", exc, exc_info=True
+        )
         raise HTTPException(status_code=500, detail="Internal server error") from exc

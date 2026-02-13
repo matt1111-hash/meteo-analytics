@@ -1,11 +1,13 @@
 """Cities search API routes."""
+
 from __future__ import annotations
 
 import logging
 
 from fastapi import APIRouter, HTTPException, Query
 
-from src.domain.ports import CityRepositoryPort, get_city_repository_port
+from src.domain.ports import CityRepositoryPort
+from src.infrastructure.container import get_city_repository_port
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/cities", tags=["cities"])
@@ -19,7 +21,9 @@ def _get_city_repository() -> CityRepositoryPort:
 @router.get("/search")
 async def search_cities(
     query: str = Query(..., min_length=2, description="Search query for city names"),
-    limit: int = Query(default=20, ge=1, le=50, description="Maximum number of results")
+    limit: int = Query(
+        default=20, ge=1, le=50, description="Maximum number of results"
+    ),
 ) -> dict:
     """Search for cities by name.
 
@@ -44,16 +48,15 @@ async def search_cities(
                     "name": city_data["city"],
                     "country": city_data["country"],
                     "country_code": city_data["country_code"],
-                    "coordinates": {
-                        "lat": city_data["lat"],
-                        "lon": city_data["lon"]
-                    } if city_data["lat"] and city_data["lon"] else None,
+                    "coordinates": {"lat": city_data["lat"], "lon": city_data["lon"]}
+                    if city_data["lat"] and city_data["lon"]
+                    else None,
                     "population": city_data["population"],
                     "meteostat_station_id": city_data["meteostat_station_id"],
-                    "data_quality_score": city_data["data_quality_score"]
+                    "data_quality_score": city_data["data_quality_score"],
                 }
                 for city_data in results
-            ]
+            ],
         }
 
     except Exception as exc:

@@ -20,8 +20,11 @@ from src.domain.analytics.services import (
 )
 from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
 from src.domain.entities.weather import CityWeatherResult
-from src.domain.ports import CityRepositoryPort, get_city_repository_port, get_weather_client_port
 from src.domain.value_objects.enums import AnalyticsMetric, QuestionType, RegionScope
+from src.infrastructure.container import (
+    get_city_repository_port,
+    get_weather_client_port,
+)
 
 from .multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS
 
@@ -46,13 +49,62 @@ class MultiCityEngine:
 
     # Query types configuration
     QUERY_TYPES = {
-        "hottest_today": {"name": "Legmelegebb ma", "metric": "temperature_2m_max", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legmelegebb {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MAX},
-        "coldest_today": {"name": "Leghidegebb ma", "metric": "temperature_2m_min", "unit": "°C", "sort_desc": False, "question_template": "Hol volt ma a leghidegebb {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MIN},
-        "temperature_mean": {"name": "Átlag hőmérséklet", "metric": "temperature_2m_mean", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legmagasabb átlaghőmérséklet {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MEAN},
-        "wettest_today": {"name": "Legcsapadékosabb ma", "metric": "precipitation_sum", "unit": "mm", "sort_desc": True, "question_template": "Hol esett ma a legtöbb csapadék {region}ban?", "metric_enum": AnalyticsMetric.PRECIPITATION_SUM},
-        "windiest_today": {"name": "Legszelesebb ma", "metric": "windspeed_10m_max", "unit": "km/h", "sort_desc": True, "question_template": "Hol fújt ma a legerősebb szél {region}ban?", "metric_enum": AnalyticsMetric.WINDSPEED_10M_MAX},
-        "wind_gusts": {"name": "Legerősebb széllökés", "metric": "windgusts_10m_max", "unit": "km/h", "sort_desc": True, "question_template": "Hol fújt ma a legerősebb széllökés {region}ban?", "metric_enum": AnalyticsMetric.WINDGUSTS_10M_MAX},
-        "temperature_range": {"name": "Legnagyobb hőingás", "metric": "temperature_range", "unit": "°C", "sort_desc": True, "question_template": "Hol volt ma a legnagyobb hőingás {region}ban?", "metric_enum": AnalyticsMetric.TEMPERATURE_RANGE}
+        "hottest_today": {
+            "name": "Legmelegebb ma",
+            "metric": "temperature_2m_max",
+            "unit": "°C",
+            "sort_desc": True,
+            "question_template": "Hol volt ma a legmelegebb {region}ban?",
+            "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MAX,
+        },
+        "coldest_today": {
+            "name": "Leghidegebb ma",
+            "metric": "temperature_2m_min",
+            "unit": "°C",
+            "sort_desc": False,
+            "question_template": "Hol volt ma a leghidegebb {region}ban?",
+            "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MIN,
+        },
+        "temperature_mean": {
+            "name": "Átlag hőmérséklet",
+            "metric": "temperature_2m_mean",
+            "unit": "°C",
+            "sort_desc": True,
+            "question_template": "Hol volt ma a legmagasabb átlaghőmérséklet {region}ban?",
+            "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MEAN,
+        },
+        "wettest_today": {
+            "name": "Legcsapadékosabb ma",
+            "metric": "precipitation_sum",
+            "unit": "mm",
+            "sort_desc": True,
+            "question_template": "Hol esett ma a legtöbb csapadék {region}ban?",
+            "metric_enum": AnalyticsMetric.PRECIPITATION_SUM,
+        },
+        "windiest_today": {
+            "name": "Legszelesebb ma",
+            "metric": "windspeed_10m_max",
+            "unit": "km/h",
+            "sort_desc": True,
+            "question_template": "Hol fújt ma a legerősebb szél {region}ban?",
+            "metric_enum": AnalyticsMetric.WINDSPEED_10M_MAX,
+        },
+        "wind_gusts": {
+            "name": "Legerősebb széllökés",
+            "metric": "windgusts_10m_max",
+            "unit": "km/h",
+            "sort_desc": True,
+            "question_template": "Hol fújt ma a legerősebb széllökés {region}ban?",
+            "metric_enum": AnalyticsMetric.WINDGUSTS_10M_MAX,
+        },
+        "temperature_range": {
+            "name": "Legnagyobb hőingás",
+            "metric": "temperature_range",
+            "unit": "°C",
+            "sort_desc": True,
+            "question_template": "Hol volt ma a legnagyobb hőingás {region}ban?",
+            "metric_enum": AnalyticsMetric.TEMPERATURE_RANGE,
+        },
     }
 
     def __init__(
@@ -72,7 +124,9 @@ class MultiCityEngine:
         )
 
         # Use port for city repository (CA compliant)
-        self.city_repository: CityRepositoryProtocol = city_repository or get_city_repository_port()
+        self.city_repository: CityRepositoryProtocol = (
+            city_repository or get_city_repository_port()
+        )
         self.city_repository.validate_paths()
         self.region_resolver = RegionResolverService()
 
@@ -117,7 +171,9 @@ class MultiCityEngine:
         """Execute analytics query with optional progress callback."""
         return self.use_case.execute(query)
 
-    def get_cities_for_region(self, region: str, limit: Optional[int] = None, max_cities: Optional[int] = None) -> List[Dict[str, Any]]:
+    def get_cities_for_region(
+        self, region: str, limit: Optional[int] = None, max_cities: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
         """
         Get cities for a given region with proper regional filtering.
 
@@ -141,7 +197,9 @@ class MultiCityEngine:
         country_codes = region_config["country_codes"]
         final_limit = max_cities or limit or region_config["max_cities"]
 
-        logger.info(f"🔧 get_cities_for_region: original='{original_region}' → mapped='{mapped_region}', limit={final_limit}")
+        logger.info(
+            f"🔧 get_cities_for_region: original='{original_region}' → mapped='{mapped_region}', limit={final_limit}"
+        )
 
         try:
             cities = self.city_repository.get_cities_for_region(
@@ -189,11 +247,17 @@ class MultiCityEngine:
         )
         return self.use_case.execute(query)
 
-    def _transform_to_city_weather_result(self, city_data: CityWeatherData, query_type: str) -> CityWeatherResult:
+    def _transform_to_city_weather_result(
+        self, city_data: CityWeatherData, query_type: str
+    ) -> CityWeatherResult:
         """Transform CityWeatherData to CityWeatherResult."""
-        return self.analytics_transform_service.transform_to_city_weather_result(city_data, query_type)
+        return self.analytics_transform_service.transform_to_city_weather_result(
+            city_data, query_type
+        )
 
-    def _fetch_weather_data_dual_api_batch(self, cities: List[Dict[str, Any]], date: str, region: str) -> List[CityWeatherData]:
+    def _fetch_weather_data_dual_api_batch(
+        self, cities: List[Dict[str, Any]], date: str, region: str
+    ) -> List[CityWeatherData]:
         """Fetch weather data for multiple cities in parallel."""
         region_config = REGIONS[region]
         return self.weather_fetch_service.fetch_weather_data_dual_api_batch(
@@ -202,31 +266,51 @@ class MultiCityEngine:
             region_config=region_config,
         )
 
-    def _process_dual_api_batch(self, batch: List[Dict[str, Any]], date: str, rate_limit_delay: float) -> List[CityWeatherData]:
+    def _process_dual_api_batch(
+        self, batch: List[Dict[str, Any]], date: str, rate_limit_delay: float
+    ) -> List[CityWeatherData]:
         """Process a batch of cities."""
         return self.weather_fetch_service.process_dual_api_batch(batch, date)
 
-    def _fetch_single_city_weather_dual_api(self, city: Dict[str, Any], date: str) -> CityWeatherData:
+    def _fetch_single_city_weather_dual_api(
+        self, city: Dict[str, Any], date: str
+    ) -> CityWeatherData:
         """Fetch weather data for a single city."""
         return self.weather_fetch_service.fetch_single_city_weather_dual_api(city, date)
 
-    def _create_empty_city_data(self, city: Dict[str, Any], error_msg: str = "Ismeretlen hiba") -> CityWeatherData:
+    def _create_empty_city_data(
+        self, city: Dict[str, Any], error_msg: str = "Ismeretlen hiba"
+    ) -> CityWeatherData:
         """Create empty CityWeatherData for error cases."""
         return self.weather_fetch_service.create_empty_city_data(city, error_msg)
 
-    def _process_weather_results(self, weather_data: List[CityWeatherData], query_type: str) -> List[CityWeatherData]:
+    def _process_weather_results(
+        self, weather_data: List[CityWeatherData], query_type: str
+    ) -> List[CityWeatherData]:
         """Process and sort weather results."""
-        return self.analytics_transform_service.process_weather_results(weather_data, query_type)
+        return self.analytics_transform_service.process_weather_results(
+            weather_data, query_type
+        )
 
-    def _calculate_statistics_for_results_none_safe(self, results: List[CityWeatherResult]) -> Dict[str, float]:
+    def _calculate_statistics_for_results_none_safe(
+        self, results: List[CityWeatherResult]
+    ) -> Dict[str, float]:
         """Calculate statistics for results."""
-        return self.analytics_transform_service.calculate_statistics_for_results_none_safe(results)
+        return (
+            self.analytics_transform_service.calculate_statistics_for_results_none_safe(
+                results
+            )
+        )
 
-    def _get_provider_stats(self, weather_data: List[CityWeatherData]) -> Dict[str, int]:
+    def _get_provider_stats(
+        self, weather_data: List[CityWeatherData]
+    ) -> Dict[str, int]:
         """Get provider statistics."""
         return self.analytics_transform_service.get_provider_stats(weather_data)
 
-    def _create_empty_analytics_result(self, question: Optional[AnalyticsQuestion], error_msg: str = "Ismeretlen hiba") -> AnalyticsResult:
+    def _create_empty_analytics_result(
+        self, question: Optional[AnalyticsQuestion], error_msg: str = "Ismeretlen hiba"
+    ) -> AnalyticsResult:
         """Create empty AnalyticsResult for error cases."""
         try:
             fallback_question = question
@@ -235,7 +319,7 @@ class MultiCityEngine:
                     question_text=f"Multi-city elemzés hiba: {error_msg}",
                     question_type=QuestionType.WEATHER_COMPARISON,
                     region_scope=RegionScope.GLOBAL,
-                    metric=AnalyticsMetric.TEMPERATURE_2M_MAX
+                    metric=AnalyticsMetric.TEMPERATURE_2M_MAX,
                 )
 
             empty_result = AnalyticsResult(
@@ -245,7 +329,7 @@ class MultiCityEngine:
                 total_cities_found=0,
                 data_sources_used=[],
                 statistics={},
-                provider_statistics={}
+                provider_statistics={},
             )
 
             logger.info(f"✅ Empty AnalyticsResult created for error: {error_msg}")
@@ -259,7 +343,7 @@ class MultiCityEngine:
                     question_text="Critical error",
                     question_type=QuestionType.TEMPERATURE_MAX,
                     region_scope=RegionScope.GLOBAL,
-                    metric=AnalyticsMetric.TEMPERATURE_2M_MAX
+                    metric=AnalyticsMetric.TEMPERATURE_2M_MAX,
                 )
 
                 ultra_fallback_result = AnalyticsResult(
@@ -269,13 +353,15 @@ class MultiCityEngine:
                     total_cities_found=0,
                     data_sources_used=[],
                     statistics={},
-                    provider_statistics={}
+                    provider_statistics={},
                 )
 
                 return ultra_fallback_result
 
             except Exception as ultra_e:
-                logger.error(f"⚠ ULTRA CRITICAL: Cannot create AnalyticsResult at all: {ultra_e}")
+                logger.error(
+                    f"⚠ ULTRA CRITICAL: Cannot create AnalyticsResult at all: {ultra_e}"
+                )
                 raise RuntimeError(f"Cannot create AnalyticsResult: {ultra_e}")
 
     def resolve_region_name(self, region_input: str) -> str:
@@ -283,4 +369,4 @@ class MultiCityEngine:
         return self.region_resolver.resolve_region_name(region_input)
 
 
-__all__ = ['MultiCityEngine']
+__all__ = ["MultiCityEngine"]

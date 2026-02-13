@@ -1,4 +1,5 @@
 """Anomaly detection API route."""
+
 from __future__ import annotations
 
 import logging
@@ -17,7 +18,8 @@ from src.domain.analytics.services import (
     RegionResolverService,
     WeatherFetchService,
 )
-from src.domain.ports import CityRepositoryPort, get_city_repository_port
+from src.domain.ports import CityRepositoryPort
+from src.infrastructure.container import get_city_repository_port
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["anomalies"])
@@ -28,12 +30,22 @@ class AnomalyThresholds(BaseModel):
 
     temp_hot: float = Field(default=30.0, description="Hot temperature threshold (°C)")
     temp_cold: float = Field(default=0.0, description="Cold temperature threshold (°C)")
-    precip_high: float = Field(default=50.0, description="High precipitation threshold (mm)")
-    precip_low: float = Field(default=1.0, description="Low precipitation threshold (mm)")
-    wind_normal: float = Field(default=20.0, description="Normal wind speed threshold (km/h)")
+    precip_high: float = Field(
+        default=50.0, description="High precipitation threshold (mm)"
+    )
+    precip_low: float = Field(
+        default=1.0, description="Low precipitation threshold (mm)"
+    )
+    wind_normal: float = Field(
+        default=20.0, description="Normal wind speed threshold (km/h)"
+    )
     wind_strong: float = Field(default=40.0, description="Strong wind threshold (km/h)")
-    wind_extreme: float = Field(default=60.0, description="Extreme wind threshold (km/h)")
-    wind_hurricane: float = Field(default=100.0, description="Hurricane wind threshold (km/h)")
+    wind_extreme: float = Field(
+        default=60.0, description="Extreme wind threshold (km/h)"
+    )
+    wind_hurricane: float = Field(
+        default=100.0, description="Hurricane wind threshold (km/h)"
+    )
 
 
 class AnomalyDetectionRequest(BaseModel):
@@ -43,7 +55,8 @@ class AnomalyDetectionRequest(BaseModel):
     start: str = Field(..., description="Start date (YYYY-MM-DD)")
     end: str = Field(..., description="End date (YYYY-MM-DD)")
     thresholds: Optional[AnomalyThresholds] = Field(
-        default=None, description="Custom thresholds (defaults provided if not specified)"
+        default=None,
+        description="Custom thresholds (defaults provided if not specified)",
     )
 
 
@@ -61,7 +74,9 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
             max_retries=engine.max_retries,
             retry_delay=engine.retry_delay,
         ),
-        analytics_transform_service=AnalyticsTransformService(MultiCityEngine.QUERY_TYPES),
+        analytics_transform_service=AnalyticsTransformService(
+            MultiCityEngine.QUERY_TYPES
+        ),
         query_types=MultiCityEngine.QUERY_TYPES,
         regions=REGIONS,
         hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
@@ -92,7 +107,7 @@ async def detect_anomalies(request: AnomalyDetectionRequest) -> dict:
     """
     try:
         # Fetch weather data for the city
-        multi_city_request = WeatherAnalysisRequest(
+        WeatherAnalysisRequest(
             cities=[request.city],
             date_range={"start": request.start, "end": request.end},
         )
@@ -100,18 +115,22 @@ async def detect_anomalies(request: AnomalyDetectionRequest) -> dict:
         # Fetch cities
         cities = weather_use_case.city_repository.get_cities_by_names([request.city])
         if not cities:
-            raise HTTPException(status_code=404, detail=f"City not found: {request.city}")
+            raise HTTPException(
+                status_code=404, detail=f"City not found: {request.city}"
+            )
 
         # Get region config for batching
         region_config = weather_use_case.regions.get("Global", {})
 
         # Fetch raw weather data with ALL metrics
-        raw_weather_data = weather_use_case.weather_fetch_service.fetch_weather_data_dual_api_batch(
-            cities=cities,
-            date=request.start,
-            region_config=region_config,
-            start_date=request.start,
-            end_date=request.end,
+        raw_weather_data = (
+            weather_use_case.weather_fetch_service.fetch_weather_data_dual_api_batch(
+                cities=cities,
+                date=request.start,
+                region_config=region_config,
+                start_date=request.start,
+                end_date=request.end,
+            )
         )
 
         if not raw_weather_data:
@@ -129,12 +148,16 @@ async def detect_anomalies(request: AnomalyDetectionRequest) -> dict:
 
         # Use default thresholds if not provided
         thresholds_dict = (
-            request.thresholds.model_dump() if request.thresholds else AnomalyThresholds().model_dump()
+            request.thresholds.model_dump()
+            if request.thresholds
+            else AnomalyThresholds().model_dump()
         )
 
         # Run anomaly detection
         anomalies = anomaly_use_case.execute(
-            weather_data=weather_data, thresholds=thresholds_dict, location_name=request.city
+            weather_data=weather_data,
+            thresholds=thresholds_dict,
+            location_name=request.city,
         )
 
         # Serialize ClimateAnomaly objects to dicts

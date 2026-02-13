@@ -78,7 +78,9 @@ class WindAnalysisResultDTO:
             ],
             windy_days=[
                 WindyDayDTO(
-                    date=day.date.isoformat() if hasattr(day.date, "isoformat") else str(day.date),
+                    date=day.date.isoformat()
+                    if hasattr(day.date, "isoformat")
+                    else str(day.date),
                     max_wind_speed_kmh=day.max_wind_speed_kmh,
                     avg_wind_speed_kmh=getattr(day, "avg_wind_speed_kmh", None),
                     direction=getattr(day, "direction", None),
