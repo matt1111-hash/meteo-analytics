@@ -15,12 +15,18 @@ class APIConfig:
 
     OPEN_METEO_BASE: ClassVar[str] = "https://api.open-meteo.com/v1"
     OPEN_METEO_ARCHIVE: ClassVar[str] = "https://archive-api.open-meteo.com/v1/archive"
-    OPEN_METEO_GEOCODING: ClassVar[str] = "https://geocoding-api.open-meteo.com/v1/search"
+    OPEN_METEO_GEOCODING: ClassVar[str] = (
+        "https://geocoding-api.open-meteo.com/v1/search"
+    )
 
     METEOSTAT_BASE: ClassVar[str] = "https://meteostat.p.rapidapi.com"
     METEOSTAT_API_KEY: ClassVar[str | None] = os.getenv("METEOSTAT_API_KEY")
     METEOSTAT_MONTHLY_LIMIT: ClassVar[int] = 10000
     METEOSTAT_RATE_LIMIT: ClassVar[float] = 0.1
+
+    # API Authentication
+    API_KEY: ClassVar[str | None] = os.getenv("API_KEY")
+    API_KEY_ENABLED: ClassVar[bool] = bool(API_KEY)
 
     REQUEST_TIMEOUT: ClassVar[int] = 30
     MAX_RETRIES: ClassVar[int] = 3
@@ -40,7 +46,9 @@ class APIConfig:
         }
     )
 
-    USER_AGENT: ClassVar[str] = "Global Weather Analyzer/2.2.0 (Provider-Selector Edition)"
+    USER_AGENT: ClassVar[str] = (
+        "Global Weather Analyzer/2.2.0 (Provider-Selector Edition)"
+    )
 
 
 class DataConstants:
@@ -85,7 +93,12 @@ class DataConstants:
         "weathercode",
     )
 
-    SUPPORTED_EXPORT_FORMATS: ClassVar[tuple[str, ...]] = ("csv", "excel", "json", "pdf")
+    SUPPORTED_EXPORT_FORMATS: ClassVar[tuple[str, ...]] = (
+        "csv",
+        "excel",
+        "json",
+        "pdf",
+    )
 
     DEFAULT_PAGE_SIZE: ClassVar[int] = 100
     MAX_PAGE_SIZE: ClassVar[int] = 1000
@@ -146,7 +159,7 @@ def validate_api_keys() -> Dict[str, bool]:
     validation = {
         "meteostat_key_present": bool(APIConfig.METEOSTAT_API_KEY),
         "meteostat_key_valid": False,
-        "openmeteo_available": True  # Open-Meteo doesn't require API key
+        "openmeteo_available": True,  # Open-Meteo doesn't require API key
     }
 
     # Meteostat API key validation
@@ -173,7 +186,7 @@ def get_active_data_sources() -> Dict[str, Dict[str, Any]]:
             "status": "active",
             "use_cases": ["single-city", "basic-historical", "real-time"],
             "rate_limit": "10 requests/second",
-            "cost": "Free"
+            "cost": "Free",
         }
     }
 
@@ -186,7 +199,7 @@ def get_active_data_sources() -> Dict[str, Dict[str, Any]]:
             "status": "active",
             "use_cases": ["multi-city", "rich-historical", "station-based"],
             "rate_limit": f"{APIConfig.METEOSTAT_MONTHLY_LIMIT} requests/month",
-            "cost": "$10 USD/month"
+            "cost": "$10 USD/month",
         }
     else:
         sources["meteostat"] = {
@@ -195,7 +208,7 @@ def get_active_data_sources() -> Dict[str, Dict[str, Any]]:
             "status": "inactive - API key required",
             "use_cases": ["multi-city", "rich-historical", "station-based"],
             "rate_limit": "10000 requests/month",
-            "cost": "$10 USD/month"
+            "cost": "$10 USD/month",
         }
 
     return sources

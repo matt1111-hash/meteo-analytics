@@ -1,4 +1,5 @@
 """City repository database query methods."""
+
 from __future__ import annotations
 
 import sqlite3
@@ -22,12 +23,12 @@ class CityRepositoryQueries:
         if not city_names:
             return []
 
-        # Safe: placeholders only contain '?' characters, not user data
+        # Safe: in_clause contains only '?' placeholders, params passed separately
         in_clause = ",".join(["?"] * len(city_names))
         query = (
             "SELECT city, country, country_code, lat, lon, population, "
             "meteostat_station_id, data_quality_score FROM cities "
-            "WHERE LOWER(city) IN ({}) ".format(in_clause) +
+            f"WHERE LOWER(city) IN ({in_clause}) "  # nosec B608
             "AND population = ("
             "  SELECT MAX(population) FROM cities c2 "
             "  WHERE LOWER(c2.city) = LOWER(cities.city)"
@@ -49,7 +50,7 @@ class CityRepositoryQueries:
                 "population, NULL as meteostat_station_id, "
                 "region_priority as data_quality_score "
                 "FROM hungarian_settlements "
-                "WHERE LOWER(name) IN ({}) ".format(in_clause) +
+                f"WHERE LOWER(name) IN ({in_clause}) "  # nosec B608
                 "ORDER BY population DESC"
             )
             return self._execute_hungarian(self.hungarian_db_path, hun_query, params)
@@ -88,8 +89,8 @@ class CityRepositoryQueries:
     def query_hungarian_all(self, limit: int) -> List[Dict[str, object]]:
         """Query all Hungarian settlements."""
         base_select = (
-            'SELECT city, country, country_code, lat, lon, population, '
-            'meteostat_station_id, data_quality_score FROM cities '
+            "SELECT city, country, country_code, lat, lon, population, "
+            "meteostat_station_id, data_quality_score FROM cities "
             'WHERE country_code = "HU" '
             "ORDER BY CASE WHEN population IS NOT NULL "
             "THEN population ELSE 0 END DESC "
@@ -104,7 +105,11 @@ class CityRepositoryQueries:
         limit: int,
     ) -> List[Dict[str, object]]:
         """Query Hungarian settlements by region (megye)."""
-        # Safe: placeholders only contain '?' characters, not user data
+        target_counties = hungarian_mapping.get(original_region, [])
+        if not target_counties:
+            return []
+
+        # Safe: in_clause contains only '?' placeholders, params passed separately
         in_clause = ",".join(["?"] * len(target_counties))
         base_select = (
             'SELECT name as city, "Magyarország" as country, '
@@ -112,7 +117,7 @@ class CityRepositoryQueries:
             "population, NULL as meteostat_station_id, "
             "region_priority as data_quality_score "
             "FROM hungarian_settlements "
-            "WHERE megye IN ({}) ".format(in_clause) +
+            f"WHERE megye IN ({in_clause}) "  # nosec B608
             "ORDER BY CASE WHEN population IS NOT NULL "
             "THEN population ELSE 0 END DESC "
             "LIMIT ?"
@@ -126,12 +131,12 @@ class CityRepositoryQueries:
         limit: int,
     ) -> List[Dict[str, object]]:
         """Query cities by country codes."""
-        # Safe: placeholders only contain '?' characters, not user data
+        # Safe: in_clause contains only '?' placeholders, params passed separately
         in_clause = ",".join(["?"] * len(country_codes))
         base_select = (
             "SELECT city, country, country_code, lat, lon, population, "
             "meteostat_station_id, data_quality_score FROM cities "
-            "WHERE country_code IN ({}) ".format(in_clause) +
+            f"WHERE country_code IN ({in_clause}) "  # nosec B608
             "AND population IS NOT NULL AND population > 50000 "
             "ORDER BY CASE WHEN population IS NOT NULL "
             "THEN population ELSE 0 END DESC "
@@ -140,7 +145,9 @@ class CityRepositoryQueries:
         params: List[object] = list(country_codes) + [limit]
         return self._execute(self.db_path, base_select, params)
 
-    def autocomplete_city_name(self, query: str, limit: int = 20) -> List[Dict[str, object]]:
+    def autocomplete_city_name(
+        self, query: str, limit: int = 20
+    ) -> List[Dict[str, object]]:
         """Autocomplete city names by partial match."""
         if not query or len(query.strip()) < 2:
             return []
@@ -227,8 +234,8 @@ class CityRepositoryQueries:
                 "city": row[0],  # name -> city
                 "country": row[1],
                 "country_code": row[2],
-                "lat": row[3],   # latitude -> lat
-                "lon": row[4],   # longitude -> lon
+                "lat": row[3],  # latitude -> lat
+                "lon": row[4],  # longitude -> lon
                 "population": row[5],
                 "meteostat_station_id": row[6],
                 "data_quality_score": row[7],
@@ -237,4 +244,4 @@ class CityRepositoryQueries:
         ]
 
 
-__all__ = ['CityRepositoryQueries']
+__all__ = ["CityRepositoryQueries"]

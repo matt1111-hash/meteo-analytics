@@ -9,12 +9,11 @@ Tests for Provider Management API routes.
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
-
 
 # =============================================================================
 # FIXTURES
@@ -216,7 +215,7 @@ class TestGetProvidersStatus:
             "src.api.routes.providers.UserPreferences.get_selected_provider",
             return_value="auto",
         ), patch.dict(
-            "src.api.routes.providers._usage_tracker",
+            "src.api.services.provider_usage_service._usage_service._usage_data",
             {
                 "meteostat": {
                     "requests_this_month": 9000,  # 90% of 10000
@@ -456,7 +455,7 @@ class TestGetProviderUsage:
             "src.api.routes.providers.UserPreferences.load_provider_preferences",
             return_value={"monthly_budget_usd": 10.0},
         ), patch.dict(
-            "src.api.routes.providers._usage_tracker",
+            "src.api.services.provider_usage_service._usage_service._usage_data",
             {
                 "meteostat": {
                     "requests_this_month": 5000,  # 5000 * 0.001 = $5
