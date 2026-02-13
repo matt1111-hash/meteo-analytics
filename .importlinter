@@ -64,3 +64,33 @@ forbidden_modules =
     fastapi
     flask
     sqlalchemy
+
+# -----------------------------------------------------------------------------
+# DOMAIN PURITY ENHANCED - Inner Layer Independence
+# -----------------------------------------------------------------------------
+# Domain layer must not depend on any outer layer
+[importlinter:contract:domain_purity_enhanced]
+name = Domain Layer Purity (Inner Layers)
+type = forbidden
+source_modules = src.domain
+forbidden_modules =
+    src.data
+    src.infrastructure
+    src.api
+    src.analytics
+    src.presentation
+    src.application
+
+# -----------------------------------------------------------------------------
+# PRESENTATION ISOLATION
+# -----------------------------------------------------------------------------
+# Presentation should not access outer layers directly
+# NOTE: presentation MAY read domain.value_objects and domain.entities (stable contracts)
+# Only domain.services and domain.ports calls should go through application layer
+[importlinter:contract:presentation_isolation]
+name = Presentation Layer Isolation
+type = forbidden
+source_modules = src.presentation
+forbidden_modules =
+    src.data
+    src.infrastructure

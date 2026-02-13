@@ -15,8 +15,9 @@ from .interrupt_handler import InterruptHandler
 # Import checks (CA compliant - uses ports and Domain layer)
 try:
     from src.analytics.ports import MultiCityEnginePort, get_multi_city_engine_port
-    from src.domain.ports import WeatherClientPort, get_weather_client_port
+    from src.domain.ports import WeatherClientPort
     from src.domain.value_objects.enums import AnalysisType, DataProvider  # noqa: F401
+    from src.infrastructure.container import get_weather_client_port
 
     IMPORTS_OK = True
 except ImportError as e:

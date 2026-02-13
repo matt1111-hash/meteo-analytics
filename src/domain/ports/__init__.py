@@ -33,6 +33,7 @@ from src.domain.value_objects.enums import QuestionType as DomainQuestionType
 # City Manager Port
 # =============================================================================
 
+
 class CityManagerPort(Protocol):
     """
     Port for city search and management operations.
@@ -50,7 +51,9 @@ class CityManagerPort(Protocol):
     def hungarian_db_path(self) -> Path: ...
 
     def find_city_by_name(self, city_name: str) -> Optional[tuple]: ...
-    def find_cities_by_name(self, city_name: str, limit: int = 10) -> List[Dict[str, Any]]: ...
+    def find_cities_by_name(
+        self, city_name: str, limit: int = 10
+    ) -> List[Dict[str, Any]]: ...
     def get_city_by_id(self, city_id: int) -> Optional[Dict[str, Any]]: ...
     def get_cities_in_bounding_box(
         self,
@@ -58,7 +61,7 @@ class CityManagerPort(Protocol):
         max_lat: float,
         min_lon: float,
         max_lon: float,
-        limit: int = 100
+        limit: int = 100,
     ) -> List[Dict[str, Any]]: ...
     def get_cities_for_region(
         self,
@@ -80,13 +83,15 @@ class CityManagerPort(Protocol):
 # Weather Client Port
 # =============================================================================
 
+
 @dataclass
 class WeatherFetchParams:
     """Parameters for weather data fetching."""
+
     latitude: float
     longitude: float
     start_date: str  # YYYY-MM-DD
-    end_date: str    # YYYY-MM-DD
+    end_date: str  # YYYY-MM-DD
     daily_params: List[str]
     hourly_params: Optional[List[str]] = None
     timezone: str = "UTC"
@@ -95,6 +100,7 @@ class WeatherFetchParams:
 
 class WeatherDataProtocol(Protocol):
     """Protocol for weather data response."""
+
     @property
     def daily(self) -> Dict[str, Any]: ...
     @property
@@ -156,6 +162,7 @@ class WeatherClientPort(Protocol):
 # City Repository Port
 # =============================================================================
 
+
 class CityRepositoryPort(Protocol):
     """
     Port for city data repository operations.
@@ -182,7 +189,9 @@ class CityRepositoryPort(Protocol):
         hungarian_mapping: Dict[str, str],
     ) -> List[Dict[str, Any]]: ...
     def search_cities(self, query: str, limit: int = 20) -> List[Dict[str, Any]]: ...
-    def autocomplete_city_name(self, query: str, limit: int = 20) -> List[Dict[str, Any]]: ...
+    def autocomplete_city_name(
+        self, query: str, limit: int = 20
+    ) -> List[Dict[str, Any]]: ...
     def get_city_by_id(self, city_id: int) -> Optional[Dict[str, Any]]: ...
     def get_city_by_coordinates(
         self,
@@ -195,6 +204,7 @@ class CityRepositoryPort(Protocol):
 # =============================================================================
 # Weather Repository Port
 # =============================================================================
+
 
 class WeatherRepositoryPort(Protocol):
     """
@@ -235,6 +245,7 @@ class WeatherRepositoryPort(Protocol):
 # Analytics Metric Port
 # =============================================================================
 
+
 class AnalyticsMetricPort(Protocol):
     """
     Port for analytics metric operations.
@@ -256,6 +267,7 @@ class AnalyticsMetricPort(Protocol):
 # Anomaly Profile Port
 # =============================================================================
 
+
 class AnomalyProfilePort(Protocol):
     """
     Port for anomaly profile management operations.
@@ -274,6 +286,7 @@ class AnomalyProfilePort(Protocol):
 # =============================================================================
 # Question Type Port
 # =============================================================================
+
 
 class QuestionTypePort(Protocol):
     """
@@ -296,6 +309,7 @@ class QuestionTypePort(Protocol):
 # Data Source Port
 # =============================================================================
 
+
 class DataSourcePort(Protocol):
     """
     Port for data source operations.
@@ -313,6 +327,7 @@ class DataSourcePort(Protocol):
 # Region Scope Port
 # =============================================================================
 
+
 class RegionScopePort(Protocol):
     """
     Port for region scope operations.
@@ -329,55 +344,18 @@ class RegionScopePort(Protocol):
 
 
 # =============================================================================
-# Factory Functions for Port Instantiation
+# DEPRECATION NOTICE - Factory Functions Moved
 # =============================================================================
-
-def get_city_manager_port() -> CityManagerPort:
-    """
-    Factory function to get CityManagerPort implementation.
-
-    Returns:
-        CityManagerPort implementation from Data Layer
-    """
-    from src.data.city_manager_stats import CityManagerStats
-    return CityManagerStats()
-
-
-def get_weather_client_port() -> WeatherClientPort:
-    """
-    Factory function to get WeatherClientPort implementation.
-
-    Returns:
-        WeatherClientPort implementation from Data Layer
-    """
-    from src.data.weather_client_extensions import WeatherClientExtensions
-    return WeatherClientExtensions()
-
-
-def get_city_repository_port() -> CityRepositoryPort:
-    """
-    Factory function to get CityRepositoryPort implementation.
-
-    Returns:
-        CityRepositoryPort implementation from Infrastructure Layer
-    """
-    from pathlib import Path
-
-    from src.infrastructure.repositories.city_repository import CityRepository
-
-    project_root = Path(__file__).parent.parent.parent
-    db_path = project_root / "data" / "cities.db"
-    hungarian_db_path = project_root / "data" / "hungarian_settlements.db"
-
-    return CityRepository(db_path, hungarian_db_path)
-
-
-def get_anomaly_profile_port() -> AnomalyProfilePort:
-    """
-    Factory function to get AnomalyProfilePort implementation.
-
-    Returns:
-        AnomalyProfilePort implementation from Data Layer
-    """
-    from src.data.anomaly_profile.manager import AnomalyProfileManager
-    return AnomalyProfileManager()
+# Factory functions have been moved to src.infrastructure.container.factories
+# This follows Clean Architecture - domain should not depend on outer layers.
+#
+# MIGRATION GUIDE:
+#   OLD: from src.domain.ports import get_city_manager_port
+#   NEW: from src.infrastructure.container import get_city_manager_port
+#
+# Available factories in src.infrastructure.container:
+#   - get_city_manager_port()
+#   - get_weather_client_port()
+#   - get_city_repository_port()
+#   - get_anomaly_profile_port()
+# =============================================================================

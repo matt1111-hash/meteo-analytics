@@ -34,7 +34,8 @@ from typing import Optional
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
 
-from src.domain.ports import CityManagerPort, get_city_manager_port
+from src.domain.ports import CityManagerPort
+from src.infrastructure.container import get_city_manager_port
 
 # Refaktorált widget komponensek
 from ..panel_widgets.analysis_type_widget import AnalysisTypeWidget
@@ -125,7 +126,9 @@ class ControlPanel(
         self._connect_widget_signals()
         self._setup_theme()
 
-        print("🎯 ControlPanel CLEAN ARCHITECTURE + MULTI-CITY WIDGET - Widget Aggregator Pattern initialized")
+        print(
+            "🎯 ControlPanel CLEAN ARCHITECTURE + MULTI-CITY WIDGET - Widget Aggregator Pattern initialized"
+        )
 
     def _init_ui(self) -> None:
         """UI struktúra létrehozása scroll area-val."""

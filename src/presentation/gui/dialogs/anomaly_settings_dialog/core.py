@@ -11,7 +11,8 @@ import logging
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import QDialog, QMessageBox, QVBoxLayout
 
-from src.domain.ports import AnomalyProfilePort, get_anomaly_profile_port
+from src.domain.ports import AnomalyProfilePort
+from src.infrastructure.container import get_anomaly_profile_port
 
 from ...theme_manager import get_theme_manager, register_widget_for_theming
 from .preview_handler import AnomalySettingsPreviewHandler
@@ -73,10 +74,10 @@ class AnomalySettingsDialog(QDialog):
 
         # Window icon és flags
         self.setWindowFlags(
-            Qt.Dialog |
-            Qt.WindowTitleHint |
-            Qt.WindowCloseButtonHint |
-            Qt.WindowMaximizeButtonHint
+            Qt.Dialog
+            | Qt.WindowTitleHint
+            | Qt.WindowCloseButtonHint
+            | Qt.WindowMaximizeButtonHint
         )
 
     def _init_ui(self) -> None:
@@ -177,7 +178,11 @@ class AnomalySettingsDialog(QDialog):
             self.unsaved_changes = False
             self._update_preview()
 
-            QMessageBox.information(self, "Siker", f"Beállítások mentve a '{self.current_profile}' profilba!")
+            QMessageBox.information(
+                self,
+                "Siker",
+                f"Beállítások mentve a '{self.current_profile}' profilba!",
+            )
             logger.info(f"Beállítások mentve és alkalmazva: {self.current_profile}")
         else:
             QMessageBox.warning(self, "Hiba", "Beállítások mentése sikertelen!")
@@ -190,7 +195,7 @@ class AnomalySettingsDialog(QDialog):
                 "Módosítások Elvetése",
                 "Vannak nem mentett módosítások. Biztos elveted őket?",
                 QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
+                QMessageBox.No,
             )
 
             if reply == QMessageBox.No:

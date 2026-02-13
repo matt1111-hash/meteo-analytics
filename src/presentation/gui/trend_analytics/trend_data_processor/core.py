@@ -1,12 +1,17 @@
 """Trend Data Processor Core - API-based trend data processing."""
+
 import logging
-from typing import Dict, Optional
+from typing import Optional
 
 from PySide6.QtCore import QObject, Signal
 
-from src.domain.ports import CityManagerPort, WeatherClientPort, get_city_manager_port, get_weather_client_port
-
-from src.presentation.gui.trend_analytics.trend_data_processor.calculator import calculate_trend_statistics
+from src.infrastructure.container import (
+    get_city_manager_port,
+    get_weather_client_port,
+)
+from src.presentation.gui.trend_analytics.trend_data_processor.calculator import (
+    calculate_trend_statistics,
+)
 from src.presentation.gui.trend_analytics.trend_data_processor.constants import (
     TIME_RANGES,
     TREND_PARAMETERS,
@@ -50,7 +55,9 @@ class TrendDataProcessor(QObject):
         """Get settlement coordinates from CityManager."""
         return get_settlement_coordinates(self.city_manager, settlement_name)
 
-    def fetch_trend_data(self, settlement_name: str, parameter: str, time_range: str) -> None:
+    def fetch_trend_data(
+        self, settlement_name: str, parameter: str, time_range: str
+    ) -> None:
         """Fetch trend data via API (background thread)."""
         try:
             self.progress_updated.emit(10)

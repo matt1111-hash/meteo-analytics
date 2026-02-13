@@ -26,7 +26,8 @@ from PySide6.QtWidgets import (
 
 from src.domain.entities.location_types import LocationType
 from src.domain.entities.universal_location import UniversalLocation
-from src.domain.ports import CityManagerPort, get_city_manager_port
+from src.domain.ports import CityManagerPort
+from src.infrastructure.container import get_city_manager_port
 
 from ..theme_manager import register_widget_for_theming
 from .public_api import UniversalLocationSelectorPublicAPI
@@ -79,13 +80,15 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
             self.search_input,
             self.status_label,
             self.results_list,
-            self.search_requested.emit
+            self.search_requested.emit,
         )
 
         self._connect_signals()
         register_widget_for_theming(self, "container")
 
-        logger.info("🇭🇺 Enhanced Universal Location Selector inicializálva (DUAL DATABASE)")
+        logger.info(
+            "🇭🇺 Enhanced Universal Location Selector inicializálva (DUAL DATABASE)"
+        )
 
     def _setup_ui(self) -> None:
         """UI elemek létrehozása."""
@@ -118,31 +121,31 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
         try:
             result_data = item.data(Qt.UserRole)
             if result_data:
-                name = result_data.get('city', 'Ismeretlen')
-                country = result_data.get('country', '')
-                region = result_data.get('admin_name', '')
-                lat = float(result_data.get('lat', 0.0))
-                lon = float(result_data.get('lon', 0.0))
-                is_hungarian = result_data.get('is_hungarian', False)
+                name = result_data.get("city", "Ismeretlen")
+                country = result_data.get("country", "")
+                region = result_data.get("admin_name", "")
+                lat = float(result_data.get("lat", 0.0))
+                lon = float(result_data.get("lon", 0.0))
+                is_hungarian = result_data.get("is_hungarian", False)
 
                 # MAGYAR SPECIFIKUS DETAILS
                 details_parts = []
 
                 if is_hungarian:
                     # Magyar település részletek
-                    settlement_type = result_data.get('settlement_type')
+                    settlement_type = result_data.get("settlement_type")
                     if settlement_type:
                         details_parts.append(f"Típus: {settlement_type}")
 
-                    megye = result_data.get('megye')
+                    megye = result_data.get("megye")
                     if megye:
                         details_parts.append(f"Megye: {megye}")
 
-                    jaras = result_data.get('jaras')
+                    jaras = result_data.get("jaras")
                     if jaras:
                         details_parts.append(f"Járás: {jaras}")
 
-                    population = result_data.get('population')
+                    population = result_data.get("population")
                     if population:
                         details_parts.append(f"Lakosság: {population:,}")
 
@@ -160,7 +163,9 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
                 self.location_card.set_location(name, details, is_hungarian)
                 self.confirm_button.setEnabled(True)
 
-                logger.info(f"Eredmény preview: {name} ({'magyar' if is_hungarian else 'globális'})")
+                logger.info(
+                    f"Eredmény preview: {name} ({'magyar' if is_hungarian else 'globális'})"
+                )
 
         except Exception as e:
             logger.error(f"Preview hiba: {e}")
@@ -168,7 +173,7 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
     def _on_result_selected(self, item: QListWidgetItem) -> None:
         """Eredmény dupla kattintás (azonnali kiválasztás)"""
         self._on_result_clicked(item)  # Preview
-        self._on_confirm_selection()   # Azonnali megerősítés
+        self._on_confirm_selection()  # Azonnali megerősítés
 
     def _on_confirm_selection(self) -> None:
         """Lokáció megerősítése"""
@@ -181,17 +186,17 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
             if not result_data:
                 return
 
-            name = result_data.get('city', 'Ismeretlen')
-            lat = float(result_data.get('lat', 0.0))
-            lon = float(result_data.get('lon', 0.0))
-            is_hungarian = result_data.get('is_hungarian', False)
+            name = result_data.get("city", "Ismeretlen")
+            lat = float(result_data.get("lat", 0.0))
+            lon = float(result_data.get("lon", 0.0))
+            is_hungarian = result_data.get("is_hungarian", False)
 
             # UniversalLocation objektum létrehozása
             location = UniversalLocation(
                 type=LocationType.CITY,
                 identifier=name,
                 display_name=name,
-                coordinates=(lat, lon)
+                coordinates=(lat, lon),
             )
 
             self.current_location = location

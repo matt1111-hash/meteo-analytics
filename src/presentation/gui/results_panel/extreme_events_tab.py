@@ -67,7 +67,7 @@ except ImportError:
 
 
 try:
-    from src.domain.ports import get_anomaly_profile_port
+    from src.infrastructure.container import get_anomaly_profile_port
 
     _profile_manager_available = True
 except ImportError:

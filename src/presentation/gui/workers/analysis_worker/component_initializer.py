@@ -37,7 +37,9 @@ class ComponentInitializer:
         # Port import ellenőrzés (Clean Architecture)
         try:
             from src.analytics.ports import get_multi_city_engine_port  # noqa: F401
-            from src.domain.ports import get_weather_client_port  # noqa: F401
+            from src.infrastructure.container import (
+                get_weather_client_port,  # noqa: F401
+            )
 
             self._worker._emit_progress("Portok ellenőrzése...", 10)
         except ImportError as e:
@@ -86,7 +88,7 @@ class ComponentInitializer:
         Returns:
             True if successful
         """
-        from src.domain.ports import get_weather_client_port
+        from src.infrastructure.container import get_weather_client_port
 
         try:
             self._worker._weather_client = get_weather_client_port()

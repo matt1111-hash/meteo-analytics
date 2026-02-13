@@ -1,9 +1,10 @@
 """Location domain entity."""
+
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 
 if TYPE_CHECKING:
-    from src.data.city_types import City as CityInfo
+    from src.domain.value_objects.city_info import CityInfo
 
 
 @dataclass
@@ -23,6 +24,7 @@ class Location:
         timezone: Timezone (e.g. "Europe/Budapest")
         metadata: Additional information in dictionary
     """
+
     identifier: str
     display_name: str
     latitude: float
@@ -41,23 +43,23 @@ class Location:
 
     def get_region(self) -> Optional[str]:
         """Get region name from metadata."""
-        return self.metadata.get('region')
+        return self.metadata.get("region")
 
     def get_county(self) -> Optional[str]:
         """Get county name from metadata."""
-        return self.metadata.get('county')
+        return self.metadata.get("county")
 
     def get_climate_zone(self) -> Optional[str]:
         """Get climate zone from metadata."""
-        return self.metadata.get('climate_zone')
+        return self.metadata.get("climate_zone")
 
     def get_source(self) -> Optional[str]:
         """Get data source from metadata."""
-        return self.metadata.get('source')
+        return self.metadata.get("source")
 
     def get_bounds(self) -> Optional[Tuple[float, float, float, float]]:
         """Get area bounds from metadata (minx, miny, maxx, maxy)."""
-        return self.metadata.get('bounds')
+        return self.metadata.get("bounds")
 
     def is_hungarian_location(self) -> bool:
         """Check if Hungarian location."""
@@ -66,24 +68,24 @@ class Location:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'identifier': self.identifier,
-            'display_name': self.display_name,
-            'latitude': self.latitude,
-            'longitude': self.longitude,
-            'country_code': self.country_code,
-            'timezone': self.timezone,
-            'metadata': self.metadata,
-            'coordinates': self.get_coordinates(),
-            'region': self.get_region(),
-            'county': self.get_county(),
-            'climate_zone': self.get_climate_zone(),
-            'source': self.get_source(),
-            'bounds': self.get_bounds(),
-            'is_hungarian': self.is_hungarian_location()
+            "identifier": self.identifier,
+            "display_name": self.display_name,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "country_code": self.country_code,
+            "timezone": self.timezone,
+            "metadata": self.metadata,
+            "coordinates": self.get_coordinates(),
+            "region": self.get_region(),
+            "county": self.get_county(),
+            "climate_zone": self.get_climate_zone(),
+            "source": self.get_source(),
+            "bounds": self.get_bounds(),
+            "is_hungarian": self.is_hungarian_location(),
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Location':
+    def from_dict(cls, data: Dict[str, Any]) -> "Location":
         """
         Create Location from dictionary.
 
@@ -93,18 +95,18 @@ class Location:
         Returns:
             Location object
         """
-        identifier = data['identifier']
-        display_name = data['display_name']
-        latitude = data['latitude']
-        longitude = data['longitude']
+        identifier = data["identifier"]
+        display_name = data["display_name"]
+        latitude = data["latitude"]
+        longitude = data["longitude"]
 
-        country_code = data.get('country_code', 'HU')
-        timezone = data.get('timezone', 'Europe/Budapest')
-        metadata = data.get('metadata', {})
+        country_code = data.get("country_code", "HU")
+        timezone = data.get("timezone", "Europe/Budapest")
+        metadata = data.get("metadata", {})
 
         # Old format compatibility
         if not metadata:
-            extra_fields = ['region', 'county', 'climate_zone', 'source', 'bounds']
+            extra_fields = ["region", "county", "climate_zone", "source", "bounds"]
             for field_name in extra_fields:
                 if field_name in data and data[field_name] is not None:
                     metadata[field_name] = data[field_name]
@@ -116,7 +118,7 @@ class Location:
             longitude=longitude,
             country_code=country_code,
             timezone=timezone,
-            metadata=metadata
+            metadata=metadata,
         )
 
     @classmethod
@@ -125,8 +127,8 @@ class Location:
         latitude: float,
         longitude: float,
         display_name: Optional[str] = None,
-        **kwargs
-    ) -> 'Location':
+        **kwargs,
+    ) -> "Location":
         """
         Create Location from coordinates.
 
@@ -149,11 +151,11 @@ class Location:
             display_name=display_name,
             latitude=latitude,
             longitude=longitude,
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
-    def from_city_info(cls, city_info: 'CityInfo') -> 'Location':
+    def from_city_info(cls, city_info: "CityInfo") -> "Location":
         """
         Create Location from CityInfo.
 
@@ -172,14 +174,14 @@ class Location:
             country_code=city_info.country_code,
             timezone=city_info.timezone or "Europe/Budapest",
             metadata={
-                'city_id': city_info.id,
-                'population': city_info.population,
-                'continent': city_info.continent,
-                'admin_name': city_info.admin_name,
-                'capital': city_info.capital,
-                'source': 'city_manager'
-            }
+                "city_id": city_info.id,
+                "population": city_info.population,
+                "continent": city_info.continent,
+                "admin_name": city_info.admin_name,
+                "capital": city_info.capital,
+                "source": "city_manager",
+            },
         )
 
 
-__all__ = ['Location']
+__all__ = ["Location"]
