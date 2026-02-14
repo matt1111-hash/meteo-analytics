@@ -50,7 +50,7 @@ class AnomalyProfileManager:
             get_available_func=self.get_available_profiles,
             get_cache_func=self._get_profiles_cache,
             active_profile_getter=self.get_active_profile,
-            active_profile_setter=self._set_active_profile
+            active_profile_setter=self._set_active_profile,
         )
 
         # Inicializálás
@@ -135,7 +135,7 @@ class AnomalyProfileManager:
                 "profiles": profiles,
                 "active_profile": profile_name,
                 "modified_at": datetime.now().isoformat(),
-                "version": "1.0"
+                "version": "1.0",
             }
 
             success = self.storage.save_profiles(data)
@@ -164,7 +164,9 @@ class AnomalyProfileManager:
         profiles = self._get_profiles_cache()
 
         if profile_name not in profiles:
-            logger.warning(f"📁 Profil nem található: {profile_name}, default használata")
+            logger.warning(
+                f"📁 Profil nem található: {profile_name}, default használata"
+            )
             profile_name = "default"
 
         return profiles.get(profile_name, {}).copy()
@@ -197,7 +199,7 @@ class AnomalyProfileManager:
                 "profiles": profiles,
                 "active_profile": self._active_profile,
                 "modified_at": datetime.now().isoformat(),
-                "version": "1.0"
+                "version": "1.0",
             }
 
             success = self.storage.save_profiles(data)
@@ -246,4 +248,4 @@ class AnomalyProfileManager:
             return self.load_profile("default")
 
 
-__all__ = ['AnomalyProfileManager']
+__all__ = ["AnomalyProfileManager"]

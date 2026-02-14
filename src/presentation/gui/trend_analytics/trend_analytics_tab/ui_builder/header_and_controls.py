@@ -1,4 +1,5 @@
 """UI Builder - Header and Controls sections."""
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
@@ -35,7 +36,9 @@ def create_header(parent_widget: QWidget) -> QWidget:
     title.setAlignment(Qt.AlignCenter)
     layout.addWidget(title)
 
-    subtitle = QLabel("Globális trend elemzés dinamikus KPI dashboard-dal - Hibamentesen javított!")
+    subtitle = QLabel(
+        "Globális trend elemzés dinamikus KPI dashboard-dal - Hibamentesen javított!"
+    )
     subtitle.setFont(QFont("Arial", 11))
     subtitle.setStyleSheet("color: rgba(255,255,255,0.9); margin: 5px 0 0 0;")
     subtitle.setAlignment(Qt.AlignCenter)
@@ -88,14 +91,16 @@ def create_controls_panel(parent_widget: QWidget) -> dict:
     param_group.addWidget(param_label)
 
     parameter_combo = QComboBox()
-    parameter_combo.addItems([
-        "🥶 Minimum hőmérséklet",
-        "🔥 Maximum hőmérséklet",
-        "🌡️ Átlag hőmérséklet",
-        "🌧️ Csapadékmennyiség",
-        "💨 Szélsebesség",
-        "💨 Széllökések"
-    ])
+    parameter_combo.addItems(
+        [
+            "🥶 Minimum hőmérséklet",
+            "🔥 Maximum hőmérséklet",
+            "🌡️ Átlag hőmérséklet",
+            "🌧️ Csapadékmennyiség",
+            "💨 Szélsebesség",
+            "💨 Széllökések",
+        ]
+    )
     parameter_combo.setCurrentText("🔥 Maximum hőmérséklet")
     param_group.addWidget(parameter_combo)
     controls_layout.addLayout(param_group)
@@ -163,5 +168,5 @@ def create_controls_panel(parent_widget: QWidget) -> dict:
         "parameter_combo": parameter_combo,
         "time_combo": time_combo,
         "analyze_button": analyze_button,
-        "progress_bar": progress_bar
+        "progress_bar": progress_bar,
     }

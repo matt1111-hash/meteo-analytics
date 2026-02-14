@@ -16,9 +16,7 @@ from src.presentation.gui.color_palette.types import (
 
 
 def calculate_contrast_ratio(
-    color1: Union[str, HSLColor],
-    color2: Union[str, HSLColor],
-    hex_to_hsl_func
+    color1: Union[str, HSLColor], color2: Union[str, HSLColor], hex_to_hsl_func
 ) -> float:
     """
     WCAG kontraszt arány számítása két szín között.
@@ -31,6 +29,7 @@ def calculate_contrast_ratio(
     Returns:
         Kontraszt arány (1.0-21.0)
     """
+
     def get_luminance(color: Union[str, HSLColor]) -> float:
         if isinstance(color, str):
             hsl = hex_to_hsl_func(color)
@@ -38,7 +37,7 @@ def calculate_contrast_ratio(
             hsl = color
 
         r, g, b = hsl.to_rgb()
-        r, g, b = r/255.0, g/255.0, b/255.0
+        r, g, b = r / 255.0, g / 255.0, b / 255.0
 
         # Gamma correction
         def gamma_correct(c):
@@ -56,10 +55,7 @@ def calculate_contrast_ratio(
     return (lighter + 0.05) / (darker + 0.05)
 
 
-def get_color_metrics(
-    color: HSLColor,
-    calculate_contrast_func
-) -> ColorMetrics:
+def get_color_metrics(color: HSLColor, calculate_contrast_func) -> ColorMetrics:
     """
     Szín accessibility metrikáinak lekérdezése.
 
@@ -88,7 +84,7 @@ def get_color_metrics(
         wcag_aa_compliant=wcag_aa,
         wcag_aaa_compliant=wcag_aaa,
         readable_on_white=white_contrast >= 4.5,
-        readable_on_black=black_contrast >= 4.5
+        readable_on_black=black_contrast >= 4.5,
     )
 
 
@@ -96,7 +92,7 @@ def suggest_accessible_variants(
     base_color: HSLColor,
     target_background: str,
     calculate_contrast_func,
-    hex_to_hsl_func
+    hex_to_hsl_func,
 ) -> Dict[str, str]:
     """
     Accessible variánsok javaslása adott háttérszínhez.
@@ -135,8 +131,7 @@ def suggest_accessible_variants(
 
 
 def simulate_color_blindness(
-    color: HSLColor,
-    blindness_type: ColorBlindnessType
+    color: HSLColor, blindness_type: ColorBlindnessType
 ) -> Optional[str]:
     """
     Színvakság szimuláció adott színre.

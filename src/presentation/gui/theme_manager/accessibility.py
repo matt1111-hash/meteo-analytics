@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class AccessibilityHelper:
     """Professional accessibility helper methods."""
 
-    def __init__(self, manager: 'ProfessionalThemeManager'):
+    def __init__(self, manager: "ProfessionalThemeManager"):
         """
         Initialize accessibility helper.
 
@@ -36,22 +36,26 @@ class AccessibilityHelper:
             "theme": self._manager.current_theme,
             "contrast_ratios": {},
             "wcag_compliance": {},
-            "recommendations": []
+            "recommendations": [],
         }
 
         # Check contrast ratios
-        if hasattr(self._manager.color_palette, 'calculate_contrast_ratio'):
+        if hasattr(self._manager.color_palette, "calculate_contrast_ratio"):
             try:
-                primary_surface_contrast = self._manager.color_palette.calculate_contrast_ratio(
-                    colors["primary"], colors["surface"]
+                primary_surface_contrast = (
+                    self._manager.color_palette.calculate_contrast_ratio(
+                        colors["primary"], colors["surface"]
+                    )
                 )
-                text_surface_contrast = self._manager.color_palette.calculate_contrast_ratio(
-                    colors["on_surface"], colors["surface"]
+                text_surface_contrast = (
+                    self._manager.color_palette.calculate_contrast_ratio(
+                        colors["on_surface"], colors["surface"]
+                    )
                 )
 
                 accessibility_info["contrast_ratios"] = {
                     "primary_on_surface": primary_surface_contrast,
-                    "text_on_surface": text_surface_contrast
+                    "text_on_surface": text_surface_contrast,
                 }
 
                 # WCAG compliance
@@ -59,7 +63,7 @@ class AccessibilityHelper:
                     "primary_aa": primary_surface_contrast >= 4.5,
                     "primary_aaa": primary_surface_contrast >= 7.0,
                     "text_aa": text_surface_contrast >= 4.5,
-                    "text_aaa": text_surface_contrast >= 7.0
+                    "text_aaa": text_surface_contrast >= 7.0,
                 }
 
                 # Recommendations

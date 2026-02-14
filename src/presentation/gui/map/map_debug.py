@@ -30,24 +30,24 @@ def generate_demo_weather_data() -> Dict[str, Any]:
         {"name": "Nyíregyháza", "coordinates": [47.9562, 21.7201]},
         {"name": "Kecskemét", "coordinates": [46.9061, 19.6938]},
         {"name": "Székesfehérvár", "coordinates": [47.1884, 18.4241]},
-        {"name": "Szombathely", "coordinates": [47.2309, 16.6218]}
+        {"name": "Szombathely", "coordinates": [47.2309, 16.6218]},
     ]
 
-    demo_data = {'temperature': {}, 'precipitation': {}, 'wind_speed': {}}
+    demo_data = {"temperature": {}, "precipitation": {}, "wind_speed": {}}
 
     for city in cities:
-        demo_data['temperature'][city['name']] = {
-            'coordinates': city['coordinates'],
-            'value': random.uniform(-5, 35)
+        demo_data["temperature"][city["name"]] = {
+            "coordinates": city["coordinates"],
+            "value": random.uniform(-5, 35),
         }
-        demo_data['precipitation'][city['name']] = {
-            'coordinates': city['coordinates'],
-            'value': random.uniform(0, 25)
+        demo_data["precipitation"][city["name"]] = {
+            "coordinates": city["coordinates"],
+            "value": random.uniform(0, 25),
         }
-        demo_data['wind_speed'][city['name']] = {
-            'coordinates': city['coordinates'],
-            'speed': random.uniform(5, 45),
-            'direction': random.randint(0, 360)
+        demo_data["wind_speed"][city["name"]] = {
+            "coordinates": city["coordinates"],
+            "speed": random.uniform(5, 45),
+            "direction": random.randint(0, 360),
         }
 
     print(f"🧪 Demo weather data generated: {len(cities)} cities")
@@ -58,7 +58,7 @@ def get_http_server_info(
     local_server,
     http_host: Optional[str],
     http_port: Optional[int],
-    current_map_file: Optional[str]
+    current_map_file: Optional[str],
 ) -> Dict[str, Any]:
     """
     🌐 HTTP szerver információk lekérdezése.
@@ -76,14 +76,20 @@ def get_http_server_info(
         "server_running": local_server is not None and local_server.running,
         "http_host": http_host,
         "http_port": http_port,
-        "server_url": f"http://{http_host}:{http_port}" if http_host and http_port else None,
+        "server_url": f"http://{http_host}:{http_port}"
+        if http_host and http_port
+        else None,
         "current_map_file": current_map_file,
-        "current_map_size": os.path.getsize(current_map_file) if current_map_file and os.path.exists(current_map_file) else 0,
-        "version": "v3.0"
+        "current_map_size": os.path.getsize(current_map_file)
+        if current_map_file and os.path.exists(current_map_file)
+        else 0,
+        "version": "v3.0",
     }
 
 
-def get_dynamic_gradient_info(active_overlay_parameter: Optional[str]) -> Dict[str, Any]:
+def get_dynamic_gradient_info(
+    active_overlay_parameter: Optional[str],
+) -> Dict[str, Any]:
     """
     🔧 Dinamikus gradient információk lekérdezése.
 
@@ -105,7 +111,7 @@ def get_dynamic_gradient_info(active_overlay_parameter: Optional[str]) -> Dict[s
         "reactive_counties": True,
         "reactive_weather": True,
         "large_html_support": True,
-        "version": "v3.0"
+        "version": "v3.0",
     }
 
 
@@ -115,7 +121,7 @@ def get_http_debug_info(
     http_port: Optional[int],
     current_map_file: Optional[str],
     counties_gdf,
-    current_weather_data
+    current_weather_data,
 ) -> Dict[str, Any]:
     """
     🌐 HTTP szerver verzió debug információk.
@@ -131,7 +137,9 @@ def get_http_debug_info(
     Returns:
         HTTP szerver debug információk
     """
-    server_info = get_http_server_info(local_server, http_host, http_port, current_map_file)
+    server_info = get_http_server_info(
+        local_server, http_host, http_port, current_map_file
+    )
 
     return {
         "http_server_running": server_info["server_running"],
@@ -147,14 +155,14 @@ def get_http_debug_info(
         "counties_loaded": counties_gdf is not None,
         "counties_count": len(counties_gdf) if counties_gdf is not None else 0,
         "weather_data_loaded": current_weather_data is not None,
-        "version": "v3.0"
+        "version": "v3.0",
     }
 
 
 # Export
 __all__ = [
-    'generate_demo_weather_data',
-    'get_http_server_info',
-    'get_dynamic_gradient_info',
-    'get_http_debug_info',
+    "generate_demo_weather_data",
+    "get_http_server_info",
+    "get_dynamic_gradient_info",
+    "get_http_debug_info",
 ]

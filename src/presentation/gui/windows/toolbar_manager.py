@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from .main_window import MainWindow
 
 
-def create_navigation_toolbar(window: 'MainWindow') -> QToolBar:
+def create_navigation_toolbar(window: "MainWindow") -> QToolBar:
     """
     🧭 Navigációs eszköztár létrehozása.
 
@@ -98,5 +98,5 @@ def create_navigation_toolbar(window: 'MainWindow') -> QToolBar:
 
 # Export
 __all__ = [
-    'create_navigation_toolbar',
+    "create_navigation_toolbar",
 ]

@@ -13,6 +13,7 @@ from PySide6.QtCore import QThread, Signal
 
 try:
     import geopandas as gpd
+
     GEOPANDAS_AVAILABLE = True
 except ImportError:
     GEOPANDAS_AVAILABLE = False
@@ -27,11 +28,11 @@ class HungarianLocationWorker(QThread):
     """
 
     # Signalok
-    progress_updated = Signal(int)           # progress (0-100)
-    counties_loaded = Signal(object)        # GeoDataFrame
-    postal_codes_loaded = Signal(object)    # GeoDataFrame
-    error_occurred = Signal(str)            # error message
-    completed = Signal()                    # összes adat betöltve
+    progress_updated = Signal(int)  # progress (0-100)
+    counties_loaded = Signal(object)  # GeoDataFrame
+    postal_codes_loaded = Signal(object)  # GeoDataFrame
+    error_occurred = Signal(str)  # error message
+    completed = Signal()  # összes adat betöltve
 
     def __init__(self, data_dir: Path):
         super().__init__()
@@ -57,7 +58,9 @@ class HungarianLocationWorker(QThread):
                 self.counties_loaded.emit(self.counties_gdf)
                 self.progress_updated.emit(50)
             else:
-                self.error_occurred.emit(f"Counties fájl nem található: {counties_file}")
+                self.error_occurred.emit(
+                    f"Counties fájl nem található: {counties_file}"
+                )
                 return
 
             # Postal codes betöltése (opcionális, nagy fájl)

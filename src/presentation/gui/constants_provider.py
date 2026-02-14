@@ -17,9 +17,9 @@ class ConstantsProvider(IConstantsProvider):
     def __init__(self):
         # Wind thresholds (moved from utils to here)
         self._wind_thresholds = {
-            'high': 70.0,      # WIND_HIGH_THRESHOLD
-            'extreme': 100.0,  # WIND_EXTREME_THRESHOLD
-            'hurricane': 120.0  # WIND_HURRICANE_THRESHOLD
+            "high": 70.0,  # WIND_HIGH_THRESHOLD
+            "extreme": 100.0,  # WIND_EXTREME_THRESHOLD
+            "hurricane": 120.0,  # WIND_HURRICANE_THRESHOLD
         }
 
     def get_wind_threshold(self, threshold_type: str) -> float:

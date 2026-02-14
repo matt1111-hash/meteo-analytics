@@ -1,4 +1,5 @@
 """Trend analysis domain entities."""
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
@@ -32,20 +33,20 @@ class TrendPeriodResult:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'time_period': self.time_period,
-            'years': self.years,
-            'slope': self.slope,
-            'slope_per_decade': self.slope_per_decade,
-            'r_squared': self.r_squared,
-            'p_value': self.p_value,
-            'trend_direction': self.trend_direction,
-            'confidence_interval': list(self.confidence_interval),
-            'significance': self.significance,
-            'yearly_means': self.yearly_means,
-            'yearly_dates': self.yearly_dates,
-            'intercept': self.intercept,
-            'std_error': self.std_error,
-            'sample_size': self.sample_size,
+            "time_period": self.time_period,
+            "years": self.years,
+            "slope": self.slope,
+            "slope_per_decade": self.slope_per_decade,
+            "r_squared": self.r_squared,
+            "p_value": self.p_value,
+            "trend_direction": self.trend_direction,
+            "confidence_interval": list(self.confidence_interval),
+            "significance": self.significance,
+            "yearly_means": self.yearly_means,
+            "yearly_dates": self.yearly_dates,
+            "intercept": self.intercept,
+            "std_error": self.std_error,
+            "sample_size": self.sample_size,
         }
 
 
@@ -64,7 +65,7 @@ class TrendAnalysisResult:
     # Execution metadata
     execution_time: float = 0.0
     total_data_points: int = 0
-    date_range: Tuple[str, str] = ('', '')  # (start_date, end_date)
+    date_range: Tuple[str, str] = ("", "")  # (start_date, end_date)
 
     # Quality metrics
     data_quality_score: float = 1.0
@@ -91,18 +92,22 @@ class TrendAnalysisResult:
 
         directions = [p.trend_direction for p in self.periods]
         direction_counts = {
-            'increasing': directions.count('increasing'),
-            'decreasing': directions.count('decreasing'),
-            'stable': directions.count('stable'),
+            "increasing": directions.count("increasing"),
+            "decreasing": directions.count("decreasing"),
+            "stable": directions.count("stable"),
         }
 
         return {
-            'total_periods': len(self.periods),
-            'trend_directions': direction_counts,
-            'avg_r_squared': sum(p.r_squared for p in self.periods) / len(self.periods),
-            'significant_periods': sum(1 for p in self.periods if p.significance in ('significant', 'highly_significant')),
-            'location_name': self.location_name,
-            'metric': self.metric.value,
+            "total_periods": len(self.periods),
+            "trend_directions": direction_counts,
+            "avg_r_squared": sum(p.r_squared for p in self.periods) / len(self.periods),
+            "significant_periods": sum(
+                1
+                for p in self.periods
+                if p.significance in ("significant", "highly_significant")
+            ),
+            "location_name": self.location_name,
+            "metric": self.metric.value,
         }
 
     def get_chart_data(self, period_years: int) -> Dict[str, Any]:
@@ -116,29 +121,29 @@ class TrendAnalysisResult:
         y_trend = [period.intercept + period.slope * i for i in x_values]
 
         return {
-            'years': period.years,
-            'values': period.yearly_means,
-            'trend_line': y_trend,
-            'slope_per_decade': period.slope_per_decade,
-            'r_squared': period.r_squared,
-            'p_value': period.p_value,
-            'trend_direction': period.trend_direction,
+            "years": period.years,
+            "values": period.yearly_means,
+            "trend_line": y_trend,
+            "slope_per_decade": period.slope_per_decade,
+            "r_squared": period.r_squared,
+            "p_value": period.p_value,
+            "trend_direction": period.trend_direction,
         }
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'location_name': self.location_name,
-            'metric': self.metric.value,
-            'periods': [p.to_dict() for p in self.periods],
-            'execution_time': self.execution_time,
-            'total_data_points': self.total_data_points,
-            'date_range': list(self.date_range),
-            'data_quality_score': self.data_quality_score,
-            'completeness_ratio': self.completeness_ratio,
-            'created_at': self.created_at.isoformat(),
-            'summary': self.get_summary(),
+            "location_name": self.location_name,
+            "metric": self.metric.value,
+            "periods": [p.to_dict() for p in self.periods],
+            "execution_time": self.execution_time,
+            "total_data_points": self.total_data_points,
+            "date_range": list(self.date_range),
+            "data_quality_score": self.data_quality_score,
+            "completeness_ratio": self.completeness_ratio,
+            "created_at": self.created_at.isoformat(),
+            "summary": self.get_summary(),
         }
 
 
-__all__ = ['TrendPeriodResult', 'TrendAnalysisResult']
+__all__ = ["TrendPeriodResult", "TrendAnalysisResult"]

@@ -5,6 +5,7 @@
 Constants - GUI dimensions, margins, colors.
 """
 
+
 class GUIConstants:
     """GUI constants - window sizes, positions, fonts."""
 

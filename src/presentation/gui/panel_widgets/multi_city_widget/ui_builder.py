@@ -27,7 +27,6 @@ from PySide6.QtWidgets import (
 )
 
 if TYPE_CHECKING:
-
     from src.presentation.gui.theme_manager import ThemeManager
 
 
@@ -88,7 +87,7 @@ def create_multi_city_ui(parent_widget: QWidget, theme_manager: "ThemeManager") 
         "group": group,
         "combo_box": combo_box,
         "info_label": info_label,
-        "clear_btn": clear_btn
+        "clear_btn": clear_btn,
     }
 
 
@@ -98,7 +97,7 @@ def register_widget_for_theming(
     group: QGroupBox,
     combo_box: QComboBox,
     clear_btn: QPushButton,
-    info_label: QLabel
+    info_label: QLabel,
 ) -> None:
     """
     Widgetek regisztrálása theme manager-hez.
@@ -121,9 +120,7 @@ def register_widget_for_theming(
 
 
 def apply_label_styling(
-    label: QLabel,
-    theme_manager: "ThemeManager",
-    style_type: str
+    label: QLabel, theme_manager: "ThemeManager", style_type: str
 ) -> None:
     """
     Label styling alkalmazása.
@@ -150,4 +147,5 @@ def apply_label_styling(
     label.setStyleSheet(css)
 
     from src.presentation.gui.theme_manager import register_widget_for_theming
+
     register_widget_for_theming(label, "text")

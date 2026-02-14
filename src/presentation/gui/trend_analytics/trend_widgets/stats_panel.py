@@ -73,7 +73,7 @@ class EnhancedStatisticsPanel(QWidget):
             ("🎯 Trend", "Nincs adat", "per évtized", "#3b82f6", "📈"),
             ("🎯 Megbízhatóság", "Nincs adat", "R² érték", "#10b981", "🎯"),
             ("🎯 Szignifikancia", "Nincs adat", "statisztikai", "#f59e0b", "⚡"),
-            ("📊 Tartomány", "Nincs adat", "min - max", "#8b5cf6", "📊")
+            ("📊 Tartomány", "Nincs adat", "min - max", "#8b5cf6", "📊"),
         ]
 
         for i, (title, value, subtitle, color, icon) in enumerate(placeholder_cards):
@@ -93,12 +93,12 @@ class EnhancedStatisticsPanel(QWidget):
             logger.info("🎯 DASHBOARD STATS FRISSÍTÉS KEZDÉSE")
 
             # 1. TREND VÁLTOZÁS KÁRTYA
-            trend_value = trend_data['trend_per_decade']
-            if 'hőmérséklet' in trend_data['parameter'].lower():
+            trend_value = trend_data["trend_per_decade"]
+            if "hőmérséklet" in trend_data["parameter"].lower():
                 trend_unit = "°C/évtized"
-            elif 'csapadék' in trend_data['parameter'].lower():
+            elif "csapadék" in trend_data["parameter"].lower():
                 trend_unit = "mm/évtized"
-            elif 'szél' in trend_data['parameter'].lower():
+            elif "szél" in trend_data["parameter"].lower():
                 trend_unit = "km/h/évtized"
             else:
                 trend_unit = "/évtized"
@@ -107,7 +107,7 @@ class EnhancedStatisticsPanel(QWidget):
             trend_subtitle = f"{trend_unit}"
 
             # 2. MEGBÍZHATÓSÁG (R²) KÁRTYA
-            r2 = trend_data['r_squared']
+            r2 = trend_data["r_squared"]
             if r2 > 0.7:
                 reliability_level = "Magas"
                 r2_color = "#10b981"  # zöld
@@ -122,7 +122,7 @@ class EnhancedStatisticsPanel(QWidget):
             r2_subtitle = f"{reliability_level} megbízhatóság"
 
             # 3. SZIGNIFIKANCIA KÁRTYA
-            p_val = trend_data['p_value']
+            p_val = trend_data["p_value"]
 
             if p_val < 0.001:
                 sig_display = "***"
@@ -140,24 +140,26 @@ class EnhancedStatisticsPanel(QWidget):
             sig_subtitle = f"p = {p_val:.3f}"
 
             # 4. ÉRTÉKTARTOMÁNY KÁRTYA
-            stats = trend_data['statistics']
-            if 'hőmérséklet' in trend_data['parameter'].lower():
+            stats = trend_data["statistics"]
+            if "hőmérséklet" in trend_data["parameter"].lower():
                 unit = "°C"
-            elif 'csapadék' in trend_data['parameter'].lower():
+            elif "csapadék" in trend_data["parameter"].lower():
                 unit = "mm"
-            elif 'szél' in trend_data['parameter'].lower():
+            elif "szél" in trend_data["parameter"].lower():
                 unit = "km/h"
             else:
                 unit = ""
 
-            range_value = stats['max'] - stats['min']
+            range_value = stats["max"] - stats["min"]
             range_display = f"{range_value:.1f}"
             range_subtitle = f"{stats['min']:.1f} - {stats['max']:.1f} {unit}"
 
             # KÁRTYÁK FRISSÍTÉSE
 
             # Trend kártya frissítése (színkódolással)
-            trend_color = "#ef4444" if trend_value < 0 else "#10b981"  # piros ha csökken, zöld ha nő
+            trend_color = (
+                "#ef4444" if trend_value < 0 else "#10b981"
+            )  # piros ha csökken, zöld ha nő
             self.update_card("🎯 Trend", trend_display, trend_subtitle, trend_color)
 
             # Megbízhatóság kártya
@@ -205,7 +207,7 @@ class EnhancedStatisticsPanel(QWidget):
             ("🎯 Trend", "Hiba", "számítási hiba", "#ef4444"),
             ("🎯 Megbízhatóság", "Hiba", "számítási hiba", "#ef4444"),
             ("🎯 Szignifikancia", "Hiba", "számítási hiba", "#ef4444"),
-            ("📊 Tartomány", "Hiba", "számítási hiba", "#ef4444")
+            ("📊 Tartomány", "Hiba", "számítási hiba", "#ef4444"),
         ]
 
         for card_key, value, subtitle, color in error_cards_data:

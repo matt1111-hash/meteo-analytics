@@ -1,0 +1,32 @@
+[
+  {
+    "code": "W293",
+    "name": "blank-line-with-whitespace",
+    "count": 185,
+    "fixable": true
+  },
+  {
+    "code": "F401",
+    "name": "unused-import",
+    "count": 4,
+    "fixable": false
+  },
+  {
+    "code": "F541",
+    "name": "f-string-missing-placeholders",
+    "count": 4,
+    "fixable": true
+  },
+  {
+    "code": "E722",
+    "name": "bare-except",
+    "count": 1,
+    "fixable": false
+  },
+  {
+    "code": "I001",
+    "name": "unsorted-imports",
+    "count": 1,
+    "fixable": true
+  }
+]

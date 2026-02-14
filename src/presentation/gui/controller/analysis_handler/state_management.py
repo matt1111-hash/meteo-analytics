@@ -51,10 +51,10 @@ def _cleanup_analysis_state(self) -> None:
 
         # State reset
         self.analysis_state = {
-            'is_running': False,
-            'analysis_type': None,
-            'start_time': None,
-            'request_data': None
+            "is_running": False,
+            "analysis_type": None,
+            "start_time": None,
+            "request_data": None,
         }
 
         logger.info("🧹 Analysis state cleaned up")
@@ -72,11 +72,11 @@ def stop_current_analysis(self) -> None:
         self: AnalysisHandler instance
     """
     try:
-        if not self.analysis_state['is_running']:
+        if not self.analysis_state["is_running"]:
             logger.info("🛑 Nincs futó analysis amit meg lehetne szakítani")
             return
 
-        analysis_type = self.analysis_state.get('analysis_type', 'unknown')
+        analysis_type = self.analysis_state.get("analysis_type", "unknown")
         logger.info(f"🛑 Analysis megszakítása: {analysis_type}")
 
         if self.active_analysis_worker:
@@ -91,6 +91,7 @@ def stop_current_analysis(self) -> None:
 
 # === PUBLIC GETTEREK ===
 
+
 def is_analysis_running(self) -> bool:
     """
     Analysis futási állapot lekérdezése.
@@ -101,7 +102,7 @@ def is_analysis_running(self) -> bool:
     Returns:
         bool: True ha fut analysis
     """
-    return self.analysis_state.get('is_running', False)
+    return self.analysis_state.get("is_running", False)
 
 
 def get_current_analysis_info(self) -> Dict:

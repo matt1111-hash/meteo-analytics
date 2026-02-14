@@ -20,10 +20,10 @@ from ..charts import (
     WindRoseChart,
 )
 from ..theme_manager import get_theme_manager, register_widget_for_theming
-from .ui_builder import UIBuilder
 from .chart_manager import ChartManager
-from .toggle_handlers import ToggleHandlers
 from .theme_handler import ThemeHandler
+from .toggle_handlers import ToggleHandlers
+from .ui_builder import UIBuilder
 
 
 class ChartsContainer(QWidget):
@@ -85,8 +85,12 @@ class ChartsContainer(QWidget):
     def _connect_signals(self) -> None:
         """Connect all chart signals."""
         charts = [
-            self.temp_chart, self.precip_chart, self.wind_chart,
-            self.heatmap_chart, self.windrose_chart, self.comparison_chart
+            self.temp_chart,
+            self.precip_chart,
+            self.wind_chart,
+            self.heatmap_chart,
+            self.windrose_chart,
+            self.comparison_chart,
         ]
 
         for chart in charts:
@@ -126,9 +130,11 @@ class ChartsContainer(QWidget):
     def _export_current_chart(self) -> None:
         """Export current chart."""
         current_widget = self.tabs.currentWidget()
-        if hasattr(current_widget, 'export_chart'):
-            chart_name = self.tabs.tabText(self.tabs.currentIndex()).replace(' ', '_')
-            filepath = f"chart_{chart_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        if hasattr(current_widget, "export_chart"):
+            chart_name = self.tabs.tabText(self.tabs.currentIndex()).replace(" ", "_")
+            filepath = (
+                f"chart_{chart_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+            )
             success = current_widget.export_chart(filepath)
             self.chart_exported.emit(filepath, success)
 
@@ -139,6 +145,8 @@ class ChartsContainer(QWidget):
         Args:
             dark_theme: Dark theme flag (DEPRECATED)
         """
-        print("⚠️ DEBUG: apply_theme() DEPRECATED - use SimplifiedThemeManager.set_theme()")
+        print(
+            "⚠️ DEBUG: apply_theme() DEPRECATED - use SimplifiedThemeManager.set_theme()"
+        )
         theme_name = "dark" if dark_theme else "light"
         self.theme_manager.set_theme(theme_name)

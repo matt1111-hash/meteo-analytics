@@ -56,7 +56,7 @@ def create_public_api_methods(self) -> None:
         if self.counties_gdf is None:
             return False
         try:
-            county_row = self.counties_gdf[self.counties_gdf['megye'] == county_name]
+            county_row = self.counties_gdf[self.counties_gdf["megye"] == county_name]
             if county_row.empty:
                 return False
             geometry = county_row.geometry.iloc[0]
@@ -79,13 +79,13 @@ def create_public_api_methods(self) -> None:
 
     def is_ready() -> bool:
         return (
-            self.is_data_loaded and
-            self.location_selector is not None and
-            self.map_visualizer is not None and
-            self.counties_gdf is not None and
-            self.is_folium_ready and
-            self.weather_bridge is not None and
-            self.multi_city_engine is not None
+            self.is_data_loaded
+            and self.location_selector is not None
+            and self.map_visualizer is not None
+            and self.counties_gdf is not None
+            and self.is_folium_ready
+            and self.weather_bridge is not None
+            and self.multi_city_engine is not None
         )
 
     def is_folium_ready_status() -> bool:
@@ -110,7 +110,10 @@ def create_public_api_methods(self) -> None:
             self.map_visualizer._refresh_map()
         if self.current_analytics_result:
             from .weather_integration import _generate_weather_overlay_from_analytics
-            _generate_weather_overlay_from_analytics(self, self.current_analytics_result)
+
+            _generate_weather_overlay_from_analytics(
+                self, self.current_analytics_result
+            )
         self.loading_status.setText("🔄 Folium komponensek frissítve...")
 
     def clear_selection() -> None:
@@ -159,14 +162,18 @@ def create_public_api_methods(self) -> None:
             "auto_weather_refresh_enabled": self.auto_weather_refresh_enabled,
             "location_selector_available": self.location_selector is not None,
             "map_visualizer_available": self.map_visualizer is not None,
-            "folium_available": self.map_visualizer.is_folium_available() if self.map_visualizer else False,
+            "folium_available": self.map_visualizer.is_folium_available()
+            if self.map_visualizer
+            else False,
             "weather_bridge_available": self.weather_bridge is not None,
             "multi_city_engine_available": self.multi_city_engine is not None,
             "weather_data_available": self.weather_data_available,
             "current_location": self.current_location_data,
             "current_analytics_result": self.current_analytics_result is not None,
             "current_analytics_parameter": self.current_analytics_parameter,
-            "current_weather_overlay_type": self.current_weather_overlay.overlay_type if self.current_weather_overlay else None,
+            "current_weather_overlay_type": self.current_weather_overlay.overlay_type
+            if self.current_weather_overlay
+            else None,
             "available_counties_count": len(self.get_available_counties()),
             "current_theme": self.current_theme,
             "map_status": self.get_map_status(),

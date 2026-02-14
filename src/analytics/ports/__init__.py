@@ -32,6 +32,7 @@ from src.domain.ports import (
 # Multi-City Engine Port
 # =============================================================================
 
+
 class MultiCityEnginePort(Protocol):
     """
     Port for multi-city analytics operations.
@@ -72,6 +73,7 @@ class MultiCityEnginePort(Protocol):
 @dataclass
 class MultiCityEngineConfig:
     """Configuration for MultiCityEngine."""
+
     max_workers: int = 8
     request_timeout: int = 90
     max_retries: int = 2
@@ -113,9 +115,11 @@ def get_multi_city_engine_port(
 # Wind Analysis Port
 # =============================================================================
 
+
 @dataclass
 class WindAnalysisResult:
     """Result of wind analysis."""
+
     windy_days_count: int
     total_days: int
     windy_percentage: float
@@ -166,6 +170,7 @@ def get_wind_analysis_port() -> WindAnalysisPort:
         WindAnalysisPort implementation
     """
     from src.analytics import wind_analysis
+
     return wind_analysis
 
 
@@ -173,9 +178,11 @@ def get_wind_analysis_port() -> WindAnalysisPort:
 # Anomaly Detection Port
 # =============================================================================
 
+
 @dataclass
 class AnomalyDetectionResult:
     """Result of anomaly detection."""
+
     anomalies: List[Dict[str, Any]]
     total_records: int
     anomaly_count: int
@@ -218,6 +225,7 @@ class AnomalyDetectionPort(Protocol):
 # Analytics Query Port
 # =============================================================================
 
+
 class AnalyticsQueryPort(Protocol):
     """
     Port for analytics query building.
@@ -241,6 +249,7 @@ class AnalyticsQueryPort(Protocol):
 # =============================================================================
 # Query Type Configuration Port
 # =============================================================================
+
 
 class QueryTypeConfigPort(Protocol):
     """

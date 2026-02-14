@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class ProviderManager:
     """Handle provider routing and state management."""
 
-    def __init__(self, manager: 'WorkerManager'):
+    def __init__(self, manager: "WorkerManager"):
         """
         Initialize provider manager.
 
@@ -37,7 +37,9 @@ class ProviderManager:
         self._manager.last_successful_provider = new_provider
         self._manager.provider_changed.emit(new_provider)
 
-    def _on_provider_fallback(self, original_provider: str, fallback_provider: str) -> None:
+    def _on_provider_fallback(
+        self, original_provider: str, fallback_provider: str
+    ) -> None:
         """
         Handle provider fallback.
 
@@ -51,10 +53,12 @@ class ProviderManager:
         self._manager.provider_states[original_provider] = {
             "status": "failed",
             "last_attempt": datetime.now(),
-            "fallback_used": fallback_provider
+            "fallback_used": fallback_provider,
         }
 
-        self._manager.provider_fallback_occurred.emit(original_provider, fallback_provider)
+        self._manager.provider_fallback_occurred.emit(
+            original_provider, fallback_provider
+        )
 
     def _on_provider_validation_failed(self, provider: str, error_message: str) -> None:
         """
@@ -70,7 +74,7 @@ class ProviderManager:
         self._manager.provider_states[provider] = {
             "status": "validation_failed",
             "last_attempt": datetime.now(),
-            "error": error_message
+            "error": error_message,
         }
 
         self._manager.provider_validation_failed.emit(provider, error_message)
@@ -83,16 +87,20 @@ class ProviderManager:
             provider: Provider name
             success: Whether the request was successful
         """
-        print(f"📊 DEBUG: Provider usage tracked: {provider} - {'SUCCESS' if success else 'FAILED'}")
+        print(
+            f"📊 DEBUG: Provider usage tracked: {provider} - {'SUCCESS' if success else 'FAILED'}"
+        )
 
         # Update provider state
         if provider not in self._manager.provider_states:
             self._manager.provider_states[provider] = {}
 
-        self._manager.provider_states[provider].update({
-            "last_usage": datetime.now(),
-            "last_result": "success" if success else "failed"
-        })
+        self._manager.provider_states[provider].update(
+            {
+                "last_usage": datetime.now(),
+                "last_result": "success" if success else "failed",
+            }
+        )
 
         if success:
             self._manager.last_successful_provider = provider

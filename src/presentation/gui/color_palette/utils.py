@@ -25,7 +25,9 @@ def calculate_color_contrast(color1: str, color2: str) -> float:
     return palette.calculate_contrast_ratio(color1, color2)
 
 
-def generate_color_variants(base_hex: str, theme_type: ThemeType = ThemeType.LIGHT) -> Dict[str, str]:
+def generate_color_variants(
+    base_hex: str, theme_type: ThemeType = ThemeType.LIGHT
+) -> Dict[str, str]:
     """
     Convenience function színvariánsok generálásához.
 

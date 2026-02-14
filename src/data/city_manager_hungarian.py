@@ -25,9 +25,13 @@ class CityManagerHungarian(CityManagerDB):
     from hungarian_settlements.db database.
     """
 
-    def search_hungarian_settlements(self, search_term: str, limit: int = 20,
-                                     county_filter: Optional[str] = None,
-                                     settlement_type_filter: Optional[str] = None) -> List[City]:
+    def search_hungarian_settlements(
+        self,
+        search_term: str,
+        limit: int = 20,
+        county_filter: Optional[str] = None,
+        settlement_type_filter: Optional[str] = None,
+    ) -> List[City]:
         """
         Search Hungarian settlements by name - ALL villages, municipalities, cities.
 
@@ -57,7 +61,9 @@ class CityManagerHungarian(CityManagerDB):
             params.append(settlement_type_filter)
 
         sql_parts.append("WHERE " + " AND ".join(where_conditions))
-        sql_parts.append("ORDER BY region_priority DESC, population DESC NULLS LAST, name ASC")
+        sql_parts.append(
+            "ORDER BY region_priority DESC, population DESC NULLS LAST, name ASC"
+        )
         sql_parts.append(f"LIMIT {limit}")
 
         sql = " ".join(sql_parts)
@@ -65,12 +71,17 @@ class CityManagerHungarian(CityManagerDB):
 
         cities = [City.from_hungarian_settlement(row) for row in rows]
 
-        logger.info(f"Hungarian settlements search '{search_term}': {len(cities)} results")
+        logger.info(
+            f"Hungarian settlements search '{search_term}': {len(cities)} results"
+        )
         return cities
 
     def get_hungarian_counties(self) -> List[str]:
         """Get list of Hungarian counties (cached)."""
-        if hasattr(self, '_hungarian_counties_cache') and self._hungarian_counties_cache is not None:
+        if (
+            hasattr(self, "_hungarian_counties_cache")
+            and self._hungarian_counties_cache is not None
+        ):
             return self._hungarian_counties_cache
 
         if not self.hungarian_connection:
@@ -92,7 +103,9 @@ class CityManagerHungarian(CityManagerDB):
 
         return [row[0] for row in rows]
 
-    def get_hungarian_settlements_by_county(self, county: str, limit: int = 50) -> List[City]:
+    def get_hungarian_settlements_by_county(
+        self, county: str, limit: int = 50
+    ) -> List[City]:
         """Get Hungarian settlements by county."""
         if not self.hungarian_connection:
             return []
@@ -111,4 +124,4 @@ class CityManagerHungarian(CityManagerDB):
         return cities
 
 
-__all__ = ['CityManagerHungarian']
+__all__ = ["CityManagerHungarian"]

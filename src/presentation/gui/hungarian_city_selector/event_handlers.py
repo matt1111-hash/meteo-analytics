@@ -67,25 +67,27 @@ class HungarianCityEventHandlersMixin:
         """
         # Metadata összeállítása
         metadata = {
-            'name': city.city,
-            'latitude': city.lat,
-            'longitude': city.lon,
-            'country': city.country,
-            'country_code': city.country_code,
-            'population': city.population,
-            'admin_name': city.admin_name,
-            'region': city.region,
-            'meteostat_station_id': city.meteostat_station_id,
-            'data_quality_score': city.data_quality_score,
-            'source': 'hungarian_city_selector',
-            'display_name': f"{city.city}, Magyarország",
-            'preferred_source': 'open-meteo'  # Magyar városokhoz Open-Meteo optimális
+            "name": city.city,
+            "latitude": city.lat,
+            "longitude": city.lon,
+            "country": city.country,
+            "country_code": city.country_code,
+            "population": city.population,
+            "admin_name": city.admin_name,
+            "region": city.region,
+            "meteostat_station_id": city.meteostat_station_id,
+            "data_quality_score": city.data_quality_score,
+            "source": "hungarian_city_selector",
+            "display_name": f"{city.city}, Magyarország",
+            "preferred_source": "open-meteo",  # Magyar városokhoz Open-Meteo optimális
         }
 
         # Signal kibocsátása
         self.city_selected.emit(city.city, city.lat, city.lon, metadata)
 
-        logger.info(f"✅ Város kiválasztva: {city.city} ({city.lat:.4f}, {city.lon:.4f})")
+        logger.info(
+            f"✅ Város kiválasztva: {city.city} ({city.lat:.4f}, {city.lon:.4f})"
+        )
 
     def _reload_cities(self) -> None:
         """Városok listájának újratöltése."""
@@ -100,7 +102,9 @@ class HungarianCityEventHandlersMixin:
         """Keresés törlése."""
         self.search_filter.clear_search()
         self.ui_builder.clear_search_box()
-        stats_text = HungarianCityDatabaseLoader.calculate_city_stats(self.hungarian_cities)
+        stats_text = HungarianCityDatabaseLoader.calculate_city_stats(
+            self.hungarian_cities
+        )
         self.ui_builder.update_stats(stats_text)
 
     def _on_theme_changed(self, theme_name: str) -> None:

@@ -62,7 +62,9 @@ class ColorManagementMixin:
         variant_color = variants.get(variant)
         return variant_color.to_hex() if variant_color else None
 
-    def get_color_hsl(self, semantic_name: str, variant: str = "base") -> Optional[HSLColor]:
+    def get_color_hsl(
+        self, semantic_name: str, variant: str = "base"
+    ) -> Optional[HSLColor]:
         """Szín lekérdezése HSLColor formátumban."""
         if variant == "base":
             return self._base_colors.get(semantic_name)

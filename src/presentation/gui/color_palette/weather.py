@@ -29,7 +29,7 @@ def generate_weather_palette(base_temperature: str, hex_to_hsl_func) -> Dict[str
     # Triadic harmony alapján időjárás típusok
     weather_palette["temperature"] = base_hsl.to_hex()
     weather_palette["humidity"] = base_hsl.rotate_hue(120).to_hex()  # Kék irányba
-    weather_palette["wind"] = base_hsl.rotate_hue(240).to_hex()      # Zöld irányba
+    weather_palette["wind"] = base_hsl.rotate_hue(240).to_hex()  # Zöld irányba
 
     # Complementary alapján pressure
     weather_palette["pressure"] = base_hsl.rotate_hue(180).to_hex()
@@ -41,7 +41,9 @@ def generate_weather_palette(base_temperature: str, hex_to_hsl_func) -> Dict[str
     return weather_palette
 
 
-def generate_alert_gradient(base_alert: str, hex_to_hsl_func, levels: int = 5) -> List[str]:
+def generate_alert_gradient(
+    base_alert: str, hex_to_hsl_func, levels: int = 5
+) -> List[str]:
     """
     Alert szintek gradiens generálása.
 
@@ -61,7 +63,7 @@ def generate_alert_gradient(base_alert: str, hex_to_hsl_func, levels: int = 5) -
         factor = i / (levels - 1)  # 0.0 → 1.0
 
         lightness = base_hsl.lightness + (30 * (1 - factor))  # 70% → 40%
-        saturation = base_hsl.saturation + (20 * factor)      # 60% → 80%
+        saturation = base_hsl.saturation + (20 * factor)  # 60% → 80%
 
         alert_color = HSLColor(base_hsl.hue, saturation, lightness)
         gradient.append(alert_color.to_hex())

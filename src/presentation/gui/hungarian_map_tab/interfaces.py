@@ -22,6 +22,7 @@ class IMapWidget:
         """Export the current map view to an HTML string or file path."""
         raise NotImplementedError
 
+
 class IMapEvents:
     """Interface for the Event Bridge."""
 
@@ -32,6 +33,7 @@ class IMapEvents:
     def handle_map_interaction(self, event_type: str, data: Any) -> None:
         """Handle a generic map interaction event."""
         raise NotImplementedError
+
 
 class IMapAnalyticsBridge:
     """Interface for the Analytics Synchronization."""

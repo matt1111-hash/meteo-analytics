@@ -18,4 +18,4 @@ FÁJL: src/presentation/gui/windows/__init__.py
 from .main_window import MainWindow
 
 # Re-export main class
-__all__ = ['MainWindow']
+__all__ = ["MainWindow"]

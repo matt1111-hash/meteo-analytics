@@ -39,11 +39,16 @@ class ProviderRouting:
         self._logger = logging.getLogger(__name__)
 
         self._logger.info("🌐 Provider routing komponensek betöltve:")
-        self._logger.info(f"🌐 - Default provider: {self.user_preferences.get_selected_provider()}")
-        self._logger.info(f"🌐 - Available providers: {list(self.provider_config.PROVIDERS.keys())}")
+        self._logger.info(
+            f"🌐 - Default provider: {self.user_preferences.get_selected_provider()}"
+        )
+        self._logger.info(
+            f"🌐 - Available providers: {list(self.provider_config.PROVIDERS.keys())}"
+        )
 
-    def select_provider_for_request(self, latitude: float, longitude: float,
-                                     start_date: str, end_date: str) -> str:
+    def select_provider_for_request(
+        self, latitude: float, longitude: float, start_date: str, end_date: str
+    ) -> str:
         """
         Smart provider selection a kérés alapján.
 
@@ -60,15 +65,17 @@ class ProviderRouting:
             # User preference ellenőrzése
             user_provider = self.user_preferences.get_selected_provider()
 
-            if user_provider != 'auto':
+            if user_provider != "auto":
                 self._logger.info(f"🌐 User forced provider: {user_provider}")
 
                 # Rate limiting ellenőrzés premium providereknél
-                if user_provider != 'open-meteo':
+                if user_provider != "open-meteo":
                     usage_summary = self.usage_tracker.get_usage_summary()
-                    if usage_summary.get('warning_level') == 'critical':
-                        self._logger.warning(f"⚠️ Provider {user_provider} rate limit exceeded, fallback to open-meteo")
-                        return 'open-meteo'
+                    if usage_summary.get("warning_level") == "critical":
+                        self._logger.warning(
+                            f"⚠️ Provider {user_provider} rate limit exceeded, fallback to open-meteo"
+                        )
+                        return "open-meteo"
 
                 return user_provider
 
@@ -96,20 +103,24 @@ class ProviderRouting:
             if is_historical or is_large_request:
                 # Meteostat jobb historikus adatokhoz
                 usage_summary = self.usage_tracker.get_usage_summary()
-                if usage_summary.get('warning_level') != 'critical':
-                    self._logger.info("🌐 Selected Meteostat for historical/large request")
-                    return 'meteostat'
+                if usage_summary.get("warning_level") != "critical":
+                    self._logger.info(
+                        "🌐 Selected Meteostat for historical/large request"
+                    )
+                    return "meteostat"
                 else:
-                    self._logger.info("🌐 Meteostat rate limited, fallback to Open-Meteo")
-                    return 'open-meteo'
+                    self._logger.info(
+                        "🌐 Meteostat rate limited, fallback to Open-Meteo"
+                    )
+                    return "open-meteo"
             else:
                 # Aktuális/közelmúlt adatokhoz Open-Meteo
                 self._logger.info("🌐 Selected Open-Meteo for recent data")
-                return 'open-meteo'
+                return "open-meteo"
 
         except Exception as e:
             self._logger.error(f"Provider selection error: {e}")
-            return 'open-meteo'  # Fallback to free provider
+            return "open-meteo"  # Fallback to free provider
 
     def track_provider_usage(self, provider_name: str) -> Optional[Dict[str, Any]]:
         """
@@ -131,25 +142,29 @@ class ProviderRouting:
                 # Usage statistics frissítése
                 usage_summary = self.usage_tracker.get_usage_summary()
                 result = {
-                    'meteostat': {
-                        'requests': usage_summary.get('meteostat_requests', 0),
-                        'limit': usage_summary.get('meteostat_limit', 10000)
+                    "meteostat": {
+                        "requests": usage_summary.get("meteostat_requests", 0),
+                        "limit": usage_summary.get("meteostat_limit", 10000),
                     },
-                    'open-meteo': {
-                        'requests': usage_summary.get('openmeteo_requests', 0),
-                        'limit': float('inf')  # Unlimited
-                    }
+                    "open-meteo": {
+                        "requests": usage_summary.get("openmeteo_requests", 0),
+                        "limit": float("inf"),  # Unlimited
+                    },
                 }
 
                 # Warning ellenőrzés
-                if provider_name != 'open-meteo':
-                    warning_level = usage_summary.get('warning_level', 'normal')
-                    usage_percent = usage_summary.get('meteostat_percentage', 0)
+                if provider_name != "open-meteo":
+                    warning_level = usage_summary.get("warning_level", "normal")
+                    usage_percent = usage_summary.get("meteostat_percentage", 0)
 
-                    if warning_level == 'critical':
-                        self._logger.critical(f"🚨 Provider {provider_name} usage critical: {usage_percent:.1f}%")
-                    elif warning_level == 'warning':
-                        self._logger.warning(f"⚠️ Provider {provider_name} usage warning: {usage_percent:.1f}%")
+                    if warning_level == "critical":
+                        self._logger.critical(
+                            f"🚨 Provider {provider_name} usage critical: {usage_percent:.1f}%"
+                        )
+                    elif warning_level == "warning":
+                        self._logger.warning(
+                            f"⚠️ Provider {provider_name} usage warning: {usage_percent:.1f}%"
+                        )
 
                 return result
             else:
@@ -177,11 +192,11 @@ class ProviderRouting:
             self.user_preferences.set_selected_provider(provider_name)
 
             # Státusz üzenet generálása
-            if provider_name == 'auto':
+            if provider_name == "auto":
                 status_msg = "🤖 Automatikus provider routing bekapcsolva"
             else:
                 provider_info = self.provider_config.PROVIDERS.get(provider_name, {})
-                provider_display = provider_info.get('name', provider_name)
+                provider_display = provider_info.get("name", provider_name)
                 status_msg = f"🌐 Provider beállítva: {provider_display}"
 
             self._logger.info(f"✅ Provider changed to: {provider_name}")
@@ -203,10 +218,10 @@ class ProviderRouting:
             usage_summary = self.usage_tracker.get_usage_summary()
 
             return {
-                'current_provider': current_provider,
-                'usage_summary': usage_summary,
-                'available_providers': list(self.provider_config.PROVIDERS.keys()),
-                'provider_configs': self.provider_config.PROVIDERS
+                "current_provider": current_provider,
+                "usage_summary": usage_summary,
+                "available_providers": list(self.provider_config.PROVIDERS.keys()),
+                "provider_configs": self.provider_config.PROVIDERS,
             }
         except Exception as e:
             self._logger.error(f"Provider info hiba: {e}")
@@ -226,30 +241,30 @@ class ProviderRouting:
             # Usage statistics signal
             usage_summary = self.usage_tracker.get_usage_summary()
             usage_data = {
-                'meteostat': {
-                    'requests': usage_summary.get('meteostat_requests', 0),
-                    'limit': usage_summary.get('meteostat_limit', 10000)
+                "meteostat": {
+                    "requests": usage_summary.get("meteostat_requests", 0),
+                    "limit": usage_summary.get("meteostat_limit", 10000),
                 },
-                'open-meteo': {
-                    'requests': usage_summary.get('openmeteo_requests', 0),
-                    'limit': float('inf')  # Unlimited
-                }
+                "open-meteo": {
+                    "requests": usage_summary.get("openmeteo_requests", 0),
+                    "limit": float("inf"),  # Unlimited
+                },
             }
 
             # Warning ellenőrzés
-            warning_level = usage_summary.get('warning_level', 'normal')
-            usage_percent = usage_summary.get('meteostat_percentage', 0)
+            warning_level = usage_summary.get("warning_level", "normal")
+            usage_percent = usage_summary.get("meteostat_percentage", 0)
 
             warning_data = None
-            if warning_level in ['critical', 'warning']:
-                warning_data = ('meteostat', int(usage_percent))
+            if warning_level in ["critical", "warning"]:
+                warning_data = ("meteostat", int(usage_percent))
 
             self._logger.info("✅ User preferences betöltve")
 
             return {
-                'selected_provider': selected_provider,
-                'usage_data': usage_data,
-                'warning_data': warning_data
+                "selected_provider": selected_provider,
+                "usage_data": usage_data,
+                "warning_data": warning_data,
             }
 
         except Exception as e:

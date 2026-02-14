@@ -32,16 +32,16 @@ class MeteorologicalColorMaps:
         """🌧️ Csapadék színskála - 0mm = FEHÉR!"""
         precipitation_levels = [0, 1, 5, 10, 20, 30, 40, 50, 80, 100]
         precipitation_colors = [
-            '#FFFFFF',  # 0 mm - FEHÉR (száraz nap!)
-            '#E6F3FF',  # 1 mm - nagyon világoskék
-            '#CCE7FF',  # 5 mm - világoskék
-            '#99D6FF',  # 10 mm - kék
-            '#66C2FF',  # 20 mm - sötétkék
-            '#3399FF',  # 30 mm - erős kék
-            '#0066CC',  # 40 mm - sötét kék
-            '#004499',  # 50 mm - nagyon sötét kék
-            '#002266',  # 80 mm - sötétbordó
-            '#001133'   # 100+ mm - fekete-kék
+            "#FFFFFF",  # 0 mm - FEHÉR (száraz nap!)
+            "#E6F3FF",  # 1 mm - nagyon világoskék
+            "#CCE7FF",  # 5 mm - világoskék
+            "#99D6FF",  # 10 mm - kék
+            "#66C2FF",  # 20 mm - sötétkék
+            "#3399FF",  # 30 mm - erős kék
+            "#0066CC",  # 40 mm - sötét kék
+            "#004499",  # 50 mm - nagyon sötét kék
+            "#002266",  # 80 mm - sötétbordó
+            "#001133",  # 100+ mm - fekete-kék
         ]
 
         cmap = mcolors.ListedColormap(precipitation_colors)
@@ -69,42 +69,40 @@ class MeteorologicalColorMaps:
 
         # 🎯 BEAUFORT SZINTŰ HATÁROK (km/h) - 13 FOKOZAT
         beaufort_levels = [
-            0,    # 0: Szélcsend
-            1,    # 1: Gyenge szellő
-            6,    # 2: Enyhe szél
-            11,   # 3: Gyenge szél
-            19,   # 4: Mérsékelt szél
-            29,   # 5: Élénk szél
-            39,   # 6: Erős szél
-            49,   # 7: Viharos szél
-            60,   # 8: Élénk viharos szél
-            72,   # 9: Heves vihar
-            85,   # 10: Dühöngő vihar
+            0,  # 0: Szélcsend
+            1,  # 1: Gyenge szellő
+            6,  # 2: Enyhe szél
+            11,  # 3: Gyenge szél
+            19,  # 4: Mérsékelt szél
+            29,  # 5: Élénk szél
+            39,  # 6: Erős szél
+            49,  # 7: Viharos szél
+            60,  # 8: Élénk viharos szél
+            72,  # 9: Heves vihar
+            85,  # 10: Dühöngő vihar
             100,  # 11: Heves szélvész
             115,  # 12: Orkán
-            150   # 12+: Szuper orkán (colorbar határhoz)
+            150,  # 12+: Szuper orkán (colorbar határhoz)
         ]
 
         # 🌈 BEAUFORT PROGRESSZÍV SZÍNPALETTA - INTUITÍV ÁTMENET
         beaufort_colors = [
             # === ALAPFOK ZÓNA (0-5): NYUGODT SZÍNEK ===
-            '#FFFFFF',  # 0: Szélcsend - Tiszta fehér
-            '#F0F8FF',  # 1: Gyenge szellő - Alice blue (nagyon halvány kék)
-            '#E6F3FF',  # 2: Enyhe szél - Világos égkék
-            '#CCE7FF',  # 3: Gyenge szél - Világosabb kék
-            '#90EE90',  # 4: Mérsékelt szél - Világos zöld (természet)
-            '#32CD32',  # 5: Élénk szél - Lime zöld (aktív, de biztonságos)
-
+            "#FFFFFF",  # 0: Szélcsend - Tiszta fehér
+            "#F0F8FF",  # 1: Gyenge szellő - Alice blue (nagyon halvány kék)
+            "#E6F3FF",  # 2: Enyhe szél - Világos égkék
+            "#CCE7FF",  # 3: Gyenge szél - Világosabb kék
+            "#90EE90",  # 4: Mérsékelt szél - Világos zöld (természet)
+            "#32CD32",  # 5: Élénk szél - Lime zöld (aktív, de biztonságos)
             # === ELSŐFOK ZÓNA (6-7): FIGYELMEZTETŐ SZÍNEK ===
-            '#FFD700',  # 6: Erős szél - Arany sárga (FIGYELEM!)
-            '#FFA500',  # 7: Viharos szél - Narancs (FOKOZOTT FIGYELEM!)
-
+            "#FFD700",  # 6: Erős szél - Arany sárga (FIGYELEM!)
+            "#FFA500",  # 7: Viharos szél - Narancs (FOKOZOTT FIGYELEM!)
             # === MÁSODFOK ZÓNA (8-12): VESZÉLY SZÍNEK ===
-            '#FF6347',  # 8: Élénk viharos - Paradicsom piros (VESZÉLY!)
-            '#FF4500',  # 9: Heves vihar - Narancs-piros (NAGY VESZÉLY!)
-            '#DC143C',  # 10: Dühöngő vihar - Crimson piros (SZÉLSŐSÉGES!)
-            '#8B008B',  # 11: Heves szélvész - Sötét magenta (KRITIKUS!)
-            '#4B0082'   # 12: Orkán - Indigo ibolya (KATASZTROFÁLIS!)
+            "#FF6347",  # 8: Élénk viharos - Paradicsom piros (VESZÉLY!)
+            "#FF4500",  # 9: Heves vihar - Narancs-piros (NAGY VESZÉLY!)
+            "#DC143C",  # 10: Dühöngő vihar - Crimson piros (SZÉLSŐSÉGES!)
+            "#8B008B",  # 11: Heves szélvész - Sötét magenta (KRITIKUS!)
+            "#4B0082",  # 12: Orkán - Indigo ibolya (KATASZTROFÁLIS!)
         ]
 
         # 🎨 MATPLOTLIB COLORMAP OBJEKTUMOK

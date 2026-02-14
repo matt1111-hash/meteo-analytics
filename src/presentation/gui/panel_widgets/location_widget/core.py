@@ -12,7 +12,6 @@ from PySide6.QtWidgets import QWidget
 
 from src.domain.entities.universal_location import UniversalLocation
 from src.domain.ports import CityManagerPort
-
 from src.presentation.gui.theme_manager import get_theme_manager
 
 
@@ -38,7 +37,9 @@ class LocationWidget(QWidget):
     # === KIMENŐ SIGNALOK ===
     search_requested = Signal(str)  # search_query
     location_changed = Signal(object)  # UniversalLocation object
-    city_selected = Signal(str, float, float, dict)  # name, lat, lon, metadata (compatibility)
+    city_selected = Signal(
+        str, float, float, dict
+    )  # name, lat, lon, metadata (compatibility)
 
     def __init__(self, city_manager: CityManagerPort, parent: Optional[QWidget] = None):
         """
@@ -60,10 +61,10 @@ class LocationWidget(QWidget):
         self._updating_state = False
 
         # UI init
-        from .ui_builder import UIInitializer
-        from .signal_handlers import SignalHandlers
         from .refresh_handler import RefreshHandler
+        from .signal_handlers import SignalHandlers
         from .theme_handler import ThemeHandler
+        from .ui_builder import UIInitializer
 
         self.ui = UIInitializer(self)
         self.signals = SignalHandlers(self)
@@ -89,7 +90,7 @@ class LocationWidget(QWidget):
             "current_location": self.current_location,
             "current_city_data": self.current_city_data,
             "has_location": self.current_city_data is not None,
-            "is_valid": self.is_valid()
+            "is_valid": self.is_valid(),
         }
 
     def set_state(self, state: Dict[str, Any]) -> bool:
@@ -112,7 +113,7 @@ class LocationWidget(QWidget):
                 self.signals._update_location_info(
                     city_data.get("name", "Unknown"),
                     city_data.get("latitude", 0.0),
-                    city_data.get("longitude", 0.0)
+                    city_data.get("longitude", 0.0),
                 )
                 self.ui.clear_btn.setEnabled(True)
             else:
@@ -171,7 +172,7 @@ class LocationWidget(QWidget):
 
     def update_search_results(self, results) -> None:
         """Search results frissítése (compatibility)."""
-        if hasattr(self.ui.location_selector, 'update_search_results'):
+        if hasattr(self.ui.location_selector, "update_search_results"):
             self.ui.location_selector.update_search_results(results)
 
     def refresh_ui(self) -> None:

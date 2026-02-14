@@ -1,4 +1,5 @@
 """Weather Data Handler Core."""
+
 import logging
 from typing import Any, Dict, Optional
 
@@ -43,7 +44,7 @@ class WeatherDataHandler(QObject):
         self._logger.info("on_weather_data_completed called")
 
         try:
-            used_provider = data.get('provider', 'unknown')
+            used_provider = data.get("provider", "unknown")
             self._logger.info(f"Weather data from provider: {used_provider}")
 
             processed_data = process_weather_data(data, self.current_city_data)
@@ -52,24 +53,31 @@ class WeatherDataHandler(QObject):
                 self.error_occurred.emit("No processable weather data")
                 return
 
-            processed_data['provider'] = used_provider
+            processed_data["provider"] = used_provider
             self.current_weather_data = processed_data
 
             self._save_weather_to_database(processed_data)
 
-            city_name = self.current_city_data.get('name', 'Unknown') if self.current_city_data else 'Unknown'
-            record_count = len(processed_data.get('daily', {}).get('time', []))
+            city_name = (
+                self.current_city_data.get("name", "Unknown")
+                if self.current_city_data
+                else "Unknown"
+            )
+            record_count = len(processed_data.get("daily", {}).get("time", []))
 
             wind_gusts_info = ""
-            if 'wind_gusts_max' in processed_data.get('daily', {}):
-                wind_gusts_max = processed_data['daily']['wind_gusts_max']
+            if "wind_gusts_max" in processed_data.get("daily", {}):
+                wind_gusts_max = processed_data["daily"]["wind_gusts_max"]
                 if wind_gusts_max:
                     max_gust = max([g for g in wind_gusts_max if g is not None])
                     wind_gusts_info = f", max gust: {max_gust:.1f} km/h"
 
             from src.config import ProviderConfig
+
             provider_config = ProviderConfig()
-            provider_display = provider_config.PROVIDERS.get(used_provider, {}).get('name', used_provider)
+            provider_display = provider_config.PROVIDERS.get(used_provider, {}).get(
+                "name", used_provider
+            )
 
             self.status_updated.emit(
                 f"Data received ({provider_display}): {city_name} ({record_count} days{wind_gusts_info})"
@@ -81,15 +89,14 @@ class WeatherDataHandler(QObject):
             self._logger.error(f"Weather data processing error: {e}")
             self.error_occurred.emit(f"Processing error: {e}")
 
-    def _process_weather_data(self, raw_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _process_weather_data(
+        self, raw_data: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """Process weather data with wind support."""
         return process_weather_data(raw_data, self.current_city_data)
 
     def _calculate_daily_max_wind_gusts(
-        self,
-        hourly_gusts: list,
-        hourly_times: list,
-        daily_times: list
+        self, hourly_gusts: list, hourly_times: list, daily_times: list
     ) -> list:
         """Calculate daily maximum wind gusts."""
         return calculate_daily_max_wind_gusts(hourly_gusts, hourly_times, daily_times)

@@ -36,24 +36,29 @@ class MeteostatProvider(WeatherProvider):
         self.api_key = os.getenv("METEOSTAT_API_KEY")
 
         if self.api_key:
-            self.session.headers.update({
-                "User-Agent": APIConfig.USER_AGENT,
-                "Accept": "application/json",
-                "X-RapidAPI-Key": self.api_key,
-                "X-RapidAPI-Host": "meteostat.p.rapidapi.com"
-            })
+            self.session.headers.update(
+                {
+                    "User-Agent": APIConfig.USER_AGENT,
+                    "Accept": "application/json",
+                    "X-RapidAPI-Key": self.api_key,
+                    "X-RapidAPI-Host": "meteostat.p.rapidapi.com",
+                }
+            )
 
         self.min_request_interval = APIConfig.METEOSTAT_RATE_LIMIT
         self.max_years_per_request = 10
 
-        logger.info(f"MeteostatProvider - max {self.max_years_per_request} years/request")
+        logger.info(
+            f"MeteostatProvider - max {self.max_years_per_request} years/request"
+        )
 
     def validate_provider(self) -> bool:
         """Validate Meteostat API key."""
         return bool(self.api_key and len(self.api_key.strip()) >= 32)
 
-    def get_weather_data(self, latitude: float, longitude: float,
-                        start_date: str, end_date: str) -> List[Dict[str, Any]]:
+    def get_weather_data(
+        self, latitude: float, longitude: float, start_date: str, end_date: str
+    ) -> List[Dict[str, Any]]:
         """
         Get weather data with smart dispatch.
 
@@ -69,24 +74,30 @@ class MeteostatProvider(WeatherProvider):
         logger.info(f"Meteostat query: {years_diff:.1f} years")
 
         if years_diff > self.max_years_per_request:
-            return self.get_weather_data_batched(latitude, longitude, start_date, end_date)
+            return self.get_weather_data_batched(
+                latitude, longitude, start_date, end_date
+            )
         else:
-            return self.get_weather_data_single(latitude, longitude, start_date, end_date)
+            return self.get_weather_data_single(
+                latitude, longitude, start_date, end_date
+            )
 
-    def get_weather_data_single(self, latitude: float, longitude: float,
-                               start_date: str, end_date: str) -> List[Dict[str, Any]]:
+    def get_weather_data_single(
+        self, latitude: float, longitude: float, start_date: str, end_date: str
+    ) -> List[Dict[str, Any]]:
         """Single Meteostat API request."""
         params = {
             "lat": latitude,
             "lon": longitude,
             "start": start_date,
-            "end": end_date
+            "end": end_date,
         }
 
         return self._make_api_request(params)
 
-    def get_weather_data_batched(self, latitude: float, longitude: float,
-                                start_date: str, end_date: str) -> List[Dict[str, Any]]:
+    def get_weather_data_batched(
+        self, latitude: float, longitude: float, start_date: str, end_date: str
+    ) -> List[Dict[str, Any]]:
         """Multi-year query with batching logic."""
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")
@@ -96,8 +107,10 @@ class MeteostatProvider(WeatherProvider):
 
         while current_start <= end_dt:
             current_end = min(
-                current_start.replace(year=current_start.year + self.max_years_per_request),
-                end_dt
+                current_start.replace(
+                    year=current_start.year + self.max_years_per_request
+                ),
+                end_dt,
             )
             batches.append((current_start, current_end))
             current_start = current_end + timedelta(days=1)
@@ -124,7 +137,7 @@ class MeteostatProvider(WeatherProvider):
                 logger.error(f"Meteostat batch {i} error: {e}")
                 continue
 
-        return sorted(all_data, key=lambda x: x.get('date', ''))
+        return sorted(all_data, key=lambda x: x.get("date", ""))
 
     def _make_api_request(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Execute Meteostat API request."""
@@ -133,7 +146,9 @@ class MeteostatProvider(WeatherProvider):
         endpoint = f"{self.base_url}/point/daily"
 
         try:
-            response = self.session.get(endpoint, params=params, timeout=APIConfig.REQUEST_TIMEOUT)
+            response = self.session.get(
+                endpoint, params=params, timeout=APIConfig.REQUEST_TIMEOUT
+            )
             self._update_request_tracking()
 
             if response.status_code == 200:
@@ -169,7 +184,7 @@ class MeteostatProvider(WeatherProvider):
             "wspd": "windspeed_10m_max",
             "wpgt": "wind_gusts_10m_max",
             "wdir": "winddirection_10m_dominant",
-            "tsun": "sunshine_duration"
+            "tsun": "sunshine_duration",
         }
 
         weather_data = []
@@ -182,13 +197,17 @@ class MeteostatProvider(WeatherProvider):
                     daily_record[openmeteo_field] = value
 
             if "temperature_2m_max" in daily_record:
-                daily_record["apparent_temperature_max"] = daily_record["temperature_2m_max"]
+                daily_record["apparent_temperature_max"] = daily_record[
+                    "temperature_2m_max"
+                ]
             if "temperature_2m_min" in daily_record:
-                daily_record["apparent_temperature_min"] = daily_record["temperature_2m_min"]
+                daily_record["apparent_temperature_min"] = daily_record[
+                    "temperature_2m_min"
+                ]
 
             weather_data.append(daily_record)
 
         return weather_data
 
 
-__all__ = ['MeteostatProvider']
+__all__ = ["MeteostatProvider"]

@@ -29,7 +29,9 @@ def demo_hungarian_location_selector_with_state_management_fix():
 
     # Fő ablak
     window = QMainWindow()
-    window.setWindowTitle("🗺️ Hungarian Location Selector Demo - GET_CURRENT_CITY() STATE MANAGEMENT FIX")
+    window.setWindowTitle(
+        "🗺️ Hungarian Location Selector Demo - GET_CURRENT_CITY() STATE MANAGEMENT FIX"
+    )
     window.setGeometry(100, 100, 1200, 700)
 
     # Central widget
@@ -39,14 +41,19 @@ def demo_hungarian_location_selector_with_state_management_fix():
     layout = QVBoxLayout(central_widget)
 
     # Információs header
-    info_label = QLabel("🔧 GET_CURRENT_CITY() STATE MANAGEMENT FIX: Enhanced debug logging + robust state handling!")
-    info_label.setStyleSheet("background-color: #27AE60; color: white; padding: 10px; font-weight: bold;")
+    info_label = QLabel(
+        "🔧 GET_CURRENT_CITY() STATE MANAGEMENT FIX: Enhanced debug logging + robust state handling!"
+    )
+    info_label.setStyleSheet(
+        "background-color: #27AE60; color: white; padding: 10px; font-weight: bold;"
+    )
     layout.addWidget(info_label)
 
     main_layout = QHBoxLayout()
 
     # Location selector
     from .core import HungarianLocationSelector
+
     location_selector = HungarianLocationSelector()
     main_layout.addWidget(location_selector)
 
@@ -86,16 +93,24 @@ def demo_hungarian_location_selector_with_state_management_fix():
         is_valid = location_selector.is_valid()
 
         current_city_label.setText(f"get_current_city(): {current_city}")
-        coordinates_label.setText(f"get_current_coordinates(): {coordinates[0]:.4f}, {coordinates[1]:.4f}")
-        location_data_label.setText(f"get_selected_location_data(): valid={location_data['valid']}, city={location_data['city']}")
+        coordinates_label.setText(
+            f"get_current_coordinates(): {coordinates[0]:.4f}, {coordinates[1]:.4f}"
+        )
+        location_data_label.setText(
+            f"get_selected_location_data(): valid={location_data['valid']}, city={location_data['city']}"
+        )
         is_valid_label.setText(f"is_valid(): {is_valid}")
 
     def on_region_selected(region_data):
-        print(f"🏛️ Statisztikai régió kiválasztva: {region_data.display_name} ({region_data.nuts_code})")
+        print(
+            f"🏛️ Statisztikai régió kiválasztva: {region_data.display_name} ({region_data.nuts_code})"
+        )
         print(f"   Megyék: {region_data.counties}")
         print(f"   Admin központ: {region_data.administrative_center}")
 
-        region_info_label.setText(f"Régió: {region_data.display_name} ({region_data.nuts_code})")
+        region_info_label.setText(
+            f"Régió: {region_data.display_name} ({region_data.nuts_code})"
+        )
         update_debug_info()
 
     def on_county_selected(county_name, geometry):
@@ -109,13 +124,17 @@ def demo_hungarian_location_selector_with_state_management_fix():
         print(f"📍 Lokáció kiválasztva: {location.display_name}")
         print(f"   Koordináták: {location.latitude:.4f}, {location.longitude:.4f}")
         print(f"   NUTS kód: {location.metadata.get('nuts_code', 'N/A')}")
-        print(f"   Admin központ: {location.metadata.get('administrative_center', 'N/A')}")
+        print(
+            f"   Admin központ: {location.metadata.get('administrative_center', 'N/A')}"
+        )
         update_debug_info()
 
     def on_selection_changed():
         """Bármilyen változás esetén frissítjük a debug info-t."""
         update_debug_info()
-        print(f"🔧 Selection changed - get_current_city(): {location_selector.get_current_city()}")
+        print(
+            f"🔧 Selection changed - get_current_city(): {location_selector.get_current_city()}"
+        )
 
     def on_map_update_requested(bounds):
         print(f"🎯 Térkép frissítés: {bounds}")
@@ -129,7 +148,9 @@ def demo_hungarian_location_selector_with_state_management_fix():
 
     window.show()
 
-    print("🗺️ Hungarian Location Selector Demo elindítva - GET_CURRENT_CITY() STATE MANAGEMENT JAVÍTVA!")
+    print(
+        "🗺️ Hungarian Location Selector Demo elindítva - GET_CURRENT_CITY() STATE MANAGEMENT JAVÍTVA!"
+    )
     print("✅ JAVÍTÁSOK:")
     print("   🔧 _on_county_changed() enhanced debug logging")
     print("   🔧 get_current_city() robust defensive programming")
@@ -141,7 +162,9 @@ def demo_hungarian_location_selector_with_state_management_fix():
     print("   1. Válassz 'Észak-Magyarország' régiót")
     print("   2. Ellenőrizd: Borsod-Abaúj-Zemplén, Heves, Nógrád megyék jelennek meg")
     print("   3. Válassz egy megyét (pl. 'Borsod-Abaúj-Zemplén')")
-    print("   4. Ellenőrizd a debug panel-en: get_current_city() helyes értéket ad vissza!")
+    print(
+        "   4. Ellenőrizd a debug panel-en: get_current_city() helyes értéket ad vissza!"
+    )
     print("   5. Ellenőrizd a konzol logging-ot a state frissítésről")
     print()
     print("🔧 QUERY_CONTROL_WIDGET KOMPATIBILITÁSI METÓDUSOK:")

@@ -30,10 +30,14 @@ class CityManagerDB:
     - Hungarian settlements from hungarian_settlements.db (3200+ settlements)
     """
 
-    def __init__(self, db_path: Optional[Path] = None, hungarian_db_path: Optional[Path] = None):
+    def __init__(
+        self, db_path: Optional[Path] = None, hungarian_db_path: Optional[Path] = None
+    ):
         """Initialize database connections."""
         self.db_path = db_path or (DATA_DIR / "cities.db")
-        self.hungarian_db_path = hungarian_db_path or (DATA_DIR / "hungarian_settlements.db")
+        self.hungarian_db_path = hungarian_db_path or (
+            DATA_DIR / "hungarian_settlements.db"
+        )
 
         self.connection: Optional[sqlite3.Connection] = None
         self.hungarian_connection: Optional[sqlite3.Connection] = None
@@ -68,16 +72,22 @@ class CityManagerDB:
                 self.connection = None
 
         if not self.hungarian_db_path.exists():
-            logger.warning(f"Hungarian settlements database not found: {self.hungarian_db_path}")
+            logger.warning(
+                f"Hungarian settlements database not found: {self.hungarian_db_path}"
+            )
             logger.warning("   Run: python scripts/hungarian_settlements_importer.py")
         else:
             try:
-                self.hungarian_connection = sqlite3.connect(self.hungarian_db_path, check_same_thread=False)
+                self.hungarian_connection = sqlite3.connect(
+                    self.hungarian_db_path, check_same_thread=False
+                )
                 self.hungarian_connection.row_factory = sqlite3.Row
                 self._validate_hungarian_database_structure()
 
                 total_hungarian = self._get_total_hungarian_settlements_count()
-                logger.info(f"Hungarian settlements database: {total_hungarian:,} settlements")
+                logger.info(
+                    f"Hungarian settlements database: {total_hungarian:,} settlements"
+                )
 
             except sqlite3.Error as e:
                 logger.error(f"Hungarian database connection error: {e}")
@@ -96,13 +106,24 @@ class CityManagerDB:
         columns = [row[1] for row in cursor.fetchall()]
 
         required_columns = [
-            "id", "city", "lat", "lon", "country", "country_code",
-            "population", "continent", "admin_name", "capital", "timezone"
+            "id",
+            "city",
+            "lat",
+            "lon",
+            "country",
+            "country_code",
+            "population",
+            "continent",
+            "admin_name",
+            "capital",
+            "timezone",
         ]
 
         missing_columns = [col for col in required_columns if col not in columns]
         if missing_columns:
-            raise CityDatabaseError(f"Missing columns in cities table: {missing_columns}")
+            raise CityDatabaseError(
+                f"Missing columns in cities table: {missing_columns}"
+            )
 
         logger.debug("Global database structure validated")
 
@@ -116,13 +137,22 @@ class CityManagerDB:
         columns = [row[1] for row in cursor.fetchall()]
 
         required_columns = [
-            "id", "name", "latitude", "longitude", "megye", "settlement_type",
-            "population", "climate_zone", "region_priority"
+            "id",
+            "name",
+            "latitude",
+            "longitude",
+            "megye",
+            "settlement_type",
+            "population",
+            "climate_zone",
+            "region_priority",
         ]
 
         missing_columns = [col for col in required_columns if col not in columns]
         if missing_columns:
-            raise CityDatabaseError(f"Missing columns in hungarian_settlements table: {missing_columns}")
+            raise CityDatabaseError(
+                f"Missing columns in hungarian_settlements table: {missing_columns}"
+            )
 
         logger.debug("Hungarian database structure validated")
 
@@ -142,7 +172,9 @@ class CityManagerDB:
         cursor.execute("SELECT COUNT(*) FROM hungarian_settlements")
         return cursor.fetchone()[0]
 
-    def _execute_query(self, sql: str, params: Tuple = (), use_hungarian: bool = False) -> List[sqlite3.Row]:
+    def _execute_query(
+        self, sql: str, params: Tuple = (), use_hungarian: bool = False
+    ) -> List[sqlite3.Row]:
         """Execute SQL query on appropriate database."""
         connection = self.hungarian_connection if use_hungarian else self.connection
 
@@ -161,7 +193,9 @@ class CityManagerDB:
                 self.query_count += 1
             self.last_query_time = datetime.now()
 
-            logger.debug(f"SQL query executed ({'Hungarian' if use_hungarian else 'Global'}): {len(results)} results")
+            logger.debug(
+                f"SQL query executed ({'Hungarian' if use_hungarian else 'Global'}): {len(results)} results"
+            )
             return results
 
         except sqlite3.Error as e:
@@ -181,4 +215,4 @@ class CityManagerDB:
         logger.info("Dual database connections closed")
 
 
-__all__ = ['CityManagerDB']
+__all__ = ["CityManagerDB"]

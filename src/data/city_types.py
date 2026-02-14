@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 class RegionType(Enum):
     """Region type enumeration."""
+
     GLOBAL = "global"
     CONTINENT = "continent"
     COUNTRY = "country"
@@ -26,6 +27,7 @@ class RegionType(Enum):
 
 class CitySort(Enum):
     """City sorting options."""
+
     POPULATION_DESC = "population_desc"
     POPULATION_ASC = "population_asc"
     NAME_ASC = "name_asc"
@@ -37,6 +39,7 @@ class CitySort(Enum):
 @dataclass
 class City:
     """City data structure with Hungarian settlements support."""
+
     id: int
     city: str
     lat: float
@@ -98,11 +101,11 @@ class City:
             "terulet_hektar": self.terulet_hektar,
             "lakasok_szama": self.lakasok_szama,
             "distance_km": self.distance_km,
-            "display_name": self.display_name
+            "display_name": self.display_name,
         }
 
     @classmethod
-    def from_db_row(cls, row: Tuple) -> 'City':
+    def from_db_row(cls, row: Tuple) -> "City":
         """Create City object from database row (original format)."""
         return cls(
             id=row[0],
@@ -115,36 +118,37 @@ class City:
             continent=row[7],
             admin_name=row[8],
             capital=row[9],
-            timezone=row[10]
+            timezone=row[10],
         )
 
     @classmethod
-    def from_hungarian_settlement(cls, row: sqlite3.Row) -> 'City':
+    def from_hungarian_settlement(cls, row: sqlite3.Row) -> "City":
         """Create City object from Hungarian settlement row."""
         return cls(
-            id=row['id'],
-            city=row['name'],
-            lat=row['latitude'],
-            lon=row['longitude'],
+            id=row["id"],
+            city=row["name"],
+            lat=row["latitude"],
+            lon=row["longitude"],
             country="Magyarország",
             country_code="HU",
-            population=row['population'],
+            population=row["population"],
             continent="Europe",
-            admin_name=row['megye'],
-            settlement_type=row['settlement_type'],
-            megye=row['megye'],
-            jaras=row['jaras'] if row['jaras'] else None,
-            climate_zone=row['climate_zone'],
-            region_priority=row['region_priority'],
+            admin_name=row["megye"],
+            settlement_type=row["settlement_type"],
+            megye=row["megye"],
+            jaras=row["jaras"] if row["jaras"] else None,
+            climate_zone=row["climate_zone"],
+            region_priority=row["region_priority"],
             is_hungarian=True,
-            terulet_hektar=row['terulet_hektar'],
-            lakasok_szama=row['lakasok_szama']
+            terulet_hektar=row["terulet_hektar"],
+            lakasok_szama=row["lakasok_szama"],
         )
 
 
 @dataclass
 class CityQuery:
     """City query parameters with Hungarian support."""
+
     region_type: RegionType
     region_value: Optional[str] = None
     limit: int = 50
@@ -166,13 +170,8 @@ class CityQuery:
 
 class CityDatabaseError(Exception):
     """City database specific errors."""
+
     pass
 
 
-__all__ = [
-    'RegionType',
-    'CitySort',
-    'City',
-    'CityQuery',
-    'CityDatabaseError'
-]
+__all__ = ["RegionType", "CitySort", "City", "CityQuery", "CityDatabaseError"]

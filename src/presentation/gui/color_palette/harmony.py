@@ -12,8 +12,7 @@ from src.presentation.gui.color_palette.types import ColorHarmony, HSLColor
 
 
 def generate_harmony(
-    base_color: HSLColor,
-    harmony_type: ColorHarmony
+    base_color: HSLColor, harmony_type: ColorHarmony
 ) -> Dict[str, str]:
     """
     Színharmónia generálása base szín alapján.

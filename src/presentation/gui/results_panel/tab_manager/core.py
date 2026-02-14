@@ -1,6 +1,7 @@
 """Tab Manager Core - initialization and tab creation."""
+
 import logging
-from typing import Any, Optional
+from typing import Optional
 
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QLabel, QTabWidget, QVBoxLayout, QWidget
@@ -41,28 +42,35 @@ class TabManager(QObject):
         # QuickOverviewTab
         try:
             from ..quick_overview_tab import QuickOverviewTab
+
             self.overview_tab = QuickOverviewTab()
             self.tab_widget.addTab(self.overview_tab, "📊 Gyors Áttekintés")
             self._overview_available = True
         except ImportError as e:
             self._logger.warning(f"QuickOverviewTab import failed: {e}")
-            self.overview_tab = self._create_fallback_tab("📊 Gyors Áttekintés (Fallback)")
+            self.overview_tab = self._create_fallback_tab(
+                "📊 Gyors Áttekintés (Fallback)"
+            )
             self.tab_widget.addTab(self.overview_tab, "📊 Gyors Áttekintés")
 
         # DetailedChartsTab
         try:
             from ..detailed_charts_tab import DetailedChartsTab
+
             self.charts_tab = DetailedChartsTab()
             self.tab_widget.addTab(self.charts_tab, "📈 Részletes Diagramok")
             self._charts_available = True
         except ImportError as e:
             self._logger.warning(f"DetailedChartsTab import failed: {e}")
-            self.charts_tab = self._create_fallback_tab("📈 Részletes Diagramok (Fallback)")
+            self.charts_tab = self._create_fallback_tab(
+                "📈 Részletes Diagramok (Fallback)"
+            )
             self.tab_widget.addTab(self.charts_tab, "📈 Részletes Diagramok")
 
         # DataTableTab
         try:
             from ..data_table_tab import DataTableTab
+
             self.table_tab = DataTableTab()
             self.tab_widget.addTab(self.table_tab, "📋 Adattáblázat")
             self._table_available = True
@@ -74,17 +82,21 @@ class TabManager(QObject):
         # ExtremeEventsTab
         try:
             from ..extreme_events_tab import ExtremeEventsTab
+
             self.extreme_tab = ExtremeEventsTab()
             self.tab_widget.addTab(self.extreme_tab, "⚡ Extrém Események")
             self._extreme_available = True
         except ImportError as e:
             self._logger.warning(f"ExtremeEventsTab import failed: {e}")
-            self.extreme_tab = self._create_fallback_tab("⚡ Extrém Események (Fallback)")
+            self.extreme_tab = self._create_fallback_tab(
+                "⚡ Extrém Események (Fallback)"
+            )
             self.tab_widget.addTab(self.extreme_tab, "⚡ Extrém Események")
 
         # WindyDaysTab
         try:
             from ..windy_days_tab import WindyDaysTab
+
             self.windy_days_tab = WindyDaysTab()
             self.tab_widget.addTab(self.windy_days_tab, "🌪️ Szeles Napok")
             self._windy_days_available = True
@@ -107,7 +119,11 @@ class TabManager(QObject):
             return
 
         tab_indices = {
-            "overview": 0, "charts": 1, "table": 2, "extreme": 3, "windy_days": 4
+            "overview": 0,
+            "charts": 1,
+            "table": 2,
+            "extreme": 3,
+            "windy_days": 4,
         }
 
         if tab_name in tab_indices:

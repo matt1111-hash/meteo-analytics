@@ -1,10 +1,11 @@
 """Metadata API routes - available metrics, regions, etc."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter
 
-from src.analytics.multi_city_types import REGIONS
 from src.analytics.multi_city_engine_core import MultiCityEngine
+from src.analytics.multi_city_types import REGIONS
 from src.domain.value_objects.enums import AnalyticsMetric
 
 router = APIRouter(prefix="/api/weather", tags=["metadata"])
@@ -98,7 +99,9 @@ async def get_query_types() -> dict:
         formatted_types[query_key] = {
             "question_template": query_config.get("question_template", ""),
             "metric": query_config.get("metric", ""),
-            "metric_enum": query_config.get("metric_enum", "").value if hasattr(query_config.get("metric_enum", ""), "value") else str(query_config.get("metric_enum", "")),
+            "metric_enum": query_config.get("metric_enum", "").value
+            if hasattr(query_config.get("metric_enum", ""), "value")
+            else str(query_config.get("metric_enum", "")),
             "sort_desc": query_config.get("sort_desc", True),
         }
 

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ChartManager:
     """Handle chart updates and clearing."""
 
-    def __init__(self, container: 'ChartsContainer'):
+    def __init__(self, container: "ChartsContainer"):
         """
         Initialize chart manager.
 
@@ -76,6 +76,7 @@ class ChartManager:
         except Exception as e:
             print(f"❌ DEBUG: ChartsContainer frissítési hiba: {e}")
             import traceback
+
             print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
 
     def clear_all(self) -> None:
@@ -83,9 +84,12 @@ class ChartManager:
         self._container.current_data = None
 
         charts = [
-            self._container.temp_chart, self._container.precip_chart,
-            self._container.wind_chart, self._container.heatmap_chart,
-            self._container.windrose_chart, self._container.comparison_chart
+            self._container.temp_chart,
+            self._container.precip_chart,
+            self._container.wind_chart,
+            self._container.heatmap_chart,
+            self._container.windrose_chart,
+            self._container.comparison_chart,
         ]
 
         for chart in charts:
@@ -110,10 +114,10 @@ class ChartManager:
 
     def _debug_final_status(self) -> None:
         """Debug final chart status."""
-        if hasattr(self._container.wind_chart, 'current_data'):
+        if hasattr(self._container.wind_chart, "current_data"):
             status = "VAN" if self._container.wind_chart.current_data else "NINCS"
             print(f"🌪️ FINAL DEBUG: wind_chart.current_data: {status}")
 
-        if hasattr(self._container.windrose_chart, 'current_data'):
+        if hasattr(self._container.windrose_chart, "current_data"):
             status = "VAN" if self._container.windrose_chart.current_data else "NINCS"
             print(f"🌹 FINAL DEBUG: windrose_chart.current_data: {status}")

@@ -47,20 +47,17 @@ from .geo_utils_region import GeoUtilsRegion
 
 __all__ = [
     # Types
-    'DistanceUnit',
-    'CoordinateSystem',
-    'GeoPoint',
-    'BoundingBox',
-    'GeographicRegion',
-
+    "DistanceUnit",
+    "CoordinateSystem",
+    "GeoPoint",
+    "BoundingBox",
+    "GeographicRegion",
     # Calculator
-    'DistanceCalculator',
-
+    "DistanceCalculator",
     # GeoUtils classes
-    'GeoUtils',
-    'GeoUtilsRegion',
-    'GeoUtilsAnalytics',
-
+    "GeoUtils",
+    "GeoUtilsRegion",
+    "GeoUtilsAnalytics",
     # Demo
-    'demo_geo_utils'
+    "demo_geo_utils",
 ]

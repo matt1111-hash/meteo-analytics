@@ -92,7 +92,9 @@ def calculate_monthly_windy_stats(windy_days_data: pd.DataFrame) -> list[WindyDa
 
                     logger.debug(f"🔍 HIÁNYZÓ HÓNAP KITÖLTVE: {year}/{month}")
 
-                month_name = MONTHS_HU[month - 1] if 1 <= month <= 12 else f"Hónap {month}"
+                month_name = (
+                    MONTHS_HU[month - 1] if 1 <= month <= 12 else f"Hónap {month}"
+                )
 
                 stat = WindyDayStats(
                     year=year,

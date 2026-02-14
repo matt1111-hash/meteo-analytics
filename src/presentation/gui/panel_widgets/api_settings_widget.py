@@ -24,19 +24,22 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from src.presentation.gui.theme_manager import get_theme_manager, register_widget_for_theming
+from src.presentation.gui.theme_manager import (
+    get_theme_manager,
+    register_widget_for_theming,
+)
 
 
 class ApiSettingsWidget(QWidget):
     """
     ⚙️ API BEÁLLÍTÁSOK WIDGET - CLEAN ARCHITECTURE
-    
+
     Felelősség:
     - API timeout beállítás (multi-year batch optimalizált)
     - Automatikus timezone detection
     - Data caching enable/disable
     - Settings validation és persistence
-    
+
     Interface:
     - api_settings_changed = Signal(dict) - settings változás
     - get_state() -> dict - aktuális állapot
@@ -50,7 +53,7 @@ class ApiSettingsWidget(QWidget):
     def __init__(self, parent: Optional[QWidget] = None):
         """
         ApiSettingsWidget inicializálása.
-        
+
         Args:
             parent: Szülő widget
         """
@@ -94,7 +97,9 @@ class ApiSettingsWidget(QWidget):
         self.cache_data = QCheckBox()
         self.cache_data.setChecked(True)
         self.cache_data.setMinimumHeight(20)
-        self.cache_data.setToolTip("API válaszok gyorsítótárazása a teljesítmény javításához")
+        self.cache_data.setToolTip(
+            "API válaszok gyorsítótárazása a teljesítmény javításához"
+        )
         form_layout.addRow("Adatok cache-elése:", self.cache_data)
 
         # API timeout - Multi-year batch optimalizált
@@ -103,7 +108,9 @@ class ApiSettingsWidget(QWidget):
         self.api_timeout.setValue(60)  # 60 sec default multi-year batch-hez
         self.api_timeout.setSuffix(" másodperc")
         self.api_timeout.setMinimumHeight(28)
-        self.api_timeout.setToolTip("API timeout - multi-year batch lekérdezésekhez nagyobb érték ajánlott")
+        self.api_timeout.setToolTip(
+            "API timeout - multi-year batch lekérdezésekhez nagyobb érték ajánlott"
+        )
         form_layout.addRow("API timeout:", self.api_timeout)
 
         # Size constraints
@@ -145,7 +152,7 @@ class ApiSettingsWidget(QWidget):
         return {
             "timezone": "auto" if self.auto_timezone.isChecked() else "UTC",
             "cache": self.cache_data.isChecked(),
-            "timeout": self.api_timeout.value()
+            "timeout": self.api_timeout.value(),
         }
 
     # === PUBLIKUS INTERFACE ===
@@ -159,7 +166,7 @@ class ApiSettingsWidget(QWidget):
             "cache_data": self.cache_data.isChecked(),
             "api_timeout": self.api_timeout.value(),
             "settings": settings,
-            "is_valid": self.is_valid()
+            "is_valid": self.is_valid(),
         }
 
     def set_state(self, state: Dict[str, Any]) -> bool:
@@ -185,7 +192,9 @@ class ApiSettingsWidget(QWidget):
             self.cache_data.setChecked(cache_data)
             self.api_timeout.setValue(api_timeout)
 
-            print(f"✅ DEBUG: ApiSettingsWidget state set: timeout={api_timeout}s, cache={cache_data}, auto_tz={auto_timezone}")
+            print(
+                f"✅ DEBUG: ApiSettingsWidget state set: timeout={api_timeout}s, cache={cache_data}, auto_tz={auto_timezone}"
+            )
             return True
 
         except Exception as e:
@@ -213,7 +222,7 @@ class ApiSettingsWidget(QWidget):
             state = {
                 "auto_timezone": settings.get("timezone") == "auto",
                 "cache_data": settings.get("cache", True),
-                "api_timeout": settings.get("timeout", 60)
+                "api_timeout": settings.get("timeout", 60),
             }
 
             return self.set_state(state)

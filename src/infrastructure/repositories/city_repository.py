@@ -1,4 +1,5 @@
 """SQLite-backed city repository with regional filtering and validation."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -46,7 +47,9 @@ class CityRepository(CityRepositoryProtocol):
 
     def _update_queries(self) -> None:
         """Update queries object with current paths."""
-        self._queries = CityRepositoryQueries(self._paths.db_path, self._paths.hungarian_db_path)
+        self._queries = CityRepositoryQueries(
+            self._paths.db_path, self._paths.hungarian_db_path
+        )
 
     def validate_paths(self) -> None:
         """Validate that at least one database is available."""
@@ -73,11 +76,13 @@ class CityRepository(CityRepositoryProtocol):
             mapped_region, original_region, country_codes, limit, hungarian_mapping
         )
 
-    def autocomplete_city_name(self, query: str, limit: int = 20) -> List[Dict[str, object]]:
+    def autocomplete_city_name(
+        self, query: str, limit: int = 20
+    ) -> List[Dict[str, object]]:
         """Autocomplete city names by partial match."""
         if self._queries is None:
             self._update_queries()
         return self._queries.autocomplete_city_name(query, limit)
 
 
-__all__ = ['CityRepository']
+__all__ = ["CityRepository"]

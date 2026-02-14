@@ -1,4 +1,5 @@
 """Wind Rose Chart - Széllökés rózsadiagram."""
+
 from typing import Any, Dict, Optional
 
 from PySide6.QtWidgets import QWidget
@@ -40,11 +41,14 @@ class WindRoseChart(WeatherChart):
 
             # Téma alkalmazása
             from src.presentation.gui.theme_manager import get_current_colors
+
             current_colors = get_current_colors()
-            self.figure.patch.set_facecolor(current_colors.get('surface', '#ffffff'))
+            self.figure.patch.set_facecolor(current_colors.get("surface", "#ffffff"))
 
             # Wind rose megrajzolása
-            plot_wind_rose(self.ax, self.figure, self.chart_title, df, self.legend_enabled)
+            plot_wind_rose(
+                self.ax, self.figure, self.chart_title, df, self.legend_enabled
+            )
 
             self.draw()
             self._is_updating = False
@@ -56,10 +60,10 @@ class WindRoseChart(WeatherChart):
 
     def has_valid_data(self) -> bool:
         """Van-e érvényes wind rose adat."""
-        if not hasattr(self, 'current_data') or self.current_data is None:
+        if not hasattr(self, "current_data") or self.current_data is None:
             return False
 
         if isinstance(self.current_data, type(None).__class__):
             return False
 
-        return hasattr(self.current_data, 'empty') and not self.current_data.empty
+        return hasattr(self.current_data, "empty") and not self.current_data.empty

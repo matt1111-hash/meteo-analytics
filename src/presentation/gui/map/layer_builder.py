@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 try:
     import folium
     from folium import plugins
+
     FOLIUM_AVAILABLE = True
 except ImportError:
     FOLIUM_AVAILABLE = False
@@ -40,7 +41,7 @@ class LayerBuilder:
         """
         self.config = config
 
-    def create_base_map(self) -> 'folium.Map':
+    def create_base_map(self) -> "folium.Map":
         """
         🗺️ Alap Folium térkép létrehozása.
 
@@ -64,16 +65,18 @@ class LayerBuilder:
             min_zoom=self.config.min_zoom,
             max_zoom=self.config.max_zoom,
             control_scale=True,
-            prefer_canvas=True
+            prefer_canvas=True,
         )
 
         if self.config.disable_scroll_zoom:
-            map_obj.options['scrollWheelZoom'] = False
+            map_obj.options["scrollWheelZoom"] = False
 
         print(f"✅ Base Folium map created: {tiles}")
         return map_obj
 
-    def add_counties_layer(self, map_obj: 'folium.Map', counties_gdf: 'gpd.GeoDataFrame') -> None:
+    def add_counties_layer(
+        self, map_obj: "folium.Map", counties_gdf: "gpd.GeoDataFrame"
+    ) -> None:
         """
         🗺️ Magyar megyék GeoJSON layer hozzáadása interaktív funkcionalitással.
 
@@ -90,7 +93,7 @@ class LayerBuilder:
         counties_geojson = json.loads(counties_gdf.to_json())
 
         def style_function(feature):
-            county_name = feature['properties'].get('megye', '')
+            county_name = feature["properties"].get("megye", "")
 
             if county_name == self.config.selected_county:
                 return COUNTY_STYLE_SELECTED
@@ -99,10 +102,10 @@ class LayerBuilder:
                 return COUNTY_STYLE_HIGHLIGHTED
 
             return {
-                'fillColor': self.config.county_fill_color,
-                'color': self.config.county_border_color,
-                'weight': self.config.county_border_weight,
-                'fillOpacity': self.config.county_fill_opacity
+                "fillColor": self.config.county_fill_color,
+                "color": self.config.county_border_color,
+                "weight": self.config.county_border_weight,
+                "fillOpacity": self.config.county_fill_opacity,
             }
 
         def highlight_function(feature):
@@ -113,25 +116,18 @@ class LayerBuilder:
             style_function=style_function,
             highlight_function=highlight_function,
             tooltip=folium.Tooltip(
-                folium.Html(
-                    '<b>Hover a megyére a részletekért</b>',
-                    script=True
-                ),
-                sticky=True
+                folium.Html("<b>Hover a megyére a részletekért</b>", script=True),
+                sticky=True,
             ),
             popup=folium.Popup(
-                folium.Html(
-                    '<b>Kattints a megyére</b>',
-                    script=True
-                ),
-                max_width=200
-            )
+                folium.Html("<b>Kattints a megyére</b>", script=True), max_width=200
+            ),
         )
 
         counties_layer.add_to(map_obj)
         print("✅ Counties layer added with interactivity")
 
-    def add_map_controls(self, map_obj: 'folium.Map') -> None:
+    def add_map_controls(self, map_obj: "folium.Map") -> None:
         """
         🎮 További térkép vezérlők hozzáadása.
 
@@ -141,31 +137,31 @@ class LayerBuilder:
         plugins.Fullscreen().add_to(map_obj)
         plugins.MeasureControl().add_to(map_obj)
         plugins.MousePosition(
-            position='bottomright',
-            separator=' | ',
-            empty_string='Koordináták...',
+            position="bottomright",
+            separator=" | ",
+            empty_string="Koordináták...",
             lng_first=False,
             num_digits=20,
-            prefix='Pos: ',
+            prefix="Pos: ",
             lat_formatter="function(num) {return L.Util.formatNum(num, 4) + '°';}",
-            lng_formatter="function(num) {return L.Util.formatNum(num, 4) + '°';}"
+            lng_formatter="function(num) {return L.Util.formatNum(num, 4) + '°';}",
         ).add_to(map_obj)
 
         minimap = plugins.MiniMap(
             tile_layer="OpenStreetMap",
-            position='bottomleft',
+            position="bottomleft",
             width=150,
             height=150,
             collapsed_width=25,
             collapsed_height=25,
             zoom_level_offset=-5,
-            zoom_animation=True
+            zoom_animation=True,
         )
         minimap.add_to(map_obj)
 
         print("✅ Map controls added")
 
-    def add_javascript_bridge(self, map_obj: 'folium.Map', bridge_id: str) -> None:
+    def add_javascript_bridge(self, map_obj: "folium.Map", bridge_id: str) -> None:
         """
         🌉 JavaScript bridge kód hozzáadása a térképhez.
 
@@ -268,5 +264,5 @@ class LayerBuilder:
 
 # Export
 __all__ = [
-    'LayerBuilder',
+    "LayerBuilder",
 ]

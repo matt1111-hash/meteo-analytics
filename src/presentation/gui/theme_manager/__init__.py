@@ -24,20 +24,19 @@ USAGE:
 """
 
 # Core classes
-from .core import ProfessionalThemeManager
-
 # Convenience API
 from .convenience_api import (
-    get_theme_manager,
-    register_widget_for_theming,
     apply_theme_to_app,
-    get_current_colors,
-    get_weather_colors,
-    toggle_app_theme,
-    initialize_theme_system,
     get_accessibility_info,
+    get_current_colors,
     get_theme_debug_info,
+    get_theme_manager,
+    get_weather_colors,
+    initialize_theme_system,
+    register_widget_for_theming,
+    toggle_app_theme,
 )
+from .core import ProfessionalThemeManager
 
 # Backward compatibility aliases
 ThemeManager = ProfessionalThemeManager

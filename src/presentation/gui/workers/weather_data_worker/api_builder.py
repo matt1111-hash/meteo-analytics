@@ -5,7 +5,7 @@
 WeatherDataWorker API Builder - Build API requests for different providers.
 """
 
-from typing import Any, Dict, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Tuple
 
 if TYPE_CHECKING:
     from .core import WeatherDataWorker
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class APIBuilder:
     """Build API requests for different providers."""
 
-    def __init__(self, worker: 'WeatherDataWorker'):
+    def __init__(self, worker: "WeatherDataWorker"):
         """
         Initialize API builder.
 
@@ -60,7 +60,7 @@ class APIBuilder:
             "daily": "temperature_2m_max,temperature_2m_min,temperature_2m_mean,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant",
             # Hourly parameters - wind gusts
             "hourly": "wind_gusts_10m,windspeed_10m",
-            "timezone": "auto"
+            "timezone": "auto",
         }
 
         return url, params

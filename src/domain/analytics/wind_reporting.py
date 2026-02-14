@@ -31,7 +31,7 @@ def format_wind_analysis_summary(analysis: WindAnalysisResult) -> str:
 
         summary = f"""
 Szél Analízis - {analysis.location_name}
-{'=' * 50}
+{"=" * 50}
 
 Időszak: {start_str} - {end_str}
 Küszöbérték: {analysis.threshold_kmh} km/h
@@ -41,8 +41,8 @@ Küszöbérték: {analysis.threshold_kmh} km/h
 - Szeles napok: {analysis.total_windy_days}
 - Szeles napok aránya: {analysis.overall_windy_percentage:.1f}%
 
-Legszélesebb hónap: {analysis.windiest_month.month_name if analysis.windiest_month else 'N/A'} ({analysis.windiest_month.windy_days_count if analysis.windiest_month else 0} nap)
-Legcsendesebb hónap: {analysis.calmest_month.month_name if analysis.calmest_month else 'N/A'} ({analysis.calmest_month.windy_days_count if analysis.calmest_month else 0} nap)
+Legszélesebb hónap: {analysis.windiest_month.month_name if analysis.windiest_month else "N/A"} ({analysis.windiest_month.windy_days_count if analysis.windiest_month else 0} nap)
+Legcsendesebb hónap: {analysis.calmest_month.month_name if analysis.calmest_month else "N/A"} ({analysis.calmest_month.windy_days_count if analysis.calmest_month else 0} nap)
 """
 
         return summary.strip()
@@ -52,7 +52,9 @@ Legcsendesebb hónap: {analysis.calmest_month.month_name if analysis.calmest_mon
         return f"Hiba történt az összefoglaló készítésében: {e}"
 
 
-def get_chart_data_for_monthly_windy_days(analysis: WindAnalysisResult) -> WindChartData:
+def get_chart_data_for_monthly_windy_days(
+    analysis: WindAnalysisResult,
+) -> WindChartData:
     """
     🔥 JAVÍTÁS #2: Chart adatok előkészítése TELJES HÓNAPOS LISTÁVAL.
 

@@ -5,6 +5,7 @@
 Constants - Data handling constants - fields, formats, pagination.
 """
 
+
 class DataConstants:
     """Data handling constants - CLEAN DUAL-API VERSION."""
 
@@ -16,19 +17,23 @@ class DataConstants:
         "precipitation_sum",
         "windspeed_10m_max",
         "winddirection_10m_dominant",
-        "weathercode"
+        "weathercode",
     ]
 
-    OPEN_METEO_HOURLY_FIELDS = [
-        "wind_gusts_10m",
-        "windspeed_10m"
-    ]
+    OPEN_METEO_HOURLY_FIELDS = ["wind_gusts_10m", "windspeed_10m"]
 
     # Meteostat API fields
     METEOSTAT_DAILY_FIELDS = [
-        "tavg", "tmin", "tmax",
-        "prcp", "snow", "wdir",
-        "wspd", "wpgt", "pres", "tsun"
+        "tavg",
+        "tmin",
+        "tmax",
+        "prcp",
+        "snow",
+        "wdir",
+        "wspd",
+        "wpgt",
+        "pres",
+        "tsun",
     ]
 
     # Processed fields with wind gusts support
@@ -40,7 +45,7 @@ class DataConstants:
         "windspeed_10m_max",
         "wind_gusts_max",
         "winddirection_10m_dominant",
-        "weathercode"
+        "weathercode",
     ]
 
     # Export formats
@@ -61,14 +66,11 @@ class DataConstants:
         "historical_deep": "meteostat",
         "real_time": "open-meteo",
         "station_based": "meteostat",
-        "interpolated": "open-meteo"
+        "interpolated": "open-meteo",
     }
 
     # Source priority
-    DATA_SOURCE_PRIORITY = [
-        "open-meteo",
-        "meteostat"
-    ]
+    DATA_SOURCE_PRIORITY = ["open-meteo", "meteostat"]
 
     # Source capabilities
     SOURCE_CAPABILITIES = {
@@ -80,7 +82,7 @@ class DataConstants:
             "cost": "free",
             "rate_limit": "10/sec",
             "wind_gusts": True,
-            "rich_params": False
+            "rich_params": False,
         },
         "meteostat": {
             "historical": True,
@@ -90,6 +92,6 @@ class DataConstants:
             "cost": "premium",
             "rate_limit": "10k/month",
             "wind_gusts": True,
-            "rich_params": True
-        }
+            "rich_params": True,
+        },
     }

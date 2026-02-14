@@ -85,38 +85,30 @@ __all__ = [
     "ColorBlindnessType",
     "ColorMetrics",
     "HSLColor",
-
     # Generators
     "ColorGenerator",
     "StandardColorGenerator",
     "MaterialColorGenerator",
-
     # Core
     "ColorPalette",
-
     # Presets
     "get_semantic_presets",
     "get_preset",
     "is_valid_preset",
-
     # Accessibility
     "calculate_contrast_ratio",
     "get_color_metrics",
     "suggest_accessible_variants",
     "simulate_color_blindness",
-
     # Harmony
     "generate_harmony",
-
     # Weather
     "generate_weather_palette",
     "generate_alert_gradient",
-
     # Factory
     "create_color_palette",
     "create_material_palette",
     "create_weather_palette",
-
     # Utils
     "hex_to_hsl",
     "calculate_color_contrast",

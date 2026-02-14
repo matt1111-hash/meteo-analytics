@@ -1,4 +1,5 @@
 """Utility functions for domain enums."""
+
 from typing import List
 
 from src.domain.value_objects.enums import (
@@ -21,7 +22,7 @@ def get_analysis_type_display_name(analysis_type: AnalysisType) -> str:
         AnalysisType.TREND: "Trend elemzés",
         AnalysisType.STATISTICAL: "Statisztikai elemzés",
         AnalysisType.ANOMALY: "Anomália elemzés",
-        AnalysisType.CLIMATE: "Klíma elemzés"
+        AnalysisType.CLIMATE: "Klíma elemzés",
     }
     return display_names.get(analysis_type, analysis_type.value)
 
@@ -35,7 +36,7 @@ def get_data_provider_display_name(provider: DataProvider) -> str:
         DataProvider.OPENWEATHER: "OpenWeatherMap",
         DataProvider.ECMWF: "ECMWF",
         DataProvider.NOAA: "NOAA",
-        DataProvider.AUTO: "Automatikus"
+        DataProvider.AUTO: "Automatikus",
     }
     return display_names.get(provider, provider.value)
 
@@ -57,7 +58,7 @@ def get_metric_display_name(metric: AnalyticsMetric) -> str:
         AnalyticsMetric.PRESSURE_MSL_MIN: "Minimum légnyomás",
         AnalyticsMetric.HUMIDITY_2M_MEAN: "Átlagos páratartalom",
         AnalyticsMetric.UV_INDEX_MAX: "Maximum UV index",
-        AnalyticsMetric.SUNSHINE_DURATION: "Napsütés időtartama"
+        AnalyticsMetric.SUNSHINE_DURATION: "Napsütés időtartama",
     }
     return display_names.get(metric, metric.value)
 
@@ -74,7 +75,7 @@ def get_metric_unit(metric: AnalyticsMetric) -> str:
         AnalyticsMetric.PRESSURE_MSL_MIN: "hPa",
         AnalyticsMetric.HUMIDITY_2M_MEAN: "%",
         AnalyticsMetric.UV_INDEX_MAX: "",
-        AnalyticsMetric.SUNSHINE_DURATION: "h"
+        AnalyticsMetric.SUNSHINE_DURATION: "h",
     }
     return units.get(metric, "")
 
@@ -86,7 +87,7 @@ def get_region_scope_display_name(scope: RegionScope) -> str:
         RegionScope.CONTINENT: "Kontinens",
         RegionScope.GLOBAL: "Globális",
         RegionScope.REGION: "Régió",
-        RegionScope.CUSTOM: "Egyedi"
+        RegionScope.CUSTOM: "Egyedi",
     }
     return display_names.get(scope, scope.value)
 
@@ -99,7 +100,7 @@ def get_question_type_display_name(question_type: QuestionType) -> str:
         QuestionType.PRECIPITATION_MAX: "Legtöbb csapadék",
         QuestionType.WIND_MAX: "Legerősebb szél",
         QuestionType.EXTREME_WEATHER: "Szélsőséges időjárás",
-        QuestionType.WEATHER_COMPARISON: "Időjárás összehasonlítás"
+        QuestionType.WEATHER_COMPARISON: "Időjárás összehasonlítás",
     }
     return display_names.get(question_type, question_type.value)
 
@@ -111,7 +112,7 @@ def get_severity_color(severity: AnomalySeverity) -> str:
         AnomalySeverity.MODERATE: "#f97316",
         AnomalySeverity.HIGH: "#ef4444",
         AnomalySeverity.EXTREME: "#dc2626",
-        AnomalySeverity.RECORD: "#7c2d12"
+        AnomalySeverity.RECORD: "#7c2d12",
     }
     return colors.get(severity, "#6b7280")
 
@@ -132,42 +133,42 @@ def validate_region_scope(scope_str: str) -> bool:
 
 
 def get_available_metrics_for_question_type(
-    question_type: QuestionType
+    question_type: QuestionType,
 ) -> List[AnalyticsMetric]:
     """Get available metrics for a question type."""
     metric_mapping = {
         QuestionType.TEMPERATURE_MAX: [
             AnalyticsMetric.TEMPERATURE_2M_MAX,
-            AnalyticsMetric.APPARENT_TEMPERATURE_MAX
+            AnalyticsMetric.APPARENT_TEMPERATURE_MAX,
         ],
         QuestionType.TEMPERATURE_MIN: [
             AnalyticsMetric.TEMPERATURE_2M_MIN,
-            AnalyticsMetric.APPARENT_TEMPERATURE_MIN
+            AnalyticsMetric.APPARENT_TEMPERATURE_MIN,
         ],
         QuestionType.PRECIPITATION_MAX: [
             AnalyticsMetric.PRECIPITATION_SUM,
             AnalyticsMetric.RAIN_SUM,
-            AnalyticsMetric.SNOWFALL_SUM
+            AnalyticsMetric.SNOWFALL_SUM,
         ],
         QuestionType.WIND_MAX: [
             AnalyticsMetric.WINDSPEED_10M_MAX,
-            AnalyticsMetric.WINDGUSTS_10M_MAX
-        ]
+            AnalyticsMetric.WINDGUSTS_10M_MAX,
+        ],
     }
     return metric_mapping.get(question_type, [])
 
 
 __all__ = [
-    'get_analysis_type_display_name',
-    'get_data_provider_display_name',
-    'get_metric_display_name',
-    'get_metric_unit',
-    'get_region_scope_display_name',
-    'get_question_type_display_name',
-    'get_severity_color',
-    'validate_analysis_type',
-    'validate_data_provider',
-    'validate_analytics_metric',
-    'validate_region_scope',
-    'get_available_metrics_for_question_type'
+    "get_analysis_type_display_name",
+    "get_data_provider_display_name",
+    "get_metric_display_name",
+    "get_metric_unit",
+    "get_region_scope_display_name",
+    "get_question_type_display_name",
+    "get_severity_color",
+    "validate_analysis_type",
+    "validate_data_provider",
+    "validate_analytics_metric",
+    "validate_region_scope",
+    "get_available_metrics_for_question_type",
 ]

@@ -21,4 +21,4 @@ Fájl: src/presentation/gui/results_panel/results_panel/__init__.py
 
 from .core import ResultsPanel
 
-__all__ = ['ResultsPanel']
+__all__ = ["ResultsPanel"]

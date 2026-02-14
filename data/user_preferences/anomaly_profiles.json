@@ -1,0 +1,68 @@
+{
+  "profiles": {
+    "default": {},
+    "test": {
+      "temp_hot": 35.0,
+      "temp_cold": -10.0,
+      "precip_high": 100.0,
+      "precip_low": 5.0,
+      "wind_high": 70.0,
+      "wind_normal": 50.0,
+      "wind_strong": 70.0,
+      "wind_extreme": 100.0,
+      "wind_hurricane": 120.0,
+      "profile_name": "test",
+      "created_at": "2026-02-05T17:17:55.726735",
+      "modified_at": "2026-02-05T17:17:55.726751",
+      "description": ""
+    },
+    "new_profile": {
+      "temp_hot": 35.0,
+      "temp_cold": -10.0,
+      "precip_high": 100.0,
+      "precip_low": 5.0,
+      "wind_high": 70.0,
+      "wind_normal": 50.0,
+      "wind_strong": 70.0,
+      "wind_extreme": 100.0,
+      "wind_hurricane": 120.0,
+      "profile_name": "new_profile",
+      "created_at": "2026-02-05T17:17:55.734756",
+      "modified_at": "2026-02-05T17:17:55.734767",
+      "description": "Egyedi profil - default alapján"
+    },
+    "new": {
+      "temp_hot": 35.0,
+      "temp_cold": -10.0,
+      "precip_high": 100.0,
+      "precip_low": 5.0,
+      "wind_high": 70.0,
+      "wind_normal": 50.0,
+      "wind_strong": 70.0,
+      "wind_extreme": 100.0,
+      "wind_hurricane": 120.0,
+      "profile_name": "new",
+      "created_at": "2026-02-05T17:17:55.744600",
+      "modified_at": "2026-02-05T17:17:55.744601",
+      "description": ""
+    },
+    "custom": {
+      "temp_hot": 35.0,
+      "temp_cold": -10.0,
+      "precip_high": 100.0,
+      "precip_low": 5.0,
+      "wind_high": 70.0,
+      "wind_normal": 50.0,
+      "wind_strong": 70.0,
+      "wind_extreme": 100.0,
+      "wind_hurricane": 120.0,
+      "profile_name": "custom",
+      "created_at": "2026-02-05T17:17:55.749749",
+      "modified_at": "2026-02-05T17:17:55.749766",
+      "description": ""
+    }
+  },
+  "active_profile": "default",
+  "modified_at": "2026-02-05T17:17:55.749774",
+  "version": "1.0"
+}

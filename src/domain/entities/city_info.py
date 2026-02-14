@@ -1,4 +1,5 @@
 """City info domain entity."""
+
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
@@ -10,6 +11,7 @@ class CityInfo:
 
     CityManager database record representation.
     """
+
     id: int
     city: str
     latitude: float
@@ -39,18 +41,18 @@ class CityInfo:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'id': self.id,
-            'city': self.city,
-            'latitude': self.latitude,
-            'longitude': self.longitude,
-            'country': self.country,
-            'country_code': self.country_code,
-            'population': self.population,
-            'continent': self.continent,
-            'admin_name': self.admin_name,
-            'capital': self.capital,
-            'timezone': self.timezone
+            "id": self.id,
+            "city": self.city,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "country": self.country,
+            "country_code": self.country_code,
+            "population": self.population,
+            "continent": self.continent,
+            "admin_name": self.admin_name,
+            "capital": self.capital,
+            "timezone": self.timezone,
         }
 
 
-__all__ = ['CityInfo']
+__all__ = ["CityInfo"]

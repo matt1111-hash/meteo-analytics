@@ -95,7 +95,10 @@ async def auth_middleware(request: Request, call_next: Callable):
         )
 
     if not secrets.compare_digest(api_key, APIConfig.API_KEY):
-        logger.warning("Invalid API key attempt from %s", request.client.host if request.client else "unknown")
+        logger.warning(
+            "Invalid API key attempt from %s",
+            request.client.host if request.client else "unknown",
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Invalid API key",

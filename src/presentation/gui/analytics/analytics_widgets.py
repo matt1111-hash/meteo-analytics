@@ -51,7 +51,9 @@ class RecordCard(QWidget):
 
         # Value
         self.value_label = QLabel("-")
-        self.value_label.setStyleSheet("font-size: 12px; font-weight: bold; color: #C43939;")
+        self.value_label.setStyleSheet(
+            "font-size: 12px; font-weight: bold; color: #C43939;"
+        )
         self.value_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.value_label)
 
@@ -130,25 +132,27 @@ class RecordSummaryCard(QWidget):
 
     def update_records(self, records: Dict[str, Dict[str, str]]):
         """Rekordok frissítése"""
-        if 'hottest' in records:
-            rec = records['hottest']
-            self.hottest_card.update_record(rec.get('value', '-'), rec.get('date', '-'))
+        if "hottest" in records:
+            rec = records["hottest"]
+            self.hottest_card.update_record(rec.get("value", "-"), rec.get("date", "-"))
 
-        if 'coldest' in records:
-            rec = records['coldest']
-            self.coldest_card.update_record(rec.get('value', '-'), rec.get('date', '-'))
+        if "coldest" in records:
+            rec = records["coldest"]
+            self.coldest_card.update_record(rec.get("value", "-"), rec.get("date", "-"))
 
-        if 'wettest' in records:
-            rec = records['wettest']
-            self.wettest_card.update_record(rec.get('value', '-'), rec.get('date', '-'))
+        if "wettest" in records:
+            rec = records["wettest"]
+            self.wettest_card.update_record(rec.get("value", "-"), rec.get("date", "-"))
 
-        if 'driest' in records:
-            rec = records['driest']
-            self.driest_card.update_record(rec.get('value', '-'), rec.get('date', '-'))
+        if "driest" in records:
+            rec = records["driest"]
+            self.driest_card.update_record(rec.get("value", "-"), rec.get("date", "-"))
 
-        if 'windiest' in records:
-            rec = records['windiest']
-            self.windiest_card.update_record(rec.get('value', '-'), rec.get('date', '-'))
+        if "windiest" in records:
+            rec = records["windiest"]
+            self.windiest_card.update_record(
+                rec.get("value", "-"), rec.get("date", "-")
+            )
 
 
 __all__ = [

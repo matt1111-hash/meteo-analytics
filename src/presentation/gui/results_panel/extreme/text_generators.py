@@ -25,9 +25,7 @@ class TextGenerators:
     """
 
     def generate_summary(
-        self,
-        daily_data: Dict[str, List],
-        dates: List[str]
+        self, daily_data: Dict[str, List], dates: List[str]
     ) -> RecordsTextSummary:
         """
         📋 Szöveges rekord összefoglaló generálása.
@@ -47,7 +45,7 @@ class TextGenerators:
             return RecordsTextSummary(
                 temperature_text=temp_text,
                 precipitation_text=precip_text,
-                wind_text=wind_text
+                wind_text=wind_text,
             )
 
         except Exception as e:
@@ -55,24 +53,29 @@ class TextGenerators:
             return RecordsTextSummary(
                 temperature_text="🌡️ HŐMÉRSÉKLET REKORDOK: Hiba a számítás során\n",
                 precipitation_text="🌧️ CSAPADÉK REKORDOK: Hiba a számítás során\n",
-                wind_text="🌪️ SZÉLLÖKÉS REKORDOK: Hiba a számítás során\n"
+                wind_text="🌪️ SZÉLLÖKÉS REKORDOK: Hiba a számítás során\n",
             )
 
     def _generate_temperature_text(
-        self,
-        daily_data: Dict[str, List],
-        dates: List[str]
+        self, daily_data: Dict[str, List], dates: List[str]
     ) -> str:
         """Hőmérséklet szöveges összefoglaló."""
         try:
-            temp_max_list = daily_data.get('temperature_2m_max', [])
-            temp_min_list = daily_data.get('temperature_2m_min', [])
+            temp_max_list = daily_data.get("temperature_2m_max", [])
+            temp_min_list = daily_data.get("temperature_2m_min", [])
 
-            if (temp_max_list and temp_min_list and
-                    len(temp_max_list) == len(dates) and
-                    len(temp_min_list) == len(dates)):
-                clean_max = [(i, t) for i, t in enumerate(temp_max_list) if t is not None]
-                clean_min = [(i, t) for i, t in enumerate(temp_min_list) if t is not None]
+            if (
+                temp_max_list
+                and temp_min_list
+                and len(temp_max_list) == len(dates)
+                and len(temp_min_list) == len(dates)
+            ):
+                clean_max = [
+                    (i, t) for i, t in enumerate(temp_max_list) if t is not None
+                ]
+                clean_min = [
+                    (i, t) for i, t in enumerate(temp_min_list) if t is not None
+                ]
 
                 if clean_max and clean_min:
                     max_temp_idx, max_temp = max(clean_max, key=lambda x: x[1])
@@ -90,20 +93,22 @@ class TextGenerators:
             return "🌡️ HŐMÉRSÉKLET REKORDOK: Hiba a számítás során\n\n"
 
     def _generate_precipitation_text(
-        self,
-        daily_data: Dict[str, List],
-        dates: List[str]
+        self, daily_data: Dict[str, List], dates: List[str]
     ) -> str:
         """Csapadék szöveges összefoglaló."""
         try:
-            precip_list = daily_data.get('precipitation_sum', [])
+            precip_list = daily_data.get("precipitation_sum", [])
 
             if precip_list and len(precip_list) == len(dates):
-                clean_precip = [(i, p) for i, p in enumerate(precip_list) if p is not None]
+                clean_precip = [
+                    (i, p) for i, p in enumerate(precip_list) if p is not None
+                ]
 
                 if clean_precip:
                     max_precip_idx, max_precip = max(clean_precip, key=lambda x: x[1])
-                    dry_days = len([p for p in precip_list if p is not None and p <= 0.1])
+                    dry_days = len(
+                        [p for p in precip_list if p is not None and p <= 0.1]
+                    )
                     total_precip = sum([p for p in precip_list if p is not None])
 
                     return f"""🌧️ CSAPADÉK REKORDOK:
@@ -117,11 +122,7 @@ class TextGenerators:
             logger.error(f"Csapadék szöveg hiba: {e}")
             return "🌧️ CSAPADÉK REKORDOK: Hiba a számítás során\n\n"
 
-    def _generate_wind_text(
-        self,
-        daily_data: Dict[str, List],
-        dates: List[str]
-    ) -> str:
+    def _generate_wind_text(self, daily_data: Dict[str, List], dates: List[str]) -> str:
         """Széllökés szöveges összefoglaló."""
         try:
             wind_data, wind_source = self._get_wind_data(daily_data)
@@ -135,7 +136,8 @@ class TextGenerators:
                     avg_wind = sum(valid_winds) / len(valid_winds)
 
                     from ..utils import WindGustsAnalyzer, WindGustsConstants
-                    if wind_source == 'wind_gusts_max':
+
+                    if wind_source == "wind_gusts_max":
                         category = WindGustsAnalyzer.categorize_wind_gust(
                             max_wind_value, wind_source
                         )
@@ -144,18 +146,24 @@ class TextGenerators:
    🚨 Legerősebb széllökés: {max_wind_value:.1f}km/h ({dates[max_wind_idx]})
 """
 
-                        if category == 'hurricane':
-                            text += (f"   ⚠️ KATEGÓRIA: "
-                                    f"{WindGustsConstants.CATEGORIES[category]} "
-                                    f"(>{WindGustsConstants.HURRICANE_THRESHOLD:.0f} km/h)\n")
-                        elif category == 'extreme':
-                            text += (f"   ⚠️ KATEGÓRIA: "
-                                    f"{WindGustsConstants.CATEGORIES[category]} "
-                                    f"(>{WindGustsConstants.EXTREME_THRESHOLD:.0f} km/h)\n")
-                        elif category == 'strong':
-                            text += (f"   ⚠️ KATEGÓRIA: "
-                                    f"{WindGustsConstants.CATEGORIES[category]} "
-                                    f"(>{WindGustsConstants.STRONG_THRESHOLD:.0f} km/h)\n")
+                        if category == "hurricane":
+                            text += (
+                                f"   ⚠️ KATEGÓRIA: "
+                                f"{WindGustsConstants.CATEGORIES[category]} "
+                                f"(>{WindGustsConstants.HURRICANE_THRESHOLD:.0f} km/h)\n"
+                            )
+                        elif category == "extreme":
+                            text += (
+                                f"   ⚠️ KATEGÓRIA: "
+                                f"{WindGustsConstants.CATEGORIES[category]} "
+                                f"(>{WindGustsConstants.EXTREME_THRESHOLD:.0f} km/h)\n"
+                            )
+                        elif category == "strong":
+                            text += (
+                                f"   ⚠️ KATEGÓRIA: "
+                                f"{WindGustsConstants.CATEGORIES[category]} "
+                                f"(>{WindGustsConstants.STRONG_THRESHOLD:.0f} km/h)\n"
+                            )
                         else:
                             text += f"   ✅ KATEGÓRIA: {WindGustsConstants.CATEGORIES[category]}\n"
                     else:
@@ -176,9 +184,9 @@ class TextGenerators:
     @staticmethod
     def _get_wind_data(daily_data: Dict[str, List]) -> tuple[list | None, str]:
         """Széladatok prioritás alapú kiválasztása."""
-        wind_gusts_max = daily_data.get('wind_gusts_max', [])
-        windspeed_10m_max = daily_data.get('windspeed_10m_max', [])
-        windspeed = daily_data.get('windspeed', [])
+        wind_gusts_max = daily_data.get("wind_gusts_max", [])
+        windspeed_10m_max = daily_data.get("windspeed_10m_max", [])
+        windspeed = daily_data.get("windspeed", [])
 
         if wind_gusts_max:
             return wind_gusts_max, "wind_gusts_max"

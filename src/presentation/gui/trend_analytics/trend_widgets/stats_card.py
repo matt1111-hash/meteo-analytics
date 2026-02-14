@@ -29,8 +29,14 @@ class DashboardStatsCard(QFrame):
     - ✅ QPalette-alapú konfliktusmentes színfrissítés
     """
 
-    def __init__(self, title: str, value: str, subtitle: str = "",
-                 color: str = "#3b82f6", icon: str = "📊"):
+    def __init__(
+        self,
+        title: str,
+        value: str,
+        subtitle: str = "",
+        color: str = "#3b82f6",
+        icon: str = "📊",
+    ):
         """
         KPI kártya inicializálása QPalette-alapú frissítési képességgel
 
@@ -147,7 +153,9 @@ class DashboardStatsCard(QFrame):
         # Subtitle label színe (szürke marad)
         if self.subtitle_label:
             subtitle_palette = self.subtitle_label.palette()
-            subtitle_palette.setColor(QPalette.WindowText, QColor("#6b7280"))  # Mindig szürke
+            subtitle_palette.setColor(
+                QPalette.WindowText, QColor("#6b7280")
+            )  # Mindig szürke
             self.subtitle_label.setPalette(subtitle_palette)
 
         # Icon label nem változik (emoji)

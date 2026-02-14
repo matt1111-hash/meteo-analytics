@@ -27,4 +27,4 @@ Fájl: src/presentation/gui/charts/heatmap_chart/__init__.py
 
 from .core import HeatmapCalendarChart
 
-__all__ = ['HeatmapCalendarChart']
+__all__ = ["HeatmapCalendarChart"]

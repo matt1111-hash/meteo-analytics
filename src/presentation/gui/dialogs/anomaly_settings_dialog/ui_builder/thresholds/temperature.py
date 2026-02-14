@@ -1,4 +1,5 @@
 """Temperature threshold section builder."""
+
 from PySide6.QtWidgets import QDoubleSpinBox, QGroupBox, QLabel, QVBoxLayout
 
 from ...utils import AnomalyConstants
@@ -31,7 +32,9 @@ def create_temperature_section(dialog: object) -> QGroupBox:
     layout.addWidget(QLabel("❄️ Hideg küszöb:"))
     layout.addWidget(cold_spinbox)
 
-    info_label = QLabel("💡 Meleg küszöb felett 'forró', hideg alatt 'fagyos' kategória.")
+    info_label = QLabel(
+        "💡 Meleg küszöb felett 'forró', hideg alatt 'fagyos' kategória."
+    )
     info_label.setStyleSheet("color: #6b7280; font-size: 11px;")
     layout.addWidget(info_label)
 

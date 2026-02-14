@@ -30,6 +30,4 @@ Fájl: src/presentation/gui/charts/temperature_chart/__init__.py
 
 from .core import EnhancedTemperatureChart
 
-__all__ = [
-    "EnhancedTemperatureChart"
-]
+__all__ = ["EnhancedTemperatureChart"]

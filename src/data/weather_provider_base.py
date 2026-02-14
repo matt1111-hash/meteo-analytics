@@ -35,8 +35,9 @@ class WeatherProvider(ABC):
         logger.info(f"Weather provider initialized: {display_name}")
 
     @abstractmethod
-    def get_weather_data(self, latitude: float, longitude: float,
-                        start_date: str, end_date: str) -> List[Dict[str, Any]]:
+    def get_weather_data(
+        self, latitude: float, longitude: float, start_date: str, end_date: str
+    ) -> List[Dict[str, Any]]:
         """
         Get weather data for the specified location and date range.
 
@@ -82,4 +83,4 @@ class WeatherProvider(ABC):
         self.request_count = 0
 
 
-__all__ = ['WeatherProvider']
+__all__ = ["WeatherProvider"]

@@ -56,8 +56,7 @@ class SetupMixin:
         # 🔧 KRITIKUS: 7 statisztikai régió hozzáadása (Control Panel konzisztens!)
         for region_key, region_data in self.region_data.items():
             self.region_combo.addItem(
-                f"{region_data.display_name} ({region_data.nuts_code})",
-                region_key
+                f"{region_data.display_name} ({region_data.nuts_code})", region_key
             )
 
         region_layout.addWidget(self.region_combo)
@@ -111,7 +110,9 @@ class SetupMixin:
         # 🔧 JAVÍTOTT: Debug információk megjelenítése
         if self._debug_enabled:
             self.debug_label = QLabel("🔧 DEBUG: State = {}")
-            self.debug_label.setStyleSheet("color: #E74C3C; font-family: monospace; font-size: 10px;")
+            self.debug_label.setStyleSheet(
+                "color: #E74C3C; font-family: monospace; font-size: 10px;"
+            )
             location_layout.addWidget(self.debug_label)
 
         layout.addWidget(location_group)
@@ -159,6 +160,7 @@ class SetupMixin:
         🎨 Téma beállítások alkalmazása.
         """
         from ...theme_manager import register_widget_for_theming
+
         register_widget_for_theming(self, "container")
 
     def _connect_signals(self):

@@ -1,4 +1,5 @@
 """Factory functions for location entities."""
+
 from typing import Optional, Tuple, Union
 
 from src.domain.entities.location import Location
@@ -10,7 +11,7 @@ def create_universal_location(
     location_type: Union[LocationType, str],
     identifier: Union[str, Tuple[float, float], list[str]],
     display_name: str,
-    **kwargs
+    **kwargs,
 ) -> UniversalLocation:
     """
     UniversalLocation factory - user-friendly.
@@ -19,19 +20,12 @@ def create_universal_location(
         location_type = LocationType(location_type.lower())
 
     return UniversalLocation(
-        type=location_type,
-        identifier=identifier,
-        display_name=display_name,
-        **kwargs
+        type=location_type, identifier=identifier, display_name=display_name, **kwargs
     )
 
 
 def create_location(
-    identifier: str,
-    display_name: str,
-    latitude: float,
-    longitude: float,
-    **kwargs
+    identifier: str, display_name: str, latitude: float, longitude: float, **kwargs
 ) -> Location:
     """
     Location factory function - HungarianLocationSelector compatible.
@@ -41,15 +35,12 @@ def create_location(
         display_name=display_name,
         latitude=latitude,
         longitude=longitude,
-        **kwargs
+        **kwargs,
     )
 
 
 def create_location_from_coordinates(
-    latitude: float,
-    longitude: float,
-    display_name: Optional[str] = None,
-    **kwargs
+    latitude: float, longitude: float, display_name: Optional[str] = None, **kwargs
 ) -> Location:
     """
     Create Location from coordinates - for map components.
@@ -58,7 +49,7 @@ def create_location_from_coordinates(
 
 
 __all__ = [
-    'create_universal_location',
-    'create_location',
-    'create_location_from_coordinates'
+    "create_universal_location",
+    "create_location",
+    "create_location_from_coordinates",
 ]

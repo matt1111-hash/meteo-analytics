@@ -39,10 +39,7 @@ def _extract_precipitation_data(self, data: Dict[str, Any]) -> pd.DataFrame:
     if not dates or not precipitation:
         return pd.DataFrame()
 
-    df = pd.DataFrame({
-        'date': pd.to_datetime(dates),
-        'precipitation': precipitation
-    })
+    df = pd.DataFrame({"date": pd.to_datetime(dates), "precipitation": precipitation})
 
     return df
 
@@ -57,7 +54,9 @@ def update_data(self, data: Dict[str, Any]) -> None:
     """
     from .plotting import _plot_precipitation
 
-    print("🌧️ DEBUG: PrecipitationChart.update_data() - DUPLIKÁCIÓ BUGFIX + SIMPLIFIED THEMEMANAGER VERZIÓ")
+    print(
+        "🌧️ DEBUG: PrecipitationChart.update_data() - DUPLIKÁCIÓ BUGFIX + SIMPLIFIED THEMEMANAGER VERZIÓ"
+    )
 
     try:
         if self._is_updating:
@@ -86,7 +85,9 @@ def update_data(self, data: Dict[str, Any]) -> None:
         self.draw()
         self._is_updating = False
 
-        print("✅ DEBUG: PrecipitationChart frissítés kész - DUPLIKÁCIÓ MENTES + THEMED + TOOLTIP READY")
+        print(
+            "✅ DEBUG: PrecipitationChart frissítés kész - DUPLIKÁCIÓ MENTES + THEMED + TOOLTIP READY"
+        )
 
     except Exception as e:
         print(f"❌ DEBUG: Csapadék chart hiba: {e}")

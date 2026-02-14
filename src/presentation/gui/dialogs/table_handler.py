@@ -37,9 +37,9 @@ def _populate_extreme_table(self, extremes: List[Dict[str, str]]) -> None:
 
     for i, extreme in enumerate(extremes):
         # Item-ek létrehozása
-        category_item = QTableWidgetItem(extreme['category'])
-        value_item = QTableWidgetItem(extreme['value'])
-        date_item = QTableWidgetItem(extreme['date'])
+        category_item = QTableWidgetItem(extreme["category"])
+        value_item = QTableWidgetItem(extreme["value"])
+        date_item = QTableWidgetItem(extreme["date"])
 
         # ThemeManager színek alkalmazása item-ekre
         if scheme:

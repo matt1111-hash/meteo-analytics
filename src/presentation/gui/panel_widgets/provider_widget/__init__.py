@@ -28,4 +28,4 @@ Fájl: src/presentation/gui/panel_widgets/provider_widget/__init__.py
 
 from .core import ProviderWidget
 
-__all__ = ['ProviderWidget']
+__all__ = ["ProviderWidget"]

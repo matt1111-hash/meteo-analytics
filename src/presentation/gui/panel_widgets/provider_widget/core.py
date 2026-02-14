@@ -21,6 +21,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QComboBox, QLabel, QProgressBar, QTextEdit, QWidget
 
 from src.presentation.gui.theme_manager import register_widget_for_theming
+
 from .monitoring import _update_usage_display
 from .provider_data import get_default_warning_thresholds, get_status_messages
 
@@ -93,6 +94,7 @@ class ProviderWidget(QWidget):
         # === TIMER SETUP ===
 
         from PySide6.QtCore import QTimer
+
         self.usage_timer = QTimer()
         self.usage_timer.setInterval(5000)  # 5 seconds
         self.usage_timer.timeout.connect(lambda: _update_usage_display(self))
@@ -108,7 +110,9 @@ class ProviderWidget(QWidget):
     def _setup_signals(self) -> None:
         """Signal connections beállítása."""
         # Provider selection change
-        self.provider_combo.currentTextChanged.connect(self._on_provider_selection_changed)
+        self.provider_combo.currentTextChanged.connect(
+            self._on_provider_selection_changed
+        )
 
         print("✅ DEBUG: ProviderWidget signals connected")
 
@@ -120,11 +124,15 @@ class ProviderWidget(QWidget):
                 old_provider = self.current_provider
                 self.current_provider = current_data
 
-                print(f"🌍 DEBUG: Provider changed: {old_provider} → {self.current_provider}")
+                print(
+                    f"🌍 DEBUG: Provider changed: {old_provider} → {self.current_provider}"
+                )
 
                 # Status update
                 status_messages = get_status_messages()
-                status = status_messages.get(self.current_provider, f"📡 {self.current_provider} aktív")
+                status = status_messages.get(
+                    self.current_provider, f"📡 {self.current_provider} aktív"
+                )
                 self.status_label.setText(status)
 
                 # Signal emission

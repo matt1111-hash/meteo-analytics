@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 # === PROGRESS API ===
 
+
 def show_loading_indicator(self, message: str = "⏳ Adatok betöltése...") -> None:
     """Loading indicator megjelenítése."""
     self.progress_manager.show_loading(message)
@@ -63,6 +64,7 @@ def get_loading_status(self) -> Dict[str, Any]:
 
 # === TAB API ===
 
+
 def switch_to_tab(self, tab_name: str) -> None:
     """Specifikus tab-ra váltás."""
     self.tab_manager.switch_to_tab(tab_name)
@@ -86,12 +88,13 @@ def get_windy_days_tab(self):
 def trigger_windy_days_analysis(self) -> None:
     """Szeles napok analízis programatikus triggerelése."""
     windy_days_tab = self.get_windy_days_tab()
-    if windy_days_tab and hasattr(windy_days_tab, '_start_analysis'):
+    if windy_days_tab and hasattr(windy_days_tab, "_start_analysis"):
         windy_days_tab._start_analysis()
         logger.info("🌪️ WindyDaysTab analízis programatikusan triggerelve")
 
 
 # === DATA UPDATE API ===
+
 
 def update_data(self, data: Dict[str, Any], city_name: str) -> None:
     """
@@ -105,7 +108,9 @@ def update_data(self, data: Dict[str, Any], city_name: str) -> None:
     print("=" * 80)
     print("🚨 DEBUG: ResultsPanel.update_data() ELEJE")
     print(f"🚨 DEBUG: city_name={city_name}")
-    print(f"🚨 DEBUG: data type={type(data)}, keys={list(data.keys()) if isinstance(data, dict) else 'NEM DICT'}")
+    print(
+        f"🚨 DEBUG: data type={type(data)}, keys={list(data.keys()) if isinstance(data, dict) else 'NEM DICT'}"
+    )
     print("=" * 80)
 
     logger.info(f"ResultsPanel.update_data() - City: {city_name} (REFACTORED)")
@@ -133,6 +138,7 @@ def update_data(self, data: Dict[str, Any], city_name: str) -> None:
     except Exception as e:
         logger.error(f"ResultsPanel adatfrissítési hiba: {e}")
         import traceback
+
         traceback.print_exc()
 
         # Error esetén is hide loading
@@ -162,12 +168,13 @@ def _update_windy_days_tab(self, data: Dict[str, Any], city_name: str) -> None:
         self.data_processor.process_windy_days_data(
             weather_df,
             city_name,
-            lambda df, city: self.tab_manager.update_windy_days_tab(data, city, df)
+            lambda df, city: self.tab_manager.update_windy_days_tab(data, city, df),
         )
 
     except Exception as convert_error:
         logger.error(f"🚨 DEBUG: _convert_data_to_dataframe() HIBA: {convert_error}")
         import traceback
+
         traceback.print_exc()
         empty_df = self.data_processor._empty_dataframe_fallback()
         self.tab_manager.update_windy_days_tab(data, city_name, empty_df)
@@ -196,6 +203,7 @@ def clear_data(self) -> None:
 
 # === EXTREME WEATHER ===
 
+
 def trigger_extreme_weather_analysis(self) -> None:
     """Programmatic extreme weather trigger."""
     logger.info("🔥 Programmatic extreme weather analysis triggered")
@@ -203,6 +211,7 @@ def trigger_extreme_weather_analysis(self) -> None:
 
 
 # === PUBLIKUS GETTEREK ===
+
 
 def get_charts_container(self):
     """Charts container referenciájának lekérdezése."""
@@ -215,6 +224,7 @@ def get_data_table(self):
 
 
 # === TÉMA KEZELÉS ===
+
 
 def apply_theme(self, dark_theme: bool) -> None:
     """

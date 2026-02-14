@@ -33,7 +33,9 @@ class CityManagerStats(CityManagerSearch):
         stats = {
             "query_count": self.query_count,
             "hungarian_query_count": self.hungarian_query_count,
-            "last_query": self.last_query_time.isoformat() if self.last_query_time else None
+            "last_query": self.last_query_time.isoformat()
+            if self.last_query_time
+            else None,
         }
 
         if self.connection:
@@ -46,7 +48,9 @@ class CityManagerStats(CityManagerSearch):
             stats["countries"] = []
 
         if self.hungarian_connection:
-            stats["hungarian_settlements"] = self._get_total_hungarian_settlements_count()
+            stats["hungarian_settlements"] = (
+                self._get_total_hungarian_settlements_count()
+            )
             stats["hungarian_counties"] = self.get_hungarian_counties()
             stats["settlement_types"] = self.get_hungarian_settlement_types()
         else:
@@ -54,7 +58,9 @@ class CityManagerStats(CityManagerSearch):
             stats["hungarian_counties"] = []
             stats["settlement_types"] = []
 
-        stats["total_searchable_locations"] = stats["global_cities"] + stats["hungarian_settlements"]
+        stats["total_searchable_locations"] = (
+            stats["global_cities"] + stats["hungarian_settlements"]
+        )
 
         return stats
 
@@ -107,16 +113,17 @@ class CityManagerStats(CityManagerSearch):
                 "medium_towns_10k_plus": row[1],
                 "small_towns_under_10k": row[2],
                 "average_population": int(row[3]) if row[3] else 0,
-                "largest_settlement_population": row[4]
-            }
+                "largest_settlement_population": row[4],
+            },
         }
 
     # ========================================================================
     # LEGACY METHODS (COMPATIBILITY)
     # ========================================================================
 
-    def get_cities_by_continent(self, continent: str, limit: int = 50,
-                                min_population: Optional[int] = None) -> List[City]:
+    def get_cities_by_continent(
+        self, continent: str, limit: int = 50, min_population: Optional[int] = None
+    ) -> List[City]:
         """Continent-based city query (original)."""
         if not self.connection:
             return []
@@ -141,7 +148,9 @@ class CityManagerStats(CityManagerSearch):
         if not self.connection:
             return []
         cursor = self.connection.cursor()
-        cursor.execute("SELECT DISTINCT continent FROM cities WHERE continent IS NOT NULL ORDER BY continent")
+        cursor.execute(
+            "SELECT DISTINCT continent FROM cities WHERE continent IS NOT NULL ORDER BY continent"
+        )
         return [row[0] for row in cursor.fetchall()]
 
     def _get_available_countries(self) -> List[Dict[str, Any]]:
@@ -158,11 +167,7 @@ class CityManagerStats(CityManagerSearch):
         """)
 
         return [
-            {
-                "country_code": row[0],
-                "country_name": row[1],
-                "city_count": row[2]
-            }
+            {"country_code": row[0], "country_name": row[1], "city_count": row[2]}
             for row in cursor.fetchall()
         ]
 
@@ -177,7 +182,6 @@ class CityManagerStats(CityManagerSearch):
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager support."""
         self.close()
-
 
     # ========================================================================
     # PORT IMPLEMENTATION (CityManagerPort)
@@ -196,4 +200,4 @@ class CityManagerStats(CityManagerSearch):
         return [city.to_dict() for city in cities]
 
 
-__all__ = ['CityManagerStats']
+__all__ = ["CityManagerStats"]

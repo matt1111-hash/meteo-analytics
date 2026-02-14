@@ -27,27 +27,32 @@ class GeoUtilsAnalytics(GeoUtilsRegion):
     - Weather analytics city selection
     """
 
-    def optimize_cities_for_weather_analytics(self, cities_data: List[Dict[str, Any]],
-                                            analytics_type: str,
-                                            max_cities: int = 50) -> List[Dict[str, Any]]:
+    def optimize_cities_for_weather_analytics(
+        self,
+        cities_data: List[Dict[str, Any]],
+        analytics_type: str,
+        max_cities: int = 50,
+    ) -> List[Dict[str, Any]]:
         """Optimize cities for weather analytics type."""
         filters = {
             "temperature": {"min_population": 100000, "distribution_weight": 0.8},
             "precipitation": {"min_population": 50000, "distribution_weight": 0.6},
             "wind": {"min_population": 200000, "distribution_weight": 0.9},
-            "global": {"min_population": 500000, "distribution_weight": 0.7}
+            "global": {"min_population": 500000, "distribution_weight": 0.7},
         }
 
         filter_config = filters.get(analytics_type, filters["global"])
 
         filtered_cities = [
-            city for city in cities_data
+            city
+            for city in cities_data
             if city.get("population", 0) >= filter_config["min_population"]
         ]
 
         if len(filtered_cities) < max_cities // 2:
             filtered_cities = [
-                city for city in cities_data
+                city
+                for city in cities_data
                 if city.get("population", 0) >= filter_config["min_population"] // 2
             ]
 
@@ -56,10 +61,14 @@ class GeoUtilsAnalytics(GeoUtilsRegion):
                 filtered_cities, max_cities
             )
 
-        logger.info(f"Weather analytics cities optimized ({analytics_type}): {len(filtered_cities)}")
+        logger.info(
+            f"Weather analytics cities optimized ({analytics_type}): {len(filtered_cities)}"
+        )
         return filtered_cities
 
-    def calculate_multi_city_coverage_area(self, cities_data: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def calculate_multi_city_coverage_area(
+        self, cities_data: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """Calculate multi-city analytics coverage area."""
         if not cities_data:
             return {}
@@ -85,12 +94,14 @@ class GeoUtilsAnalytics(GeoUtilsRegion):
             "cities_count": len(cities_data),
             "distances": {
                 "max_distance_from_center": max(distances) if distances else 0,
-                "avg_distance_from_center": statistics.mean(distances) if distances else 0,
-                "coverage_radius_km": max(distances) if distances else 0
-            }
+                "avg_distance_from_center": statistics.mean(distances)
+                if distances
+                else 0,
+                "coverage_radius_km": max(distances) if distances else 0,
+            },
         }
 
         return coverage_stats
 
 
-__all__ = ['GeoUtilsAnalytics']
+__all__ = ["GeoUtilsAnalytics"]

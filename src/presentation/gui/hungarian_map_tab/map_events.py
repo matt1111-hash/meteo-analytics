@@ -15,11 +15,11 @@ class MapEvents(QObject, IMapEvents):
     """
 
     # Public signals forwarded from components
-    location_selected = Signal(object)        # Location data
-    county_clicked_on_map = Signal(str)       # Folium county click
-    map_interaction = Signal(str, object)     # interaction_type, data
-    export_completed = Signal(str)           # file_path
-    error_occurred = Signal(str)             # error_message
+    location_selected = Signal(object)  # Location data
+    county_clicked_on_map = Signal(str)  # Folium county click
+    map_interaction = Signal(str, object)  # interaction_type, data
+    export_completed = Signal(str)  # file_path
+    error_occurred = Signal(str)  # error_message
 
     # Internal coordination signals
     analytics_sync_requested = Signal(dict)

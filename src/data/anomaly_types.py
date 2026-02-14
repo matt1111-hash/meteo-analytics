@@ -23,6 +23,7 @@ class AnomalyProfileSettings:
     ✅ Validáció support
     ✅ JSON serialization
     """
+
     # Hőmérséklet küszöbök
     temp_hot: float = 35.0
     temp_cold: float = -10.0
@@ -61,7 +62,9 @@ class AnomalyProfileSettings:
 
         # Hőmérséklet validáció
         if self.temp_hot <= self.temp_cold:
-            errors.append("Meleg küszöb nem lehet kisebb vagy egyenlő a hideg küszöbnél")
+            errors.append(
+                "Meleg küszöb nem lehet kisebb vagy egyenlő a hideg küszöbnél"
+            )
 
         if not (-50.0 <= self.temp_hot <= 60.0):
             errors.append("Meleg küszöb tartománya: -50°C és 60°C között")
@@ -71,7 +74,9 @@ class AnomalyProfileSettings:
 
         # Csapadék validáció
         if self.precip_high <= self.precip_low:
-            errors.append("Magas csapadék küszöb nem lehet kisebb vagy egyenlő az alacsony küszöbnél")
+            errors.append(
+                "Magas csapadék küszöb nem lehet kisebb vagy egyenlő az alacsony küszöbnél"
+            )
 
         if not (0.0 <= self.precip_low <= 50.0):
             errors.append("Alacsony csapadék küszöb tartománya: 0-50mm")
@@ -80,13 +85,20 @@ class AnomalyProfileSettings:
             errors.append("Magas csapadék küszöb tartománya: 10-500mm")
 
         # Szél validáció
-        wind_values = [self.wind_normal, self.wind_strong, self.wind_extreme, self.wind_hurricane]
+        wind_values = [
+            self.wind_normal,
+            self.wind_strong,
+            self.wind_extreme,
+            self.wind_hurricane,
+        ]
         if wind_values != sorted(wind_values):
             errors.append("Szél küszöbök nem növekvő sorrendben vannak")
 
         for wind_val in wind_values:
             if not (10.0 <= wind_val <= 300.0):
-                errors.append(f"Szél küszöb tartománya: 10-300km/h (hibás érték: {wind_val})")
+                errors.append(
+                    f"Szél küszöb tartománya: 10-300km/h (hibás érték: {wind_val})"
+                )
 
         return errors
 
@@ -95,9 +107,9 @@ class AnomalyProfileSettings:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'AnomalyProfileSettings':
+    def from_dict(cls, data: Dict[str, Any]) -> "AnomalyProfileSettings":
         """Létrehozás dictionary-ből."""
         return cls(**data)
 
 
-__all__ = ['AnomalyProfileSettings']
+__all__ = ["AnomalyProfileSettings"]

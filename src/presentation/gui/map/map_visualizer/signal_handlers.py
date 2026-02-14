@@ -108,14 +108,18 @@ def _export_map(self) -> None:
         self,
         "HTTP szerver Folium térkép exportálása",
         f"hungarian_folium_map_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html",
-        "HTML fájlok (*.html);;Minden fájl (*)"
+        "HTML fájlok (*.html);;Minden fájl (*)",
     )
 
     if file_path:
         try:
             shutil.copy2(self.current_map_file, file_path)
             self.export_completed.emit(file_path)
-            QMessageBox.information(self, "Export", f"HTTP szerver Folium térkép sikeresen exportálva:\n{file_path}")
+            QMessageBox.information(
+                self,
+                "Export",
+                f"HTTP szerver Folium térkép sikeresen exportálva:\n{file_path}",
+            )
         except Exception as e:
             error_msg = f"Export hiba: {e}"
             self.error_occurred.emit(error_msg)
@@ -126,8 +130,14 @@ def _on_map_loaded(self, success: bool) -> None:
     """Map loaded handler."""
     if success:
         self.map_ready.emit()
-        counties_info = f" ({len(self.counties_gdf)} megye)" if self.counties_gdf is not None else ""
-        self.status_label.setText(f"🌐 HTTP szerver interaktív térkép kész!{counties_info}")
+        counties_info = (
+            f" ({len(self.counties_gdf)} megye)"
+            if self.counties_gdf is not None
+            else ""
+        )
+        self.status_label.setText(
+            f"🌐 HTTP szerver interaktív térkép kész!{counties_info}"
+        )
     else:
         self.error_occurred.emit("WebEngine HTTP loading failed")
         self.status_label.setText("❌ WebEngine HTTP betöltés sikertelen!")

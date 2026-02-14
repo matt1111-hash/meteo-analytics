@@ -40,26 +40,34 @@ def setup_map_visualizer_ui(self) -> None:
     Args:
         self: HungarianMapVisualizer instance
     """
-    layout = layout = self.layout() if self.layout() else __import__('PySide6.QtWidgets').QtWidgets.QVBoxLayout(self)
+    layout = layout = (
+        self.layout()
+        if self.layout()
+        else __import__("PySide6.QtWidgets").QtWidgets.QVBoxLayout(self)
+    )
     layout.setContentsMargins(5, 5, 5, 5)
     layout.setSpacing(5)
 
     controls_group = QGroupBox("🌐 HTTP Szerver Folium Térkép v3.0")
     register_widget_for_theming(controls_group, "container")
-    controls_layout = __import__('PySide6.QtWidgets').QtWidgets.QHBoxLayout(controls_group)
+    controls_layout = __import__("PySide6.QtWidgets").QtWidgets.QHBoxLayout(
+        controls_group
+    )
 
     style_label = QLabel("Stílus:")
     register_widget_for_theming(style_label, "text")
     controls_layout.addWidget(style_label)
 
     self.style_combo = QComboBox()
-    self.style_combo.addItems([
-        "OpenStreetMap",
-        "CartoDB positron",
-        "CartoDB dark_matter",
-        "Stamen Terrain",
-        "Stamen Toner"
-    ])
+    self.style_combo.addItems(
+        [
+            "OpenStreetMap",
+            "CartoDB positron",
+            "CartoDB dark_matter",
+            "Stamen Terrain",
+            "Stamen Toner",
+        ]
+    )
     self.style_combo.setCurrentText(self.map_config.tiles)
     register_widget_for_theming(self.style_combo, "input")
     controls_layout.addWidget(self.style_combo)
@@ -144,6 +152,7 @@ def setup_web_view(self) -> None:
 
     try:
         from PySide6.QtWebEngineCore import QWebEngineSettings
+
         settings = self.web_view.settings()
         settings.setAttribute(QWebEngineSettings.JavascriptEnabled, True)
         settings.setAttribute(QWebEngineSettings.ErrorPageEnabled, True)

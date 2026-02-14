@@ -37,8 +37,7 @@ logger = logging.getLogger(__name__)
 
 
 class HungarianCitySelector(
-    HungarianCityEventHandlersMixin,
-    HungarianCityPublicAPIMixin
+    HungarianCityEventHandlersMixin, HungarianCityPublicAPIMixin
 ):
     """
     🇭🇺 Hungarian City Selector Widget - Magyar Klímaanalitika MVP
@@ -52,11 +51,11 @@ class HungarianCitySelector(
     """
 
     # Signalok
-    city_selected = Signal(str, float, float, dict)      # name, lat, lon, metadata
-    region_selected = Signal(str, list)                  # region_name, cities
-    search_completed = Signal(int)                       # results_count
-    data_loaded = Signal(int)                           # cities_count
-    error_occurred = Signal(str)                        # error_message
+    city_selected = Signal(str, float, float, dict)  # name, lat, lon, metadata
+    region_selected = Signal(str, list)  # region_name, cities
+    search_completed = Signal(int)  # results_count
+    data_loaded = Signal(int)  # cities_count
+    error_occurred = Signal(str)  # error_message
 
     def __init__(self, db_path: str = "src/data/cities.db", parent=None):
         super().__init__(parent)
@@ -96,8 +95,7 @@ class HungarianCitySelector(
 
         # === KERESÉSI SZAKASZ ===
         search_group = self.ui_builder.create_search_section(
-            self._on_search_text_changed,
-            self._clear_search
+            self._on_search_text_changed, self._clear_search
         )
         main_layout.addWidget(search_group)
 
@@ -107,13 +105,14 @@ class HungarianCitySelector(
 
         # === VÁROSOK LISTÁJA ===
         cities_group = self.ui_builder.create_cities_list_section(
-            self._select_current_city,
-            self._reload_cities
+            self._select_current_city, self._reload_cities
         )
         main_layout.addWidget(cities_group)
 
         # === GYORS HOZZÁFÉRÉS ===
-        quick_group = self.ui_builder.create_quick_access_section(self._select_quick_city)
+        quick_group = self.ui_builder.create_quick_access_section(
+            self._select_quick_city
+        )
         main_layout.addWidget(quick_group)
 
         # === STATISZTIKÁK ===
@@ -128,7 +127,7 @@ class HungarianCitySelector(
             self.ui_builder.search_box,
             self.ui_builder.region_combo,
             self.ui_builder.city_list,
-            self.ui_builder.quick_access_buttons
+            self.ui_builder.quick_access_buttons,
         )
 
         # Kezdeti téma alkalmazása
@@ -138,8 +137,7 @@ class HungarianCitySelector(
         """Magyar városok betöltése a cities.db adatbázisból."""
         db_loader = HungarianCityDatabaseLoader(self.db_path)
         self.hungarian_cities = db_loader.load_cities(
-            self.error_occurred,
-            self.ui_builder.update_stats
+            self.error_occurred, self.ui_builder.update_stats
         )
 
         # Search filter létrehozása a városok betöltése után
@@ -148,14 +146,18 @@ class HungarianCitySelector(
             self.search_completed,
             self.region_selected,
             self.ui_builder.update_stats,
-            lambda: self.ui_builder.populate_city_list(self.search_filter.get_filtered_cities())
+            lambda: self.ui_builder.populate_city_list(
+                self.search_filter.get_filtered_cities()
+            ),
         )
 
         # Lista feltöltése
         self.ui_builder.populate_city_list(self.hungarian_cities)
 
         # Statisztikák frissítése
-        stats_text = HungarianCityDatabaseLoader.calculate_city_stats(self.hungarian_cities)
+        stats_text = HungarianCityDatabaseLoader.calculate_city_stats(
+            self.hungarian_cities
+        )
         self.ui_builder.update_stats(stats_text)
 
         # Signal

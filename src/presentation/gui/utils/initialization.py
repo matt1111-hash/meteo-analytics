@@ -38,7 +38,9 @@ def initialize_utils_module() -> bool:
         Inicializálás sikerességét jelző bool
     """
     try:
-        logger.info("utils.py modul inicializálása (DUAL-API + WIND GUSTS + PROVIDER TRACKING + BACKWARD COMPATIBILITY)...")
+        logger.info(
+            "utils.py modul inicializálása (DUAL-API + WIND GUSTS + PROVIDER TRACKING + BACKWARD COMPATIBILITY)..."
+        )
 
         # Konstansok validálása
         gui_valid = validate_gui_constants()
@@ -47,17 +49,25 @@ def initialize_utils_module() -> bool:
 
         # Validációs eredmények ellenőrzése
         all_valid = (
-            all(gui_valid.values()) and
-            all(wind_valid.values()) and
-            all(dual_api_valid.values())
+            all(gui_valid.values())
+            and all(wind_valid.values())
+            and all(dual_api_valid.values())
         )
 
         if all_valid:
-            logger.info("✅ utils.py modul sikeresen inicializálva (DUAL-API + WIND GUSTS + PROVIDER TRACKING + BACKWARD COMPATIBILITY)")
-            logger.info(f"🌪️ Wind thresholds - Strong: {AnomalyConstants.WIND_HIGH_THRESHOLD}, Extreme: {AnomalyConstants.WIND_EXTREME_THRESHOLD}")
-            logger.info(f"🌍 Data sources: {len(DataConstants.DATA_SOURCE_PRIORITY)} APIs configured")
+            logger.info(
+                "✅ utils.py modul sikeresen inicializálva (DUAL-API + WIND GUSTS + PROVIDER TRACKING + BACKWARD COMPATIBILITY)"
+            )
+            logger.info(
+                f"🌪️ Wind thresholds - Strong: {AnomalyConstants.WIND_HIGH_THRESHOLD}, Extreme: {AnomalyConstants.WIND_EXTREME_THRESHOLD}"
+            )
+            logger.info(
+                f"🌍 Data sources: {len(DataConstants.DATA_SOURCE_PRIORITY)} APIs configured"
+            )
             logger.info("🌍 Provider tracking functions loaded")
-            logger.info("🔧 Backward compatibility aliases: get_display_name_for_source ✅")
+            logger.info(
+                "🔧 Backward compatibility aliases: get_display_name_for_source ✅"
+            )
 
             # API availability check
             for source in DataConstants.DATA_SOURCE_PRIORITY:

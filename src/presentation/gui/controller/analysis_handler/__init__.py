@@ -23,4 +23,4 @@ Fájl: src/presentation/gui/controller/analysis_handler/__init__.py
 
 from .core import AnalysisHandler
 
-__all__ = ['AnalysisHandler']
+__all__ = ["AnalysisHandler"]

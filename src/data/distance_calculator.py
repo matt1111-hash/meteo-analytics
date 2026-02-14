@@ -50,12 +50,18 @@ class DistanceCalculator:
             DistanceUnit.KILOMETERS: self.EARTH_RADIUS_KM,
             DistanceUnit.MILES: self.EARTH_RADIUS_MILES,
             DistanceUnit.NAUTICAL_MILES: self.EARTH_RADIUS_NAUTICAL_MILES,
-            DistanceUnit.METERS: self.EARTH_RADIUS_KM * 1000
+            DistanceUnit.METERS: self.EARTH_RADIUS_KM * 1000,
         }
         return radius_map[unit]
 
-    def haversine_distance(self, lat1: float, lon1: float, lat2: float, lon2: float,
-                          unit: Optional[DistanceUnit] = None) -> float:
+    def haversine_distance(
+        self,
+        lat1: float,
+        lon1: float,
+        lat2: float,
+        lon2: float,
+        unit: Optional[DistanceUnit] = None,
+    ) -> float:
         """
         Haversine formula distance calculation.
 
@@ -74,7 +80,10 @@ class DistanceCalculator:
         dlon = lon2_rad - lon1_rad
 
         # Haversine formula
-        a = math.sin(dlat / 2) ** 2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon / 2) ** 2
+        a = (
+            math.sin(dlat / 2) ** 2
+            + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon / 2) ** 2
+        )
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
         earth_radius = self._get_earth_radius(unit)
@@ -83,8 +92,14 @@ class DistanceCalculator:
         self.calculation_count += 1
         return distance
 
-    def vincenty_distance(self, lat1: float, lon1: float, lat2: float, lon2: float,
-                         unit: Optional[DistanceUnit] = None) -> float:
+    def vincenty_distance(
+        self,
+        lat1: float,
+        lon1: float,
+        lat2: float,
+        lon2: float,
+        unit: Optional[DistanceUnit] = None,
+    ) -> float:
         """
         Vincenty formula distance calculation.
 
@@ -127,8 +142,10 @@ class DistanceCalculator:
             sin_lambda = math.sin(lambda_val)
             cos_lambda = math.cos(lambda_val)
 
-            sin_sigma = math.sqrt((cos_U2 * sin_lambda) ** 2 +
-                           (cos_U1 * sin_U2 - sin_U1 * cos_U2 * cos_lambda) ** 2)
+            sin_sigma = math.sqrt(
+                (cos_U2 * sin_lambda) ** 2
+                + (cos_U1 * sin_U2 - sin_U1 * cos_U2 * cos_lambda) ** 2
+            )
 
             if sin_sigma == 0:
                 return 0.0
@@ -137,19 +154,27 @@ class DistanceCalculator:
             sigma = math.atan2(sin_sigma, cos_sigma)
 
             sin_alpha = cos_U1 * cos_U2 * sin_lambda / sin_sigma
-            cos2_alpha = 1 - sin_alpha ** 2
+            cos2_alpha = 1 - sin_alpha**2
 
             if cos2_alpha == 0:
                 cos_2sigma_m = 0
             else:
                 cos_2sigma_m = cos_sigma - 2 * sin_U1 * sin_U2 / cos2_alpha
 
-            C = self.WGS84_F / 16 * cos2_alpha * (4 + self.WGS84_F * (4 - 3 * cos2_alpha))
+            C = (
+                self.WGS84_F
+                / 16
+                * cos2_alpha
+                * (4 + self.WGS84_F * (4 - 3 * cos2_alpha))
+            )
 
             lambda_prev = lambda_val
-            lambda_val = L + (1 - C) * self.WGS84_F * sin_alpha * \
-                        (sigma + C * sin_sigma * (cos_2sigma_m + C * cos_sigma *
-                        (-1 + 2 * cos_2sigma_m ** 2)))
+            lambda_val = L + (1 - C) * self.WGS84_F * sin_alpha * (
+                sigma
+                + C
+                * sin_sigma
+                * (cos_2sigma_m + C * cos_sigma * (-1 + 2 * cos_2sigma_m**2))
+            )
 
             iteration += 1
 
@@ -159,14 +184,27 @@ class DistanceCalculator:
             return self.haversine_distance(lat1, lon1, lat2, lon2, unit)
 
         # Calculate distance
-        u2 = cos2_alpha * (self.WGS84_A ** 2 - self.WGS84_B ** 2) / (self.WGS84_B ** 2)
+        u2 = cos2_alpha * (self.WGS84_A**2 - self.WGS84_B**2) / (self.WGS84_B**2)
         A = 1 + u2 / 16384 * (4096 + u2 * (-768 + u2 * (320 - 175 * u2)))
         B = u2 / 1024 * (256 + u2 * (-128 + u2 * (74 - 47 * u2)))
 
-        delta_sigma = B * sin_sigma * (cos_2sigma_m + B / 4 *
-                     (cos_sigma * (-1 + 2 * cos_2sigma_m ** 2) -
-                     B / 6 * cos_2sigma_m * (-3 + 4 * sin_sigma ** 2) *
-                     (-3 + 4 * cos_2sigma_m ** 2)))
+        delta_sigma = (
+            B
+            * sin_sigma
+            * (
+                cos_2sigma_m
+                + B
+                / 4
+                * (
+                    cos_sigma * (-1 + 2 * cos_2sigma_m**2)
+                    - B
+                    / 6
+                    * cos_2sigma_m
+                    * (-3 + 4 * sin_sigma**2)
+                    * (-3 + 4 * cos_2sigma_m**2)
+                )
+            )
+        )
 
         distance_m = self.WGS84_B * A * (sigma - delta_sigma)
 
@@ -183,9 +221,13 @@ class DistanceCalculator:
         self.calculation_count += 1
         return distance
 
-    def batch_haversine_distances(self, center_lat: float, center_lon: float,
-                                 points: List[Tuple[float, float]],
-                                 unit: Optional[DistanceUnit] = None) -> List[float]:
+    def batch_haversine_distances(
+        self,
+        center_lat: float,
+        center_lon: float,
+        points: List[Tuple[float, float]],
+        unit: Optional[DistanceUnit] = None,
+    ) -> List[float]:
         """Batch Haversine distance calculation from center point."""
         if unit is None:
             unit = self.default_unit
@@ -197,13 +239,17 @@ class DistanceCalculator:
 
         return distances
 
-    def closest_point(self, reference_lat: float, reference_lon: float,
-                     points: List[Tuple[float, float, Any]]) -> Tuple[float, float, Any, float]:
+    def closest_point(
+        self,
+        reference_lat: float,
+        reference_lon: float,
+        points: List[Tuple[float, float, Any]],
+    ) -> Tuple[float, float, Any, float]:
         """Find closest point."""
         if not points:
             raise ValueError("Points list is empty")
 
-        min_distance = float('inf')
+        min_distance = float("inf")
         closest = None
 
         for lat, lon, data in points:
@@ -218,8 +264,8 @@ class DistanceCalculator:
         """Get calculation statistics."""
         return {
             "total_calculations": self.calculation_count,
-            "default_unit": self.default_unit.value
+            "default_unit": self.default_unit.value,
         }
 
 
-__all__ = ['DistanceCalculator']
+__all__ = ["DistanceCalculator"]

@@ -5,7 +5,7 @@
 WeatherDataWorker Provider Selector - Select optimal data provider.
 """
 
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from .core import WeatherDataWorker
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ProviderSelector:
     """Select optimal data provider."""
 
-    def __init__(self, worker: 'WeatherDataWorker'):
+    def __init__(self, worker: "WeatherDataWorker"):
         """
         Initialize provider selector.
 
@@ -31,9 +31,9 @@ class ProviderSelector:
             Selected provider name or None
         """
         from ...utils import (
+            get_fallback_source_chain,
             get_optimal_data_source,
             validate_api_source_available,
-            get_fallback_source_chain,
         )
 
         if self._worker.preferred_provider == "auto":
@@ -56,7 +56,11 @@ class ProviderSelector:
             else:
                 self._worker.provider_validation_failed.emit(
                     self._worker.preferred_provider,
-                    "Provider nem elérhető vagy API kulcs hiányzik"
+                    "Provider nem elérhető vagy API kulcs hiányzik",
                 )
                 # Auto fallback
-                return self.select_optimal() if self._worker.preferred_provider != "auto" else None
+                return (
+                    self.select_optimal()
+                    if self._worker.preferred_provider != "auto"
+                    else None
+                )

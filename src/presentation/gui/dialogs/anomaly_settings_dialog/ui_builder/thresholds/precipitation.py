@@ -1,4 +1,5 @@
 """Precipitation threshold section builder."""
+
 from PySide6.QtWidgets import QDoubleSpinBox, QGroupBox, QLabel, QVBoxLayout
 
 from ...utils import AnomalyConstants
@@ -31,7 +32,9 @@ def create_precipitation_section(dialog: object) -> QGroupBox:
     layout.addWidget(QLabel("🏜️ Alacsony küszöb:"))
     layout.addWidget(low_spinbox)
 
-    info_label = QLabel("💡 Magas küszöb felett 'esős', alacsony alatt 'száraz' kategória.")
+    info_label = QLabel(
+        "💡 Magas küszöb felett 'esős', alacsony alatt 'száraz' kategória."
+    )
     info_label.setStyleSheet("color: #6b7280; font-size: 11px;")
     layout.addWidget(info_label)
 

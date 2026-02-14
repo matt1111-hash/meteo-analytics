@@ -212,7 +212,9 @@ class QueryControlStateManager:
             elapsed_time = f" ({elapsed_seconds}s)"
 
         if self._ui.progress_text_label:
-            self._ui.progress_text_label.setText(f"📄 Adatok letöltése{dots}{elapsed_time}")
+            self._ui.progress_text_label.setText(
+                f"📄 Adatok letöltése{dots}{elapsed_time}"
+            )
 
     def cleanup(self) -> None:
         """Timer-ek takarítása."""

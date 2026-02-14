@@ -17,4 +17,4 @@ Fájl: src/presentation/gui/charts/precipitation_chart/__init__.py
 
 from .core import PrecipitationChart
 
-__all__ = ['PrecipitationChart']
+__all__ = ["PrecipitationChart"]

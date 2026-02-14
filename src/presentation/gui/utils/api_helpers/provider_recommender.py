@@ -7,11 +7,13 @@ API Helpers Provider Recommender - Get provider recommendations.
 
 from typing import Any, Dict
 
-from .source_selector import get_optimal_data_source, get_fallback_source_chain
 from .provider_validator import validate_provider_selection
+from .source_selector import get_fallback_source_chain, get_optimal_data_source
 
 
-def get_provider_recommendation(use_case: str, usage_stats: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+def get_provider_recommendation(
+    use_case: str, usage_stats: Dict[str, Dict[str, Any]]
+) -> Dict[str, Any]:
     """
     Get provider recommendation based on use case.
 
@@ -32,22 +34,22 @@ def get_provider_recommendation(use_case: str, usage_stats: Dict[str, Dict[str, 
             is_fallback_valid, _ = validate_provider_selection(fallback, usage_stats)
             if is_fallback_valid:
                 return {
-                    'recommended': fallback,
-                    'original': optimal_source,
-                    'reason': f"Fallback due to: {error_msg}",
-                    'is_fallback': True
+                    "recommended": fallback,
+                    "original": optimal_source,
+                    "reason": f"Fallback due to: {error_msg}",
+                    "is_fallback": True,
                 }
 
         return {
-            'recommended': 'open-meteo',
-            'original': optimal_source,
-            'reason': "Forced fallback to free provider",
-            'is_fallback': True
+            "recommended": "open-meteo",
+            "original": optimal_source,
+            "reason": "Forced fallback to free provider",
+            "is_fallback": True,
         }
 
     return {
-        'recommended': optimal_source,
-        'original': optimal_source,
-        'reason': f"Optimal for {use_case}",
-        'is_fallback': False
+        "recommended": optimal_source,
+        "original": optimal_source,
+        "reason": f"Optimal for {use_case}",
+        "is_fallback": False,
     }

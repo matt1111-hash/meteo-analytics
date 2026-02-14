@@ -79,7 +79,7 @@ def create_universal_location_selector_ui(parent_widget: QWidget) -> dict:
         "status_label": status_label,
         "results_list": results_list,
         "location_card": location_card,
-        "confirm_button": confirm_button
+        "confirm_button": confirm_button,
     }
 
 
@@ -149,6 +149,7 @@ def _create_selection_group() -> tuple:
 
 
 # === STYLES ===
+
 
 def _get_group_box_style() -> str:
     """Group box stílus."""

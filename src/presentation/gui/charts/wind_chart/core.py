@@ -8,16 +8,14 @@ Wind Chart Core - Main WindChart class.
 
 from typing import Any, Dict, Optional
 
-import pandas as pd
 from PySide6.QtWidgets import QWidget
 
 from ..base_chart import WeatherChart
 from ..tooltip_mixin import WeatherTooltipMixin
-from .data_extractor import WindDataExtractor
-from .wind_plotter import WindPlotter
 from .chart_formatter import WindChartFormatter
+from .data_extractor import WindDataExtractor
 from .tooltip_handlers import WindTooltipHandler
-from .wind_categories import HUNGARIAN_WIND_THRESHOLDS
+from .wind_plotter import WindPlotter
 
 
 class WindChart(WeatherChart, WeatherTooltipMixin):
@@ -123,6 +121,7 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
         except Exception as e:
             print(f"❌ DEBUG: Szél chart hiba: {e}")
             import traceback
+
             print(f"❌ DEBUG: WindChart traceback: {traceback.format_exc()}")
             self._is_updating = False
             self.clear_chart()

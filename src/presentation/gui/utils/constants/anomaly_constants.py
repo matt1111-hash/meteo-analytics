@@ -5,6 +5,7 @@
 Constants - Anomaly detection thresholds - Wind gusts optimized.
 """
 
+
 class AnomalyConstants:
     """
     Anomaly detection constants - WIND GUSTS OPTIMIZED.
@@ -58,19 +59,67 @@ class AnomalyConstants:
         "MILD": {"threshold": 1.5, "color": "#f59e0b", "label": "Enyhe anomália"},
         "MODERATE": {"threshold": 2.0, "color": "#ef4444", "label": "Közepes anomália"},
         "SEVERE": {"threshold": 3.0, "color": "#dc2626", "label": "Súlyos anomália"},
-        "EXTREME": {"threshold": 4.0, "color": "#7c2d12", "label": "Extrém anomália"}
+        "EXTREME": {"threshold": 4.0, "color": "#7c2d12", "label": "Extrém anomália"},
     }
 
     # Wind gusts categories - METEOROLOGICAL STANDARDS
     WIND_GUSTS_CATEGORIES = {
-        "CALM": {"threshold": 0.0, "max": 10.0, "color": "#a3a3a3", "label": "Szélcsend", "emoji": "🌤️"},
-        "LIGHT": {"threshold": 10.0, "max": 30.0, "color": "#86efac", "label": "Enyhe szél", "emoji": "🍃"},
-        "MODERATE": {"threshold": 30.0, "max": 50.0, "color": "#f59e0b", "label": "Mérsékelt szél", "emoji": "💨"},
-        "STRONG": {"threshold": 50.0, "max": 70.0, "color": "#f87171", "label": "Erős szél", "emoji": "🌪️"},
-        "STORMY": {"threshold": 70.0, "max": 100.0, "color": "#dc2626", "label": "Viharos szél", "emoji": "⚠️"},
-        "EXTREME": {"threshold": 100.0, "max": 120.0, "color": "#991b1b", "label": "Extrém széllökés", "emoji": "🚨"},
-        "HURRICANE": {"threshold": 120.0, "max": 150.0, "color": "#7c2d12", "label": "Hurrikán erősségű", "emoji": "☢️"},
-        "CATASTROPHIC": {"threshold": 150.0, "max": 999.0, "color": "#450a0a", "label": "Katasztrofális", "emoji": "💀"}
+        "CALM": {
+            "threshold": 0.0,
+            "max": 10.0,
+            "color": "#a3a3a3",
+            "label": "Szélcsend",
+            "emoji": "🌤️",
+        },
+        "LIGHT": {
+            "threshold": 10.0,
+            "max": 30.0,
+            "color": "#86efac",
+            "label": "Enyhe szél",
+            "emoji": "🍃",
+        },
+        "MODERATE": {
+            "threshold": 30.0,
+            "max": 50.0,
+            "color": "#f59e0b",
+            "label": "Mérsékelt szél",
+            "emoji": "💨",
+        },
+        "STRONG": {
+            "threshold": 50.0,
+            "max": 70.0,
+            "color": "#f87171",
+            "label": "Erős szél",
+            "emoji": "🌪️",
+        },
+        "STORMY": {
+            "threshold": 70.0,
+            "max": 100.0,
+            "color": "#dc2626",
+            "label": "Viharos szél",
+            "emoji": "⚠️",
+        },
+        "EXTREME": {
+            "threshold": 100.0,
+            "max": 120.0,
+            "color": "#991b1b",
+            "label": "Extrém széllökés",
+            "emoji": "🚨",
+        },
+        "HURRICANE": {
+            "threshold": 120.0,
+            "max": 150.0,
+            "color": "#7c2d12",
+            "label": "Hurrikán erősségű",
+            "emoji": "☢️",
+        },
+        "CATASTROPHIC": {
+            "threshold": 150.0,
+            "max": 999.0,
+            "color": "#450a0a",
+            "label": "Katasztrofális",
+            "emoji": "💀",
+        },
     }
 
     # Color codes
@@ -87,5 +136,5 @@ class AnomalyConstants:
         "stormy": "#dc2626",
         "extreme": "#991b1b",
         "hurricane": "#7c2d12",
-        "catastrophic": "#450a0a"
+        "catastrophic": "#450a0a",
     }

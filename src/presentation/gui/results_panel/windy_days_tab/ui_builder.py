@@ -9,7 +9,7 @@ UI elemek létrehozása a szeles napok analízis tab-hoz.
 Fájl: src/presentation/gui/results_panel/windy_days_tab/ui_builder.py
 """
 
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -24,11 +24,10 @@ from PySide6.QtWidgets import (
     QSplitter,
     QTextEdit,
     QVBoxLayout,
-    QWidget,
 )
 
 if TYPE_CHECKING:
-    from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
+    pass
 
 
 def create_header_section() -> tuple[QFrame, QLabel, QLabel]:

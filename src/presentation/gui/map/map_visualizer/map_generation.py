@@ -61,11 +61,12 @@ def _start_map_generation(self) -> None:
     self.status_label.setText("🌐 HTTP szerver Folium térkép generálása...")
 
     from .folium_renderer import FoliumMapGenerator
+
     self.map_generator = FoliumMapGenerator(
         config=self.map_config,
         counties_gdf=self.counties_gdf,
         weather_data=self.current_weather_data,
-        bridge_id=self.js_bridge.bridge_id
+        bridge_id=self.js_bridge.bridge_id,
     )
     self.map_generator.progress_updated.connect(self.progress_bar.setValue)
     self.map_generator.status_updated.connect(self.status_label.setText)

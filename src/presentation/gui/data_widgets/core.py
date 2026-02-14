@@ -67,5 +67,5 @@ class WeatherDataTable(
         self._register_widgets_for_theming()
 
         # Export progress UI - use info_bar layout
-        if hasattr(self, 'info_bar') and self.info_bar.layout():
+        if hasattr(self, "info_bar") and self.info_bar.layout():
             self._setup_export_ui(self.info_bar.layout())

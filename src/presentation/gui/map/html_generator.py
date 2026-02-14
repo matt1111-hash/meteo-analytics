@@ -10,7 +10,7 @@ FÁJL: src/presentation/gui/map/html_generator.py
 
 def create_temperature_legend() -> str:
     """🌡️ Hőmérséklet specifikus legend HTML."""
-    return '''
+    return """
     <div style="position: fixed;
                 top: 80px; right: 20px; width: 200px; height: auto;
                 background-color: rgba(255, 255, 255, 0.9);
@@ -32,12 +32,12 @@ def create_temperature_legend() -> str:
         <b>Adatok:</b> Napi maximum hőmérséklet
     </p>
     </div>
-    '''
+    """
 
 
 def create_wind_legend() -> str:
     """💨 Szél specifikus legend HTML."""
-    return '''
+    return """
     <div style="position: fixed;
                 top: 80px; right: 20px; width: 200px; height: auto;
                 background-color: rgba(255, 255, 255, 0.9);
@@ -61,12 +61,12 @@ def create_wind_legend() -> str:
         <div>🔴 > 50 km/h - Erős szél</div>
     </p>
     </div>
-    '''
+    """
 
 
 def create_precipitation_legend() -> str:
     """🌧️ Csapadék specifikus legend HTML."""
-    return '''
+    return """
     <div style="position: fixed;
                 top: 80px; right: 20px; width: 200px; height: auto;
                 background-color: rgba(255, 255, 255, 0.9);
@@ -98,12 +98,12 @@ def create_precipitation_legend() -> str:
         </div>
     </p>
     </div>
-    '''
+    """
 
 
 def create_general_legend() -> str:
     """🌤️ Általános weather legend HTML."""
-    return '''
+    return """
     <div style="position: fixed;
                 top: 80px; right: 20px; width: 200px; height: auto;
                 background-color: rgba(255, 255, 255, 0.9);
@@ -143,13 +143,13 @@ def create_general_legend() -> str:
         <div>🔴 > 50 km/h - Erős</div>
     </div>
     </div>
-    '''
+    """
 
 
 # Export
 __all__ = [
-    'create_temperature_legend',
-    'create_wind_legend',
-    'create_precipitation_legend',
-    'create_general_legend',
+    "create_temperature_legend",
+    "create_wind_legend",
+    "create_precipitation_legend",
+    "create_general_legend",
 ]

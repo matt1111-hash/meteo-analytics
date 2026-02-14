@@ -38,7 +38,7 @@ def setup_axes_and_labels(self, min_date: pd.Timestamp, max_date: pd.Timestamp) 
         max_date: Maximális dátum
     """
     current_colors = get_current_colors()
-    text_color = current_colors.get('on_surface', '#1f2937')
+    text_color = current_colors.get("on_surface", "#1f2937")
 
     total_days = (max_date - min_date).days + 1
 
@@ -50,8 +50,19 @@ def setup_axes_and_labels(self, min_date: pd.Timestamp, max_date: pd.Timestamp) 
     seen_months = set()
 
     hungarian_months = [
-        '', 'Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún',
-        'Júl', 'Aug', 'Sze', 'Okt', 'Nov', 'Dec'
+        "",
+        "Jan",
+        "Feb",
+        "Már",
+        "Ápr",
+        "Máj",
+        "Jún",
+        "Júl",
+        "Aug",
+        "Sze",
+        "Okt",
+        "Nov",
+        "Dec",
     ]
 
     # 53 hét végigiterálása
@@ -88,21 +99,26 @@ def setup_axes_and_labels(self, min_date: pd.Timestamp, max_date: pd.Timestamp) 
                 x_labels.append(f"H{week_idx}")
 
     self.ax.set_xticks(x_ticks)
-    self.ax.set_xticklabels(x_labels, color=text_color, rotation=0, ha='center')
-    self.ax.set_xlabel('Valódi hónapok (helyes pozíciók)', color=text_color, fontsize=12)
+    self.ax.set_xticklabels(x_labels, color=text_color, rotation=0, ha="center")
+    self.ax.set_xlabel(
+        "Valódi hónapok (helyes pozíciók)", color=text_color, fontsize=12
+    )
 
     # Y TENGELY - HÉTKÖZNAPOK
     self.ax.set_yticks(range(7))
-    self.ax.set_yticklabels([
-        'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'
-    ], color=text_color)
+    self.ax.set_yticklabels(
+        ["Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat", "Vasárnap"],
+        color=text_color,
+    )
     self.ax.invert_yaxis()
 
     self.ax.set_xlim(-0.5, 52.5)
     self.ax.set_ylim(-0.5, 6.5)
 
 
-def format_period_text(self, min_date: pd.Timestamp, max_date: pd.Timestamp, total_days: int) -> str:
+def format_period_text(
+    self, min_date: pd.Timestamp, max_date: pd.Timestamp, total_days: int
+) -> str:
     """
     Format period text for title.
 
@@ -118,8 +134,12 @@ def format_period_text(self, min_date: pd.Timestamp, max_date: pd.Timestamp, tot
     years = sorted(set([min_date.year, max_date.year]))
 
     if len(years) == 1:
-        if (min_date.month == 1 and min_date.day == 1 and
-            max_date.month == 12 and max_date.day == 31):
+        if (
+            min_date.month == 1
+            and min_date.day == 1
+            and max_date.month == 12
+            and max_date.day == 31
+        ):
             return f" ({years[0]})"
         else:
             return f" ({min_date.strftime('%Y.%m.%d')} - {max_date.strftime('%m.%d')})"

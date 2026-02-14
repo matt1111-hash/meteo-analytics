@@ -60,7 +60,7 @@ class MultiCityWidgetPublicAPI:
             "current_selection": current_selection,
             "selection_count": 1 if current_selection else 0,
             "is_valid": self.is_valid(),
-            "selection_text": self._get_selection_display_text()
+            "selection_text": self._get_selection_display_text(),
         }
 
     def set_state(self, state: Dict[str, Any]) -> bool:
@@ -90,13 +90,10 @@ class MultiCityWidgetPublicAPI:
 
             # UI frissítése
             self._combo_handler.restore_selection(
-                self._current_mode,
-                self._selected_region,
-                self._selected_county
+                self._current_mode, self._selected_region, self._selected_county
             )
             self._combo_handler.update_info_label(
-                self._current_mode,
-                self._get_current_selection()
+                self._current_mode, self._get_current_selection()
             )
             self._update_clear_button()
 
@@ -136,15 +133,23 @@ class MultiCityWidgetPublicAPI:
                 # Régió esetén a régióhoz tartozó megyék városai
                 counties = get_counties_for_region(current_selection)
                 for county in counties:
-                    county_cities = self.city_manager.get_hungarian_settlements_by_county(county, limit=50)
+                    county_cities = (
+                        self.city_manager.get_hungarian_settlements_by_county(
+                            county, limit=50
+                        )
+                    )
                     cities.extend([city.to_dict() for city in county_cities])
 
             else:
                 # Megye esetén közvetlenül
-                county_cities = self.city_manager.get_hungarian_settlements_by_county(current_selection, limit=50)
+                county_cities = self.city_manager.get_hungarian_settlements_by_county(
+                    current_selection, limit=50
+                )
                 cities.extend([city.to_dict() for city in county_cities])
 
-            print(f"🏙️ DEBUG: Kiválasztott városok: {len(cities)} db ({self._current_mode}: {current_selection})")
+            print(
+                f"🏙️ DEBUG: Kiválasztott városok: {len(cities)} db ({self._current_mode}: {current_selection})"
+            )
             return cities
 
         except Exception as e:
@@ -183,7 +188,9 @@ class MultiCityWidgetPublicAPI:
         self.clear_btn.setEnabled(enabled and self.is_valid())
 
         print(f"🏙️ DEBUG: MultiCityWidget enabled state: {enabled}")
-        print(f"🔧 DEBUG: ComboBox enabled after set_enabled: {self.combo_box.isEnabled()}")
+        print(
+            f"🔧 DEBUG: ComboBox enabled after set_enabled: {self.combo_box.isEnabled()}"
+        )
 
     # === HELPER METHODS ===
 

@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 class AnalyticsViewUIBuilder:
     """UI építő osztály az AnalyticsViewhoz."""
 
-    def __init__(self, view: 'AnalyticsView'):
+    def __init__(self, view: "AnalyticsView"):
         """Inicializálás."""
         self.view = view
 
@@ -41,7 +41,9 @@ class AnalyticsViewUIBuilder:
         layout = QHBoxLayout()
 
         # Cím
-        title_label = QLabel("🎯 Konstans Heatmap Klímakutató Dashboard + Régió Elemzés + DEDICATED Wind Chartok")
+        title_label = QLabel(
+            "🎯 Konstans Heatmap Klímakutató Dashboard + Régió Elemzés + DEDICATED Wind Chartok"
+        )
         title_font = QFont()
         title_font.setPointSize(14)
         title_font.setBold(True)
@@ -91,15 +93,17 @@ class AnalyticsViewUIBuilder:
         region_layout.addWidget(region_label)
 
         self.view.region_combo = QComboBox()
-        self.view.region_combo.addItems([
-            "Észak-Magyarország",
-            "Észak-Alföld",
-            "Dél-Alföld",
-            "Közép-Magyarország",
-            "Közép-Dunántúl",
-            "Nyugat-Dunántúl",
-            "Dél-Dunántúl"
-        ])
+        self.view.region_combo.addItems(
+            [
+                "Észak-Magyarország",
+                "Észak-Alföld",
+                "Dél-Alföld",
+                "Közép-Magyarország",
+                "Közép-Dunántúl",
+                "Nyugat-Dunántúl",
+                "Dél-Dunántúl",
+            ]
+        )
         self.view.region_combo.setStyleSheet("""
             QComboBox {
                 padding: 3px;

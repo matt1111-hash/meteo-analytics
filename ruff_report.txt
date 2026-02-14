@@ -1,4 +1,0 @@
-5	F401	unused-import
-3	E722	bare-except
-1	E402	module-import-not-at-top-of-file
-Found 9 errors.

@@ -45,8 +45,10 @@ class ExportMixin:
         default_filename = f"weather_data_{timestamp}{default_ext}"
 
         filepath, _ = QFileDialog.getSaveFileName(
-            self, f"Adatok exportálása ({format.upper()})",
-            default_filename, file_filter
+            self,
+            f"Adatok exportálása ({format.upper()})",
+            default_filename,
+            file_filter,
         )
 
         if not filepath:
@@ -62,29 +64,38 @@ class ExportMixin:
             self.export_progress.setValue(10)
 
             export_data = self.filtered_data.copy()
-            column_names = ["Dátum", "Max hőmérséklet (°C)", "Min hőmérséklet (°C)", "Napi átlag (°C)", "Csapadék (mm)"]
+            column_names = [
+                "Dátum",
+                "Max hőmérséklet (°C)",
+                "Min hőmérséklet (°C)",
+                "Napi átlag (°C)",
+                "Csapadék (mm)",
+            ]
 
             if len(export_data.columns) > 5:
                 column_names.append("Szélsebesség (km/h)")
 
-            export_data.columns = column_names[:len(export_data.columns)]
+            export_data.columns = column_names[: len(export_data.columns)]
 
             self.export_progress.setValue(50)
 
             if format == "csv":
-                export_data.to_csv(filepath, index=False, encoding='utf-8')
+                export_data.to_csv(filepath, index=False, encoding="utf-8")
             else:
-                export_data.to_excel(filepath, index=False, engine='openpyxl')
+                export_data.to_excel(filepath, index=False, engine="openpyxl")
 
             self.export_progress.setValue(100)
 
-            QMessageBox.information(self, "Export sikeres",
-                                  f"Adatok sikeresen exportálva:\n{filepath}")
+            QMessageBox.information(
+                self, "Export sikeres", f"Adatok sikeresen exportálva:\n{filepath}"
+            )
 
             self.export_completed.emit(filepath, True)
 
         except Exception as e:
-            QMessageBox.critical(self, "Export hiba", f"Hiba az export során:\n{str(e)}")
+            QMessageBox.critical(
+                self, "Export hiba", f"Hiba az export során:\n{str(e)}"
+            )
             self.export_completed.emit(filepath, False)
 
         finally:

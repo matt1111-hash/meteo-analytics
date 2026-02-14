@@ -42,7 +42,7 @@ class MapViewDebugMixin:
             "folium_ready": self.is_folium_ready(),
             "current_location": self.get_current_location(),
             "available_counties": len(self.get_available_counties()),
-            "map_status": self.get_map_status()
+            "map_status": self.get_map_status(),
         }
 
         # JavaScript Bridge info
@@ -59,7 +59,7 @@ class MapViewDebugMixin:
                 "zoom_start": folium_config.zoom_start,
                 "tiles": folium_config.tiles,
                 "theme": folium_config.theme,
-                "weather_overlay": folium_config.weather_overlay
+                "weather_overlay": folium_config.weather_overlay,
             }
 
         return debug_info

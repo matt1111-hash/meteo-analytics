@@ -79,22 +79,29 @@ class GeocodingHandler(QObject):
 
             self._logger.info("🚀 Creating GeocodingWorker...")
             worker = GeocodingWorker(self.active_search_query)
-            self._logger.info(f"✅ GeocodingWorker created for query: '{self.active_search_query}'")
+            self._logger.info(
+                f"✅ GeocodingWorker created for query: '{self.active_search_query}'"
+            )
 
             # WorkerManager központi használata
             self._logger.info("🚀 Starting worker via WorkerManager...")
             worker_id = self.worker_manager.start_geocoding(worker)
-            self._logger.info(f"✅ GeocodingWorker started via WorkerManager with ID: {worker_id}")
+            self._logger.info(
+                f"✅ GeocodingWorker started via WorkerManager with ID: {worker_id}"
+            )
 
         except Exception as e:
             error_msg = f"Geocoding worker indítási hiba: {e}"
             self._logger.error(error_msg)
             import traceback
+
             traceback.print_exc()
             self.error_occurred.emit(error_msg)
             return
 
-        self._logger.info(f"✅ handle_search_request completed successfully for '{search_query}'")
+        self._logger.info(
+            f"✅ handle_search_request completed successfully for '{search_query}'"
+        )
 
     @Slot(list)
     def on_geocoding_completed(self, results: List[Dict[str, Any]]) -> None:
@@ -104,7 +111,9 @@ class GeocodingHandler(QObject):
         Args:
             results: Település találatok listája
         """
-        self._logger.info(f"🔍 on_geocoding_completed called with {len(results)} results")
+        self._logger.info(
+            f"🔍 on_geocoding_completed called with {len(results)} results"
+        )
 
         try:
             if not results:
@@ -129,15 +138,20 @@ class GeocodingHandler(QObject):
             self._logger.info("📡 Emitting geocoding_results_ready signal...")
             self.geocoding_results_ready.emit(processed_results)
 
-            self._logger.info(f"✅ Geocoding befejezve: {len(processed_results)} találat")
+            self._logger.info(
+                f"✅ Geocoding befejezve: {len(processed_results)} találat"
+            )
 
         except Exception as e:
             self._logger.error(f"Geocoding feldolgozási hiba: {e}")
             import traceback
+
             traceback.print_exc()
             self.error_occurred.emit(f"Keresési eredmények feldolgozási hiba: {e}")
 
-    def _process_geocoding_results(self, raw_results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _process_geocoding_results(
+        self, raw_results: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Geocoding eredmények feldolgozása és gazdagítása.
 
@@ -155,28 +169,27 @@ class GeocodingHandler(QObject):
             try:
                 # Alapadatok kinyerése
                 processed_result = {
-                    'name': result.get('name', ''),
-                    'latitude': result.get('latitude', 0.0),
-                    'longitude': result.get('longitude', 0.0),
-                    'country': result.get('country', ''),
-                    'admin1': result.get('admin1', ''),  # megye/régió
-                    'admin2': result.get('admin2', ''),  # járás
-                    'population': result.get('population'),
-                    'timezone': result.get('timezone', 'UTC'),
-                    'elevation': result.get('elevation'),
-
+                    "name": result.get("name", ""),
+                    "latitude": result.get("latitude", 0.0),
+                    "longitude": result.get("longitude", 0.0),
+                    "country": result.get("country", ""),
+                    "admin1": result.get("admin1", ""),  # megye/régió
+                    "admin2": result.get("admin2", ""),  # járás
+                    "population": result.get("population"),
+                    "timezone": result.get("timezone", "UTC"),
+                    "elevation": result.get("elevation"),
                     # Megjelenítés a GUI számára
-                    'display_name': self._create_display_name(result),
-                    'search_rank': result.get('rank', 999),
-                    'original_query': self.active_search_query,
+                    "display_name": self._create_display_name(result),
+                    "search_rank": result.get("rank", 999),
+                    "original_query": self.active_search_query,
                 }
 
                 processed.append(processed_result)
 
                 # Debug információ minden 5. eredményhez
                 if i < 5 or i % 5 == 0:
-                    name = processed_result['name']
-                    country = processed_result['country']
+                    name = processed_result["name"]
+                    country = processed_result["country"]
                     self._logger.debug(f"🔍 Result {i}: {name}, {country}")
 
             except Exception as e:
@@ -184,7 +197,7 @@ class GeocodingHandler(QObject):
                 continue
 
         # Rendezés relevancia szerint
-        processed.sort(key=lambda x: x['search_rank'])
+        processed.sort(key=lambda x: x["search_rank"])
         self._logger.info("🔍 Results sorted by relevance")
 
         return processed
@@ -199,9 +212,9 @@ class GeocodingHandler(QObject):
         Returns:
             Formázott megjelenítési név
         """
-        name = result.get('name', 'Ismeretlen')
-        admin1 = result.get('admin1', '')
-        country = result.get('country', '')
+        name = result.get("name", "Ismeretlen")
+        admin1 = result.get("admin1", "")
+        country = result.get("country", "")
 
         display_parts = [name]
 
@@ -211,11 +224,16 @@ class GeocodingHandler(QObject):
         if country:
             display_parts.append(country)
 
-        return ', '.join(display_parts)
+        return ", ".join(display_parts)
 
     @Slot(str, float, float, dict)
-    def handle_city_selection(self, city_name: str, latitude: float,
-                              longitude: float, metadata: Dict[str, Any]) -> Dict[str, Any]:
+    def handle_city_selection(
+        self,
+        city_name: str,
+        latitude: float,
+        longitude: float,
+        metadata: Dict[str, Any],
+    ) -> Dict[str, Any]:
         """
         Település kiválasztás kezelése a ControlPanel-től.
 
@@ -228,16 +246,18 @@ class GeocodingHandler(QObject):
         Returns:
             A létrehozott city_data dictionary
         """
-        self._logger.info(f"🔍 handle_city_selection called: {city_name} ({latitude:.4f}, {longitude:.4f})")
+        self._logger.info(
+            f"🔍 handle_city_selection called: {city_name} ({latitude:.4f}, {longitude:.4f})"
+        )
 
         try:
             # Kiválasztott település adatainak mentése
             city_data = {
-                'name': city_name,
-                'latitude': latitude,
-                'longitude': longitude,
-                'metadata': metadata,
-                'selected_at': datetime.now().isoformat(),
+                "name": city_name,
+                "latitude": latitude,
+                "longitude": longitude,
+                "metadata": metadata,
+                "selected_at": datetime.now().isoformat(),
             }
 
             # Státusz frissítése
@@ -248,7 +268,9 @@ class GeocodingHandler(QObject):
             # Adatbázisba mentés (aszinkron)
             self._save_city_to_database(city_data)
 
-            self._logger.info(f"✅ Település kiválasztva: {city_name} ({latitude:.4f}, {longitude:.4f})")
+            self._logger.info(
+                f"✅ Település kiválasztva: {city_name} ({latitude:.4f}, {longitude:.4f})"
+            )
             return city_data
 
         except Exception as e:

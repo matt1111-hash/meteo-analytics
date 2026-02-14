@@ -10,7 +10,9 @@ from typing import Any, Dict, Optional
 from src.presentation.gui.utils.constants import AnomalyConstants
 
 
-def format_wind_gusts(value: float, unit: str = "km/h", include_category: bool = False) -> str:
+def format_wind_gusts(
+    value: float, unit: str = "km/h", include_category: bool = False
+) -> str:
     """Format wind gusts values with category."""
     if value is None:
         return "N/A"

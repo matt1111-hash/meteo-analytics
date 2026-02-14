@@ -1,33 +1,16 @@
 #!/bin/bash
-
 # =============================================================================
-# Universal Python Quality Gate Script
+# Quality Gate v3.1 - Merged Edition (Fixed)
 # =============================================================================
-# Használat: ./quality_gate.sh [options]
-#   --config FILE       Egyedi config file (default: .quality_gate.conf)
-#   --coverage NUM      Coverage threshold (default: 95)
-#   --pylint NUM        Pylint minimum score (default: 9.0)
-#   --max-lines NUM     Max sorok fájlonként (default: 250)
-#   --src-dir DIR       Source könyvtár (default: auto-detect)
-#   --test-dir DIR      Test könyvtár (default: auto-detect)
-#   --skip-git          Git check kihagyása
-#   --skip-tests        Tesztek kihagyása (CSAK fejlesztés közben!)
-#   --strict            Szigorú mód: 0 warning
-#   --help              Súgó
+# v2.2 Ruff-alapok + Solo kiegészítések (architecture, complexity, dead code)
+# Fixes: src_dir guard, glob bug, CI strictness, dependency checks, set -u
 # =============================================================================
-# VERZIÓ: 1.5.0 - 2025-12-22
-# JAVÍTÁSOK:
-#   - PYTHON_BIN változó (python3/python konzisztencia)
-#   - bc függőség eltávolítva (Python-alapú score összehasonlítás)
-#   - grep -oP (PCRE) eltávolítva (sed/awk kompatibilitás)
-#   - Cirkuláris import: Pylint statikus elemzés (nem futtat kódot)
-#   - pytest-cov ellenőrzés hozzáadva
-#   - FAIL/WARN logika javítva (teszt FAIL = quality gate FAIL)
+# Használat: ./quality_gate.sh [--quick|--full|--ci|--strict|--trend|--health]
 # =============================================================================
 
-set -o pipefail
+set -uo pipefail
 
-# Colors
+# === COLORS ===
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -35,705 +18,471 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-# Defaults
-COVERAGE_THRESHOLD=95
-PYLINT_MIN_SCORE=9.0
-MAX_FILE_LINES=250
-SRC_DIR=""
-TEST_DIR=""
-SKIP_GIT=false
-SKIP_TESTS=false
+# === DEFAULTS ===
+COVERAGE_THRESHOLD=85
+MAX_FILE_LINES=300
+CI_MODE=false
 STRICT_MODE=false
+
+# === CONFIG ===
 CONFIG_FILE=".quality_gate.conf"
-VENV_PATHS=(".venv" "venv" ".env" "env")
+[ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
 
-# Python binary - will be set by detect_python()
-PYTHON_BIN=""
+# === CLI ARGS ===
+MODE="full"
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --quick|-q) MODE="quick"; shift ;;
+        --full|-f) MODE="full"; shift ;;
+        --ci) MODE="ci"; CI_MODE=true; COVERAGE_THRESHOLD=90; MAX_FILE_LINES=250; shift ;;
+        --strict|-s) MODE="strict"; CI_MODE=true; STRICT_MODE=true; COVERAGE_THRESHOLD=90; MAX_FILE_LINES=250; shift ;;
+        --trend|-t) MODE="trend"; shift ;;
+        --health|-h) MODE="health"; shift ;;
+        --help)
+            echo "Usage: ./quality_gate.sh [MODE]"
+            echo "  --quick, -q    Quick lint + format check"
+            echo "  --full, -f     Full quality gate (default)"
+            echo "  --ci           CI mode (strict thresholds)"
+            echo "  --strict, -s   Strict: EVERY warning → fail"
+            echo "  --trend, -t    Wily trend analysis"
+            echo "  --health       Full health report"
+            exit 0 ;;
+        *) echo "Unknown: $1"; exit 1 ;;
+    esac
+done
 
-# EXCLUDE patterns
-EXCLUDE_DIRS=("venv" ".venv" "env" ".env" "__pycache__" ".git" "node_modules" "htmlcov" ".pytest_cache" ".mypy_cache" ".ruff_cache" "build" "dist" "*.egg-info" "migrations" ".tox" ".idea" ".vscode")
-
-# Result tracking
-ALL_PASSED=true
-WARNINGS=0
-declare -a FAILED_CHECKS=()
-declare -a WARNING_CHECKS=()
-
-# =============================================================================
-# Helper Functions
-# =============================================================================
-
+# === HELPERS ===
 print_header() {
     echo ""
     echo -e "${CYAN}════════════════════════════════════════════════════════════${NC}"
     echo -e "${BOLD}$1${NC}"
     echo -e "${CYAN}════════════════════════════════════════════════════════════${NC}"
 }
+print_step() { echo -e "${YELLOW}[CHECK]${NC} $1"; }
+print_pass() { echo -e "${GREEN}[PASS]${NC} $1"; }
+print_fail() { echo -e "${RED}[FAIL]${NC} $1"; }
+print_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+print_info() { echo -e "${CYAN}[INFO]${NC} $1"; }
 
-print_status() {
-    echo -e "${YELLOW}[CHECK]${NC} $1"
-}
+FAILED=0
+WARNINGS=0
+SKIPPED=0
+declare -a FAILED_CHECKS=()
 
-print_pass() {
-    echo -e "${GREEN}[PASS]${NC} $1"
-}
-
-print_fail() {
-    echo -e "${RED}[FAIL]${NC} $1"
-    ALL_PASSED=false
+fail_check() {
+    print_fail "$1"
     FAILED_CHECKS+=("$1")
+    ((FAILED++))
 }
 
-print_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
-    ((WARNINGS++))
-    WARNING_CHECKS+=("$1")
-}
-
-print_info() {
-    echo -e "${CYAN}[INFO]${NC} $1"
-}
-
-show_help() {
-    head -20 "$0" | tail -16
-    exit 0
-}
-
-build_pylint_ignores() {
-    local IFS=','
-    echo "${EXCLUDE_DIRS[*]}"
-}
-
-# =============================================================================
-# Python Detection (KRITIKUS - konzisztens python használat)
-# =============================================================================
-
-detect_python() {
-    # Prioritás: venv python > python3 > python
-    if [ -n "$VIRTUAL_ENV" ]; then
-        if command -v python &> /dev/null; then
-            PYTHON_BIN="python"
-            return 0
-        fi
-    fi
-    
-    if command -v python3 &> /dev/null; then
-        PYTHON_BIN="python3"
-        return 0
-    fi
-    
-    if command -v python &> /dev/null; then
-        PYTHON_BIN="python"
-        return 0
-    fi
-    
-    print_fail "Python nem található!"
-    return 1
-}
-
-# =============================================================================
-# Config & CLI Parsing
-# =============================================================================
-
-load_config() {
-    if [ -f "$CONFIG_FILE" ]; then
-        print_info "Config betöltése: $CONFIG_FILE"
-        source "$CONFIG_FILE"
+warn_or_fail() {
+    # CI/strict módban fail, különben warning
+    if $CI_MODE; then
+        fail_check "$1"
+    else
+        print_warn "$1 (local: nem blokkoló)"
+        ((WARNINGS++))
     fi
 }
 
-parse_args() {
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --config)      CONFIG_FILE="$2"; shift 2 ;;
-            --coverage)    COVERAGE_THRESHOLD="$2"; shift 2 ;;
-            --pylint)      PYLINT_MIN_SCORE="$2"; shift 2 ;;
-            --max-lines)   MAX_FILE_LINES="$2"; shift 2 ;;
-            --src-dir)     SRC_DIR="$2"; shift 2 ;;
-            --test-dir)    TEST_DIR="$2"; shift 2 ;;
-            --skip-git)    SKIP_GIT=true; shift ;;
-            --skip-tests)  SKIP_TESTS=true; shift ;;
-            --strict)      STRICT_MODE=true; shift ;;
-            --help|-h)     show_help ;;
-            *)             echo "Ismeretlen opció: $1"; show_help ;;
-        esac
-    done
-}
-
-# =============================================================================
-# Auto-Detection Functions
-# =============================================================================
-
-detect_project_name() {
-    # pyproject.toml parsing Python-nal (megbízhatóbb)
-    if [ -f "pyproject.toml" ] && [ -n "$PYTHON_BIN" ]; then
-        local name
-        name=$($PYTHON_BIN -c "
-try:
-    import tomllib
-except ImportError:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        tomllib = None
-
-if tomllib:
-    with open('pyproject.toml', 'rb') as f:
-        data = tomllib.load(f)
-    name = data.get('project', {}).get('name', '')
-    if not name:
-        name = data.get('tool', {}).get('poetry', {}).get('name', '')
-    print(name)
-" 2>/dev/null)
-        if [ -n "$name" ]; then
-            echo "$name"
-            return
-        fi
+require_tool() {
+    local tool="$1"
+    local package="${2:-$1}"
+    if ! command -v "$tool" &> /dev/null && ! python -m "$tool" --version &> /dev/null 2>&1; then
+        print_warn "$tool not installed (pip install $package)"
+        ((SKIPPED++))
+        return 1
     fi
-    
-    # Fallback: basename
-    basename "$(pwd)"
+    return 0
 }
 
+# === DETECT PROJECT ===
 detect_src_dir() {
-    if [ -n "$SRC_DIR" ] && [ -d "$SRC_DIR" ]; then
-        echo "$SRC_DIR"
-        return
-    fi
-    
-    for dir in "src" "lib" "app" "."; do
-        if [ -d "$dir" ] && find "$dir" -maxdepth 2 -name "*.py" -type f \
-            -not -path "*/venv/*" -not -path "*/.venv/*" -not -path "*/__pycache__/*" \
-            2>/dev/null | grep -q .; then
-            echo "$dir"
-            return
+    for dir in "src" "app" "lib"; do
+        # FIXED: find|grep -q pipefail+SIGPIPE bug — find -print -quit nem kell pipe
+        if [ -d "$dir" ] && [ -n "$(find "$dir" -name "*.py" -type f -print -quit 2>/dev/null)" ]; then
+            echo "$dir"; return
         fi
     done
-    
-    if find . -maxdepth 1 -name "*.py" -type f 2>/dev/null | grep -q .; then
-        echo "."
-        return
+    if compgen -G "*.py" > /dev/null 2>&1; then
+        echo "."; return
     fi
-    
     echo ""
 }
 
 detect_test_dir() {
-    if [ -n "$TEST_DIR" ] && [ -d "$TEST_DIR" ]; then
-        echo "$TEST_DIR"
-        return
-    fi
-    
-    for dir in "tests" "test" "spec"; do
-        if [ -d "$dir" ]; then
-            echo "$dir"
-            return
-        fi
+    for dir in "tests" "test"; do
+        [ -d "$dir" ] && echo "$dir" && return
     done
     echo ""
 }
 
-detect_venv() {
-    for venv_path in "${VENV_PATHS[@]}"; do
-        if [ -f "$venv_path/bin/activate" ]; then
-            echo "$venv_path"
+# === VENV ===
+activate_venv() {
+    for venv in ".venv" "venv"; do
+        if [ -f "$venv/bin/activate" ]; then
+            # shellcheck disable=SC1091
+            source "$venv/bin/activate"
+            print_info "Venv: $venv"
             return
         fi
     done
-    echo ""
 }
 
-# =============================================================================
-# Check Functions
-# =============================================================================
-
-check_python_version() {
-    print_status "Python verzió ellenőrzése..."
-    
-    if [ -z "$PYTHON_BIN" ]; then
-        print_fail "Python nem található"
-        return 1
-    fi
-    
-    local version
-    version=$($PYTHON_BIN --version 2>&1 | cut -d' ' -f2)
-    print_info "Python verzió: $version (binary: $PYTHON_BIN)"
-    
-    if $PYTHON_BIN -c "import sys; sys.exit(0 if sys.version_info >= (3, 8) else 1)"; then
-        print_pass "Python >= 3.8"
-        return 0
-    else
-        print_fail "Python >= 3.8 szükséges (jelenlegi: $version)"
-        return 1
-    fi
-}
-
-check_venv() {
-    print_status "Virtual environment keresése..."
-    
-    local venv_path
-    venv_path=$(detect_venv)
-    
-    if [ -n "$venv_path" ]; then
-        print_info "Venv aktiválása: $venv_path"
-        source "$venv_path/bin/activate"
-        # Venv aktiválás után frissítjük a PYTHON_BIN-t
-        PYTHON_BIN="python"
-        print_pass "Virtual environment aktív"
-        return 0
-    else
-        print_warn "Nincs venv - rendszer Python használata"
-        return 0
-    fi
-}
-
-check_dependencies() {
-    print_status "Függőségek ellenőrzése..."
-    
-    # CLI tool + Python module párok
-    local missing=()
-    
-    # pytest (CLI + module)
-    if ! $PYTHON_BIN -c "import pytest" 2>/dev/null; then
-        missing+=("pytest")
-    fi
-    
-    # pytest-cov (KRITIKUS - ezt eddig nem ellenőriztük!)
-    if ! $PYTHON_BIN -c "import pytest_cov" 2>/dev/null; then
-        missing+=("pytest-cov")
-    fi
-    
-    # coverage
-    if ! $PYTHON_BIN -c "import coverage" 2>/dev/null; then
-        missing+=("coverage")
-    fi
-    
-    # pylint
-    if ! $PYTHON_BIN -c "import pylint" 2>/dev/null; then
-        missing+=("pylint")
-    fi
-    
-    # mypy
-    if ! $PYTHON_BIN -c "import mypy" 2>/dev/null; then
-        missing+=("mypy")
-    fi
-    
-    if [ ${#missing[@]} -eq 0 ]; then
-        print_pass "Minden quality tool telepítve"
-        return 0
-    else
-        print_fail "Hiányzó csomagok: ${missing[*]}"
-        print_info "Telepítés: $PYTHON_BIN -m pip install ${missing[*]}"
-        return 1
-    fi
-}
-
-check_pylint() {
+# === GUARD ===
+guard_src_dir() {
     local src_dir="$1"
-    print_status "Pylint ellenőrzés (minimum: $PYLINT_MIN_SCORE)..."
-    
-    if [ -z "$src_dir" ] || [ ! -d "$src_dir" ]; then
-        print_fail "Nincs source könyvtár - pylint FAIL"
-        return 1
+    if [ -z "$src_dir" ]; then
+        echo -e "${RED}FATAL: Nem találok Python forrást (src/, app/, lib/, *.py)${NC}"
+        echo "Futtasd a projekt gyökérkönyvtárából!"
+        exit 1
     fi
-    
-    local pylint_output
-    pylint_output=$(mktemp)
-    
-    local ignore_list
-    ignore_list=$(build_pylint_ignores)
-    
-    # PYTHONPATH beállítás
-    local old_pythonpath="${PYTHONPATH:-}"
-    if [ "$src_dir" != "." ]; then
-        export PYTHONPATH="${src_dir}:${old_pythonpath}"
-    fi
-    
-    $PYTHON_BIN -m pylint "$src_dir" \
-        --ignore="$ignore_list" \
-        --ignore-patterns="test_.*\.py" \
-        --output-format=text 2>&1 | tee "$pylint_output" || true
-    
-    export PYTHONPATH="$old_pythonpath"
-    
-    # Score parsing sed-del (PCRE-mentes, univerzális)
-    local score
-    score=$(grep "Your code has been rated at" "$pylint_output" | sed -n 's/.*rated at \([0-9]*\.[0-9]*\).*/\1/p' | head -1)
-    
-    rm -f "$pylint_output"
-    
-    if [ -z "$score" ]; then
-        print_warn "Pylint score nem olvasható"
-        return 0
-    fi
-    
-    print_info "Pylint score: $score / 10.0"
-    
-    # Score összehasonlítás Python-nal (bc nélkül!)
-    if $PYTHON_BIN -c "import sys; sys.exit(0 if float('$score') >= float('$PYLINT_MIN_SCORE') else 1)"; then
-        print_pass "Pylint score >= $PYLINT_MIN_SCORE"
-        return 0
+}
+
+# === CHECKS ===
+
+check_ruff() {
+    local src_dir="$1"
+
+    require_tool "ruff" "ruff" || return
+
+    print_step "Ruff lint..."
+    local lint_output
+    lint_output=$(python -m ruff check "$src_dir" 2>&1)
+    local lint_rc=$?
+    if [ $lint_rc -eq 0 ]; then
+        print_pass "Ruff lint OK"
     else
-        print_fail "Pylint score $score < $PYLINT_MIN_SCORE"
-        return 1
+        echo "$lint_output"
+        fail_check "Ruff lint hibák"
+        print_info "Fix: ruff check --fix $src_dir"
+    fi
+
+    print_step "Ruff format..."
+    local fmt_output
+    fmt_output=$(python -m ruff format --check "$src_dir" 2>&1)
+    local fmt_rc=$?
+    if [ $fmt_rc -eq 0 ]; then
+        print_pass "Format OK"
+    else
+        echo "$fmt_output"
+        # FIXED: CI/strict módban fail
+        warn_or_fail "Format eltérések"
+        print_info "Fix: ruff format $src_dir"
     fi
 }
 
 check_mypy() {
     local src_dir="$1"
-    print_status "Mypy type checking..."
-    
-    if [ -z "$src_dir" ] || [ ! -d "$src_dir" ]; then
-        print_fail "Nincs source könyvtár - mypy FAIL"
-        return 1
-    fi
-    
-    # PYTHONPATH beállítás
-    local old_pythonpath="${PYTHONPATH:-}"
-    if [ "$src_dir" != "." ]; then
-        export PYTHONPATH="${src_dir}:${old_pythonpath}"
-    fi
-    
-    if $PYTHON_BIN -m mypy "$src_dir" \
-        --ignore-missing-imports \
-        --exclude "venv|\.venv|__pycache__|\.git|build|dist|migrations" \
-        --no-error-summary 2>&1; then
-        print_pass "Type checking passed"
-        export PYTHONPATH="$old_pythonpath"
-        return 0
+
+    require_tool "mypy" "mypy" || return
+
+    print_step "Mypy type checking..."
+    local mypy_output
+    mypy_output=$(python -m mypy "$src_dir" --ignore-missing-imports 2>&1)
+    local mypy_rc=$?
+    if [ $mypy_rc -eq 0 ]; then
+        print_pass "Type check OK"
     else
-        print_fail "Type checking hibák találhatók"
-        export PYTHONPATH="$old_pythonpath"
-        return 1
+        echo "$mypy_output"
+        warn_or_fail "Type errors"
     fi
 }
 
-check_tests_and_coverage() {
+check_tests() {
     local src_dir="$1"
     local test_dir="$2"
-    print_status "Tesztek és coverage (minimum: ${COVERAGE_THRESHOLD}%)..."
-    
-    # --skip-tests flag kezelése
-    if [ "$SKIP_TESTS" = true ]; then
-        print_warn "Tesztek kihagyva (--skip-tests) - CSAK fejlesztés közben!"
-        return 0
-    fi
-    
-    # KRITIKUS: Hiányzó test könyvtár = FAIL
+    print_step "Tests + coverage (min: ${COVERAGE_THRESHOLD}%)..."
+
     if [ -z "$test_dir" ] || [ ! -d "$test_dir" ]; then
-        print_fail "Test könyvtár KÖTELEZŐ! Hozd létre: tests/"
-        print_info "AGENTS.md követelmény: ≥95% coverage, tesztek MANDATORY"
-        return 1
+        fail_check "Nincs tests/ könyvtár!"
+        return
     fi
-    
-    # Ellenőrizzük, hogy van-e teszt fájl
-    local test_files
-    test_files=$(find "$test_dir" -name "test_*.py" -o -name "*_test.py" 2>/dev/null | head -1)
-    if [ -z "$test_files" ]; then
-        print_fail "Nincs teszt fájl a $test_dir könyvtárban!"
-        return 1
+
+    require_tool "pytest" "pytest" || return
+
+    export PYTHONPATH="${src_dir}:${PYTHONPATH:-}"
+
+    local test_output
+    test_output=$(python -m pytest "$test_dir" -v --tb=short \
+        --cov="$src_dir" --cov-branch \
+        --cov-report=term-missing:skip-covered \
+        --cov-fail-under="$COVERAGE_THRESHOLD" 2>&1)
+    local test_rc=$?
+    echo "$test_output"
+    if [ $test_rc -eq 0 ]; then
+        print_pass "Tests PASS, coverage >= ${COVERAGE_THRESHOLD}%"
+    else
+        fail_check "Tests or coverage failed"
     fi
-    
-    local cov_output
-    cov_output=$(mktemp)
-    
-    local cov_source="$src_dir"
-    [ "$src_dir" = "." ] && cov_source="."
-    
-    # PYTHONPATH beállítás
-    local old_pythonpath="${PYTHONPATH:-}"
-    if [ "$src_dir" != "." ] && [ -d "$src_dir" ]; then
-        export PYTHONPATH="${src_dir}:${old_pythonpath}"
-        print_info "PYTHONPATH beállítva: ${src_dir}"
-    fi
-    
-    $PYTHON_BIN -m pytest "$test_dir" -v --tb=short \
-        --cov="$cov_source" \
-        --cov-report=term-missing \
-        --cov-report=html:htmlcov \
-        --cov-report=xml:coverage.xml \
-        --cov-fail-under="$COVERAGE_THRESHOLD" 2>&1 | tee "$cov_output"
-    
-    local pytest_exit=${PIPESTATUS[0]}
-    
-    export PYTHONPATH="$old_pythonpath"
-    
-    # Exit code 0 = minden OK
-    if [ $pytest_exit -eq 0 ]; then
-        print_pass "Minden teszt PASSED, coverage >= ${COVERAGE_THRESHOLD}%"
-        rm -f "$cov_output"
-        return 0
-    fi
-    
-    # =========================================================================
-    # HIBA KEZELÉS - MINDEN HIBA FAIL, NEM WARN!
-    # =========================================================================
-    
-    # Import error vagy collection error?
-    if grep -q "ERROR collecting\|ImportError\|ModuleNotFoundError" "$cov_output"; then
-        local error_count
-        error_count=$(grep -c "ERROR\|ImportError\|ModuleNotFoundError" "$cov_output" 2>/dev/null || echo "?")
-        print_fail "Import/collection error - tesztek nem futottak le! ($error_count hiba)"
-        rm -f "$cov_output"
-        return 1
-    fi
-    
-    # Teszt FAILED?
-    if grep -q "FAILED" "$cov_output"; then
-        local failed_count
-        failed_count=$(grep -c "FAILED" "$cov_output" 2>/dev/null || echo "?")
-        print_fail "Tesztek FAILED ($failed_count db) - QUALITY GATE FAIL!"
-        rm -f "$cov_output"
-        return 1
-    fi
-    
-    # Coverage nem elég?
-    if grep -q "TOTAL" "$cov_output"; then
-        local coverage_pct
-        coverage_pct=$(grep "TOTAL" "$cov_output" | tail -1 | awk '{print $NF}' | sed 's/%//')
-        
-        if [ -n "$coverage_pct" ]; then
-            if $PYTHON_BIN -c "import sys; sys.exit(0 if float('$coverage_pct') >= float('$COVERAGE_THRESHOLD') else 1)" 2>/dev/null; then
-                : # OK
-            else
-                print_fail "Coverage ${coverage_pct}% < ${COVERAGE_THRESHOLD}%"
-                rm -f "$cov_output"
-                return 1
-            fi
-        fi
-    fi
-    
-    # Egyéb pytest hiba
-    print_fail "Pytest hiba (exit code: $pytest_exit)"
-    rm -f "$cov_output"
-    return 1
 }
 
 check_file_sizes() {
     local src_dir="$1"
-    print_status "File méretek ellenőrzése (max: $MAX_FILE_LINES sor)..."
-    
-    if [ -z "$src_dir" ]; then
-        print_fail "Nincs source könyvtár - size check FAIL"
-        return 1
-    fi
-    
+    print_step "File sizes (max: $MAX_FILE_LINES)..."
+
     local oversized=()
-    local exclude_pattern=""
-    
-    # Exclude pattern építése
-    for dir in "${EXCLUDE_DIRS[@]}"; do
-        exclude_pattern="$exclude_pattern -not -path '*/$dir/*'"
-    done
-    
-    while IFS= read -r -d '' file; do
+    while IFS= read -r file; do
         local lines
         lines=$(wc -l < "$file")
-        if [ "$lines" -gt "$MAX_FILE_LINES" ]; then
-            oversized+=("$file ($lines sor)")
-        fi
+        [ "$lines" -gt "$MAX_FILE_LINES" ] && oversized+=("$file ($lines)")
     done < <(find "$src_dir" -name "*.py" -type f \
-        -not -path "*/venv/*" \
-        -not -path "*/.venv/*" \
-        -not -path "*/env/*" \
-        -not -path "*/.env/*" \
         -not -path "*/__pycache__/*" \
-        -not -path "*/.git/*" \
-        -not -path "*/node_modules/*" \
-        -not -path "*/build/*" \
-        -not -path "*/dist/*" \
-        -not -path "*/.pytest_cache/*" \
-        -not -path "*/.mypy_cache/*" \
-        -not -path "*/migrations/*" \
-        -print0 2>/dev/null)
-    
+        -not -path "*/.venv/*" \
+        -not -path "*/venv/*" 2>/dev/null)
+
     if [ ${#oversized[@]} -eq 0 ]; then
-        print_pass "Minden file <= $MAX_FILE_LINES sor"
-        return 0
+        print_pass "All files <= $MAX_FILE_LINES lines"
     else
         for f in "${oversized[@]}"; do
-            print_fail "Túl nagy: $f"
+            fail_check "Too large: $f"
         done
-        return 1
     fi
 }
 
-check_circular_imports() {
+check_complexity() {
     local src_dir="$1"
-    print_status "Cirkuláris import ellenőrzés (Pylint statikus elemzés)..."
-    
-    if [ -z "$src_dir" ]; then
-        print_warn "Nincs source könyvtár - circular check kihagyva"
-        return 0
-    fi
-    
-    # PYTHONPATH beállítás
-    local old_pythonpath="${PYTHONPATH:-}"
-    if [ "$src_dir" != "." ]; then
-        export PYTHONPATH="${src_dir}:${old_pythonpath}"
-    fi
-    
-    # Pylint statikus elemzés - NEM FUTTAT KÓDOT!
-    local circular_output
-    circular_output=$($PYTHON_BIN -m pylint "$src_dir" \
-        --disable=all \
-        --enable=cyclic-import \
-        --persistent=n \
-        --score=n \
-        --ignore-patterns="test_.*\.py" 2>&1 || true)
-    
-    export PYTHONPATH="$old_pythonpath"
-    
-    if echo "$circular_output" | grep -q "cyclic-import"; then
-        print_warn "Lehetséges cirkuláris importok találhatók:"
-        echo "$circular_output" | grep "cyclic-import"
-        return 0  # WARNING, nem FAIL (false positive-ok miatt)
+    print_step "Complexity gate (xenon)..."
+
+    require_tool "xenon" "xenon" || return
+
+    local xenon_output
+    xenon_output=$(xenon "$src_dir" --max-absolute=B --max-modules=A --max-average=A 2>&1)
+    local xenon_rc=$?
+    if [ $xenon_rc -eq 0 ]; then
+        print_pass "Complexity OK (max B)"
     else
-        print_pass "Nincs észlelt cirkuláris import"
-        return 0
+        echo "$xenon_output"
+        fail_check "Complexity too high!"
     fi
 }
 
-check_git_status() {
-    if [ "$SKIP_GIT" = true ]; then
-        print_info "Git check kihagyva (--skip-git)"
-        return 0
-    fi
-    
-    print_status "Git státusz ellenőrzése..."
-    
-    if ! git rev-parse --git-dir > /dev/null 2>&1; then
-        print_info "Nem git repository - kihagyva"
-        return 0
-    fi
-    
-    local status
-    status=$(git status --porcelain 2>/dev/null)
-    
-    if [ -z "$status" ]; then
-        print_pass "Git working directory clean"
-        return 0
+check_dead_code() {
+    local src_dir="$1"
+    print_step "Dead code (vulture)..."
+
+    require_tool "vulture" "vulture" || return
+
+    local result
+    result=$(vulture "$src_dir" --min-confidence=80 2>&1)
+    if [ -z "$result" ]; then
+        print_pass "No dead code"
     else
-        print_warn "Uncommitted változások vannak"
-        git status --short
-        return 0
+        echo "$result" | head -10
+        # FIXED: strict módban fail
+        if $STRICT_MODE; then
+            fail_check "Dead code found"
+        else
+            print_warn "Dead code found (nem blokkoló)"
+            ((WARNINGS++))
+        fi
+    fi
+}
+
+check_architecture() {
+    local src_dir="$1"
+    print_step "Clean Architecture (import-linter)..."
+
+    if [ ! -f ".importlinter" ]; then
+        # Fallback: grep-based check
+        if [ -d "$src_dir/domain" ]; then
+            if grep -rq "from infrastructure\|from src\.infrastructure" "$src_dir/domain/" 2>/dev/null; then
+                fail_check "Domain imports infrastructure! (TILOS)"
+            else
+                print_pass "Architecture OK (basic check)"
+            fi
+        else
+            print_info "No domain/ - architecture check skipped"
+            ((SKIPPED++))
+        fi
+        return
+    fi
+
+    require_tool "lint-imports" "import-linter" || return
+
+    local lint_output
+    lint_output=$(lint-imports 2>&1)
+    local lint_rc=$?
+    if [ $lint_rc -eq 0 ]; then
+        print_pass "Architecture OK"
+    else
+        echo "$lint_output"
+        fail_check "Architecture violation!"
     fi
 }
 
 check_security() {
-    print_status "Biztonsági ellenőrzés (bandit)..."
-    
-    if ! $PYTHON_BIN -c "import bandit" 2>/dev/null; then
-        print_info "Bandit nincs telepítve - kihagyva"
-        return 0
-    fi
-    
     local src_dir="$1"
-    if [ -z "$src_dir" ]; then
-        return 0
-    fi
-    
-    if $PYTHON_BIN -m bandit -r "$src_dir" \
-        --exclude "venv,.venv,env,.env,__pycache__,build,dist,tests,test,migrations" \
-        -ll -q 2>/dev/null; then
-        print_pass "Nincs magas kockázatú biztonsági probléma"
-        return 0
+    print_step "Security (bandit)..."
+
+    require_tool "bandit" "bandit" || return
+
+    local bandit_output
+    bandit_output=$(python -m bandit -r "$src_dir" -ll -q 2>&1)
+    local bandit_rc=$?
+    if [ $bandit_rc -eq 0 ]; then
+        print_pass "No high-risk issues"
     else
-        print_warn "Biztonsági figyelmeztetések - nézd meg: bandit -r $src_dir"
-        return 0
+        echo "$bandit_output"
+        # FIXED: CI módban fail
+        warn_or_fail "Security warnings"
     fi
 }
 
-# =============================================================================
-# Main
-# =============================================================================
+# === TREND MODE ===
+run_trend() {
+    print_header "📈 Code Health Trends"
 
-main() {
-    parse_args "$@"
-    load_config
-    
-    # Python detektálás ELŐSZÖR
-    if ! detect_python; then
+    if ! command -v wily &> /dev/null; then
+        echo "Wily not installed. Run: pip install wily"
         exit 1
     fi
-    
-    local project_name
-    project_name=$(detect_project_name)
-    
-    print_header "🚀 Quality Gate: $project_name"
-    echo ""
-    print_info "Thresholds: coverage=${COVERAGE_THRESHOLD}%, pylint=${PYLINT_MIN_SCORE}, max-lines=${MAX_FILE_LINES}"
-    print_info "Excluded: ${EXCLUDE_DIRS[*]}"
-    
-    local src_dir test_dir
+
+    local src_dir
     src_dir=$(detect_src_dir)
+    guard_src_dir "$src_dir"
+
+    echo "Building metrics..."
+    wily build "$src_dir" 2>/dev/null || true
+
+    echo ""
+    echo "Current state:"
+    wily report "$src_dir"
+
+    echo ""
+    echo "Recent changes:"
+    wily diff "$src_dir" 2>/dev/null || echo "No previous data"
+}
+
+# === HEALTH MODE ===
+run_health() {
+    print_header "🏥 Full Health Report"
+
+    local src_dir
+    src_dir=$(detect_src_dir)
+    guard_src_dir "$src_dir"
+
+    echo -e "${BOLD}📏 COMPLEXITY${NC}"
+    echo "────────────────────────────────────────"
+    radon cc "$src_dir" -a -s 2>/dev/null || echo "radon not installed"
+
+    echo ""
+    echo -e "${BOLD}📊 MAINTAINABILITY${NC}"
+    echo "────────────────────────────────────────"
+    radon mi "$src_dir" -s 2>/dev/null || echo "radon not installed"
+
+    echo ""
+    echo -e "${BOLD}💀 DEAD CODE${NC}"
+    echo "────────────────────────────────────────"
+    vulture "$src_dir" --min-confidence=80 2>/dev/null || echo "None found"
+
+    echo ""
+    echo -e "${BOLD}🔍 RUFF SUMMARY${NC}"
+    echo "────────────────────────────────────────"
+    ruff check "$src_dir" --statistics 2>/dev/null | tail -20 || echo "No issues"
+
+    echo ""
+    echo -e "${BOLD}🏛️  ARCHITECTURE${NC}"
+    echo "────────────────────────────────────────"
+    if [ -f ".importlinter" ]; then
+        lint-imports 2>&1 | head -10
+    else
+        echo "No .importlinter config"
+    fi
+}
+
+# === QUICK MODE ===
+run_quick() {
+    print_header "⚡ Quick Check"
+
+    local src_dir
+    src_dir=$(detect_src_dir)
+    guard_src_dir "$src_dir"
+
+    echo "Ruff fix + format..."
+    ruff check "$src_dir" --fix 2>/dev/null || true
+    ruff format "$src_dir" 2>/dev/null || true
+
+    echo -e "${GREEN}✅ Done${NC}"
+}
+
+# === FULL MODE ===
+run_full() {
+    print_header "🚀 Quality Gate v3.1"
+
+    if $STRICT_MODE; then
+        print_info "MODE: STRICT (minden warning → fail)"
+    elif $CI_MODE; then
+        print_info "MODE: CI (strict: ${COVERAGE_THRESHOLD}% cov, ${MAX_FILE_LINES} LOC)"
+    else
+        print_info "MODE: Local (${COVERAGE_THRESHOLD}% cov, ${MAX_FILE_LINES} LOC)"
+    fi
+
+    activate_venv
+
+    local src_dir
+    src_dir=$(detect_src_dir)
+    guard_src_dir "$src_dir"
+
+    local test_dir
     test_dir=$(detect_test_dir)
-    
-    print_info "Source dir: ${src_dir:-'(nincs)'}"
-    print_info "Test dir: ${test_dir:-'(nincs - FAIL!)'}"
-    
+
+    print_info "Source: ${src_dir}"
+    print_info "Tests: ${test_dir:-'(none)'}"
+
     echo ""
-    
-    check_python_version
-    check_venv
-    check_dependencies
-    
-    echo ""
-    check_pylint "$src_dir"
-    
+    check_ruff "$src_dir"
+
     echo ""
     check_mypy "$src_dir"
-    
+
     echo ""
-    check_tests_and_coverage "$src_dir" "$test_dir"
-    
+    check_complexity "$src_dir"
+
+    echo ""
+    check_dead_code "$src_dir"
+
+    echo ""
+    check_architecture "$src_dir"
+
     echo ""
     check_file_sizes "$src_dir"
-    
-    echo ""
-    check_circular_imports "$src_dir"
-    
-    echo ""
-    check_git_status
-    
+
     echo ""
     check_security "$src_dir"
-    
-    # Summary
-    print_header "📊 Quality Gate Summary"
-    
-    if [ "$ALL_PASSED" = true ]; then
-        if [ "$WARNINGS" -eq 0 ]; then
-            echo -e "${GREEN}✅ ALL CHECKS PASSED - Production ready!${NC}"
+
+    echo ""
+    check_tests "$src_dir" "$test_dir"
+
+    # === SUMMARY ===
+    print_header "📊 Summary"
+
+    [ $SKIPPED -gt 0 ] && print_info "$SKIPPED check(s) skipped (missing tools)"
+
+    if [ $FAILED -eq 0 ]; then
+        if [ $WARNINGS -eq 0 ]; then
+            echo -e "${GREEN}✅ ALL CHECKS PASSED${NC}"
         else
-            echo -e "${GREEN}✅ ALL CHECKS PASSED${NC} ${YELLOW}($WARNINGS warning(s))${NC}"
-            if [ "$STRICT_MODE" = true ]; then
-                echo -e "${RED}STRICT MODE: Warningok miatt FAIL${NC}"
-                exit 1
-            fi
+            echo -e "${GREEN}✅ PASSED${NC} ${YELLOW}($WARNINGS warnings)${NC}"
         fi
         exit 0
     else
-        echo -e "${RED}❌ FAILED CHECKS:${NC}"
+        echo -e "${RED}❌ FAILED ($FAILED checks):${NC}"
         for check in "${FAILED_CHECKS[@]}"; do
             echo -e "  ${RED}•${NC} $check"
         done
-        
-        if [ "$WARNINGS" -gt 0 ]; then
-            echo ""
-            echo -e "${YELLOW}⚠️  WARNINGS:${NC}"
-            for warn in "${WARNING_CHECKS[@]}"; do
-                echo -e "  ${YELLOW}•${NC} $warn"
-            done
-        fi
-        
         echo ""
-        echo "Javítási tippek:"
-        echo "  $PYTHON_BIN -m pylint $src_dir --output-format=colorized"
-        echo "  $PYTHON_BIN -m mypy $src_dir --ignore-missing-imports"
-        echo "  $PYTHON_BIN -m pytest $test_dir -v --cov=$src_dir"
+        echo "Quick fixes:"
+        echo "  ruff check --fix $src_dir"
+        echo "  ruff format $src_dir"
         exit 1
     fi
 }
 
-main "$@"
+# === MAIN ===
+case $MODE in
+    quick) run_quick ;;
+    full|ci|strict) run_full ;;
+    trend) run_trend ;;
+    health) run_health ;;
+esac

@@ -64,12 +64,14 @@ def on_analysis_completed(self, result_data: Dict) -> None:
         processed_result = _process_analysis_result(self, result_data)
 
         # State cleanup
-        analysis_type = self.analysis_state.get('analysis_type', 'unknown')
+        analysis_type = self.analysis_state.get("analysis_type", "unknown")
         duration = _calculate_analysis_duration(self)
 
         # Success signalok
         self.analysis_completed.emit(processed_result)
-        self.status_updated.emit(f"✅ {analysis_type.replace('_', ' ').title()} elemzés befejezve ({duration:.1f}s)")
+        self.status_updated.emit(
+            f"✅ {analysis_type.replace('_', ' ').title()} elemzés befejezve ({duration:.1f}s)"
+        )
 
         # Cleanup
         _cleanup_analysis_state(self)

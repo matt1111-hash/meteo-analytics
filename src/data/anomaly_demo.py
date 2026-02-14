@@ -53,4 +53,4 @@ def demo_anomaly_profile_manager() -> None:
     print("\n✅ DEMO BEFEJEZVE!")
 
 
-__all__ = ['demo_anomaly_profile_manager']
+__all__ = ["demo_anomaly_profile_manager"]

@@ -11,6 +11,7 @@ import pandas as pd
 from matplotlib.dates import DateFormatter, MonthLocator
 
 from src.presentation.gui.theme_manager import get_current_colors
+
 from .wind_categories import calculate_y_axis_max
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 class WindChartFormatter:
     """Format wind chart with theme integration."""
 
-    def __init__(self, chart: 'WindChart'):
+    def __init__(self, chart: "WindChart"):
         """
         Initialize wind chart formatter.
 
@@ -37,14 +38,11 @@ class WindChartFormatter:
             df: DataFrame with wind data
         """
         current_colors = get_current_colors()
-        text_color = current_colors.get('on_surface', '#1f2937')
+        text_color = current_colors.get("on_surface", "#1f2937")
 
         # Set labels and title
         self.chart.ax.set_title(
-            self.chart.chart_title,
-            fontweight='bold',
-            pad=20,
-            color=text_color
+            self.chart.chart_title, fontweight="bold", pad=20, color=text_color
         )
         self.chart.ax.set_xlabel(self.chart.x_label, color=text_color)
         self.chart.ax.set_ylabel(self.chart.y_label, color=text_color)
@@ -54,10 +52,10 @@ class WindChartFormatter:
 
         # Date formatting
         self.chart.ax.xaxis.set_major_locator(MonthLocator())
-        self.chart.ax.xaxis.set_major_formatter(DateFormatter('%Y-%m'))
+        self.chart.ax.xaxis.set_major_formatter(DateFormatter("%Y-%m"))
 
         # Y-axis range - optimized for Hungarian thresholds
-        max_wind = df['windspeed'].max() if not df.empty else 50
+        max_wind = df["windspeed"].max() if not df.empty else 50
         y_max = calculate_y_axis_max(max_wind)
         self.chart.ax.set_ylim(0, y_max)
 
@@ -77,18 +75,16 @@ class WindChartFormatter:
         """
         # Grid
         if self.chart.grid_enabled:
-            grid_color = current_colors.get('border', '#d1d5db')
-            grid_alpha = 0.3 if self.chart.theme_manager.get_current_theme() == "light" else 0.2
+            grid_color = current_colors.get("border", "#d1d5db")
+            grid_alpha = (
+                0.3 if self.chart.theme_manager.get_current_theme() == "light" else 0.2
+            )
             self.chart.ax.grid(
-                True,
-                alpha=grid_alpha,
-                linestyle='-',
-                linewidth=0.5,
-                color=grid_color
+                True, alpha=grid_alpha, linestyle="-", linewidth=0.5, color=grid_color
             )
 
         # Legend
         if self.chart.legend_enabled:
-            legend = self.chart.ax.legend(loc='upper left', framealpha=0.9)
-            legend.get_frame().set_facecolor(current_colors.get('surface', '#ffffff'))
-            legend.get_frame().set_edgecolor(current_colors.get('border', '#d1d5db'))
+            legend = self.chart.ax.legend(loc="upper left", framealpha=0.9)
+            legend.get_frame().set_facecolor(current_colors.get("surface", "#ffffff"))
+            legend.get_frame().set_edgecolor(current_colors.get("border", "#d1d5db"))

@@ -51,7 +51,9 @@ class TrendAnalyticsWorker(QThread):
     def run(self) -> None:
         """Háttérszál futtatása"""
         try:
-            logger.info(f"🔥 WORKER THREAD START: {self.settlement_name} - {self.parameter} - {self.time_range}")
+            logger.info(
+                f"🔥 WORKER THREAD START: {self.settlement_name} - {self.parameter} - {self.time_range}"
+            )
 
             self.processor.fetch_trend_data(
                 self.settlement_name, self.parameter, self.time_range

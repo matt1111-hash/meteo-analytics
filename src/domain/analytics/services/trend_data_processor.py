@@ -1,4 +1,5 @@
 """Trend data processor for DataFrame preparation and aggregation."""
+
 from __future__ import annotations
 
 import logging
@@ -23,10 +24,12 @@ class TrendDataProcessor:
         for record in weather_data:
             if record.get("date") and record.get(api_field) is not None:
                 try:
-                    df_data.append({
-                        "date": pd.to_datetime(record["date"]),
-                        "value": float(record[api_field]),
-                    })
+                    df_data.append(
+                        {
+                            "date": pd.to_datetime(record["date"]),
+                            "value": float(record[api_field]),
+                        }
+                    )
                 except (ValueError, TypeError):
                     continue
 
@@ -44,10 +47,16 @@ class TrendDataProcessor:
         df = df.copy()
         df["year_month"] = df["date"].dt.to_period("M")
 
-        monthly_df = df.groupby("year_month").agg({
-            "value": ["mean", "min", "max", "count"],
-            "date": "first",
-        }).reset_index()
+        monthly_df = (
+            df.groupby("year_month")
+            .agg(
+                {
+                    "value": ["mean", "min", "max", "count"],
+                    "date": "first",
+                }
+            )
+            .reset_index()
+        )
 
         monthly_df.columns = [
             "year_month",
@@ -59,9 +68,7 @@ class TrendDataProcessor:
         ]
 
         # Filter months with insufficient data
-        monthly_df = monthly_df[
-            monthly_df["day_count"] >= self.MIN_DAYS_PER_MONTH
-        ]
+        monthly_df = monthly_df[monthly_df["day_count"] >= self.MIN_DAYS_PER_MONTH]
 
         if len(monthly_df) < 6:
             return None

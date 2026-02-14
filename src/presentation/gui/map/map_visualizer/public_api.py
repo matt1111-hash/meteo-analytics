@@ -37,7 +37,7 @@ def set_active_overlay_parameter(self, parameter: str) -> None:
         "wind_speed": "💨 Szélsebesség",
         "precipitation": "🌧️ Csapadék",
         "wind_gusts": "🌪️ Széllökések",
-        "humidity": "💧 Páratartalom"
+        "humidity": "💧 Páratartalom",
     }
 
     display_name = parameter_display_names.get(parameter, f"🎨 {parameter}")
@@ -77,7 +77,9 @@ def set_counties_geodataframe(self, counties_gdf) -> None:
         self: HungarianMapVisualizer instance
         counties_gdf: Counties GeoDataFrame
     """
-    print(f"🗺️ 🚀 REAKTÍV: Counties GeoDataFrame set: {len(counties_gdf) if counties_gdf is not None else 0} counties")
+    print(
+        f"🗺️ 🚀 REAKTÍV: Counties GeoDataFrame set: {len(counties_gdf) if counties_gdf is not None else 0} counties"
+    )
     self.counties_gdf = counties_gdf
 
     if counties_gdf is not None and len(counties_gdf) > 0:
@@ -99,7 +101,12 @@ def set_weather_data(self, weather_data: Dict) -> None:
 
     if weather_data:
         for data_type in weather_data.keys():
-            if data_type in ['temperature', 'wind_speed', 'precipitation', 'wind_gusts']:
+            if data_type in [
+                "temperature",
+                "wind_speed",
+                "precipitation",
+                "wind_gusts",
+            ]:
                 self.set_active_overlay_parameter(data_type)
 
         self.map_config.weather_overlay = True
@@ -244,6 +251,7 @@ def is_folium_available(self) -> bool:
     """
     try:
         import folium  # noqa: F401
+
         return True
     except ImportError:
         return False

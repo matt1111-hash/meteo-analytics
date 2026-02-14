@@ -35,19 +35,19 @@ from .map_visualizer import HungarianMapVisualizer
 
 __all__ = [
     # Main widget
-    'HungarianMapVisualizer',
+    "HungarianMapVisualizer",
     # Configuration
-    'FoliumMapConfig',
+    "FoliumMapConfig",
     # Interactions
-    'JavaScriptBridge',
-    'LocalHttpServerThread',
+    "JavaScriptBridge",
+    "LocalHttpServerThread",
     # Renderer
-    'FoliumMapGenerator',
+    "FoliumMapGenerator",
     # Constants
-    'HUNGARY_CENTER',
-    'COLOR_SCALE_GRADIENTS',
-    'OVERLAY_COLOR_MAPPING',
-    'get_beaufort_color',
-    'get_precipitation_color',
-    'get_gradient_for_overlay',
+    "HUNGARY_CENTER",
+    "COLOR_SCALE_GRADIENTS",
+    "OVERLAY_COLOR_MAPPING",
+    "get_beaufort_color",
+    "get_precipitation_color",
+    "get_gradient_for_overlay",
 ]

@@ -31,6 +31,7 @@ def start_local_server(self) -> None:
         return
 
     from ..map_interactions import LocalHttpServerThread
+
     self.local_server = LocalHttpServerThread(self)
     self.local_server.server_ready.connect(self._on_server_ready)
     self.local_server.server_error.connect(self._on_server_error)
@@ -53,6 +54,7 @@ def _on_server_ready(self, host: str, port: int) -> None:
 
     try:
         import folium  # noqa: F401
+
         self._generate_default_map()
     except ImportError:
         pass
@@ -82,4 +84,6 @@ def _show_folium_error(self) -> None:
     self.progress_bar.setVisible(False)
     self.refresh_btn.setEnabled(False)
     self.export_btn.setEnabled(False)
-    self.error_occurred.emit("Folium library not installed. Please run: pip install folium branca")
+    self.error_occurred.emit(
+        "Folium library not installed. Please run: pip install folium branca"
+    )

@@ -32,6 +32,7 @@ def create_windy_days_chart(parent: Optional[QWidget] = None):
         WindyDaysChart példány
     """
     from .core import WindyDaysChart
+
     return WindyDaysChart(parent)
 
 
@@ -44,21 +45,21 @@ def demo_windy_days_chart():
 
     # Test adatok
     demo_data = {
-        'chart_data': {
-            'months': ['Január', 'Február', 'Március', 'Április', 'Május', 'Június'],
-            'counts': [12, 8, 15, 6, 3, 9],
-            'percentages': [38.7, 28.6, 48.4, 20.0, 9.7, 30.0],
-            'labels': [
-                'Január: 12 szeles nap (38.7%)',
-                'Február: 8 szeles nap (28.6%)',
-                'Március: 15 szeles nap (48.4%)',
-                'Április: 6 szeles nap (20.0%)',
-                'Május: 3 szeles nap (9.7%)',
-                'Június: 9 szeles nap (30.0%)'
-            ]
+        "chart_data": {
+            "months": ["Január", "Február", "Március", "Április", "Május", "Június"],
+            "counts": [12, 8, 15, 6, 3, 9],
+            "percentages": [38.7, 28.6, 48.4, 20.0, 9.7, 30.0],
+            "labels": [
+                "Január: 12 szeles nap (38.7%)",
+                "Február: 8 szeles nap (28.6%)",
+                "Március: 15 szeles nap (48.4%)",
+                "Április: 6 szeles nap (20.0%)",
+                "Május: 3 szeles nap (9.7%)",
+                "Június: 9 szeles nap (30.0%)",
+            ],
         },
-        'threshold_kmh': 43.0,
-        'location_name': 'Budapest'
+        "threshold_kmh": 43.0,
+        "location_name": "Budapest",
     }
 
     # Main window

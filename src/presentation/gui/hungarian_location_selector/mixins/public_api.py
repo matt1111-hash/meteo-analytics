@@ -21,10 +21,10 @@ class PublicApiMixin:
         📋 Jelenlegi kiválasztott elemek lekérdezése.
         """
         return {
-            'region': self.current_region,
-            'county': self.current_county,
-            'location': self.current_location,
-            'has_geodata': self.counties_gdf is not None
+            "region": self.current_region,
+            "county": self.current_county,
+            "location": self.current_location,
+            "has_geodata": self.counties_gdf is not None,
         }
 
     def set_region(self, region_key: str) -> bool:
@@ -54,7 +54,7 @@ class PublicApiMixin:
         if self.counties_gdf is None:
             return []
 
-        return sorted(self.counties_gdf['megye'].tolist())
+        return sorted(self.counties_gdf["megye"].tolist())
 
     def get_counties_geodataframe(self):
         """
@@ -87,7 +87,9 @@ class PublicApiMixin:
 
     # === 🔧 JAVÍTOTT: RÉGIÓ KOMPATIBILITÁSI METÓDUSOK ===
 
-    def get_region_by_display_name(self, display_name: str) -> Optional[HungarianRegionData]:
+    def get_region_by_display_name(
+        self, display_name: str
+    ) -> Optional[HungarianRegionData]:
         """
         🔧 ÚJ: Régió lekérdezése megjelenítési név alapján (Control Panel kompatibilitás).
 

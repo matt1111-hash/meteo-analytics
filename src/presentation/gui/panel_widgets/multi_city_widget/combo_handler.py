@@ -36,7 +36,7 @@ class ComboHandler:
         combo_box: QComboBox,
         group: QGroupBox,
         info_label: QLabel,
-        apply_label_styling_fn
+        apply_label_styling_fn,
     ):
         """
         ComboHandler inicializálása.
@@ -58,7 +58,7 @@ class ComboHandler:
         available_regions: List[str],
         available_counties: List[str],
         selected_region: Optional[str],
-        selected_county: Optional[str]
+        selected_county: Optional[str],
     ) -> None:
         """
         ComboBox feltöltése aktuális mode alapján.
@@ -108,10 +108,7 @@ class ComboHandler:
             print(f"❌ ERROR: ComboBox populate hiba: {e}")
 
     def restore_selection(
-        self,
-        mode: str,
-        selected_region: Optional[str],
-        selected_county: Optional[str]
+        self, mode: str, selected_region: Optional[str], selected_county: Optional[str]
     ) -> None:
         """
         Selection visszaállítása combo box populate után.
@@ -149,11 +146,7 @@ class ComboHandler:
         else:
             self.group.setTitle("🏛️ Megye Választó (Multi-City)")
 
-    def update_info_label(
-        self,
-        mode: str,
-        current_selection: Optional[str]
-    ) -> None:
+    def update_info_label(self, mode: str, current_selection: Optional[str]) -> None:
         """
         Info label frissítése.
 

@@ -12,14 +12,13 @@ Fájl: src/presentation/gui/results_panel/windy_days_tab/data_processor.py
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import pandas as pd
 
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 
 if TYPE_CHECKING:
-    from PySide6.QtWidgets import QWidget
     from src.presentation.gui.results_panel.windy_days_tab.core import WindyDaysTab
 
 logger = logging.getLogger(__name__)
@@ -28,7 +27,7 @@ logger = logging.getLogger(__name__)
 def update_data(
     self: "WindyDaysTab",
     weather_data: pd.DataFrame,
-    location: str = "Ismeretlen helyszín"
+    location: str = "Ismeretlen helyszín",
 ) -> None:
     """
     Adatok frissítése - MEGBÍZIK A RESULTSPANEL-BEN!
@@ -39,13 +38,17 @@ def update_data(
     """
     try:
         logger.info(f"WindyDaysTab adatok frissítése: {location}")
-        logger.info(f"BEJÖVŐ ADATOK (ResultsPanel konvertálta): {len(weather_data)} sor, oszlopok: {list(weather_data.columns)}")
+        logger.info(
+            f"BEJÖVŐ ADATOK (ResultsPanel konvertálta): {len(weather_data)} sor, oszlopok: {list(weather_data.columns)}"
+        )
 
         # Wind speed ellenőrzés
-        if not weather_data.empty and 'wind_speed' in weather_data.columns:
-            wind_speeds = weather_data['wind_speed'].dropna()
+        if not weather_data.empty and "wind_speed" in weather_data.columns:
+            wind_speeds = weather_data["wind_speed"].dropna()
             if len(wind_speeds) > 0:
-                logger.info(f"KAPOTT WIND_SPEED (km/h): {wind_speeds.min():.1f} - {wind_speeds.max():.1f}")
+                logger.info(
+                    f"KAPOTT WIND_SPEED (km/h): {wind_speeds.min():.1f} - {wind_speeds.max():.1f}"
+                )
             else:
                 logger.warning("ÜRES WIND_SPEED OSZLOP")
 
@@ -54,10 +57,8 @@ def update_data(
         self.current_location = location
 
         # Automatikus analízis ha be van kapcsolva
-        auto_update = getattr(self, 'auto_update_checkbox', None)
-        if (auto_update and
-            auto_update.isChecked() and
-            not weather_data.empty):
+        auto_update = getattr(self, "auto_update_checkbox", None)
+        if auto_update and auto_update.isChecked() and not weather_data.empty:
             logger.info("AUTOMATIKUS ANALÍZIS INDÍTÁSA (DUPLA KONVERZIÓ NÉLKÜL)")
             _start_auto_analysis(self)
 
@@ -110,7 +111,10 @@ def set_threshold(self: "WindyDaysTab", threshold: float) -> None:
 def _start_auto_analysis(self: "WindyDaysTab") -> None:
     """Automatikus analízis indítása (késleltetve)."""
     try:
-        from src.presentation.gui.results_panel.windy_days_tab.handlers import _start_analysis
+        from src.presentation.gui.results_panel.windy_days_tab.handlers import (
+            _start_analysis,
+        )
+
         _start_analysis(self)
     except Exception as e:
         logger.error(f"Hiba az automatikus analízis indításában: {e}")

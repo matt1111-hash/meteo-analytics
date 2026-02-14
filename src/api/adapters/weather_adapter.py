@@ -1,4 +1,5 @@
 """Adapter from API DTOs to application use case inputs."""
+
 from __future__ import annotations
 
 from typing import Optional

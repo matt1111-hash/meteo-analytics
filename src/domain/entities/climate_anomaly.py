@@ -1,4 +1,5 @@
 """Domain entity representing a detected weather anomaly."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -37,13 +38,8 @@ class ClimateAnomaly:  # pylint: disable=too-many-instance-attributes
         if self.severity not in _VALID_SEVERITIES:
             raise ValueError(f"Invalid severity: {self.severity}")
 
-        if (
-            self.parameter in {"precipitation", "wind"}
-            and self.measured_value < 0
-        ):
-            raise ValueError(
-                f"Negative value not allowed for {self.parameter}"
-            )
+        if self.parameter in {"precipitation", "wind"} and self.measured_value < 0:
+            raise ValueError(f"Negative value not allowed for {self.parameter}")
 
     @property
     def is_extreme(self) -> bool:

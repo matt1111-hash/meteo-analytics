@@ -1,4 +1,5 @@
 """Analytics models domain entities."""
+
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Tuple
@@ -19,6 +20,7 @@ class AnalyticsQuestion:
 
     Multi-city analytics question specification.
     """
+
     question_text: str
     question_type: QuestionType
     region_scope: RegionScope
@@ -69,29 +71,34 @@ class AnalyticsQuestion:
         if self.max_cities > 1000:
             errors.append("Maximum városok száma nem lehet 1000-nél több")
 
-        if self.region_scope in [RegionScope.COUNTRY, RegionScope.REGION] and not self.region_value:
-            errors.append(f"{self.region_scope.value} scope esetén region_value kötelező")
+        if (
+            self.region_scope in [RegionScope.COUNTRY, RegionScope.REGION]
+            and not self.region_value
+        ):
+            errors.append(
+                f"{self.region_scope.value} scope esetén region_value kötelező"
+            )
 
         return len(errors) == 0, errors
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'question_text': self.question_text,
-            'question_type': self.question_type.value,
-            'region_scope': self.region_scope.value,
-            'metric': self.metric.value,
-            'region_value': self.region_value,
-            'date_filter': self.date_filter,
-            'ascending_order': self.ascending_order,
-            'max_cities': self.max_cities,
-            'min_population': self.min_population,
-            'include_capitals_only': self.include_capitals_only,
-            'exclude_islands': self.exclude_islands,
-            'climate_zones': self.climate_zones,
-            'created_at': self.created_at.isoformat(),
-            'created_by': self.created_by,
-            'tags': self.tags
+            "question_text": self.question_text,
+            "question_type": self.question_type.value,
+            "region_scope": self.region_scope.value,
+            "metric": self.metric.value,
+            "region_value": self.region_value,
+            "date_filter": self.date_filter,
+            "ascending_order": self.ascending_order,
+            "max_cities": self.max_cities,
+            "min_population": self.min_population,
+            "include_capitals_only": self.include_capitals_only,
+            "exclude_islands": self.exclude_islands,
+            "climate_zones": self.climate_zones,
+            "created_at": self.created_at.isoformat(),
+            "created_by": self.created_by,
+            "tags": self.tags,
         }
 
 
@@ -102,6 +109,7 @@ class AnalyticsResult:
 
     Complete analytics query result.
     """
+
     question: AnalyticsQuestion
     city_results: List[CityWeatherResult]
 
@@ -149,13 +157,13 @@ class AnalyticsResult:
         import statistics
 
         return {
-            'count': len(values),
-            'min': min(values),
-            'max': max(values),
-            'mean': statistics.mean(values),
-            'median': statistics.median(values),
-            'stdev': statistics.stdev(values) if len(values) > 1 else 0,
-            'range': max(values) - min(values)
+            "count": len(values),
+            "min": min(values),
+            "max": max(values),
+            "mean": statistics.mean(values),
+            "median": statistics.median(values),
+            "stdev": statistics.stdev(values) if len(values) > 1 else 0,
+            "range": max(values) - min(values),
         }
 
     def get_countries_represented(self) -> List[str]:
@@ -165,16 +173,16 @@ class AnalyticsResult:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'question': self.question.to_dict(),
-            'city_results': [r.to_dict() for r in self.city_results],
-            'execution_time': self.execution_time,
-            'total_cities_found': self.total_cities_found,
-            'data_sources_used': [ds.value for ds in self.data_sources_used],
-            'statistics': self.statistics,
-            'provider_statistics': self.provider_statistics,
-            'average_quality_score': self.average_quality_score,
-            'average_confidence': self.average_confidence,
-            'created_at': self.created_at.isoformat()
+            "question": self.question.to_dict(),
+            "city_results": [r.to_dict() for r in self.city_results],
+            "execution_time": self.execution_time,
+            "total_cities_found": self.total_cities_found,
+            "data_sources_used": [ds.value for ds in self.data_sources_used],
+            "statistics": self.statistics,
+            "provider_statistics": self.provider_statistics,
+            "average_quality_score": self.average_quality_score,
+            "average_confidence": self.average_confidence,
+            "created_at": self.created_at.isoformat(),
         }
 
 
@@ -185,6 +193,7 @@ class QueryResults:
 
     ParameterSelectorWidget query result storage.
     """
+
     query_parameters: Dict[str, Any]
     anomalies: Dict[str, List[AnomalyResult]]
 
@@ -229,17 +238,20 @@ class QueryResults:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'query_parameters': self.query_parameters,
-            'anomalies': {
+            "query_parameters": self.query_parameters,
+            "anomalies": {
                 param: [a.to_dict() for a in anomalies]
                 for param, anomalies in self.anomalies.items()
             },
-            'execution_time': self.execution_time,
-            'total_records_analyzed': self.total_records_analyzed,
-            'date_range': [self.date_range[0].isoformat(), self.date_range[1].isoformat()],
-            'anomaly_summary': self.anomaly_summary,
-            'created_at': self.created_at.isoformat()
+            "execution_time": self.execution_time,
+            "total_records_analyzed": self.total_records_analyzed,
+            "date_range": [
+                self.date_range[0].isoformat(),
+                self.date_range[1].isoformat(),
+            ],
+            "anomaly_summary": self.anomaly_summary,
+            "created_at": self.created_at.isoformat(),
         }
 
 
-__all__ = ['AnalyticsQuestion', 'AnalyticsResult', 'QueryResults']
+__all__ = ["AnalyticsQuestion", "AnalyticsResult", "QueryResults"]

@@ -51,6 +51,7 @@ class SignalHandlersMixin:
 
         # Timer a progress eltüntetéséhez
         from PySide6.QtCore import QTimer
+
         QTimer.singleShot(3000, lambda: self.progress_label.setText("Kész használatra"))
 
     def _on_region_changed(self):
@@ -74,12 +75,12 @@ class SignalHandlersMixin:
         info_text = f"""
 <b>{region_data.display_name}</b> ({region_data.nuts_code})<br>
 <b>Közigazgatási központ:</b> {region_data.administrative_center}<br>
-<b>Megyék:</b> {', '.join(region_data.counties)}<br>
+<b>Megyék:</b> {", ".join(region_data.counties)}<br>
 <b>Átlagos évi hőmérséklet:</b> {region_data.avg_temp_annual}°C<br>
 <b>Átlagos évi csapadék:</b> {region_data.avg_precipitation_annual} mm<br>
 <br>
 <b>Jellemzők:</b><br>
-• {' <br>• '.join(region_data.characteristics)}<br>
+• {" <br>• ".join(region_data.characteristics)}<br>
 <br>
 <b>Leírás:</b> {region_data.description}
         """.strip()
@@ -98,7 +99,9 @@ class SignalHandlersMixin:
 
         # 🔧 JAVÍTOTT: Debug logging
         if self._debug_enabled:
-            logger.info(f"🏛️ Régió kiválasztva: {region_data.display_name} - current_region state frissítve")
+            logger.info(
+                f"🏛️ Régió kiválasztva: {region_data.display_name} - current_region state frissítve"
+            )
 
     def _update_county_combo(self):
         """
@@ -119,7 +122,7 @@ class SignalHandlersMixin:
         # 🔧 KRITIKUS: Régió megyéinek hozzáadása (statisztikai régió alapján)
         self.county_combo.addItem("Válassz megyét...", None)
 
-        available_counties = set(self.counties_gdf['megye'].tolist())
+        available_counties = set(self.counties_gdf["megye"].tolist())
         region_counties = set(self.current_region.counties)
 
         # Közös megyék (régió és GeoJSON alapján)
@@ -145,7 +148,9 @@ class SignalHandlersMixin:
 
         # 🔧 JAVÍTOTT: Debug logging hozzáadva
         if self._debug_enabled:
-            logger.info(f"🗺️ _on_county_changed() hívva - current_county combo data: {current_county}")
+            logger.info(
+                f"🗺️ _on_county_changed() hívva - current_county combo data: {current_county}"
+            )
 
         if current_county is None:
             if self._debug_enabled:
@@ -165,11 +170,13 @@ class SignalHandlersMixin:
 
         # 🔧 JAVÍTOTT: Megye geometria lekérdezése robust error handling-gal
         try:
-            county_row = self.counties_gdf[self.counties_gdf['megye'] == current_county]
+            county_row = self.counties_gdf[self.counties_gdf["megye"] == current_county]
 
             if county_row.empty:
                 if self._debug_enabled:
-                    logger.warning(f"🔧 Megye nem található GeoJSON-ben: {current_county}")
+                    logger.warning(
+                        f"🔧 Megye nem található GeoJSON-ben: {current_county}"
+                    )
                 self.current_county = None
                 self._update_location_info()
                 self._update_debug_display()
@@ -178,16 +185,20 @@ class SignalHandlersMixin:
             # 🔧 KRITIKUS: Megye adatok tárolása - STATE FRISSÍTÉS!
             geometry = county_row.geometry.iloc[0]
             self.current_county = {
-                'name': current_county,
-                'geometry': geometry,
-                'bounds': geometry.bounds,  # (minx, miny, maxx, maxy)
-                'centroid': geometry.centroid
+                "name": current_county,
+                "geometry": geometry,
+                "bounds": geometry.bounds,  # (minx, miny, maxx, maxy)
+                "centroid": geometry.centroid,
             }
 
             # 🔧 JAVÍTOTT: Debug logging a state frissítés után
             if self._debug_enabled:
-                logger.info(f"✅ current_county state frissítve: {self.current_county['name']}")
-                logger.info(f"🎯 Centroid koordináták: {self.current_county['centroid'].y:.4f}, {self.current_county['centroid'].x:.4f}")
+                logger.info(
+                    f"✅ current_county state frissítve: {self.current_county['name']}"
+                )
+                logger.info(
+                    f"🎯 Centroid koordináták: {self.current_county['centroid'].y:.4f}, {self.current_county['centroid'].x:.4f}"
+                )
 
             # Lokáció info frissítése
             self._update_location_info()
@@ -200,10 +211,12 @@ class SignalHandlersMixin:
             self.selection_changed.emit()
 
             # Térkép frissítés kérése
-            self.map_update_requested.emit(self.current_county['bounds'])
+            self.map_update_requested.emit(self.current_county["bounds"])
 
             if self._debug_enabled:
-                logger.info("✅ Signalok kibocsátva - county_selected, selection_changed, map_update_requested")
+                logger.info(
+                    "✅ Signalok kibocsátva - county_selected, selection_changed, map_update_requested"
+                )
 
         except Exception as e:
             # 🔧 JAVÍTOTT: Robust error handling
@@ -227,7 +240,7 @@ class SignalHandlersMixin:
             return
 
         # Központi koordináták
-        centroid = self.current_county['centroid']
+        centroid = self.current_county["centroid"]
         lat = centroid.y
         lon = centroid.x
 
@@ -235,7 +248,7 @@ class SignalHandlersMixin:
         self.lon_label.setText(f"Hosszúság: {lon:.4f}°")
 
         # Terület számítás (közelítő, fok alapú)
-        bounds = self.current_county['bounds']
+        bounds = self.current_county["bounds"]
         width = bounds[2] - bounds[0]  # maxx - minx
         height = bounds[3] - bounds[1]  # maxy - miny
 
@@ -243,21 +256,27 @@ class SignalHandlersMixin:
 
         # Location objektum létrehozása
         self.current_location = Location(
-            identifier=self.current_county['name'],
-            display_name=self.current_county['name'],
+            identifier=self.current_county["name"],
+            display_name=self.current_county["name"],
             latitude=lat,
             longitude=lon,
             country_code="HU",
             timezone="Europe/Budapest",
             metadata={
-                'region': self.current_region.name if self.current_region else None,
-                'region_display_name': self.current_region.display_name if self.current_region else None,
-                'nuts_code': self.current_region.nuts_code if self.current_region else None,
-                'county': self.current_county['name'],
-                'source': 'hungarian_location_selector',
-                'bounds': bounds,
-                'administrative_center': self.current_region.administrative_center if self.current_region else None
-            }
+                "region": self.current_region.name if self.current_region else None,
+                "region_display_name": self.current_region.display_name
+                if self.current_region
+                else None,
+                "nuts_code": self.current_region.nuts_code
+                if self.current_region
+                else None,
+                "county": self.current_county["name"],
+                "source": "hungarian_location_selector",
+                "bounds": bounds,
+                "administrative_center": self.current_region.administrative_center
+                if self.current_region
+                else None,
+            },
         )
 
         # Location signal kibocsátása
@@ -267,13 +286,15 @@ class SignalHandlersMixin:
         """
         🔧 JAVÍTOTT: Debug információk frissítése.
         """
-        if not self._debug_enabled or not hasattr(self, 'debug_label'):
+        if not self._debug_enabled or not hasattr(self, "debug_label"):
             return
 
         state_info = {
-            'region': self.current_region.display_name if self.current_region else None,
-            'county': self.current_county['name'] if self.current_county else None,
-            'location': self.current_location.display_name if self.current_location else None
+            "region": self.current_region.display_name if self.current_region else None,
+            "county": self.current_county["name"] if self.current_county else None,
+            "location": self.current_location.display_name
+            if self.current_location
+            else None,
         }
 
         self.debug_label.setText(f"🔧 DEBUG: State = {state_info}")
@@ -285,5 +306,5 @@ class SignalHandlersMixin:
         if self.current_county is None:
             return
 
-        bounds = self.current_county['bounds']
+        bounds = self.current_county["bounds"]
         self.map_update_requested.emit(bounds)

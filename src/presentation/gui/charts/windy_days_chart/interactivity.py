@@ -22,8 +22,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _setup_chart_interactivity(self, bars, months: List[str],
-                              counts: List[int], percentages: List[float]) -> None:
+def _setup_chart_interactivity(
+    self, bars, months: List[str], counts: List[int], percentages: List[float]
+) -> None:
     """
     Chart interaktivitás beállítása.
 
@@ -48,13 +49,13 @@ def _setup_chart_interactivity(self, bars, months: List[str],
                         tooltip = f"{month}: {count} szeles nap ({percentage:.1f}%)"
 
                         # Status bar frissítés (ha van parent widget)
-                        if hasattr(self.parent(), 'status_bar'):
+                        if hasattr(self.parent(), "status_bar"):
                             self.parent().status_bar.showMessage(tooltip)
 
                         return
 
         # Event kapcsolás - 🚨 JAVÍTVA: self használata self.canvas helyett
-        self.mpl_connect('motion_notify_event', on_hover)
+        self.mpl_connect("motion_notify_event", on_hover)
 
     except Exception as e:
         logger.error(f"Hiba az interaktivitás beállításában: {e}")

@@ -35,8 +35,12 @@ class WeatherTableModel(QAbstractTableModel):
         """Oszlop fejlécek frissítése - SZAKMAILAG PONTOS ELNEVEZÉSSEL."""
         if not self._data.empty:
             self._headers = [
-                "Dátum", "Max hőmérséklet (°C)", "Min hőmérséklet (°C)",
-                "Napi átlag (°C)", "Csapadék (mm)", "Szélsebesség (km/h)"
+                "Dátum",
+                "Max hőmérséklet (°C)",
+                "Min hőmérséklet (°C)",
+                "Napi átlag (°C)",
+                "Csapadék (mm)",
+                "Szélsebesség (km/h)",
             ]
         else:
             self._headers = []
@@ -77,7 +81,11 @@ class WeatherTableModel(QAbstractTableModel):
                 value = self._data.iloc[row, 3] if len(self._data.columns) > 3 else None
                 return f"{value:.1f}" if pd.notna(value) else "N/A"
             elif col == 4:  # Csapadék
-                value = self._data.iloc[row, 4] if len(self._data.columns) > 4 else self._data.iloc[row, 3]
+                value = (
+                    self._data.iloc[row, 4]
+                    if len(self._data.columns) > 4
+                    else self._data.iloc[row, 3]
+                )
                 return f"{value:.1f}" if pd.notna(value) else "0.0"
             elif col == 5:  # Szélsebesség
                 value = self._data.iloc[row, 5] if len(self._data.columns) > 5 else None
@@ -105,7 +113,9 @@ class WeatherTableModel(QAbstractTableModel):
 
         return None
 
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole) -> Any:
+    def headerData(
+        self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole
+    ) -> Any:
         if role == Qt.DisplayRole and orientation == Qt.Horizontal:
             if 0 <= section < len(self._headers):
                 return self._headers[section]

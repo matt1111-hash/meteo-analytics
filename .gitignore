@@ -1,68 +1,53 @@
-# 🐍 Python
+# Quality caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.mutmut-cache/
+.wily/
+.import_linter_cache/
+.coverage
+coverage.xml
+coverage.json
+htmlcov/
+
+# Generated reports
+bandit_results.txt
+baseline_report.txt
+ruff_report.txt
+vulture*.txt
+*_audit.txt
+
+# Python
 __pycache__/
 *.py[cod]
-*.so
-*.egg
 *.egg-info/
-*.pyo
-
-# 🧪 Virtuális környezetek, dotenv
+dist/
+build/
+.venv/
 venv/
+env/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# Secrets
+.secrets.baseline
 .env
 
-# 🔌 IDE, rendszerfájlok
-.vscode/
-.idea/
-.DS_Store
-Thumbs.db
+# Temp files
+*.save
+*.tmp
+*.zip
+python_files.txt
 
-# 🗃️ Adatok, cache-ek, exportok, logok
-data/
-logs/
-exports/
-
-# Exception: src/data source files are tracked
-!src/data/
-
-# 🔎 Scripts-ből csak a fő python fájlokat engedjük át
-scripts/__pycache__/
-scripts/logs/
-scripts/src/
-scripts/*.csv
-scripts/*.xlsx
-scripts/*.json
-scripts/*.db
-scripts/*.sql
-scripts/*.zip
-
-# 🔁 Explicit allow kivétel – ezek MARADNAK
-!scripts/populate_cities_db.py
-!scripts/fix_hungarian_coordinates.py
-!scripts/ai_studio_code.py
-!scripts/add_coordinates_to_db.py
-
-# 📁 Csak src mappa tartalma legyen a repo-ban (struktúrával)
-# Exclude minden mást a gyökéren, kivéve src/** és a fenti scripts kivételeket
-/*
-!/src/
-!/tests/
-!/tests/**
-!/scripts/
-!/frontend/
-!/frontend/**
-# A scripts kivételek már fentiekben
-!/data_explorer.py
-!/tools_archi_scan.py
-.aider*
-*.coverage
-!/.gitignore
-!/README.md
-!/pyproject.toml
-!/ruff.toml
-!/STATUS.md
-!/PLAN.md
-!/GEMINI.md
-!/AGENTS-1.md
-!/quality_gate.sh
-!/requirements.txt
-!/requirements-dev.txt
+# Data files (large JSONs should be in data/)
+sqlite3

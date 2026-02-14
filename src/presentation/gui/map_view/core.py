@@ -48,13 +48,13 @@ class MapView(QWidget, MapViewIntegrationMixin, MapViewDebugMixin):
     """
 
     # Forwarded signalok a HungarianMapTab-ból (Folium verzió)
-    location_selected = Signal(object)        # Location data
-    county_clicked_on_map = Signal(str)       # Folium county click
-    map_interaction = Signal(str, object)     # interaction_type, data
-    export_completed = Signal(str)           # file_path
-    error_occurred = Signal(str)             # error_message
-    data_loading_completed = Signal()        # adatok betöltve
-    folium_ready = Signal()                  # Folium térkép kész
+    location_selected = Signal(object)  # Location data
+    county_clicked_on_map = Signal(str)  # Folium county click
+    map_interaction = Signal(str, object)  # interaction_type, data
+    export_completed = Signal(str)  # file_path
+    error_occurred = Signal(str)  # error_message
+    data_loading_completed = Signal()  # adatok betöltve
+    folium_ready = Signal()  # Folium térkép kész
 
     def __init__(self, parent=None):
         """
@@ -106,7 +106,9 @@ class MapView(QWidget, MapViewIntegrationMixin, MapViewDebugMixin):
             self.map_tab.map_interaction.connect(self.map_interaction.emit)
             self.map_tab.export_completed.connect(self.export_completed.emit)
             self.map_tab.error_occurred.connect(self.error_occurred.emit)
-            self.map_tab.data_loading_completed.connect(self.data_loading_completed.emit)
+            self.map_tab.data_loading_completed.connect(
+                self.data_loading_completed.emit
+            )
             self.map_tab.folium_ready.connect(self.folium_ready.emit)
 
             print("✅ DEBUG: MapView Folium signal forwarding setup complete")

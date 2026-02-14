@@ -12,8 +12,12 @@ from typing import Any, Dict, Optional
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
+from src.presentation.gui.theme_manager import (
+    get_theme_manager,
+    register_widget_for_theming,
+)
+
 from ..data_widgets import WeatherDataTable
-from src.presentation.gui.theme_manager import get_theme_manager, register_widget_for_theming
 
 # Logging konfigurálása
 logger = logging.getLogger(__name__)

@@ -17,7 +17,9 @@ class ColorGenerator(ABC):
     """Absztrakt base class különböző színgeneráló stratégiákhoz."""
 
     @abstractmethod
-    def generate_variants(self, base_color: HSLColor, theme_type: ThemeType) -> Dict[str, HSLColor]:
+    def generate_variants(
+        self, base_color: HSLColor, theme_type: ThemeType
+    ) -> Dict[str, HSLColor]:
         """
         Színvariánsok generálása base színből.
 
@@ -33,7 +35,9 @@ class ColorGenerator(ABC):
 class StandardColorGenerator(ColorGenerator):
     """Standard színvariáns generátor - light/dark adaptive."""
 
-    def generate_variants(self, base_color: HSLColor, theme_type: ThemeType) -> Dict[str, HSLColor]:
+    def generate_variants(
+        self, base_color: HSLColor, theme_type: ThemeType
+    ) -> Dict[str, HSLColor]:
         """Standard variánsok: light, dark, hover, pressed, disabled."""
         variants = {}
 
@@ -58,7 +62,9 @@ class StandardColorGenerator(ColorGenerator):
 class MaterialColorGenerator(ColorGenerator):
     """Material Design inspirált színgenerátor."""
 
-    def generate_variants(self, base_color: HSLColor, theme_type: ThemeType) -> Dict[str, HSLColor]:
+    def generate_variants(
+        self, base_color: HSLColor, theme_type: ThemeType
+    ) -> Dict[str, HSLColor]:
         """Material Design 50-900 színskála generálása."""
         variants = {}
 
@@ -73,10 +79,8 @@ class MaterialColorGenerator(ColorGenerator):
             "600": 40,
             "700": 30,
             "800": 20,
-            "900": 10
+            "900": 10,
         }
-
-        base_lightness = base_color.lightness
 
         for stop, target_lightness in lightness_stops.items():
             # Telítettség adaptálása világosság alapján
@@ -88,17 +92,26 @@ class MaterialColorGenerator(ColorGenerator):
 
             adjusted_saturation = base_color.saturation * saturation_factor
             variants[f"material_{stop}"] = HSLColor(
-                base_color.hue,
-                adjusted_saturation,
-                target_lightness,
-                base_color.alpha
+                base_color.hue, adjusted_saturation, target_lightness, base_color.alpha
             )
 
         # Standard variánsok hozzáadása
         variants["light"] = variants["material_200"]
         variants["dark"] = variants["material_700"]
-        variants["hover"] = variants["material_400"] if theme_type == ThemeType.LIGHT else variants["material_300"]
-        variants["pressed"] = variants["material_800"] if theme_type == ThemeType.LIGHT else variants["material_200"]
-        variants["disabled"] = variants["material_100"] if theme_type == ThemeType.LIGHT else variants["material_800"]
+        variants["hover"] = (
+            variants["material_400"]
+            if theme_type == ThemeType.LIGHT
+            else variants["material_300"]
+        )
+        variants["pressed"] = (
+            variants["material_800"]
+            if theme_type == ThemeType.LIGHT
+            else variants["material_200"]
+        )
+        variants["disabled"] = (
+            variants["material_100"]
+            if theme_type == ThemeType.LIGHT
+            else variants["material_800"]
+        )
 
         return variants

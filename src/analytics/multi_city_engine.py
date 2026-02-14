@@ -44,22 +44,22 @@ from .multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS, Number, Numbe
 
 __all__ = [
     # Types
-    'Number',
-    'NumberOrNone',
-    'HUNGARIAN_REGIONAL_MAPPING',
-    'REGIONS',
+    "Number",
+    "NumberOrNone",
+    "HUNGARIAN_REGIONAL_MAPPING",
+    "REGIONS",
     # Legacy
-    'safe_mean',
-    'safe_statistics_mean',
-    'safe_median',
-    'safe_statistics_median',
-    'safe_stdev',
-    'safe_statistics_stdev',
-    'safe_min_max',
+    "safe_mean",
+    "safe_statistics_mean",
+    "safe_median",
+    "safe_statistics_median",
+    "safe_stdev",
+    "safe_statistics_stdev",
+    "safe_min_max",
     # Core
-    'MultiCityEngine',
+    "MultiCityEngine",
     # Demo
-    'demo_multi_city_engine'
+    "demo_multi_city_engine",
 ]
 
 

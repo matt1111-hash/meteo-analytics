@@ -12,7 +12,7 @@ from src.presentation.gui.dialogs.anomaly_settings_dialog.core import (
     AnomalySettingsDialog,
 )
 
-__all__ = ['AnomalySettingsDialog']
+__all__ = ["AnomalySettingsDialog"]
 
 
 # 🧪 DEMO FUNKCIÓ
@@ -36,9 +36,14 @@ def demo_anomaly_settings_dialog():
         from src.presentation.gui.dialogs.anomaly_settings_dialog import (
             AnomalySettingsDialog,
         )
+
         dialog = AnomalySettingsDialog(main_window)
-        dialog.settings_changed.connect(lambda settings: print(f"🔧 Beállítások változtak: {settings}"))
-        dialog.profile_changed.connect(lambda profile: print(f"📁 Profil váltva: {profile}"))
+        dialog.settings_changed.connect(
+            lambda settings: print(f"🔧 Beállítások változtak: {settings}")
+        )
+        dialog.profile_changed.connect(
+            lambda profile: print(f"📁 Profil váltva: {profile}")
+        )
         dialog.exec()
 
     open_btn.clicked.connect(open_dialog)

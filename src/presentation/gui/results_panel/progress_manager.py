@@ -82,7 +82,9 @@ class ProgressManager(QObject):
         if self._loading_timer:
             self._loading_timer.start(30000)
 
-        self._logger.debug(f"📊 DEBUG: ResultsPanel loading indicator shown - {message}")
+        self._logger.debug(
+            f"📊 DEBUG: ResultsPanel loading indicator shown - {message}"
+        )
 
     def hide_loading(self) -> None:
         """Loading indicator elrejtése."""

@@ -50,7 +50,9 @@ class DatabaseManager:
 
             conn.close()
 
-            self._logger.info(f"✅ Adatbázis kapcsolat OK (WIND GUSTS support): {self.db_path}")
+            self._logger.info(
+                f"✅ Adatbázis kapcsolat OK (WIND GUSTS support): {self.db_path}"
+            )
 
         except Exception as e:
             self._logger.error(f"Adatbázis kapcsolat hiba: {e}")
@@ -70,7 +72,7 @@ class DatabaseManager:
             cursor.execute("PRAGMA table_info(weather_data)")
             columns = [column[1] for column in cursor.fetchall()]
 
-            if 'wind_gusts_max' not in columns:
+            if "wind_gusts_max" not in columns:
                 self._logger.info("🌪️ wind_gusts_max oszlop nem létezik - hozzáadás...")
 
                 # Új oszlop hozzáadása
@@ -93,7 +95,7 @@ class DatabaseManager:
                 self._logger.info("✅ wind_gusts_max oszlop már létezik")
 
             # Provider tracking oszlop hozzáadása
-            if 'data_provider' not in columns:
+            if "data_provider" not in columns:
                 self._logger.info("🌐 data_provider oszlop nem létezik - hozzáadás...")
 
                 cursor.execute("""
@@ -121,16 +123,19 @@ class DatabaseManager:
             cursor = conn.cursor()
 
             # Upsert (INSERT OR REPLACE) művelet
-            cursor.execute('''
+            cursor.execute(
+                """
                 INSERT OR REPLACE INTO cities (name, latitude, longitude, country, region)
                 VALUES (?, ?, ?, ?, ?)
-            ''', (
-                city_data['name'],
-                city_data['latitude'],
-                city_data['longitude'],
-                city_data['metadata'].get('country', ''),
-                city_data['metadata'].get('admin1', '')
-            ))
+            """,
+                (
+                    city_data["name"],
+                    city_data["latitude"],
+                    city_data["longitude"],
+                    city_data["metadata"].get("country", ""),
+                    city_data["metadata"].get("admin1", ""),
+                ),
+            )
 
             conn.commit()
             conn.close()
@@ -140,8 +145,9 @@ class DatabaseManager:
         except Exception as e:
             self._logger.error(f"Adatbázis mentési hiba: {e}")
 
-    def save_weather_to_database(self, weather_data: Dict[str, Any],
-                                  current_city_data: Optional[Dict[str, Any]]) -> bool:
+    def save_weather_to_database(
+        self, weather_data: Dict[str, Any], current_city_data: Optional[Dict[str, Any]]
+    ) -> bool:
         """
         Időjárási adatok mentése adatbázisba wind gusts támogatással.
 
@@ -154,21 +160,26 @@ class DatabaseManager:
         """
         try:
             if not current_city_data:
-                self._logger.warning("⚠️ Nincs város adat az időjárási adatok mentéséhez")
+                self._logger.warning(
+                    "⚠️ Nincs város adat az időjárási adatok mentéséhez"
+                )
                 return False
 
             conn = sqlite3.connect(str(self.db_path))
             cursor = conn.cursor()
 
             # Város ID lekérdezése
-            cursor.execute('''
+            cursor.execute(
+                """
                 SELECT id FROM cities
                 WHERE name = ? AND latitude = ? AND longitude = ?
-            ''', (
-                current_city_data['name'],
-                current_city_data['latitude'],
-                current_city_data['longitude']
-            ))
+            """,
+                (
+                    current_city_data["name"],
+                    current_city_data["latitude"],
+                    current_city_data["longitude"],
+                ),
+            )
 
             city_result = cursor.fetchone()
             if not city_result:
@@ -177,46 +188,63 @@ class DatabaseManager:
                 return False
 
             city_id = city_result[0]
-            daily_data = weather_data['daily']
+            daily_data = weather_data["daily"]
 
             # Provider információ
-            data_provider = weather_data.get('provider', 'unknown')
+            data_provider = weather_data.get("provider", "unknown")
 
             # Időjárási adatok mentése
             saved_count = 0
-            for i, date in enumerate(daily_data['time']):
+            for i, date in enumerate(daily_data["time"]):
                 try:
                     # Wind gusts_max oszlop hozzáadása
                     wind_gusts_max = None
-                    if 'wind_gusts_max' in daily_data and i < len(daily_data['wind_gusts_max']):
-                        wind_gusts_max = daily_data['wind_gusts_max'][i]
+                    if "wind_gusts_max" in daily_data and i < len(
+                        daily_data["wind_gusts_max"]
+                    ):
+                        wind_gusts_max = daily_data["wind_gusts_max"][i]
 
                     # Windspeed_10m_max proper handling
                     windspeed_max = None
-                    if 'windspeed_10m_max' in daily_data and i < len(daily_data['windspeed_10m_max']):
-                        windspeed_max = daily_data['windspeed_10m_max'][i]
+                    if "windspeed_10m_max" in daily_data and i < len(
+                        daily_data["windspeed_10m_max"]
+                    ):
+                        windspeed_max = daily_data["windspeed_10m_max"][i]
 
-                    cursor.execute('''
+                    cursor.execute(
+                        """
                         INSERT OR REPLACE INTO weather_data
                         (city_id, date, temp_max, temp_min, precipitation, windspeed_max, wind_gusts_max, data_provider)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    ''', (
-                        city_id,
-                        date,
-                        daily_data['temperature_2m_max'][i] if i < len(daily_data['temperature_2m_max']) else None,
-                        daily_data['temperature_2m_min'][i] if i < len(daily_data['temperature_2m_min']) else None,
-                        daily_data['precipitation_sum'][i] if i < len(daily_data['precipitation_sum']) else None,
-                        windspeed_max,
-                        wind_gusts_max,
-                        data_provider
-                    ))
+                    """,
+                        (
+                            city_id,
+                            date,
+                            daily_data["temperature_2m_max"][i]
+                            if i < len(daily_data["temperature_2m_max"])
+                            else None,
+                            daily_data["temperature_2m_min"][i]
+                            if i < len(daily_data["temperature_2m_min"])
+                            else None,
+                            daily_data["precipitation_sum"][i]
+                            if i < len(daily_data["precipitation_sum"])
+                            else None,
+                            windspeed_max,
+                            wind_gusts_max,
+                            data_provider,
+                        ),
+                    )
                     saved_count += 1
 
                     # Debug logolás szélsebesség + széllökésekhez
                     if windspeed_max is not None and windspeed_max > 40:
-                        self._logger.info(f"🌪️ Saved high wind speed ({data_provider}): {date} - {windspeed_max:.1f} km/h")
+                        self._logger.info(
+                            f"🌪️ Saved high wind speed ({data_provider}): {date} - {windspeed_max:.1f} km/h"
+                        )
                     if wind_gusts_max is not None and wind_gusts_max > 80:
-                        self._logger.info(f"🌪️ Saved extreme wind gust ({data_provider}): {date} - {wind_gusts_max:.1f} km/h")
+                        self._logger.info(
+                            f"🌪️ Saved extreme wind gust ({data_provider}): {date} - {wind_gusts_max:.1f} km/h"
+                        )
 
                 except Exception as e:
                     self._logger.warning(f"⚠️ Rekord mentési hiba: {e}")
@@ -225,7 +253,9 @@ class DatabaseManager:
             conn.commit()
             conn.close()
 
-            self._logger.info(f"✅ Weather data mentve adatbázisba ({data_provider}): {saved_count} rekord")
+            self._logger.info(
+                f"✅ Weather data mentve adatbázisba ({data_provider}): {saved_count} rekord"
+            )
             return True
 
         except Exception as e:

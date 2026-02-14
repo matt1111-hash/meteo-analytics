@@ -63,105 +63,108 @@ __description__ = "Professional weather chart widgets with ColorPalette integrat
 
 __all__ = [
     # Base chart
-    'WeatherChart',
-
+    "WeatherChart",
     # Specific chart types
-    'EnhancedTemperatureChart',
-    'PrecipitationChart',
-    'WindChart',
-    'WindRoseChart',
-    'HeatmapCalendarChart',
-    'MultiYearComparisonChart'
+    "EnhancedTemperatureChart",
+    "PrecipitationChart",
+    "WindChart",
+    "WindRoseChart",
+    "HeatmapCalendarChart",
+    "MultiYearComparisonChart",
 ]
 
 # === CHART TÍPUSOK REGISTRY ===
 
 CHART_TYPES = {
-    'temperature': EnhancedTemperatureChart,
-    'precipitation': PrecipitationChart,
-    'wind': WindChart,
-    'wind_rose': WindRoseChart,
-    'heatmap': HeatmapCalendarChart,
-    'comparison': MultiYearComparisonChart
+    "temperature": EnhancedTemperatureChart,
+    "precipitation": PrecipitationChart,
+    "wind": WindChart,
+    "wind_rose": WindRoseChart,
+    "heatmap": HeatmapCalendarChart,
+    "comparison": MultiYearComparisonChart,
 }
 
 # === UTILITY FÜGGVÉNYEK ===
 
+
 def get_available_chart_types():
     """
     Elérhető chart típusok listája.
-    
+
     Returns:
         List[str]: Chart típusok nevei
     """
     return list(CHART_TYPES.keys())
 
+
 def create_chart(chart_type: str, parent=None):
     """
     Chart factory függvény.
-    
+
     Args:
         chart_type: Chart típus neve ('temperature', 'precipitation', stb.)
         parent: Szülő widget
-        
+
     Returns:
         WeatherChart: Chart instance
-        
+
     Raises:
         ValueError: Ha ismeretlen chart típus
     """
     if chart_type not in CHART_TYPES:
-        available = ', '.join(CHART_TYPES.keys())
+        available = ", ".join(CHART_TYPES.keys())
         raise ValueError(f"Ismeretlen chart típus: {chart_type}. Elérhető: {available}")
 
     chart_class = CHART_TYPES[chart_type]
     return chart_class(parent=parent)
 
+
 def get_chart_info():
     """
     Részletes információk az összes chart típusról.
-    
+
     Returns:
         Dict[str, Dict]: Chart típusok és tulajdonságaik
     """
     return {
-        'temperature': {
-            'class': 'EnhancedTemperatureChart',
-            'description': 'Fejlett hőmérséklet vizualizáció trend vonalakkal',
-            'icon': '🌡️',
-            'features': ['trend_lines', 'zones', 'annotations', 'statistics']
+        "temperature": {
+            "class": "EnhancedTemperatureChart",
+            "description": "Fejlett hőmérséklet vizualizáció trend vonalakkal",
+            "icon": "🌡️",
+            "features": ["trend_lines", "zones", "annotations", "statistics"],
         },
-        'precipitation': {
-            'class': 'PrecipitationChart',
-            'description': 'Csapadék oszlopdiagram színkódolással',
-            'icon': '🌧️',
-            'features': ['color_coding', 'statistics', 'bar_chart']
+        "precipitation": {
+            "class": "PrecipitationChart",
+            "description": "Csapadék oszlopdiagram színkódolással",
+            "icon": "🌧️",
+            "features": ["color_coding", "statistics", "bar_chart"],
         },
-        'wind': {
-            'class': 'WindChart',
-            'description': 'Széllökés trend chart kritikus küszöbökkel',
-            'icon': '🌪️',
-            'features': ['wind_gusts', 'thresholds', 'annotations', 'categories']
+        "wind": {
+            "class": "WindChart",
+            "description": "Széllökés trend chart kritikus küszöbökkel",
+            "icon": "🌪️",
+            "features": ["wind_gusts", "thresholds", "annotations", "categories"],
         },
-        'wind_rose': {
-            'class': 'WindRoseChart',
-            'description': 'Széllökés rózsadiagram 16 iránnyal',
-            'icon': '🌹',
-            'features': ['polar_plot', 'direction_analysis', 'speed_categories']
+        "wind_rose": {
+            "class": "WindRoseChart",
+            "description": "Széllökés rózsadiagram 16 iránnyal",
+            "icon": "🌹",
+            "features": ["polar_plot", "direction_analysis", "speed_categories"],
         },
-        'heatmap': {
-            'class': 'HeatmapCalendarChart',
-            'description': 'Hőmérséklet naptár heatmap tetszőleges időszakhoz',
-            'icon': '📅',
-            'features': ['calendar_view', 'heatmap', 'colorbar', 'date_range']
+        "heatmap": {
+            "class": "HeatmapCalendarChart",
+            "description": "Hőmérséklet naptár heatmap tetszőleges időszakhoz",
+            "icon": "📅",
+            "features": ["calendar_view", "heatmap", "colorbar", "date_range"],
         },
-        'comparison': {
-            'class': 'MultiYearComparisonChart',
-            'description': 'Évek összehasonlító chart szezonális vonalakkal',
-            'icon': '📊',
-            'features': ['multi_year', 'trend_analysis', 'seasonal_markers']
-        }
+        "comparison": {
+            "class": "MultiYearComparisonChart",
+            "description": "Évek összehasonlító chart szezonális vonalakkal",
+            "icon": "📊",
+            "features": ["multi_year", "trend_analysis", "seasonal_markers"],
+        },
     }
+
 
 # === DEBUG INFORMÁCIÓK ===
 

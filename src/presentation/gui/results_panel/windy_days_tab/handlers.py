@@ -12,7 +12,7 @@ Fájl: src/presentation/gui/results_panel/windy_days_tab/handlers.py
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QFileDialog
@@ -25,9 +25,6 @@ from src.domain.analytics.wind_reporting import (
 )
 
 if TYPE_CHECKING:
-    from PySide6.QtWidgets import QWidget
-    from pandas import DataFrame
-
     from src.presentation.gui.results_panel.windy_days_tab.core import WindyDaysTab
 
 logger = logging.getLogger(__name__)
@@ -57,7 +54,7 @@ def handle_export_clicked(self: "WindyDaysTab") -> None:
                 self,
                 "Chart Exportálása",
                 f"szeles_napok_{self.current_location.replace(' ', '_')}.png",
-                "PNG Files (*.png);;PDF Files (*.pdf);;All Files (*)"
+                "PNG Files (*.png);;PDF Files (*.pdf);;All Files (*)",
             )
 
             if file_path:
@@ -78,10 +75,12 @@ def handle_threshold_changed(self: "WindyDaysTab", value: int) -> None:
         logger.info(f"Küszöbérték változott: {value} km/h")
 
         # Automatikus frissítés ha be van kapcsolva
-        auto_update = getattr(self, 'auto_update_checkbox', None)
-        if (auto_update and
-            auto_update.isChecked() and
-            self.current_weather_data is not None):
+        auto_update = getattr(self, "auto_update_checkbox", None)
+        if (
+            auto_update
+            and auto_update.isChecked()
+            and self.current_weather_data is not None
+        ):
             # Kis késleltetés a túl gyakori frissítés elkerülésére
             QTimer.singleShot(500, lambda: _start_analysis(self))
 
@@ -108,20 +107,32 @@ def _start_analysis(self: "WindyDaysTab") -> None:
         # UI állapot
         _set_analysis_state(self, True)
 
-        logger.info("KONVERZIÓ NÉLKÜLI ANALÍZIS: Megbízunk a ResultsPanel km/h konverziójában")
+        logger.info(
+            "KONVERZIÓ NÉLKÜLI ANALÍZIS: Megbízunk a ResultsPanel km/h konverziójában"
+        )
 
         # Paraméterek
-        threshold = self.threshold_spinbox.value() if self.threshold_spinbox else WINDY_DAY_THRESHOLD_KMH
+        threshold = (
+            self.threshold_spinbox.value()
+            if self.threshold_spinbox
+            else WINDY_DAY_THRESHOLD_KMH
+        )
         location = self.current_location
 
-        logger.info(f"ANALÍZIS PARAMÉTEREI: threshold={threshold} km/h, location={location}")
-        logger.info(f"WEATHER DATA: {len(self.current_weather_data)} sor, oszlopok: {list(self.current_weather_data.columns)}")
+        logger.info(
+            f"ANALÍZIS PARAMÉTEREI: threshold={threshold} km/h, location={location}"
+        )
+        logger.info(
+            f"WEATHER DATA: {len(self.current_weather_data)} sor, oszlopok: {list(self.current_weather_data.columns)}"
+        )
 
         # Wind speed ellenőrzés
-        if 'wind_speed' in self.current_weather_data.columns:
-            wind_speeds = self.current_weather_data['wind_speed'].dropna()
+        if "wind_speed" in self.current_weather_data.columns:
+            wind_speeds = self.current_weather_data["wind_speed"].dropna()
             if len(wind_speeds) > 0:
-                logger.info(f"KAPOTT WIND_SPEED (ResultsPanel konvertálta): {wind_speeds.min():.1f} - {wind_speeds.max():.1f} km/h")
+                logger.info(
+                    f"KAPOTT WIND_SPEED (ResultsPanel konvertálta): {wind_speeds.min():.1f} - {wind_speeds.max():.1f} km/h"
+                )
             else:
                 logger.error("ÜRES WIND_SPEED OSZLOP!")
                 self.error_occurred.emit("Nincs szélsebesség adat")
@@ -135,9 +146,7 @@ def _start_analysis(self: "WindyDaysTab") -> None:
 
         # ANALÍZIS FUTTATÁSA KÖZVETLENÜL A KAPOTT ADATOKKAL!
         analysis_result = analyze_wind_patterns(
-            self.current_weather_data,
-            location_name=location,
-            threshold_kmh=threshold
+            self.current_weather_data, location_name=location, threshold_kmh=threshold
         )
 
         # Chart adatok előkészítése
@@ -150,37 +159,37 @@ def _start_analysis(self: "WindyDaysTab") -> None:
         _set_analysis_state(self, False)
 
         # Signal kibocsátása
-        self.analysis_completed.emit({
-            'analysis_result': analysis_result,
-            'chart_data': chart_data,
-            'threshold': threshold,
-            'location': location
-        })
+        self.analysis_completed.emit(
+            {
+                "analysis_result": analysis_result,
+                "chart_data": chart_data,
+                "threshold": threshold,
+                "location": location,
+            }
+        )
 
         logger.info("Szeles napok analízis befejezve (DUPLA KONVERZIÓ NÉLKÜL)")
 
     except Exception as e:
         logger.error(f"Hiba az analízisben: {e}")
         import traceback
+
         traceback.print_exc()
         _set_analysis_state(self, False)
         self.error_occurred.emit(f"Analízis hiba: {e}")
 
 
 def _display_analysis_results(
-    self: "WindyDaysTab",
-    analysis_result,
-    chart_data: dict,
-    threshold: float
+    self: "WindyDaysTab", analysis_result, chart_data: dict, threshold: float
 ) -> None:
     """Analízis eredmények megjelenítése."""
     try:
         # Chart frissítése
         if self.chart:
             chart_update_data = {
-                'chart_data': chart_data,
-                'threshold_kmh': threshold,
-                'location_name': self.current_location
+                "chart_data": chart_data,
+                "threshold_kmh": threshold,
+                "location_name": self.current_location,
             }
             self.chart.update_data(chart_update_data)
 
@@ -196,9 +205,9 @@ def _display_analysis_results(
 
         # Eredmény tárolása
         self.current_analysis_result = {
-            'analysis_result': analysis_result,
-            'chart_data': chart_data,
-            'threshold': threshold
+            "analysis_result": analysis_result,
+            "chart_data": chart_data,
+            "threshold": threshold,
         }
 
         logger.info("Analízis eredmények megjelenítve (DUPLA KONVERZIÓ NÉLKÜL)")
@@ -212,7 +221,9 @@ def _set_analysis_state(self: "WindyDaysTab", running: bool) -> None:
     try:
         if self.analyze_button:
             self.analyze_button.setEnabled(not running)
-            self.analyze_button.setText("Elemzés..." if running else "Analízis Futtatása")
+            self.analyze_button.setText(
+                "Elemzés..." if running else "Analízis Futtatása"
+            )
 
         if self.progress_bar:
             self.progress_bar.setVisible(running)

@@ -31,11 +31,14 @@ def on_county_selected(self, county_name: str, geometry) -> None:
 
         self.loading_status.setText(f"🎯 Folium térkép központosítva: {county_name}")
 
-        self.map_interaction.emit("county_focused", {
-            'county_name': county_name,
-            'bounds': bounds,
-            'source': 'location_selector'
-        })
+        self.map_interaction.emit(
+            "county_focused",
+            {
+                "county_name": county_name,
+                "bounds": bounds,
+                "source": "location_selector",
+            },
+        )
 
     except Exception as e:
         error_msg = f"Megye Folium térképes megjelenítési hiba: {e}"
@@ -56,7 +59,9 @@ def on_map_update_requested(self, bounds) -> None:
 
 def on_location_selected(self, location) -> None:
     """🔍 Lokáció kiválasztva a location selector-ben → forward signal."""
-    print(f"🔍 DEBUG: Location selected: {location.display_name if location else 'None'}")
+    print(
+        f"🔍 DEBUG: Location selected: {location.display_name if location else 'None'}"
+    )
 
     self.current_location_data = location
     self.location_selected.emit(location)
@@ -72,11 +77,13 @@ def on_selection_changed(self) -> None:
     if self.location_selector:
         selection_info = self.location_selector.get_current_selection()
 
-        region = selection_info.get('region')
-        county = selection_info.get('county')
+        region = selection_info.get("region")
+        county = selection_info.get("county")
 
         if county:
-            status = f"🗺️ {region.display_name if region else 'Régió'} → {county['name']}"
+            status = (
+                f"🗺️ {region.display_name if region else 'Régió'} → {county['name']}"
+            )
         elif region:
             status = f"🌡️ {region.display_name}"
         else:
@@ -117,10 +124,9 @@ def on_folium_county_clicked(self, county_name: str) -> None:
             print(f"⚠️ DEBUG: Failed to sync location selector to county: {county_name}")
 
     self.county_clicked_on_map.emit(county_name)
-    self.map_interaction.emit("county_clicked", {
-        'county_name': county_name,
-        'source': 'folium_map'
-    })
+    self.map_interaction.emit(
+        "county_clicked", {"county_name": county_name, "source": "folium_map"}
+    )
 
     self.loading_status.setText(f"🖱️ Megye kattintva Folium térképen: {county_name}")
 
@@ -129,11 +135,9 @@ def on_folium_coordinates_clicked(self, lat: float, lon: float) -> None:
     """🔍 Koordináta kattintás a Folium térképen."""
     print(f"🔍 DEBUG: Coordinates clicked on Folium map: {lat:.4f}, {lon:.4f}")
 
-    self.map_interaction.emit("coordinates_clicked", {
-        'lat': lat,
-        'lon': lon,
-        'source': 'folium_map'
-    })
+    self.map_interaction.emit(
+        "coordinates_clicked", {"lat": lat, "lon": lon, "source": "folium_map"}
+    )
 
     self.loading_status.setText(f"🔍 Koordináta: {lat:.4f}°, {lon:.4f}°")
 
@@ -142,12 +146,9 @@ def on_folium_map_moved(self, lat: float, lon: float, zoom: int) -> None:
     """🗺️ Folium térkép mozgott (zoom/pan)."""
     print(f"🗺️ DEBUG: Folium map moved: center=({lat:.4f}, {lon:.4f}), zoom={zoom}")
 
-    self.map_interaction.emit("map_moved", {
-        'lat': lat,
-        'lon': lon,
-        'zoom': zoom,
-        'source': 'folium_map'
-    })
+    self.map_interaction.emit(
+        "map_moved", {"lat": lat, "lon": lon, "zoom": zoom, "source": "folium_map"}
+    )
 
 
 def on_folium_county_hovered(self, county_name: str) -> None:
@@ -156,10 +157,9 @@ def on_folium_county_hovered(self, county_name: str) -> None:
 
     self.loading_status.setText(f"👆 Hover: {county_name}")
 
-    self.map_interaction.emit("county_hovered", {
-        'county_name': county_name,
-        'source': 'folium_map'
-    })
+    self.map_interaction.emit(
+        "county_hovered", {"county_name": county_name, "source": "folium_map"}
+    )
 
 
 def on_export_completed(self, file_path: str) -> None:

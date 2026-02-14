@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class ThemeHandler:
     """Theme handler a LocationWidget számára."""
 
-    def __init__(self, widget: 'LocationWidget'):
+    def __init__(self, widget: "LocationWidget"):
         """
         ThemeHandler inicializálása.
 

@@ -51,7 +51,9 @@ def check_environment() -> dict[str, bool | str | None]:
 
         env_status["cache_available"] = CACHE_DIR.exists() and CACHE_DIR.is_dir()
         env_status["provider_selector_ready"] = bool(
-            env_status["directories_created"] and env_status["write_permissions"] and USER_PREFS_DIR.exists()
+            env_status["directories_created"]
+            and env_status["write_permissions"]
+            and USER_PREFS_DIR.exists()
         )
     except Exception as exc:  # pragma: no cover - defensive guard
         env_status["error"] = str(exc)
@@ -85,7 +87,9 @@ def validate_config() -> dict[str, bool | str | None]:
             api_validation["meteostat_key_valid"] and status["api_configuration"]
         )
         status["provider_selector_ready"] = bool(
-            status["directories"] and status["write_permissions"] and USER_PREFS_DIR.exists()
+            status["directories"]
+            and status["write_permissions"]
+            and USER_PREFS_DIR.exists()
         )
     except PermissionError as exc:
         status["directories"] = False
@@ -115,7 +119,9 @@ def get_optimal_data_source(use_case: str, prefer_free: bool = True) -> str:
         # Ha ingyenes forrást preferálunk és az optimális fizetős
         if prefer_free and optimal_source == "meteostat":
             # Ellenőrizzük, hogy az open-meteo képes-e kezelni
-            if DataConstants.SOURCE_CAPABILITIES["open-meteo"].get(use_case.replace("_", "-"), False):
+            if DataConstants.SOURCE_CAPABILITIES["open-meteo"].get(
+                use_case.replace("_", "-"), False
+            ):
                 return "open-meteo"
 
         return optimal_source
@@ -134,7 +140,9 @@ def get_source_display_name(source_id: str) -> str:
     Returns:
         Felhasználóbarát megjelenítési név
     """
-    return APIConfig.SOURCE_DISPLAY_NAMES.get(source_id, f"Unknown Source ({source_id})")
+    return APIConfig.SOURCE_DISPLAY_NAMES.get(
+        source_id, f"Unknown Source ({source_id})"
+    )
 
 
 def validate_api_source_available(source_id: str) -> bool:
@@ -169,7 +177,8 @@ def get_fallback_source_chain(primary_source: str) -> list[str]:
         Fallback források listája
     """
     available_sources = [
-        source for source in DataConstants.DATA_SOURCE_PRIORITY
+        source
+        for source in DataConstants.DATA_SOURCE_PRIORITY
         if validate_api_source_available(source)
     ]
 
@@ -182,10 +191,10 @@ def get_fallback_source_chain(primary_source: str) -> list[str]:
 
 
 __all__ = [
-    'check_environment',
-    'validate_config',
-    'get_optimal_data_source',
-    'get_source_display_name',
-    'validate_api_source_available',
-    'get_fallback_source_chain'
+    "check_environment",
+    "validate_config",
+    "get_optimal_data_source",
+    "get_source_display_name",
+    "validate_api_source_available",
+    "get_fallback_source_chain",
 ]

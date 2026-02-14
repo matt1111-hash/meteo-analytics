@@ -12,15 +12,18 @@ Fájl: src/presentation/gui/results_panel/windy_days_tab/core.py
 from __future__ import annotations
 
 import logging
-from typing import Dict, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Optional
 
 import pandas as pd
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QCheckBox, QVBoxLayout, QWidget
 
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 from src.presentation.gui.charts.windy_days_chart import WindyDaysChart
-from src.presentation.gui.theme_manager import ProfessionalThemeManager, register_widget_for_theming
+from src.presentation.gui.theme_manager import (
+    ProfessionalThemeManager,
+    register_widget_for_theming,
+)
 
 from .data_processor import (
     clear_data,
@@ -45,7 +48,14 @@ from .ui_builder import (
 )
 
 if TYPE_CHECKING:
-    from PySide6.QtWidgets import QFrame, QGroupBox, QLabel, QProgressBar, QPushButton, QSpinBox, QSplitter, QTextEdit
+    from PySide6.QtWidgets import (
+        QFrame,
+        QGroupBox,
+        QProgressBar,
+        QPushButton,
+        QSpinBox,
+        QTextEdit,
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -107,9 +117,12 @@ class WindyDaysTab(QWidget):
             main_layout.addWidget(self._header_frame)
 
             # Controls
-            self._controls_group, self.threshold_spinbox, self.analyze_button, self.export_button = create_controls_section(
-                WINDY_DAY_THRESHOLD_KMH
-            )
+            (
+                self._controls_group,
+                self.threshold_spinbox,
+                self.analyze_button,
+                self.export_button,
+            ) = create_controls_section(WINDY_DAY_THRESHOLD_KMH)
             main_layout.addWidget(self._controls_group)
 
             # Progress bar
@@ -174,19 +187,25 @@ DUPLA KONVERZIÓ ELTÁVOLÍTVA!
         """Signal kapcsolatok létrehozása."""
         try:
             if self.analyze_button:
-                self.analyze_button.clicked.connect(lambda: handle_analyze_clicked(self))
+                self.analyze_button.clicked.connect(
+                    lambda: handle_analyze_clicked(self)
+                )
 
             if self.export_button:
                 self.export_button.clicked.connect(lambda: handle_export_clicked(self))
 
             if self.threshold_spinbox:
-                self.threshold_spinbox.valueChanged.connect(lambda v: handle_threshold_changed(self, v))
+                self.threshold_spinbox.valueChanged.connect(
+                    lambda v: handle_threshold_changed(self, v)
+                )
 
             # Auto update checkbox查找
             auto_update = self.findChild(QCheckBox, "auto_update_checkbox")
             if auto_update:
                 self.auto_update_checkbox = auto_update
-                auto_update.toggled.connect(lambda c: handle_auto_update_toggled(self, c))
+                auto_update.toggled.connect(
+                    lambda c: handle_auto_update_toggled(self, c)
+                )
 
             # Theme manager
             self.theme_manager.theme_changed.connect(self._on_theme_changed)
@@ -219,7 +238,9 @@ DUPLA KONVERZIÓ ELTÁVOLÍTVA!
             logger.error(f"Hiba a theme változás kezelésében: {e}")
 
     # Public methods - delegálás a data_processor modulra
-    def update_data(self, weather_data: pd.DataFrame, location: str = "Ismeretlen helyszín") -> None:
+    def update_data(
+        self, weather_data: pd.DataFrame, location: str = "Ismeretlen helyszín"
+    ) -> None:
         """Adatok frissítése."""
         update_data(self, weather_data, location)
 

@@ -17,6 +17,7 @@ class WeatherData:
 
     Contains daily weather metrics for a single day.
     """
+
     date: str
     temperature_2m_max: Optional[float] = None
     temperature_2m_min: Optional[float] = None
@@ -46,28 +47,37 @@ class WeatherData:
         if self.temperature_2m_max is not None and self.temperature_2m_min is not None:
             self.temperature_range = self.temperature_2m_max - self.temperature_2m_min
 
-        if self.temperature_2m_max is not None and self.temperature_2m_min is not None and self.temperature_2m_mean is None:
-            self.temperature_2m_mean = (self.temperature_2m_max + self.temperature_2m_min) / 2
+        if (
+            self.temperature_2m_max is not None
+            and self.temperature_2m_min is not None
+            and self.temperature_2m_mean is None
+        ):
+            self.temperature_2m_mean = (
+                self.temperature_2m_max + self.temperature_2m_min
+            ) / 2
 
 
 class WeatherAPIError(Exception):
     """Weather API specific errors."""
+
     pass
 
 
 class ProviderNotAvailableError(WeatherAPIError):
     """Provider not available error."""
+
     pass
 
 
 class ProviderValidationError(WeatherAPIError):
     """Provider validation error."""
+
     pass
 
 
 __all__ = [
-    'WeatherData',
-    'WeatherAPIError',
-    'ProviderNotAvailableError',
-    'ProviderValidationError'
+    "WeatherData",
+    "WeatherAPIError",
+    "ProviderNotAvailableError",
+    "ProviderValidationError",
 ]

@@ -44,8 +44,8 @@ class HungarianCityPublicAPIMixin:
 
     def clear_all_filters(self) -> None:
         """Összes szűrő törlése."""
-        self.set_region('Összes')
-        self.set_search_term('')
+        self.set_region("Összes")
+        self.set_search_term("")
 
     def get_city_by_name(self, city_name: str) -> Optional[HungarianCity]:
         """

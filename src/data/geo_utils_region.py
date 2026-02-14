@@ -33,8 +33,9 @@ class GeoUtilsRegion(GeoUtils):
         super().__init__(distance_calculator)
         self.region_cache: Dict[str, GeographicRegion] = {}
 
-    def calculate_region_from_cities(self, cities_data: List[Dict[str, Any]],
-                                   region_name: str) -> GeographicRegion:
+    def calculate_region_from_cities(
+        self, cities_data: List[Dict[str, Any]], region_name: str
+    ) -> GeographicRegion:
         """Calculate geographic region from cities."""
         if not cities_data:
             raise ValueError("Cities list is empty")
@@ -44,7 +45,9 @@ class GeoUtilsRegion(GeoUtils):
         bbox = self.calculate_bounding_box(coordinates, padding_degrees=0.1)
         center = self.calculate_geographic_center(coordinates)
 
-        total_population = sum(city.get("population", 0) for city in cities_data if city.get("population"))
+        total_population = sum(
+            city.get("population", 0) for city in cities_data if city.get("population")
+        )
         cities_count = len(cities_data)
         area_km2 = self._estimate_bounding_box_area(bbox)
 
@@ -54,7 +57,7 @@ class GeoUtilsRegion(GeoUtils):
             center_point=center,
             area_km2=area_km2,
             population=total_population if total_population > 0 else None,
-            cities_count=cities_count
+            cities_count=cities_count,
         )
 
         self.region_cache[region_name] = region
@@ -73,8 +76,9 @@ class GeoUtilsRegion(GeoUtils):
 
         return abs(lat_km * lon_km)
 
-    def group_cities_by_proximity(self, cities_data: List[Dict[str, Any]],
-                                 max_distance_km: float = 100) -> List[List[Dict[str, Any]]]:
+    def group_cities_by_proximity(
+        self, cities_data: List[Dict[str, Any]], max_distance_km: float = 100
+    ) -> List[List[Dict[str, Any]]]:
         """Group cities by geographic proximity."""
         if not cities_data:
             return []
@@ -92,8 +96,10 @@ class GeoUtilsRegion(GeoUtils):
                 for group_city in current_group[:]:
                     for i, city in enumerate(remaining_cities):
                         distance = self.distance_calculator.haversine_distance(
-                            group_city["lat"], group_city["lon"],
-                            city["lat"], city["lon"]
+                            group_city["lat"],
+                            group_city["lon"],
+                            city["lat"],
+                            city["lon"],
                         )
 
                         if distance <= max_distance_km:
@@ -109,9 +115,12 @@ class GeoUtilsRegion(GeoUtils):
         groups.sort(key=len, reverse=True)
         return groups
 
-    def find_optimal_cities_for_region(self, all_cities: List[Dict[str, Any]],
-                                      target_count: int,
-                                      region_bbox: Optional[BoundingBox] = None) -> List[Dict[str, Any]]:
+    def find_optimal_cities_for_region(
+        self,
+        all_cities: List[Dict[str, Any]],
+        target_count: int,
+        region_bbox: Optional[BoundingBox] = None,
+    ) -> List[Dict[str, Any]]:
         """Find optimal cities for region analytics."""
         filtered_cities = all_cities
         if region_bbox:
@@ -124,8 +133,12 @@ class GeoUtilsRegion(GeoUtils):
         if len(filtered_cities) <= target_count:
             return filtered_cities
 
-        cities_with_pop = [city for city in filtered_cities if city.get("population", 0) > 0]
-        cities_without_pop = [city for city in filtered_cities if city.get("population", 0) <= 0]
+        cities_with_pop = [
+            city for city in filtered_cities if city.get("population", 0) > 0
+        ]
+        cities_without_pop = [
+            city for city in filtered_cities if city.get("population", 0) <= 0
+        ]
 
         cities_with_pop.sort(key=lambda c: c.get("population", 0), reverse=True)
 
@@ -140,11 +153,10 @@ class GeoUtilsRegion(GeoUtils):
             best_score = -1
 
             for city in remaining_cities:
-                min_distance = float('inf')
+                min_distance = float("inf")
                 for selected in selected_cities:
                     distance = self.distance_calculator.haversine_distance(
-                        city["lat"], city["lon"],
-                        selected["lat"], selected["lon"]
+                        city["lat"], city["lon"], selected["lat"], selected["lon"]
                     )
                     min_distance = min(min_distance, distance)
 
@@ -166,4 +178,4 @@ class GeoUtilsRegion(GeoUtils):
         return selected_cities
 
 
-__all__ = ['GeoUtilsRegion']
+__all__ = ["GeoUtilsRegion"]

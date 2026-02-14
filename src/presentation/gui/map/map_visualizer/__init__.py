@@ -20,4 +20,4 @@ Fájl: src/presentation/gui/map/map_visualizer/__init__.py
 
 from .core import HungarianMapVisualizer
 
-__all__ = ['HungarianMapVisualizer']
+__all__ = ["HungarianMapVisualizer"]

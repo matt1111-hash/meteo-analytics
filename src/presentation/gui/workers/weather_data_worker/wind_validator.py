@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class WindValidator:
     """Validate wind gusts data."""
 
-    def __init__(self, worker: 'WeatherDataWorker'):
+    def __init__(self, worker: "WeatherDataWorker"):
         """
         Initialize wind validator.
 
@@ -31,9 +31,9 @@ class WindValidator:
         daily_data = self._worker.weather_data.get("daily", {})
         hourly_data = self._worker.weather_data.get("hourly", {})
 
-        daily_record_count = len(daily_data.get('time', []))
-        hourly_record_count = len(hourly_data.get('time', []))
-        wind_gusts_count = len(hourly_data.get('wind_gusts_10m', []))
+        daily_record_count = len(daily_data.get("time", []))
+        hourly_record_count = len(hourly_data.get("time", []))
+        wind_gusts_count = len(hourly_data.get("wind_gusts_10m", []))
 
         print(f"✅ DEBUG: {daily_record_count} napi rekord lekérdezve")
         print(f"✅ DEBUG: {hourly_record_count} óránkénti rekord lekérdezve")
@@ -41,7 +41,7 @@ class WindValidator:
 
         # Quality check
         if wind_gusts_count > 0:
-            wind_gusts = hourly_data.get('wind_gusts_10m', [])
+            wind_gusts = hourly_data.get("wind_gusts_10m", [])
             valid_gusts = [g for g in wind_gusts if g is not None and g > 0]
 
             if valid_gusts:
@@ -49,7 +49,9 @@ class WindValidator:
                 print(f"🌪️ DEBUG: Maximum széllökés: {max_gust:.1f} km/h")
 
                 if max_gust < 60:
-                    print(f"⚠️  DEBUG: Széllökés még mindig alacsony: {max_gust:.1f} km/h")
+                    print(
+                        f"⚠️  DEBUG: Széllökés még mindig alacsony: {max_gust:.1f} km/h"
+                    )
                 else:
                     print(f"✅ DEBUG: Realistic széllökés értékek: {max_gust:.1f} km/h")
             else:

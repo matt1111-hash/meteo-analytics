@@ -1,9 +1,10 @@
 """Base Weather Chart class."""
+
 from typing import Any, Optional
 
 import matplotlib
 
-matplotlib.use('QtAgg')
+matplotlib.use("QtAgg")
 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -35,7 +36,7 @@ class WeatherChart(FigureCanvas):
         self, figsize: tuple = DEFAULT_FIGSIZE, parent: Optional[QWidget] = None
     ) -> None:
         current_colors = get_current_colors()
-        figure_bg = current_colors.get('surface', '#ffffff')
+        figure_bg = current_colors.get("surface", "#ffffff")
 
         self.figure = Figure(figsize=figsize, dpi=DEFAULT_DPI, facecolor=figure_bg)
         super().__init__(self.figure)
@@ -46,11 +47,11 @@ class WeatherChart(FigureCanvas):
         self.weather_colors = self.color_palette.generate_weather_palette("#C43939")
 
         self.current_data = None
-        self.chart_title = CHART_DEFAULTS['chart_title']
-        self.x_label = CHART_DEFAULTS['x_label']
-        self.y_label = CHART_DEFAULTS['y_label']
-        self.grid_enabled = CHART_DEFAULTS['grid_enabled']
-        self.legend_enabled = CHART_DEFAULTS['legend_enabled']
+        self.chart_title = CHART_DEFAULTS["chart_title"]
+        self.x_label = CHART_DEFAULTS["x_label"]
+        self.y_label = CHART_DEFAULTS["y_label"]
+        self.grid_enabled = CHART_DEFAULTS["grid_enabled"]
+        self.legend_enabled = CHART_DEFAULTS["legend_enabled"]
 
         self._is_updating = False
         self._last_update_data = None
@@ -62,7 +63,7 @@ class WeatherChart(FigureCanvas):
 
         apply_theme_to_axis(self.ax, self.theme_manager, self.grid_enabled)
 
-        self.mpl_connect('button_press_event', self._on_click)
+        self.mpl_connect("button_press_event", self._on_click)
 
         register_widget_for_theming(self, "chart")
         self.theme_manager.theme_changed.connect(self._on_theme_changed)
@@ -81,11 +82,11 @@ class WeatherChart(FigureCanvas):
             apply_theme_to_axis(self.ax, self.theme_manager, self.grid_enabled)
 
             current_colors = get_current_colors()
-            text_color = current_colors.get('on_surface', '#1f2937')
+            text_color = current_colors.get("on_surface", "#1f2937")
 
             for line in self.ax.get_lines():
-                if line.get_color() in ['#1f77b4', 'blue', 'b']:
-                    line.set_color(current_colors.get('primary', '#C43939'))
+                if line.get_color() in ["#1f77b4", "blue", "b"]:
+                    line.set_color(current_colors.get("primary", "#C43939"))
 
             for text in self.ax.texts:
                 text.set_color(text_color)
@@ -114,10 +115,10 @@ class WeatherChart(FigureCanvas):
             print(f"Chart clear error: {e}")
             self._is_updating = False
 
-    def export_chart(self, filepath: str, format: str = 'png', dpi: int = 300) -> bool:
+    def export_chart(self, filepath: str, format: str = "png", dpi: int = 300) -> bool:
         """Export chart to file."""
         try:
-            self.figure.savefig(filepath, format=format, dpi=dpi, bbox_inches='tight')
+            self.figure.savefig(filepath, format=format, dpi=dpi, bbox_inches="tight")
             return True
         except Exception as e:
             print(f"Chart export error: {e}")

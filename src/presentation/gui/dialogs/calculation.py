@@ -77,19 +77,21 @@ def _extract_weather_dataframe(self) -> pd.DataFrame:
         windspeed = daily_data.get("windspeed_10m_max", [])
 
         # DataFrame létrehozása
-        df = pd.DataFrame({
-            'date': dates,
-            'temp_max': temp_max,
-            'temp_min': temp_min,
-            'precipitation': precip,
-            'windspeed': windspeed if windspeed else [None] * len(dates)
-        })
+        df = pd.DataFrame(
+            {
+                "date": dates,
+                "temp_max": temp_max,
+                "temp_min": temp_min,
+                "precipitation": precip,
+                "windspeed": windspeed if windspeed else [None] * len(dates),
+            }
+        )
 
         # Dátum oszlop konvertálása
-        df['date_obj'] = pd.to_datetime(df['date'])
-        df['year'] = df['date_obj'].dt.year
-        df['month'] = df['date_obj'].dt.month
-        df['formatted_date'] = df['date_obj'].dt.strftime('%Y-%m-%d')
+        df["date_obj"] = pd.to_datetime(df["date"])
+        df["year"] = df["date_obj"].dt.year
+        df["month"] = df["date_obj"].dt.month
+        df["formatted_date"] = df["date_obj"].dt.strftime("%Y-%m-%d")
 
         return df
 
@@ -112,54 +114,66 @@ def _calculate_daily_extremes(self, df: pd.DataFrame) -> List[Dict[str, str]]:
     extremes = []
 
     # Legmelegebb nap
-    max_temp_idx = df['temp_max'].idxmax()
-    extremes.append({
-        'category': 'Legmelegebb nap',
-        'value': f"{df.iloc[max_temp_idx]['temp_max']:.1f} °C",
-        'date': df.iloc[max_temp_idx]['formatted_date']
-    })
+    max_temp_idx = df["temp_max"].idxmax()
+    extremes.append(
+        {
+            "category": "Legmelegebb nap",
+            "value": f"{df.iloc[max_temp_idx]['temp_max']:.1f} °C",
+            "date": df.iloc[max_temp_idx]["formatted_date"],
+        }
+    )
 
     # Leghidegebb nap
-    min_temp_idx = df['temp_min'].idxmin()
-    extremes.append({
-        'category': 'Leghidegebb nap',
-        'value': f"{df.iloc[min_temp_idx]['temp_min']:.1f} °C",
-        'date': df.iloc[min_temp_idx]['formatted_date']
-    })
+    min_temp_idx = df["temp_min"].idxmin()
+    extremes.append(
+        {
+            "category": "Leghidegebb nap",
+            "value": f"{df.iloc[min_temp_idx]['temp_min']:.1f} °C",
+            "date": df.iloc[min_temp_idx]["formatted_date"],
+        }
+    )
 
     # Legnagyobb napi hőingás
-    df['temp_range'] = df['temp_max'] - df['temp_min']
-    max_range_idx = df['temp_range'].idxmax()
-    extremes.append({
-        'category': 'Legnagyobb napi hőingás',
-        'value': f"{df.iloc[max_range_idx]['temp_range']:.1f} °C",
-        'date': df.iloc[max_range_idx]['formatted_date']
-    })
+    df["temp_range"] = df["temp_max"] - df["temp_min"]
+    max_range_idx = df["temp_range"].idxmax()
+    extremes.append(
+        {
+            "category": "Legnagyobb napi hőingás",
+            "value": f"{df.iloc[max_range_idx]['temp_range']:.1f} °C",
+            "date": df.iloc[max_range_idx]["formatted_date"],
+        }
+    )
 
     # Legcsapadékosabb nap
-    max_precip_idx = df['precipitation'].idxmax()
-    extremes.append({
-        'category': 'Legcsapadékosabb nap',
-        'value': f"{df.iloc[max_precip_idx]['precipitation']:.1f} mm",
-        'date': df.iloc[max_precip_idx]['formatted_date']
-    })
+    max_precip_idx = df["precipitation"].idxmax()
+    extremes.append(
+        {
+            "category": "Legcsapadékosabb nap",
+            "value": f"{df.iloc[max_precip_idx]['precipitation']:.1f} mm",
+            "date": df.iloc[max_precip_idx]["formatted_date"],
+        }
+    )
 
     # Legszelesebb nap (ha van adat)
-    if not df['windspeed'].isna().all():
-        max_wind_idx = df['windspeed'].idxmax()
-        extremes.append({
-            'category': 'Legszelesebb nap',
-            'value': f"{df.iloc[max_wind_idx]['windspeed']:.1f} km/h",
-            'date': df.iloc[max_wind_idx]['formatted_date']
-        })
+    if not df["windspeed"].isna().all():
+        max_wind_idx = df["windspeed"].idxmax()
+        extremes.append(
+            {
+                "category": "Legszelesebb nap",
+                "value": f"{df.iloc[max_wind_idx]['windspeed']:.1f} km/h",
+                "date": df.iloc[max_wind_idx]["formatted_date"],
+            }
+        )
 
     # Időszak átlaghőmérséklete
-    avg_temp = (df['temp_max'].mean() + df['temp_min'].mean()) / 2
-    extremes.append({
-        'category': 'Időszak átlaghőmérséklete',
-        'value': f"{avg_temp:.1f} °C",
-        'date': '-'
-    })
+    avg_temp = (df["temp_max"].mean() + df["temp_min"].mean()) / 2
+    extremes.append(
+        {
+            "category": "Időszak átlaghőmérséklete",
+            "value": f"{avg_temp:.1f} °C",
+            "date": "-",
+        }
+    )
 
     return extremes
 
@@ -178,61 +192,86 @@ def _calculate_monthly_extremes(self, df: pd.DataFrame) -> List[Dict[str, str]]:
     extremes = []
 
     # Havi aggregáció
-    monthly_data = df.groupby(['year', 'month']).agg({
-        'temp_max': 'max',
-        'temp_min': 'min',
-        'precipitation': 'sum',
-        'windspeed': 'max' if not df['windspeed'].isna().all() else 'mean'
-    }).reset_index()
+    monthly_data = (
+        df.groupby(["year", "month"])
+        .agg(
+            {
+                "temp_max": "max",
+                "temp_min": "min",
+                "precipitation": "sum",
+                "windspeed": "max" if not df["windspeed"].isna().all() else "mean",
+            }
+        )
+        .reset_index()
+    )
 
     # Hónap nevek
     month_names = {
-        1: 'Január', 2: 'Február', 3: 'Március', 4: 'Április',
-        5: 'Május', 6: 'Június', 7: 'Július', 8: 'Augusztus',
-        9: 'Szeptember', 10: 'Október', 11: 'November', 12: 'December'
+        1: "Január",
+        2: "Február",
+        3: "Március",
+        4: "Április",
+        5: "Május",
+        6: "Június",
+        7: "Július",
+        8: "Augusztus",
+        9: "Szeptember",
+        10: "Október",
+        11: "November",
+        12: "December",
     }
 
-    monthly_data['month_name'] = monthly_data['month'].map(month_names)
+    monthly_data["month_name"] = monthly_data["month"].map(month_names)
 
     # Legmelegebb hónap (max hőmérséklet alapján)
-    max_temp_idx = monthly_data['temp_max'].idxmax()
-    extremes.append({
-        'category': 'Legmelegebb hónap (max)',
-        'value': f"{monthly_data.iloc[max_temp_idx]['temp_max']:.1f} °C",
-        'date': f"{monthly_data.iloc[max_temp_idx]['month_name']} {monthly_data.iloc[max_temp_idx]['year']}"
-    })
+    max_temp_idx = monthly_data["temp_max"].idxmax()
+    extremes.append(
+        {
+            "category": "Legmelegebb hónap (max)",
+            "value": f"{monthly_data.iloc[max_temp_idx]['temp_max']:.1f} °C",
+            "date": f"{monthly_data.iloc[max_temp_idx]['month_name']} {monthly_data.iloc[max_temp_idx]['year']}",
+        }
+    )
 
     # Leghidegebb hónap
-    min_temp_idx = monthly_data['temp_min'].idxmin()
-    extremes.append({
-        'category': 'Leghidegebb hónap',
-        'value': f"{monthly_data.iloc[min_temp_idx]['temp_min']:.1f} °C",
-        'date': f"{monthly_data.iloc[min_temp_idx]['month_name']} {monthly_data.iloc[min_temp_idx]['year']}"
-    })
+    min_temp_idx = monthly_data["temp_min"].idxmin()
+    extremes.append(
+        {
+            "category": "Leghidegebb hónap",
+            "value": f"{monthly_data.iloc[min_temp_idx]['temp_min']:.1f} °C",
+            "date": f"{monthly_data.iloc[min_temp_idx]['month_name']} {monthly_data.iloc[min_temp_idx]['year']}",
+        }
+    )
 
     # Legcsapadékosabb hónap
-    max_precip_idx = monthly_data['precipitation'].idxmax()
-    extremes.append({
-        'category': 'Legcsapadékosabb hónap',
-        'value': f"{monthly_data.iloc[max_precip_idx]['precipitation']:.1f} mm",
-        'date': f"{monthly_data.iloc[max_precip_idx]['month_name']} {monthly_data.iloc[max_precip_idx]['year']}"
-    })
+    max_precip_idx = monthly_data["precipitation"].idxmax()
+    extremes.append(
+        {
+            "category": "Legcsapadékosabb hónap",
+            "value": f"{monthly_data.iloc[max_precip_idx]['precipitation']:.1f} mm",
+            "date": f"{monthly_data.iloc[max_precip_idx]['month_name']} {monthly_data.iloc[max_precip_idx]['year']}",
+        }
+    )
 
     # Legszelesebb hónap (ha van adat)
-    if not df['windspeed'].isna().all():
-        max_wind_idx = monthly_data['windspeed'].idxmax()
-        extremes.append({
-            'category': 'Legszelesebb hónap',
-            'value': f"{monthly_data.iloc[max_wind_idx]['windspeed']:.1f} km/h",
-            'date': f"{monthly_data.iloc[max_wind_idx]['month_name']} {monthly_data.iloc[max_wind_idx]['year']}"
-        })
+    if not df["windspeed"].isna().all():
+        max_wind_idx = monthly_data["windspeed"].idxmax()
+        extremes.append(
+            {
+                "category": "Legszelesebb hónap",
+                "value": f"{monthly_data.iloc[max_wind_idx]['windspeed']:.1f} km/h",
+                "date": f"{monthly_data.iloc[max_wind_idx]['month_name']} {monthly_data.iloc[max_wind_idx]['year']}",
+            }
+        )
 
     # Időszak átlaghőmérséklete
-    avg_temp = (df['temp_max'].mean() + df['temp_min'].mean()) / 2
-    extremes.append({
-        'category': 'Időszak átlaghőmérséklete',
-        'value': f"{avg_temp:.1f} °C",
-        'date': '-'
-    })
+    avg_temp = (df["temp_max"].mean() + df["temp_min"].mean()) / 2
+    extremes.append(
+        {
+            "category": "Időszak átlaghőmérséklete",
+            "value": f"{avg_temp:.1f} °C",
+            "date": "-",
+        }
+    )
 
     return extremes

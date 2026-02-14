@@ -1,4 +1,5 @@
 """Domain service for detecting weather anomalies."""
+
 from __future__ import annotations
 
 from datetime import date
@@ -143,9 +144,7 @@ class AnomalyDetectorService:
                 severity="error",
                 message=f"🌀 Orkán: {max_wind:.1f} km/h",
                 threshold=self.thresholds.wind_hurricane,
-                details=(
-                    f"Szélsebesség > {self.thresholds.wind_hurricane} km/h"
-                ),
+                details=(f"Szélsebesség > {self.thresholds.wind_hurricane} km/h"),
             )
 
         if max_wind > self.thresholds.wind_extreme:
@@ -158,9 +157,7 @@ class AnomalyDetectorService:
                 severity="error",
                 message=f"🌪️ Extrém szél: {max_wind:.1f} km/h",
                 threshold=self.thresholds.wind_extreme,
-                details=(
-                    f"Szélsebesség > {self.thresholds.wind_extreme} km/h"
-                ),
+                details=(f"Szélsebesség > {self.thresholds.wind_extreme} km/h"),
             )
 
         if max_wind > self.thresholds.wind_strong:
@@ -173,9 +170,7 @@ class AnomalyDetectorService:
                 severity="warning",
                 message=f"🌬️ Erős szél: {max_wind:.1f} km/h",
                 threshold=self.thresholds.wind_strong,
-                details=(
-                    f"Szélsebesség > {self.thresholds.wind_strong} km/h"
-                ),
+                details=(f"Szélsebesség > {self.thresholds.wind_strong} km/h"),
             )
 
         if max_wind > self.thresholds.wind_normal:
@@ -188,9 +183,7 @@ class AnomalyDetectorService:
                 severity="warning",
                 message=f"💨 Mérsékelt szél: {max_wind:.1f} km/h",
                 threshold=self.thresholds.wind_normal,
-                details=(
-                    f"Szélsebesség > {self.thresholds.wind_normal} km/h"
-                ),
+                details=(f"Szélsebesség > {self.thresholds.wind_normal} km/h"),
             )
 
         return ClimateAnomaly(

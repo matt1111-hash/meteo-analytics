@@ -24,14 +24,18 @@ logger = logging.getLogger(__name__)
 class AnalyticsViewStatisticsCards:
     """Statisztika kártyák kezelő osztály."""
 
-    def __init__(self, view: 'AnalyticsView'):
+    def __init__(self, view: "AnalyticsView"):
         """Inicializálás."""
         self.view = view
 
-    def process_and_display_statistics(self, data: Dict[str, Any], total_days: int) -> None:
+    def process_and_display_statistics(
+        self, data: Dict[str, Any], total_days: int
+    ) -> None:
         """🚨 JAVÍTOTT: Statisztikák feldolgozása és megjelenítése - KOMPAKT KÁRTYÁS RENDSZER."""
         try:
-            logger.info("🚨 _process_and_display_statistics() MEGHÍVVA - STATISZTIKÁK JAVÍTÁS")
+            logger.info(
+                "🚨 _process_and_display_statistics() MEGHÍVVA - STATISZTIKÁK JAVÍTÁS"
+            )
 
             # Statisztikai adatok számítása
             stats_data = AnalyticsStatistics.calculate_statistics_data(data, total_days)
@@ -63,7 +67,9 @@ class AnalyticsViewStatisticsCards:
             if not stats:
                 no_data_label = QLabel("❌ Nincsenek adatok")
                 no_data_label.setAlignment(Qt.AlignCenter)
-                no_data_label.setStyleSheet("color: #666; font-style: italic; padding: 20px; font-size: 12px;")
+                no_data_label.setStyleSheet(
+                    "color: #666; font-style: italic; padding: 20px; font-size: 12px;"
+                )
                 layout.addWidget(no_data_label)
                 return main_widget
 
@@ -71,12 +77,18 @@ class AnalyticsViewStatisticsCards:
             temp_card = self._create_statistic_card(
                 "🌡️ HŐMÉRSÉKLETI STATISZTIKÁK",
                 [
-                    f"• Átlag hőmérséklet: {stats.get('temp_avg', 0):.1f}°C" if stats.get('temp_avg') else "• Átlag hőmérséklet: N/A",
-                    f"• Min/Max: {stats.get('temp_min', 0):.1f}°C / {stats.get('temp_max', 0):.1f}°C" if stats.get('temp_min') and stats.get('temp_max') else "• Min/Max: N/A",
+                    f"• Átlag hőmérséklet: {stats.get('temp_avg', 0):.1f}°C"
+                    if stats.get("temp_avg")
+                    else "• Átlag hőmérséklet: N/A",
+                    f"• Min/Max: {stats.get('temp_min', 0):.1f}°C / {stats.get('temp_max', 0):.1f}°C"
+                    if stats.get("temp_min") and stats.get("temp_max")
+                    else "• Min/Max: N/A",
                     f"• Fagyos napok: {stats.get('freezing_days', 0)} nap",
                     f"• Hőséghullám (>30°C): {stats.get('hot_days', 0)} nap",
-                    f"• Hőmérséklet ingadozás: {stats.get('temp_range_avg', 0):.1f}°C" if stats.get('temp_range_avg') else "• Hőmérséklet ingadozás: N/A"
-                ]
+                    f"• Hőmérséklet ingadozás: {stats.get('temp_range_avg', 0):.1f}°C"
+                    if stats.get("temp_range_avg")
+                    else "• Hőmérséklet ingadozás: N/A",
+                ],
             )
             layout.addWidget(temp_card)
 
@@ -84,12 +96,16 @@ class AnalyticsViewStatisticsCards:
             precip_card = self._create_statistic_card(
                 "🌧️ CSAPADÉK ELEMZÉS",
                 [
-                    f"• Átlag csapadék: {stats.get('precip_avg', 0):.1f}mm/nap" if stats.get('precip_avg') else "• Átlag csapadék: N/A",
+                    f"• Átlag csapadék: {stats.get('precip_avg', 0):.1f}mm/nap"
+                    if stats.get("precip_avg")
+                    else "• Átlag csapadék: N/A",
                     f"• Száraz napok: {stats.get('dry_days', 0)} nap ({stats.get('dry_percentage', 0):.0f}%)",
                     f"• Esős napok: {stats.get('rainy_days', 0)} nap ({stats.get('rainy_percentage', 0):.0f}%)",
-                    f"• Összes csapadék: {stats.get('annual_precip', 0):.0f}mm/év" if stats.get('annual_precip') else "• Összes csapadék: N/A",
-                    f"• Leghosszabb száraz: {stats.get('longest_dry_streak', 0)} nap"
-                ]
+                    f"• Összes csapadék: {stats.get('annual_precip', 0):.0f}mm/év"
+                    if stats.get("annual_precip")
+                    else "• Összes csapadék: N/A",
+                    f"• Leghosszabb száraz: {stats.get('longest_dry_streak', 0)} nap",
+                ],
             )
             layout.addWidget(precip_card)
 
@@ -97,13 +113,19 @@ class AnalyticsViewStatisticsCards:
             wind_card = self._create_statistic_card(
                 "💨 SZÉL BEAUFORT ELEMZÉS",
                 [
-                    f"• Átlag szélsebesség: {stats.get('wind_avg', 0):.1f} km/h" if stats.get('wind_avg') else "• Átlag szélsebesség: N/A",
-                    f"• Max széllökés: {stats.get('windgust_max', 0):.1f} km/h" if stats.get('windgust_max') else f"• Max szélsebesség: {stats.get('wind_max', 0):.1f} km/h" if stats.get('wind_max') else "• Max szél: N/A",
+                    f"• Átlag szélsebesség: {stats.get('wind_avg', 0):.1f} km/h"
+                    if stats.get("wind_avg")
+                    else "• Átlag szélsebesség: N/A",
+                    f"• Max széllökés: {stats.get('windgust_max', 0):.1f} km/h"
+                    if stats.get("windgust_max")
+                    else f"• Max szélsebesség: {stats.get('wind_max', 0):.1f} km/h"
+                    if stats.get("wind_max")
+                    else "• Max szél: N/A",
                     f"• Szélcsend (0-1): {stats.get('wind_calm', 0)} nap",
                     f"• Gyenge szél (2-3): {stats.get('wind_light', 0)} nap",
                     f"• Mérsékelt (4-5): {stats.get('wind_moderate', 0)} nap",
-                    f"• Erős szél (6+): {stats.get('wind_strong', 0)} nap"
-                ]
+                    f"• Erős szél (6+): {stats.get('wind_strong', 0)} nap",
+                ],
             )
             layout.addWidget(wind_card)
 
@@ -115,8 +137,8 @@ class AnalyticsViewStatisticsCards:
                     f"• Napok száma: {stats.get('total_days', 0)} nap",
                     "• Konstans felbontás: 365 bin",
                     f"• Bin méret: ~{stats.get('bin_size', 1)} nap/téglalap",
-                    "• Beaufort 13 fokozat színek"
-                ]
+                    "• Beaufort 13 fokozat színek",
+                ],
             )
             layout.addWidget(period_card)
 

@@ -24,13 +24,13 @@ def get_hungarian_regions() -> List[str]:
         7 magyar statisztikai régió listája
     """
     return [
-        "Közép-Magyarország",     # Budapest + Pest
-        "Közép-Dunántúl",         # Fejér + Komárom-Esztergom + Veszprém
-        "Nyugat-Dunántúl",        # Győr-Moson-Sopron + Vas + Zala
-        "Dél-Dunántúl",           # Baranya + Somogy + Tolna
-        "Észak-Magyarország",     # Borsod-Abaúj-Zemplén + Heves + Nógrád
-        "Észak-Alföld",           # Hajdú-Bihar + Jász-Nagykun-Szolnok + Szabolcs-Szatmár-Bereg
-        "Dél-Alföld"              # Bács-Kiskun + Békés + Csongrád-Csanád
+        "Közép-Magyarország",  # Budapest + Pest
+        "Közép-Dunántúl",  # Fejér + Komárom-Esztergom + Veszprém
+        "Nyugat-Dunántúl",  # Győr-Moson-Sopron + Vas + Zala
+        "Dél-Dunántúl",  # Baranya + Somogy + Tolna
+        "Észak-Magyarország",  # Borsod-Abaúj-Zemplén + Heves + Nógrád
+        "Észak-Alföld",  # Hajdú-Bihar + Jász-Nagykun-Szolnok + Szabolcs-Szatmár-Bereg
+        "Dél-Alföld",  # Bács-Kiskun + Békés + Csongrád-Csanád
     ]
 
 
@@ -47,8 +47,12 @@ def get_region_county_mapping() -> Dict[str, List[str]]:
         "Nyugat-Dunántúl": ["Győr-Moson-Sopron", "Vas", "Zala"],
         "Dél-Dunántúl": ["Baranya", "Somogy", "Tolna"],
         "Észak-Magyarország": ["Borsod-Abaúj-Zemplén", "Heves", "Nógrád"],
-        "Észak-Alföld": ["Hajdú-Bihar", "Jász-Nagykun-Szolnok", "Szabolcs-Szatmár-Bereg"],
-        "Dél-Alföld": ["Bács-Kiskun", "Békés", "Csongrád-Csanád"]
+        "Észak-Alföld": [
+            "Hajdú-Bihar",
+            "Jász-Nagykun-Szolnok",
+            "Szabolcs-Szatmár-Bereg",
+        ],
+        "Dél-Alföld": ["Bács-Kiskun", "Békés", "Csongrád-Csanád"],
     }
 
 

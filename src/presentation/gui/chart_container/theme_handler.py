@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ThemeHandler:
     """Handle theme change events."""
 
-    def __init__(self, container: 'ChartsContainer'):
+    def __init__(self, container: "ChartsContainer"):
         """
         Initialize theme handler.
 
@@ -33,16 +33,21 @@ class ThemeHandler:
         print(f"🎨 DEBUG: ChartsContainer theme changing to: {theme_name}")
 
         charts = [
-            self._container.temp_chart, self._container.precip_chart,
-            self._container.wind_chart, self._container.heatmap_chart,
-            self._container.windrose_chart, self._container.comparison_chart
+            self._container.temp_chart,
+            self._container.precip_chart,
+            self._container.wind_chart,
+            self._container.heatmap_chart,
+            self._container.windrose_chart,
+            self._container.comparison_chart,
         ]
 
         for chart in charts:
-            if hasattr(chart, '_redraw_with_new_theme'):
+            if hasattr(chart, "_redraw_with_new_theme"):
                 try:
                     chart._redraw_with_new_theme()
                 except Exception as e:
-                    print(f"⚠️ DEBUG: Chart theme update error for {chart.__class__.__name__}: {e}")
+                    print(
+                        f"⚠️ DEBUG: Chart theme update error for {chart.__class__.__name__}: {e}"
+                    )
 
         print(f"✅ DEBUG: ChartsContainer theme updated: {theme_name}")

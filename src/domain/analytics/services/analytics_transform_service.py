@@ -1,4 +1,5 @@
 """Transform and statistics service for analytics results."""
+
 from __future__ import annotations
 
 import logging
@@ -37,8 +38,10 @@ class AnalyticsTransformService:
         metric_name = query_config["metric"]
         metric_enum = query_config["metric_enum"]
 
-        metric_value = city_data.temperature_range if metric_name == "temperature_range" else getattr(
-            city_data, metric_name, None
+        metric_value = (
+            city_data.temperature_range
+            if metric_name == "temperature_range"
+            else getattr(city_data, metric_name, None)
         )
 
         logger.info(
@@ -71,7 +74,11 @@ class AnalyticsTransformService:
                     or city_data.windspeed_10m_max
                     or 0.0
                 )
-                logger.warning("NULL metric value for %s, using fallback: %s", city_data.city, fallback_value)
+                logger.warning(
+                    "NULL metric value for %s, using fallback: %s",
+                    city_data.city,
+                    fallback_value,
+                )
 
             final_value = float(fallback_value) if fallback_value is not None else 0.0
 
@@ -83,13 +90,20 @@ class AnalyticsTransformService:
             longitude=city_data.lon,
             value=final_value,
             metric=metric_enum,
-            date=datetime.strptime(city_data.date, "%Y-%m-%d").date() if city_data.date else datetime.now().date(),
+            date=datetime.strptime(city_data.date, "%Y-%m-%d").date()
+            if city_data.date
+            else datetime.now().date(),
             population=city_data.population,
-            quality_score=city_data.data_quality_score if city_data.data_quality_score is not None else 0.0,
+            quality_score=city_data.data_quality_score
+            if city_data.data_quality_score is not None
+            else 0.0,
         )
 
     def process_weather_results(
-        self, weather_data: List[CityWeatherData], query_type: str, aggregate: bool = True
+        self,
+        weather_data: List[CityWeatherData],
+        query_type: str,
+        aggregate: bool = True,
     ) -> List[CityWeatherData]:
         """Sort and enrich weather data with computed temperature range.
 
@@ -97,7 +111,11 @@ class AnalyticsTransformService:
             aggregate: If True, aggregates multi-day data per city by taking max value.
                       If False, returns all daily records without aggregation.
         """
-        logger.info("WEATHER RESULT PROCESSING: %d total records (aggregate=%s)", len(weather_data), aggregate)
+        logger.info(
+            "WEATHER RESULT PROCESSING: %d total records (aggregate=%s)",
+            len(weather_data),
+            aggregate,
+        )
         query_config = self._require_query_config(query_type)
         metric = query_config["metric"]
         sort_desc = query_config["sort_desc"]
@@ -125,7 +143,9 @@ class AnalyticsTransformService:
                 else:
                     # Compare and keep the record with higher metric value (for max aggregation)
                     existing_value = getattr(city_aggregates[city_key], metric, None)
-                    if current_value is not None and (existing_value is None or current_value > existing_value):
+                    if current_value is not None and (
+                        existing_value is None or current_value > existing_value
+                    ):
                         city_aggregates[city_key] = city_data
 
             aggregated_data = list(city_aggregates.values())
@@ -133,18 +153,26 @@ class AnalyticsTransformService:
         else:
             # No aggregation - return all daily records
             aggregated_data = weather_data
-            logger.info("NO AGGREGATION: Returning all %d daily records", len(aggregated_data))
+            logger.info(
+                "NO AGGREGATION: Returning all %d daily records", len(aggregated_data)
+            )
 
         # DEBUG: Log filtered out records
         for d in aggregated_data:
             if not d.fetch_success or getattr(d, metric, None) is None:
                 logger.warning(
                     "FILTERED OUT: date=%s city=%s fetch_success=%s %s=%s",
-                    d.date, d.city, d.fetch_success, metric, getattr(d, metric, None)
+                    d.date,
+                    d.city,
+                    d.fetch_success,
+                    metric,
+                    getattr(d, metric, None),
                 )
 
         valid_data = [
-            d for d in aggregated_data if d.fetch_success and getattr(d, metric, None) is not None
+            d
+            for d in aggregated_data
+            if d.fetch_success and getattr(d, metric, None) is not None
         ]
         if not valid_data:
             logger.error("NO VALID DATA for metric '%s'", metric)
@@ -166,11 +194,16 @@ class AnalyticsTransformService:
             sorted_data = valid_data
 
         if query_type == "windiest_today":
-            logger.info("TOP WINDIEST CITIES: %s", [(c.city, getattr(c, metric, None)) for c in sorted_data[:3]])
+            logger.info(
+                "TOP WINDIEST CITIES: %s",
+                [(c.city, getattr(c, metric, None)) for c in sorted_data[:3]],
+            )
 
         return sorted_data
 
-    def calculate_statistics_for_results_none_safe(self, results: List[CityWeatherResult]) -> Dict[str, float]:
+    def calculate_statistics_for_results_none_safe(
+        self, results: List[CityWeatherResult]
+    ) -> Dict[str, float]:
         """Compute none-safe statistics from CityWeatherResult list."""
         logger.info("NONE-SAFE STATS: %d results", len(results))
         all_values = [r.value for r in results]
@@ -200,7 +233,9 @@ class AnalyticsTransformService:
         logger.info("STATS RESULT: %s", stats)
         return stats
 
-    def get_provider_stats(self, weather_data: Iterable[CityWeatherData]) -> Dict[str, int]:
+    def get_provider_stats(
+        self, weather_data: Iterable[CityWeatherData]
+    ) -> Dict[str, int]:
         """Count provider usage from CityWeatherData list."""
         stats: Dict[str, int] = {}
         for item in weather_data:

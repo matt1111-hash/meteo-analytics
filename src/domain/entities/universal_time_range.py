@@ -1,4 +1,5 @@
 """Universal time range domain entity."""
+
 from dataclasses import dataclass, field
 from datetime import date
 from typing import Any, Dict, List, Optional
@@ -11,6 +12,7 @@ class UniversalTimeRange:
     """
     Universal time range model - complete time freedom.
     """
+
     start_date: date
     end_date: date
     granularity: TimeGranularity
@@ -47,7 +49,9 @@ class UniversalTimeRange:
         elif self.total_days <= 31:
             return f"~{self.total_days // 7} hét ({self.start_date} - {self.end_date})"
         elif self.total_days <= 365:
-            return f"~{self.total_days // 30} hónap ({self.start_date} - {self.end_date})"
+            return (
+                f"~{self.total_days // 30} hónap ({self.start_date} - {self.end_date})"
+            )
         else:
             years = self.total_days // 365
             return f"~{years} év ({self.start_date} - {self.end_date})"
@@ -56,9 +60,11 @@ class UniversalTimeRange:
         """String representation."""
         return f"{self.description} [{self.granularity.value}]"
 
-    def overlaps_with(self, other: 'UniversalTimeRange') -> bool:
+    def overlaps_with(self, other: "UniversalTimeRange") -> bool:
         """Check if overlaps with another time range."""
-        return not (self.end_date < other.start_date or self.start_date > other.end_date)
+        return not (
+            self.end_date < other.start_date or self.start_date > other.end_date
+        )
 
     def contains_date(self, check_date: date) -> bool:
         """Check if contains the given date."""
@@ -70,7 +76,7 @@ class UniversalTimeRange:
         current = self.start_date.replace(day=1)
 
         while current <= self.end_date:
-            months.append(current.strftime('%Y-%m'))
+            months.append(current.strftime("%Y-%m"))
             if current.month == 12:
                 current = current.replace(year=current.year + 1, month=1)
             else:
@@ -82,7 +88,7 @@ class UniversalTimeRange:
         """Get affected years list."""
         return list(range(self.start_date.year, self.end_date.year + 1))
 
-    def split_by_years(self) -> List['UniversalTimeRange']:
+    def split_by_years(self) -> List["UniversalTimeRange"]:
         """Split by years."""
         if self.start_date.year == self.end_date.year:
             return [self]
@@ -96,7 +102,7 @@ class UniversalTimeRange:
                 start_date=year_start,
                 end_date=year_end,
                 granularity=TimeGranularity.YEARLY,
-                description=f"{year} év részlet"
+                description=f"{year} év részlet",
             )
             yearly_ranges.append(yearly_range)
 
@@ -105,17 +111,17 @@ class UniversalTimeRange:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'start_date': self.start_date.isoformat(),
-            'end_date': self.end_date.isoformat(),
-            'granularity': self.granularity.value,
-            'description': self.description,
-            'total_days': self.total_days,
-            'is_historical': self.is_historical,
-            'is_future': self.is_future,
-            'include_partial_periods': self.include_partial_periods,
-            'exclude_weekends': self.exclude_weekends,
-            'seasonal_filter': self.seasonal_filter
+            "start_date": self.start_date.isoformat(),
+            "end_date": self.end_date.isoformat(),
+            "granularity": self.granularity.value,
+            "description": self.description,
+            "total_days": self.total_days,
+            "is_historical": self.is_historical,
+            "is_future": self.is_future,
+            "include_partial_periods": self.include_partial_periods,
+            "exclude_weekends": self.exclude_weekends,
+            "seasonal_filter": self.seasonal_filter,
         }
 
 
-__all__ = ['UniversalTimeRange']
+__all__ = ["UniversalTimeRange"]

@@ -11,7 +11,9 @@ from src.presentation.gui.color_palette.generators import MaterialColorGenerator
 from src.presentation.gui.types import ThemeType
 
 
-def create_color_palette(preset_name: str = "red", theme_type: ThemeType = ThemeType.LIGHT) -> ColorPalette:
+def create_color_palette(
+    preset_name: str = "red", theme_type: ThemeType = ThemeType.LIGHT
+) -> ColorPalette:
     """
     🎨 KRITIKUS JAVÍTÁS: ColorPalette factory function - "red" preset alapértelmezett!
 
@@ -48,7 +50,9 @@ def create_material_palette(theme_type: ThemeType = ThemeType.LIGHT) -> ColorPal
     return palette
 
 
-def create_weather_palette(base_temperature: str = "#C43939", theme_type: ThemeType = ThemeType.LIGHT) -> ColorPalette:
+def create_weather_palette(
+    base_temperature: str = "#C43939", theme_type: ThemeType = ThemeType.LIGHT
+) -> ColorPalette:
     """
     🎨 KRITIKUS JAVÍTÁS: Weather-specific ColorPalette - piros (#C43939) alapértelmezett!
 
@@ -68,5 +72,7 @@ def create_weather_palette(base_temperature: str = "#C43939", theme_type: ThemeT
     for weather_type, color in weather_colors.items():
         palette.set_base_color(f"weather_{weather_type}", color)
 
-    print(f"🌦️ FACTORY: Weather palette created with base temperature: {base_temperature}")
+    print(
+        f"🌦️ FACTORY: Weather palette created with base temperature: {base_temperature}"
+    )
     return palette

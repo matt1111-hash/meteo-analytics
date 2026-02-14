@@ -24,13 +24,15 @@ class ProfileActions:
     visszaállítási műveleteket tartalmazza.
     """
 
-    def __init__(self,
-                 save_func: Callable[[str, Dict[str, Any]], bool],
-                 load_func: Callable[[str], Dict[str, Any]],
-                 get_available_func: Callable[[], list],
-                 get_cache_func: Callable[[], Dict[str, Dict[str, Any]]],
-                 active_profile_getter: Callable[[], str],
-                 active_profile_setter: Callable[[str], None]):
+    def __init__(
+        self,
+        save_func: Callable[[str, Dict[str, Any]], bool],
+        load_func: Callable[[str], Dict[str, Any]],
+        get_available_func: Callable[[], list],
+        get_cache_func: Callable[[], Dict[str, Dict[str, Any]]],
+        active_profile_getter: Callable[[], str],
+        active_profile_setter: Callable[[str], None],
+    ):
         """
         Inicializálás függvényekkel.
 
@@ -114,7 +116,7 @@ class ProfileActions:
                 "profiles": profiles,
                 "active_profile": self._get_active(),
                 "modified_at": datetime.now().isoformat(),
-                "version": "1.0"
+                "version": "1.0",
             }
 
             success = storage.save_profiles(data)
@@ -173,7 +175,9 @@ class ProfileActions:
             bool: Sikeres volt-e a visszaállítás
         """
         try:
-            default_settings = AnomalyProfileSettings(profile_name=profile_name).to_dict()
+            default_settings = AnomalyProfileSettings(
+                profile_name=profile_name
+            ).to_dict()
             return self._save(profile_name, default_settings)
 
         except Exception as e:
@@ -181,4 +185,4 @@ class ProfileActions:
             return False
 
 
-__all__ = ['ProfileActions']
+__all__ = ["ProfileActions"]

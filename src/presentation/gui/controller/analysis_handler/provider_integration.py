@@ -23,8 +23,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _enhance_request_with_provider_routing(self, request_data: Dict[str, Any],
-                                          provider_routing) -> Dict[str, Any]:
+def _enhance_request_with_provider_routing(
+    self, request_data: Dict[str, Any], provider_routing
+) -> Dict[str, Any]:
     """
     Provider routing integráció - Kérés gazdagítása provider információkkal.
 
@@ -36,29 +37,38 @@ def _enhance_request_with_provider_routing(self, request_data: Dict[str, Any],
     Returns:
         Gazdagított kérés provider routing információkkal
     """
-    print(f"🚨 DEBUG: _enhance_request_with_provider_routing - input request_data keys: {list(request_data.keys())}")
-    location_data = request_data.get('location_data', {})
-    print(f"🚨 DEBUG: _enhance_request_with_provider_routing - location_data keys: {list(location_data.keys())}")
+    print(
+        f"🚨 DEBUG: _enhance_request_with_provider_routing - input request_data keys: {list(request_data.keys())}"
+    )
+    location_data = request_data.get("location_data", {})
+    print(
+        f"🚨 DEBUG: _enhance_request_with_provider_routing - location_data keys: {list(location_data.keys())}"
+    )
 
     try:
         enhanced_request = request_data.copy()
 
         # Koordináták kinyerése
         latitude, longitude = _extract_coordinates_from_request(self, request_data)
-        print(f"🚨 DEBUG: _enhance_request_with_provider_routing - after extract, enhanced_request has location_data: {'location_data' in enhanced_request}")
+        print(
+            f"🚨 DEBUG: _enhance_request_with_provider_routing - after extract, enhanced_request has location_data: {'location_data' in enhanced_request}"
+        )
 
         if latitude is not None and longitude is not None:
             # Smart provider selection
-            date_range = request_data.get('date_range', {})
+            date_range = request_data.get("date_range", {})
             selected_provider = provider_routing.select_provider_for_request(
-                latitude, longitude,
-                date_range.get('start_date', ''),
-                date_range.get('end_date', '')
+                latitude,
+                longitude,
+                date_range.get("start_date", ""),
+                date_range.get("end_date", ""),
             )
 
             # Provider információk hozzáadása
-            enhanced_request['selected_provider'] = selected_provider
-            enhanced_request['provider_config'] = provider_routing.provider_config.PROVIDERS.get(selected_provider, {})
+            enhanced_request["selected_provider"] = selected_provider
+            enhanced_request["provider_config"] = (
+                provider_routing.provider_config.PROVIDERS.get(selected_provider, {})
+            )
 
             # Usage tracking
             provider_routing.track_provider_usage(selected_provider)
@@ -66,7 +76,7 @@ def _enhance_request_with_provider_routing(self, request_data: Dict[str, Any],
             logger.info(f"🌐 Provider routing: {selected_provider} selected")
         else:
             # Fallback provider
-            enhanced_request['selected_provider'] = 'open-meteo'
+            enhanced_request["selected_provider"] = "open-meteo"
             logger.warning("🌐 No coordinates found, using fallback provider")
 
         return enhanced_request
@@ -87,25 +97,25 @@ def _extract_coordinates_from_request(self, request_data: Dict[str, Any]) -> Tup
     Returns:
         (latitude, longitude) tuple vagy (None, None)
     """
-    analysis_type = request_data.get('analysis_type')
+    analysis_type = request_data.get("analysis_type")
 
-    if analysis_type == 'single_location':
+    if analysis_type == "single_location":
         # 1. Direkt koordináták keresése
-        if 'latitude' in request_data and 'longitude' in request_data:
-            return request_data.get('latitude'), request_data.get('longitude')
-        elif 'lat' in request_data and 'lon' in request_data:
-            return request_data.get('lat'), request_data.get('lon')
+        if "latitude" in request_data and "longitude" in request_data:
+            return request_data.get("latitude"), request_data.get("longitude")
+        elif "lat" in request_data and "lon" in request_data:
+            return request_data.get("lat"), request_data.get("lon")
 
         # 2. location_data objektum ellenőrzése
-        location_data = request_data.get('location_data', {})
+        location_data = request_data.get("location_data", {})
         if location_data:
-            lat = location_data.get('latitude') or location_data.get('lat')
-            lon = location_data.get('longitude') or location_data.get('lon')
+            lat = location_data.get("latitude") or location_data.get("lat")
+            lon = location_data.get("longitude") or location_data.get("lon")
 
             if lat is not None and lon is not None:
                 return lat, lon
 
-    elif analysis_type in ['multi_city', 'county_analysis']:
+    elif analysis_type in ["multi_city", "county_analysis"]:
         # Multi-city esetén használjuk a jelenlegi város koordinátáit (ha van)
         # Ez a kontexterületből kellene jöjjön
         return 47.4979, 19.0402  # Budapest default

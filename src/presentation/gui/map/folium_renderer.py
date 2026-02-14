@@ -17,6 +17,7 @@ from PySide6.QtCore import QThread, Signal
 
 try:
     import folium
+
     FOLIUM_AVAILABLE = True
 except ImportError:
     FOLIUM_AVAILABLE = False
@@ -48,10 +49,10 @@ class FoliumMapGenerator(QThread):
     def __init__(
         self,
         config: FoliumMapConfig,
-        counties_gdf: Optional['gpd.GeoDataFrame'] = None,
+        counties_gdf: Optional["gpd.GeoDataFrame"] = None,
         weather_data: Optional[Dict] = None,
         bridge_id: Optional[str] = None,
-        output_path: Optional[str] = None
+        output_path: Optional[str] = None,
     ):
         super().__init__()
         self.config = config
@@ -60,10 +61,9 @@ class FoliumMapGenerator(QThread):
         self.bridge_id = bridge_id or str(uuid.uuid4())
 
         if output_path is None:
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             self.output_path = os.path.join(
-                tempfile.gettempdir(),
-                f"hungarian_folium_map_{timestamp}.html"
+                tempfile.gettempdir(), f"hungarian_folium_map_{timestamp}.html"
             )
         else:
             self.output_path = output_path
@@ -76,6 +76,7 @@ class FoliumMapGenerator(QThread):
             self._generate_map_content()
         except Exception as e:
             import traceback
+
             error_msg = f"Folium térkép generálási hiba: {e}\n{traceback.format_exc()}"
             self.error_occurred.emit(error_msg)
 
@@ -111,32 +112,36 @@ class FoliumMapGenerator(QThread):
         self.progress_updated.emit(100)
 
         self.status_updated.emit("✅ Folium térkép elkészült!")
-        print(f"✅ Folium map generated: {self.output_path} ({os.path.getsize(self.output_path):,} bytes)")
+        print(
+            f"✅ Folium map generated: {self.output_path} ({os.path.getsize(self.output_path):,} bytes)"
+        )
         self.map_generated.emit(self.output_path)
 
-    def _maybe_add_counties(self, map_obj: 'folium.Map', layer_builder: LayerBuilder) -> None:
+    def _maybe_add_counties(
+        self, map_obj: "folium.Map", layer_builder: LayerBuilder
+    ) -> None:
         if self.config.show_counties and self.counties_gdf is not None:
             self.status_updated.emit("🗺️ Megyehatárok hozzáadása...")
             layer_builder.add_counties_layer(map_obj, self.counties_gdf)
 
-    def _maybe_add_weather_overlay(self, map_obj: 'folium.Map') -> None:
+    def _maybe_add_weather_overlay(self, map_obj: "folium.Map") -> None:
         if self.config.weather_overlay and self.weather_data:
             self.status_updated.emit("🌤️ Időjárási overlay...")
             overlay_manager = OverlayManager(self.weather_data)
             overlay_manager.add_overlays(map_obj)
 
-    def _add_weather_legend(self, map_obj: 'folium.Map') -> None:
+    def _add_weather_legend(self, map_obj: "folium.Map") -> None:
         """
         📊 Weather overlay legend hozzáadása.
         """
         try:
             active_parameter = self.config.active_overlay_parameter
 
-            if active_parameter == 'temperature':
+            if active_parameter == "temperature":
                 legend_html = create_temperature_legend()
-            elif active_parameter == 'wind_speed':
+            elif active_parameter == "wind_speed":
                 legend_html = create_wind_legend()
-            elif active_parameter == 'precipitation':
+            elif active_parameter == "precipitation":
                 legend_html = create_precipitation_legend()
             else:
                 legend_html = create_general_legend()
@@ -147,12 +152,14 @@ class FoliumMapGenerator(QThread):
         except Exception as e:
             print(f"⚠️ Weather legend error: {e}")
 
-    def _save_and_validate_map(self, map_obj: 'folium.Map') -> None:
+    def _save_and_validate_map(self, map_obj: "folium.Map") -> None:
         self.status_updated.emit("💾 HTML fájl mentése...")
         map_obj.save(self.output_path)
 
         if not os.path.exists(self.output_path):
-            raise FileNotFoundError(f"Generated HTML file not found: {self.output_path}")
+            raise FileNotFoundError(
+                f"Generated HTML file not found: {self.output_path}"
+            )
 
         file_size = os.path.getsize(self.output_path)
         if file_size < 1000:
@@ -161,5 +168,5 @@ class FoliumMapGenerator(QThread):
 
 # Export
 __all__ = [
-    'FoliumMapGenerator',
+    "FoliumMapGenerator",
 ]

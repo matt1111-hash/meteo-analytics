@@ -38,7 +38,9 @@ def demo_map_view_folium() -> None:
 
     # Event handlers
     def on_location_selected(location):
-        print(f"📍 DEMO: Location selected in MapView: {location.display_name if location else 'None'}")
+        print(
+            f"📍 DEMO: Location selected in MapView: {location.display_name if location else 'None'}"
+        )
 
     def on_county_clicked_on_map(county_name):
         print(f"🖱️ DEMO: County clicked on Folium map in MapView: {county_name}")

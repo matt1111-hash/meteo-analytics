@@ -72,13 +72,15 @@ def create_time_range_group(parent_widget: QWidget) -> dict:
     form_layout.setHorizontalSpacing(8)
 
     time_range_combo = QComboBox()
-    time_range_combo.addItems([
-        "1 év",
-        "5 év",
-        "10 év",
-        "25 év",
-        "55 év (teljes)",
-    ])
+    time_range_combo.addItems(
+        [
+            "1 év",
+            "5 év",
+            "10 év",
+            "25 év",
+            "55 év (teljes)",
+        ]
+    )
     time_range_combo.setCurrentText("1év")
     time_range_combo.setMinimumHeight(32)
     time_range_combo.setToolTip("Automatikus dátum számítás a mai naptól visszafelé")
@@ -103,7 +105,7 @@ def create_time_range_group(parent_widget: QWidget) -> dict:
         "time_range_radio": time_range_radio,
         "manual_dates_radio": manual_dates_radio,
         "time_range_combo": time_range_combo,
-        "computed_dates_info": computed_dates_info
+        "computed_dates_info": computed_dates_info,
     }
 
 
@@ -195,7 +197,7 @@ def create_manual_dates_group(parent_widget: QWidget) -> dict:
         "last_5years_btn": last_5years_btn,
         "last_10years_btn": last_10years_btn,
         "last_25years_btn": last_25years_btn,
-        "last_55years_btn": last_55years_btn
+        "last_55years_btn": last_55years_btn,
     }
 
 
@@ -210,7 +212,7 @@ def register_for_theming(
     start_date: QDateEdit,
     end_date: QDateEdit,
     buttons: list,
-    computed_dates_info: QLabel
+    computed_dates_info: QLabel,
 ) -> None:
     """
     Widgetek regisztrálása theme manager-hez.
@@ -252,9 +254,7 @@ def register_for_theming(
 
 
 def apply_label_styling(
-    theme_manager: "ThemeManager",
-    label: QLabel,
-    style_type: str
+    theme_manager: "ThemeManager", label: QLabel, style_type: str
 ) -> None:
     """
     Label styling alkalmazása.

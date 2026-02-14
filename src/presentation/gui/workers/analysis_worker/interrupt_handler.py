@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class InterruptHandler:
     """Handle thread interruption checks and requests."""
 
-    def __init__(self, worker: 'AnalysisWorker'):
+    def __init__(self, worker: "AnalysisWorker"):
         """
         Initialize interrupt handler.
 

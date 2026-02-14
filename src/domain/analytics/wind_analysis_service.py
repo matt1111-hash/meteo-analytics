@@ -72,8 +72,16 @@ def analyze_wind_patterns(
             (total_windy_days / total_days) * 100 if total_days > 0 else 0.0
         )
 
-        windiest_month = max(monthly_stats, key=lambda x: x.windy_days_count) if monthly_stats else None
-        calmest_month = min(monthly_stats, key=lambda x: x.windy_days_count) if monthly_stats else None
+        windiest_month = (
+            max(monthly_stats, key=lambda x: x.windy_days_count)
+            if monthly_stats
+            else None
+        )
+        calmest_month = (
+            min(monthly_stats, key=lambda x: x.windy_days_count)
+            if monthly_stats
+            else None
+        )
 
         if not daily_wind.empty:
             start_date = daily_wind["date"].min()

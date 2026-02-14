@@ -1,22 +1,23 @@
 """Anomaly Settings UI Builder - re-export for backward compatibility."""
+
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.buttons import (
+    create_buttons_section,
+)
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.categories import (
+    create_categories_grid,
+    create_categories_tab,
+)
 from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.header import (
     create_header_section,
     create_profile_section,
-)
-from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (
-    create_main_tabs,
-    create_thresholds_tab,
-)
-from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.categories import (
-    create_categories_tab,
-    create_categories_grid,
 )
 from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.preview import (
     create_preview_tab,
     create_test_section,
 )
-from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.buttons import (
-    create_buttons_section,
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (
+    create_main_tabs,
+    create_thresholds_tab,
 )
 
 
@@ -48,6 +49,7 @@ class AnomalySettingsUIBuilder:
         from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (
             create_temperature_section,
         )
+
         return create_temperature_section(self.dialog)
 
     def create_precipitation_section(self) -> object:
@@ -55,6 +57,7 @@ class AnomalySettingsUIBuilder:
         from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (
             create_precipitation_section,
         )
+
         return create_precipitation_section(self.dialog)
 
     def create_wind_section(self) -> object:
@@ -62,6 +65,7 @@ class AnomalySettingsUIBuilder:
         from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (
             create_wind_section,
         )
+
         return create_wind_section(self.dialog)
 
     def create_categories_tab(self) -> object:

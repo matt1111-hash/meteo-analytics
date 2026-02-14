@@ -110,7 +110,9 @@ class DateHandlerMixin:
                 f"Számított időszak: {start_date.strftime('%Y-%m-%d')} → {end_date.strftime('%Y-%m-%d')} ({years} év)"
             )
 
-            print(f"📅 DEBUG: Computed dates: {start_date} → {end_date} ({years} years)")
+            print(
+                f"📅 DEBUG: Computed dates: {start_date} → {end_date} ({years} years)"
+            )
 
         except Exception as e:
             print(f"❌ ERROR: Computed dates update error: {e}")
@@ -180,7 +182,9 @@ class DateHandlerMixin:
         self.start_date.setDate(start)
         self.end_date.setDate(end)
 
-        print(f"📅 DEBUG: Set {years} years back: {start.toString()} → {end.toString()}")
+        print(
+            f"📅 DEBUG: Set {years} years back: {start.toString()} → {end.toString()}"
+        )
 
     def _set_manual_dates_enabled(self, enabled: bool) -> None:
         """
@@ -193,9 +197,15 @@ class DateHandlerMixin:
         self.end_date.setEnabled(enabled)
 
         # Quick buttons
-        for btn in [self.last_month_btn, self.last_year_btn, self.last_1year_btn,
-                   self.last_5years_btn, self.last_10years_btn, self.last_25years_btn,
-                   self.last_55years_btn]:
+        for btn in [
+            self.last_month_btn,
+            self.last_year_btn,
+            self.last_1year_btn,
+            self.last_5years_btn,
+            self.last_10years_btn,
+            self.last_25years_btn,
+            self.last_55years_btn,
+        ]:
             btn.setEnabled(enabled)
 
         # Time range combo ellenkező

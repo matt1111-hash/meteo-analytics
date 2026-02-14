@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import time
 from datetime import datetime
 from typing import Dict, List, Tuple
 
 import pytest
-import time
 
 from src.data import weather_client as weather_client_module
 

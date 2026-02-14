@@ -12,24 +12,29 @@ Fájl: src/presentation/gui/results_panel/quick_overview_tab/core.py
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QVBoxLayout, QWidget
 
-from src.presentation.gui.theme_manager import get_theme_manager, register_widget_for_theming
+from src.presentation.gui.theme_manager import (
+    get_theme_manager,
+    register_widget_for_theming,
+)
 
-from .temp_precip_stats import calculate_temperature_stats, calculate_precipitation_stats
-from .wind_info_stats import calculate_wind_stats, update_info_labels, clear_stats
+from .temp_precip_stats import (
+    calculate_precipitation_stats,
+    calculate_temperature_stats,
+)
 from .ui_builder import (
     create_mini_charts_container,
     create_quick_actions,
     create_stats_container,
     create_title_label,
 )
+from .wind_info_stats import calculate_wind_stats, clear_stats, update_info_labels
 
 if TYPE_CHECKING:
-    from src.presentation.gui.results_panel.utils import DataFrameExtractor
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +81,7 @@ class QuickOverviewTab(QWidget):
 
     def _create_stats_section(self, layout: QVBoxLayout) -> None:
         """Statisztika szekció létrehozása."""
+
         def apply_text_styling(label):
             scheme = self.theme_manager.get_color_scheme()
             if not scheme:
@@ -92,8 +98,12 @@ class QuickOverviewTab(QWidget):
                 "#3b82f6": scheme.get_color("primary", "base") or "#3b82f6",
                 "#10b981": scheme.get_color("success", "base") or "#10b981",
             }
-            theme_color = color_mapping.get(accent_color, scheme.get_color("primary", "base") or "#3b82f6")
-            label.setStyleSheet(f"QLabel {{ font-weight: bold; color: {theme_color}; font-size: 14px; }}")
+            theme_color = color_mapping.get(
+                accent_color, scheme.get_color("primary", "base") or "#3b82f6"
+            )
+            label.setStyleSheet(
+                f"QLabel {{ font-weight: bold; color: {theme_color}; font-size: 14px; }}"
+            )
 
         (
             self.stats_container,
@@ -110,16 +120,26 @@ class QuickOverviewTab(QWidget):
         layout.addWidget(self.stats_container)
 
         # Info card elements - unpack the tuple
-        self.info_card, self.city_info_label, self.date_range_label, self.data_source_label, self.record_count_label = info_card_tuple
+        (
+            self.info_card,
+            self.city_info_label,
+            self.date_range_label,
+            self.data_source_label,
+            self.record_count_label,
+        ) = info_card_tuple
 
     def _create_mini_charts_section(self, layout: QVBoxLayout) -> None:
         """Mini chartok szekció létrehozása."""
-        self.mini_charts_container, self.mini_chart_placeholder = create_mini_charts_container()
+        self.mini_charts_container, self.mini_chart_placeholder = (
+            create_mini_charts_container()
+        )
         layout.addWidget(self.mini_charts_container)
 
     def _create_actions_section(self, layout: QVBoxLayout) -> None:
         """Gyors akciók szekció létrehozása."""
-        container, self.charts_btn, self.table_btn, self.extreme_btn = create_quick_actions()
+        container, self.charts_btn, self.table_btn, self.extreme_btn = (
+            create_quick_actions()
+        )
         layout.addWidget(container)
 
     def _register_widgets_for_theming(self) -> None:
@@ -150,6 +170,7 @@ class QuickOverviewTab(QWidget):
 
             # DataFrame kinyerése
             from ..utils import DataFrameExtractor
+
             df = DataFrameExtractor.extract_safely(data)
 
             if df.empty:

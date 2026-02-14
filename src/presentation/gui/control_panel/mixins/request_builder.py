@@ -50,7 +50,9 @@ class RequestBuilderMixin:
             location_state = self.location_widget.get_state()
             if location_state["has_location"]:
                 city_data = location_state["current_city_data"]
-                print(f"🚨 DEBUG: _get_analysis_params - city_data keys: {list(city_data.keys())}")
+                print(
+                    f"🚨 DEBUG: _get_analysis_params - city_data keys: {list(city_data.keys())}"
+                )
                 print(f"🚨 DEBUG: _get_analysis_params - city_data: {city_data}")
                 params.update(
                     {
@@ -60,7 +62,9 @@ class RequestBuilderMixin:
                         "location_data": city_data,
                     }
                 )
-                print(f"🚨 DEBUG: _get_analysis_params - params['location_data'] keys: {list(params['location_data'].keys())}")
+                print(
+                    f"🚨 DEBUG: _get_analysis_params - params['location_data'] keys: {list(params['location_data'].keys())}"
+                )
 
         elif analysis_type in ["region", "county"]:
             # 🚨 FIX: Analysis type konverzió AppController kompatibilitáshoz
@@ -103,7 +107,9 @@ class RequestBuilderMixin:
             print(
                 f"🏙️ DEBUG: Multi-city analysis request - {len(selected_cities)} cities selected"
             )
-            print(f"🚨 DEBUG: Analysis type converted: {analysis_type} → {converted_analysis_type}")
+            print(
+                f"🚨 DEBUG: Analysis type converted: {analysis_type} → {converted_analysis_type}"
+            )
 
         return params
 
@@ -166,9 +172,13 @@ class RequestBuilderMixin:
                 return False
             location_data = request["location_data"]
             if not all(key in location_data for key in ["latitude", "longitude"]):
-                print(f"❌ DEBUG: Missing lat/lon in location_data: {list(location_data.keys())}")
+                print(
+                    f"❌ DEBUG: Missing lat/lon in location_data: {list(location_data.keys())}"
+                )
                 return False
-            print("✅ DEBUG: Single location validation passed - location_data structure valid")
+            print(
+                "✅ DEBUG: Single location validation passed - location_data structure valid"
+            )
 
         # 🏙️ Multi-city validation (mind a két típusra)
         elif analysis_type in ["multi_city", "county_analysis"]:
@@ -180,7 +190,9 @@ class RequestBuilderMixin:
                 print("❌ DEBUG: No selected_cities in multi-city request")
                 return False
 
-            print(f"✅ DEBUG: Multi-city validation passed - {len(request['selected_cities'])} cities")
+            print(
+                f"✅ DEBUG: Multi-city validation passed - {len(request['selected_cities'])} cities"
+            )
 
         # Date validation - 🚨 FIX: date_range objektum ellenőrzése
         if "date_range" not in request:
@@ -189,7 +201,9 @@ class RequestBuilderMixin:
 
         date_range = request["date_range"]
         if not all(key in date_range for key in ["start_date", "end_date"]):
-            print(f"❌ DEBUG: Missing start_date/end_date in date_range: {list(date_range.keys())}")
+            print(
+                f"❌ DEBUG: Missing start_date/end_date in date_range: {list(date_range.keys())}"
+            )
             return False
 
         # API validation

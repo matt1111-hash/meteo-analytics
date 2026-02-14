@@ -31,7 +31,9 @@ class UIManagerMixin:
             }
 
             location_valid = self._preserved_states["location"].get("is_valid", False)
-            multi_city_valid = self._preserved_states["multi_city"].get("is_valid", False)
+            multi_city_valid = self._preserved_states["multi_city"].get(
+                "is_valid", False
+            )
             print(
                 f"✅ DEBUG: Widget states preserved - location: {location_valid}, multi-city: {multi_city_valid}"
             )
@@ -51,14 +53,20 @@ class UIManagerMixin:
 
         try:
             # Location widget state visszaállítása (csak single_location módban)
-            if analysis_type == "single_location" and "location" in self._preserved_states:
+            if (
+                analysis_type == "single_location"
+                and "location" in self._preserved_states
+            ):
                 location_state = self._preserved_states["location"]
                 if location_state.get("has_location", False):
                     print("🔄 DEBUG: Restoring location widget state...")
                     self.location_widget.set_state(location_state)
 
             # 🏙️ Multi-city widget state visszaállítása (csak region/county módban)
-            if analysis_type in ["region", "county"] and "multi_city" in self._preserved_states:
+            if (
+                analysis_type in ["region", "county"]
+                and "multi_city" in self._preserved_states
+            ):
                 multi_city_state = self._preserved_states["multi_city"]
                 if multi_city_state.get("is_valid", False):
                     print(
@@ -74,7 +82,9 @@ class UIManagerMixin:
                 self.provider_widget.set_state(self._preserved_states["provider"])
 
             if "api_settings" in self._preserved_states:
-                self.api_settings_widget.set_state(self._preserved_states["api_settings"])
+                self.api_settings_widget.set_state(
+                    self._preserved_states["api_settings"]
+                )
 
             print("✅ DEBUG: Widget states restored successfully")
 

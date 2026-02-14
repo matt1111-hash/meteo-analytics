@@ -30,7 +30,7 @@ class HungarianCitySearchFilter:
         search_completed_signal: Signal,
         region_selected_signal: Signal,
         stats_update_callback: callable,
-        populate_callback: callable
+        populate_callback: callable,
     ):
         """
         Inicializálás.
@@ -48,8 +48,8 @@ class HungarianCitySearchFilter:
         self.stats_update_callback = stats_update_callback
         self.populate_callback = populate_callback
 
-        self.current_region = 'Összes'
-        self.current_search_term = ''
+        self.current_region = "Összes"
+        self.current_search_term = ""
         self.filtered_cities: List[HungarianCity] = []
 
         # Keresési debounce timer
@@ -93,7 +93,7 @@ class HungarianCitySearchFilter:
                 self.filtered_cities.append(city)
 
         # Régió szűrés alkalmazása a keresési eredményekre
-        if self.current_region != 'Összes':
+        if self.current_region != "Összes":
             self.filtered_cities = HungarianRegions.get_cities_by_region(
                 self.current_region, self.filtered_cities
             )
@@ -107,10 +107,10 @@ class HungarianCitySearchFilter:
 
     def clear_search(self) -> None:
         """Keresés törlése."""
-        self.current_search_term = ''
+        self.current_search_term = ""
 
         # Csak régió szűrés marad aktív
-        if self.current_region != 'Összes':
+        if self.current_region != "Összes":
             self.filtered_cities = HungarianRegions.get_cities_by_region(
                 self.current_region, self.all_cities
             )
@@ -126,7 +126,7 @@ class HungarianCitySearchFilter:
         logger.debug(f"🗺️ Régió váltás: {self.current_region}")
 
         # Szűrés alkalmazása
-        if self.current_region == 'Összes':
+        if self.current_region == "Összes":
             if self.current_search_term:
                 # Ha van keresési kifejezés, azt alkalmazzuk
                 self._trigger_search()
@@ -141,16 +141,26 @@ class HungarianCitySearchFilter:
             # Ha van keresési kifejezés, először azt alkalmazzuk
             if self.current_search_term:
                 search_term_lower = self.current_search_term.lower()
-                base_cities = [city for city in base_cities if search_term_lower in city.city.lower()]
+                base_cities = [
+                    city
+                    for city in base_cities
+                    if search_term_lower in city.city.lower()
+                ]
 
             # Régió szűrés
-            self.filtered_cities = HungarianRegions.get_cities_by_region(self.current_region, base_cities)
+            self.filtered_cities = HungarianRegions.get_cities_by_region(
+                self.current_region, base_cities
+            )
             self.populate_callback()
             self._update_region_stats()
 
         # Signal - régió kiválasztás
-        region_cities = self.filtered_cities if self.filtered_cities else self.all_cities
-        self.region_selected_signal.emit(self.current_region, [city.city for city in region_cities])
+        region_cities = (
+            self.filtered_cities if self.filtered_cities else self.all_cities
+        )
+        self.region_selected_signal.emit(
+            self.current_region, [city.city for city in region_cities]
+        )
 
     def get_filtered_cities(self) -> List[HungarianCity]:
         """Szűrt városok lekérdezése."""
@@ -164,7 +174,9 @@ class HungarianCitySearchFilter:
 
     def _update_region_stats(self) -> None:
         """Statisztika frissítése régió szűrés után."""
-        region_display = HungarianRegions.REGION_DISPLAY_NAMES.get(self.current_region, self.current_region)
+        region_display = HungarianRegions.REGION_DISPLAY_NAMES.get(
+            self.current_region, self.current_region
+        )
         found_count = len(self.filtered_cities)
         stats_text = f"🗺️ Régió szűrés: {region_display}\n{found_count} város a régióban"
         if self.current_search_term:

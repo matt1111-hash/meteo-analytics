@@ -175,15 +175,15 @@ class StyleSheets:
 
         # Widget típusok CSS generálása
         widget_types = [
-            "container",    # QMainWindow, QWidget alapok
-            "button",       # QPushButton és variánsai
-            "input",        # QLineEdit, QComboBox, stb.
-            "table",        # QTableWidget, QHeaderView
-            "scrollbar",    # QScrollBar
-            "splitter",     # QSplitter - JAVÍTOTT!
-            "navigation",   # QToolBar, QToolButton
-            "dialog",       # QDialog, QMessageBox
-            "chart"         # Chart widget toggle-ök
+            "container",  # QMainWindow, QWidget alapok
+            "button",  # QPushButton és variánsai
+            "input",  # QLineEdit, QComboBox, stb.
+            "table",  # QTableWidget, QHeaderView
+            "scrollbar",  # QScrollBar
+            "splitter",  # QSplitter - JAVÍTOTT!
+            "navigation",  # QToolBar, QToolButton
+            "dialog",  # QDialog, QMessageBox
+            "chart",  # Chart widget toggle-ök
         ]
 
         for widget_type in widget_types:
@@ -207,7 +207,9 @@ class StyleSheets:
             return StyleSheets._LEGACY_LIGHT_THEME
 
     @staticmethod
-    def get_widget_stylesheet(widget_class: str, theme_type: Optional[ThemeType] = None) -> str:
+    def get_widget_stylesheet(
+        widget_class: str, theme_type: Optional[ThemeType] = None
+    ) -> str:
         """
         🎨 Widget-specifikus CSS lekérdezése ThemeManager-rel.
 
@@ -234,7 +236,9 @@ class StyleSheets:
             return ""
 
     @staticmethod
-    def apply_theme_to_widget(widget, widget_class: str, theme_type: Optional[ThemeType] = None) -> None:
+    def apply_theme_to_widget(
+        widget, widget_class: str, theme_type: Optional[ThemeType] = None
+    ) -> None:
         """
         🎨 Téma alkalmazása egyetlen widget-re ThemeManager-rel.
 
@@ -251,7 +255,9 @@ class StyleSheets:
             # Widget regisztrálása és styling alkalmazása
             manager.register_widget(widget, widget_class)
 
-            logger.debug(f"Theme applied to widget: {widget.__class__.__name__} as {widget_class}")
+            logger.debug(
+                f"Theme applied to widget: {widget.__class__.__name__} as {widget_class}"
+            )
 
         except Exception as e:
             logger.error(f"Widget theme application failed: {e}")
@@ -297,7 +303,9 @@ def log_wind_gusts_event(value: float, location: str = "Unknown") -> None:
 
     category = get_wind_gusts_category(value)
     if category:
-        logger.info(f"WIND GUSTS: {value:.1f} km/h at {location} - {category['emoji']} {category['label']}")
+        logger.info(
+            f"WIND GUSTS: {value:.1f} km/h at {location} - {category['emoji']} {category['label']}"
+        )
     else:
         logger.info(f"WIND GUSTS: {value:.1f} km/h at {location}")
 

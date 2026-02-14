@@ -4,7 +4,6 @@ Multi-City Analytics Engine - Types and Constants
 Type aliases, constants, and configuration mappings
 """
 
-
 Number = float | int
 NumberOrNone = Number | None
 
@@ -19,7 +18,6 @@ HUNGARIAN_REGIONAL_MAPPING = {
     "Dél-Dunántúl": ["Baranya", "Somogy", "Tolna"],
     "Nyugat-Dunántúl": ["Győr-Moson-Sopron", "Vas", "Zala"],
     "Közép-Dunántúl": ["Fejér", "Komárom-Esztergom", "Veszprém"],
-
     # MEGYÉK EGYEDI KEZELÉSE (ha valaki konkrét megyét választ)
     "Budapest": ["Budapest"],
     "Pest": ["Pest"],
@@ -40,20 +38,73 @@ HUNGARIAN_REGIONAL_MAPPING = {
     "Zala": ["Zala"],
     "Fejér": ["Fejér"],
     "Komárom-Esztergom": ["Komárom-Esztergom"],
-    "Veszprém": ["Veszprém"]
+    "Veszprém": ["Veszprém"],
 }
 
 # Region configuration
 REGIONS = {
-    "Hungary": {"name": "Magyarország", "country_codes": ["HU"], "max_cities": 165, "batch_size": 8, "rate_limit_delay": 0.2},
-    "Europe": {"name": "Európa", "country_codes": ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "CH", "GB", "NO", "IS", "RS", "BA", "MK", "AL", "MD", "UA", "BY", "RU"], "max_cities": 150, "batch_size": 4, "rate_limit_delay": 0.4},
-    "Global": {"name": "Globális", "country_codes": [], "max_cities": 160, "batch_size": 8, "rate_limit_delay": 0.5},
+    "Hungary": {
+        "name": "Magyarország",
+        "country_codes": ["HU"],
+        "max_cities": 165,
+        "batch_size": 8,
+        "rate_limit_delay": 0.2,
+    },
+    "Europe": {
+        "name": "Európa",
+        "country_codes": [
+            "AT",
+            "BE",
+            "BG",
+            "HR",
+            "CY",
+            "CZ",
+            "DK",
+            "EE",
+            "FI",
+            "FR",
+            "DE",
+            "GR",
+            "HU",
+            "IE",
+            "IT",
+            "LV",
+            "LT",
+            "LU",
+            "MT",
+            "NL",
+            "PL",
+            "PT",
+            "RO",
+            "SK",
+            "SI",
+            "ES",
+            "SE",
+            "CH",
+            "GB",
+            "NO",
+            "IS",
+            "RS",
+            "BA",
+            "MK",
+            "AL",
+            "MD",
+            "UA",
+            "BY",
+            "RU",
+        ],
+        "max_cities": 150,
+        "batch_size": 4,
+        "rate_limit_delay": 0.4,
+    },
+    "Global": {
+        "name": "Globális",
+        "country_codes": [],
+        "max_cities": 160,
+        "batch_size": 8,
+        "rate_limit_delay": 0.5,
+    },
 }
 
 
-__all__ = [
-    'Number',
-    'NumberOrNone',
-    'HUNGARIAN_REGIONAL_MAPPING',
-    'REGIONS'
-]
+__all__ = ["Number", "NumberOrNone", "HUNGARIAN_REGIONAL_MAPPING", "REGIONS"]

@@ -1,4 +1,5 @@
 """None-safe statistical helper functions for multi-city analytics."""
+
 from __future__ import annotations
 
 from statistics import StatisticsError, mean, median, stdev

@@ -84,7 +84,9 @@ class AnalyticsSyncHelpers:
         if self.multi_city_engine and hasattr(self.multi_city_engine, "set_date_range"):
             self.multi_city_engine.set_date_range(start_date, end_date)
 
-        self.loading_status.setText(f"Temporal data refreshed: {start_date} to {end_date}")
+        self.loading_status.setText(
+            f"Temporal data refreshed: {start_date} to {end_date}"
+        )
 
     def _refresh_weather_overlay_with_new_dates(
         self, start_date: str, end_date: str
@@ -93,11 +95,11 @@ class AnalyticsSyncHelpers:
         if not self.multi_city_engine:
             return
 
-        self.loading_status.setText(f"Weather overlay refreshed: {start_date} to {end_date}")
+        self.loading_status.setText(
+            f"Weather overlay refreshed: {start_date} to {end_date}"
+        )
 
-    def _full_map_refresh(
-        self, analysis: Dict, weather: Dict, date: Dict
-    ) -> None:
+    def _full_map_refresh(self, analysis: Dict, weather: Dict, date: Dict) -> None:
         """Comprehensive map refresh with all parameters."""
         # Apply analysis parameters
         if analysis:

@@ -93,7 +93,9 @@ def extract_daily_wind_data(weather_data: pd.DataFrame) -> pd.DataFrame:
 
         # Statisztikák
         valid_days = len(daily_wind[daily_wind["max_wind_speed_kmh"] > 0])
-        max_speed = daily_wind["max_wind_speed_kmh"].max() if not daily_wind.empty else 0
+        max_speed = (
+            daily_wind["max_wind_speed_kmh"].max() if not daily_wind.empty else 0
+        )
 
         logger.info(f"✅ Feldolgozott {len(daily_wind)} napi szélsebesség adat")
         logger.info(f"📊 Érvényes napok: {valid_days}/{len(daily_wind)}")
@@ -140,7 +142,7 @@ def identify_windy_days(
         logger.info(
             "🌪️ Azonosított szeles napok: "
             f"{windy_count}/{total_count} "
-            f"({windy_count/total_count*100:.1f}%) threshold: {threshold_kmh} km/h"
+            f"({windy_count / total_count * 100:.1f}%) threshold: {threshold_kmh} km/h"
         )
 
         # Részletes statisztikák

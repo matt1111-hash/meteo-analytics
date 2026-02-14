@@ -16,9 +16,10 @@ from src.domain.value_objects.enums import (
 class CityWeatherResult:
     """
     Egyetlen város időjárási eredménye.
-    
+
     Multi-city analytics alapegysége.
     """
+
     city_name: str
     country: str
     country_code: str
@@ -26,18 +27,18 @@ class CityWeatherResult:
     longitude: float
 
     # Weather data
-    value: float                    # Fő metrika értéke
-    metric: AnalyticsMetric        # Metrika típusa
-    date: date                     # Adat dátuma
-    rank: Optional[int] = None     # 🔧 FIX: UI compatibility - eredmény rangsor
+    value: float  # Fő metrika értéke
+    metric: AnalyticsMetric  # Metrika típusa
+    date: date  # Adat dátuma
+    rank: Optional[int] = None  # 🔧 FIX: UI compatibility - eredmény rangsor
 
     # Additional data
     additional_data: Dict[str, Any] = field(default_factory=dict)
 
     # Metadata
     data_source: DataSource = DataSource.AUTO
-    quality_score: float = 1.0     # 0.0-1.0 adat minőség
-    confidence: float = 1.0        # 0.0-1.0 megbízhatóság
+    quality_score: float = 1.0  # 0.0-1.0 adat minőség
+    confidence: float = 1.0  # 0.0-1.0 megbízhatóság
 
     # Geographical context
     population: Optional[int] = None
@@ -65,39 +66,41 @@ class CityWeatherResult:
     def to_dict(self) -> Dict[str, Any]:
         """Dictionary konverzió."""
         return {
-            'city_name': self.city_name,
-            'country': self.country,
-            'country_code': self.country_code,
-            'latitude': self.latitude,
-            'longitude': self.longitude,
-            'value': self.value,
-            'metric': self.metric.value,
-            'date': self.date.isoformat(),
-            'rank': self.rank,  # 🔧 FIX: rank mező hozzáadva
-            'additional_data': self.additional_data,
-            'data_source': self.data_source.value,
-            'quality_score': self.quality_score,
-            'confidence': self.confidence,
-            'population': self.population,
-            'elevation': self.elevation,
-            'timezone': self.timezone,
-            'admin_name': self.admin_name
+            "city_name": self.city_name,
+            "country": self.country,
+            "country_code": self.country_code,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "value": self.value,
+            "metric": self.metric.value,
+            "date": self.date.isoformat(),
+            "rank": self.rank,  # 🔧 FIX: rank mező hozzáadva
+            "additional_data": self.additional_data,
+            "data_source": self.data_source.value,
+            "quality_score": self.quality_score,
+            "confidence": self.confidence,
+            "population": self.population,
+            "elevation": self.elevation,
+            "timezone": self.timezone,
+            "admin_name": self.admin_name,
         }
+
 
 @dataclass
 class AnomalyResult:
     """
     Anomália detektálási eredmény.
-    
+
     Parameter-based analytics anomália eredménye.
     """
+
     date: date
     metric: AnalyticsMetric
     value: float
     expected_value: float
-    deviation: float                # Standard deviáció
+    deviation: float  # Standard deviáció
     severity: AnomalySeverity
-    anomaly_type: AnomalyType      # HIGH/LOW
+    anomaly_type: AnomalyType  # HIGH/LOW
 
     # Context
     description: str
@@ -122,20 +125,21 @@ class AnomalyResult:
     def to_dict(self) -> Dict[str, Any]:
         """Dictionary konverzió."""
         return {
-            'date': self.date.isoformat(),
-            'metric': self.metric.value,
-            'value': self.value,
-            'expected_value': self.expected_value,
-            'deviation': self.deviation,
-            'severity': self.severity.value,
-            'anomaly_type': self.anomaly_type.value,
-            'description': self.description,
-            'confidence': self.confidence,
-            'percentile': self.percentile,
-            'z_score': self.z_score,
-            'detected_at': self.detected_at.isoformat(),
-            'detection_method': self.detection_method
+            "date": self.date.isoformat(),
+            "metric": self.metric.value,
+            "value": self.value,
+            "expected_value": self.expected_value,
+            "deviation": self.deviation,
+            "severity": self.severity.value,
+            "anomaly_type": self.anomaly_type.value,
+            "description": self.description,
+            "confidence": self.confidence,
+            "percentile": self.percentile,
+            "z_score": self.z_score,
+            "detected_at": self.detected_at.isoformat(),
+            "detection_method": self.detection_method,
         }
+
 
 def create_city_weather_result(
     city_name: str,
@@ -146,7 +150,7 @@ def create_city_weather_result(
     value: float,
     metric: AnalyticsMetric,
     result_date: date,
-    **kwargs
+    **kwargs,
 ) -> CityWeatherResult:
     """
     CityWeatherResult factory function.
@@ -160,5 +164,5 @@ def create_city_weather_result(
         value=value,
         metric=metric,
         date=result_date,
-        **kwargs
+        **kwargs,
     )

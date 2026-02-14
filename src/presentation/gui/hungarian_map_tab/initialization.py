@@ -77,7 +77,7 @@ def _show_folium_installation_message(self) -> None:
         "A teljes interaktív térkép működéséhez szükséges a Folium library.\n\n"
         "Telepítés:\n"
         "pip install folium branca geopandas\n\n"
-        "A térkép static módban fog működni Folium nélkül."
+        "A térkép static módban fog működni Folium nélkül.",
     )
 
 
@@ -102,11 +102,15 @@ def _initialize_step_2(self) -> None:
         self.counties_gdf = self.location_selector.get_counties_geodataframe()
 
         if self.counties_gdf is not None:
-            print(f"✅ DEBUG: Counties GeoDataFrame received: {len(self.counties_gdf)} counties")
+            print(
+                f"✅ DEBUG: Counties GeoDataFrame received: {len(self.counties_gdf)} counties"
+            )
 
             if self.map_visualizer:
                 self.map_visualizer.set_counties_geodataframe(self.counties_gdf)
-                print("✅ DEBUG: Counties GeoDataFrame shared with Folium MapVisualizer")
+                print(
+                    "✅ DEBUG: Counties GeoDataFrame shared with Folium MapVisualizer"
+                )
         else:
             print("⚠️ DEBUG: Counties GeoDataFrame not available yet")
 
@@ -152,7 +156,9 @@ def _initialization_complete(self) -> None:
 def _hide_loading_indicators(self) -> None:
     """Loading indikátorok elrejtése."""
     self.loading_progress.setVisible(False)
-    self.loading_status.setText("🗺️ Kattints a megyékre a Folium térképen vagy használd a bal oldali választót!")
+    self.loading_status.setText(
+        "🗺️ Kattints a megyékre a Folium térképen vagy használd a bal oldali választót!"
+    )
 
 
 __all__ = [

@@ -52,7 +52,9 @@ class SignalHandlersMixin:
         self.query_control_widget.fetch_requested.connect(self._on_fetch_requested)
         self.query_control_widget.cancel_requested.connect(self._on_cancel_requested)
 
-        print("🎯 Clean signal routing connected + MULTI-CITY signals - Single analysis_requested signal")
+        print(
+            "🎯 Clean signal routing connected + MULTI-CITY signals - Single analysis_requested signal"
+        )
 
     def _on_analysis_type_changed(self, analysis_type: str) -> None:
         """
@@ -144,7 +146,9 @@ class SignalHandlersMixin:
         3. Validálás
         4. analysis_requested(dict) signal emit
         """
-        print("🚀 Fetch requested - generating clean analysis request + multi-city support")
+        print(
+            "🚀 Fetch requested - generating clean analysis request + multi-city support"
+        )
 
         # Comprehensive analysis request összeállítása
         analysis_request = self._build_analysis_request()
@@ -156,7 +160,9 @@ class SignalHandlersMixin:
             # 🎯 FŐSIGNAL KIBOCSÁTÁSA - CLEAN ARCHITECTURE
             self.analysis_requested.emit(analysis_request)
 
-            print(f"🎯 CLEAN: analysis_requested emitted → {analysis_request['analysis_type']}")
+            print(
+                f"🎯 CLEAN: analysis_requested emitted → {analysis_request['analysis_type']}"
+            )
 
             # 🔧 AUTO-RESET FETCH STATE - Error esetére timeout
             from PySide6.QtCore import QTimer

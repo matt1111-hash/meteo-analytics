@@ -40,10 +40,14 @@ def _find_closest_chart_point(self, event) -> Optional[Dict[str, Any]]:
         Dict with point data or None
     """
     try:
-        if not hasattr(self, 'current_data') or self.current_data is None or self.current_data.empty:
+        if (
+            not hasattr(self, "current_data")
+            or self.current_data is None
+            or self.current_data.empty
+        ):
             return None
 
-        if not hasattr(self, 'bar_data') or not self.bar_data:
+        if not hasattr(self, "bar_data") or not self.bar_data:
             return None
 
         if event.xdata is None or event.ydata is None:
@@ -51,14 +55,15 @@ def _find_closest_chart_point(self, event) -> Optional[Dict[str, Any]]:
 
         # 🎯 BAR CHART LOGIKA: X koordináta alapú oszlop keresés
         import matplotlib.dates as mdates
+
         mouse_x = event.xdata
 
         closest_idx = None
-        min_distance = float('inf')
+        min_distance = float("inf")
 
         # Minden bar-höz távolság számítás X koordináta alapján
         for i, bar_info in enumerate(self.bar_data):
-            bar_date = bar_info['date']
+            bar_date = bar_info["date"]
             bar_x = mdates.date2num(bar_date)
 
             # X távolság (időben)
@@ -73,18 +78,17 @@ def _find_closest_chart_point(self, event) -> Optional[Dict[str, Any]]:
         day_tolerance = 0.5  # Fél nap tolerance
 
         if closest_idx is not None and min_distance <= day_tolerance:
-
             bar_info = self.bar_data[closest_idx]
 
             # Pont adatok összeállítása - PRECIPITATION SPECIFIKUS
             point_data = {
-                'index': closest_idx,
-                'date': bar_info['date'],
-                'precipitation': bar_info['precipitation'],
-                'primary_temp': bar_info['precipitation'],  # Mixin kompatibilitás
-                'primary_temp_column': 'precipitation',     # Mixin kompatibilitás
-                'pixel_distance': min_distance,
-                'chart_type': 'precipitation_bar'
+                "index": closest_idx,
+                "date": bar_info["date"],
+                "precipitation": bar_info["precipitation"],
+                "primary_temp": bar_info["precipitation"],  # Mixin kompatibilitás
+                "primary_temp_column": "precipitation",  # Mixin kompatibilitás
+                "pixel_distance": min_distance,
+                "chart_type": "precipitation_bar",
             }
 
             return point_data
@@ -112,12 +116,12 @@ def _format_tooltip_text(self, point_data: Dict[str, Any]) -> str:
     Returns:
         Formatted tooltip text
     """
-    date = point_data['date']
-    precipitation = point_data['precipitation']
+    date = point_data["date"]
+    precipitation = point_data["precipitation"]
 
     # Dátum formázás
     if isinstance(date, datetime):
-        date_str = date.strftime('%Y-%m-%d (%A)')
+        date_str = date.strftime("%Y-%m-%d (%A)")
     else:
         date_str = str(date)
 
@@ -165,9 +169,9 @@ def _format_tooltip_text(self, point_data: Dict[str, Any]) -> str:
 
     # 📊 HAVI/ÉVES KONTEXTUS (ha elérhető)
     contextual_info = []
-    if hasattr(self, 'current_data') and not self.current_data.empty:
+    if hasattr(self, "current_data") and not self.current_data.empty:
         df = self.current_data
-        avg_precip = df['precipitation'].mean()
+        avg_precip = df["precipitation"].mean()
 
         # Napi érték vs átlag összehasonlítás
         if precipitation > avg_precip * 2:
@@ -196,7 +200,7 @@ def _format_tooltip_text(self, point_data: Dict[str, Any]) -> str:
         tooltip_lines.append("")
         tooltip_lines.extend(contextual_info)
 
-    return '\n'.join(tooltip_lines)
+    return "\n".join(tooltip_lines)
 
 
 def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
@@ -213,7 +217,7 @@ def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
         event: Matplotlib mouse event
         point_data: Point data dict
     """
-    if not hasattr(self, 'ax'):
+    if not hasattr(self, "ax"):
         return
 
     # Előző tooltip törlése
@@ -224,8 +228,9 @@ def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
 
     # Koordináták meghatározása - BAR CHART SPECIFIC
     import matplotlib.dates as mdates
-    x_pos = mdates.date2num(point_data['date'])
-    y_pos = point_data['precipitation']
+
+    x_pos = mdates.date2num(point_data["date"])
+    y_pos = point_data["precipitation"]
 
     # 🎯 BAR CHART SMART POSITIONING
     # Chart területének boundaries
@@ -243,28 +248,28 @@ def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
         if x_relative > 0.8:  # Jobb szélen
             offset_x = -120
             offset_y = -30
-            ha_align = 'right'
-            va_align = 'top'
+            ha_align = "right"
+            va_align = "top"
             print("🔽⬅️ DEBUG: Tooltip balra-lefelé - magas oszlop jobb szélen")
         else:
             offset_x = 40
             offset_y = -50
-            ha_align = 'left'
-            va_align = 'top'
+            ha_align = "left"
+            va_align = "top"
             print("🔽 DEBUG: Tooltip lefelé - magas oszlop")
     else:
         # Tooltip felfelé (oszlop felett)
         if x_relative > 0.8:  # Jobb szélen
             offset_x = -120
             offset_y = 30
-            ha_align = 'right'
-            va_align = 'bottom'
+            ha_align = "right"
+            va_align = "bottom"
             print("🔼⬅️ DEBUG: Tooltip balra-felfelé - jobb szélen")
         else:
             offset_x = 40
             offset_y = 30
-            ha_align = 'left'
-            va_align = 'bottom'
+            ha_align = "left"
+            va_align = "bottom"
             print("🔼 DEBUG: Tooltip felfelé - oszlop felett")
 
     # Current colors
@@ -275,32 +280,32 @@ def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
         tooltip_text,
         xy=(x_pos, y_pos),
         xytext=(offset_x, offset_y),  # 🎯 DYNAMIC OFFSET
-        textcoords='offset points',
+        textcoords="offset points",
         bbox=dict(
-            boxstyle='round,pad=1.0',
-            facecolor='lightcyan',  # 🌧️ Precipitation theme
-            edgecolor=current_colors.get('border', '#34495E'),
+            boxstyle="round,pad=1.0",
+            facecolor="lightcyan",  # 🌧️ Precipitation theme
+            edgecolor=current_colors.get("border", "#34495E"),
             linewidth=2,
-            alpha=0.95
+            alpha=0.95,
         ),
         arrowprops=dict(
-            arrowstyle='->',
-            color=current_colors.get('border', '#34495E'),
+            arrowstyle="->",
+            color=current_colors.get("border", "#34495E"),
             lw=2,
-            alpha=0.8
+            alpha=0.8,
         ),
         fontsize=10,
-        fontweight='bold',
-        ha=ha_align,      # 🎯 DYNAMIC HORIZONTAL ALIGNMENT
-        va=va_align,      # 🎯 DYNAMIC VERTICAL ALIGNMENT
-        zorder=1000       # Top layer
+        fontweight="bold",
+        ha=ha_align,  # 🎯 DYNAMIC HORIZONTAL ALIGNMENT
+        va=va_align,  # 🎯 DYNAMIC VERTICAL ALIGNMENT
+        zorder=1000,  # Top layer
     )
 
     self._tooltip_visible = True
     self._tooltip_annotation = self.tooltip_annotation
 
     # Canvas frissítése
-    if hasattr(self, 'draw_idle'):
+    if hasattr(self, "draw_idle"):
         self.draw_idle()
 
 
@@ -311,7 +316,7 @@ def _hide_tooltip(self) -> None:
     Args:
         self: PrecipitationChart instance
     """
-    if hasattr(self, '_tooltip_annotation') and self._tooltip_annotation:
+    if hasattr(self, "_tooltip_annotation") and self._tooltip_annotation:
         try:
             self._tooltip_annotation.remove()
         except Exception as e:
@@ -321,5 +326,5 @@ def _hide_tooltip(self) -> None:
         self._tooltip_visible = False
 
         # Canvas frissítése
-        if hasattr(self, 'draw_idle'):
+        if hasattr(self, "draw_idle"):
             self.draw_idle()

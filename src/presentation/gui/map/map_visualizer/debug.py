@@ -32,6 +32,7 @@ def generate_demo_weather_data(self) -> Dict:
         Dict: Demo weather data
     """
     from .map_debug import generate_demo_weather_data
+
     return generate_demo_weather_data()
 
 
@@ -46,7 +47,10 @@ def get_http_server_info(self) -> Dict:
         Dict: HTTP szerver információk
     """
     from .map_debug import get_http_server_info
-    return get_http_server_info(self.local_server, self.http_host, self.http_port, self.current_map_file)
+
+    return get_http_server_info(
+        self.local_server, self.http_host, self.http_port, self.current_map_file
+    )
 
 
 def get_dynamic_gradient_info(self) -> Dict:
@@ -60,6 +64,7 @@ def get_dynamic_gradient_info(self) -> Dict:
         Dict: Gradient információk
     """
     from .map_debug import get_dynamic_gradient_info
+
     return get_dynamic_gradient_info(self.get_active_overlay_parameter())
 
 
@@ -74,13 +79,14 @@ def get_http_debug_info(self) -> Dict:
         Dict: Debug információk
     """
     from .map_debug import get_http_debug_info
+
     return get_http_debug_info(
         self.local_server,
         self.http_host,
         self.http_port,
         self.current_map_file,
         self.counties_gdf,
-        self.current_weather_data
+        self.current_weather_data,
     )
 
 

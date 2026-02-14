@@ -11,7 +11,7 @@ Fájl: src/presentation/gui/results_panel/quick_overview_tab/ui_builder.py
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Tuple
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
@@ -26,7 +26,7 @@ from PySide6.QtWidgets import (
 )
 
 if TYPE_CHECKING:
-    from src.presentation.gui.theme_manager import ColorScheme
+    pass
 
 
 def create_title_label() -> QLabel:
@@ -63,7 +63,7 @@ def create_stats_container(
             ("Átlag", "avg_temp", "°C"),
             ("Maximum", "max_temp", "°C"),
             ("Minimum", "min_temp", "°C"),
-            ("Hőingás", "temp_range", "°C")
+            ("Hőingás", "temp_range", "°C"),
         ],
         "#f59e0b",
         theme_manager,
@@ -80,7 +80,7 @@ def create_stats_container(
             ("Összesen", "total_precip", "mm"),
             ("Átlag/nap", "avg_precip", "mm"),
             ("Maximum", "max_precip", "mm"),
-            ("Esős napok", "rainy_days", "nap")
+            ("Esős napok", "rainy_days", "nap"),
         ],
         "#3b82f6",
         theme_manager,
@@ -97,7 +97,7 @@ def create_stats_container(
             ("Átlag", "avg_wind", "km/h"),
             ("Maximum", "max_wind", "km/h"),
             ("Szeles napok", "windy_days", "nap"),
-            ("Uralkodó irány", "wind_direction", "")
+            ("Uralkodó irány", "wind_direction", ""),
         ],
         "#10b981",
         theme_manager,
@@ -174,7 +174,13 @@ def create_info_card(theme_manager) -> tuple[QGroupBox, QLabel, QLabel, QLabel, 
     layout.addWidget(data_source_label)
     layout.addWidget(record_count_label)
 
-    return card, city_info_label, date_range_label, data_source_label, record_count_label
+    return (
+        card,
+        city_info_label,
+        date_range_label,
+        data_source_label,
+        record_count_label,
+    )
 
 
 def create_mini_charts_container() -> QGroupBox:

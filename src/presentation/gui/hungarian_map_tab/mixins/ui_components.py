@@ -67,7 +67,9 @@ class MapTabUIComponents:
 
     def _create_header_group(self) -> QGroupBox:
         """Create header group with status labels and action buttons."""
-        header_group = QGroupBox("Hungarian Interactive Map + Weather Overlay + Analytics Sync")
+        header_group = QGroupBox(
+            "Hungarian Interactive Map + Weather Overlay + Analytics Sync"
+        )
         register_widget_for_theming(header_group, "container")
         header_layout = QHBoxLayout(header_group)
 
@@ -139,7 +141,9 @@ class MapTabUIComponents:
 
         self.auto_weather_refresh_check = QCheckBox("Auto Weather")
         self.auto_weather_refresh_check.setChecked(True)
-        self.auto_weather_refresh_check.setToolTip("Auto refresh weather on parameter change")
+        self.auto_weather_refresh_check.setToolTip(
+            "Auto refresh weather on parameter change"
+        )
         register_widget_for_theming(self.auto_weather_refresh_check, "input")
         layout.addWidget(self.auto_weather_refresh_check)
 

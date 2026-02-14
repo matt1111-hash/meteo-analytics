@@ -28,8 +28,4 @@ from src.presentation.gui.hungarian_city_selector.types import (
     HungarianRegions,
 )
 
-__all__ = [
-    'HungarianCitySelector',
-    'HungarianCity',
-    'HungarianRegions'
-]
+__all__ = ["HungarianCitySelector", "HungarianCity", "HungarianRegions"]

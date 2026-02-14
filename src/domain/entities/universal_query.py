@@ -1,4 +1,5 @@
 """Universal query domain entity."""
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
@@ -15,6 +16,7 @@ class UniversalQuery:
     """
     Universal query model - user-centric paradigm.
     """
+
     # Basic query components
     locations: List[UniversalLocation]
     time_range: UniversalTimeRange
@@ -22,7 +24,9 @@ class UniversalQuery:
     analysis_type: AnalysisType
 
     # Query metadata
-    query_id: str = field(default_factory=lambda: f"universal_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+    query_id: str = field(
+        default_factory=lambda: f"universal_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    )
     user_description: str = ""
 
     # Execution settings
@@ -71,14 +75,14 @@ class UniversalQuery:
             location_desc = f"{len(self.locations)} lokáció"
 
         if len(self.parameters) == 1:
-            param_desc = self.parameters[0].replace('_', ' ')
+            param_desc = self.parameters[0].replace("_", " ")
         elif len(self.parameters) <= 3:
-            param_desc = ", ".join([p.replace('_', ' ') for p in self.parameters])
+            param_desc = ", ".join([p.replace("_", " ") for p in self.parameters])
         else:
             param_desc = f"{len(self.parameters)} paraméter"
 
         time_desc = self.time_range.description
-        analysis_desc = self.analysis_type.value.replace('_', ' ')
+        analysis_desc = self.analysis_type.value.replace("_", " ")
 
         return f"{location_desc}: {param_desc} {analysis_desc} ({time_desc})"
 
@@ -124,9 +128,15 @@ class UniversalQuery:
         score += len(self.parameters) * 3
         score += min(self.time_range.total_days // 30, 50)
 
-        if self.analysis_type in [AnalysisType.TREND_ANALYSIS, AnalysisType.ANOMALY_DETECTION]:
+        if self.analysis_type in [
+            AnalysisType.TREND_ANALYSIS,
+            AnalysisType.ANOMALY_DETECTION,
+        ]:
             score += 20
-        elif self.analysis_type in [AnalysisType.PATTERN_RECOGNITION, AnalysisType.FORECAST]:
+        elif self.analysis_type in [
+            AnalysisType.PATTERN_RECOGNITION,
+            AnalysisType.FORECAST,
+        ]:
             score += 30
 
         if self.comparative_mode:
@@ -160,8 +170,13 @@ class UniversalQuery:
             errors.append("A kezdő dátum nem lehet későbbi a záró dátumnál!")
 
         estimated_complexity = self.get_estimated_complexity()
-        if estimated_complexity == "very_complex" and self.max_results_per_location < 100:
-            errors.append("Nagyon komplex query esetén növelje a max_results_per_location értékét!")
+        if (
+            estimated_complexity == "very_complex"
+            and self.max_results_per_location < 100
+        ):
+            errors.append(
+                "Nagyon komplex query esetén növelje a max_results_per_location értékét!"
+            )
 
         if self.anomaly_detection:
             if self.anomaly_threshold_override and self.anomaly_threshold_override <= 0:
@@ -172,28 +187,28 @@ class UniversalQuery:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'query_id': self.query_id,
-            'user_description': self.user_description,
-            'locations': [loc.to_dict() for loc in self.locations],
-            'time_range': self.time_range.to_dict(),
-            'parameters': self.parameters,
-            'analysis_type': self.analysis_type.value,
-            'data_sources': [ds.value for ds in self.data_sources],
-            'quality_threshold': self.quality_threshold,
-            'max_results_per_location': self.max_results_per_location,
-            'anomaly_detection': self.anomaly_detection,
-            'statistical_analysis': self.statistical_analysis,
-            'trend_analysis': self.trend_analysis,
-            'comparative_mode': self.comparative_mode,
-            'estimated_complexity': self.get_estimated_complexity(),
-            'total_locations': self.get_total_locations(),
-            'is_multi_location': self.is_multi_location_query(),
-            'is_long_term': self.is_long_term_analysis(),
-            'is_historical': self.is_historical_query(),
-            'created_at': self.created_at.isoformat(),
-            'created_by': self.created_by,
-            'tags': self.tags
+            "query_id": self.query_id,
+            "user_description": self.user_description,
+            "locations": [loc.to_dict() for loc in self.locations],
+            "time_range": self.time_range.to_dict(),
+            "parameters": self.parameters,
+            "analysis_type": self.analysis_type.value,
+            "data_sources": [ds.value for ds in self.data_sources],
+            "quality_threshold": self.quality_threshold,
+            "max_results_per_location": self.max_results_per_location,
+            "anomaly_detection": self.anomaly_detection,
+            "statistical_analysis": self.statistical_analysis,
+            "trend_analysis": self.trend_analysis,
+            "comparative_mode": self.comparative_mode,
+            "estimated_complexity": self.get_estimated_complexity(),
+            "total_locations": self.get_total_locations(),
+            "is_multi_location": self.is_multi_location_query(),
+            "is_long_term": self.is_long_term_analysis(),
+            "is_historical": self.is_historical_query(),
+            "created_at": self.created_at.isoformat(),
+            "created_by": self.created_by,
+            "tags": self.tags,
         }
 
 
-__all__ = ['UniversalQuery']
+__all__ = ["UniversalQuery"]

@@ -1,4 +1,5 @@
 """Use case for running anomaly detection from GUI-facing data."""
+
 from __future__ import annotations
 
 import logging
@@ -42,7 +43,9 @@ class DetectAnomaliesUseCase:
         precipitation_anomaly = service.detect_precipitation_anomaly(
             location_name=location_name,
             analysis_date=analysis_date,
-            precipitation_values=self._safe_float_list(weather_data.get("precipitation_sum")),
+            precipitation_values=self._safe_float_list(
+                weather_data.get("precipitation_sum")
+            ),
         )
         wind_anomaly = service.detect_wind_anomaly(
             location_name=location_name,
@@ -85,7 +88,9 @@ class DetectAnomaliesUseCase:
             logger.error("Invalid threshold values: %s", thresholds)
             raise ValueError("Threshold values must be numeric") from exc
 
-    def _collect_wind_values(self, weather_data: Dict[str, List[Any]]) -> List[Optional[float]]:
+    def _collect_wind_values(
+        self, weather_data: Dict[str, List[Any]]
+    ) -> List[Optional[float]]:
         wind_fields = ["wind_speed_10m_max", "wind_gusts_10m_max", "windspeed_10m_max"]
         for field in wind_fields:
             values = self._safe_float_list(weather_data.get(field))

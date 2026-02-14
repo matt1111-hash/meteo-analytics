@@ -44,30 +44,30 @@ def get_colormap_and_norm(self, calendar_matrix: np.ndarray) -> Tuple[str, objec
     valid_values = calendar_matrix[~np.isnan(calendar_matrix)]
     if len(valid_values) == 0:
         logger.warning("⚠️ Nincs érvényes adat")
-        return 'viridis', None
+        return "viridis", None
 
     vmin = valid_values.min()
     vmax = valid_values.max()
 
-    if 'temperature' in self.parameter:
+    if "temperature" in self.parameter:
         if vmin < 0 and vmax > 20:
-            cmap = 'RdYlBu_r'  # REVERSE: piros=meleg, kék=hideg
+            cmap = "RdYlBu_r"  # REVERSE: piros=meleg, kék=hideg
             logger.debug("🌡️ Hőmérséklet: RdYlBu_r (piros=meleg, kék=hideg)")
         elif vmax <= 15:
-            cmap = 'Blues_r'  # Hideg: sötétkék=hidegebb
+            cmap = "Blues_r"  # Hideg: sötétkék=hidegebb
             logger.debug("🌡️ Hőmérséklet: Blues_r (hideg)")
         elif vmin >= 15:
-            cmap = 'Reds'  # Meleg: sötétpiros=melegebb
+            cmap = "Reds"  # Meleg: sötétpiros=melegebb
             logger.debug("🌡️ Hőmérséklet: Reds (meleg)")
         else:
-            cmap = 'viridis'
+            cmap = "viridis"
             logger.debug("🌡️ Hőmérséklet: viridis (alapértelmezett)")
-    elif 'precipitation' in self.parameter:
-        cmap = 'Blues'
-    elif 'wind' in self.parameter:
-        cmap = 'Greens'
+    elif "precipitation" in self.parameter:
+        cmap = "Blues"
+    elif "wind" in self.parameter:
+        cmap = "Greens"
     else:
-        cmap = 'viridis'
+        cmap = "viridis"
 
     norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
     return cmap, norm

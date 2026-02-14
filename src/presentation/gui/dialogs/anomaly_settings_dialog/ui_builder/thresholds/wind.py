@@ -1,5 +1,6 @@
 """Wind threshold section builder."""
-from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QPushButton, QSpinBox, QVBoxLayout
+
+from PySide6.QtWidgets import QGroupBox, QLabel, QSpinBox, QVBoxLayout
 
 from ...utils import AnomalyConstants
 
@@ -24,7 +25,7 @@ def create_wind_section(dialog: object) -> QGroupBox:
         ("Mérsékelt", 50, "normal"),
         ("Erős", 70, "strong"),
         ("Extrém", 100, "extreme"),
-        ("Orkán", 120, "hurricane")
+        ("Orkán", 120, "hurricane"),
     ]
 
     for name, default_value, key in categories:

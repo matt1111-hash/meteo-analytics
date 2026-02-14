@@ -45,7 +45,7 @@ def get_state(self) -> Dict[str, Any]:
         "progress_visible": self.progress_indicator.isVisible(),
         "pandas_available": True,
         "dataframe_extractor_available": self.data_processor._dataframe_extractor_available,
-        "is_valid": True
+        "is_valid": True,
     }
 
 
@@ -121,10 +121,12 @@ def emergency_reset(self) -> None:
 
     # Loading reset
     from .public_api import force_hide_loading
+
     force_hide_loading(self)
 
     # Data clear
     from .public_api import clear_data
+
     clear_data(self)
 
     # UI reset
@@ -160,6 +162,7 @@ def closeEvent(self, event) -> None:
     """
     cleanup(self)
     from PySide6.QtWidgets import QWidget
+
     QWidget.closeEvent(self, event)
 
 

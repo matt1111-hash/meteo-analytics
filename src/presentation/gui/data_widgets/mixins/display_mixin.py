@@ -70,7 +70,9 @@ class DisplayMixin:
         filter_layout = QHBoxLayout()
         filter_label = QLabel("Oszlop:")
         self.column_filter = QComboBox()
-        self.column_filter.addItems(["Összes", "Dátum", "Hőmérséklet", "Csapadék", "Szél"])
+        self.column_filter.addItems(
+            ["Összes", "Dátum", "Hőmérséklet", "Csapadék", "Szél"]
+        )
         self.column_filter.currentTextChanged.connect(self._apply_filter)
 
         filter_layout.addWidget(filter_label)
@@ -171,7 +173,13 @@ class DisplayMixin:
         """Táblázat feltöltése NumericTableWidgetItem-ekkel."""
         rows, cols = data.shape
 
-        headers = ["Dátum", "Max hőmérséklet (°C)", "Min hőmérséklet (°C)", "Napi átlag (°C)", "Csapadék (mm)"]
+        headers = [
+            "Dátum",
+            "Max hőmérséklet (°C)",
+            "Min hőmérséklet (°C)",
+            "Napi átlag (°C)",
+            "Csapadék (mm)",
+        ]
         if cols > 5:
             headers.append("Szélsebesség (km/h)")
 
@@ -208,10 +216,16 @@ class DisplayMixin:
 
                 if scheme:
                     if i % 2 == 0:
-                        item.setBackground(QColor(scheme.get_color("surface", "base") or "#ffffff"))
+                        item.setBackground(
+                            QColor(scheme.get_color("surface", "base") or "#ffffff")
+                        )
                     else:
-                        item.setBackground(QColor(scheme.get_color("surface", "light") or "#f5f5f5"))
-                    item.setForeground(QColor(scheme.get_color("primary", "base") or "#1f2937"))
+                        item.setBackground(
+                            QColor(scheme.get_color("surface", "light") or "#f5f5f5")
+                        )
+                    item.setForeground(
+                        QColor(scheme.get_color("primary", "base") or "#1f2937")
+                    )
                 else:
                     if i % 2 == 0:
                         item.setBackground(QColor(248, 249, 250))
@@ -231,7 +245,10 @@ class DisplayMixin:
         if total_rows == 0:
             self.rows_info.setText("Nincs megjeleníthető adat")
         else:
-            if self.rows_per_page_combo.currentText() == "Összes" or displayed_rows == total_rows:
+            if (
+                self.rows_per_page_combo.currentText() == "Összes"
+                or displayed_rows == total_rows
+            ):
                 info_text = f"Összesen: {total_rows} sor (mind megjelenítve)"
             else:
                 current_page = self.current_page + 1
@@ -248,7 +265,7 @@ class DisplayMixin:
         self._theme_manager.set_theme(theme_name)
 
         scheme = self._theme_manager.get_color_scheme()
-        if scheme and hasattr(self, 'info_bar'):
+        if scheme and hasattr(self, "info_bar"):
             surface_variant = scheme.get_color("surface", "light") or "#f5f5f5"
             border_color = scheme.get_color("info", "light") or "#d1d5db"
 
@@ -259,7 +276,7 @@ class DisplayMixin:
                 }}
             """)
 
-            if hasattr(self, 'rows_info'):
+            if hasattr(self, "rows_info"):
                 text_color = scheme.get_color("info", "base") or "#6b7280"
                 self.rows_info.setStyleSheet(f"""
                     QLabel#rows_info {{

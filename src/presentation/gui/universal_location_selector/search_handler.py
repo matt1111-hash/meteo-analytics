@@ -90,7 +90,9 @@ class SearchHandler:
             self.search_requested_callback(query)
 
             # KULCS VÁLTOZÁS: search_unified() hívása
-            raw_results = self.city_manager.search_unified(query, limit=20, hungarian_priority=True)
+            raw_results = self.city_manager.search_unified(
+                query, limit=20, hungarian_priority=True
+            )
             results = self._normalize_results(raw_results)
 
             self._display_results(results)
@@ -103,7 +105,9 @@ class SearchHandler:
                 global_count = len(results) - hungarian_count
 
                 if hungarian_count > 0 and global_count > 0:
-                    self.status_label.setText(f"✅ {hungarian_count} magyar + {global_count} globális = {len(results)} találat")
+                    self.status_label.setText(
+                        f"✅ {hungarian_count} magyar + {global_count} globális = {len(results)} találat"
+                    )
                 elif hungarian_count > 0:
                     self.status_label.setText(f"✅ {hungarian_count} magyar találat")
                 else:
@@ -152,10 +156,26 @@ class SearchHandler:
                 logger.warning("to_dict hiba: %s", e)
 
         fields = [
-            "city", "name", "lat", "lon", "country", "country_code", "population",
-            "continent", "admin_name", "capital", "timezone", "settlement_type",
-            "megye", "jaras", "climate_zone", "region_priority", "is_hungarian",
-            "terulet_hektar", "lakasok_szama", "display_name"
+            "city",
+            "name",
+            "lat",
+            "lon",
+            "country",
+            "country_code",
+            "population",
+            "continent",
+            "admin_name",
+            "capital",
+            "timezone",
+            "settlement_type",
+            "megye",
+            "jaras",
+            "climate_zone",
+            "region_priority",
+            "is_hungarian",
+            "terulet_hektar",
+            "lakasok_szama",
+            "display_name",
         ]
         city_dict: Dict[str, Any] = {}
         for field in fields:
@@ -186,10 +206,10 @@ class SearchHandler:
         for city in results[:20]:  # Első 20 eredmény
             try:
                 # Alap adatok
-                name = city.get('city', city.get('name', 'Unknown'))
-                lat = city.get('lat', 0.0)
-                lon = city.get('lon', 0.0)
-                is_hungarian = city.get('is_hungarian', False)
+                name = city.get("city", city.get("name", "Unknown"))
+                lat = city.get("lat", 0.0)
+                lon = city.get("lon", 0.0)
+                is_hungarian = city.get("is_hungarian", False)
 
                 # MAGYAR SPECIFIKUS FORMATTING
                 if is_hungarian:
@@ -206,7 +226,9 @@ class SearchHandler:
             except Exception as e:
                 logger.warning(f"Eredmény feldolgozási hiba: {e}")
 
-    def _format_hungarian_city(self, city: Dict[str, Any], name: str, lat: float, lon: float) -> str:
+    def _format_hungarian_city(
+        self, city: Dict[str, Any], name: str, lat: float, lon: float
+    ) -> str:
         """
         Magyar város formázása.
 
@@ -222,7 +244,7 @@ class SearchHandler:
         flag = "🇭🇺"
 
         # Display név: "Kiskunhalas, Bács-Kiskun megye"
-        megye = city.get('megye', '')
+        megye = city.get("megye", "")
         if megye:
             display_name = f"{name}, {megye} megye"
         else:
@@ -230,19 +252,21 @@ class SearchHandler:
 
         # Settlement type info
         settlement_info = ""
-        settlement_type = city.get('settlement_type')
+        settlement_type = city.get("settlement_type")
         if settlement_type:
             settlement_info = f" ({settlement_type})"
 
         # Population info
         pop_info = ""
-        population = city.get('population')
+        population = city.get("population")
         if population:
             pop_info = f"\n👥 {population:,} lakos"
 
         return f"{flag} {display_name}{settlement_info}{pop_info}\n🗺️ [{lat:.3f}, {lon:.3f}]"
 
-    def _format_global_city(self, city: Dict[str, Any], name: str, lat: float, lon: float) -> str:
+    def _format_global_city(
+        self, city: Dict[str, Any], name: str, lat: float, lon: float
+    ) -> str:
         """
         Globális város formázása.
 
@@ -256,8 +280,8 @@ class SearchHandler:
             Formázott szöveg
         """
         flag = "🌍"
-        country = city.get('country', '') or ''
-        region = city.get('admin_name', '') or ''
+        country = city.get("country", "") or ""
+        region = city.get("admin_name", "") or ""
 
         display_text = f"{flag} {name}"
         if region and region != name:

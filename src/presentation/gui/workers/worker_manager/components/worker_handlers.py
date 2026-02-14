@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class WorkerHandlers:
     """Handle worker lifecycle events."""
 
-    def __init__(self, manager: 'WorkerManager'):
+    def __init__(self, manager: "WorkerManager"):
         """
         Initialize worker handlers.
 
@@ -37,7 +37,7 @@ class WorkerHandlers:
         self._manager.mutex.lock()
         try:
             if worker_id in self._manager.active_workers:
-                worker_type = worker_id.split('_')[0]
+                worker_type = worker_id.split("_")[0]
                 worker = self._manager.active_workers[worker_id]
 
                 # Emit completion signal based on cancellation status
@@ -68,13 +68,13 @@ class WorkerHandlers:
         self._manager.mutex.lock()
         try:
             if worker_id in self._manager.active_workers:
-                worker_type = worker_id.split('_')[0]
+                worker_type = worker_id.split("_")[0]
 
                 # Remove worker
                 worker = self._manager.active_workers.pop(worker_id)
 
                 # Provider usage tracking
-                if hasattr(worker, 'actual_provider') and worker.actual_provider:
+                if hasattr(worker, "actual_provider") and worker.actual_provider:
                     self._manager._provider_manager._track_provider_usage(
                         worker.actual_provider, True
                     )

@@ -39,10 +39,7 @@ def _setup_window(self) -> None:
         self: ExtremeWeatherDialog instance
     """
     self.setWindowTitle(f"Extrém időjárási események - {self.city_name}")
-    self.setMinimumSize(
-        GUIConstants.DIALOG_MIN_WIDTH,
-        GUIConstants.DIALOG_MIN_HEIGHT
-    )
+    self.setMinimumSize(GUIConstants.DIALOG_MIN_WIDTH, GUIConstants.DIALOG_MIN_HEIGHT)
 
     # ThemeManager automatikus styling (szülő CSS öröklés helyett)
 

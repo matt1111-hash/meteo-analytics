@@ -1,0 +1,140 @@
+.
+├── data
+│   ├── cache
+│   ├── climate_cache
+│   ├── geojson
+│   └── user_preferences
+│       └── backups
+├── docs
+├── exports
+├── _legacy_code
+├── logs
+├── meteo_gui_starter.py
+├── scripts
+│   ├── logs
+│   └── src
+│       └── data
+├── src
+│   ├── analytics
+│   │   ├── __init__.py
+│   │   ├── multi_city_engine.py
+│   │   └── wind_analysis.py
+│   ├── config
+│   │   ├── api_config.py
+│   │   ├── __init__.py
+│   │   ├── paths_config.py
+│   │   ├── provider_config.py
+│   │   └── usage_config.py
+│   ├── config.py
+│   ├── data
+│   │   ├── anomaly_profile_manager.py
+│   │   ├── enums.py
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── user_preferences
+│   │   └── weather_client.py
+│   ├── domain
+│   │   ├── analytics
+│   │   │   ├── __init__.py
+│   │   │   ├── models.py
+│   │   │   ├── repositories.py
+│   │   │   ├── services
+│   │   │   │   ├── analytics_transform_service.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── region_resolver.py
+│   │   │   │   └── weather_fetch_service.py
+│   │   │   └── statistics.py
+│   │   ├── entities
+│   │   │   ├── climate_anomaly.py
+│   │   │   └── __init__.py
+│   │   ├── __init__.py
+│   │   ├── services
+│   │   │   ├── anomaly_detector.py
+│   │   │   └── __init__.py
+│   │   └── value_objects
+│   │       ├── anomaly_threshold.py
+│   │       └── __init__.py
+│   ├── gui
+│   │   ├── analytics_view.py
+│   │   ├── app_controller.py
+│   │   ├── chart_container.py
+│   │   ├── charts
+│   │   │   ├── base_chart.py
+│   │   │   ├── comparison_chart.py
+│   │   │   ├── heatmap_chart.py
+│   │   │   ├── __init__.py
+│   │   │   ├── precipitation_chart.py
+│   │   │   ├── temperature_chart.py
+│   │   │   ├── tooltip_mixin.py
+│   │   │   ├── wind_chart.py
+│   │   │   ├── wind_rose_chart.py
+│   │   │   └── windy_days_chart.py
+│   │   ├── cleanup_manager.py
+│   │   ├── color_palette.py
+│   │   ├── control_panel.py
+│   │   ├── data_widgets.py
+│   │   ├── dialogs
+│   │   │   ├── anomaly_settings_dialog.py
+│   │   │   └── __init__.py
+│   │   ├── dialogs.py
+│   │   ├── hungarian_location_selector.py
+│   │   ├── hungarian_map_tab.py
+│   │   ├── __init__.py
+│   │   ├── main_window.py
+│   │   ├── map_visualizer.py
+│   │   ├── panel_widgets
+│   │   │   ├── analysis_type_widget.py
+│   │   │   ├── api_settings_widget.py
+│   │   │   ├── date_range_widget.py
+│   │   │   ├── __init__.py
+│   │   │   ├── location_widget.py
+│   │   │   ├── multi_city_widget.py
+│   │   │   ├── provider_widget.py
+│   │   │   └── query_control_widget.py
+│   │   ├── results_panel
+│   │   │   ├── anomaly_detector.py
+│   │   │   ├── data_table_tab.py
+│   │   │   ├── detailed_charts_tab.py
+│   │   │   ├── extreme_calculator.py
+│   │   │   ├── extreme_events_tab.py
+│   │   │   ├── __init__.py
+│   │   │   ├── quick_overview_tab.py
+│   │   │   ├── results_panel.py
+│   │   │   ├── utils.py
+│   │   │   └── windy_days_tab.py
+│   │   ├── signal_manager.py
+│   │   ├── theme_manager.py
+│   │   ├── universal_location_selector.py
+│   │   ├── utils.py
+│   │   └── workers
+│   │       ├── analysis_worker.py
+│   │       └── data_fetch_worker.py
+│   └── infrastructure
+│       └── repositories
+│           └── city_repository.py
+├── tests
+│   ├── conftest.py
+│   ├── domain
+│   │   ├── analytics
+│   │   │   ├── test_analytics_transform_service.py
+│   │   │   ├── test_models.py
+│   │   │   ├── test_region_resolver.py
+│   │   │   ├── test_statistics.py
+│   │   │   └── test_weather_fetch_service.py
+│   │   ├── test_anomaly_detector_service.py
+│   │   ├── test_anomaly_threshold.py
+│   │   └── test_climate_anomaly.py
+│   ├── infrastructure
+│   │   └── repositories
+│   │       └── test_city_repository.py
+│   ├── test_config_core.py
+│   ├── test_data_models.py
+│   ├── test_multi_city_engine_core.py
+│   ├── test_smoke.py
+│   ├── test_usage_tracker_track_request.py
+│   ├── test_weather_client_core.py
+│   └── test_wind_analysis.py
+├── ultimate_project_analyzer.py
+└── utils
+
+40 directories, 98 files

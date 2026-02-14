@@ -121,7 +121,7 @@ class UserPreferences:
             "show_cost_estimates": True,
             "monthly_budget_usd": ProviderConfig.MONTHLY_BUDGET_USD,
             "warning_threshold": ProviderConfig.WARNING_THRESHOLD,
-            "last_updated": datetime.now().isoformat()
+            "last_updated": datetime.now().isoformat(),
         }
 
         prefs_file = _get_provider_prefs_file()

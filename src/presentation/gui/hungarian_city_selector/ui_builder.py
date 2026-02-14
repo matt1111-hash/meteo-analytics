@@ -59,7 +59,9 @@ class HungarianCityUIBuilder:
 
         # Magyar zászló és cím
         flag_label = QLabel("🇭🇺")
-        flag_label.setStyleSheet("font-size: 24px; border: none; background: transparent;")
+        flag_label.setStyleSheet(
+            "font-size: 24px; border: none; background: transparent;"
+        )
         layout.addWidget(flag_label)
 
         title_label = QLabel("Magyar Városok")
@@ -73,12 +75,16 @@ class HungarianCityUIBuilder:
 
         # Verzió info
         version_label = QLabel("MVP v1.0")
-        version_label.setStyleSheet("color: gray; font-size: 10px; border: none; background: transparent;")
+        version_label.setStyleSheet(
+            "color: gray; font-size: 10px; border: none; background: transparent;"
+        )
         layout.addWidget(version_label)
 
         return layout
 
-    def create_search_section(self, search_callback: Callable, clear_callback: Callable) -> QGroupBox:
+    def create_search_section(
+        self, search_callback: Callable, clear_callback: Callable
+    ) -> QGroupBox:
         """Keresési szakasz létrehozása."""
         group = QGroupBox("🔍 Keresés")
         layout = QVBoxLayout(group)
@@ -88,11 +94,15 @@ class HungarianCityUIBuilder:
         search_container = QHBoxLayout()
 
         search_icon = QLabel("🔍")
-        search_icon.setStyleSheet("font-size: 16px; border: none; background: transparent;")
+        search_icon.setStyleSheet(
+            "font-size: 16px; border: none; background: transparent;"
+        )
         search_container.addWidget(search_icon)
 
         self.search_box = QLineEdit()
-        self.search_box.setPlaceholderText("Keresés magyar városokban... (pl. Budapest, Szeged, Debrecen)")
+        self.search_box.setPlaceholderText(
+            "Keresés magyar városokban... (pl. Budapest, Szeged, Debrecen)"
+        )
         self.search_box.textChanged.connect(search_callback)
         self.search_box.returnPressed.connect(search_callback)
         search_container.addWidget(self.search_box)
@@ -141,7 +151,9 @@ class HungarianCityUIBuilder:
 
         return group
 
-    def create_cities_list_section(self, select_callback: Callable, reload_callback: Callable) -> QGroupBox:
+    def create_cities_list_section(
+        self, select_callback: Callable, reload_callback: Callable
+    ) -> QGroupBox:
         """Városok listája szakasz létrehozása."""
         group = QGroupBox("🏙️ Magyar városok listája")
         layout = QVBoxLayout(group)
@@ -190,7 +202,7 @@ class HungarianCityUIBuilder:
             ("🍇 Kecskemét", "Kecskemét", "Bács-Kiskun megye - 109k lakos"),
             ("🌲 Szombathely", "Szombathely", "Vas megye székhelye - 76k lakos"),
             ("💎 Veszprém", "Veszprém", "Balaton-felvidék - 57k lakos"),
-            ("🍷 Kaposvár", "Kaposvár", "Somogy megye székhelye - 63k lakos")
+            ("🍷 Kaposvár", "Kaposvár", "Somogy megye székhelye - 63k lakos"),
         ]
 
         self.quick_access_buttons = []
@@ -254,8 +266,8 @@ class HungarianCityUIBuilder:
             Régió: {region_text}
             Népesség: {population_text} fő
             Koordináták: {city.lat:.4f}, {city.lon:.4f}
-            Megye: {city.admin_name or 'n/a'}
-            Adatminőség: {city.data_quality_score or 'n/a'}
+            Megye: {city.admin_name or "n/a"}
+            Adatminőség: {city.data_quality_score or "n/a"}
             """
             item.setToolTip(tooltip.strip())
 
@@ -274,9 +286,9 @@ class HungarianCityUIBuilder:
     def get_current_region(self) -> str:
         """Jelenlegi régió lekérdezése."""
         if not self.region_combo:
-            return 'Összes'
+            return "Összes"
         current_data = self.region_combo.currentData()
-        return current_data if current_data else 'Összes'
+        return current_data if current_data else "Összes"
 
     def set_region(self, region: str) -> None:
         """Régió programozott beállítása."""

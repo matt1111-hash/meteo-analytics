@@ -50,10 +50,7 @@ import logging
 
 from .core import TrendAnalyticsTab, register_trend_analytics_theme
 
-__all__ = [
-    "TrendAnalyticsTab",
-    "register_trend_analytics_theme"
-]
+__all__ = ["TrendAnalyticsTab", "register_trend_analytics_theme"]
 
 logger = logging.getLogger(__name__)
 logger.info("✅ TrendAnalyticsTab module loaded (refactored: 5 files, max 150 lines)")

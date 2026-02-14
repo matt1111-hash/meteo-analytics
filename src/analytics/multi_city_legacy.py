@@ -59,11 +59,11 @@ def safe_min_max(values: List[NumberOrNone]) -> Tuple[Optional[float], Optional[
 
 
 __all__ = [
-    'safe_mean',
-    'safe_statistics_mean',
-    'safe_median',
-    'safe_statistics_median',
-    'safe_stdev',
-    'safe_statistics_stdev',
-    'safe_min_max'
+    "safe_mean",
+    "safe_statistics_mean",
+    "safe_median",
+    "safe_statistics_median",
+    "safe_stdev",
+    "safe_statistics_stdev",
+    "safe_min_max",
 ]

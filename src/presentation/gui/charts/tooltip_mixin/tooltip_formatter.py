@@ -6,7 +6,7 @@ WeatherTooltipMixin Tooltip Formatter - Format tooltip text.
 """
 
 import datetime
-from typing import Any, Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict
 
 if TYPE_CHECKING:
     from .core import WeatherTooltipMixin
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class TooltipFormatter:
     """Format tooltip text for different chart types."""
 
-    def __init__(self, mixin: 'WeatherTooltipMixin'):
+    def __init__(self, mixin: "WeatherTooltipMixin"):
         """
         Initialize tooltip formatter.
 
@@ -35,7 +35,7 @@ class TooltipFormatter:
             Formatted tooltip text
         """
         # Temperature chart specific
-        if 'primary_temp' in point_data:
+        if "primary_temp" in point_data:
             return self._format_temperature(point_data)
         else:
             # Generic for other charts
@@ -51,12 +51,12 @@ class TooltipFormatter:
         Returns:
             Formatted tooltip text
         """
-        date = point_data['date']
-        primary_temp = point_data['primary_temp']
+        date = point_data["date"]
+        primary_temp = point_data["primary_temp"]
 
         # Date formatting
         if isinstance(date, datetime.date):
-            date_str = date.strftime('%Y-%m-%d (%A)')
+            date_str = date.strftime("%Y-%m-%d (%A)")
         else:
             date_str = str(date)
 
@@ -80,22 +80,19 @@ class TooltipFormatter:
         # Base tooltip text
         tooltip_lines = [
             f"📅 {date_str}",
-            f"{temp_icon} {point_data['primary_temp_column'].replace('temp_', '').replace('_', ' ').title()}: {primary_temp:.1f}°C"
+            f"{temp_icon} {point_data['primary_temp_column'].replace('temp_', '').replace('_', ' ').title()}: {primary_temp:.1f}°C",
         ]
 
         # Add additional temperature columns
         for key, value in point_data.items():
-            if key.startswith('temp_') and key != point_data['primary_temp_column']:
-                column_name = key.replace('temp_', '').replace('_', ' ').title()
+            if key.startswith("temp_") and key != point_data["primary_temp_column"]:
+                column_name = key.replace("temp_", "").replace("_", " ").title()
                 tooltip_lines.append(f"🌡️ {column_name}: {value:.1f}°C")
 
         # Add category
-        tooltip_lines.extend([
-            "",
-            f"🏷️ {category}"
-        ])
+        tooltip_lines.extend(["", f"🏷️ {category}"])
 
-        return '\n'.join(tooltip_lines)
+        return "\n".join(tooltip_lines)
 
     def _format_generic(self, point_data: Dict[str, Any]) -> str:
         """
@@ -110,27 +107,27 @@ class TooltipFormatter:
         tooltip_lines = []
 
         # Add date if available
-        if 'date' in point_data:
-            date = point_data['date']
+        if "date" in point_data:
+            date = point_data["date"]
             if isinstance(date, datetime.date):
-                date_str = date.strftime('%Y-%m-%d (%A)')
+                date_str = date.strftime("%Y-%m-%d (%A)")
             else:
                 date_str = str(date)
             tooltip_lines.append(f"📅 {date_str}")
 
         # Add value if available
-        if 'value' in point_data:
-            parameter = point_data.get('parameter', 'Ismeretlen')
-            value = point_data['value']
+        if "value" in point_data:
+            parameter = point_data.get("parameter", "Ismeretlen")
+            value = point_data["value"]
 
             # Icon and unit based on parameter
-            if 'temperature' in parameter:
+            if "temperature" in parameter:
                 icon = "🌡️"
                 unit = "°C"
-            elif 'precipitation' in parameter:
+            elif "precipitation" in parameter:
                 icon = "🌧️"
                 unit = "mm"
-            elif 'wind' in parameter:
+            elif "wind" in parameter:
                 icon = "💨"
                 unit = "km/h"
             else:
@@ -143,10 +140,10 @@ class TooltipFormatter:
         # Fallback: show all key-value pairs
         if not tooltip_lines:
             for key, value in point_data.items():
-                if key not in ['index', 'pixel_distance']:
+                if key not in ["index", "pixel_distance"]:
                     tooltip_lines.append(f"{key}: {value}")
 
-        return '\n'.join(tooltip_lines) if tooltip_lines else "📊 Chart adat"
+        return "\n".join(tooltip_lines) if tooltip_lines else "📊 Chart adat"
 
     def log_detailed_info(self, point_data: Dict[str, Any]) -> None:
         """Log detailed point info for debugging."""
@@ -155,17 +152,17 @@ class TooltipFormatter:
         print("=" * 60)
 
         for key, value in point_data.items():
-            if key == 'date':
+            if key == "date":
                 print(f"📅 Dátum: {value}")
-            elif key in ['primary_temp', 'value']:
+            elif key in ["primary_temp", "value"]:
                 print(f"📊 Fő érték ({key}): {value:.1f}")
-            elif key.startswith('temp_'):
+            elif key.startswith("temp_"):
                 print(f"🌡️ {key}: {value:.1f}°C")
-            elif key == 'parameter':
+            elif key == "parameter":
                 print(f"📋 Parameter: {value}")
-            elif key == 'pixel_distance':
+            elif key == "pixel_distance":
                 print(f"🎯 Pixel távolság: {value:.1f}px")
-            elif key == 'index':
+            elif key == "index":
                 print(f"📊 Index: {value}")
             else:
                 print(f"🔧 {key}: {value}")

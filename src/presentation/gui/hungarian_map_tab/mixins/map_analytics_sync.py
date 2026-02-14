@@ -22,6 +22,7 @@ class MapAnalyticsSyncMixin(AnalyticsSyncCore, AnalyticsSyncHelpers):
 
     Combines core sync functionality with helper methods.
     """
+
     pass
 
 

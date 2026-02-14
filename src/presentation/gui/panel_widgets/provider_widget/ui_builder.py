@@ -161,7 +161,9 @@ def create_details_group(self) -> QGroupBox:
     self.details_text.setMaximumHeight(80)
     self.details_text.setReadOnly(True)
     # OPEN-METEO KIEMELÉS
-    self.details_text.setText("🌍 Open-Meteo: Ingyenes, korlátlan, megbízható\n💎 Meteostat: Premium, API key szükséges\n🤖 Auto: Smart routing (opcionális)")
+    self.details_text.setText(
+        "🌍 Open-Meteo: Ingyenes, korlátlan, megbízható\n💎 Meteostat: Premium, API key szükséges\n🤖 Auto: Smart routing (opcionális)"
+    )
     details_layout.addWidget(self.details_text)
 
     return details_group
@@ -209,7 +211,7 @@ def populate_provider_combo(self) -> None:
         ("meteostat", "💎 Meteostat (Premium)"),
         ("weatherapi", "🌤️ WeatherAPI (Premium)"),
         ("openweather", "☁️ OpenWeatherMap (Premium)"),
-        ("auto", "🤖 Automatikus (Smart Routing)")  # Auto utolsó helyen!
+        ("auto", "🤖 Automatikus (Smart Routing)"),  # Auto utolsó helyen!
     ]
 
     for value, display in providers:

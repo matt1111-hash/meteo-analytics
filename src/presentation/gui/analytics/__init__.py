@@ -43,18 +43,18 @@ from .analytics_widgets import RecordCard, RecordSummaryCard
 
 __all__ = [
     # Main class
-    'AnalyticsView',
+    "AnalyticsView",
     # Color maps
-    'MeteorologicalColorMaps',
+    "MeteorologicalColorMaps",
     # Widgets
-    'RecordCard',
-    'RecordSummaryCard',
+    "RecordCard",
+    "RecordSummaryCard",
     # Tabs
-    'TemperatureTabWidget',
-    'PrecipitationTabWidget',
-    'WindTabWidget',
-    'WindGustTabWidget',
-    'ClimateTabWidget',
+    "TemperatureTabWidget",
+    "PrecipitationTabWidget",
+    "WindTabWidget",
+    "WindGustTabWidget",
+    "ClimateTabWidget",
     # Statistics
-    'AnalyticsStatistics',
+    "AnalyticsStatistics",
 ]

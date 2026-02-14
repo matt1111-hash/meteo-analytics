@@ -5,10 +5,10 @@
 WorkerManager Components - Internal components.
 """
 
-from .worker_starters import WorkerStarters
-from .worker_handlers import WorkerHandlers
 from .provider_manager import ProviderManager
 from .shutdown import ShutdownManager
+from .worker_handlers import WorkerHandlers
+from .worker_starters import WorkerStarters
 
 __all__ = [
     "WorkerStarters",

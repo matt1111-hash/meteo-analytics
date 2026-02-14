@@ -43,6 +43,7 @@ class MapTabActions:
 
     These methods are imported from actions.py and other modules and made available as class methods.
     """
+
     # Import action functions as methods
     _on_auto_sync_toggled = _on_auto_sync_toggled
     _on_auto_weather_refresh_toggled = _on_auto_weather_refresh_toggled
@@ -71,6 +72,7 @@ class MapTabUIMixin(MapTabUIComponents, MapTabUIHandlers, MapTabActions):
 
     Combines UI component creation, signal handling, and actions.
     """
+
     pass
 
 

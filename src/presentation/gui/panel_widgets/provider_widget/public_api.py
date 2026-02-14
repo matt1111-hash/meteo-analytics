@@ -65,6 +65,7 @@ def update_usage_stats(self, stats: Dict[str, Any]) -> None:
     """
     try:
         from .monitoring import _update_usage_display
+
         self.usage_stats.update(stats)
         _update_usage_display(self)
 
@@ -84,14 +85,18 @@ def get_usage_summary(self) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: Usage summary
     """
-    total_requests = sum(stats.get('requests', 0) for stats in self.usage_stats.values())
-    total_cost = sum(stats.get('estimated_cost', 0) for stats in self.usage_stats.values())
+    total_requests = sum(
+        stats.get("requests", 0) for stats in self.usage_stats.values()
+    )
+    total_cost = sum(
+        stats.get("estimated_cost", 0) for stats in self.usage_stats.values()
+    )
 
     return {
         "current_provider": self.current_provider,
         "total_requests": total_requests,
         "total_cost": total_cost,
-        "provider_stats": self.usage_stats.copy()
+        "provider_stats": self.usage_stats.copy(),
     }
 
 
@@ -133,9 +138,9 @@ def get_state(self) -> Dict[str, Any]:
         "current_provider": self.current_provider,
         "provider_preferences": {
             "default_provider": "open-meteo",  # OPEN-METEO alapértelmezett
-            "auto_fallback": False  # Auto routing letiltva alapértelmezetten
+            "auto_fallback": False,  # Auto routing letiltva alapértelmezetten
         },
-        "is_valid": is_valid(self)
+        "is_valid": is_valid(self),
     }
 
 
@@ -196,6 +201,7 @@ def refresh_usage_display(self) -> None:
         self: ProviderWidget instance
     """
     from .monitoring import _update_usage_display
+
     _update_usage_display(self)
 
 
@@ -220,4 +226,5 @@ def closeEvent(self, event) -> None:
     """
     cleanup(self)
     from PySide6.QtWidgets import QWidget
+
     QWidget.closeEvent(self, event)

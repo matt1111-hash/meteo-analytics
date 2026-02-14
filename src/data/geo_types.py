@@ -15,6 +15,7 @@ from typing import Any, Dict, Optional
 
 class DistanceUnit(Enum):
     """Distance measurement units."""
+
     KILOMETERS = "km"
     MILES = "miles"
     NAUTICAL_MILES = "nm"
@@ -23,6 +24,7 @@ class DistanceUnit(Enum):
 
 class CoordinateSystem(Enum):
     """Coordinate systems."""
+
     WGS84 = "WGS84"
     WGS72 = "WGS72"
     NAD83 = "NAD83"
@@ -32,6 +34,7 @@ class CoordinateSystem(Enum):
 @dataclass
 class GeoPoint:
     """Geographic point data structure."""
+
     latitude: float
     longitude: float
     altitude: Optional[float] = None
@@ -40,13 +43,15 @@ class GeoPoint:
     def __post_init__(self):
         """Validate coordinates on initialization."""
         if not self.is_valid():
-            raise ValueError(f"Invalid coordinates: lat={self.latitude}, lon={self.longitude}")
+            raise ValueError(
+                f"Invalid coordinates: lat={self.latitude}, lon={self.longitude}"
+            )
 
     def is_valid(self) -> bool:
         """Check if coordinates are valid."""
         return (-90 <= self.latitude <= 90) and (-180 <= self.longitude <= 180)
 
-    def normalize(self) -> 'GeoPoint':
+    def normalize(self) -> "GeoPoint":
         """Normalize coordinates."""
         # Longitude wraparound (-180 to 180)
         normalized_lon = ((self.longitude + 180) % 360) - 180
@@ -58,7 +63,7 @@ class GeoPoint:
             latitude=normalized_lat,
             longitude=normalized_lon,
             altitude=self.altitude,
-            name=self.name
+            name=self.name,
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -67,23 +72,24 @@ class GeoPoint:
             "latitude": self.latitude,
             "longitude": self.longitude,
             "altitude": self.altitude,
-            "name": self.name
+            "name": self.name,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'GeoPoint':
+    def from_dict(cls, data: Dict[str, Any]) -> "GeoPoint":
         """Create GeoPoint from dictionary."""
         return cls(
             latitude=data["latitude"],
             longitude=data["longitude"],
             altitude=data.get("altitude"),
-            name=data.get("name")
+            name=data.get("name"),
         )
 
 
 @dataclass
 class BoundingBox:
     """Bounding box data structure."""
+
     min_latitude: float
     max_latitude: float
     min_longitude: float
@@ -105,7 +111,9 @@ class BoundingBox:
             lon_in_range = self.min_longitude <= point.longitude <= self.max_longitude
         else:
             # Dateline crossing
-            lon_in_range = (point.longitude >= self.min_longitude) or (point.longitude <= self.max_longitude)
+            lon_in_range = (point.longitude >= self.min_longitude) or (
+                point.longitude <= self.max_longitude
+            )
 
         return lat_in_range and lon_in_range
 
@@ -123,13 +131,13 @@ class BoundingBox:
 
         return GeoPoint(latitude=center_lat, longitude=center_lon)
 
-    def expand_by_padding(self, padding_degrees: float) -> 'BoundingBox':
+    def expand_by_padding(self, padding_degrees: float) -> "BoundingBox":
         """Expand bounding box by padding."""
         return BoundingBox(
             min_latitude=max(-90, self.min_latitude - padding_degrees),
             max_latitude=min(90, self.max_latitude + padding_degrees),
             min_longitude=max(-180, self.min_longitude - padding_degrees),
-            max_longitude=min(180, self.max_longitude + padding_degrees)
+            max_longitude=min(180, self.max_longitude + padding_degrees),
         )
 
     def to_dict(self) -> Dict[str, float]:
@@ -138,13 +146,14 @@ class BoundingBox:
             "min_latitude": self.min_latitude,
             "max_latitude": self.max_latitude,
             "min_longitude": self.min_longitude,
-            "max_longitude": self.max_longitude
+            "max_longitude": self.max_longitude,
         }
 
 
 @dataclass
 class GeographicRegion:
     """Geographic region data structure."""
+
     name: str
     bounding_box: BoundingBox
     center_point: GeoPoint
@@ -159,9 +168,9 @@ class GeographicRegion:
 
 
 __all__ = [
-    'DistanceUnit',
-    'CoordinateSystem',
-    'GeoPoint',
-    'BoundingBox',
-    'GeographicRegion'
+    "DistanceUnit",
+    "CoordinateSystem",
+    "GeoPoint",
+    "BoundingBox",
+    "GeographicRegion",
 ]

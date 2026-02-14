@@ -14,10 +14,11 @@ class ExtremeRecord:
     """
     🏆 Extrém időjárási rekord adatstruktúra
     """
-    category: str      # 'temperature', 'precipitation', 'wind'
-    record_type: str   # 'Legmelegebb nap', 'Legnagyobb széllökés', stb.
-    value: str         # Formázott érték (pl. "35.2°C", "91.4km/h")
-    date: str          # Dátum string
+
+    category: str  # 'temperature', 'precipitation', 'wind'
+    record_type: str  # 'Legmelegebb nap', 'Legnagyobb széllökés', stb.
+    value: str  # Formázott érték (pl. "35.2°C", "91.4km/h")
+    date: str  # Dátum string
     raw_value: float | None = None  # Nyers érték számításokhoz
 
 
@@ -26,6 +27,7 @@ class RecordsTextSummary:
     """
     📋 Rekordok szöveges összefoglalója
     """
+
     temperature_text: str
     precipitation_text: str
     wind_text: str

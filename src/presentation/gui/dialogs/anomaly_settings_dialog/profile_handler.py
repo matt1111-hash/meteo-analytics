@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class AnomalySettingsProfileHandler:
     """Profil kezelő osztály az AnomalySettingsDialoghoz."""
 
-    def __init__(self, dialog: 'AnomalySettingsDialog'):
+    def __init__(self, dialog: "AnomalySettingsDialog"):
         """Inicializálás."""
         self.dialog = dialog
 
@@ -58,7 +58,9 @@ class AnomalySettingsProfileHandler:
         self.dialog.wind_widgets["normal"].setValue(settings.get("wind_normal", 50))
         self.dialog.wind_widgets["strong"].setValue(settings.get("wind_strong", 70))
         self.dialog.wind_widgets["extreme"].setValue(settings.get("wind_extreme", 100))
-        self.dialog.wind_widgets["hurricane"].setValue(settings.get("wind_hurricane", 120))
+        self.dialog.wind_widgets["hurricane"].setValue(
+            settings.get("wind_hurricane", 120)
+        )
 
         self.dialog.unsaved_changes = False
         self.dialog._update_preview()
@@ -76,7 +78,7 @@ class AnomalySettingsProfileHandler:
             "wind_normal": self.dialog.wind_widgets["normal"].value(),
             "wind_strong": self.dialog.wind_widgets["strong"].value(),
             "wind_extreme": self.dialog.wind_widgets["extreme"].value(),
-            "wind_hurricane": self.dialog.wind_widgets["hurricane"].value()
+            "wind_hurricane": self.dialog.wind_widgets["hurricane"].value(),
         }
 
     def create_new_profile(self) -> None:
@@ -88,29 +90,44 @@ class AnomalySettingsProfileHandler:
                 self.dialog.profile_combo.setCurrentText(name.strip())
                 logger.info(f"Új profil létrehozva: {name}")
             else:
-                QMessageBox.warning(self.dialog, "Hiba", f"Profil '{name}' már létezik!")
+                QMessageBox.warning(
+                    self.dialog, "Hiba", f"Profil '{name}' már létezik!"
+                )
 
     def edit_profile_name(self) -> None:
         """Profil átnevezése."""
         if self.dialog.current_profile == "default":
-            QMessageBox.information(self.dialog, "Info", "Az alapértelmezett profil nem nevezhető át!")
+            QMessageBox.information(
+                self.dialog, "Info", "Az alapértelmezett profil nem nevezhető át!"
+            )
             return
 
         new_name, ok = QInputDialog.getText(
-            self.dialog, "Profil Átnevezése", "Új név:", text=self.dialog.current_profile
+            self.dialog,
+            "Profil Átnevezése",
+            "Új név:",
+            text=self.dialog.current_profile,
         )
         if ok and new_name.strip() and new_name.strip() != self.dialog.current_profile:
-            if self.dialog.profile_manager.rename_profile(self.dialog.current_profile, new_name.strip()):
+            if self.dialog.profile_manager.rename_profile(
+                self.dialog.current_profile, new_name.strip()
+            ):
                 self.load_current_profile()
                 self.dialog.profile_combo.setCurrentText(new_name.strip())
-                logger.info(f"Profil átnevezve: {self.dialog.current_profile} → {new_name}")
+                logger.info(
+                    f"Profil átnevezve: {self.dialog.current_profile} → {new_name}"
+                )
             else:
-                QMessageBox.warning(self.dialog, "Hiba", f"Profil '{new_name}' már létezik!")
+                QMessageBox.warning(
+                    self.dialog, "Hiba", f"Profil '{new_name}' már létezik!"
+                )
 
     def delete_profile(self) -> None:
         """Profil törlése."""
         if self.dialog.current_profile == "default":
-            QMessageBox.information(self.dialog, "Info", "Az alapértelmezett profil nem törölhető!")
+            QMessageBox.information(
+                self.dialog, "Info", "Az alapértelmezett profil nem törölhető!"
+            )
             return
 
         reply = QMessageBox.question(
@@ -118,7 +135,7 @@ class AnomalySettingsProfileHandler:
             "Profil Törlése",
             f"Biztosan törölni szeretnéd a '{self.dialog.current_profile}' profilt?",
             QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
+            QMessageBox.No,
         )
 
         if reply == QMessageBox.Yes:
@@ -135,10 +152,14 @@ class AnomalySettingsProfileHandler:
             "Alapértelmezett Visszaállítás",
             "Biztos visszaállítod az alapértelmezett értékeket?",
             QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
+            QMessageBox.No,
         )
 
         if reply == QMessageBox.Yes:
-            self.dialog.profile_manager.reset_profile_to_defaults(self.dialog.current_profile)
+            self.dialog.profile_manager.reset_profile_to_defaults(
+                self.dialog.current_profile
+            )
             self.load_profile_settings(self.dialog.current_profile)
-            logger.info(f"Profil visszaállítva alapértelmezettre: {self.dialog.current_profile}")
+            logger.info(
+                f"Profil visszaállítva alapértelmezettre: {self.dialog.current_profile}"
+            )

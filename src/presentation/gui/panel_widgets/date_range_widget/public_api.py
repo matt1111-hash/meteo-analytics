@@ -61,10 +61,12 @@ class DateRangeWidgetPublicAPI:
 
         return {
             "date_mode": self.date_mode,
-            "time_range": self.time_range_combo.currentText() if self.date_mode == "time_range" else None,
+            "time_range": self.time_range_combo.currentText()
+            if self.date_mode == "time_range"
+            else None,
             "start_date": start_date,
             "end_date": end_date,
-            "is_valid": self.is_valid()
+            "is_valid": self.is_valid(),
         }
 
     def set_state(self, state: Dict[str, Any]) -> bool:

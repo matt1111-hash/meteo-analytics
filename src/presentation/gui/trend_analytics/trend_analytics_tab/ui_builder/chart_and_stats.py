@@ -1,4 +1,5 @@
 """UI Builder - Chart and Statistics sections."""
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
@@ -32,6 +33,7 @@ def create_plotly_chart_container(parent_widget: QWidget) -> QWidget:
     layout.addWidget(chart_title)
 
     from ...trend_widgets import InteractiveTrendChart
+
     chart = InteractiveTrendChart()
     layout.addWidget(chart)
 
@@ -61,6 +63,7 @@ def create_dashboard_statistics_area(parent_widget: QWidget) -> QWidget:
     stats_layout.setContentsMargins(10, 10, 10, 10)
 
     from ...trend_widgets import EnhancedStatisticsPanel
+
     statistics_panel = EnhancedStatisticsPanel()
     stats_layout.addWidget(statistics_panel, stretch=1)
 
@@ -74,7 +77,9 @@ def create_dashboard_statistics_area(parent_widget: QWidget) -> QWidget:
     return statistics_panel
 
 
-def setup_content_splitter(parent_widget: QWidget, chart_container: QWidget, stats_area: QWidget) -> None:
+def setup_content_splitter(
+    parent_widget: QWidget, chart_container: QWidget, stats_area: QWidget
+) -> None:
     """QSplitter implementáció."""
     content_splitter = QSplitter(Qt.Horizontal)
     content_splitter.setChildrenCollapsible(False)

@@ -13,6 +13,7 @@ from PySide6.QtWidgets import QWidget
 def get_theme_manager():
     """Get ThemeManager singleton (imported in __init__ to avoid circular import)."""
     from .core import ProfessionalThemeManager
+
     return ProfessionalThemeManager()
 
 
@@ -28,7 +29,9 @@ def register_widget_for_theming(widget: QWidget, style_class: str) -> None:
     css = manager.generate_css_for_class(style_class)
     if css:
         widget.setStyleSheet(css)
-        print(f"🎨 Professional styling applied to {widget.__class__.__name__}: {style_class}")
+        print(
+            f"🎨 Professional styling applied to {widget.__class__.__name__}: {style_class}"
+        )
 
 
 def apply_theme_to_app(theme_name: str) -> bool:
@@ -54,7 +57,7 @@ def toggle_app_theme() -> str:
 def initialize_theme_system(
     default_theme: str = "light",
     load_saved_preferences: bool = True,
-    create_weather_palette: bool = True
+    create_weather_palette: bool = True,
 ) -> None:
     """
     🚀 PROFESSIONAL SETUP - PIROS (#C43939) TÉMA RENDSZER INICIALIZÁLÁSA.
@@ -74,7 +77,9 @@ def initialize_theme_system(
     else:
         manager.set_theme(default_theme)
 
-    print(f"🎨 Professional RED (#C43939) theme system initialized: {manager.get_current_theme()}")
+    print(
+        f"🎨 Professional RED (#C43939) theme system initialized: {manager.get_current_theme()}"
+    )
     print(f"🌦️ Weather palette: {'enabled' if create_weather_palette else 'disabled'}")
 
 

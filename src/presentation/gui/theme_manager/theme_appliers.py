@@ -8,13 +8,14 @@ ThemeManager Theme Appliers - Different theme application strategies.
 from typing import TYPE_CHECKING
 
 from PySide6.QtGui import QColor, QPalette
-from PySide6.QtWidgets import QApplication
 
 if TYPE_CHECKING:
     from .core import ProfessionalThemeManager
 
 
-def apply_qdarktheme_theme(theme_name: str, manager: 'ProfessionalThemeManager') -> None:
+def apply_qdarktheme_theme(
+    theme_name: str, manager: "ProfessionalThemeManager"
+) -> None:
     """
     Apply qdarktheme (professional) theme.
 
@@ -28,7 +29,9 @@ def apply_qdarktheme_theme(theme_name: str, manager: 'ProfessionalThemeManager')
     _enhance_with_color_palette(manager)
 
 
-def apply_qt6_native_theme(theme_name: str, manager: 'ProfessionalThemeManager') -> None:
+def apply_qt6_native_theme(
+    theme_name: str, manager: "ProfessionalThemeManager"
+) -> None:
     """
     Apply Qt6.5+ native ColorScheme theme.
 
@@ -46,7 +49,9 @@ def apply_qt6_native_theme(theme_name: str, manager: 'ProfessionalThemeManager')
     _enhance_with_color_palette(manager)
 
 
-def apply_color_palette_theme(theme_name: str, manager: 'ProfessionalThemeManager') -> None:
+def apply_color_palette_theme(
+    theme_name: str, manager: "ProfessionalThemeManager"
+) -> None:
     """
     Apply ColorPalette-based theme (fallback).
 
@@ -64,7 +69,9 @@ def apply_color_palette_theme(theme_name: str, manager: 'ProfessionalThemeManage
     palette.setColor(QPalette.ColorRole.Window, QColor(colors["surface"]))
     palette.setColor(QPalette.ColorRole.WindowText, QColor(colors["on_surface"]))
     palette.setColor(QPalette.ColorRole.Base, QColor(colors["surface_variant"]))
-    palette.setColor(QPalette.ColorRole.AlternateBase, QColor(colors["surface_variant"]))
+    palette.setColor(
+        QPalette.ColorRole.AlternateBase, QColor(colors["surface_variant"])
+    )
     palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(colors["surface"]))
     palette.setColor(QPalette.ColorRole.ToolTipText, QColor(colors["on_surface"]))
     palette.setColor(QPalette.ColorRole.Text, QColor(colors["on_surface"]))
@@ -86,7 +93,7 @@ def apply_color_palette_theme(theme_name: str, manager: 'ProfessionalThemeManage
     manager.app.setPalette(palette)
 
 
-def _enhance_with_color_palette(manager: 'ProfessionalThemeManager') -> None:
+def _enhance_with_color_palette(manager: "ProfessionalThemeManager") -> None:
     """
     Enhance Qt theming with ColorPalette colors.
 
@@ -104,7 +111,7 @@ def _enhance_with_color_palette(manager: 'ProfessionalThemeManager') -> None:
     palette.setColor(QPalette.ColorRole.Link, QColor(colors["info"]))
 
     # Weather-specific enhancements
-    if hasattr(manager, 'weather_palette'):
+    if hasattr(manager, "weather_palette"):
         weather_colors = manager.weather_palette.get_all_variants("primary")
         if "hover" in weather_colors:
             hover_color = QColor(weather_colors["hover"])

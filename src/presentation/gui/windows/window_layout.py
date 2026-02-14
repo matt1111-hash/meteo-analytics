@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from .main_window import MainWindow
 
 
-def setup_window(window: 'MainWindow') -> None:
+def setup_window(window: "MainWindow") -> None:
     """
     🪟 Ablak alapbeállításai.
 
@@ -37,16 +37,13 @@ def setup_window(window: 'MainWindow') -> None:
 
     window.setWindowTitle(f"{AppInfo.NAME} - THREAD CLEANUP FIX")
     window.setGeometry(
-        GUIConstants.MAIN_WINDOW_X,
-        GUIConstants.MAIN_WINDOW_Y,
-        1400,
-        900
+        GUIConstants.MAIN_WINDOW_X, GUIConstants.MAIN_WINDOW_Y, 1400, 900
     )
     window.setMinimumSize(1200, 700)
     register_widget_for_theming(window, "navigation")
 
 
-def create_stacked_views(window: 'MainWindow') -> QStackedWidget:
+def create_stacked_views(window: "MainWindow") -> QStackedWidget:
     """
     📚 QStackedWidget inicializálása különböző nézetekkel.
 
@@ -91,7 +88,7 @@ def create_stacked_views(window: 'MainWindow') -> QStackedWidget:
     return stacked_widget
 
 
-def create_single_city_view(window: 'MainWindow') -> QWidget:
+def create_single_city_view(window: "MainWindow") -> QWidget:
     """Single City View létrehozása."""
     from ..control_panel import ControlPanel
     from ..results_panel import ResultsPanel
@@ -137,7 +134,7 @@ def create_single_city_view(window: 'MainWindow') -> QWidget:
     return view
 
 
-def create_analytics_view(window: 'MainWindow') -> QWidget:
+def create_analytics_view(window: "MainWindow") -> QWidget:
     """Analytics View létrehozása."""
     from ..analytics import AnalyticsView
     from ..theme_manager import register_widget_for_theming
@@ -147,7 +144,7 @@ def create_analytics_view(window: 'MainWindow') -> QWidget:
     return window.analytics_panel
 
 
-def create_trend_analysis_view(window: 'MainWindow') -> QWidget:
+def create_trend_analysis_view(window: "MainWindow") -> QWidget:
     """Trend Analysis view létrehozása."""
     from ..theme_manager import register_widget_for_theming
     from ..trend_analytics import TrendAnalyticsTab
@@ -157,7 +154,7 @@ def create_trend_analysis_view(window: 'MainWindow') -> QWidget:
     return window.trend_analytics_tab
 
 
-def create_hungarian_map_view(window: 'MainWindow') -> QWidget:
+def create_hungarian_map_view(window: "MainWindow") -> QWidget:
     """Hungarian Map view létrehozása."""
     from ..hungarian_map_tab import HungarianMapTab
     from ..theme_manager import register_widget_for_theming
@@ -167,15 +164,17 @@ def create_hungarian_map_view(window: 'MainWindow') -> QWidget:
 
     # Magyar megyék automatikus konfigurálása
     if window.state.hungarian_counties.geodataframe is not None:
-        if hasattr(window.hungarian_map_tab, 'map_visualizer'):
+        if hasattr(window.hungarian_map_tab, "map_visualizer"):
             map_visualizer = window.hungarian_map_tab.map_visualizer
-            if hasattr(map_visualizer, 'set_counties_geodataframe'):
-                map_visualizer.set_counties_geodataframe(window.state.hungarian_counties.geodataframe)
+            if hasattr(map_visualizer, "set_counties_geodataframe"):
+                map_visualizer.set_counties_geodataframe(
+                    window.state.hungarian_counties.geodataframe
+                )
 
     return window.hungarian_map_tab
 
 
-def create_settings_placeholder(window: 'MainWindow') -> QWidget:
+def create_settings_placeholder(window: "MainWindow") -> QWidget:
     """Settings placeholder view létrehozása."""
     from ..theme_manager import register_widget_for_theming
 
@@ -184,7 +183,7 @@ def create_settings_placeholder(window: 'MainWindow') -> QWidget:
     return view
 
 
-def create_status_bar_provider_widgets(window: 'MainWindow') -> tuple:
+def create_status_bar_provider_widgets(window: "MainWindow") -> tuple:
     """
     🌍 Status bar provider widgetek létrehozása.
 
@@ -200,12 +199,12 @@ def create_status_bar_provider_widgets(window: 'MainWindow') -> tuple:
 
 # Export
 __all__ = [
-    'setup_window',
-    'create_stacked_views',
-    'create_single_city_view',
-    'create_analytics_view',
-    'create_trend_analysis_view',
-    'create_hungarian_map_view',
-    'create_settings_placeholder',
-    'create_status_bar_provider_widgets',
+    "setup_window",
+    "create_stacked_views",
+    "create_single_city_view",
+    "create_analytics_view",
+    "create_trend_analysis_view",
+    "create_hungarian_map_view",
+    "create_settings_placeholder",
+    "create_status_bar_provider_widgets",
 ]

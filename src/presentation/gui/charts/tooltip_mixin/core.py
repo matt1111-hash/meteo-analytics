@@ -7,8 +7,8 @@ WeatherTooltipMixin Core - Main mixin class for chart tooltips.
 
 from typing import Any, Dict
 
-from .event_manager import EventManager
 from .event_handlers import EventHandlers
+from .event_manager import EventManager
 from .point_finder import PointFinder
 from .tooltip_display import TooltipDisplay
 from .tooltip_formatter import TooltipFormatter

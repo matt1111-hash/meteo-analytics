@@ -1,11 +1,12 @@
 """Main thresholds tab builder."""
+
 from PySide6.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 
 from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder import (
     create_categories_tab,
+    create_precipitation_section,
     create_preview_tab,
     create_temperature_section,
-    create_precipitation_section,
     create_wind_section,
 )
 

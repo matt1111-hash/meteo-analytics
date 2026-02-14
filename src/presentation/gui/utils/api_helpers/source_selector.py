@@ -29,7 +29,9 @@ def get_optimal_data_source(use_case: str, prefer_free: bool = True) -> str:
         optimal_source = DataConstants.USE_CASE_SOURCE_MAPPING[use_case]
 
         if prefer_free and optimal_source == "meteostat":
-            if DataConstants.SOURCE_CAPABILITIES["open-meteo"].get(use_case.replace("_", "-"), False):
+            if DataConstants.SOURCE_CAPABILITIES["open-meteo"].get(
+                use_case.replace("_", "-"), False
+            ):
                 return "open-meteo"
 
         return optimal_source
@@ -47,7 +49,9 @@ def get_source_display_name(source_id: str) -> str:
     Returns:
         User-friendly display name
     """
-    return APIConstants.SOURCE_DISPLAY_NAMES.get(source_id, f"Unknown Source ({source_id})")
+    return APIConstants.SOURCE_DISPLAY_NAMES.get(
+        source_id, f"Unknown Source ({source_id})"
+    )
 
 
 def validate_api_source_available(source_id: str) -> bool:
@@ -81,7 +85,8 @@ def get_fallback_source_chain(primary_source: str) -> List[str]:
         List of fallback sources
     """
     available_sources = [
-        source for source in DataConstants.DATA_SOURCE_PRIORITY
+        source
+        for source in DataConstants.DATA_SOURCE_PRIORITY
         if validate_api_source_available(source)
     ]
 
@@ -92,7 +97,9 @@ def get_fallback_source_chain(primary_source: str) -> List[str]:
     return available_sources
 
 
-def log_api_source_selection(use_case: str, selected_source: str, reason: str = "") -> None:
+def log_api_source_selection(
+    use_case: str, selected_source: str, reason: str = ""
+) -> None:
     """
     Log API source selection.
 

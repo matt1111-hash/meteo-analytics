@@ -42,27 +42,37 @@ def _update_usage_display(self) -> None:
             self.cost_label.setText("💰 Költség: $0.00/hó (INGYENES)")
 
             # Green progress bar for Open-Meteo
-            self.usage_progress.setStyleSheet("QProgressBar::chunk { background-color: #10b981; }")
+            self.usage_progress.setStyleSheet(
+                "QProgressBar::chunk { background-color: #10b981; }"
+            )
 
         elif self.current_provider == "auto":
             # Auto routing - mixed stats
-            total_requests = sum(stats.get('requests', 0) for stats in self.usage_stats.values())
-            self.usage_progress.setValue(min(total_requests // 100, 100))  # Scale for display
+            total_requests = sum(
+                stats.get("requests", 0) for stats in self.usage_stats.values()
+            )
+            self.usage_progress.setValue(
+                min(total_requests // 100, 100)
+            )  # Scale for display
             self.usage_label.setText(f"🤖 Összesen: {total_requests:,} kérés")
 
-            total_cost = sum(stats.get('estimated_cost', 0) for stats in self.usage_stats.values())
+            total_cost = sum(
+                stats.get("estimated_cost", 0) for stats in self.usage_stats.values()
+            )
             self.cost_label.setText(f"💰 Becsült költség: ${total_cost:.2f}/hó")
 
         else:
             # Premium provider stats
-            requests = current_provider_stats.get('requests', 0)
-            limit = current_provider_stats.get('limit', 10000)
+            requests = current_provider_stats.get("requests", 0)
+            limit = current_provider_stats.get("limit", 10000)
             usage_percent = min((requests / limit) * 100, 100) if limit > 0 else 0
 
             self.usage_progress.setValue(int(usage_percent))
-            self.usage_label.setText(f"💎 {requests:,}/{limit:,} kérés ({usage_percent:.1f}%)")
+            self.usage_label.setText(
+                f"💎 {requests:,}/{limit:,} kérés ({usage_percent:.1f}%)"
+            )
 
-            estimated_cost = current_provider_stats.get('estimated_cost', 0)
+            estimated_cost = current_provider_stats.get("estimated_cost", 0)
             self.cost_label.setText(f"💰 Becsült költség: ${estimated_cost:.2f}/hó")
 
             # Warning checks
@@ -86,6 +96,7 @@ def _generate_mock_usage_data(self) -> None:
         self: ProviderWidget instance
     """
     from .provider_data import generate_mock_usage_data
+
     self.usage_stats = generate_mock_usage_data()
 
 
@@ -101,10 +112,14 @@ def _check_usage_warnings(self, usage_percent: float, estimated_cost: float) -> 
     # Usage warnings
     if usage_percent >= self.warning_thresholds["usage_critical"]:
         self.usage_warning.emit(self.current_provider, int(usage_percent))
-        self.usage_progress.setStyleSheet("QProgressBar::chunk { background-color: #dc2626; }")
+        self.usage_progress.setStyleSheet(
+            "QProgressBar::chunk { background-color: #dc2626; }"
+        )
     elif usage_percent >= self.warning_thresholds["usage_warning"]:
         self.usage_warning.emit(self.current_provider, int(usage_percent))
-        self.usage_progress.setStyleSheet("QProgressBar::chunk { background-color: #f59e0b; }")
+        self.usage_progress.setStyleSheet(
+            "QProgressBar::chunk { background-color: #f59e0b; }"
+        )
     else:
         self.usage_progress.setStyleSheet("")  # Default styling
 
@@ -123,8 +138,8 @@ def _update_details_display(self) -> None:
     details = []
 
     for provider, stats in self.usage_stats.items():
-        requests = stats.get('requests', 0)
-        cost = stats.get('estimated_cost', 0)
+        requests = stats.get("requests", 0)
+        cost = stats.get("estimated_cost", 0)
 
         if provider == "open-meteo":
             # 🌍 OPEN-METEO POZITÍV KIEMELÉS

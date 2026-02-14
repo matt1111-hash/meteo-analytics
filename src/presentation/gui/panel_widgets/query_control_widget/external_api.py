@@ -88,7 +88,10 @@ class QueryControlExternalAPI:
         if self._state._auto_reset_timer and self._state._auto_reset_timer.isActive():
             self._state._auto_reset_timer.stop()
 
-        if self._state._progress_update_timer and self._state._progress_update_timer.isActive():
+        if (
+            self._state._progress_update_timer
+            and self._state._progress_update_timer.isActive()
+        ):
             self._state._progress_update_timer.stop()
 
         self._state.set_state(self._state.STATE_IDLE)
@@ -132,7 +135,7 @@ class QueryControlExternalAPI:
             "current_state": self._state.current_state,
             "is_fetching": self._state.is_fetching,
             "last_query_params": self._events.last_query_params,
-            "cancel_requested": self._state.cancel_requested
+            "cancel_requested": self._state.cancel_requested,
         }
 
     def restore_state(self, state: Dict[str, Any]) -> bool:
@@ -155,8 +158,14 @@ class QueryControlExternalAPI:
             "state": self._state.current_state,
             "is_fetching": self._state.is_fetching,
             "cancel_requested": self._state.cancel_requested,
-            "fetch_start_time": self._state.fetch_start_time.isoformat() if self._state.fetch_start_time else None,
-            "auto_reset_timer_active": self._state._auto_reset_timer.isActive() if self._state._auto_reset_timer else False,
-            "progress_timer_active": self._state._progress_update_timer.isActive() if self._state._progress_update_timer else False,
-            "last_query_params": self._events.last_query_params
+            "fetch_start_time": self._state.fetch_start_time.isoformat()
+            if self._state.fetch_start_time
+            else None,
+            "auto_reset_timer_active": self._state._auto_reset_timer.isActive()
+            if self._state._auto_reset_timer
+            else False,
+            "progress_timer_active": self._state._progress_update_timer.isActive()
+            if self._state._progress_update_timer
+            else False,
+            "last_query_params": self._events.last_query_params,
         }

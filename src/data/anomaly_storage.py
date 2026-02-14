@@ -65,7 +65,7 @@ class AnomalyProfileStorage:
 
         try:
             with self._lock:
-                with open(self.profiles_file, 'r', encoding='utf-8') as f:
+                with open(self.profiles_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
 
                 logger.debug(f"📁 Profilok betöltve: {self.profiles_file}")
@@ -91,7 +91,7 @@ class AnomalyProfileStorage:
                 self._create_backup()
 
                 # Mentés
-                with open(self.profiles_file, 'w', encoding='utf-8') as f:
+                with open(self.profiles_file, "w", encoding="utf-8") as f:
                     json.dump(data, f, indent=2, ensure_ascii=False)
 
                 logger.debug(f"📁 Profilok mentve: {self.profiles_file}")
@@ -121,7 +121,9 @@ class AnomalyProfileStorage:
             except Exception as e:
                 logger.warning(f"📁 Backup készítési hiba: {e}")
 
-    def save_current_settings(self, profile_name: str, settings: Dict[str, Any]) -> bool:
+    def save_current_settings(
+        self, profile_name: str, settings: Dict[str, Any]
+    ) -> bool:
         """
         Jelenlegi beállítások mentése gyors eléréshez.
 
@@ -136,10 +138,10 @@ class AnomalyProfileStorage:
             current_data = {
                 "active_profile": profile_name,
                 "settings": settings,
-                "updated_at": datetime.now().isoformat()
+                "updated_at": datetime.now().isoformat(),
             }
 
-            with open(self.settings_file, 'w', encoding='utf-8') as f:
+            with open(self.settings_file, "w", encoding="utf-8") as f:
                 json.dump(current_data, f, indent=2, ensure_ascii=False)
 
             logger.debug(f"📁 Jelenlegi beállítások mentve: {profile_name}")
@@ -158,7 +160,7 @@ class AnomalyProfileStorage:
         """
         try:
             if self.settings_file.exists():
-                with open(self.settings_file, 'r', encoding='utf-8') as f:
+                with open(self.settings_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
 
                 settings = data.get("settings", {})
@@ -171,4 +173,4 @@ class AnomalyProfileStorage:
             return None
 
 
-__all__ = ['AnomalyProfileStorage']
+__all__ = ["AnomalyProfileStorage"]

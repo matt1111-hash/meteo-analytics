@@ -1,4 +1,5 @@
 """Value object for anomaly detection thresholds."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -58,9 +59,7 @@ class AnomalyThresholdSet:  # pylint: disable=too-many-instance-attributes
 
         for wind_value in wind_values:
             if 5.0 > wind_value or wind_value > 300.0:
-                raise ValueError(
-                    "Wind thresholds must be between 5 and 300 km/h"
-                )
+                raise ValueError("Wind thresholds must be between 5 and 300 km/h")
 
     @classmethod
     def default(cls) -> AnomalyThresholdSet:

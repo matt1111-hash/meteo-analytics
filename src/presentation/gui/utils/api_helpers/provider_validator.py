@@ -7,8 +7,8 @@ API Helpers Provider Validator - Validate provider selections.
 
 from typing import Tuple
 
-from .source_selector import validate_api_source_available
 from .provider_tracker import get_provider_warning_level
+from .source_selector import validate_api_source_available
 
 
 def validate_provider_selection(provider_name: str, usage_stats) -> Tuple[bool, str]:
@@ -22,10 +22,10 @@ def validate_provider_selection(provider_name: str, usage_stats) -> Tuple[bool, 
     Returns:
         (valid, error_message) tuple
     """
-    if provider_name == 'auto':
+    if provider_name == "auto":
         return True, ""
 
-    if provider_name == 'open-meteo':
+    if provider_name == "open-meteo":
         return True, ""
 
     if not validate_api_source_available(provider_name):

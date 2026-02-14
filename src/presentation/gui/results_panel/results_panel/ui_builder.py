@@ -38,7 +38,6 @@ def init_ui(self) -> None:
 
     from PySide6.QtWidgets import QVBoxLayout
 
-
     layout = QVBoxLayout(self)
     layout.setContentsMargins(5, 5, 5, 5)
     layout.setSpacing(5)

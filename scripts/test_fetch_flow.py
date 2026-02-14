@@ -6,22 +6,18 @@ Szimulálja a teljes fetch flow-t GUI indítás nélkül, de QEventLoop-pal.
 """
 
 import sys
-import os
-import time
 from pathlib import Path
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from typing import Any, Dict
 from datetime import datetime, timedelta
 
 # Qt imports
-from PySide6.QtCore import QCoreApplication, QEventLoop, QObject, Signal, Slot, QTimer
+from PySide6.QtCore import QCoreApplication, QObject, QTimer, Slot
 from PySide6.QtWidgets import QApplication
 
 # Import required components
-from src.config import DATA_DIR
 from src.presentation.gui.controller.app_controller import AppController
 
 
@@ -45,7 +41,7 @@ class TestReceiver(QObject):
 
     @Slot(dict)
     def on_analysis_completed(self, result_data: dict):
-        self.signals_received.append(f"analysis_completed")
+        self.signals_received.append("analysis_completed")
         self.result_data = result_data
         print(f"   📡 SIGNAL: analysis_completed - keys: {list(result_data.keys())}")
 
@@ -199,7 +195,7 @@ def test_component_imports():
     for name, module_path in components:
         try:
             parts = module_path.split('.')
-            module = __import__('.'.join(parts[:-1]), fromlist=[parts[-1]])
+            __import__('.'.join(parts[:-1]), fromlist=[parts[-1]])
             print(f"   ✅ {name}")
         except Exception as e:
             print(f"   ❌ {name}: {e}")

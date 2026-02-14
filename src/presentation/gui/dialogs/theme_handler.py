@@ -58,15 +58,19 @@ def apply_theme(self, dark_theme: bool) -> None:
     """
     from .calculation import _calculate_extremes
 
-    print(f"🎨 DEBUG: ExtremeWeatherDialog applying theme via ThemeManager: {'dark' if dark_theme else 'light'}")
+    print(
+        f"🎨 DEBUG: ExtremeWeatherDialog applying theme via ThemeManager: {'dark' if dark_theme else 'light'}"
+    )
 
     # ThemeManager automatikus widget styling
     theme_name = "dark" if dark_theme else "light"
     self._theme_manager.set_theme(theme_name)
 
     # Ha van extrém adat, újrarajzoljuk a táblázatot ThemeManager színekkel
-    if hasattr(self, 'extreme_table') and self.extreme_table.rowCount() > 0:
+    if hasattr(self, "extreme_table") and self.extreme_table.rowCount() > 0:
         # Re-populate with current data to apply new colors
         _calculate_extremes(self)
 
-    print(f"✅ DEBUG: ExtremeWeatherDialog theme applied via ThemeManager: {'dark' if dark_theme else 'light'}")
+    print(
+        f"✅ DEBUG: ExtremeWeatherDialog theme applied via ThemeManager: {'dark' if dark_theme else 'light'}"
+    )

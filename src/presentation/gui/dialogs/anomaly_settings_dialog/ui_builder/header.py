@@ -1,9 +1,7 @@
 """Header section builders."""
-from PySide6.QtCore import Qt
+
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget
-
-from ...utils import AnomalyConstants
 
 
 def create_header_section(dialog: object) -> QWidget:

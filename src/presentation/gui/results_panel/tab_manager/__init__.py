@@ -1,16 +1,17 @@
 """Tab Manager - re-export for backward compatibility."""
+
 from src.presentation.gui.results_panel.tab_manager.core import TabManager
 
 # Add update methods to TabManager class
 from src.presentation.gui.results_panel.tab_manager.updaters import (
-    update_standard_tabs,
-    update_windy_days_tab,
-    get_windy_days_tab,
+    apply_theme,
+    cleanup,
+    clear_all_tabs,
     get_charts_container,
     get_data_table,
-    apply_theme,
-    clear_all_tabs,
-    cleanup,
+    get_windy_days_tab,
+    update_standard_tabs,
+    update_windy_days_tab,
 )
 
 TabManager.update_standard_tabs = update_standard_tabs

@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class TooltipDisplay:
     """Handle tooltip display and hiding."""
 
-    def __init__(self, mixin: 'WeatherTooltipMixin'):
+    def __init__(self, mixin: "WeatherTooltipMixin"):
         """
         Initialize tooltip display.
 
@@ -35,7 +35,7 @@ class TooltipDisplay:
             event: Mouse event
             point_data: Point data dictionary
         """
-        if not hasattr(self._mixin, 'ax'):
+        if not hasattr(self._mixin, "ax"):
             return
 
         # Hide previous tooltip
@@ -45,8 +45,8 @@ class TooltipDisplay:
         tooltip_text = self._mixin._format_tooltip_text(point_data)
 
         # Get coordinates
-        if 'date' in point_data:
-            x_pos = mdates.date2num(point_data['date'])
+        if "date" in point_data:
+            x_pos = mdates.date2num(point_data["date"])
         else:
             print("⚠️ DEBUG: Nincs 'date' kulcs a point_data-ban")
             return
@@ -69,25 +69,25 @@ class TooltipDisplay:
                 tooltip_text,
                 xy=(x_pos, y_pos),
                 xytext=(40, 50),
-                textcoords='offset points',
+                textcoords="offset points",
                 bbox=dict(
-                    boxstyle='round,pad=1.0',
-                    facecolor='lightyellow',
-                    edgecolor=current_colors.get('border', '#34495E'),
+                    boxstyle="round,pad=1.0",
+                    facecolor="lightyellow",
+                    edgecolor=current_colors.get("border", "#34495E"),
                     linewidth=2,
-                    alpha=0.95
+                    alpha=0.95,
                 ),
                 arrowprops=dict(
-                    arrowstyle='->',
-                    color=current_colors.get('border', '#34495E'),
+                    arrowstyle="->",
+                    color=current_colors.get("border", "#34495E"),
                     lw=2,
-                    alpha=0.8
+                    alpha=0.8,
                 ),
                 fontsize=10,
-                fontweight='bold',
-                ha='left',
-                va='bottom',
-                zorder=1000
+                fontweight="bold",
+                ha="left",
+                va="bottom",
+                zorder=1000,
             )
 
             self._mixin._tooltip_visible = True
@@ -112,7 +112,7 @@ class TooltipDisplay:
             self._mixin._tooltip_annotation = None
             self._mixin._tooltip_visible = False
 
-            if hasattr(self._mixin, 'draw_idle'):
+            if hasattr(self._mixin, "draw_idle"):
                 self._mixin.draw_idle()
 
     def _get_y_coordinate(self, point_data: Dict[str, Any]) -> Optional[float]:
@@ -120,17 +120,17 @@ class TooltipDisplay:
         y_pos = None
 
         # Temperature chart: 'primary_temp'
-        if 'primary_temp' in point_data:
-            y_pos = point_data['primary_temp']
+        if "primary_temp" in point_data:
+            y_pos = point_data["primary_temp"]
             print(f"🌡️ DEBUG: Temperature chart Y pozíció: {y_pos}")
         # Heatmap/Wind/Precipitation: 'value'
-        elif 'value' in point_data:
-            y_pos = point_data['value']
+        elif "value" in point_data:
+            y_pos = point_data["value"]
             print(f"📊 DEBUG: Generic chart Y pozíció: {y_pos}")
         # Fallback: first numeric value
         else:
             for key, value in point_data.items():
-                if isinstance(value, (int, float)) and not key.endswith('_index'):
+                if isinstance(value, (int, float)) and not key.endswith("_index"):
                     y_pos = value
                     print(f"🔍 DEBUG: Fallback Y pozíció ({key}): {y_pos}")
                     break
@@ -140,19 +140,21 @@ class TooltipDisplay:
     def _refresh_canvas(self) -> None:
         """Force canvas refresh with multiple methods."""
         try:
-            if hasattr(self._mixin, 'draw_idle'):
+            if hasattr(self._mixin, "draw_idle"):
                 self._mixin.draw_idle()
                 print("🔄 DEBUG: draw_idle() hívva")
 
-            if hasattr(self._mixin, 'draw'):
+            if hasattr(self._mixin, "draw"):
                 self._mixin.draw()
                 print("🔄 DEBUG: draw() force hívva")
 
-            if hasattr(self._mixin.figure, 'canvas') and hasattr(self._mixin.figure.canvas, 'draw'):
+            if hasattr(self._mixin.figure, "canvas") and hasattr(
+                self._mixin.figure.canvas, "draw"
+            ):
                 self._mixin.figure.canvas.draw()
                 print("🔄 DEBUG: figure.canvas.draw() hívva")
 
-            if hasattr(self._mixin, 'update'):
+            if hasattr(self._mixin, "update"):
                 self._mixin.update()
                 print("🔄 DEBUG: widget.update() hívva")
 

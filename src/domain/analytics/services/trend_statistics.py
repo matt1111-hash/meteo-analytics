@@ -1,4 +1,5 @@
 """Trend statistics calculator for linear regression analysis."""
+
 from __future__ import annotations
 
 import logging
@@ -38,7 +39,7 @@ class TrendStatisticsCalculator:
         except ValueError:
             slope = model.coef_[0]
             intercept = model.intercept_
-            r_value = np.sqrt(r2) if r2 >= 0 else 0
+            np.sqrt(r2) if r2 >= 0 else 0
             p_value = 0.5
             std_err = 0.0
 

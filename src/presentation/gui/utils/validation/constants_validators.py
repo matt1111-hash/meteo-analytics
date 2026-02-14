@@ -23,27 +23,35 @@ def validate_gui_constants() -> Dict[str, bool]:
     """
     try:
         validations = {
-            "window_size_valid": GUIConstants.MAIN_WINDOW_WIDTH >= GUIConstants.MAIN_WINDOW_MIN_WIDTH,
-            "panel_size_valid": GUIConstants.CONTROL_PANEL_MIN_WIDTH <= GUIConstants.CONTROL_PANEL_MAX_WIDTH,
+            "window_size_valid": GUIConstants.MAIN_WINDOW_WIDTH
+            >= GUIConstants.MAIN_WINDOW_MIN_WIDTH,
+            "panel_size_valid": GUIConstants.CONTROL_PANEL_MIN_WIDTH
+            <= GUIConstants.CONTROL_PANEL_MAX_WIDTH,
             "splitter_size_valid": GUIConstants.SPLITTER_HANDLE_WIDTH > 0,
-            "colors_valid": all(validate_color_hex(color) for color in [
-                GUIConstants.PRIMARY_COLOR,
-                GUIConstants.SUCCESS_COLOR,
-                GUIConstants.WARNING_COLOR,
-                GUIConstants.ERROR_COLOR
-            ]),
+            "colors_valid": all(
+                validate_color_hex(color)
+                for color in [
+                    GUIConstants.PRIMARY_COLOR,
+                    GUIConstants.SUCCESS_COLOR,
+                    GUIConstants.WARNING_COLOR,
+                    GUIConstants.ERROR_COLOR,
+                ]
+            ),
             # 🌪️ KRITIKUS JAVÍTÁS: Wind gusts küszöbök validálása
             "wind_gusts_thresholds_valid": (
-                AnomalyConstants.WIND_GUSTS_STRONG > AnomalyConstants.WIND_GUSTS_MODERATE and
-                AnomalyConstants.WIND_GUSTS_EXTREME > AnomalyConstants.WIND_GUSTS_STRONG and
-                AnomalyConstants.WIND_GUSTS_HURRICANE > AnomalyConstants.WIND_GUSTS_EXTREME
+                AnomalyConstants.WIND_GUSTS_STRONG
+                > AnomalyConstants.WIND_GUSTS_MODERATE
+                and AnomalyConstants.WIND_GUSTS_EXTREME
+                > AnomalyConstants.WIND_GUSTS_STRONG
+                and AnomalyConstants.WIND_GUSTS_HURRICANE
+                > AnomalyConstants.WIND_GUSTS_EXTREME
             ),
             # ✅ ÚJ: Dual-API validáció
             "dual_api_sources_valid": len(DataConstants.DATA_SOURCE_PRIORITY) >= 2,
             "api_capabilities_defined": all(
                 source in DataConstants.SOURCE_CAPABILITIES
                 for source in DataConstants.DATA_SOURCE_PRIORITY
-            )
+            ),
         }
 
         return validations
@@ -63,24 +71,30 @@ def validate_wind_gusts_constants() -> Dict[str, bool]:
     try:
         validations = {
             "thresholds_ascending": (
-                AnomalyConstants.WIND_HIGH_THRESHOLD > 0 and
-                AnomalyConstants.WIND_EXTREME_THRESHOLD > AnomalyConstants.WIND_HIGH_THRESHOLD and
-                AnomalyConstants.WIND_HURRICANE_THRESHOLD > AnomalyConstants.WIND_EXTREME_THRESHOLD
+                AnomalyConstants.WIND_HIGH_THRESHOLD > 0
+                and AnomalyConstants.WIND_EXTREME_THRESHOLD
+                > AnomalyConstants.WIND_HIGH_THRESHOLD
+                and AnomalyConstants.WIND_HURRICANE_THRESHOLD
+                > AnomalyConstants.WIND_EXTREME_THRESHOLD
             ),
-            "categories_complete": len(AnomalyConstants.WIND_GUSTS_CATEGORIES) >= 7,  # 7 kategória már (STORMY hozzáadva)
+            "categories_complete": len(AnomalyConstants.WIND_GUSTS_CATEGORIES)
+            >= 7,  # 7 kategória már (STORMY hozzáadva)
             "colors_valid": all(
-                validate_color_hex(color) for color in AnomalyConstants.WIND_GUSTS_COLORS.values()
+                validate_color_hex(color)
+                for color in AnomalyConstants.WIND_GUSTS_COLORS.values()
             ),
             "gusts_vs_windspeed_valid": (
-                AnomalyConstants.WIND_GUSTS_STRONG >= AnomalyConstants.WINDSPEED_HIGH_THRESHOLD and
-                AnomalyConstants.WIND_GUSTS_EXTREME >= AnomalyConstants.WINDSPEED_EXTREME_THRESHOLD
+                AnomalyConstants.WIND_GUSTS_STRONG
+                >= AnomalyConstants.WINDSPEED_HIGH_THRESHOLD
+                and AnomalyConstants.WIND_GUSTS_EXTREME
+                >= AnomalyConstants.WINDSPEED_EXTREME_THRESHOLD
             ),
             # 🌪️ KRITIKUS JAVÍTÁS: Meteorológiai standard validálás
             "beaufort_scale_compliant": (
-                AnomalyConstants.WIND_GUSTS_MODERATE == 30.0 and    # Beaufort 4-5
-                AnomalyConstants.WIND_GUSTS_STRONG == 50.0 and      # Beaufort 7-8
-                AnomalyConstants.WIND_GUSTS_STORMY == 70.0          # Beaufort 8-9
-            )
+                AnomalyConstants.WIND_GUSTS_MODERATE == 30.0  # Beaufort 4-5
+                and AnomalyConstants.WIND_GUSTS_STRONG == 50.0  # Beaufort 7-8
+                and AnomalyConstants.WIND_GUSTS_STORMY == 70.0  # Beaufort 8-9
+            ),
         }
 
         return validations
@@ -113,9 +127,8 @@ def validate_dual_api_constants() -> Dict[str, bool]:
                 for source in DataConstants.DATA_SOURCE_PRIORITY
             ),
             "api_endpoints_defined": (
-                bool(APIConstants.OPEN_METEO_BASE) and
-                bool(APIConstants.METEOSTAT_BASE)
-            )
+                bool(APIConstants.OPEN_METEO_BASE) and bool(APIConstants.METEOSTAT_BASE)
+            ),
         }
 
         return validations
@@ -140,16 +153,19 @@ def validate_anomaly_constants() -> Dict[str, bool]:
         # Hőmérséklet validálás
         temp_validation = {
             "temp_thresholds_valid": (
-                AnomalyConstants.TEMP_EXTREME_HOT > AnomalyConstants.TEMP_HOT_THRESHOLD and
-                AnomalyConstants.TEMP_COLD_THRESHOLD > AnomalyConstants.TEMP_EXTREME_COLD
+                AnomalyConstants.TEMP_EXTREME_HOT > AnomalyConstants.TEMP_HOT_THRESHOLD
+                and AnomalyConstants.TEMP_COLD_THRESHOLD
+                > AnomalyConstants.TEMP_EXTREME_COLD
             )
         }
 
         # Csapadék validálás
         precip_validation = {
             "precip_thresholds_valid": (
-                AnomalyConstants.PRECIP_EXTREME_HIGH > AnomalyConstants.PRECIP_HIGH_THRESHOLD and
-                AnomalyConstants.PRECIP_HIGH_THRESHOLD > AnomalyConstants.PRECIP_LOW_THRESHOLD
+                AnomalyConstants.PRECIP_EXTREME_HIGH
+                > AnomalyConstants.PRECIP_HIGH_THRESHOLD
+                and AnomalyConstants.PRECIP_HIGH_THRESHOLD
+                > AnomalyConstants.PRECIP_LOW_THRESHOLD
             )
         }
 
@@ -159,7 +175,7 @@ def validate_anomaly_constants() -> Dict[str, bool]:
             **wind_validation,
             **dual_api_validation,
             **temp_validation,
-            **precip_validation
+            **precip_validation,
         }
 
         return all_validations

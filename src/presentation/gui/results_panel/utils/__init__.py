@@ -22,11 +22,9 @@ from .wind_analyzer import WindGustsAnalyzer
 # Re-export for backward compatibility
 from .wind_constants import WindGustsConstants
 
-__all__ = [
-    "WindGustsConstants",
-    "DataFrameExtractor",
-    "WindGustsAnalyzer"
-]
+__all__ = ["WindGustsConstants", "DataFrameExtractor", "WindGustsAnalyzer"]
 
 logger = logging.getLogger(__name__)
-logger.info("✅ Results panel utils loaded: WindGustsConstants, DataFrameExtractor, WindGustsAnalyzer")
+logger.info(
+    "✅ Results panel utils loaded: WindGustsConstants, DataFrameExtractor, WindGustsAnalyzer"
+)

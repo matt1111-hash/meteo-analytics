@@ -44,7 +44,9 @@ class BaseWorkerThread(QThread):
         self._check_timer.timeout.connect(self._check_interruption)
         self._check_timer.moveToThread(self)
 
-        print("🔧 DEBUG: BaseWorkerThread initialized with comprehensive cancellation support")
+        print(
+            "🔧 DEBUG: BaseWorkerThread initialized with comprehensive cancellation support"
+        )
 
     def cancel(self) -> None:
         """
@@ -66,7 +68,9 @@ class BaseWorkerThread(QThread):
         if self._check_timer.isActive():
             self._check_timer.stop()
 
-        print(f"🛑 DEBUG: Worker cancel signals sent - thread: {self.currentThreadId()}")
+        print(
+            f"🛑 DEBUG: Worker cancel signals sent - thread: {self.currentThreadId()}"
+        )
 
     def _check_interruption(self) -> None:
         """

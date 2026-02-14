@@ -77,16 +77,16 @@ class UsageTracker:
                 "requests_this_month": 0,
                 "estimated_cost_usd": 0.0,
                 "last_request": None,
-                "daily_breakdown": {}
+                "daily_breakdown": {},
             },
             "open_meteo": {
                 "requests_this_month": 0,
                 "last_request": None,
-                "daily_breakdown": {}
+                "daily_breakdown": {},
             },
             "total_requests": 0,
             "month_start_date": f"{current_month}-01",
-            "last_updated": _now().isoformat()
+            "last_updated": _now().isoformat(),
         }
 
         usage_file = _get_usage_tracking_file()
@@ -204,14 +204,18 @@ class UsageTracker:
             "meteostat_limit": meteostat_limit,
             "meteostat_percentage": meteostat_percentage,
             "meteostat_cost": usage.get("meteostat", {}).get("estimated_cost_usd", 0.0),
-            "openmeteo_requests": usage.get("open_meteo", {}).get("requests_this_month", 0),
+            "openmeteo_requests": usage.get("open_meteo", {}).get(
+                "requests_this_month", 0
+            ),
             "total_requests": usage.get("total_requests", 0),
             "warning_level": UsageTracker._get_warning_level(meteostat_percentage),
-            "days_remaining": UsageTracker._get_days_remaining_in_month()
+            "days_remaining": UsageTracker._get_days_remaining_in_month(),
         }
 
     @staticmethod
-    def _reset_monthly_usage(old_usage: dict[str, Any], new_month: str) -> dict[str, Any]:
+    def _reset_monthly_usage(
+        old_usage: dict[str, Any], new_month: str
+    ) -> dict[str, Any]:
         """Reset usage data for new month."""
         old_usage["current_month"] = new_month
         old_usage["month_start_date"] = f"{new_month}-01"

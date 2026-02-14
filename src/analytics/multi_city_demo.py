@@ -13,7 +13,9 @@ from .multi_city_engine_core import MultiCityEngine
 
 def demo_multi_city_engine() -> None:
     """Demo: Multi-city analytics engine testing."""
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
     print("\n🚀 MULTI-CITY ENGINE DEMO:")
     print(f"🔧 Script location: {Path(__file__).absolute()}")
@@ -31,8 +33,14 @@ def demo_multi_city_engine() -> None:
 
         print("\n🚀 REGION MAPPING TESTS:")
         test_regions = [
-            "HU", "Észak-Magyarország", "Pest", "Budapest",
-            "észak-magyarország", "közép-magyarország", "EU", "GLOBAL"
+            "HU",
+            "Észak-Magyarország",
+            "Pest",
+            "Budapest",
+            "észak-magyarország",
+            "közép-magyarország",
+            "EU",
+            "GLOBAL",
         ]
 
         for region in test_regions:
@@ -44,17 +52,21 @@ def demo_multi_city_engine() -> None:
 
         print("\n🚀 ANALYTICS TEST: 'Észak-Magyarország' region (windiest):")
         try:
-            result_wind = engine.analyze_multi_city("windiest_today", "Észak-Magyarország", today, limit=10)
+            result_wind = engine.analyze_multi_city(
+                "windiest_today", "Észak-Magyarország", today, limit=10
+            )
             print(f"📊 Results: {len(result_wind.city_results)} cities")
             print(f"📊 Statistics: {result_wind.statistics}")
 
             print("🔥 TOP 3 WINDIEST CITIES:")
             for i, city in enumerate(result_wind.city_results[:3]):
-                print(f"  {i+1}. {city.city_name}: {city.value} km/h")
+                print(f"  {i + 1}. {city.city_name}: {city.value} km/h")
 
             non_zero_count = len([c for c in result_wind.city_results if c.value > 0])
             print("\n🔧 WINDSPEED CHECK:")
-            print(f"   Non-zero wind speed values: {non_zero_count}/{len(result_wind.city_results)}")
+            print(
+                f"   Non-zero wind speed values: {non_zero_count}/{len(result_wind.city_results)}"
+            )
 
             if non_zero_count > 0:
                 print("✅ WINDSPEED METRIC SUCCESS!")
@@ -64,6 +76,7 @@ def demo_multi_city_engine() -> None:
         except Exception as e:
             print(f"⚠ Test error: {e}")
             import traceback
+
             traceback.print_exc()
 
         print("\n🔧 DEMO COMPLETE")
@@ -87,10 +100,11 @@ def demo_multi_city_engine() -> None:
             print(f"   Files in data/: {[f.name for f in files]}")
 
         import traceback
+
         traceback.print_exc()
 
 
-__all__ = ['demo_multi_city_engine']
+__all__ = ["demo_multi_city_engine"]
 
 
 if __name__ == "__main__":

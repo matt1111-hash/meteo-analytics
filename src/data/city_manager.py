@@ -39,21 +39,18 @@ from .city_types import City, CityDatabaseError, CityQuery, CitySort, RegionType
 
 __all__ = [
     # Types
-    'RegionType',
-    'CitySort',
-    'City',
-    'CityQuery',
-    'CityDatabaseError',
-
+    "RegionType",
+    "CitySort",
+    "City",
+    "CityQuery",
+    "CityDatabaseError",
     # Main client (with all functionality)
-    'CityManager',
-
+    "CityManager",
     # Individual classes for partial usage
-    'CityManagerDB',
-    'CityManagerHungarian',
-    'CityManagerSearch',
-    'CityManagerStats',
-
+    "CityManagerDB",
+    "CityManagerHungarian",
+    "CityManagerSearch",
+    "CityManagerStats",
     # Demo function
-    'demo_dual_database_city_manager'
+    "demo_dual_database_city_manager",
 ]

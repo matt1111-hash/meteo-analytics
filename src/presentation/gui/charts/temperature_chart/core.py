@@ -32,7 +32,7 @@ class EnhancedTemperatureChart(
     TemperatureFormattingMixin,
     TemperaturePlottingMixin,
     WeatherChart,
-    WeatherTooltipMixin
+    WeatherTooltipMixin,
 ):
     """
     Fejlett hőmérséklet grafikon widget - PROFESSZIONÁLIS NAGY VERZIÓ + DUPLIKÁCIÓ BUGFIX + SIMPLIFIED THEMEMANAGER.
@@ -55,7 +55,9 @@ class EnhancedTemperatureChart(
         """
         🔧 KRITIKUS JAVÍTÁS: Duplikáció-mentes hőmérséklet chart frissítés + SIMPLIFIED THEMEMANAGER SZÍNEK.
         """
-        print("🌡️ DEBUG: EnhancedTemperatureChart.update_data() - DUPLIKÁCIÓ BUGFIX + SIMPLIFIED THEMEMANAGER VERZIÓ")
+        print(
+            "🌡️ DEBUG: EnhancedTemperatureChart.update_data() - DUPLIKÁCIÓ BUGFIX + SIMPLIFIED THEMEMANAGER VERZIÓ"
+        )
 
         try:
             # Duplikáció ellenőrzés
@@ -89,7 +91,9 @@ class EnhancedTemperatureChart(
             self.draw()
             self._is_updating = False
 
-            print("✅ DEBUG: EnhancedTemperatureChart frissítés kész - DUPLIKÁCIÓ MENTES + THEMED + TOOLTIP READY")
+            print(
+                "✅ DEBUG: EnhancedTemperatureChart frissítés kész - DUPLIKÁCIÓ MENTES + THEMED + TOOLTIP READY"
+            )
 
         except Exception as e:
             print(f"❌ DEBUG: Enhanced hőmérséklet chart hiba: {e}")

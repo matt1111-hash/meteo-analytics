@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class CSSGenerator:
     """Professional CSS generation from ColorPalette."""
 
-    def __init__(self, manager: 'ProfessionalThemeManager'):
+    def __init__(self, manager: "ProfessionalThemeManager"):
         """
         Initialize CSS generator.
 
@@ -70,23 +70,23 @@ class CSSGenerator:
         """Generate QPushButton CSS."""
         return f"""
                 QPushButton {{
-                    background-color: {colors['surface_variant']};
-                    color: {colors['on_surface']};
-                    border: 1px solid {colors['border']};
+                    background-color: {colors["surface_variant"]};
+                    color: {colors["on_surface"]};
+                    border: 1px solid {colors["border"]};
                     border-radius: 4px;
                     padding: 8px 16px;
                     font-weight: 500;
                 }}
                 QPushButton:hover {{
-                    background-color: {colors['hover_overlay']};
+                    background-color: {colors["hover_overlay"]};
                 }}
                 QPushButton:pressed {{
-                    background-color: {colors['primary']};
-                    color: {colors['surface']};
+                    background-color: {colors["primary"]};
+                    color: {colors["surface"]};
                 }}
                 QPushButton:disabled {{
-                    background-color: {colors['surface_variant']};
-                    color: {colors['info']};
+                    background-color: {colors["surface_variant"]};
+                    color: {colors["info"]};
                     opacity: 0.6;
                 }}
             """
@@ -95,17 +95,17 @@ class CSSGenerator:
         """Generate QTabWidget CSS."""
         return f"""
                 QTabWidget::pane {{
-                    background-color: {colors['surface']};
-                    border: 1px solid {colors['border']};
+                    background-color: {colors["surface"]};
+                    border: 1px solid {colors["border"]};
                     border-radius: 4px;
                 }}
                 QTabWidget::tab-bar {{
                     left: 5px;
                 }}
                 QTabBar::tab {{
-                    background-color: {colors['surface_variant']};
-                    color: {colors['on_surface']};
-                    border: 1px solid {colors['border']};
+                    background-color: {colors["surface_variant"]};
+                    color: {colors["on_surface"]};
+                    border: 1px solid {colors["border"]};
                     border-bottom-color: transparent;
                     border-top-left-radius: 4px;
                     border-top-right-radius: 4px;
@@ -113,11 +113,11 @@ class CSSGenerator:
                     margin-right: 2px;
                 }}
                 QTabBar::tab:selected {{
-                    background-color: {colors['primary']};
-                    color: {colors['surface']};
+                    background-color: {colors["primary"]};
+                    color: {colors["surface"]};
                 }}
                 QTabBar::tab:hover {{
-                    background-color: {colors['hover_overlay']};
+                    background-color: {colors["hover_overlay"]};
                 }}
             """
 
@@ -125,8 +125,8 @@ class CSSGenerator:
         """Generate QSplitter CSS."""
         return f"""
                 QSplitter::handle {{
-                    background-color: {colors['border']};
-                    border: 1px solid {colors['surface_variant']};
+                    background-color: {colors["border"]};
+                    border: 1px solid {colors["surface_variant"]};
                 }}
                 QSplitter::handle:horizontal {{
                     width: 3px;
@@ -137,7 +137,7 @@ class CSSGenerator:
                     margin: 2px 0;
                 }}
                 QSplitter::handle:hover {{
-                    background-color: {colors['primary']};
+                    background-color: {colors["primary"]};
                 }}
             """
 
@@ -145,17 +145,17 @@ class CSSGenerator:
         """Generate QScrollBar CSS."""
         return f"""
                 QScrollBar:vertical {{
-                    background-color: {colors['surface_variant']};
+                    background-color: {colors["surface_variant"]};
                     width: 12px;
                     border-radius: 6px;
                 }}
                 QScrollBar::handle:vertical {{
-                    background-color: {colors['info']};
+                    background-color: {colors["info"]};
                     border-radius: 6px;
                     min-height: 20px;
                 }}
                 QScrollBar::handle:vertical:hover {{
-                    background-color: {colors['primary']};
+                    background-color: {colors["primary"]};
                 }}
                 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
                     height: 0px;
@@ -166,24 +166,24 @@ class CSSGenerator:
         """Generate analytics panel CSS."""
         return f"""
                 QWidget#analytics_panel {{
-                    background-color: {colors['surface']};
-                    border: 1px solid {colors['border']};
+                    background-color: {colors["surface"]};
+                    border: 1px solid {colors["border"]};
                     border-radius: 8px;
                 }}
                 QLabel#analytics_title {{
-                    color: {colors['on_surface']};
+                    color: {colors["on_surface"]};
                     font-size: 16px;
                     font-weight: 600;
                 }}
                 QGroupBox#analytics_group {{
-                    color: {colors['on_surface']};
-                    border: 2px solid {colors['border']};
+                    color: {colors["on_surface"]};
+                    border: 2px solid {colors["border"]};
                     border-radius: 6px;
                     margin-top: 12px;
                     padding-top: 8px;
                 }}
                 QGroupBox#analytics_group::title {{
-                    color: {colors['primary']};
+                    color: {colors["primary"]};
                     font-weight: 600;
                     subcontrol-origin: margin;
                     left: 8px;

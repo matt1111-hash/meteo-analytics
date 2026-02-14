@@ -30,7 +30,9 @@ def demo_hungarian_map_tab() -> None:
     app = QApplication(sys.argv)
 
     window = QMainWindow()
-    window.setWindowTitle("Hungarian Map Tab Demo - Analytics Sync + Weather Integration")
+    window.setWindowTitle(
+        "Hungarian Map Tab Demo - Analytics Sync + Weather Integration"
+    )
     window.setGeometry(100, 100, 1600, 1200)
 
     central_widget = QWidget()
@@ -128,7 +130,9 @@ def demo_hungarian_map_tab() -> None:
             print(f"   {key}: {value}")
 
     def on_weather_data_updated(weather_overlay):
-        print(f"Weather data updated: {weather_overlay.overlay_type}, {len(weather_overlay.data)} cities")
+        print(
+            f"Weather data updated: {weather_overlay.overlay_type}, {len(weather_overlay.data)} cities"
+        )
 
     def on_analytics_sync_completed(sync_type):
         print(f"Analytics sync completed: {sync_type}")
@@ -153,17 +157,28 @@ def demo_hungarian_map_tab() -> None:
 
     # Analytics Sync button handlers
     def test_analysis_sync():
-        params = {"analysis_type": "county", "county": "Budapest", "region": "central_hungary"}
+        params = {
+            "analysis_type": "county",
+            "county": "Budapest",
+            "region": "central_hungary",
+        }
         map_tab.update_analysis_parameters(params)
 
     def test_weather_sync():
-        params = {"provider": "open-meteo", "timeout": 30, "cache": True, "timezone": "auto"}
+        params = {
+            "provider": "open-meteo",
+            "timeout": 30,
+            "cache": True,
+            "timezone": "auto",
+        }
         map_tab.update_weather_parameters(params)
 
     def test_date_sync():
         today = datetime.now()
         week_ago = today - timedelta(days=7)
-        map_tab.update_date_range(week_ago.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d"))
+        map_tab.update_date_range(
+            week_ago.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d")
+        )
 
     def test_bundle_sync():
         bundle = {

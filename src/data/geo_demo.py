@@ -46,7 +46,7 @@ def demo_geo_utils():
         {"lat": 47.6835, "lon": 17.6383, "population": 130000, "name": "Győr"},
         {"lat": 47.5316, "lon": 21.6273, "population": 200000, "name": "Debrecen"},
         {"lat": 46.2530, "lon": 20.1414, "population": 160000, "name": "Szeged"},
-        {"lat": 46.0727, "lon": 18.2324, "population": 145000, "name": "Pécs"}
+        {"lat": 46.0727, "lon": 18.2324, "population": 145000, "name": "Pécs"},
     ]
 
     coordinates = [(city["lat"], city["lon"]) for city in test_cities]
@@ -86,7 +86,9 @@ def demo_geo_utils():
 
     coverage = geo_utils.calculate_multi_city_coverage_area(test_cities)
     print(f"  Coverage area: {coverage['area_km2']:.0f} km²")
-    print(f"  Max distance from center: {coverage['distances']['max_distance_from_center']:.1f} km")
+    print(
+        f"  Max distance from center: {coverage['distances']['max_distance_from_center']:.1f} km"
+    )
     print()
 
     # Map projection

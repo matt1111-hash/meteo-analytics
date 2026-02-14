@@ -20,9 +20,9 @@ from typing import Optional
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
 
-from src.domain.ports import CityManagerPort, get_city_manager_port
-
+from src.domain.ports import CityManagerPort
 from src.presentation.gui.theme_manager import get_theme_manager
+
 from .combo_handler import ComboHandler
 from .public_api import MultiCityWidgetPublicAPI
 from .regional_data import get_hungarian_regions
@@ -52,7 +52,9 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
     """
 
     # === KIMENŐ SIGNAL ===
-    selection_changed = Signal(dict)  # {"mode": "region", "selected": "Közép-Magyarország", "is_valid": True}
+    selection_changed = Signal(
+        dict
+    )  # {"mode": "region", "selected": "Közép-Magyarország", "is_valid": True}
 
     def __init__(self, city_manager: CityManagerPort, parent: Optional[QWidget] = None):
         """
@@ -90,12 +92,16 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             self._available_regions,
             self._available_counties,
             self._selected_region,
-            self._selected_county
+            self._selected_county,
         )
         self._combo_handler.update_group_title(self._current_mode)
-        self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
+        self._combo_handler.update_info_label(
+            self._current_mode, self._get_current_selection()
+        )
 
-        print("🏙️ DEBUG: MultiCityWidget (DROPDOWN) inicializálva - Clean Architecture + COMBO FIX")
+        print(
+            "🏙️ DEBUG: MultiCityWidget (DROPDOWN) inicializálva - Clean Architecture + COMBO FIX"
+        )
 
     def _init_ui(self) -> None:
         """UI elemek létrehozása."""
@@ -111,7 +117,9 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             self.combo_box,
             self.group,
             self.info_label,
-            lambda label, style_type: apply_label_styling(label, self.theme_manager, style_type)
+            lambda label, style_type: apply_label_styling(
+                label, self.theme_manager, style_type
+            ),
         )
 
     def _load_data(self) -> None:
@@ -120,7 +128,9 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             # Megyék betöltése city_manager-ből
             self._available_counties = self.city_manager.get_hungarian_counties()
             print(f"🏛️ DEBUG: Betöltött megyék: {len(self._available_counties)} db")
-            print(f"📋 DEBUG: Megyék listája: {self._available_counties[:5]}...")  # Első 5
+            print(
+                f"📋 DEBUG: Megyék listája: {self._available_counties[:5]}..."
+            )  # Első 5
 
         except Exception as e:
             print(f"❌ ERROR: Adatok betöltési hiba: {e}")
@@ -139,7 +149,7 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             self.group,
             self.combo_box,
             self.clear_btn,
-            self.info_label
+            self.info_label,
         )
 
     # === ANALYSIS MODE MANAGEMENT ===
@@ -168,10 +178,12 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             self._available_regions,
             self._available_counties,
             self._selected_region,
-            self._selected_county
+            self._selected_county,
         )
         self._combo_handler.update_group_title(self._current_mode)
-        self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
+        self._combo_handler.update_info_label(
+            self._current_mode, self._get_current_selection()
+        )
 
         print(f"✅ DEBUG: Analysis mode váltás befejezve: {mode}")
 
@@ -184,7 +196,9 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             return
 
         current_index = self.combo_box.currentIndex()
-        print(f"🔄 DEBUG: Combo selection changed - index: {current_index}, text: '{text}'")
+        print(
+            f"🔄 DEBUG: Combo selection changed - index: {current_index}, text: '{text}'"
+        )
 
         # Placeholder választás (index 0) - törlés
         if current_index == 0:
@@ -206,7 +220,9 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             self._selected_region = None  # Clear other mode
             print(f"🏛️ DEBUG: Megye kiválasztva: {self._selected_county}")
 
-        self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
+        self._combo_handler.update_info_label(
+            self._current_mode, self._get_current_selection()
+        )
         self._update_clear_button()
         self._emit_selection_changed()
 
@@ -219,7 +235,9 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             self._selected_county = None
             print("🏛️ DEBUG: Megye selection törölve")
 
-        self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
+        self._combo_handler.update_info_label(
+            self._current_mode, self._get_current_selection()
+        )
         self._update_clear_button()
         self._emit_selection_changed()
 
@@ -231,7 +249,7 @@ class MultiCityWidget(QWidget, MultiCityWidgetPublicAPI):
             "mode": self._current_mode,
             "selected": current_selection,
             "is_valid": self.is_valid(),
-            "selection_text": self._get_selection_display_text()
+            "selection_text": self._get_selection_display_text(),
         }
 
         self.selection_changed.emit(selection_data)

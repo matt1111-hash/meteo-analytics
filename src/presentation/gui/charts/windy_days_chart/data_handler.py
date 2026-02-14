@@ -36,25 +36,29 @@ def update_data(self, chart_data: Dict[str, Any]) -> None:
         logger.info("WindyDaysChart adatok frissítése")
 
         # Adatok kinyerése
-        self.chart_data = chart_data.get('chart_data', {})
-        self.threshold_kmh = chart_data.get('threshold_kmh', 43.0)
-        self.location_name = chart_data.get('location_name', 'Ismeretlen helyszín')
+        self.chart_data = chart_data.get("chart_data", {})
+        self.threshold_kmh = chart_data.get("threshold_kmh", 43.0)
+        self.location_name = chart_data.get("location_name", "Ismeretlen helyszín")
 
         # Ellenőrzés
         if not _has_valid_data(self):
             logger.warning("Nincs érvényes adat a WindyDaysChart-hoz")
             from .helpers import _plot_no_data_message
+
             _plot_no_data_message(self)
             return
 
         # Új chart rajzolása
         _plot_windy_days_chart(self)
 
-        logger.info(f"WindyDaysChart frissítve: {len(self.chart_data.get('months', []))} hónap")
+        logger.info(
+            f"WindyDaysChart frissítve: {len(self.chart_data.get('months', []))} hónap"
+        )
 
     except Exception as e:
         logger.error(f"Hiba a WindyDaysChart adatok frissítésében: {e}")
         from .helpers import _plot_error_message
+
         _plot_error_message(self, str(e))
 
 
@@ -69,14 +73,14 @@ def _has_valid_data(self) -> bool:
         bool: Van-e érvényes adat
     """
     try:
-        months = self.chart_data.get('months', [])
-        counts = self.chart_data.get('counts', [])
+        months = self.chart_data.get("months", [])
+        counts = self.chart_data.get("counts", [])
 
         return (
-            len(months) > 0 and
-            len(counts) > 0 and
-            len(months) == len(counts) and
-            any(count > 0 for count in counts)
+            len(months) > 0
+            and len(counts) > 0
+            and len(months) == len(counts)
+            and any(count > 0 for count in counts)
         )
     except Exception:
         return False

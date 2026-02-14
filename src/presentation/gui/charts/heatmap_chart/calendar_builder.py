@@ -26,7 +26,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def build_calendar_matrix(self, values: np.ndarray, start_date: pd.Timestamp) -> np.ndarray:
+def build_calendar_matrix(
+    self, values: np.ndarray, start_date: pd.Timestamp
+) -> np.ndarray:
     """
     Build 7x53 calendar matrix, considering the start day's weekday.
 
@@ -61,11 +63,15 @@ def build_calendar_matrix(self, values: np.ndarray, start_date: pd.Timestamp) ->
         week_data = full_year_values[start_idx:end_idx]
 
         # Biztosítjuk, hogy a hét adatai 7 eleműek legyenek
-        padded_week_data = np.pad(week_data, (0, 7 - len(week_data)), 'constant', constant_values=np.nan)
+        padded_week_data = np.pad(
+            week_data, (0, 7 - len(week_data)), "constant", constant_values=np.nan
+        )
         calendar_matrix[:, week] = padded_week_data
 
-    if 'precipitation' in self.parameter or 'wind' in self.parameter:
+    if "precipitation" in self.parameter or "wind" in self.parameter:
         calendar_matrix = np.nan_to_num(calendar_matrix, nan=0.0)
 
-    logger.debug(f"🗓️ OKOS Kalendár mátrix: {calendar_matrix.shape}, első nap: {start_date.strftime('%A')}")
+    logger.debug(
+        f"🗓️ OKOS Kalendár mátrix: {calendar_matrix.shape}, első nap: {start_date.strftime('%A')}"
+    )
     return calendar_matrix

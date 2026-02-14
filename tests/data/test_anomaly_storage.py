@@ -490,3 +490,32 @@ class TestEdgeCases:
         backups = list(storage.backup_dir.glob("anomaly_profiles_backup_*.json"))
         # Should still be at most 10
         assert len(backups) <= 10
+
+    def test_create_backup_handles_copy_error(self, tmp_path: Path) -> None:
+        """create_backup handles copy errors gracefully."""
+        storage = AnomalyProfileStorage(config_dir=tmp_path)
+        storage.save_profiles({"profile": {}})
+
+        # Make backup directory read-only to trigger error
+        storage.backup_dir.chmod(0o444)
+
+        try:
+            # Should not raise exception, just log warning
+            storage._create_backup()
+        finally:
+            # Restore permissions for cleanup
+            storage.backup_dir.chmod(0o755)
+
+    def test_save_current_settings_handles_write_error(self, tmp_path: Path) -> None:
+        """save_current_settings returns False on write error."""
+        storage = AnomalyProfileStorage(config_dir=tmp_path)
+
+        # Make config directory read-only
+        storage.config_dir.chmod(0o444)
+
+        try:
+            result = storage.save_current_settings("test", {"temp_hot": 35.0})
+            assert result is False
+        finally:
+            # Restore permissions for cleanup
+            storage.config_dir.chmod(0o755)

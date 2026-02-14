@@ -5,7 +5,7 @@
 Location Widget - Refresh and reactivation handlers.
 """
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .core import LocationWidget
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class RefreshHandler:
     """Refresh handler a LocationWidget számára."""
 
-    def __init__(self, widget: 'LocationWidget'):
+    def __init__(self, widget: "LocationWidget"):
         """
         RefreshHandler inicializálása.
 
@@ -33,7 +33,7 @@ class RefreshHandler:
             self.widget.ui.location_selector.setEnabled(True)
 
             # UniversalLocationSelector refresh
-            if hasattr(self.widget.ui.location_selector, 'refresh_ui'):
+            if hasattr(self.widget.ui.location_selector, "refresh_ui"):
                 self.widget.ui.location_selector.refresh_ui()
 
             # State validation
@@ -45,7 +45,9 @@ class RefreshHandler:
                 self.widget.ui.clear_btn.setEnabled(True)
             else:
                 self.widget.ui.info_label.setText("Válasszon lokációt...")
-                self.widget.theme._apply_label_styling(self.widget.ui.info_label, "secondary")
+                self.widget.theme._apply_label_styling(
+                    self.widget.ui.info_label, "secondary"
+                )
                 self.widget.ui.clear_btn.setEnabled(False)
 
             print("✅ DEBUG: LocationWidget refresh_ui() completed")
@@ -63,9 +65,9 @@ class RefreshHandler:
             self.widget.ui.group.setEnabled(True)
 
             # UniversalLocationSelector force refresh
-            if hasattr(self.widget.ui.location_selector, 'force_refresh'):
+            if hasattr(self.widget.ui.location_selector, "force_refresh"):
                 self.widget.ui.location_selector.force_refresh()
-            elif hasattr(self.widget.ui.location_selector, 'refresh_ui'):
+            elif hasattr(self.widget.ui.location_selector, "refresh_ui"):
                 self.widget.ui.location_selector.refresh_ui()
 
             # Layout frissítés

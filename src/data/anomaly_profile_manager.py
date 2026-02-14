@@ -39,10 +39,10 @@ from .anomaly_storage import AnomalyProfileStorage
 from .anomaly_types import AnomalyProfileSettings
 
 __all__ = [
-    'AnomalyProfileSettings',
-    'AnomalyProfileStorage',
-    'AnomalyProfileManager',
-    'demo_anomaly_profile_manager'
+    "AnomalyProfileSettings",
+    "AnomalyProfileStorage",
+    "AnomalyProfileManager",
+    "demo_anomaly_profile_manager",
 ]
 
 

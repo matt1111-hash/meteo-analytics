@@ -47,21 +47,31 @@ class TemperatureDataExtractor:
             return pd.DataFrame()
 
         # Adatstruktúra hosszak ellenőrzése
-        if len(dates) != len(temp_max) or len(dates) != len(temp_min) or len(dates) != len(temp_mean):
-            print("❌ DEBUG: Eltérő hosszúságú hőmérséklet adatok - chart nem jeleníthető meg")
+        if (
+            len(dates) != len(temp_max)
+            or len(dates) != len(temp_min)
+            or len(dates) != len(temp_mean)
+        ):
+            print(
+                "❌ DEBUG: Eltérő hosszúságú hőmérséklet adatok - chart nem jeleníthető meg"
+            )
             return pd.DataFrame()
 
-        df = pd.DataFrame({
-            'date': pd.to_datetime(dates),
-            'temp_max': temp_max,
-            'temp_min': temp_min,
-            'temp_mean': temp_mean  # CSAK VALÓDI API ADAT!
-        })
+        df = pd.DataFrame(
+            {
+                "date": pd.to_datetime(dates),
+                "temp_max": temp_max,
+                "temp_min": temp_min,
+                "temp_mean": temp_mean,  # CSAK VALÓDI API ADAT!
+            }
+        )
 
         # Csak érvényes adatok megtartása
         df = df.dropna()
 
         if df.empty:
-            print("⚠️ DEBUG: Nincs érvényes hőmérséklet adat - chart nem jeleníthető meg")
+            print(
+                "⚠️ DEBUG: Nincs érvényes hőmérséklet adat - chart nem jeleníthető meg"
+            )
 
         return df

@@ -16,8 +16,8 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
 
     # Signals to communicate status updates back to the UI
     analytics_sync_completed = Signal(str)  # type of sync
-    sync_error_occurred = Signal(str)       # error message
-    status_update_requested = Signal(str, str) # label, color
+    sync_error_occurred = Signal(str)  # error message
+    status_update_requested = Signal(str, str)  # label, color
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -215,8 +215,7 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
 
         if weather:
             self._refresh_weather_overlays(
-                weather.get("provider", "auto"),
-                weather.get("cache", True)
+                weather.get("provider", "auto"), weather.get("cache", True)
             )
 
         if date:

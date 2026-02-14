@@ -42,35 +42,42 @@ class TemperatureTooltipHandlerMixin:
         - Professional tooltip adatok minden hőmérséklet típussal
         """
         try:
-            if not hasattr(self, 'current_data') or self.current_data is None or self.current_data.empty:
+            if (
+                not hasattr(self, "current_data")
+                or self.current_data is None
+                or self.current_data.empty
+            ):
                 return None
 
             df = self.current_data
 
             # Matplotlib dátum koordináták
-            if 'date' not in df.columns:
+            if "date" not in df.columns:
                 return None
 
             import matplotlib.dates as mdates
-            plot_dates = mdates.date2num(df['date'])
+
+            plot_dates = mdates.date2num(df["date"])
 
             # Elérhető hőmérséklet oszlopok - MINDEN VONAL
             temp_columns = []
-            if 'temp_mean' in df.columns:
-                temp_columns.append('temp_mean')
-            if 'temp_max' in df.columns:
-                temp_columns.append('temp_max')
-            if 'temp_min' in df.columns:
-                temp_columns.append('temp_min')
+            if "temp_mean" in df.columns:
+                temp_columns.append("temp_mean")
+            if "temp_max" in df.columns:
+                temp_columns.append("temp_max")
+            if "temp_min" in df.columns:
+                temp_columns.append("temp_min")
 
             if not temp_columns:
                 return None
 
             # Mouse pozíció display koordinátákban
-            mouse_x_display, mouse_y_display = self.ax.transData.transform((event.xdata, event.ydata))
+            mouse_x_display, mouse_y_display = self.ax.transData.transform(
+                (event.xdata, event.ydata)
+            )
 
             closest_idx = None
-            min_distance = float('inf')
+            min_distance = float("inf")
             closest_temp_col = None
             closest_temp_value = None
 
@@ -84,11 +91,15 @@ class TemperatureTooltipHandlerMixin:
                         continue
 
                     # Adatpont display koordinátái
-                    point_x_display, point_y_display = self.ax.transData.transform((x_val, y_val))
+                    point_x_display, point_y_display = self.ax.transData.transform(
+                        (x_val, y_val)
+                    )
 
                     # Pixel távolság
-                    distance = np.sqrt((mouse_x_display - point_x_display)**2 +
-                                     (mouse_y_display - point_y_display)**2)
+                    distance = np.sqrt(
+                        (mouse_x_display - point_x_display) ** 2
+                        + (mouse_y_display - point_y_display) ** 2
+                    )
 
                     if distance < min_distance:
                         min_distance = distance
@@ -98,15 +109,14 @@ class TemperatureTooltipHandlerMixin:
 
             # Tolerance check
             if closest_idx is not None and min_distance <= self._hover_tolerance:
-
                 # Pont adatok összeállítása - TELJES NAPI ADAT
                 point_data = {
-                    'index': closest_idx,
-                    'date': df.iloc[closest_idx]['date'],
-                    'primary_temp': closest_temp_value,
-                    'primary_temp_column': closest_temp_col,
-                    'pixel_distance': min_distance,
-                    'closest_line': closest_temp_col  # Melyik vonalra kattintott
+                    "index": closest_idx,
+                    "date": df.iloc[closest_idx]["date"],
+                    "primary_temp": closest_temp_value,
+                    "primary_temp_column": closest_temp_col,
+                    "pixel_distance": min_distance,
+                    "closest_line": closest_temp_col,  # Melyik vonalra kattintott
                 }
 
                 # ÖSSZES hőmérséklet oszlop hozzáadása
@@ -131,13 +141,13 @@ class TemperatureTooltipHandlerMixin:
         - Magyar weather ikonok és kategóriák
         - Professional formatting
         """
-        date = point_data['date']
-        primary_temp = point_data['primary_temp']
-        closest_line = point_data.get('closest_line', 'temp_mean')
+        date = point_data["date"]
+        primary_temp = point_data["primary_temp"]
+        closest_line = point_data.get("closest_line", "temp_mean")
 
         # Dátum formázás
         if isinstance(date, datetime):
-            date_str = date.strftime('%Y-%m-%d (%A)')
+            date_str = date.strftime("%Y-%m-%d (%A)")
         else:
             date_str = str(date)
 
@@ -165,42 +175,44 @@ class TemperatureTooltipHandlerMixin:
 
         # ⭐ KIEMELT VONAL - AMELYIKRE HOVER-ELÜNK
         line_names = {
-            'temp_max': 'Maximum',
-            'temp_min': 'Minimum',
-            'temp_mean': 'Átlag'
+            "temp_max": "Maximum",
+            "temp_min": "Minimum",
+            "temp_mean": "Átlag",
         }
 
-        line_icons = {
-            'temp_max': '🔺',
-            'temp_min': '🔻',
-            'temp_mean': '🎯'
-        }
+        line_icons = {"temp_max": "🔺", "temp_min": "🔻", "temp_mean": "🎯"}
 
         # Legközelebbi vonal kiemelése
         if closest_line in point_data:
             line_name = line_names.get(closest_line, closest_line)
-            line_icon = line_icons.get(closest_line, '🌡️')
-            tooltip_lines.append(f"➤ {line_icon} {line_name}: {point_data[closest_line]:.1f}°C ← HOVER")
+            line_icon = line_icons.get(closest_line, "🌡️")
+            tooltip_lines.append(
+                f"➤ {line_icon} {line_name}: {point_data[closest_line]:.1f}°C ← HOVER"
+            )
 
         # További hőmérséklet adatok - NEM KIEMELT
-        for col in ['temp_max', 'temp_min', 'temp_mean']:
+        for col in ["temp_max", "temp_min", "temp_mean"]:
             if col in point_data and col != closest_line:
                 line_name = line_names.get(col, col)
-                line_icon = line_icons.get(col, '🌡️')
-                tooltip_lines.append(f"  {line_icon} {line_name}: {point_data[col]:.1f}°C")
+                line_icon = line_icons.get(col, "🌡️")
+                tooltip_lines.append(
+                    f"  {line_icon} {line_name}: {point_data[col]:.1f}°C"
+                )
 
         # Napi hőingás számítása
-        if 'temp_max' in point_data and 'temp_min' in point_data:
-            temp_range = point_data['temp_max'] - point_data['temp_min']
+        if "temp_max" in point_data and "temp_min" in point_data:
+            temp_range = point_data["temp_max"] - point_data["temp_min"]
             tooltip_lines.append(f"📊 Napi hőingás: {temp_range:.1f}°C")
 
         # Kategória
-        tooltip_lines.extend([
-            "",  # Üres sor
-            f"🏷️ {category}"
-        ])
+        tooltip_lines.extend(
+            [
+                "",  # Üres sor
+                f"🏷️ {category}",
+            ]
+        )
 
-        return '\n'.join(tooltip_lines)
+        return "\n".join(tooltip_lines)
 
     def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
         """
@@ -211,7 +223,7 @@ class TemperatureTooltipHandlerMixin:
         - Weather-specific formatting
         - 🎯 SMART POSITIONING: Automatically avoids chart edges
         """
-        if not hasattr(self, 'ax'):
+        if not hasattr(self, "ax"):
             return
 
         # Előző tooltip törlése
@@ -222,8 +234,9 @@ class TemperatureTooltipHandlerMixin:
 
         # Koordináták meghatározása
         import matplotlib.dates as mdates
-        x_pos = mdates.date2num(point_data['date'])
-        y_pos = point_data['primary_temp']
+
+        x_pos = mdates.date2num(point_data["date"])
+        y_pos = point_data["primary_temp"]
 
         # 🎯 SMART POSITIONING LOGIC
         # Chart területének boundaries
@@ -238,23 +251,23 @@ class TemperatureTooltipHandlerMixin:
         if y_relative > 0.7:  # Felső 30%-ban
             # Tooltip lefelé
             offset_y = -80
-            va_align = 'top'
+            va_align = "top"
             print(f"🔽 DEBUG: Tooltip lefelé - y_relative: {y_relative:.2f}")
         else:
             # Tooltip felfelé (alapértelmezett)
             offset_y = 50
-            va_align = 'bottom'
+            va_align = "bottom"
             print(f"🔼 DEBUG: Tooltip felfelé - y_relative: {y_relative:.2f}")
 
         if x_relative > 0.8:  # Jobb 20%-ban
             # Tooltip balra
             offset_x = -100
-            ha_align = 'right'
+            ha_align = "right"
             print(f"⬅️ DEBUG: Tooltip balra - x_relative: {x_relative:.2f}")
         else:
             # Tooltip jobbra (alapértelmezett)
             offset_x = 40
-            ha_align = 'left'
+            ha_align = "left"
             print(f"➡️ DEBUG: Tooltip jobbra - x_relative: {x_relative:.2f}")
 
         # Current colors
@@ -265,32 +278,32 @@ class TemperatureTooltipHandlerMixin:
             tooltip_text,
             xy=(x_pos, y_pos),
             xytext=(offset_x, offset_y),  # 🎯 DYNAMIC OFFSET
-            textcoords='offset points',
+            textcoords="offset points",
             bbox=dict(
-                boxstyle='round,pad=1.0',
-                facecolor='lightyellow',
-                edgecolor=current_colors.get('border', '#34495E'),
+                boxstyle="round,pad=1.0",
+                facecolor="lightyellow",
+                edgecolor=current_colors.get("border", "#34495E"),
                 linewidth=2,
-                alpha=0.95
+                alpha=0.95,
             ),
             arrowprops=dict(
-                arrowstyle='->',
-                color=current_colors.get('border', '#34495E'),
+                arrowstyle="->",
+                color=current_colors.get("border", "#34495E"),
                 lw=2,
-                alpha=0.8
+                alpha=0.8,
             ),
             fontsize=10,
-            fontweight='bold',
-            ha=ha_align,      # 🎯 DYNAMIC HORIZONTAL ALIGNMENT
-            va=va_align,      # 🎯 DYNAMIC VERTICAL ALIGNMENT
-            zorder=1000       # Top layer
+            fontweight="bold",
+            ha=ha_align,  # 🎯 DYNAMIC HORIZONTAL ALIGNMENT
+            va=va_align,  # 🎯 DYNAMIC VERTICAL ALIGNMENT
+            zorder=1000,  # Top layer
         )
 
         self._tooltip_visible = True
         self._tooltip_annotation = self.tooltip_annotation
 
         # Canvas frissítése
-        if hasattr(self, 'draw_idle'):
+        if hasattr(self, "draw_idle"):
             self.draw_idle()
 
     def _hide_tooltip(self) -> None:
@@ -307,5 +320,5 @@ class TemperatureTooltipHandlerMixin:
             self._tooltip_visible = False
 
             # Canvas frissítése
-            if hasattr(self, 'draw_idle'):
+            if hasattr(self, "draw_idle"):
                 self.draw_idle()

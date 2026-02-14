@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekt Analízis Riport - global_weather_analyzer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #f9f9f9; }
+        header { background-color: #333; color: white; padding: 15px 30px; }
+        h1 { margin: 0; }
+        .summary { padding: 20px 30px; background-color: #fff; margin: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .summary-card { padding: 15px; background-color: #f7f7f7; border-radius: 6px; text-align: center; }
+        .summary-card h3 { margin: 0 0 10px 0; font-size: 24px; color: #333; }
+        .summary-card p { margin: 0; font-size: 14px; color: #666; }
+        main { display: flex; flex-wrap: wrap; padding: 20px; }
+        .chart-container {
+            border: 1px solid #ddd; background-color: #fff;
+            border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            flex-basis: 60%; min-width: 500px; margin: 10px;
+        }
+        .table-container {
+            border: 1px solid #ddd; background-color: #fff;
+            border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            flex-basis: 35%; min-width: 300px; margin: 10px;
+            max-height: 80vh; overflow-y: auto;
+        }
+        h2 { border-bottom: 2px solid #eee; padding: 15px 20px; margin: 0; }
+        svg { display: block; width: 100%; height: 70vh; }
+        .node circle {
+            stroke: #fff; stroke-width: 1.5px;
+            r: 6px; fill: #1f77b4;
+            cursor: pointer;
+        }
+        .node text {
+            font-size: 10px; font-family: sans-serif;
+            pointer-events: none;
+            fill: #333;
+        }
+        .link { stroke: #999; stroke-opacity: 0.6; }
+        .link.violation { stroke: red; stroke-width: 2px; stroke-opacity: 0.8; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border-bottom: 1px solid #ddd; padding: 12px 15px; text-align: left; font-size: 14px; }
+        th { background-color: #f7f7f7; position: sticky; top: 0; }
+        tr:hover { background-color: #f1f1f1; }
+        .legend { padding: 15px 20px; background-color: #f9f9f9; border-top: 2px solid #eee; }
+        .legend-item { display: inline-block; margin-right: 20px; }
+        .legend-color { display: inline-block; width: 15px; height: 15px; margin-right: 5px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Projekt Analízis: global_weather_analyzer</h1>
+    </header>
+    
+    <div class="summary">
+        <h2>Gyors Összegzés</h2>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>111</h3>
+                <p>Modulok</p>
+            </div>
+            <div class="summary-card">
+                <h3>33,998</h3>
+                <p>LOC (összesen)</p>
+            </div>
+            <div class="summary-card">
+                <h3>2</h3>
+                <p>Ciklusok</p>
+            </div>
+            <div class="summary-card">
+                <h3>0</h3>
+                <p>Layer Violations</p>
+            </div>
+        </div>
+    </div>
+    
+    <main>
+        <div class="chart-container">
+            <h2>Import Gráf (D3.js)</h2>
+            <div class="legend">
+                <div class="legend-item"><span class="legend-color" style="background-color: #4169E1;"></span>Domain</div>
+                <div class="legend-item"><span class="legend-color" style="background-color: #32CD32;"></span>Application</div>
+                <div class="legend-item"><span class="legend-color" style="background-color: #FF6347;"></span>Infrastructure</div>
+                <div class="legend-item"><span class="legend-color" style="background-color: #FFD700;"></span>GUI</div>
+                <div class="legend-item"><span class="legend-color" style="background-color: #9370DB;"></span>Entrypoints</div>
+                <div class="legend-item"><span class="legend-color" style="background-color: red;"></span>Violation Edge</div>
+            </div>
+            <svg id="d3-graph"></svg>
+        </div>
+        
+        <div class="table-container">
+            <h2>Top Hotspotok (CC/LOC)</h2>
+            <table>
+                <thead>
+                    <tr><th>Típus</th><th>Modul</th><th>Név</th><th>LOC</th><th>CC</th></tr>
+                </thead>
+                <tbody><tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>FunctionInfo</td><td>10</td><td>1</td></tr>
+<tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>ClassInfo</td><td>11</td><td>1</td></tr>
+<tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>ModuleInfo</td><td>14</td><td>1</td></tr>
+<tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>CouplingMetrics</td><td>13</td><td>1</td></tr>
+<tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>AnalysisResult</td><td>16</td><td>1</td></tr>
+<tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>AstParser</td><td>88</td><td>1</td></tr>
+<tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>_ModuleVisitor</td><td>142</td><td>1</td></tr>
+<tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>ProjectAnalyzer</td><td>192</td><td>1</td></tr>
+<tr><td>GodClass</td><td>ultimate_project_analyzer</td><td>ReportGenerator</td><td>599</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.data.anomaly_profile_manager</td><td>AnomalyProfileSettings</td><td>60</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.data.anomaly_profile_manager</td><td>AnomalyProfileManager</td><td>351</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.map_visualizer</td><td>FoliumMapConfig</td><td>27</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.map_visualizer</td><td>LocalHttpServerThread</td><td>44</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.map_visualizer</td><td>QuietHTTPRequestHandler</td><td>3</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.map_visualizer</td><td>JavaScriptBridge</td><td>34</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.map_visualizer</td><td>FoliumMapGenerator</td><td>628</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.map_visualizer</td><td>HungarianMapVisualizer</td><td>705</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.universal_location_selector</td><td>LocationCard</td><td>47</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.universal_location_selector</td><td>UniversalLocationSelector</td><td>379</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.hungarian_location_selector</td><td>HungarianStatisticalRegion</td><td>12</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.hungarian_location_selector</td><td>HungarianRegionData</td><td>13</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.hungarian_location_selector</td><td>HungarianLocationWorker</td><td>44</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.hungarian_location_selector</td><td>HungarianLocationSelector</td><td>675</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.hungarian_map_tab</td><td>HungarianMapTab</td><td>1312</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>ColorFormat</td><td>6</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>ColorHarmony</td><td>8</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>ColorBlindnessType</td><td>6</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>ColorMetrics</td><td>8</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>HSLColor</td><td>36</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>ColorGenerator</td><td>12</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>StandardColorGenerator</td><td>18</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>MaterialColorGenerator</td><td>37</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.color_palette</td><td>ColorPalette</td><td>447</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>MeteorologicalColorMaps</td><td>70</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>RecordCard</td><td>43</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>RecordSummaryCard</td><td>55</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>TemperatureTabWidget</td><td>22</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>PrecipitationTabWidget</td><td>26</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>WindTabWidget</td><td>41</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>WindGustTabWidget</td><td>41</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>ClimateTabWidget</td><td>101</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.analytics_view</td><td>AnalyticsView</td><td>828</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.control_panel</td><td>ControlPanel</td><td>609</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.theme_manager</td><td>ProfessionalThemeManager</td><td>448</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.main_window</td><td>MainWindow</td><td>1170</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.app_controller</td><td>AppController</td><td>1107</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.data_widgets</td><td>NumericTableWidgetItem</td><td>27</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.data_widgets</td><td>WeatherTableModel</td><td>89</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.data_widgets</td><td>WeatherDataTable</td><td>537</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.workers.analysis_worker</td><td>AnalysisWorker</td><td>396</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.workers.analysis_worker</td><td>WorkerTestWindow</td><td>47</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.workers.data_fetch_worker</td><td>APIConstants</td><td>4</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.workers.data_fetch_worker</td><td>BaseWorkerThread</td><td>99</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.workers.data_fetch_worker</td><td>GeocodingWorker</td><td>70</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.workers.data_fetch_worker</td><td>WeatherDataWorker</td><td>248</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.workers.data_fetch_worker</td><td>SQLQueryWorker</td><td>74</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.workers.data_fetch_worker</td><td>WorkerManager</td><td>317</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.quick_overview_tab</td><td>QuickOverviewTab</td><td>431</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.results_panel</td><td>_DummyPandas</td><td>7</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.results_panel</td><td>QuickOverviewTab</td><td>8</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.results_panel</td><td>DetailedChartsTab</td><td>8</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.results_panel</td><td>DataTableTab</td><td>8</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.results_panel</td><td>ExtremeEventsTab</td><td>8</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.results_panel</td><td>WindyDaysTab</td><td>14</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.results_panel</td><td>ResultsPanel</td><td>738</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.results_panel</td><td>TestWindow</td><td>143</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.extreme_calculator</td><td>ExtremeRecord</td><td>9</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.extreme_calculator</td><td>RecordsTextSummary</td><td>14</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.extreme_calculator</td><td>ExtremeCalculator</td><td>519</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.results_panel.windy_days_tab</td><td>WindyDaysTab</td><td>422</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.query_control_widget</td><td>HungarianLocationSelector</td><td>16</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.query_control_widget</td><td>DateRangeWidget</td><td>16</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.query_control_widget</td><td>ParametersWidget</td><td>13</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.query_control_widget</td><td>ProviderWidget</td><td>13</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.query_control_widget</td><td>QueryControlWidget</td><td>717</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.query_control_widget</td><td>TestWindow</td><td>47</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.provider_widget</td><td>ProviderWidget</td><td>326</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.date_range_widget</td><td>DateRangeWidget</td><td>369</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.panel_widgets.multi_city_widget</td><td>MultiCityWidget</td><td>405</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.dialogs.anomaly_settings_dialog</td><td>AnomalySettingsDialog</td><td>540</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.charts.precipitation_chart</td><td>PrecipitationChart</td><td>320</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.charts.wind_chart</td><td>WindChart</td><td>464</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.charts.heatmap_chart</td><td>HeatmapCalendarChart</td><td>341</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.charts.temperature_chart</td><td>EnhancedTemperatureChart</td><td>377</td><td>1</td></tr>
+<tr><td>GodClass</td><td>src.gui.charts.tooltip_mixin</td><td>WeatherTooltipMixin</td><td>394</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.hungarian_map_tab</td><td>HungarianMapTab</td><td>1312</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.main_window</td><td>MainWindow</td><td>1170</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.app_controller</td><td>AppController</td><td>1107</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.analytics_view</td><td>AnalyticsView</td><td>828</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.results_panel.results_panel</td><td>ResultsPanel</td><td>738</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.panel_widgets.query_control_widget</td><td>QueryControlWidget</td><td>717</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.map_visualizer</td><td>HungarianMapVisualizer</td><td>705</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.hungarian_location_selector</td><td>HungarianLocationSelector</td><td>675</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.map_visualizer</td><td>FoliumMapGenerator</td><td>628</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.control_panel</td><td>ControlPanel</td><td>609</td><td>1</td></tr>
+<tr><td>method</td><td>ultimate_project_analyzer</td><td>ReportGenerator</td><td>599</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.dialogs.anomaly_settings_dialog</td><td>AnomalySettingsDialog</td><td>540</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.data_widgets</td><td>WeatherDataTable</td><td>537</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.results_panel.extreme_calculator</td><td>ExtremeCalculator</td><td>519</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.charts.wind_chart</td><td>WindChart</td><td>464</td><td>1</td></tr>
+<tr><td>method</td><td>ultimate_project_analyzer.ReportGenerator</td><td>_write_markdown</td><td>167</td><td>30</td></tr>
+<tr><td>method</td><td>src.gui.theme_manager</td><td>ProfessionalThemeManager</td><td>448</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.color_palette</td><td>ColorPalette</td><td>447</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.results_panel.quick_overview_tab</td><td>QuickOverviewTab</td><td>431</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.results_panel.windy_days_tab</td><td>WindyDaysTab</td><td>422</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.panel_widgets.multi_city_widget</td><td>MultiCityWidget</td><td>405</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.workers.analysis_worker</td><td>AnalysisWorker</td><td>396</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.charts.tooltip_mixin</td><td>WeatherTooltipMixin</td><td>394</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.universal_location_selector</td><td>UniversalLocationSelector</td><td>379</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.charts.temperature_chart</td><td>EnhancedTemperatureChart</td><td>377</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.panel_widgets.date_range_widget</td><td>DateRangeWidget</td><td>369</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.results_panel.quick_overview_tab.QuickOverviewTab</td><td>_calculate_temperature_stats</td><td>63</td><td>30</td></tr>
+<tr><td>method</td><td>src.data.anomaly_profile_manager</td><td>AnomalyProfileManager</td><td>351</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.charts.heatmap_chart</td><td>HeatmapCalendarChart</td><td>341</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.app_controller.AppController</td><td>_process_weather_data</td><td>118</td><td>23</td></tr>
+<tr><td>method</td><td>ultimate_project_analyzer.ReportGenerator</td><td>_write_html</td><td>251</td><td>9</td></tr>
+<tr><td>method</td><td>src.gui.panel_widgets.provider_widget</td><td>ProviderWidget</td><td>326</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.charts.precipitation_chart</td><td>PrecipitationChart</td><td>320</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.workers.data_fetch_worker</td><td>WorkerManager</td><td>317</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.workers.analysis_worker.AnalysisWorker</td><td>_convert_to_legacy_format</td><td>82</td><td>23</td></tr>
+<tr><td>method</td><td>src.gui.map_visualizer</td><td>demo_http_server_folium_map_visualizer</td><td>218</td><td>9</td></tr>
+<tr><td>method</td><td>src.gui.app_controller.AppController</td><td>_validate_analysis_request</td><td>71</td><td>23</td></tr>
+<tr><td>method</td><td>src.gui.workers.data_fetch_worker.WeatherDataWorker</td><td>execute</td><td>78</td><td>22</td></tr>
+<tr><td>method</td><td>src.gui.charts.wind_rose_chart</td><td>WindRoseChart</td><td>286</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.panel_widgets.location_widget</td><td>LocationWidget</td><td>281</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.charts.windy_days_chart</td><td>WindyDaysChart</td><td>277</td><td>1</td></tr>
+<tr><td>method</td><td>src.domain.analytics.services.analytics_transform_service.AnalyticsTransformService</td><td>process_weather_results</td><td>65</td><td>22</td></tr>
+<tr><td>method</td><td>src.analytics.multi_city_engine</td><td>MultiCityEngine</td><td>273</td><td>1</td></tr>
+<tr><td>method</td><td>src.gui.panel_widgets.query_control_widget.QueryControlWidget</td><td>_is_query_valid</td><td>73</td><td>21</td></tr>
+<tr><td>method</td><td>src.gui.results_panel.results_panel.ResultsPanel</td><td>_convert_data_to_dataframe</td><td>92</td><td>19</td></tr>
+<tr><td>method</td><td>src.gui.main_window.MainWindow</td><td>closeEvent</td><td>77</td><td>20</td></tr>
+<tr><td>method</td><td>src.gui.data_widgets.WeatherDataTable</td><td>_convert_to_dataframe</td><td>92</td><td>18</td></tr>
+<tr><td>method</td><td>src.gui.analytics_view.AnalyticsView</td><td>_calculate_records</td><td>58</td><td>21</td></tr>
+<tr><td>method</td><td>src.gui.charts.comparison_chart.MultiYearComparisonChart</td><td>_plot_multi_year_comparison</td><td>85</td><td>18</td></tr>
+<tr><td>method</td><td>src.gui.workers.data_fetch_worker</td><td>WeatherDataWorker</td><td>248</td><td>1</td></tr></tbody>
+            </table>
+        </div>
+        
+        
+    </main>
+    
+    <script>
+        const nodes = [{"id": "ultimate_project_analyzer"}, {"id": "meteo_gui_starter"}, {"id": "tests.test_wind_analysis"}, {"id": "tests.test_smoke"}, {"id": "tests.test_config_core"}, {"id": "tests.test_weather_client_core"}, {"id": "tests.test_data_models"}, {"id": "tests.test_usage_tracker_track_request"}, {"id": "tests.test_multi_city_engine_core"}, {"id": "tests.conftest"}, {"id": "src.config"}, {"id": "tests.domain.test_climate_anomaly"}, {"id": "tests.domain.test_anomaly_threshold"}, {"id": "tests.domain.test_anomaly_detector_service"}, {"id": "tests.infrastructure.repositories.test_city_repository"}, {"id": "tests.domain.analytics.test_models"}, {"id": "tests.domain.analytics.test_region_resolver"}, {"id": "tests.domain.analytics.test_analytics_transform_service"}, {"id": "tests.domain.analytics.test_statistics"}, {"id": "tests.domain.analytics.test_weather_fetch_service"}, {"id": "tests.application.use_cases.test_detect_anomalies"}, {"id": "tests.application.use_cases.test_analyze_multi_city"}, {"id": "src.data.anomaly_profile_manager"}, {"id": "src.data.enums"}, {"id": "src.data.models"}, {"id": "src.data.weather_client"}, {"id": "src.data"}, {"id": "src.analytics.multi_city_engine"}, {"id": "src.analytics.wind_analysis"}, {"id": "src.analytics"}, {"id": "src.config.provider_config"}, {"id": "src.config.usage_config"}, {"id": "src.config.paths_config"}, {"id": "src.config.api_config"}, {"id": "src.domain"}, {"id": "src.api.main"}, {"id": "src.api"}, {"id": "src.gui.map_visualizer"}, {"id": "src.gui.cleanup_manager"}, {"id": "src.gui.universal_location_selector"}, {"id": "src.gui.chart_container"}, {"id": "src.gui.hungarian_location_selector"}, {"id": "src.gui.hungarian_map_tab"}, {"id": "src.gui.color_palette"}, {"id": "src.gui.analytics_view"}, {"id": "src.gui.dialogs"}, {"id": "src.gui.utils"}, {"id": "src.gui.control_panel"}, {"id": "src.gui.theme_manager"}, {"id": "src.gui.main_window"}, {"id": "src.gui.app_controller"}, {"id": "src.gui.data_widgets"}, {"id": "src.gui.signal_manager"}, {"id": "src.gui"}, {"id": "src.application"}, {"id": "src.infrastructure.repositories.city_repository"}, {"id": "src.domain.analytics.repositories"}, {"id": "src.domain.analytics.statistics"}, {"id": "src.domain.analytics.models"}, {"id": "src.domain.analytics"}, {"id": "src.domain.value_objects.anomaly_threshold"}, {"id": "src.domain.value_objects"}, {"id": "src.domain.entities.climate_anomaly"}, {"id": "src.domain.entities"}, {"id": "src.domain.services.anomaly_detector"}, {"id": "src.domain.services"}, {"id": "src.domain.analytics.services.weather_fetch_service"}, {"id": "src.domain.analytics.services.analytics_transform_service"}, {"id": "src.domain.analytics.services"}, {"id": "src.domain.analytics.services.region_resolver"}, {"id": "src.api.adapters.weather_adapter"}, {"id": "src.api.routes.detailed_city"}, {"id": "src.api.routes.single_city"}, {"id": "src.api.routes.anomalies"}, {"id": "src.api.routes.metadata"}, {"id": "src.api.routes.weather"}, {"id": "src.api.dto.weather_request"}, {"id": "src.gui.workers.analysis_worker"}, {"id": "src.gui.workers.data_fetch_worker"}, {"id": "src.gui.results_panel.anomaly_detector"}, {"id": "src.gui.results_panel.quick_overview_tab"}, {"id": "src.gui.results_panel.results_panel"}, {"id": "src.gui.results_panel.detailed_charts_tab"}, {"id": "src.gui.results_panel.extreme_calculator"}, {"id": "src.gui.results_panel.utils"}, {"id": "src.gui.results_panel.windy_days_tab"}, {"id": "src.gui.results_panel.extreme_events_tab"}, {"id": "src.gui.results_panel.data_table_tab"}, {"id": "src.gui.results_panel"}, {"id": "src.gui.panel_widgets.query_control_widget"}, {"id": "src.gui.panel_widgets.provider_widget"}, {"id": "src.gui.panel_widgets.date_range_widget"}, {"id": "src.gui.panel_widgets.api_settings_widget"}, {"id": "src.gui.panel_widgets.multi_city_widget"}, {"id": "src.gui.panel_widgets.location_widget"}, {"id": "src.gui.panel_widgets"}, {"id": "src.gui.panel_widgets.analysis_type_widget"}, {"id": "src.gui.dialogs.anomaly_settings_dialog"}, {"id": "src.gui.charts.windy_days_chart"}, {"id": "src.gui.charts.comparison_chart"}, {"id": "src.gui.charts.precipitation_chart"}, {"id": "src.gui.charts.wind_chart"}, {"id": "src.gui.charts.heatmap_chart"}, {"id": "src.gui.charts.temperature_chart"}, {"id": "src.gui.charts.base_chart"}, {"id": "src.gui.charts.tooltip_mixin"}, {"id": "src.gui.charts.wind_rose_chart"}, {"id": "src.gui.charts"}, {"id": "src.application.use_cases.detect_anomalies"}, {"id": "src.application.use_cases.analyze_multi_city"}, {"id": "src.application.use_cases"}];
+        const links = [{"source": "meteo_gui_starter", "target": "src.config", "violation": false}, {"source": "meteo_gui_starter", "target": "src.gui.results_panel", "violation": false}, {"source": "meteo_gui_starter", "target": "src.gui.main_window", "violation": false}, {"source": "tests.test_wind_analysis", "target": "src.analytics", "violation": false}, {"source": "tests.test_weather_client_core", "target": "src.data", "violation": false}, {"source": "tests.test_data_models", "target": "src.data.models", "violation": false}, {"source": "tests.test_data_models", "target": "src.data.enums", "violation": false}, {"source": "tests.test_multi_city_engine_core", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "tests.domain.test_climate_anomaly", "target": "src.domain.entities.climate_anomaly", "violation": false}, {"source": "tests.domain.test_anomaly_threshold", "target": "src.domain.value_objects.anomaly_threshold", "violation": false}, {"source": "tests.domain.test_anomaly_detector_service", "target": "src.domain.services.anomaly_detector", "violation": false}, {"source": "tests.domain.test_anomaly_detector_service", "target": "src.domain.value_objects.anomaly_threshold", "violation": false}, {"source": "tests.infrastructure.repositories.test_city_repository", "target": "src.infrastructure.repositories.city_repository", "violation": false}, {"source": "tests.domain.analytics.test_models", "target": "src.data.enums", "violation": false}, {"source": "tests.domain.analytics.test_models", "target": "src.domain.analytics.models", "violation": false}, {"source": "tests.domain.analytics.test_region_resolver", "target": "src.domain.analytics.services.region_resolver", "violation": false}, {"source": "tests.domain.analytics.test_analytics_transform_service", "target": "src.data.models", "violation": false}, {"source": "tests.domain.analytics.test_analytics_transform_service", "target": "src.data.enums", "violation": false}, {"source": "tests.domain.analytics.test_analytics_transform_service", "target": "src.domain.analytics.services.analytics_transform_service", "violation": false}, {"source": "tests.domain.analytics.test_analytics_transform_service", "target": "src.domain.analytics.models", "violation": false}, {"source": "tests.domain.analytics.test_statistics", "target": "src.domain.analytics.statistics", "violation": false}, {"source": "tests.domain.analytics.test_weather_fetch_service", "target": "src.domain.analytics.models", "violation": false}, {"source": "tests.domain.analytics.test_weather_fetch_service", "target": "src.domain.analytics.services.weather_fetch_service", "violation": false}, {"source": "tests.application.use_cases.test_detect_anomalies", "target": "src.application.use_cases.detect_anomalies", "violation": false}, {"source": "tests.application.use_cases.test_analyze_multi_city", "target": "src.domain.analytics.repositories", "violation": false}, {"source": "tests.application.use_cases.test_analyze_multi_city", "target": "src.data.enums", "violation": false}, {"source": "tests.application.use_cases.test_analyze_multi_city", "target": "src.domain.analytics.services.analytics_transform_service", "violation": false}, {"source": "tests.application.use_cases.test_analyze_multi_city", "target": "src.application.use_cases.analyze_multi_city", "violation": false}, {"source": "tests.application.use_cases.test_analyze_multi_city", "target": "src.domain.analytics.models", "violation": false}, {"source": "tests.application.use_cases.test_analyze_multi_city", "target": "src.domain.analytics.services.region_resolver", "violation": false}, {"source": "src.data.models", "target": "src.data.enums", "violation": false}, {"source": "src.data.weather_client", "target": "src.gui.utils", "violation": false}, {"source": "src.data.weather_client", "target": "src.config", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.domain.analytics.repositories", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.data.enums", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.data.weather_client", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.domain.analytics.services", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.application.use_cases.analyze_multi_city", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.data.models", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.infrastructure.repositories.city_repository", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.domain.analytics.models", "violation": false}, {"source": "src.analytics.multi_city_engine", "target": "src.domain.analytics.statistics", "violation": false}, {"source": "src.config.provider_config", "target": "src.config.paths_config", "violation": false}, {"source": "src.config.usage_config", "target": "src.config.api_config", "violation": false}, {"source": "src.config.usage_config", "target": "src.config.provider_config", "violation": false}, {"source": "src.config.usage_config", "target": "src.config.paths_config", "violation": false}, {"source": "src.api.main", "target": "src.api.routes.metadata", "violation": false}, {"source": "src.api.main", "target": "src.api.routes.single_city", "violation": false}, {"source": "src.api.main", "target": "src.api.routes.weather", "violation": false}, {"source": "src.api.main", "target": "src.api.routes.detailed_city", "violation": false}, {"source": "src.api.main", "target": "src.api.routes.anomalies", "violation": false}, {"source": "src.gui.map_visualizer", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.map_visualizer", "target": "src.gui.color_palette", "violation": false}, {"source": "src.gui.cleanup_manager", "target": "src.gui.main_window", "violation": false}, {"source": "src.gui.universal_location_selector", "target": "src.data.models", "violation": false}, {"source": "src.gui.universal_location_selector", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.chart_container", "target": "src.gui.charts", "violation": false}, {"source": "src.gui.chart_container", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.hungarian_location_selector", "target": "src.data.models", "violation": false}, {"source": "src.gui.hungarian_location_selector", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.hungarian_location_selector", "target": "src.gui.color_palette", "violation": false}, {"source": "src.gui.hungarian_map_tab", "target": "src.data.enums", "violation": false}, {"source": "src.gui.hungarian_map_tab", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.hungarian_map_tab", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.gui.hungarian_map_tab", "target": "src.data.models", "violation": false}, {"source": "src.gui.hungarian_map_tab", "target": "src.gui.color_palette", "violation": false}, {"source": "src.gui.hungarian_map_tab", "target": "src.gui.hungarian_location_selector", "violation": false}, {"source": "src.gui.hungarian_map_tab", "target": "src.gui.map_visualizer", "violation": false}, {"source": "src.gui.color_palette", "target": "src.gui.utils", "violation": false}, {"source": "src.gui.analytics_view", "target": "src.data.enums", "violation": false}, {"source": "src.gui.analytics_view", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.analytics_view", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.gui.analytics_view", "target": "src.data.models", "violation": false}, {"source": "src.gui.analytics_view", "target": "src.gui.charts.wind_rose_chart", "violation": false}, {"source": "src.gui.analytics_view", "target": "src.gui.charts.wind_chart", "violation": false}, {"source": "src.gui.analytics_view", "target": "src.gui.charts.heatmap_chart", "violation": false}, {"source": "src.gui.utils", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.panel_widgets.query_control_widget", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.panel_widgets.provider_widget", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.panel_widgets.api_settings_widget", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.panel_widgets.multi_city_widget", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.panel_widgets.date_range_widget", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.workers.data_fetch_worker", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.panel_widgets.location_widget", "violation": false}, {"source": "src.gui.control_panel", "target": "src.gui.panel_widgets.analysis_type_widget", "violation": false}, {"source": "src.gui.theme_manager", "target": "src.gui.color_palette", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.results_panel", "violation": false}, {"source": "src.gui.main_window", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.color_palette", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.hungarian_map_tab", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.control_panel", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.utils", "violation": false}, {"source": "src.gui.main_window", "target": "src.config", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.app_controller", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.dialogs", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.analytics_view", "violation": false}, {"source": "src.gui.main_window", "target": "src.gui.data_widgets", "violation": false}, {"source": "src.gui.app_controller", "target": "src.gui.workers.data_fetch_worker", "violation": false}, {"source": "src.gui.app_controller", "target": "src.gui.workers.analysis_worker", "violation": false}, {"source": "src.gui.app_controller", "target": "src.config", "violation": false}, {"source": "src.gui.data_widgets", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.signal_manager", "target": "src.gui.main_window", "violation": false}, {"source": "src.infrastructure.repositories.city_repository", "target": "src.domain.analytics.repositories", "violation": false}, {"source": "src.domain.analytics.models", "target": "src.data.models", "violation": false}, {"source": "src.domain.analytics.models", "target": "src.data.enums", "violation": false}, {"source": "src.domain.services.anomaly_detector", "target": "src.domain.value_objects.anomaly_threshold", "violation": false}, {"source": "src.domain.services.anomaly_detector", "target": "src.domain.entities.climate_anomaly", "violation": false}, {"source": "src.domain.analytics.services.weather_fetch_service", "target": "src.domain.analytics.models", "violation": false}, {"source": "src.domain.analytics.services.analytics_transform_service", "target": "src.data.models", "violation": false}, {"source": "src.domain.analytics.services.analytics_transform_service", "target": "src.data.enums", "violation": false}, {"source": "src.domain.analytics.services.analytics_transform_service", "target": "src.domain.analytics.models", "violation": false}, {"source": "src.domain.analytics.services.analytics_transform_service", "target": "src.domain.analytics.statistics", "violation": false}, {"source": "src.api.adapters.weather_adapter", "target": "src.domain.analytics.models", "violation": false}, {"source": "src.api.adapters.weather_adapter", "target": "src.api.dto.weather_request", "violation": false}, {"source": "src.api.routes.detailed_city", "target": "src.domain.analytics.services", "violation": false}, {"source": "src.api.routes.detailed_city", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.api.routes.detailed_city", "target": "src.infrastructure.repositories.city_repository", "violation": false}, {"source": "src.api.routes.detailed_city", "target": "src.application.use_cases", "violation": false}, {"source": "src.api.routes.detailed_city", "target": "src.api.dto.weather_request", "violation": false}, {"source": "src.api.routes.detailed_city", "target": "src.api.adapters.weather_adapter", "violation": false}, {"source": "src.api.routes.single_city", "target": "src.domain.analytics.services", "violation": false}, {"source": "src.api.routes.single_city", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.api.routes.single_city", "target": "src.infrastructure.repositories.city_repository", "violation": false}, {"source": "src.api.routes.single_city", "target": "src.application.use_cases", "violation": false}, {"source": "src.api.routes.single_city", "target": "src.api.dto.weather_request", "violation": false}, {"source": "src.api.routes.single_city", "target": "src.api.adapters.weather_adapter", "violation": false}, {"source": "src.api.routes.anomalies", "target": "src.domain.analytics.services", "violation": false}, {"source": "src.api.routes.anomalies", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.api.routes.anomalies", "target": "src.infrastructure.repositories.city_repository", "violation": false}, {"source": "src.api.routes.anomalies", "target": "src.application.use_cases", "violation": false}, {"source": "src.api.routes.anomalies", "target": "src.api.dto.weather_request", "violation": false}, {"source": "src.api.routes.anomalies", "target": "src.api.adapters.weather_adapter", "violation": false}, {"source": "src.api.routes.metadata", "target": "src.data.enums", "violation": false}, {"source": "src.api.routes.metadata", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.api.routes.weather", "target": "src.domain.analytics.services", "violation": false}, {"source": "src.api.routes.weather", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.api.routes.weather", "target": "src.infrastructure.repositories.city_repository", "violation": false}, {"source": "src.api.routes.weather", "target": "src.application.use_cases", "violation": false}, {"source": "src.api.routes.weather", "target": "src.api.dto.weather_request", "violation": false}, {"source": "src.api.routes.weather", "target": "src.api.adapters.weather_adapter", "violation": false}, {"source": "src.gui.workers.analysis_worker", "target": "src.data.enums", "violation": false}, {"source": "src.gui.workers.analysis_worker", "target": "src.data.weather_client", "violation": false}, {"source": "src.gui.workers.analysis_worker", "target": "src.analytics.multi_city_engine", "violation": false}, {"source": "src.gui.results_panel.anomaly_detector", "target": "src.application.use_cases.detect_anomalies", "violation": false}, {"source": "src.gui.results_panel.anomaly_detector", "target": "src.gui.utils", "violation": false}, {"source": "src.gui.results_panel.quick_overview_tab", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.results_panel.quick_overview_tab", "target": "src.gui.results_panel.utils", "violation": false}, {"source": "src.gui.results_panel.quick_overview_tab", "target": "src.gui.utils", "violation": false}, {"source": "src.gui.results_panel.results_panel", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.results_panel.results_panel", "target": "src.gui.results_panel.extreme_events_tab", "violation": false}, {"source": "src.gui.results_panel.results_panel", "target": "src.gui.results_panel.data_table_tab", "violation": false}, {"source": "src.gui.results_panel.results_panel", "target": "src.gui.results_panel.quick_overview_tab", "violation": false}, {"source": "src.gui.results_panel.results_panel", "target": "src.gui.results_panel.utils", "violation": false}, {"source": "src.gui.results_panel.results_panel", "target": "src.gui.results_panel.windy_days_tab", "violation": false}, {"source": "src.gui.results_panel.results_panel", "target": "src.gui.results_panel.detailed_charts_tab", "violation": false}, {"source": "src.gui.results_panel.detailed_charts_tab", "target": "src.gui.chart_container", "violation": false}, {"source": "src.gui.results_panel.detailed_charts_tab", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.results_panel.extreme_calculator", "target": "src.gui.results_panel.utils", "violation": false}, {"source": "src.gui.results_panel.utils", "target": "src.gui.utils", "violation": false}, {"source": "src.gui.results_panel.windy_days_tab", "target": "src.gui.charts.windy_days_chart", "violation": false}, {"source": "src.gui.results_panel.windy_days_tab", "target": "src.analytics.wind_analysis", "violation": false}, {"source": "src.gui.results_panel.windy_days_tab", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.results_panel.extreme_events_tab", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.results_panel.extreme_events_tab", "target": "src.gui.dialogs.anomaly_settings_dialog", "violation": false}, {"source": "src.gui.results_panel.extreme_events_tab", "target": "src.gui.results_panel.anomaly_detector", "violation": false}, {"source": "src.gui.results_panel.extreme_events_tab", "target": "src.data.anomaly_profile_manager", "violation": false}, {"source": "src.gui.results_panel.extreme_events_tab", "target": "src.config", "violation": false}, {"source": "src.gui.results_panel.extreme_events_tab", "target": "src.gui.results_panel.extreme_calculator", "violation": false}, {"source": "src.gui.results_panel.extreme_events_tab", "target": "src.gui.utils", "violation": false}, {"source": "src.gui.results_panel.data_table_tab", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.results_panel.data_table_tab", "target": "src.gui.data_widgets", "violation": false}, {"source": "src.gui.results_panel", "target": "src.gui.utils", "violation": false}, {"source": "src.gui.results_panel", "target": "src.gui.results_panel", "violation": false}, {"source": "src.gui.panel_widgets.query_control_widget", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.panel_widgets.query_control_widget", "target": "src.gui.hungarian_location_selector", "violation": false}, {"source": "src.gui.panel_widgets.query_control_widget", "target": "src.gui.data_widgets", "violation": false}, {"source": "src.gui.panel_widgets.provider_widget", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.panel_widgets.date_range_widget", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.panel_widgets.api_settings_widget", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.panel_widgets.multi_city_widget", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.panel_widgets.location_widget", "target": "src.data.models", "violation": false}, {"source": "src.gui.panel_widgets.location_widget", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.panel_widgets.location_widget", "target": "src.gui.universal_location_selector", "violation": false}, {"source": "src.gui.panel_widgets.analysis_type_widget", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.dialogs.anomaly_settings_dialog", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.dialogs.anomaly_settings_dialog", "target": "src.data.anomaly_profile_manager", "violation": false}, {"source": "src.gui.dialogs.anomaly_settings_dialog", "target": "src.gui.utils", "violation": false}, {"source": "src.gui.charts.windy_days_chart", "target": "src.gui.charts.base_chart", "violation": false}, {"source": "src.gui.charts.windy_days_chart", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.charts.comparison_chart", "target": "src.gui.charts.base_chart", "violation": false}, {"source": "src.gui.charts.comparison_chart", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.charts.precipitation_chart", "target": "src.gui.charts.base_chart", "violation": false}, {"source": "src.gui.charts.precipitation_chart", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.charts.precipitation_chart", "target": "src.gui.charts.tooltip_mixin", "violation": false}, {"source": "src.gui.charts.wind_chart", "target": "src.gui.charts.base_chart", "violation": false}, {"source": "src.gui.charts.wind_chart", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.charts.wind_chart", "target": "src.gui.charts.tooltip_mixin", "violation": false}, {"source": "src.gui.charts.heatmap_chart", "target": "src.gui.charts.base_chart", "violation": false}, {"source": "src.gui.charts.heatmap_chart", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.charts.temperature_chart", "target": "src.gui.charts.base_chart", "violation": false}, {"source": "src.gui.charts.temperature_chart", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.charts.temperature_chart", "target": "src.gui.charts.tooltip_mixin", "violation": false}, {"source": "src.gui.charts.base_chart", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.charts.base_chart", "target": "src.gui.color_palette", "violation": false}, {"source": "src.gui.charts.tooltip_mixin", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.gui.charts.wind_rose_chart", "target": "src.gui.charts.base_chart", "violation": false}, {"source": "src.gui.charts.wind_rose_chart", "target": "src.gui.theme_manager", "violation": false}, {"source": "src.application.use_cases.detect_anomalies", "target": "src.domain.services.anomaly_detector", "violation": false}, {"source": "src.application.use_cases.detect_anomalies", "target": "src.domain.value_objects.anomaly_threshold", "violation": false}, {"source": "src.application.use_cases.detect_anomalies", "target": "src.domain.entities.climate_anomaly", "violation": false}, {"source": "src.application.use_cases.analyze_multi_city", "target": "src.domain.analytics.repositories", "violation": false}, {"source": "src.application.use_cases.analyze_multi_city", "target": "src.data.enums", "violation": false}, {"source": "src.application.use_cases.analyze_multi_city", "target": "src.domain.analytics.services", "violation": false}, {"source": "src.application.use_cases.analyze_multi_city", "target": "src.data.models", "violation": false}, {"source": "src.application.use_cases.analyze_multi_city", "target": "src.domain.analytics.models", "violation": false}];
+        
+        // Layer detection function (matches Python implementation)
+        function getLayer(moduleName) {
+            if (moduleName.startsWith("src.domain.") || moduleName.startsWith("domain.")) return "domain";
+            if (moduleName.startsWith("src.application.") || moduleName.startsWith("application.")) return "application";
+            if (moduleName.startsWith("src.infrastructure.") || moduleName.startsWith("infrastructure.")) return "infrastructure";
+            if (moduleName.startsWith("src.gui.") || moduleName.startsWith("gui.")) return "gui";
+            if (moduleName === "main" || moduleName === "src.main" || moduleName === "app") return "entrypoints";
+            if (moduleName.startsWith("tests.") || moduleName.startsWith("test_")) return "tests";
+            return "unknown";
+        }
+        
+        const layerColors = {
+            "domain": "#4169E1",
+            "application": "#32CD32",
+            "infrastructure": "#FF6347",
+            "gui": "#FFD700",
+            "entrypoints": "#9370DB",
+            "tests": "#A9A9A9",
+            "unknown": "#FFFFFF"
+        };
+        
+        // Apply layer colors to nodes
+        nodes.forEach(node => {
+            node.layer = getLayer(node.id);
+            node.color = layerColors[node.layer];
+        });
+        
+        const svg = d3.select("svg#d3-graph");
+        const width = svg.node().getBoundingClientRect().width;
+        const height = svg.node().getBoundingClientRect().height;
+
+        // Create zoomable group FIRST
+        const g = svg.append("g");
+        
+        // Create links in zoomable group
+        const link = g.append("g")
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("class", d => d.violation ? "link violation" : "link");
+
+        // Create nodes in zoomable group
+        const node = g.append("g")
+            .attr("class", "node")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g");
+
+        node.append("circle")
+            .style("fill", d => d.color);
+        
+        node.append("text")
+            .attr("x", 8)
+            .attr("y", 3)
+            .text(d => d.id);
+
+        // Setup force simulation
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(80))
+            .force("charge", d3.forceManyBody().strength(-250))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("x", d3.forceX(width / 2).strength(0.05))
+            .force("y", d3.forceY(height / 2).strength(0.05));
+
+        // Tick function - update positions
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        // Drag functions
+        function dragstarted(event) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            event.subject.fx = event.subject.x;
+            event.subject.fy = event.subject.y;
+        }
+        function dragged(event) {
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+        }
+        function dragended(event) {
+            if (!event.active) simulation.alphaTarget(0);
+            event.subject.fx = null;
+            event.subject.fy = null;
+        }
+        
+        // Enable drag on nodes
+        node.call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+        
+        // Enable zoom/pan
+        svg.call(d3.zoom()
+            .extent([[0, 0], [width, height]])
+            .scaleExtent([0.1, 8])
+            .on("zoom", ({transform}) => {
+                g.attr("transform", transform);
+            }));
+    </script>
+</body>
+</html>

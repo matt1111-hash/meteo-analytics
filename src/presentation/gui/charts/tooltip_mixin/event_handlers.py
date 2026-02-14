@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class EventHandlers:
     """Handle mouse events for tooltips."""
 
-    def __init__(self, mixin: 'WeatherTooltipMixin'):
+    def __init__(self, mixin: "WeatherTooltipMixin"):
         """
         Initialize event handlers.
 
@@ -45,7 +45,7 @@ class EventHandlers:
         if not self._mixin._tooltip_enabled:
             return
 
-        if not hasattr(self._mixin, 'ax') or event.inaxes != self._mixin.ax:
+        if not hasattr(self._mixin, "ax") or event.inaxes != self._mixin.ax:
             self._mixin._hide_tooltip()
             return
 
@@ -57,11 +57,15 @@ class EventHandlers:
         closest_point = self._mixin._find_closest_chart_point(event)
 
         if closest_point:
-            print(f"🎯 DEBUG: Tooltip FOUND point - index: {closest_point.get('index')}")
+            print(
+                f"🎯 DEBUG: Tooltip FOUND point - index: {closest_point.get('index')}"
+            )
 
-            if (not self._mixin._last_tooltip_point or
-                self._mixin._last_tooltip_point.get('index') != closest_point.get('index')):
-
+            if (
+                not self._mixin._last_tooltip_point
+                or self._mixin._last_tooltip_point.get("index")
+                != closest_point.get("index")
+            ):
                 print("🎯 DEBUG: Tooltip megjelenítés indul...")
                 self._mixin._show_tooltip(event, closest_point)
                 self._mixin._last_tooltip_point = closest_point
@@ -84,7 +88,7 @@ class EventHandlers:
         if not self._mixin._tooltip_enabled:
             return
 
-        if not hasattr(self._mixin, 'ax') or event.inaxes != self._mixin.ax:
+        if not hasattr(self._mixin, "ax") or event.inaxes != self._mixin.ax:
             return
 
         closest_point = self._mixin._find_closest_chart_point(event)

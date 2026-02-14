@@ -1,4 +1,5 @@
 """Categories section builders."""
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
@@ -49,14 +50,16 @@ def create_categories_grid(dialog: object) -> QWidget:
         ("normal", "Normális", "#10b981", "🌱", "< 35°C"),
         ("warning", "Figyelmeztetés", "#f59e0b", "⚠️", "35-40°C"),
         ("danger", "Veszélyes", "#dc2626", "🚨", "> 40°C"),
-        ("extreme", "Extrém", "#7c2d12", "💀", "> 45°C")
+        ("extreme", "Extrém", "#7c2d12", "💀", "> 45°C"),
     ]
 
     for row, (key, name, color, icon, threshold) in enumerate(categories, 1):
         dialog.category_widgets[key] = {}
 
         cat_label = QLabel(key.title())
-        cat_label.setStyleSheet("padding: 4px; background: #f3f4f6; border-radius: 4px;")
+        cat_label.setStyleSheet(
+            "padding: 4px; background: #f3f4f6; border-radius: 4px;"
+        )
         layout.addWidget(cat_label, row, 0)
 
         name_edit = QLineEdit(name)
@@ -66,7 +69,9 @@ def create_categories_grid(dialog: object) -> QWidget:
 
         color_btn = QPushButton()
         color_btn.setFixedSize(40, 30)
-        color_btn.setStyleSheet(f"background: {color}; border: 1px solid #ccc; border-radius: 4px;")
+        color_btn.setStyleSheet(
+            f"background: {color}; border: 1px solid #ccc; border-radius: 4px;"
+        )
         color_btn.clicked.connect(lambda checked, k=key: dialog._choose_color(k))
         dialog.category_widgets[key]["color"] = color_btn
         dialog.category_widgets[key]["color_value"] = color

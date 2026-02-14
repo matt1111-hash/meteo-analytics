@@ -12,6 +12,7 @@ from typing import Dict, List
 try:
     import folium
     from folium.plugins import HeatMap
+
     FOLIUM_AVAILABLE = True
 except ImportError:
     FOLIUM_AVAILABLE = False
@@ -35,7 +36,7 @@ class OverlayManager:
         """
         self.weather_data = weather_data
 
-    def add_overlays(self, map_obj: 'folium.Map') -> None:
+    def add_overlays(self, map_obj: "folium.Map") -> None:
         """
         🌤️ Összes weather overlay hozzáadása.
 
@@ -50,15 +51,15 @@ class OverlayManager:
 
         try:
             # Hőmérséklet heatmap
-            if 'temperature' in self.weather_data:
+            if "temperature" in self.weather_data:
                 self._add_temperature_heatmap(map_obj)
 
             # Csapadék overlay
-            if 'precipitation' in self.weather_data:
+            if "precipitation" in self.weather_data:
                 self._add_precipitation_overlay(map_obj)
 
             # Szél sebesség overlay
-            if 'wind_speed' in self.weather_data:
+            if "wind_speed" in self.weather_data:
                 self._add_wind_speed_overlay(map_obj)
 
             print("✅ Weather overlay layers added successfully")
@@ -66,7 +67,7 @@ class OverlayManager:
         except Exception as e:
             print(f"⚠️ Weather overlay error: {e}")
 
-    def _add_temperature_heatmap(self, map_obj: 'folium.Map') -> None:
+    def _add_temperature_heatmap(self, map_obj: "folium.Map") -> None:
         """
         🌡️ Hőmérséklet heatmap hozzáadása.
         """
@@ -75,7 +76,7 @@ class OverlayManager:
             if not temp_data:
                 return
 
-            gradient = get_gradient_for_overlay('temperature')
+            gradient = get_gradient_for_overlay("temperature")
             heat_map = HeatMap(
                 temp_data,
                 name="🌡️ Hőmérséklet",
@@ -83,7 +84,7 @@ class OverlayManager:
                 max_zoom=18,
                 radius=25,
                 blur=15,
-                gradient=gradient
+                gradient=gradient,
             )
             heat_map.add_to(map_obj)
             print(f"🌡️ Temperature heatmap added with {len(temp_data)} points")
@@ -94,26 +95,26 @@ class OverlayManager:
     def _build_temperature_heatmap_points(self) -> List[List[float]]:
         """Heatmap pontok összeállítása normalizált intenzitással."""
         temp_data: List[List[float]] = []
-        for _, data in self.weather_data.get('temperature', {}).items():
-            if 'coordinates' not in data or 'value' not in data:
+        for _, data in self.weather_data.get("temperature", {}).items():
+            if "coordinates" not in data or "value" not in data:
                 continue
-            lat, lon = data['coordinates']
-            temp = data['value']
+            lat, lon = data["coordinates"]
+            temp = data["value"]
             intensity = max(0.1, min(1.0, (temp + 20) / 60))
             temp_data.append([lat, lon, intensity])
         return temp_data
 
-    def _add_precipitation_overlay(self, map_obj: 'folium.Map') -> None:
+    def _add_precipitation_overlay(self, map_obj: "folium.Map") -> None:
         """
         🌧️ Csapadék overlay hozzáadása CircleMarker-ekkel.
         """
         try:
-            precip_data = self.weather_data.get('precipitation', {})
+            precip_data = self.weather_data.get("precipitation", {})
 
             for location, data in precip_data.items():
-                if 'coordinates' in data and 'value' in data:
-                    lat, lon = data['coordinates']
-                    precip_mm = data['value']
+                if "coordinates" in data and "value" in data:
+                    lat, lon = data["coordinates"]
+                    precip_mm = data["value"]
 
                     radius = max(3, min(20, precip_mm / 2))
                     color = get_precipitation_color(precip_mm)
@@ -122,11 +123,11 @@ class OverlayManager:
                         location=[lat, lon],
                         radius=radius,
                         popup=f"🌧️ {location}<br>Csapadék: {precip_mm:.1f} mm",
-                        color='#FFFFFF',
+                        color="#FFFFFF",
                         weight=1,
                         fillColor=color,
                         fillOpacity=0.7,
-                        tooltip=f"{precip_mm:.1f} mm"
+                        tooltip=f"{precip_mm:.1f} mm",
                     ).add_to(map_obj)
 
             print(f"🌧️ Precipitation overlay added with {len(precip_data)} points")
@@ -134,20 +135,20 @@ class OverlayManager:
         except Exception as e:
             print(f"⚠️ Precipitation overlay error: {e}")
 
-    def _add_wind_speed_overlay(self, map_obj: 'folium.Map') -> None:
+    def _add_wind_speed_overlay(self, map_obj: "folium.Map") -> None:
         """
         💨 Szél sebesség overlay hozzáadása nyilakkal.
         """
         try:
-            wind_data = self.weather_data.get('wind_speed', {})
+            wind_data = self.weather_data.get("wind_speed", {})
 
             for location, data in wind_data.items():
-                if 'coordinates' in data and 'speed' in data:
-                    lat, lon = data['coordinates']
-                    speed_kmh = data['speed']
-                    direction = data.get('direction', 0)
+                if "coordinates" in data and "speed" in data:
+                    lat, lon = data["coordinates"]
+                    speed_kmh = data["speed"]
+                    direction = data.get("direction", 0)
 
-                    arrow_size = max(5, min(15, speed_kmh / 5))
+                    max(5, min(15, speed_kmh / 5))
                     color = get_beaufort_color(speed_kmh)
 
                     wind_icon = f"""
@@ -162,10 +163,10 @@ class OverlayManager:
                             html=wind_icon,
                             class_name="wind-arrow",
                             icon_size=(20, 20),
-                            icon_anchor=(10, 10)
+                            icon_anchor=(10, 10),
                         ),
                         popup=f"💨 {location}<br>Szél: {speed_kmh:.1f} km/h<br>Irány: {direction}°",
-                        tooltip=f"{speed_kmh:.1f} km/h"
+                        tooltip=f"{speed_kmh:.1f} km/h",
                     )
 
                     wind_marker.add_to(map_obj)
@@ -178,5 +179,5 @@ class OverlayManager:
 
 # Export
 __all__ = [
-    'OverlayManager',
+    "OverlayManager",
 ]

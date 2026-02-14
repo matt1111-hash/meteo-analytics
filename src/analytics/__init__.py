@@ -19,6 +19,6 @@ from .multi_city_engine import MultiCityEngine
 
 __all__ = [
     # Multi-City Analytics - 3200+ magyar település támogatás
-    'MultiCityEngine',
-    'MultiCityQuery'
+    "MultiCityEngine",
+    "MultiCityQuery",
 ]

@@ -15,13 +15,13 @@ Képességek:
 Fájl: src/presentation/gui/map/map_visualizer/core.py
 """
 
-
 from PySide6.QtCore import Signal
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWidgets import QWidget
 
 from src.presentation.gui.color_palette import ColorPalette
 from src.presentation.gui.theme_manager import register_widget_for_theming
+
 from ..map_interactions import JavaScriptBridge
 from ..map_state import FoliumMapConfig
 from .server_handler import _show_folium_error, start_local_server
@@ -32,61 +32,59 @@ from .ui_builder import setup_map_visualizer_ui, setup_web_view
 
 try:
     import folium  # noqa: F401
+
     FOLIUM_AVAILABLE = True
 except ImportError:
     FOLIUM_AVAILABLE = False
 
 
 # Import signal handler methods and attach to class
-from .signal_handlers import (
-    _on_style_changed,
-    _on_counties_toggled,
-    _on_weather_toggled,
-    _on_zoom_changed,
-    _on_js_county_clicked,
-    _on_js_coordinates_clicked,
-    _on_js_map_moved,
-    _on_js_county_hovered,
-    _refresh_map,
-    _export_map,
-    _on_map_loaded,
+# Import map generation methods
+from .map_generation import (
+    _generate_default_map,
+    _load_map_from_http_url,
+    _on_map_error,
+    _on_map_generated,
+    _start_map_generation,
 )
 
 # Import public API methods
 from .public_api import (
-    set_active_overlay_parameter,
     clear_active_overlay_parameter,
     get_active_overlay_parameter,
-    set_counties_geodataframe,
-    set_weather_data,
-    update_map_bounds,
+    get_current_map_file,
+    get_javascript_bridge,
     get_map_config,
-    reset_map_view,
-    set_map_style,
-    toggle_counties,
-    toggle_weather_overlay,
-    set_selected_county,
     highlight_counties,
     is_folium_available,
-    get_javascript_bridge,
-    get_current_map_file,
-)
-
-# Import map generation methods
-from .map_generation import (
-    _generate_default_map,
-    _start_map_generation,
-    _on_map_generated,
-    _load_map_from_http_url,
-    _on_map_error,
+    reset_map_view,
+    set_active_overlay_parameter,
+    set_counties_geodataframe,
+    set_map_style,
+    set_selected_county,
+    set_weather_data,
+    toggle_counties,
+    toggle_weather_overlay,
+    update_map_bounds,
 )
 
 # Import server handler methods
 from .server_handler import (
-    start_local_server,
-    _on_server_ready,
     _on_server_error,
-    _show_folium_error,
+    _on_server_ready,
+)
+from .signal_handlers import (
+    _export_map,
+    _on_counties_toggled,
+    _on_js_coordinates_clicked,
+    _on_js_county_clicked,
+    _on_js_county_hovered,
+    _on_js_map_moved,
+    _on_map_loaded,
+    _on_style_changed,
+    _on_weather_toggled,
+    _on_zoom_changed,
+    _refresh_map,
 )
 
 

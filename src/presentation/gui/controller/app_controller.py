@@ -53,35 +53,37 @@ class AppController(QObject):
     # === CLEAN ARCHITECTURE SIGNALS ===
 
     # Analysis lifecycle signalok
-    analysis_started = Signal(str)              # analysis_type
-    analysis_progress = Signal(str, int)        # message, percentage
-    analysis_completed = Signal(dict)           # result_data
-    analysis_failed = Signal(str)               # error_message
-    analysis_cancelled = Signal()               # megszakítás megerősítése
+    analysis_started = Signal(str)  # analysis_type
+    analysis_progress = Signal(str, int)  # message, percentage
+    analysis_completed = Signal(dict)  # result_data
+    analysis_failed = Signal(str)  # error_message
+    analysis_cancelled = Signal()  # megszakítás megerősítése
 
     # Eredeti signalok (backwards compatibility)
-    geocoding_results_ready = Signal(list)      # List[Dict] - település találatok
-    weather_data_ready = Signal(dict)           # Dict - API válasz adatok
-    error_occurred = Signal(str)                # str - hibaüzenet
-    status_updated = Signal(str)                # str - státusz üzenet
-    progress_updated = Signal(str, int)         # worker_type, progress
+    geocoding_results_ready = Signal(list)  # List[Dict] - település találatok
+    weather_data_ready = Signal(dict)  # Dict - API válasz adatok
+    error_occurred = Signal(str)  # str - hibaüzenet
+    status_updated = Signal(str)  # str - státusz üzenet
+    progress_updated = Signal(str, int)  # worker_type, progress
 
     # Adatbázis műveletek eredményei
-    city_saved_to_db = Signal(dict)             # Dict - elmentett település adatok
-    weather_saved_to_db = Signal(bool)          # bool - sikeres mentés
+    city_saved_to_db = Signal(dict)  # Dict - elmentett település adatok
+    weather_saved_to_db = Signal(bool)  # bool - sikeres mentés
 
     # PROVIDER ROUTING SIGNALOK
-    provider_selected = Signal(str)             # str - választott provider neve
-    provider_usage_updated = Signal(dict)       # Dict - usage statistics
-    provider_warning = Signal(str, int)         # provider_name, usage_percent
-    provider_fallback = Signal(str, str)        # from_provider, to_provider
+    provider_selected = Signal(str)  # str - választott provider neve
+    provider_usage_updated = Signal(dict)  # Dict - usage statistics
+    provider_warning = Signal(str, int)  # provider_name, usage_percent
+    provider_fallback = Signal(str, str)  # from_provider, to_provider
 
     def __init__(self, parent: Optional[QObject] = None):
         """Controller inicializálása CLEAN ARCHITECTURE támogatással."""
         super().__init__(parent)
 
         self._logger = logging.getLogger(__name__)
-        self._logger.info("🎯 AppController __init__ started (CLEAN ARCHITECTURE REFACTORED)")
+        self._logger.info(
+            "🎯 AppController __init__ started (CLEAN ARCHITECTURE REFACTORED)"
+        )
 
         # === CLEAN ARCHITECTURE STATE ===
         self.current_city_data: Optional[Dict[str, Any]] = None
@@ -109,7 +111,9 @@ class AppController(QObject):
         self._logger.info("✅ WorkerManager created")
 
         # 4. Geocoding Handler
-        self.geocoding_handler = GeocodingHandler(self.worker_manager, self.database_manager, self)
+        self.geocoding_handler = GeocodingHandler(
+            self.worker_manager, self.database_manager, self
+        )
         self._connect_geocoding_signals()
         self._logger.info("✅ GeocodingHandler initialized")
 
@@ -126,11 +130,15 @@ class AppController(QObject):
         # Provider preferences betöltése
         self._load_user_preferences()
 
-        self._logger.info("✅ AppController inicializálva (CLEAN ARCHITECTURE REFACTORED)")
+        self._logger.info(
+            "✅ AppController inicializálva (CLEAN ARCHITECTURE REFACTORED)"
+        )
 
     def _connect_geocoding_signals(self) -> None:
         """Geocoding handler signaljainak bekötése."""
-        self.geocoding_handler.geocoding_results_ready.connect(self.geocoding_results_ready)
+        self.geocoding_handler.geocoding_results_ready.connect(
+            self.geocoding_results_ready
+        )
         self.geocoding_handler.city_saved_to_db.connect(self.city_saved_to_db)
         self.geocoding_handler.error_occurred.connect(self.error_occurred)
         self.geocoding_handler.status_updated.connect(self.status_updated)
@@ -146,13 +154,17 @@ class AppController(QObject):
         """Analysis handler signaljainak bekötése."""
         self.analysis_handler.analysis_started.connect(self.analysis_started)
         self.analysis_handler.analysis_progress.connect(self.analysis_progress)
-        self.analysis_handler.analysis_completed.connect(self._on_analysis_completed_forward)
+        self.analysis_handler.analysis_completed.connect(
+            self._on_analysis_completed_forward
+        )
         self.analysis_handler.analysis_failed.connect(self.analysis_failed)
         self.analysis_handler.analysis_cancelled.connect(self.analysis_cancelled)
         self.analysis_handler.status_updated.connect(self.status_updated)
 
         # Worker manager signal bekötése
-        self.worker_manager.weather_data_completed.connect(self.weather_data_handler.on_weather_data_completed)
+        self.worker_manager.weather_data_completed.connect(
+            self.weather_data_handler.on_weather_data_completed
+        )
         self.worker_manager.error_occurred.connect(self.error_occurred)
         self.worker_manager.progress_updated.connect(self.progress_updated.emit)
 
@@ -169,7 +181,9 @@ class AppController(QObject):
         print("=" * 80)
         print("🚨 DEBUG: AppController.handle_analysis_request() MEGHÍVVA!")
         print(f"🚨 DEBUG: Request data: {request_data}")
-        print(f"🚨 DEBUG: Analysis type: {request_data.get('analysis_type', 'unknown')}")
+        print(
+            f"🚨 DEBUG: Analysis type: {request_data.get('analysis_type', 'unknown')}"
+        )
         print("=" * 80)
 
         def start_analysis_callback(enhanced_request, handler):
@@ -207,15 +221,17 @@ class AppController(QObject):
         print(f"🚨 DEBUG: result_data keys: {list(result_data.keys())}")
         print("=" * 80)
 
-        analysis_type = self.analysis_handler.analysis_state.get('analysis_type', 'unknown')
+        analysis_type = self.analysis_handler.analysis_state.get(
+            "analysis_type", "unknown"
+        )
 
         # 🚨 KRITIKUS FIX: Az analysis_completed signal ELMUST, hogy elérjen a MainWindow-ig!
         self.analysis_completed.emit(result_data)
 
         # Típus-specifikus eredmény továbbítás (backwards compatibility)
-        if analysis_type == 'single_location':
+        if analysis_type == "single_location":
             self.weather_data_ready.emit(result_data)
-        elif analysis_type in ['multi_city', 'county_analysis']:
+        elif analysis_type in ["multi_city", "county_analysis"]:
             # Multi-city eredmény kezelése
             pass
 
@@ -246,8 +262,13 @@ class AppController(QObject):
         self.geocoding_handler.handle_search_request(search_query)
 
     @Slot(str, float, float, dict)
-    def handle_city_selection(self, city_name: str, latitude: float,
-                              longitude: float, metadata: Dict[str, Any]) -> None:
+    def handle_city_selection(
+        self,
+        city_name: str,
+        latitude: float,
+        longitude: float,
+        metadata: Dict[str, Any],
+    ) -> None:
         """
         Település kiválasztás kezelése.
 
@@ -265,8 +286,14 @@ class AppController(QObject):
     # === EREDETI WEATHER DATA REQUEST (DEPRECATED) ===
 
     @Slot(float, float, str, str, dict)
-    def handle_weather_data_request(self, latitude: float, longitude: float,
-                                   start_date: str, end_date: str, params: Dict[str, Any]) -> None:
+    def handle_weather_data_request(
+        self,
+        latitude: float,
+        longitude: float,
+        start_date: str,
+        end_date: str,
+        params: Dict[str, Any],
+    ) -> None:
         """
         DEPRECATED: Időjárási adatok lekérdezés (használd handle_analysis_request-et helyette)
 
@@ -281,17 +308,16 @@ class AppController(QObject):
 
         # Konvertálás új formátumra
         analysis_request = {
-            'analysis_type': 'single_location',
-            'location_data': {
-                'lat': latitude,
-                'lon': longitude,
-                'name': self.current_city_data.get('name', 'Unknown') if self.current_city_data else 'Unknown'
+            "analysis_type": "single_location",
+            "location_data": {
+                "lat": latitude,
+                "lon": longitude,
+                "name": self.current_city_data.get("name", "Unknown")
+                if self.current_city_data
+                else "Unknown",
             },
-            'date_range': {
-                'start_date': start_date,
-                'end_date': end_date
-            },
-            'api_params': params
+            "date_range": {"start_date": start_date, "end_date": end_date},
+            "api_params": params,
         }
 
         self.handle_analysis_request(analysis_request)
@@ -349,6 +375,7 @@ class AppController(QObject):
 
             # AnalysisHandler cleanup - use the module-level function
             from .analysis_handler.state_management import _cleanup_analysis_state
+
             _cleanup_analysis_state(self.analysis_handler)
 
             self.worker_manager.shutdown()
@@ -361,11 +388,14 @@ class AppController(QObject):
             self.current_weather_data = None
             self.active_search_query = None
 
-            self._logger.info("✅ AppController leállítva (CLEAN ARCHITECTURE REFACTORED)")
+            self._logger.info(
+                "✅ AppController leállítva (CLEAN ARCHITECTURE REFACTORED)"
+            )
 
         except Exception as e:
             self._logger.warning(f"⚠️ Controller leállítási hiba: {e}")
             import traceback
+
             traceback.print_exc()
 
     def _load_user_preferences(self) -> None:
@@ -374,14 +404,14 @@ class AppController(QObject):
             prefs_data = self.provider_routing.load_user_preferences()
 
             # Provider selection signal
-            self.provider_selected.emit(prefs_data['selected_provider'])
+            self.provider_selected.emit(prefs_data["selected_provider"])
 
             # Usage statistics signal
-            self.provider_usage_updated.emit(prefs_data['usage_data'])
+            self.provider_usage_updated.emit(prefs_data["usage_data"])
 
             # Warning ellenőrzés
-            if prefs_data['warning_data']:
-                self.provider_warning.emit(*prefs_data['warning_data'])
+            if prefs_data["warning_data"]:
+                self.provider_warning.emit(*prefs_data["warning_data"])
 
             self._logger.info("✅ User preferences betöltve és signalok elküldve")
 

@@ -18,7 +18,7 @@ from .core import WindyDaysChart
 from .factory import create_windy_days_chart, demo_windy_days_chart
 
 __all__ = [
-    'WindyDaysChart',
-    'create_windy_days_chart',
-    'demo_windy_days_chart',
+    "WindyDaysChart",
+    "create_windy_days_chart",
+    "demo_windy_days_chart",
 ]

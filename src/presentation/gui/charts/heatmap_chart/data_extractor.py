@@ -53,10 +53,7 @@ def extract_daily_data(self, data: Dict[str, Any]) -> pd.DataFrame:
         logger.error(f"❌ Eltérő hosszúságú {self.parameter} adatok")
         return pd.DataFrame()
 
-    df = pd.DataFrame({
-        'date': pd.to_datetime(dates),
-        self.parameter: parameter_values
-    })
+    df = pd.DataFrame({"date": pd.to_datetime(dates), self.parameter: parameter_values})
 
     df = df.dropna()
 
@@ -94,15 +91,15 @@ def aggregate_to_365(self, values: list, total_days: int) -> np.ndarray:
         end_idx = int((i + 1) * bin_size)
 
         if start_idx < len(values):
-            bin_values = values[start_idx:min(end_idx, len(values))]
+            bin_values = values[start_idx : min(end_idx, len(values))]
             clean_values = [v for v in bin_values if v is not None and not np.isnan(v)]
 
             if clean_values:
-                if 'temperature' in self.parameter:
+                if "temperature" in self.parameter:
                     aggregated[i] = np.mean(clean_values)
-                elif 'precipitation' in self.parameter:
+                elif "precipitation" in self.parameter:
                     aggregated[i] = np.sum(clean_values)
-                elif 'wind' in self.parameter:
+                elif "wind" in self.parameter:
                     aggregated[i] = np.max(clean_values)
                 else:
                     aggregated[i] = np.mean(clean_values)

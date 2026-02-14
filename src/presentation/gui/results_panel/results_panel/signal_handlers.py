@@ -41,11 +41,13 @@ def connect_signals(self) -> None:
     windy_days_tab = self.tab_manager.get_windy_days_tab()
     if windy_days_tab:
         try:
-            if hasattr(windy_days_tab, 'analysis_completed'):
-                windy_days_tab.analysis_completed.connect(_on_windy_days_analysis_completed)
-            if hasattr(windy_days_tab, 'error_occurred'):
+            if hasattr(windy_days_tab, "analysis_completed"):
+                windy_days_tab.analysis_completed.connect(
+                    _on_windy_days_analysis_completed
+                )
+            if hasattr(windy_days_tab, "error_occurred"):
                 windy_days_tab.error_occurred.connect(_on_windy_days_error)
-            if hasattr(windy_days_tab, 'export_requested'):
+            if hasattr(windy_days_tab, "export_requested"):
                 windy_days_tab.export_requested.connect(_on_windy_days_export_requested)
             logger.debug("✅ WindyDaysTab signal kapcsolatok beállítva")
         except Exception as e:
@@ -98,6 +100,7 @@ def _on_extreme_weather_clicked(self) -> None:
 
     # Tab váltás
     from .public_api import switch_to_tab
+
     switch_to_tab(self, "extreme")
 
 

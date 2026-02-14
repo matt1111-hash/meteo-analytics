@@ -26,8 +26,9 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def handle_analysis_request(self, request_data: Dict[str, Any],
-                            provider_routing, start_analysis_callback) -> None:
+def handle_analysis_request(
+    self, request_data: Dict[str, Any], provider_routing, start_analysis_callback
+) -> None:
     """
     Központi elemzési kérés kezelő.
 
@@ -44,30 +45,38 @@ def handle_analysis_request(self, request_data: Dict[str, Any],
 
     from .state_management import stop_current_analysis
 
-    logger.info(f"🎯 ANALYSIS REQUEST received: {request_data.get('analysis_type', 'unknown')}")
+    logger.info(
+        f"🎯 ANALYSIS REQUEST received: {request_data.get('analysis_type', 'unknown')}"
+    )
 
     try:
         # Aktuális analysis leállítása
-        if self.analysis_state['is_running']:
+        if self.analysis_state["is_running"]:
             logger.info("🛑 Aktuális analysis leállítása...")
             stop_current_analysis(self)
 
             # Rövid várakozás a tiszta leállásra
-            QTimer.singleShot(200, lambda: _start_new_analysis(
-                self, request_data, provider_routing, start_analysis_callback
-            ))
+            QTimer.singleShot(
+                200,
+                lambda: _start_new_analysis(
+                    self, request_data, provider_routing, start_analysis_callback
+                ),
+            )
             return
 
         # Új analysis azonnali indítása
-        _start_new_analysis(self, request_data, provider_routing, start_analysis_callback)
+        _start_new_analysis(
+            self, request_data, provider_routing, start_analysis_callback
+        )
 
     except Exception as e:
         logger.error(f"Analysis request hiba: {e}")
         self.analysis_failed.emit(f"Elemzési kérés hiba: {e}")
 
 
-def _start_new_analysis(self, request_data: Dict[str, Any],
-                        provider_routing, start_analysis_callback) -> None:
+def _start_new_analysis(
+    self, request_data: Dict[str, Any], provider_routing, start_analysis_callback
+) -> None:
     """
     ÚJ ANALYSIS INDÍTÁSA - Validálás és callback hívás.
 
@@ -89,17 +98,18 @@ def _start_new_analysis(self, request_data: Dict[str, Any],
     try:
         # Request validálás
         from .validator import _validate_analysis_request
+
         if not _validate_analysis_request(self, request_data):
             return
 
-        analysis_type = request_data.get('analysis_type', 'unknown')
+        analysis_type = request_data.get("analysis_type", "unknown")
 
         # Analysis state inicializálás
         self.analysis_state = {
-            'is_running': True,
-            'analysis_type': analysis_type,
-            'start_time': datetime.now(),
-            'request_data': request_data.copy()
+            "is_running": True,
+            "analysis_type": analysis_type,
+            "start_time": datetime.now(),
+            "request_data": request_data.copy(),
         }
 
         # Provider routing integráció
@@ -108,13 +118,15 @@ def _start_new_analysis(self, request_data: Dict[str, Any],
         )
 
         # Analysis worker indítása (callback)
-        print(f"🚨 DEBUG: start_analysis_callback() HÍVÁS ELŐTT")
+        print("🚨 DEBUG: start_analysis_callback() HÍVÁS ELŐTT")
         success = start_analysis_callback(enhanced_request, self)
         print(f"🚨 DEBUG: start_analysis_callback() VISSZATÉRT: success={success}")
 
         if success:
             self.analysis_started.emit(analysis_type)
-            self.status_updated.emit(f"🎯 {analysis_type.replace('_', ' ').title()} elemzés indítva...")
+            self.status_updated.emit(
+                f"🎯 {analysis_type.replace('_', ' ').title()} elemzés indítva..."
+            )
             logger.info(f"✅ Analysis worker elindítva: {analysis_type}")
         else:
             logger.error("❌ Analysis worker indítás sikertelen")

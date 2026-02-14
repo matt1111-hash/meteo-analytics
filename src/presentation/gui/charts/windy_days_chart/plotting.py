@@ -47,9 +47,9 @@ def _plot_windy_days_chart(self) -> None:
         ax = self.figure.add_subplot(111)
 
         # Adatok kinyerése
-        months = self.chart_data.get('months', [])
-        counts = self.chart_data.get('counts', [])
-        percentages = self.chart_data.get('percentages', [])
+        months = self.chart_data.get("months", [])
+        counts = self.chart_data.get("counts", [])
+        percentages = self.chart_data.get("percentages", [])
 
         if not months or not counts:
             _plot_no_data_message(self)
@@ -67,8 +67,8 @@ def _plot_windy_days_chart(self) -> None:
             counts,
             color=colors,
             alpha=0.8,
-            edgecolor='white',
-            linewidth=1.2
+            edgecolor="white",
+            linewidth=1.2,
         )
 
         # Értékek megjelenítése az oszlopok tetején

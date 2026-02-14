@@ -1,4 +1,5 @@
 """Weather fetch service handling dual-API batch retrieval with retries."""
+
 from __future__ import annotations
 
 import logging
@@ -59,13 +60,21 @@ class WeatherFetchService:
         batch_size = region_config["batch_size"]
         rate_limit_delay = region_config["rate_limit_delay"]
 
-        batches = [cities[i : i + batch_size] for i in range(0, len(cities), batch_size)]
-        logger.info("Dual-API batch processing: %d batch, %d város/batch", len(batches), batch_size)
+        batches = [
+            cities[i : i + batch_size] for i in range(0, len(cities), batch_size)
+        ]
+        logger.info(
+            "Dual-API batch processing: %d batch, %d város/batch",
+            len(batches),
+            batch_size,
+        )
 
         weather_data: List[CityWeatherData] = []
         for batch_idx, batch in enumerate(batches):
             batch_start_time = time.time()
-            batch_results = self.process_dual_api_batch(batch, effective_start, effective_end)
+            batch_results = self.process_dual_api_batch(
+                batch, effective_start, effective_end
+            )
             weather_data.extend(batch_results)
 
             batch_time = time.time() - batch_start_time
@@ -96,7 +105,9 @@ class WeatherFetchService:
         batch_results: List[CityWeatherData] = []
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {
-                executor.submit(self.fetch_single_city_weather_dual_api, city, start_date, end_date): city
+                executor.submit(
+                    self.fetch_single_city_weather_dual_api, city, start_date, end_date
+                ): city
                 for city in batch
             }
 
@@ -107,7 +118,12 @@ class WeatherFetchService:
                     # Flatten the list - each city returns multiple days
                     batch_results.extend(city_data_list)
                 except Exception as exc:
-                    logger.error("⚠ Hiba a város feldolgozásánál (%s): %s", city.get("city"), exc, exc_info=True)
+                    logger.error(
+                        "⚠ Hiba a város feldolgozásánál (%s): %s",
+                        city.get("city"),
+                        exc,
+                        exc_info=True,
+                    )
                     batch_results.append(self.create_empty_city_data(city, str(exc)))
         return batch_results
 
@@ -149,7 +165,9 @@ class WeatherFetchService:
                                 temp_range = None
 
                         windspeed = daily_data.get("windspeed_10m_max")
-                        windgusts = daily_data.get("wind_gusts_10m_max")  # Fixed: match weather_client output
+                        windgusts = daily_data.get(
+                            "wind_gusts_10m_max"
+                        )  # Fixed: match weather_client output
 
                         results.append(
                             CityWeatherData(
@@ -162,7 +180,9 @@ class WeatherFetchService:
                                 date=daily_data.get("date") or start_date,
                                 temperature_2m_max=temp_max,
                                 temperature_2m_min=temp_min,
-                                temperature_2m_mean=daily_data.get("temperature_2m_mean"),
+                                temperature_2m_mean=daily_data.get(
+                                    "temperature_2m_mean"
+                                ),
                                 precipitation_sum=daily_data.get("precipitation_sum"),
                                 windspeed_10m_max=windspeed,
                                 windgusts_10m_max=windgusts,
@@ -181,15 +201,22 @@ class WeatherFetchService:
             except Exception as exc:
                 last_error = str(exc)
                 logger.warning(
-                    "⚠️ Hiba a(z) %s lekérdezésekor (próba: %d): %s", city.get("city"), attempt + 1, exc
+                    "⚠️ Hiba a(z) %s lekérdezésekor (próba: %d): %s",
+                    city.get("city"),
+                    attempt + 1,
+                    exc,
                 )
                 if attempt < self.max_retries - 1:
                     time.sleep(self.retry_delay)
 
-        logger.error("⚠ Végső hiba a(z) %s lekérdezésénél: %s", city.get("city"), last_error)
+        logger.error(
+            "⚠ Végső hiba a(z) %s lekérdezésénél: %s", city.get("city"), last_error
+        )
         return [self.create_empty_city_data(city, last_error)]
 
-    def create_empty_city_data(self, city: Dict[str, Any], error_msg: str = "Ismeretlen hiba") -> CityWeatherData:
+    def create_empty_city_data(
+        self, city: Dict[str, Any], error_msg: str = "Ismeretlen hiba"
+    ) -> CityWeatherData:
         """Return empty CityWeatherData for failure cases."""
         return CityWeatherData(
             city=city.get("city", "Ismeretlen"),

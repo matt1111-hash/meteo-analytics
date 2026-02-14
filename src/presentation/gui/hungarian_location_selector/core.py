@@ -56,10 +56,10 @@ class HungarianLocationSelector(
     """
 
     # Signalok
-    region_selected = Signal(object)        # HungarianRegionData
-    county_selected = Signal(str, object)   # county_name, geometry
-    location_selected = Signal(object)     # Location object
-    selection_changed = Signal()           # általános változás
+    region_selected = Signal(object)  # HungarianRegionData
+    county_selected = Signal(str, object)  # county_name, geometry
+    location_selected = Signal(object)  # Location object
+    selection_changed = Signal()  # általános változás
     map_update_requested = Signal(object)  # map bounds/center
 
     def __init__(self, parent=None):

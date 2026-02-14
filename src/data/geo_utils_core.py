@@ -38,14 +38,17 @@ class GeoUtils:
         """Validate coordinates."""
         return (-90 <= latitude <= 90) and (-180 <= longitude <= 180)
 
-    def normalize_coordinates(self, latitude: float, longitude: float) -> Tuple[float, float]:
+    def normalize_coordinates(
+        self, latitude: float, longitude: float
+    ) -> Tuple[float, float]:
         """Normalize coordinates."""
         norm_lat = max(-90, min(90, latitude))
         norm_lon = ((longitude + 180) % 360) - 180
         return norm_lat, norm_lon
 
-    def calculate_bounding_box(self, points: List[Tuple[float, float]],
-                              padding_degrees: float = 0.0) -> BoundingBox:
+    def calculate_bounding_box(
+        self, points: List[Tuple[float, float]], padding_degrees: float = 0.0
+    ) -> BoundingBox:
         """Calculate bounding box for points."""
         if not points:
             raise ValueError("Points list is empty")
@@ -57,7 +60,7 @@ class GeoUtils:
             min_latitude=min(latitudes),
             max_latitude=max(latitudes),
             min_longitude=min(longitudes),
-            max_longitude=max(longitudes)
+            max_longitude=max(longitudes),
         )
 
         if padding_degrees > 0:
@@ -65,7 +68,9 @@ class GeoUtils:
 
         return bbox
 
-    def calculate_geographic_center(self, points: List[Tuple[float, float]]) -> GeoPoint:
+    def calculate_geographic_center(
+        self, points: List[Tuple[float, float]]
+    ) -> GeoPoint:
         """Calculate geographic center (centroid) of points."""
         if not points:
             raise ValueError("Points list is empty")
@@ -96,10 +101,12 @@ class GeoUtils:
         return GeoPoint(
             latitude=math.degrees(center_lat),
             longitude=math.degrees(center_lon),
-            name="Geographic Center"
+            name="Geographic Center",
         )
 
-    def convert_to_web_mercator(self, latitude: float, longitude: float) -> Tuple[float, float]:
+    def convert_to_web_mercator(
+        self, latitude: float, longitude: float
+    ) -> Tuple[float, float]:
         """Convert WGS84 coordinates to Web Mercator projection."""
         x = longitude * 20037508.34 / 180
         y = math.log(math.tan((90 + latitude) * math.pi / 360)) / (math.pi / 180)
@@ -121,4 +128,4 @@ class GeoUtils:
         return max(0, min(18, zoom))
 
 
-__all__ = ['GeoUtils']
+__all__ = ["GeoUtils"]

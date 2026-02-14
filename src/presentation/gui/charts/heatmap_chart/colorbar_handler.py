@@ -34,25 +34,29 @@ def create_colorbar(self, im) -> None:
         im: Matplotlib image object
     """
     current_colors = get_current_colors()
-    text_color = current_colors.get('on_surface', '#1f2937')
+    text_color = current_colors.get("on_surface", "#1f2937")
 
     try:
         if self._colorbar:
             self._colorbar.remove()
             self._colorbar = None
 
-        self._colorbar = self.figure.colorbar(im, ax=self.ax, shrink=0.8, aspect=30, pad=0.02)
+        self._colorbar = self.figure.colorbar(
+            im, ax=self.ax, shrink=0.8, aspect=30, pad=0.02
+        )
 
-        if 'temperature' in self.parameter:
-            label = 'Hőmérséklet (°C)'
-        elif 'precipitation' in self.parameter:
-            label = 'Csapadék (mm)'
-        elif 'wind' in self.parameter:
-            label = 'Szélsebesség (km/h)'
+        if "temperature" in self.parameter:
+            label = "Hőmérséklet (°C)"
+        elif "precipitation" in self.parameter:
+            label = "Csapadék (mm)"
+        elif "wind" in self.parameter:
+            label = "Szélsebesség (km/h)"
         else:
-            label = 'Érték'
+            label = "Érték"
 
-        self._colorbar.set_label(label, fontsize=12, fontweight='500', color=text_color, labelpad=15)
+        self._colorbar.set_label(
+            label, fontsize=12, fontweight="500", color=text_color, labelpad=15
+        )
         self._colorbar.ax.tick_params(colors=text_color, labelsize=10)
 
     except Exception as e:

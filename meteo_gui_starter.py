@@ -238,8 +238,8 @@ def check_requirements() -> bool:
     # === GUI MODULE VALIDÁCIÓ ===
 
     try:
-        from src.presentation.gui.windows import MainWindow
         from src.presentation.gui.controller import AppController  # noqa: F401
+        from src.presentation.gui.windows import MainWindow
         print("✅ GUI modul struktúra: OK")
     except ImportError as e:
         print(f"❌ GUI modul import hiba: {e}")

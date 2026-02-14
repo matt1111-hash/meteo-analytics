@@ -1,9 +1,11 @@
 """Time granularity enum for analysis entities."""
+
 from enum import Enum
 
 
 class TimeGranularity(Enum):
     """Time granularity for temporal analysis."""
+
     DAILY = "daily"
     WEEKLY = "weekly"
     MONTHLY = "monthly"
@@ -13,4 +15,4 @@ class TimeGranularity(Enum):
     MULTI_YEAR = "multi_year"
 
 
-__all__ = ['TimeGranularity']
+__all__ = ["TimeGranularity"]

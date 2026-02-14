@@ -17,7 +17,4 @@ Multi-city régió elemzések dashboard konstans heatmap-ekkel.
 from src.presentation.gui.analytics.analytics_helpers import MeteorologicalColorMaps
 from src.presentation.gui.analytics.analytics_view.core import AnalyticsView
 
-__all__ = [
-    'AnalyticsView',
-    'MeteorologicalColorMaps'
-]
+__all__ = ["AnalyticsView", "MeteorologicalColorMaps"]

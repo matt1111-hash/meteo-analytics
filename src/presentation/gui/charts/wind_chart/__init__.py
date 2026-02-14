@@ -12,9 +12,9 @@ from .core import WindChart
 # Wind categories
 from .wind_categories import (
     HUNGARIAN_WIND_THRESHOLDS,
+    calculate_y_axis_max,
     get_wind_category,
     get_wind_recommendations,
-    calculate_y_axis_max,
 )
 
 __all__ = [

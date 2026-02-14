@@ -1,4 +1,5 @@
 """Trend data fetching module."""
+
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
@@ -17,7 +18,7 @@ def fetch_trend_data_batch(
     lon: float,
     start_date: datetime,
     end_date: datetime,
-    progress_callback=None
+    progress_callback=None,
 ) -> List[Dict]:
     """
     Multi-year API fetch with batching.
@@ -41,9 +42,10 @@ def fetch_trend_data_batch(
 
         try:
             yearly_data = weather_client.get_weather_data(
-                lat, lon,
+                lat,
+                lon,
                 current_start.strftime("%Y-%m-%d"),
-                current_end.strftime("%Y-%m-%d")
+                current_end.strftime("%Y-%m-%d"),
             )
 
             if yearly_data:
@@ -63,7 +65,9 @@ def fetch_trend_data_batch(
     return weather_data
 
 
-def get_settlement_coordinates(city_manager: object, settlement_name: str) -> Optional[Tuple[float, float]]:
+def get_settlement_coordinates(
+    city_manager: object, settlement_name: str
+) -> Optional[Tuple[float, float]]:
     """
     Get settlement coordinates from CityManager.
 

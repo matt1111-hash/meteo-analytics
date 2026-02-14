@@ -58,10 +58,10 @@ def sanitize_filename(filename: str) -> str:
         Tisztított fájlnév
     """
     # Tiltott karakterek eltávolítása
-    filename = re.sub(r'[<>:"/\\|?*]', '_', filename)
+    filename = re.sub(r'[<>:"/\\|?*]', "_", filename)
 
     # Whitespace-ek cseréje
-    filename = re.sub(r'\s+', '_', filename)
+    filename = re.sub(r"\s+", "_", filename)
 
     # Maximum hossz korlátozása
     if len(filename) > 200:
@@ -80,7 +80,7 @@ def validate_color_hex(color: str) -> bool:
     Returns:
         Érvényes színkód-e
     """
-    pattern = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+    pattern = r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
     return bool(re.match(pattern, color))
 
 

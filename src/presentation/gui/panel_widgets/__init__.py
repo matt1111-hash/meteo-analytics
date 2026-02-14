@@ -43,61 +43,69 @@ __all__ = [
     "DateRangeWidget",
     "ProviderWidget",
     "ApiSettingsWidget",
-    "QueryControlWidget"
+    "QueryControlWidget",
 ]
+
 
 # Widget factory funkciók (opcionális, könnyebb használathoz)
 def create_analysis_type_widget(parent=None) -> AnalysisTypeWidget:
     """AnalysisTypeWidget factory."""
     return AnalysisTypeWidget(parent)
 
+
 def create_location_widget(city_manager, parent=None) -> LocationWidget:
     """LocationWidget factory."""
     return LocationWidget(city_manager, parent)
+
 
 def create_date_range_widget(parent=None) -> DateRangeWidget:
     """DateRangeWidget factory."""
     return DateRangeWidget(parent)
 
+
 def create_provider_widget(parent=None) -> ProviderWidget:
     """ProviderWidget factory."""
     return ProviderWidget(parent)
+
 
 def create_api_settings_widget(parent=None) -> ApiSettingsWidget:
     """ApiSettingsWidget factory."""
     return ApiSettingsWidget(parent)
 
+
 def create_query_control_widget(parent=None) -> QueryControlWidget:
     """QueryControlWidget factory."""
     return QueryControlWidget(parent)
+
 
 # Widget state validation helper
 def validate_widget_states(*widgets) -> bool:
     """
     Több widget állapotának validálása egyszerre.
-    
+
     Args:
         *widgets: Widget instances
-        
+
     Returns:
         bool: True ha minden widget valid
     """
-    return all(widget.is_valid() for widget in widgets if hasattr(widget, 'is_valid'))
+    return all(widget.is_valid() for widget in widgets if hasattr(widget, "is_valid"))
+
 
 # Widget state aggregation helper
 def get_all_widget_states(*widgets) -> dict:
     """
     Több widget állapotának összegyűjtése.
-    
+
     Args:
         *widgets: Widget instances
-        
+
     Returns:
         dict: Összes widget state aggregálva
     """
     states = {}
     for i, widget in enumerate(widgets):
-        if hasattr(widget, 'get_state'):
+        if hasattr(widget, "get_state"):
             widget_name = widget.__class__.__name__
             states[widget_name] = widget.get_state()
         else:
@@ -105,18 +113,20 @@ def get_all_widget_states(*widgets) -> dict:
 
     return states
 
+
 # Debug helper
 def print_widget_info(*widgets) -> None:
     """
     Widget információk debug kiírása.
-    
+
     Args:
         *widgets: Widget instances
     """
     print("🎯 DEBUG: Panel Widgets Info:")
     for widget in widgets:
         widget_name = widget.__class__.__name__
-        valid = widget.is_valid() if hasattr(widget, 'is_valid') else "Unknown"
+        valid = widget.is_valid() if hasattr(widget, "is_valid") else "Unknown"
         print(f"  - {widget_name}: valid={valid}")
+
 
 print("🎯 DEBUG: Panel Widgets package loaded - Clean Architecture Components")

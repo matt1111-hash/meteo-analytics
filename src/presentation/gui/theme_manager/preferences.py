@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class PreferencesManager:
     """Professional preferences management."""
 
-    def __init__(self, manager: 'ProfessionalThemeManager'):
+    def __init__(self, manager: "ProfessionalThemeManager"):
         """
         Initialize preferences manager.
 
@@ -49,7 +49,9 @@ class PreferencesManager:
         palette_config = self._manager.color_palette.export_palette()
         settings.setValue("theme/color_palette", palette_config)
 
-        print(f"💾 Professional theme preferences saved via compatibility API: {self._manager.current_theme}")
+        print(
+            f"💾 Professional theme preferences saved via compatibility API: {self._manager.current_theme}"
+        )
 
     def load(self) -> None:
         """Load professional theme preferences."""

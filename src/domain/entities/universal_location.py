@@ -1,4 +1,5 @@
 """Universal location domain entity."""
+
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -19,6 +20,7 @@ class UniversalLocation:
     - Coordinates (47.4979, 19.0402)
     - Multiple locations combination
     """
+
     type: LocationType
     identifier: Union[str, Tuple[float, float], List[str]]
     display_name: str
@@ -29,8 +31,8 @@ class UniversalLocation:
     region_code: Optional[str] = None
 
     # Hierarchical information
-    parent_location: Optional['UniversalLocation'] = None
-    child_locations: List['UniversalLocation'] = field(default_factory=list)
+    parent_location: Optional["UniversalLocation"] = None
+    child_locations: List["UniversalLocation"] = field(default_factory=list)
 
     # Metadata
     population: Optional[int] = None
@@ -51,7 +53,7 @@ class UniversalLocation:
         return self.type in [
             LocationType.REGION,
             LocationType.COUNTRY,
-            LocationType.MICRO_REGION
+            LocationType.MICRO_REGION,
         ]
 
     def get_coordinates_list(self) -> List[Tuple[float, float]]:
@@ -74,7 +76,7 @@ class UniversalLocation:
 
         return []
 
-    def contains_location(self, other: 'UniversalLocation') -> bool:
+    def contains_location(self, other: "UniversalLocation") -> bool:
         """Check if contains the other location (hierarchical)."""
         if self.type == LocationType.MULTIPLE:
             return other in self.child_locations
@@ -107,30 +109,30 @@ class UniversalLocation:
             country_code=self.country_code or "HU",
             timezone=self.timezone or "Europe/Budapest",
             metadata={
-                'location_type': self.type.value,
-                'climate_zone': self.climate_zone,
-                'population': self.population,
-                'area_km2': self.area_km2,
-                'region_code': self.region_code,
-                'source': 'universal_location'
-            }
+                "location_type": self.type.value,
+                "climate_zone": self.climate_zone,
+                "population": self.population,
+                "area_km2": self.area_km2,
+                "region_code": self.region_code,
+                "source": "universal_location",
+            },
         )
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'type': self.type.value,
-            'identifier': self.identifier,
-            'display_name': self.display_name,
-            'coordinates': self.coordinates,
-            'country_code': self.country_code,
-            'region_code': self.region_code,
-            'population': self.population,
-            'area_km2': self.area_km2,
-            'timezone': self.timezone,
-            'climate_zone': self.climate_zone,
-            'child_locations_count': len(self.child_locations)
+            "type": self.type.value,
+            "identifier": self.identifier,
+            "display_name": self.display_name,
+            "coordinates": self.coordinates,
+            "country_code": self.country_code,
+            "region_code": self.region_code,
+            "population": self.population,
+            "area_km2": self.area_km2,
+            "timezone": self.timezone,
+            "climate_zone": self.climate_zone,
+            "child_locations_count": len(self.child_locations),
         }
 
 
-__all__ = ['UniversalLocation']
+__all__ = ["UniversalLocation"]

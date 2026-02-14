@@ -1,4 +1,5 @@
 """Region name resolver with Hungarian region/county support."""
+
 from __future__ import annotations
 
 import logging
@@ -108,7 +109,9 @@ class RegionResolverService:
         region_key_lower = region_key.lower()
         for key, value in self.REGION_CODE_MAPPING.items():
             if key.lower() == region_key_lower:
-                logger.info("Case-insensitive region mapping: '%s' → '%s'", region_input, value)
+                logger.info(
+                    "Case-insensitive region mapping: '%s' → '%s'", region_input, value
+                )
                 return value
 
         if self._matches_hungarian_region(region_key_lower):
@@ -120,12 +123,20 @@ class RegionResolverService:
             return "Hungary"
 
         samples = ", ".join(list(self.REGION_CODE_MAPPING.keys())[:10])
-        error_msg = f"Ismeretlen régió: {region_input}. Támogatott példa régiók: {samples}..."
+        error_msg = (
+            f"Ismeretlen régió: {region_input}. Támogatott példa régiók: {samples}..."
+        )
         logger.error(error_msg)
         raise ValueError(error_msg)
 
     def _matches_hungarian_region(self, normalized: str) -> bool:
-        return any(region in normalized or normalized in region for region in self.HUNGARIAN_REGIONS)
+        return any(
+            region in normalized or normalized in region
+            for region in self.HUNGARIAN_REGIONS
+        )
 
     def _matches_hungarian_county(self, normalized: str) -> bool:
-        return any(county in normalized or normalized in county for county in self.HUNGARIAN_COUNTIES)
+        return any(
+            county in normalized or normalized in county
+            for county in self.HUNGARIAN_COUNTIES
+        )

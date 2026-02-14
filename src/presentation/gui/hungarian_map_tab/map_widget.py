@@ -27,7 +27,9 @@ class MapWidget(QWidget, IMapWidget):
     export_completed = Signal(str)
     error_occurred = Signal(str)
 
-    def __init__(self, visualizer: Optional[HungarianMapVisualizer] = None, parent=None):
+    def __init__(
+        self, visualizer: Optional[HungarianMapVisualizer] = None, parent=None
+    ):
         super().__init__(parent)
         self._layout = QVBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
@@ -38,7 +40,7 @@ class MapWidget(QWidget, IMapWidget):
             # If visualizer is passed, we assume it's already part of the UI,
             # or we add it here if it has no parent layout.
             if self.map_visualizer.parent() is None:
-                 self._layout.addWidget(self.map_visualizer)
+                self._layout.addWidget(self.map_visualizer)
         else:
             self.map_visualizer = HungarianMapVisualizer()
             self._layout.addWidget(self.map_visualizer)
@@ -79,13 +81,15 @@ class MapWidget(QWidget, IMapWidget):
         # This functionality is usually triggered via a method on visualizer that emits a signal
         # For direct export, we might need to expose a method in Visualizer
         if hasattr(self.map_visualizer, "export_map"):
-             # This usually initiates export and returns immediately, signal follows
-             self.map_visualizer.export_map()
+            # This usually initiates export and returns immediately, signal follows
+            self.map_visualizer.export_map()
         return ""
 
     # --- Extended Functionality (Logic moved from MapTab) ---
 
-    def generate_weather_overlay_from_analytics(self, analytics_result: AnalyticsResult) -> Optional[Any]:
+    def generate_weather_overlay_from_analytics(
+        self, analytics_result: AnalyticsResult
+    ) -> Optional[Any]:
         """
         Generate weather overlay data from analytics result.
         Uses WeatherDataBridge for conversion.
@@ -95,7 +99,9 @@ class MapWidget(QWidget, IMapWidget):
 
         try:
             # WeatherDataBridge handles the complexity of data conversion
-            overlay_data = self.weather_bridge.create_overlay_from_analytics(analytics_result)
+            overlay_data = self.weather_bridge.create_overlay_from_analytics(
+                analytics_result
+            )
             return overlay_data
         except Exception as e:
             self.error_occurred.emit(f"Overlay generation error: {e}")

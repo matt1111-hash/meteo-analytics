@@ -45,7 +45,7 @@ def format_api_error(status_code: int, response_text: str) -> str:
         429: "Túl sok kérés - próbálja újra később",
         500: "Szerver hiba - próbálja újra később",
         502: "Bad Gateway - szolgáltatás átmenetileg nem elérhető",
-        503: "Szolgáltatás nem elérhető"
+        503: "Szolgáltatás nem elérhető",
     }
 
     user_message = error_messages.get(status_code, f"HTTP {status_code} hiba")
@@ -56,9 +56,13 @@ def format_api_error(status_code: int, response_text: str) -> str:
     return user_message
 
 
-def create_weather_worker_with_provider(latitude: float, longitude: float,
-                                       start_date: str, end_date: str,
-                                       preferred_provider: str = "auto"):
+def create_weather_worker_with_provider(
+    latitude: float,
+    longitude: float,
+    start_date: str,
+    end_date: str,
+    preferred_provider: str = "auto",
+):
     """
     🌍 Weather data worker létrehozása provider routing támogatással.
 
@@ -79,7 +83,7 @@ def create_weather_worker_with_provider(latitude: float, longitude: float,
         longitude=longitude,
         start_date=start_date,
         end_date=end_date,
-        preferred_provider=preferred_provider
+        preferred_provider=preferred_provider,
     )
 
     print(f"🌍 DEBUG: Weather worker created with provider: {preferred_provider}")
@@ -104,7 +108,7 @@ def get_worker_manager_provider_summary(manager) -> Dict[str, Any]:
         "last_successful_provider": last_successful,
         "active_workers": manager.get_active_workers(),
         "total_providers_tracked": len(provider_states),
-        "worker_count": manager.get_worker_count()
+        "worker_count": manager.get_worker_count(),
     }
 
     return summary

@@ -5,8 +5,6 @@
 Formatting Module - Formatters - Value formatting functions.
 """
 
-from typing import Any
-
 
 def format_temperature(value: float, unit: str = "°C") -> str:
     """Format temperature values."""

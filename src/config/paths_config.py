@@ -39,7 +39,7 @@ def ensure_directories() -> None:
         CLIMATE_CACHE_DIR,
         EXPORTS_DIR,
         LOGS_DIR,
-        USER_PREFS_DIR  # Provider Selector preferences
+        USER_PREFS_DIR,  # Provider Selector preferences
     ]
 
     for directory in directories:
@@ -57,7 +57,7 @@ def validate_paths() -> dict[str, Any]:
         "directories_valid": True,
         "write_permissions": True,
         "legacy_db_exists": False,
-        "issues": []
+        "issues": [],
     }
 
     try:
@@ -104,7 +104,7 @@ def get_project_info() -> dict[str, str]:
         "exports_dir": str(EXPORTS_DIR),
         "logs_dir": str(LOGS_DIR),
         "weather_db": str(WEATHER_DB_PATH),
-        "cache_db": str(CACHE_DB_PATH)
+        "cache_db": str(CACHE_DB_PATH),
     }
 
 

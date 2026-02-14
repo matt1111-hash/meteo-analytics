@@ -35,18 +35,30 @@ class CityManagerSearch(CityManagerHungarian):
 
             # 1. HUNGARIAN SEARCH PRIORITY
             if self.hungarian_connection:
-                hungarian_results = self.search_hungarian_settlements(city_name, limit=3)
+                hungarian_results = self.search_hungarian_settlements(
+                    city_name, limit=3
+                )
 
                 if hungarian_results:
-                    exact_match = next((city for city in hungarian_results
-                                       if city.city.lower() == city_name.lower()), None)
+                    exact_match = next(
+                        (
+                            city
+                            for city in hungarian_results
+                            if city.city.lower() == city_name.lower()
+                        ),
+                        None,
+                    )
 
                     if exact_match:
-                        logger.info(f"Hungarian exact match: {exact_match.display_name}")
+                        logger.info(
+                            f"Hungarian exact match: {exact_match.display_name}"
+                        )
                         return (exact_match.lat, exact_match.lon)
 
-                    best_hungarian = max(hungarian_results,
-                                        key=lambda c: (c.region_priority or 0, c.population or 0))
+                    best_hungarian = max(
+                        hungarian_results,
+                        key=lambda c: (c.region_priority or 0, c.population or 0),
+                    )
                     logger.info(f"Hungarian best match: {best_hungarian.display_name}")
                     return (best_hungarian.lat, best_hungarian.lon)
 
@@ -55,8 +67,14 @@ class CityManagerSearch(CityManagerHungarian):
                 global_results = self.search_cities(city_name, limit=3)
 
                 if global_results:
-                    exact_match = next((city for city in global_results
-                                       if city.city.lower() == city_name.lower()), None)
+                    exact_match = next(
+                        (
+                            city
+                            for city in global_results
+                            if city.city.lower() == city_name.lower()
+                        ),
+                        None,
+                    )
 
                     if exact_match:
                         logger.info(f"Global exact match: {exact_match.display_name}")
@@ -75,9 +93,13 @@ class CityManagerSearch(CityManagerHungarian):
             logger.exception("find_city_by_name stacktrace:")
             return None
 
-    def search_unified(self, search_term: str, limit: int = 20,
-                      hungarian_priority: bool = True,
-                      global_limit_ratio: float = 0.3) -> List[City]:
+    def search_unified(
+        self,
+        search_term: str,
+        limit: int = 20,
+        hungarian_priority: bool = True,
+        global_limit_ratio: float = 0.3,
+    ) -> List[City]:
         """
         COMBINED SEARCH - Hungarian Settlements + Global Cities.
 
@@ -93,7 +115,9 @@ class CityManagerSearch(CityManagerHungarian):
             hungarian_limit = int(limit * 0.5)
             global_limit = limit - hungarian_limit
 
-        hungarian_results = self.search_hungarian_settlements(search_term, limit=hungarian_limit)
+        hungarian_results = self.search_hungarian_settlements(
+            search_term, limit=hungarian_limit
+        )
         results.extend(hungarian_results)
 
         global_results = self.search_cities(search_term, limit=global_limit)
@@ -101,13 +125,16 @@ class CityManagerSearch(CityManagerHungarian):
         # Filter duplicates (Hungarian Budapest vs global Budapest)
         hungarian_names = {city.city.lower() for city in hungarian_results}
         filtered_global = [
-            city for city in global_results
+            city
+            for city in global_results
             if city.city.lower() not in hungarian_names or city.country_code != "HU"
         ]
 
         results.extend(filtered_global)
 
-        logger.info(f"Combined search '{search_term}': {len(hungarian_results)} Hungarian + {len(filtered_global)} global = {len(results)} total")
+        logger.info(
+            f"Combined search '{search_term}': {len(hungarian_results)} Hungarian + {len(filtered_global)} global = {len(results)} total"
+        )
 
         return results[:limit]
 
@@ -115,8 +142,9 @@ class CityManagerSearch(CityManagerHungarian):
     # ORIGINAL GLOBAL SEARCH
     # ========================================================================
 
-    def search_cities(self, search_term: str, limit: int = 20,
-                     country_filter: Optional[str] = None) -> List[City]:
+    def search_cities(
+        self, search_term: str, limit: int = 20, country_filter: Optional[str] = None
+    ) -> List[City]:
         """Global city search by name (ORIGINAL FUNCTION)."""
         if not self.connection:
             logger.warning("Global cities database not available")
@@ -142,8 +170,9 @@ class CityManagerSearch(CityManagerHungarian):
         logger.info(f"Global city search '{search_term}': {len(cities)} results")
         return cities
 
-    def get_cities_by_country(self, country_code: str, limit: int = 20,
-                             min_population: Optional[int] = None) -> List[City]:
+    def get_cities_by_country(
+        self, country_code: str, limit: int = 20, min_population: Optional[int] = None
+    ) -> List[City]:
         """Country-based city query (original)."""
         if country_code.upper() == "HU":
             return self._get_hungarian_cities_combined(limit, min_population)
@@ -166,7 +195,9 @@ class CityManagerSearch(CityManagerHungarian):
 
         return [City.from_db_row(tuple(row)) for row in rows]
 
-    def _get_hungarian_cities_combined(self, limit: int, min_population: Optional[int] = None) -> List[City]:
+    def _get_hungarian_cities_combined(
+        self, limit: int, min_population: Optional[int] = None
+    ) -> List[City]:
         """Hungarian cities combined query (settlements + global)."""
         results = []
 
@@ -179,7 +210,9 @@ class CityManagerSearch(CityManagerHungarian):
                 sql_parts.append("WHERE population >= ?")
                 params.append(min_population)
 
-            sql_parts.append("ORDER BY region_priority DESC, population DESC NULLS LAST")
+            sql_parts.append(
+                "ORDER BY region_priority DESC, population DESC NULLS LAST"
+            )
             sql_parts.append(f"LIMIT {hungarian_limit}")
 
             sql = " ".join(sql_parts)
@@ -210,4 +243,4 @@ class CityManagerSearch(CityManagerHungarian):
         return results[:limit]
 
 
-__all__ = ['CityManagerSearch']
+__all__ = ["CityManagerSearch"]

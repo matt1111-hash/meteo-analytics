@@ -69,7 +69,9 @@ class TrendAnalysisHandlerMixin:
                 self.error_occurred.emit("Legalább 2 karakteres város név szükséges!")
                 return
 
-            logger.info(f"🚀 ENHANCED TREND ANALYSIS START: {location} - {parameter} - {time_range}")
+            logger.info(
+                f"🚀 ENHANCED TREND ANALYSIS START: {location} - {parameter} - {time_range}"
+            )
 
             # UI update
             self.analyze_button.setEnabled(False)
@@ -102,7 +104,9 @@ class TrendAnalysisHandlerMixin:
     def on_analysis_completed(self, trend_results: Dict) -> None:
         """🎉 ENHANCED TREND ELEMZÉS BEFEJEZÉSE"""
         try:
-            logger.info(f"🎉 ENHANCED TREND ANALYSIS COMPLETED: {trend_results['settlement_name']}")
+            logger.info(
+                f"🎉 ENHANCED TREND ANALYSIS COMPLETED: {trend_results['settlement_name']}"
+            )
 
             # 🎨 PLOTLY CHART FRISSÍTÉSE
             self.chart.update_chart(trend_results)

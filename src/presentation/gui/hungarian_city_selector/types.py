@@ -13,6 +13,7 @@ from typing import List, Optional
 @dataclass
 class HungarianCity:
     """Magyar város adatstruktúra"""
+
     city: str
     country: str
     country_code: str
@@ -33,59 +34,56 @@ class HungarianRegions:
     # Régió mappingek népszerű városok alapján
     REGION_MAPPING = {
         # Alföld
-        'Debrecen': 'Alföld',
-        'Szeged': 'Alföld',
-        'Kecskemét': 'Alföld',
-        'Nyíregyháza': 'Alföld',
-        'Békéscsaba': 'Alföld',
-        'Szolnok': 'Alföld',
-        'Orosháza': 'Alföld',
-        'Cegléd': 'Alföld',
-        'Hodmezovasarhely': 'Alföld',
-        'Jászberény': 'Alföld',
-
+        "Debrecen": "Alföld",
+        "Szeged": "Alföld",
+        "Kecskemét": "Alföld",
+        "Nyíregyháza": "Alföld",
+        "Békéscsaba": "Alföld",
+        "Szolnok": "Alföld",
+        "Orosháza": "Alföld",
+        "Cegléd": "Alföld",
+        "Hodmezovasarhely": "Alföld",
+        "Jászberény": "Alföld",
         # Dunántúl
-        'Pécs': 'Dunántúl',
-        'Győr': 'Dunántúl',
-        'Székesfehérvár': 'Dunántúl',
-        'Szombathely': 'Dunántúl',
-        'Kaposvár': 'Dunántúl',
-        'Veszprém': 'Dunántúl',
-        'Zalaegerszeg': 'Dunántúl',
-        'Nagykanizsa': 'Dunántúl',
-        'Sopron': 'Dunántúl',
-        'Tatabánya': 'Dunántúl',
-        'Dunaújváros': 'Dunántúl',
-        'Ajka': 'Dunántúl',
-
+        "Pécs": "Dunántúl",
+        "Győr": "Dunántúl",
+        "Székesfehérvár": "Dunántúl",
+        "Szombathely": "Dunántúl",
+        "Kaposvár": "Dunántúl",
+        "Veszprém": "Dunántúl",
+        "Zalaegerszeg": "Dunántúl",
+        "Nagykanizsa": "Dunántúl",
+        "Sopron": "Dunántúl",
+        "Tatabánya": "Dunántúl",
+        "Dunaújváros": "Dunántúl",
+        "Ajka": "Dunántúl",
         # Közép-Magyarország
-        'Budapest': 'Közép-Magyarország',
-        'Gödöllő': 'Közép-Magyarország',
-        'Vác': 'Közép-Magyarország',
-        'Szentendre': 'Közép-Magyarország',
-
+        "Budapest": "Közép-Magyarország",
+        "Gödöllő": "Közép-Magyarország",
+        "Vác": "Közép-Magyarország",
+        "Szentendre": "Közép-Magyarország",
         # Északi-régió
-        'Miskolc': 'Északi-régió',
-        'Eger': 'Északi-régió',
-        'Salgótarján': 'Északi-régió',
-        'Gyöngyös': 'Északi-régió',
-        'Balassagyarmat': 'Északi-régió'
+        "Miskolc": "Északi-régió",
+        "Eger": "Északi-régió",
+        "Salgótarján": "Északi-régió",
+        "Gyöngyös": "Északi-régió",
+        "Balassagyarmat": "Északi-régió",
     }
 
     REGION_DISPLAY_NAMES = {
-        'Alföld': '🌾 Alföld',
-        'Dunántúl': '🏔️ Dunántúl',
-        'Közép-Magyarország': '🏛️ Közép-Magyarország',
-        'Északi-régió': '⛰️ Északi-régió',
-        'Egyéb': '🏘️ Egyéb'
+        "Alföld": "🌾 Alföld",
+        "Dunántúl": "🏔️ Dunántúl",
+        "Közép-Magyarország": "🏛️ Közép-Magyarország",
+        "Északi-régió": "⛰️ Északi-régió",
+        "Egyéb": "🏘️ Egyéb",
     }
 
     REGION_DESCRIPTIONS = {
-        'Alföld': 'Nagy Magyar Alföld - síkvidéki klíma',
-        'Dunántúl': 'Dunántúli-dombság és középhegység',
-        'Közép-Magyarország': 'Főváros és agglomeráció',
-        'Északi-régió': 'Északi-középhegység vidéke',
-        'Egyéb': 'Egyéb területek'
+        "Alföld": "Nagy Magyar Alföld - síkvidéki klíma",
+        "Dunántúl": "Dunántúli-dombság és középhegység",
+        "Közép-Magyarország": "Főváros és agglomeráció",
+        "Északi-régió": "Északi-középhegység vidéke",
+        "Egyéb": "Egyéb területek",
     }
 
     @classmethod
@@ -99,7 +97,7 @@ class HungarianRegions:
         Returns:
             Régió neve vagy 'Egyéb'
         """
-        return cls.REGION_MAPPING.get(city_name, 'Egyéb')
+        return cls.REGION_MAPPING.get(city_name, "Egyéb")
 
     @classmethod
     def get_all_regions(cls) -> List[str]:
@@ -107,7 +105,9 @@ class HungarianRegions:
         return list(cls.REGION_DISPLAY_NAMES.keys())
 
     @classmethod
-    def get_cities_by_region(cls, region: str, cities: List[HungarianCity]) -> List[HungarianCity]:
+    def get_cities_by_region(
+        cls, region: str, cities: List[HungarianCity]
+    ) -> List[HungarianCity]:
         """
         Városok szűrése régió alapján.
 
@@ -118,7 +118,7 @@ class HungarianRegions:
         Returns:
             Szűrt városok listája
         """
-        if region == 'Összes':
+        if region == "Összes":
             return cities
 
         filtered_cities = []

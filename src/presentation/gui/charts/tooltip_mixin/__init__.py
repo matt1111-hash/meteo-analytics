@@ -11,6 +11,7 @@ WeatherTooltipMixin - Tooltip functionality for weather charts.
 # Core mixin class
 from .core import WeatherTooltipMixin
 
+
 # Helper function
 def add_tooltips_to_chart(chart_instance, hover_tolerance: int = 15) -> None:
     """
@@ -25,11 +26,13 @@ def add_tooltips_to_chart(chart_instance, hover_tolerance: int = 15) -> None:
         add_tooltips_to_chart(my_temperature_chart, hover_tolerance=20)
         ```
     """
-    if hasattr(chart_instance, 'enable_tooltips'):
+    if hasattr(chart_instance, "enable_tooltips"):
         chart_instance.enable_tooltips(hover_tolerance)
         print(f"✅ DEBUG: Tooltips aktiválva - {chart_instance.__class__.__name__}")
     else:
-        print(f"⚠️ DEBUG: {chart_instance.__class__.__name__} nem támogatja a tooltip-okat")
+        print(
+            f"⚠️ DEBUG: {chart_instance.__class__.__name__} nem támogatja a tooltip-okat"
+        )
 
 
-__all__ = ['WeatherTooltipMixin', 'add_tooltips_to_chart']
+__all__ = ["WeatherTooltipMixin", "add_tooltips_to_chart"]

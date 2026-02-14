@@ -49,21 +49,21 @@ def get_dual_api_implementation_summary() -> Dict[str, Any]:
             "single_city": "open-meteo (ingyenes)",
             "multi_city": "meteostat (prémium)",
             "historical_deep": "meteostat (gazdag adatok)",
-            "real_time": "open-meteo (valós idejű)"
+            "real_time": "open-meteo (valós idejű)",
         },
         "cost_optimization": {
             "free_tier": "Open-Meteo - 10 req/sec",
             "premium_tier": "Meteostat - 10k req/month ($10)",
-            "strategy": "Smart routing based on use case"
+            "strategy": "Smart routing based on use case",
         },
         "capabilities": {
             "wind_gusts_support": "Both APIs",
             "station_based": "Meteostat only",
             "interpolated": "Open-Meteo only",
-            "rich_parameters": "Meteostat (pressure, sunshine, etc.)"
+            "rich_parameters": "Meteostat (pressure, sunshine, etc.)",
         },
         "fallback_strategy": "Open-Meteo → Meteostat chain",
-        "validation": validate_dual_api_constants()
+        "validation": validate_dual_api_constants(),
     }
 
 
@@ -88,7 +88,7 @@ def get_project_completion_summary() -> Dict[str, Any]:
             "wind_gusts_fix": "60.8 km/h 'MÉRSÉKELT' → 'ERŐS SZÉL' (Beaufort 7-8)",
             "dual_api_system": "Clean Open-Meteo + Meteostat integration",
             "cost_optimization": "Smart routing - free vs premium based on use case",
-            "api_cleanup": "HungaroMet + met.hu teljes eltávolítása"
+            "api_cleanup": "HungaroMet + met.hu teljes eltávolítása",
         },
         "dual_api_summary": get_dual_api_implementation_summary(),
         "validation_results": validate_anomaly_constants(),
@@ -103,8 +103,8 @@ def get_project_completion_summary() -> Dict[str, Any]:
             "Error Handling",
             "Structured Logging",
             "METEOROLÓGIAI STANDARDOK",
-            "CLEAN API ARCHITECTURE"
-        ]
+            "CLEAN API ARCHITECTURE",
+        ],
     }
 
 
@@ -121,7 +121,7 @@ def demonstrate_dual_api_strategy() -> None:
         ("single_city", "Egyetlen város lekérdezése"),
         ("multi_city", "Multi-city analytics"),
         ("historical_deep", "Gazdag historikus adatok"),
-        ("real_time", "Valós idejű időjárás")
+        ("real_time", "Valós idejű időjárás"),
     ]
 
     for use_case, description in use_cases:
@@ -143,7 +143,9 @@ def demonstrate_dual_api_strategy() -> None:
 
         print(f"🔹 {display_name}:")
         print(f"   Költség: {cost} | Rate limit: {rate_limit}")
-        print(f"   Wind gusts: {wind_gusts} | Station-based: {'✅' if capabilities['station_based'] else '❌'}")
+        print(
+            f"   Wind gusts: {wind_gusts} | Station-based: {'✅' if capabilities['station_based'] else '❌'}"
+        )
         print()
 
 
@@ -185,7 +187,9 @@ def demonstrate_meteorological_fix() -> None:
     # Aktuális kategória lekérdezése
     current_category = get_wind_gusts_category(test_speed)
     if current_category:
-        print(f"🎯 AKTUÁLIS KATEGÓRIA: {current_category['emoji']} {current_category['label']}")
+        print(
+            f"🎯 AKTUÁLIS KATEGÓRIA: {current_category['emoji']} {current_category['label']}"
+        )
         print(f"🎨 SZÍN: {current_category['color']}")
 
     print("=" * 50)

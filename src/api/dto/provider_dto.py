@@ -43,7 +43,9 @@ class ProviderInfoDTO:
     """Smart routing rules (for "auto" provider)"""
 
     @classmethod
-    def from_config(cls, provider_id: str, config: Mapping[str, Any]) -> "ProviderInfoDTO":
+    def from_config(
+        cls, provider_id: str, config: Mapping[str, Any]
+    ) -> "ProviderInfoDTO":
         """Create DTO from provider configuration.
 
         Args:

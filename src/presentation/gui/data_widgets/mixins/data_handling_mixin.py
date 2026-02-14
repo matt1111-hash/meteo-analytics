@@ -25,7 +25,9 @@ class DataHandlingMixin:
         Táblázat adatainak frissítése - ROBUST HIBAKEZELÉSSEL.
         """
         try:
-            logger.info("🔄 WeatherDataTable.update_data() ELINDULT - ROBUST HIBAKEZELÉSSEL")
+            logger.info(
+                "🔄 WeatherDataTable.update_data() ELINDULT - ROBUST HIBAKEZELÉSSEL"
+            )
 
             if not data:
                 logger.error("❌ Üres adatok érkeztek a táblázatba!")
@@ -47,7 +49,9 @@ class DataHandlingMixin:
                 self.clear_data()
                 return
 
-            logger.info(f"✅ DataFrame létrehozva: {len(df)} sor, {len(df.columns)} oszlop")
+            logger.info(
+                f"✅ DataFrame létrehozva: {len(df)} sor, {len(df.columns)} oszlop"
+            )
             logger.info(f"✅ Oszlopnevek: {list(df.columns)}")
 
             self.current_data = df
@@ -70,7 +74,9 @@ class DataHandlingMixin:
             self.csv_btn.setEnabled(True)
             self.excel_btn.setEnabled(True)
 
-            logger.info(f"✅ WeatherDataTable.update_data() SIKERES! {len(df)} sor megjelenítve")
+            logger.info(
+                f"✅ WeatherDataTable.update_data() SIKERES! {len(df)} sor megjelenítve"
+            )
 
         except Exception as e:
             logger.error(f"❌ WeatherDataTable.update_data() HIBA: {e}")
@@ -94,12 +100,12 @@ class DataHandlingMixin:
             windspeed = daily_data.get("windspeed_10m_max", [])
 
             data_lengths = {
-                'dates': len(dates),
-                'temp_max': len(temp_max),
-                'temp_min': len(temp_min),
-                'temp_mean': len(temp_mean),
-                'precip': len(precip),
-                'windspeed': len(windspeed)
+                "dates": len(dates),
+                "temp_max": len(temp_max),
+                "temp_min": len(temp_min),
+                "temp_mean": len(temp_mean),
+                "precip": len(precip),
+                "windspeed": len(windspeed),
             }
 
             logger.info(f"📊 Adathosszak: {data_lengths}")
@@ -135,26 +141,32 @@ class DataHandlingMixin:
                 logger.warning("⚠️ temperature_2m_mean hiányzik, fallback számításra...")
                 temp_mean_norm = []
                 for i in range(base_length):
-                    if (i < len(temp_max_norm) and i < len(temp_min_norm) and
-                        temp_max_norm[i] is not None and temp_min_norm[i] is not None):
+                    if (
+                        i < len(temp_max_norm)
+                        and i < len(temp_min_norm)
+                        and temp_max_norm[i] is not None
+                        and temp_min_norm[i] is not None
+                    ):
                         avg = (temp_max_norm[i] + temp_min_norm[i]) / 2
                         temp_mean_norm.append(round(avg, 1))
                     else:
                         temp_mean_norm.append(None)
                 logger.info(f"🔄 Fallback számítás kész: {len(temp_mean_norm)} érték")
             else:
-                logger.info(f"✅ temperature_2m_mean használva: {len(temp_mean_norm)} érték")
+                logger.info(
+                    f"✅ temperature_2m_mean használva: {len(temp_mean_norm)} érték"
+                )
 
             df_data = {
-                'date': dates_norm,
-                'temp_max': temp_max_norm,
-                'temp_min': temp_min_norm,
-                'temp_mean': temp_mean_norm,
-                'precipitation': precip_norm
+                "date": dates_norm,
+                "temp_max": temp_max_norm,
+                "temp_min": temp_min_norm,
+                "temp_mean": temp_mean_norm,
+                "precipitation": precip_norm,
             }
 
             if windspeed_norm and any(x is not None for x in windspeed_norm):
-                df_data['windspeed'] = windspeed_norm
+                df_data["windspeed"] = windspeed_norm
                 logger.info("✅ Szélsebesség adatok hozzáadva")
             else:
                 logger.info("⚠️ Szélsebesség adatok hiányoznak")

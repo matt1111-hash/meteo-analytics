@@ -4,6 +4,7 @@
 """
 GUI wrapper around domain anomaly detection, backward-compatible interface.
 """
+
 from __future__ import annotations
 
 # pylint: disable=import-error

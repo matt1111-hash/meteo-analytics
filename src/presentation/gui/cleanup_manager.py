@@ -16,16 +16,16 @@ if TYPE_CHECKING:
 class CleanupManager:
     """
     Kezeli az alkalmazás összes worker thread-je és erőforrásának leállítását.
-    
+
     Ez az osztály biztosítja, hogy az alkalmazás bezárásakor minden háttérfolyamat,
     worker és erőforrás (pl. QWebEngineView) megfelelően leálljon, elkerülve a
     memóriaszivárgást és a fennakadásokat.
     """
 
-    def __init__(self, main_window: 'MainWindow'):
+    def __init__(self, main_window: "MainWindow"):
         """
         CleanupManager inicializálása.
-        
+
         Args:
             main_window: A MainWindow példány, amelynek a komponenseit kezeli.
         """
@@ -50,25 +50,29 @@ class CleanupManager:
         self._cleanup_all_timers()
 
         # 5. Clear all references
-        if hasattr(self.mw, 'active_threads'):
+        if hasattr(self.mw, "active_threads"):
             self.mw.active_threads.clear()
-        if hasattr(self.mw, 'active_workers'):
+        if hasattr(self.mw, "active_workers"):
             self.mw.active_workers.clear()
-        if hasattr(self.mw, 'web_engine_views'):
+        if hasattr(self.mw, "web_engine_views"):
             self.mw.web_engine_views.clear()
-        if hasattr(self.mw, 'cleanup_timers'):
+        if hasattr(self.mw, "cleanup_timers"):
             self.mw.cleanup_timers.clear()
 
         print("✅ CleanupManager: Cleanup sequence completed.")
 
     def _cleanup_all_threads(self) -> None:
         """🧹 KRITIKUS: Összes aktív thread graceful cleanup-ja."""
-        if not hasattr(self.mw, 'active_threads'):
+        if not hasattr(self.mw, "active_threads"):
             return
 
-        print(f"🧹 CleanupManager: Starting thread cleanup - {len(self.mw.active_threads)} threads")
+        print(
+            f"🧹 CleanupManager: Starting thread cleanup - {len(self.mw.active_threads)} threads"
+        )
 
-        for thread in self.mw.active_threads[:]:  # Copy to avoid modification during iteration
+        for thread in self.mw.active_threads[
+            :
+        ]:  # Copy to avoid modification during iteration
             try:
                 if thread.isRunning():
                     print(f"🧹 CleanupManager: Stopping thread: {thread}")
@@ -78,7 +82,9 @@ class CleanupManager:
 
                     # Wait for thread to finish (max 5 seconds)
                     if not thread.wait(5000):
-                        print(f"⚠️ CleanupManager: Thread did not finish gracefully, terminating: {thread}")
+                        print(
+                            f"⚠️ CleanupManager: Thread did not finish gracefully, terminating: {thread}"
+                        )
                         thread.terminate()
                         thread.wait(2000)  # Wait for termination
 
@@ -98,25 +104,29 @@ class CleanupManager:
 
     def _cleanup_all_workers(self) -> None:
         """🧹 KRITIKUS: Összes aktív worker graceful cleanup-ja."""
-        if not hasattr(self.mw, 'active_workers'):
+        if not hasattr(self.mw, "active_workers"):
             return
 
-        print(f"🧹 CleanupManager: Starting worker cleanup - {len(self.mw.active_workers)} workers")
+        print(
+            f"🧹 CleanupManager: Starting worker cleanup - {len(self.mw.active_workers)} workers"
+        )
 
-        for worker in self.mw.active_workers[:]:  # Copy to avoid modification during iteration
+        for worker in self.mw.active_workers[
+            :
+        ]:  # Copy to avoid modification during iteration
             try:
                 print(f"🧹 CleanupManager: Stopping worker: {worker}")
 
                 # Stop worker if it has a stop method
-                if hasattr(worker, 'stop'):
+                if hasattr(worker, "stop"):
                     worker.stop()
-                elif hasattr(worker, 'cancel'):
+                elif hasattr(worker, "cancel"):
                     worker.cancel()
-                elif hasattr(worker, 'quit'):
+                elif hasattr(worker, "quit"):
                     worker.quit()
 
                 # If worker has a thread, clean it up
-                if hasattr(worker, 'thread'):
+                if hasattr(worker, "thread"):
                     thread = worker.thread()
                     if thread and thread.isRunning():
                         thread.quit()
@@ -138,12 +148,16 @@ class CleanupManager:
 
     def _cleanup_all_web_engines(self) -> None:
         """🧹 KRITIKUS: Összes WebEngine view graceful cleanup-ja."""
-        if not hasattr(self.mw, 'web_engine_views'):
+        if not hasattr(self.mw, "web_engine_views"):
             return
 
-        print(f"🧹 CleanupManager: Starting WebEngine cleanup - {len(self.mw.web_engine_views)} views")
+        print(
+            f"🧹 CleanupManager: Starting WebEngine cleanup - {len(self.mw.web_engine_views)} views"
+        )
 
-        for web_view in self.mw.web_engine_views[:]:  # Copy to avoid modification during iteration
+        for web_view in self.mw.web_engine_views[
+            :
+        ]:  # Copy to avoid modification during iteration
             try:
                 print(f"🧹 CleanupManager: Stopping WebEngine view: {web_view}")
 
@@ -167,12 +181,16 @@ class CleanupManager:
 
     def _cleanup_all_timers(self) -> None:
         """🧹 KRITIKUS: Összes QTimer graceful cleanup-ja."""
-        if not hasattr(self.mw, 'cleanup_timers'):
+        if not hasattr(self.mw, "cleanup_timers"):
             return
 
-        print(f"🧹 CleanupManager: Starting timer cleanup - {len(self.mw.cleanup_timers)} timers")
+        print(
+            f"🧹 CleanupManager: Starting timer cleanup - {len(self.mw.cleanup_timers)} timers"
+        )
 
-        for timer in self.mw.cleanup_timers[:]:  # Copy to avoid modification during iteration
+        for timer in self.mw.cleanup_timers[
+            :
+        ]:  # Copy to avoid modification during iteration
             try:
                 print(f"🧹 CleanupManager: Stopping timer: {timer}")
 
@@ -196,4 +214,4 @@ class CleanupManager:
 
 
 # Export
-__all__ = ['CleanupManager']
+__all__ = ["CleanupManager"]

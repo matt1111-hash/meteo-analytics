@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class ShutdownManager:
     """Handle worker manager shutdown procedures."""
 
-    def __init__(self, manager: 'WorkerManager'):
+    def __init__(self, manager: "WorkerManager"):
         """
         Initialize shutdown manager.
 
@@ -82,7 +82,9 @@ class ShutdownManager:
 
             # 3. Emergency terminate if still active
             if self._manager.active_workers:
-                print("⚠️ DEBUG: Some workers didn't stop gracefully, emergency terminating...")
+                print(
+                    "⚠️ DEBUG: Some workers didn't stop gracefully, emergency terminating..."
+                )
                 self._manager.mutex.unlock()
                 self.emergency_terminate_all()
                 self._manager.mutex.lock()

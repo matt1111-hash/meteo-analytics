@@ -27,7 +27,7 @@ class NumericTableWidgetItem(QTableWidgetItem):
         super().__init__(display_text)
         self.numeric_value = numeric_value
 
-    def __lt__(self, other: 'NumericTableWidgetItem') -> bool:
+    def __lt__(self, other: "NumericTableWidgetItem") -> bool:
         """
         Összehasonlító metódus felülírása a rendezéshez.
         A tárolt numerikus érték alapján hasonlít össze, nem a szöveg szerint.

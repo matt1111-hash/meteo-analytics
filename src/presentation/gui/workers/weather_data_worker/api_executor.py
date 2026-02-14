@@ -6,7 +6,7 @@ WeatherDataWorker API Executor - Execute HTTP API requests.
 """
 
 import json
-from typing import Any, Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict
 
 import httpx
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class APIExecutor:
     """Execute HTTP API requests."""
 
-    def __init__(self, worker: 'WeatherDataWorker'):
+    def __init__(self, worker: "WeatherDataWorker"):
         """
         Initialize API executor.
 
@@ -26,7 +26,9 @@ class APIExecutor:
         """
         self._worker = worker
 
-    def execute_request(self, provider: str, api_url: str, params: Dict[str, Any]) -> bool:
+    def execute_request(
+        self, provider: str, api_url: str, params: Dict[str, Any]
+    ) -> bool:
         """
         Execute API request with cancellation support.
 
@@ -39,7 +41,7 @@ class APIExecutor:
             True if successful
         """
         try:
-            from ...utils import get_source_display_name, APIConstants
+            from ...utils import APIConstants, get_source_display_name
 
             headers = self.get_provider_headers(provider)
             timeout = APIConstants.DEFAULT_TIMEOUT
@@ -50,7 +52,9 @@ class APIExecutor:
                     print(f"🛑 DEBUG: {provider} API request cancelled before send")
                     return False
 
-                self._worker.emit_status(f"📡 {get_source_display_name(provider)} HTTP kérés...")
+                self._worker.emit_status(
+                    f"📡 {get_source_display_name(provider)} HTTP kérés..."
+                )
                 response = client.get(api_url, params=params)
 
                 # Cancellation check after HTTP call
@@ -62,11 +66,16 @@ class APIExecutor:
                     print(f"❌ DEBUG: {provider} API hiba: HTTP {response.status_code}")
                     return False
 
-                self._worker.emit_status(f"📄 {get_source_display_name(provider)} válasz feldolgozása...")
+                self._worker.emit_status(
+                    f"📄 {get_source_display_name(provider)} válasz feldolgozása..."
+                )
                 self._worker.weather_data = response.json()
 
                 # Provider change notification
-                if provider != self._worker.preferred_provider and self._worker.preferred_provider != "auto":
+                if (
+                    provider != self._worker.preferred_provider
+                    and self._worker.preferred_provider != "auto"
+                ):
                     if not self._worker.is_cancelled:
                         self._worker.provider_changed.emit(provider)
 
@@ -97,12 +106,11 @@ class APIExecutor:
         """
         from ...utils import APIConstants
 
-        base_headers = {
-            "User-Agent": APIConstants.USER_AGENT
-        }
+        base_headers = {"User-Agent": APIConstants.USER_AGENT}
 
         if provider == "meteostat":
             import os
+
             api_key = os.getenv("METEOSTAT_API_KEY")
             if api_key:
                 base_headers["X-RapidAPI-Key"] = api_key

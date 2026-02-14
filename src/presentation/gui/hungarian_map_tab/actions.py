@@ -42,10 +42,9 @@ def _reset_map_view(self) -> None:
     if self.location_selector:
         self.location_selector.reset_selection()
 
-    self.map_interaction.emit("view_reset", {
-        'action': 'reset_to_hungary',
-        'source': 'manual_reset'
-    })
+    self.map_interaction.emit(
+        "view_reset", {"action": "reset_to_hungary", "source": "manual_reset"}
+    )
 
 
 def _export_map(self) -> None:

@@ -23,18 +23,22 @@ def format_provider_usage(usage_stats: Dict[str, Dict[str, Any]]) -> Dict[str, s
     formatted = {}
 
     for provider_name, stats in usage_stats.items():
-        if provider_name == 'open-meteo':
+        if provider_name == "open-meteo":
             formatted[provider_name] = "🌍 Ingyenes (korlátlan)"
         else:
-            requests = stats.get('requests', 0)
-            limit = stats.get('limit', 10000)
+            requests = stats.get("requests", 0)
+            limit = stats.get("limit", 10000)
             usage_percent = (requests / limit) * 100 if limit > 0 else 0
-            formatted[provider_name] = f"💎 {requests:,}/{limit:,} ({usage_percent:.1f}%)"
+            formatted[provider_name] = (
+                f"💎 {requests:,}/{limit:,} ({usage_percent:.1f}%)"
+            )
 
     return formatted
 
 
-def calculate_provider_costs(usage_stats: Dict[str, Dict[str, Any]]) -> Dict[str, float]:
+def calculate_provider_costs(
+    usage_stats: Dict[str, Dict[str, Any]],
+) -> Dict[str, float]:
     """
     Calculate provider costs based on usage.
 
@@ -47,10 +51,10 @@ def calculate_provider_costs(usage_stats: Dict[str, Dict[str, Any]]) -> Dict[str
     costs = {}
 
     for provider_name, stats in usage_stats.items():
-        if provider_name == 'open-meteo':
+        if provider_name == "open-meteo":
             costs[provider_name] = 0.0
-        elif provider_name == 'meteostat':
-            requests = stats.get('requests', 0)
+        elif provider_name == "meteostat":
+            requests = stats.get("requests", 0)
             cost_per_request = 10.0 / 10000
             costs[provider_name] = requests * cost_per_request
         else:
@@ -59,7 +63,9 @@ def calculate_provider_costs(usage_stats: Dict[str, Dict[str, Any]]) -> Dict[str
     return costs
 
 
-def get_provider_warning_level(provider_name: str, usage_stats: Dict[str, Dict[str, Any]]) -> str:
+def get_provider_warning_level(
+    provider_name: str, usage_stats: Dict[str, Dict[str, Any]]
+) -> str:
     """
     Determine provider usage warning level.
 
@@ -70,12 +76,12 @@ def get_provider_warning_level(provider_name: str, usage_stats: Dict[str, Dict[s
     Returns:
         Warning level or None
     """
-    if provider_name == 'open-meteo':
+    if provider_name == "open-meteo":
         return None
 
     stats = usage_stats.get(provider_name, {})
-    requests = stats.get('requests', 0)
-    limit = stats.get('limit', 10000)
+    requests = stats.get("requests", 0)
+    limit = stats.get("limit", 10000)
 
     if limit <= 0:
         return None
@@ -92,7 +98,9 @@ def get_provider_warning_level(provider_name: str, usage_stats: Dict[str, Dict[s
         return None
 
 
-def format_provider_status(provider_name: str, is_current: bool, usage_stats: Dict[str, Dict[str, Any]]) -> str:
+def format_provider_status(
+    provider_name: str, is_current: bool, usage_stats: Dict[str, Dict[str, Any]]
+) -> str:
     """
     Generate provider status string for GUI.
 
@@ -106,7 +114,7 @@ def format_provider_status(provider_name: str, is_current: bool, usage_stats: Di
     """
     display_name = get_source_display_name(provider_name)
 
-    if provider_name == 'auto':
+    if provider_name == "auto":
         return "🤖 Automatikus routing"
 
     status_parts = [display_name]
@@ -114,7 +122,7 @@ def format_provider_status(provider_name: str, is_current: bool, usage_stats: Di
     if is_current:
         status_parts.append("(aktív)")
 
-    if provider_name != 'open-meteo':
+    if provider_name != "open-meteo":
         warning_level = get_provider_warning_level(provider_name, usage_stats)
         if warning_level == "critical":
             status_parts.append("⚠️ LIMIT")
@@ -136,13 +144,9 @@ def get_provider_icon(provider_name: str) -> str:
     Returns:
         Emoji icon
     """
-    icons = {
-        'auto': '🤖',
-        'open-meteo': '🌍',
-        'meteostat': '💎'
-    }
+    icons = {"auto": "🤖", "open-meteo": "🌍", "meteostat": "💎"}
 
-    return icons.get(provider_name, '🔧')
+    return icons.get(provider_name, "🔧")
 
 
 def format_cost_summary(usage_stats: Dict[str, Dict[str, Any]]) -> str:
@@ -174,6 +178,7 @@ def log_provider_usage_event(provider_name: str, use_case: str, success: bool) -
         success: Whether successful
     """
     import logging
+
     logger = logging.getLogger(__name__)
 
     status = "SUCCESS" if success else "FAILED"

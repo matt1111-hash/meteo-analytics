@@ -5,6 +5,7 @@
 Constants - API endpoints, timeouts, rate limits.
 """
 
+
 class APIConstants:
     """API constants - CLEAN DUAL-API VERSION"""
 
@@ -34,5 +35,5 @@ class APIConstants:
     # Source Display Names
     SOURCE_DISPLAY_NAMES = {
         "open-meteo": "🌍 Open-Meteo API",
-        "meteostat": "💎 Meteostat API"
+        "meteostat": "💎 Meteostat API",
     }

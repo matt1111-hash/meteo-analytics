@@ -24,14 +24,16 @@ logger = logging.getLogger(__name__)
 class AnomalySettingsPreviewHandler:
     """Előnézet és teszt kezelő osztály az AnomalySettingsDialoghoz."""
 
-    def __init__(self, dialog: 'AnomalySettingsDialog'):
+    def __init__(self, dialog: "AnomalySettingsDialog"):
         """Inicializálás."""
         self.dialog = dialog
 
     def choose_color(self, category_key: str) -> None:
         """Szín választó dialog."""
         current_color = self.dialog.category_widgets[category_key]["color_value"]
-        color = QColorDialog.getColor(QColor(current_color), self.dialog, f"Szín választás - {category_key}")
+        color = QColorDialog.getColor(
+            QColor(current_color), self.dialog, f"Szín választás - {category_key}"
+        )
 
         if color.isValid():
             hex_color = color.name()
@@ -51,7 +53,7 @@ class AnomalySettingsPreviewHandler:
             "Válassz ikont:",
             icons,
             0,
-            False
+            False,
         )
 
         if ok and icon:
@@ -61,10 +63,30 @@ class AnomalySettingsPreviewHandler:
     def run_test(self, test_type: str) -> None:
         """Teszt futtatása az előnézetben."""
         test_data = {
-            "hot_day": {"temp_max": 42.5, "temp_min": 28.0, "precipitation": 0.0, "wind_speed": 15.0},
-            "cold_day": {"temp_max": -15.0, "temp_min": -25.0, "precipitation": 5.0, "wind_speed": 35.0},
-            "rainy_day": {"temp_max": 22.0, "temp_min": 16.0, "precipitation": 125.0, "wind_speed": 25.0},
-            "windy_day": {"temp_max": 18.0, "temp_min": 12.0, "precipitation": 2.0, "wind_speed": 85.0}
+            "hot_day": {
+                "temp_max": 42.5,
+                "temp_min": 28.0,
+                "precipitation": 0.0,
+                "wind_speed": 15.0,
+            },
+            "cold_day": {
+                "temp_max": -15.0,
+                "temp_min": -25.0,
+                "precipitation": 5.0,
+                "wind_speed": 35.0,
+            },
+            "rainy_day": {
+                "temp_max": 22.0,
+                "temp_min": 16.0,
+                "precipitation": 125.0,
+                "wind_speed": 25.0,
+            },
+            "windy_day": {
+                "temp_max": 18.0,
+                "temp_min": 12.0,
+                "precipitation": 2.0,
+                "wind_speed": 85.0,
+            },
         }
 
         data = test_data.get(test_type, {})
@@ -118,19 +140,19 @@ class AnomalySettingsPreviewHandler:
 🎯 AKTUÁLIS BEÁLLÍTÁSOK:
 
 🌡️ HŐMÉRSÉKLET:
-• Forró küszöb: > {settings['temp_hot']}°C
-• Hideg küszöb: < {settings['temp_cold']}°C
+• Forró küszöb: > {settings["temp_hot"]}°C
+• Hideg küszöb: < {settings["temp_cold"]}°C
 
 🌧️ CSAPADÉK:
-• Magas küszöb: > {settings['precip_high']}mm
-• Alacsony küszöb: < {settings['precip_low']}mm
+• Magas küszöb: > {settings["precip_high"]}mm
+• Alacsony küszöb: < {settings["precip_low"]}mm
 
 🌪️ SZÉL KATEGÓRIÁK:
-• Szeles küszöb: > {settings['wind_high']}km/h
-• Normális: < {settings['wind_normal']}km/h
-• Erős: {settings['wind_normal']}-{settings['wind_strong']}km/h
-• Extrém: {settings['wind_strong']}-{settings['wind_extreme']}km/h
-• Orkán: > {settings['wind_hurricane']}km/h
+• Szeles küszöb: > {settings["wind_high"]}km/h
+• Normális: < {settings["wind_normal"]}km/h
+• Erős: {settings["wind_normal"]}-{settings["wind_strong"]}km/h
+• Extrém: {settings["wind_strong"]}-{settings["wind_extreme"]}km/h
+• Orkán: > {settings["wind_hurricane"]}km/h
 
 📁 Aktív profil: {self.dialog.current_profile}
 {"⚠️ Nem mentett változások!" if self.dialog.unsaved_changes else "✅ Mentett állapot"}

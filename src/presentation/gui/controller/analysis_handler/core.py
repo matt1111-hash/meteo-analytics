@@ -48,12 +48,12 @@ class AnalysisHandler(QObject):
     """
 
     # Signalok
-    analysis_started = Signal(str)              # analysis_type
-    analysis_progress = Signal(str, int)        # message, percentage
-    analysis_completed = Signal(dict)           # result_data
-    analysis_failed = Signal(str)               # error_message
-    analysis_cancelled = Signal()               # megszakítás megerősítése
-    status_updated = Signal(str)                # str - státusz üzenet
+    analysis_started = Signal(str)  # analysis_type
+    analysis_progress = Signal(str, int)  # message, percentage
+    analysis_completed = Signal(dict)  # result_data
+    analysis_failed = Signal(str)  # error_message
+    analysis_cancelled = Signal()  # megszakítás megerősítése
+    status_updated = Signal(str)  # str - státusz üzenet
 
     def __init__(self, parent=None):
         """
@@ -68,18 +68,21 @@ class AnalysisHandler(QObject):
         # Analysis state
         self.active_analysis_worker = None
         self.analysis_state = {
-            'is_running': False,
-            'analysis_type': None,
-            'start_time': None,
-            'request_data': None
+            "is_running": False,
+            "analysis_type": None,
+            "start_time": None,
+            "request_data": None,
         }
 
         logger.info("✅ AnalysisHandler inicializálva")
 
     # Public API methods
-    def handle_analysis_request(self, request_data: Dict[str, Any],
-                                provider_routing, start_analysis_callback) -> None:
-        handle_analysis_request(self, request_data, provider_routing, start_analysis_callback)
+    def handle_analysis_request(
+        self, request_data: Dict[str, Any], provider_routing, start_analysis_callback
+    ) -> None:
+        handle_analysis_request(
+            self, request_data, provider_routing, start_analysis_callback
+        )
 
     @Slot(str, int)
     def on_analysis_progress(self, message: str, percentage: int) -> None:

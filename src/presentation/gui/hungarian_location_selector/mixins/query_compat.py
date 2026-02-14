@@ -33,34 +33,48 @@ class QueryControlWidgetCompatMixin:
             logger.info(f"   current_county: {self.current_county}")
             logger.info(f"   current_region: {self.current_region}")
             logger.info(f"   current_location: {self.current_location}")
-            logger.info(f"   county_combo current data: {self.county_combo.currentData()}")
-            logger.info(f"   county_combo current text: {self.county_combo.currentText()}")
+            logger.info(
+                f"   county_combo current data: {self.county_combo.currentData()}"
+            )
+            logger.info(
+                f"   county_combo current text: {self.county_combo.currentText()}"
+            )
 
         # 0. EMERGENCY: UI alapú fallback - ami a combo-ban van kiválasztva
         current_county_data = self.county_combo.currentData()
         current_county_text = self.county_combo.currentText()
-        if current_county_data and current_county_data != "Nincs kiválasztva" and not current_county_text.startswith("Válassz"):
+        if (
+            current_county_data
+            and current_county_data != "Nincs kiválasztva"
+            and not current_county_text.startswith("Válassz")
+        ):
             result = current_county_data
             if self._debug_enabled:
                 logger.info(f"🚨 EMERGENCY get_current_city() UI-ból: {result}")
             return result
 
         # 1. Prioritás: Kiválasztott megye
-        if self.current_county and isinstance(self.current_county, dict) and 'name' in self.current_county:
-            result = self.current_county['name']
+        if (
+            self.current_county
+            and isinstance(self.current_county, dict)
+            and "name" in self.current_county
+        ):
+            result = self.current_county["name"]
             if self._debug_enabled:
                 logger.info(f"✅ get_current_city() visszaadja county: {result}")
             return result
 
         # 2. Fallback: Location objektum
-        if self.current_location and hasattr(self.current_location, 'display_name'):
+        if self.current_location and hasattr(self.current_location, "display_name"):
             result = self.current_location.display_name
             if self._debug_enabled:
                 logger.info(f"✅ get_current_city() visszaadja location: {result}")
             return result
 
         # 3. Fallback: Régió adminisztratív központ
-        if self.current_region and hasattr(self.current_region, 'administrative_center'):
+        if self.current_region and hasattr(
+            self.current_region, "administrative_center"
+        ):
             result = self.current_region.administrative_center
             if self._debug_enabled:
                 logger.info(f"✅ get_current_city() visszaadja admin center: {result}")
@@ -89,19 +103,19 @@ class QueryControlWidgetCompatMixin:
         Returns:
             Tuple[float, float]: (latitude, longitude) koordináták
         """
-        if self.current_county and 'centroid' in self.current_county:
-            centroid = self.current_county['centroid']
+        if self.current_county and "centroid" in self.current_county:
+            centroid = self.current_county["centroid"]
             return (centroid.y, centroid.x)
         elif self.current_region:
             # Régió adminisztratív központjának közelítő koordinátái
             region_centers = {
                 "kozep_magyarorszag": (47.4979, 19.0402),  # Budapest
-                "kozep_dunantul": (47.1903, 18.4148),     # Székesfehérvár
-                "nyugat_dunantul": (47.6875, 17.6504),    # Győr
-                "del_dunantul": (46.0727, 18.2330),       # Pécs
-                "eszak_magyarorszag": (48.1034, 20.7784), # Miskolc
-                "eszak_alfold": (47.5316, 21.6273),       # Debrecen
-                "del_alfold": (46.2530, 20.1414)          # Szeged
+                "kozep_dunantul": (47.1903, 18.4148),  # Székesfehérvár
+                "nyugat_dunantul": (47.6875, 17.6504),  # Győr
+                "del_dunantul": (46.0727, 18.2330),  # Pécs
+                "eszak_magyarorszag": (48.1034, 20.7784),  # Miskolc
+                "eszak_alfold": (47.5316, 21.6273),  # Debrecen
+                "del_alfold": (46.2530, 20.1414),  # Szeged
             }
             return region_centers.get(self.current_region.name, (47.4979, 19.0402))
         else:
@@ -123,20 +137,24 @@ class QueryControlWidgetCompatMixin:
                 "city": self.current_location.display_name,
                 "latitude": self.current_location.latitude,
                 "longitude": self.current_location.longitude,
-                "region": self.current_region.display_name if self.current_region else None,
-                "county": self.current_county['name'] if self.current_county else None,
-                "source": "hungarian_location_selector"
+                "region": self.current_region.display_name
+                if self.current_region
+                else None,
+                "county": self.current_county["name"] if self.current_county else None,
+                "source": "hungarian_location_selector",
             }
         elif self.current_county:
             lat, lon = self.get_current_coordinates()
             return {
                 "valid": True,
-                "city": self.current_county['name'],
+                "city": self.current_county["name"],
                 "latitude": lat,
                 "longitude": lon,
-                "region": self.current_region.display_name if self.current_region else None,
-                "county": self.current_county['name'],
-                "source": "hungarian_location_selector"
+                "region": self.current_region.display_name
+                if self.current_region
+                else None,
+                "county": self.current_county["name"],
+                "source": "hungarian_location_selector",
             }
         elif self.current_region:
             lat, lon = self.get_current_coordinates()
@@ -147,7 +165,7 @@ class QueryControlWidgetCompatMixin:
                 "longitude": lon,
                 "region": self.current_region.display_name,
                 "county": None,
-                "source": "hungarian_location_selector"
+                "source": "hungarian_location_selector",
             }
         else:
             return {
@@ -157,7 +175,7 @@ class QueryControlWidgetCompatMixin:
                 "longitude": None,
                 "region": None,
                 "county": None,
-                "source": "hungarian_location_selector"
+                "source": "hungarian_location_selector",
             }
 
     def is_valid(self) -> bool:

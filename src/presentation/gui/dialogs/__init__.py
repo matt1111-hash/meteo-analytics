@@ -14,10 +14,7 @@ Global Weather Analyzer - GUI Dialogs Package
 from .anomaly_settings_dialog import AnomalySettingsDialog
 from .core import ExtremeWeatherDialog
 
-__all__ = [
-    'AnomalySettingsDialog',
-    'ExtremeWeatherDialog'
-]
+__all__ = ["AnomalySettingsDialog", "ExtremeWeatherDialog"]
 
 # Package info
 __version__ = "1.1.0"

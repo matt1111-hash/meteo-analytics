@@ -3,6 +3,7 @@
 Provides statistical trend calculation with confidence intervals and significance testing.
 Extracted from GUI layer for API reuse.
 """
+
 from __future__ import annotations
 
 import logging
@@ -74,7 +75,9 @@ class TrendCalculator:
         # Prepare data
         df = self.data_processor.prepare_dataframe(weather_data, api_field)
         if df is None or len(df) < self.MIN_DAILY_RECORDS:
-            logger.warning("Insufficient data: %d records", len(df) if df is not None else 0)
+            logger.warning(
+                "Insufficient data: %d records", len(df) if df is not None else 0
+            )
             return None
 
         # Monthly aggregation
@@ -156,7 +159,9 @@ class TrendCalculator:
             period_data = [
                 d
                 for d in sorted_data
-                if period_start_str <= d.get("date", "") <= calculated_end.strftime("%Y-%m-%d")
+                if period_start_str
+                <= d.get("date", "")
+                <= calculated_end.strftime("%Y-%m-%d")
             ]
 
             if period_data:

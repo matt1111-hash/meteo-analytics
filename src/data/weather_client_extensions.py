@@ -28,7 +28,9 @@ class WeatherClientExtensions(WeatherClient):
         """Set preferred provider."""
         if provider == "auto" or provider in self.providers:
             self.preferred_provider = provider
-            logger.info(f"Preferred provider changed: {get_source_display_name(provider)}")
+            logger.info(
+                f"Preferred provider changed: {get_source_display_name(provider)}"
+            )
         else:
             raise ValueError(f"Unknown provider: {provider}")
 
@@ -39,7 +41,8 @@ class WeatherClientExtensions(WeatherClient):
     def get_available_providers(self) -> List[str]:
         """Get list of available providers."""
         return [
-            provider_id for provider_id, provider in self.providers.items()
+            provider_id
+            for provider_id, provider in self.providers.items()
             if provider.validate_provider()
         ]
 
@@ -54,7 +57,7 @@ class WeatherClientExtensions(WeatherClient):
                 "available": available,
                 "request_count": provider.get_request_count(),
                 "usage_count": self.provider_usage_stats.get(provider_id, 0),
-                "is_current": self.current_provider == provider_id
+                "is_current": self.current_provider == provider_id,
             }
 
         return status
@@ -67,8 +70,12 @@ class WeatherClientExtensions(WeatherClient):
         logger.info("Provider usage stats reset")
 
     # Backward compatibility methods
-    def get_current_weather(self, latitude: float, longitude: float,
-                          user_override_provider: Optional[str] = None) -> Tuple[Optional[Dict[str, Any]], str]:
+    def get_current_weather(
+        self,
+        latitude: float,
+        longitude: float,
+        user_override_provider: Optional[str] = None,
+    ) -> Tuple[Optional[Dict[str, Any]], str]:
         """Get current weather (backward compatibility)."""
         from datetime import datetime
 
@@ -80,7 +87,7 @@ class WeatherClientExtensions(WeatherClient):
             )
 
             if weather_data:
-                source = weather_data[0].get('data_source', 'unknown')
+                source = weather_data[0].get("data_source", "unknown")
                 return (weather_data[0], source)
             return (None, "no_data")
 
@@ -88,9 +95,13 @@ class WeatherClientExtensions(WeatherClient):
             logger.error(f"Error getting current weather: {e}")
             return (None, "error")
 
-    def get_weather_for_date_range(self, latitude: float, longitude: float,
-                                  days_back: int = 7,
-                                  user_override_provider: Optional[str] = None) -> Tuple[List[Dict[str, Any]], str]:
+    def get_weather_for_date_range(
+        self,
+        latitude: float,
+        longitude: float,
+        days_back: int = 7,
+        user_override_provider: Optional[str] = None,
+    ) -> Tuple[List[Dict[str, Any]], str]:
         """Get weather for date range (backward compatibility)."""
         from datetime import datetime, timedelta
 
@@ -98,14 +109,17 @@ class WeatherClientExtensions(WeatherClient):
         start_date = end_date - timedelta(days=days_back)
 
         weather_data = self.get_weather_data(
-            latitude, longitude,
+            latitude,
+            longitude,
             start_date.strftime("%Y-%m-%d"),
             end_date.strftime("%Y-%m-%d"),
-            user_override_provider
+            user_override_provider,
         )
 
-        source = weather_data[0].get('data_source', 'unknown') if weather_data else 'no_data'
+        source = (
+            weather_data[0].get("data_source", "unknown") if weather_data else "no_data"
+        )
         return (weather_data, source)
 
 
-__all__ = ['WeatherClientExtensions']
+__all__ = ["WeatherClientExtensions"]

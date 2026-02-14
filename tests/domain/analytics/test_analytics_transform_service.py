@@ -5,10 +5,12 @@ from datetime import date
 
 import pytest
 
-from src.domain.analytics.models import CityWeatherData
-from src.domain.analytics.services.analytics_transform_service import AnalyticsTransformService
 from src.data.enums import AnalyticsMetric, QuestionType, RegionScope
 from src.data.models import AnalyticsQuestion, CityWeatherResult
+from src.domain.analytics.models import CityWeatherData
+from src.domain.analytics.services.analytics_transform_service import (
+    AnalyticsTransformService,
+)
 
 QUERY_TYPES = {
     "windiest_today": {

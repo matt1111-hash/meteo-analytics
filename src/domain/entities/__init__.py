@@ -47,40 +47,32 @@ from src.domain.entities.weather import (
 
 __all__ = [
     # Location types
-    'LocationType',
-
+    "LocationType",
     # Location entities
-    'Location',
-    'UniversalLocation',
-    'CityInfo',
-
+    "Location",
+    "UniversalLocation",
+    "CityInfo",
     # Location factory functions
-    'create_universal_location',
-    'create_location',
-    'create_location_from_coordinates',
-
+    "create_universal_location",
+    "create_location",
+    "create_location_from_coordinates",
     # Time granularity
-    'TimeGranularity',
-
+    "TimeGranularity",
     # Analysis type
-    'AnalysisType',
-
+    "AnalysisType",
     # Time range and query
-    'UniversalTimeRange',
-    'UniversalQuery',
-
+    "UniversalTimeRange",
+    "UniversalQuery",
     # Analytics models
-    'AnalyticsQuestion',
-    'AnalyticsResult',
-    'QueryResults',
-
+    "AnalyticsQuestion",
+    "AnalyticsResult",
+    "QueryResults",
     # Analysis factory functions
-    'create_universal_time_range',
-    'create_universal_query',
-    'create_analytics_question',
-
+    "create_universal_time_range",
+    "create_universal_query",
+    "create_analytics_question",
     # Weather entities
-    'CityWeatherResult',
-    'AnomalyResult',
-    'create_city_weather_result'
+    "CityWeatherResult",
+    "AnomalyResult",
+    "create_city_weather_result",
 ]

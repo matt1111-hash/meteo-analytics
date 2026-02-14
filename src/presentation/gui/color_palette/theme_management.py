@@ -27,7 +27,9 @@ class ThemeManagementMixin:
             for semantic_name in self._base_colors.keys():
                 self._generate_variants_for_color(semantic_name)
 
-            print(f"🎨 DEBUG: Theme type changed to {theme_type.value}, variants regenerated")
+            print(
+                f"🎨 DEBUG: Theme type changed to {theme_type.value}, variants regenerated"
+            )
 
     def get_theme_type(self) -> ThemeType:
         """Jelenlegi téma típus lekérdezése."""

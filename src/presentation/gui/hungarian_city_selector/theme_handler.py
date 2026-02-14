@@ -44,7 +44,7 @@ class HungarianCityThemeHandler:
         search_box,
         region_combo,
         city_list,
-        quick_access_buttons: List[QPushButton]
+        quick_access_buttons: List[QPushButton],
     ) -> None:
         """
         Widgetek regisztrálása theminghez.
@@ -78,12 +78,12 @@ class HungarianCityThemeHandler:
         # Fő widget háttér
         self.widget.setStyleSheet(f"""
             QWidget {{
-                background-color: {colors.get('surface', '#ffffff')};
-                color: {colors.get('on_surface', '#000000')};
+                background-color: {colors.get("surface", "#ffffff")};
+                color: {colors.get("on_surface", "#000000")};
             }}
             QGroupBox {{
                 font-weight: bold;
-                border: 1px solid {colors.get('border', '#ccc')};
+                border: 1px solid {colors.get("border", "#ccc")};
                 border-radius: 6px;
                 margin-top: 12px;
                 padding-top: 6px;
@@ -92,6 +92,6 @@ class HungarianCityThemeHandler:
                 subcontrol-origin: margin;
                 left: 12px;
                 padding: 0 6px 0 6px;
-                color: {colors.get('primary', '#0066cc')};
+                color: {colors.get("primary", "#0066cc")};
             }}
         """)

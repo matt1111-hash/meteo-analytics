@@ -21,6 +21,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
 
 from src.presentation.gui.theme_manager import get_theme_manager
+
 from .date_handlers import DateHandlerMixin
 from .public_api import DateRangeWidgetPublicAPI
 from .ui_builder import (
@@ -135,9 +136,13 @@ class DateRangeWidget(QWidget, DateHandlerMixin, DateRangeWidgetPublicAPI):
     def _register_for_theming(self) -> None:
         """Theme manager regisztráció."""
         buttons = [
-            self.last_month_btn, self.last_year_btn, self.last_1year_btn,
-            self.last_5years_btn, self.last_10years_btn, self.last_25years_btn,
-            self.last_55years_btn
+            self.last_month_btn,
+            self.last_year_btn,
+            self.last_1year_btn,
+            self.last_5years_btn,
+            self.last_10years_btn,
+            self.last_25years_btn,
+            self.last_55years_btn,
         ]
 
         register_for_theming(
@@ -151,7 +156,7 @@ class DateRangeWidget(QWidget, DateHandlerMixin, DateRangeWidgetPublicAPI):
             self.start_date,
             self.end_date,
             buttons,
-            self.computed_dates_info
+            self.computed_dates_info,
         )
 
     # === SIGNAL HANDLERS ===

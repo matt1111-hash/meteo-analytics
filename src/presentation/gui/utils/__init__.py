@@ -131,7 +131,9 @@ METEOSTAT_BASE = APIConstants.METEOSTAT_BASE
 # === MODUL INICIALIZÁLÁS ===
 if __name__ == "__main__":
     # Standalone futtatás esetén teljes validáció
-    print("🌍 DUAL-API UTILS MODULE + PROVIDER TRACKING + BACKWARD COMPATIBILITY - STANDALONE VALIDATION")
+    print(
+        "🌍 DUAL-API UTILS MODULE + PROVIDER TRACKING + BACKWARD COMPATIBILITY - STANDALONE VALIDATION"
+    )
     print("=" * 80)
 
     summary = get_project_completion_summary()
@@ -165,7 +167,7 @@ if __name__ == "__main__":
         "get_provider_warning_level",
         "format_provider_status",
         "validate_provider_selection",
-        "get_provider_recommendation"
+        "get_provider_recommendation",
     ]
     for func in tracking_functions:
         print(f"  ✅ {func}")
@@ -192,8 +194,12 @@ if __name__ == "__main__":
 else:
     # Importálás esetén csendes inicializálás
     initialize_utils_module()
-    logger.info("utils.py loaded with DUAL-API + WIND GUSTS + PROVIDER TRACKING + BACKWARD COMPATIBILITY support")
-    logger.info("🌍 Clean Dual-API: Open-Meteo + Meteostat | 🌪️ Meteorológiai standardok OK | 🌍 Provider tracking ready | 🔧 Backward compatibility fixed")
+    logger.info(
+        "utils.py loaded with DUAL-API + WIND GUSTS + PROVIDER TRACKING + BACKWARD COMPATIBILITY support"
+    )
+    logger.info(
+        "🌍 Clean Dual-API: Open-Meteo + Meteostat | 🌪️ Meteorológiai standardok OK | 🌍 Provider tracking ready | 🔧 Backward compatibility fixed"
+    )
 
 
 # === FULL EXPORT LIST FOR BACKWARD COMPATIBILITY ===

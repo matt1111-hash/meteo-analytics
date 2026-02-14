@@ -1,4 +1,5 @@
 """DTOs for weather analysis requests."""
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -35,7 +36,9 @@ class WeatherAnalysisRequest(BaseModel):
         if not isinstance(value, dict):
             raise ValueError("date_range objektum kell legyen.")
         if not any(k in value for k in ("date", "start", "end")):
-            raise ValueError("date_range tartalmazzon 'date' vagy 'start'/'end' kulcsot.")
+            raise ValueError(
+                "date_range tartalmazzon 'date' vagy 'start'/'end' kulcsot."
+            )
         return value
 
     model_config = ConfigDict(frozen=True)

@@ -1,4 +1,5 @@
 """Domain models for multi-city analytics."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

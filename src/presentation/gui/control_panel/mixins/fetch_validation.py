@@ -66,7 +66,9 @@ class FetchValidationMixin:
                 # 🏙️ Multi-city validation
                 multi_city_valid = self.multi_city_widget.is_valid()
                 if not multi_city_valid:
-                    print(f"❌ DEBUG: Multi-city selection not valid in {analysis_type} mode")
+                    print(
+                        f"❌ DEBUG: Multi-city selection not valid in {analysis_type} mode"
+                    )
                     return False
 
                 # További multi-city ellenőrzések

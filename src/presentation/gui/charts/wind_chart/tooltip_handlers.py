@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 from src.presentation.gui.theme_manager import get_current_colors
+
 from .wind_categories import get_wind_category, get_wind_recommendations
 
 
@@ -40,11 +41,7 @@ class WindTooltipHandler:
         self._tooltip_annotation = None
         self._tooltip_visible = False
 
-    def find_closest_point(
-        self,
-        event,
-        df: pd.DataFrame
-    ) -> Optional[Dict[str, Any]]:
+    def find_closest_point(self, event, df: pd.DataFrame) -> Optional[Dict[str, Any]]:
         """
         Find closest data point to mouse event.
 
@@ -59,12 +56,13 @@ class WindTooltipHandler:
             if df is None or df.empty:
                 return None
 
-            if 'date' not in df.columns or 'windspeed' not in df.columns:
+            if "date" not in df.columns or "windspeed" not in df.columns:
                 return None
 
             import matplotlib.dates as mdates
-            plot_dates = mdates.date2num(df['date'])
-            windspeeds = df['windspeed']
+
+            plot_dates = mdates.date2num(df["date"])
+            windspeeds = df["windspeed"]
 
             # Mouse position in display coordinates
             mouse_x_display, mouse_y_display = self.ax.transData.transform(
@@ -72,19 +70,21 @@ class WindTooltipHandler:
             )
 
             closest_idx = None
-            min_distance = float('inf')
+            min_distance = float("inf")
 
             # Find closest point
             for i, (x_val, y_val) in enumerate(zip(plot_dates, windspeeds)):
                 if pd.isna(y_val):
                     continue
 
-                point_x_display, point_y_display = self.ax.transData.transform((x_val, y_val))
+                point_x_display, point_y_display = self.ax.transData.transform(
+                    (x_val, y_val)
+                )
 
                 # Pixel distance
                 distance = np.sqrt(
-                    (mouse_x_display - point_x_display)**2 +
-                    (mouse_y_display - point_y_display)**2
+                    (mouse_x_display - point_x_display) ** 2
+                    + (mouse_y_display - point_y_display) ** 2
                 )
 
                 if distance < min_distance:
@@ -94,11 +94,13 @@ class WindTooltipHandler:
             # Tolerance check
             if closest_idx is not None and min_distance <= self._hover_tolerance:
                 point_data = {
-                    'index': closest_idx,
-                    'date': df.iloc[closest_idx]['date'],
-                    'windspeed': df.iloc[closest_idx]['windspeed'],
-                    'pixel_distance': min_distance,
-                    'data_source': df.iloc[closest_idx]['_data_source'] if '_data_source' in df.columns else 'unknown',
+                    "index": closest_idx,
+                    "date": df.iloc[closest_idx]["date"],
+                    "windspeed": df.iloc[closest_idx]["windspeed"],
+                    "pixel_distance": min_distance,
+                    "data_source": df.iloc[closest_idx]["_data_source"]
+                    if "_data_source" in df.columns
+                    else "unknown",
                 }
                 return point_data
 
@@ -117,13 +119,13 @@ class WindTooltipHandler:
         Returns:
             Formatted tooltip text
         """
-        date = point_data['date']
-        windspeed = point_data['windspeed']
-        data_source = point_data.get('data_source', 'unknown')
+        date = point_data["date"]
+        windspeed = point_data["windspeed"]
+        data_source = point_data.get("data_source", "unknown")
 
         # Date formatting
         if isinstance(date, datetime):
-            date_str = date.strftime('%Y-%m-%d (%A)')
+            date_str = date.strftime("%Y-%m-%d (%A)")
         else:
             date_str = str(date)
 
@@ -132,8 +134,11 @@ class WindTooltipHandler:
         recommendations = get_wind_recommendations(windspeed)
 
         # Measurement type
-        measurement_type = "Széllökések" if data_source == "wind_gusts_10m_max" else "Szélsebesség (átlag)"
-        measurement_icon = "⚡" if data_source == "wind_gusts_10m_max" else "🌀"
+        measurement_type = (
+            "Széllökések"
+            if data_source == "wind_gusts_10m_max"
+            else "Szélsebesség (átlag)"
+        )
 
         # Build tooltip lines
         tooltip_lines = [
@@ -145,7 +150,7 @@ class WindTooltipHandler:
             f"🌬️ {category['description']}",
             "",
             f"📈 Intenzitás: {category['intensity']}",
-            category['effects'],
+            category["effects"],
         ]
 
         # Add recommendations
@@ -155,14 +160,13 @@ class WindTooltipHandler:
 
         # Fallback indicator
         if data_source == "windspeed_10m_max":
-            tooltip_lines.extend([
-                "",
-                "ℹ️ Fallback adatforrás (átlag szélsebesség)"
-            ])
+            tooltip_lines.extend(["", "ℹ️ Fallback adatforrás (átlag szélsebesség)"])
 
-        return '\n'.join(tooltip_lines)
+        return "\n".join(tooltip_lines)
 
-    def show_tooltip(self, event, point_data: Dict[str, Any], draw_idle_callback) -> None:
+    def show_tooltip(
+        self, event, point_data: Dict[str, Any], draw_idle_callback
+    ) -> None:
         """
         Show tooltip with smart positioning.
 
@@ -179,8 +183,9 @@ class WindTooltipHandler:
 
         # Get coordinates
         import matplotlib.dates as mdates
-        x_pos = mdates.date2num(point_data['date'])
-        y_pos = point_data['windspeed']
+
+        x_pos = mdates.date2num(point_data["date"])
+        y_pos = point_data["windspeed"]
 
         # Smart positioning
         xlim = self.ax.get_xlim()
@@ -192,17 +197,17 @@ class WindTooltipHandler:
         # Dynamic offset calculation
         if y_relative > 0.7:
             offset_y = -80
-            va_align = 'top'
+            va_align = "top"
         else:
             offset_y = 50
-            va_align = 'bottom'
+            va_align = "bottom"
 
         if x_relative > 0.8:
             offset_x = -120
-            ha_align = 'right'
+            ha_align = "right"
         else:
             offset_x = 40
-            ha_align = 'left'
+            ha_align = "left"
 
         # Current colors
         current_colors = get_current_colors()
@@ -212,25 +217,25 @@ class WindTooltipHandler:
             tooltip_text,
             xy=(x_pos, y_pos),
             xytext=(offset_x, offset_y),
-            textcoords='offset points',
+            textcoords="offset points",
             bbox=dict(
-                boxstyle='round,pad=1.0',
-                facecolor='lightblue',
-                edgecolor=current_colors.get('border', '#34495E'),
+                boxstyle="round,pad=1.0",
+                facecolor="lightblue",
+                edgecolor=current_colors.get("border", "#34495E"),
                 linewidth=2,
-                alpha=0.95
+                alpha=0.95,
             ),
             arrowprops=dict(
-                arrowstyle='->',
-                color=current_colors.get('border', '#34495E'),
+                arrowstyle="->",
+                color=current_colors.get("border", "#34495E"),
                 lw=2,
-                alpha=0.8
+                alpha=0.8,
             ),
             fontsize=10,
-            fontweight='bold',
+            fontweight="bold",
             ha=ha_align,
             va=va_align,
-            zorder=1000
+            zorder=1000,
         )
 
         self._tooltip_visible = True
@@ -247,7 +252,7 @@ class WindTooltipHandler:
         Args:
             draw_idle_callback: Callback to redraw canvas
         """
-        if hasattr(self, '_tooltip_annotation') and self._tooltip_annotation:
+        if hasattr(self, "_tooltip_annotation") and self._tooltip_annotation:
             try:
                 self._tooltip_annotation.remove()
             except Exception as e:

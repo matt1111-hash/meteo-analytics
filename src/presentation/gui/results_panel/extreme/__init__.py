@@ -17,7 +17,7 @@ from .extreme_calculator import ExtremeCalculator
 from .extreme_records import ExtremeRecord, RecordsTextSummary
 
 __all__ = [
-    'ExtremeRecord',
-    'RecordsTextSummary',
-    'ExtremeCalculator',
+    "ExtremeRecord",
+    "RecordsTextSummary",
+    "ExtremeCalculator",
 ]

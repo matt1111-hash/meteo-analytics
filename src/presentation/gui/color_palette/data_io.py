@@ -29,7 +29,7 @@ class DataIOMixin:
             "theme_type": self._theme_type.value,
             "generator_type": self.generator.__class__.__name__,
             "base_colors": {},
-            "semantic_mapping": self._semantic_mapping.copy()
+            "semantic_mapping": self._semantic_mapping.copy(),
         }
 
         # Base colors export
@@ -40,8 +40,8 @@ class DataIOMixin:
                     "hue": hsl_color.hue,
                     "saturation": hsl_color.saturation,
                     "lightness": hsl_color.lightness,
-                    "alpha": hsl_color.alpha
-                }
+                    "alpha": hsl_color.alpha,
+                },
             }
 
         # Variants export
@@ -50,7 +50,9 @@ class DataIOMixin:
             for semantic_name, variants in self._generated_variants.items():
                 export_data["variants"][semantic_name] = {}
                 for variant_name, variant_color in variants.items():
-                    export_data["variants"][semantic_name][variant_name] = variant_color.to_hex()
+                    export_data["variants"][semantic_name][variant_name] = (
+                        variant_color.to_hex()
+                    )
 
         return export_data
 
@@ -80,7 +82,7 @@ class DataIOMixin:
                             hsl_data["hue"],
                             hsl_data["saturation"],
                             hsl_data["lightness"],
-                            hsl_data.get("alpha", 1.0)
+                            hsl_data.get("alpha", 1.0),
                         )
                         self.set_base_color(semantic_name, hsl_color)
 

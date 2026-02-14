@@ -153,7 +153,6 @@ class GUIAuditor:
         if port_match:
             port_params = port_match.group(1)
             port_has_lat = 'lat:' in port_params or 'lat,' in port_params or 'lat ' in port_params
-            port_has_latitude = 'latitude:' in port_params
 
             impl_file = self.src_dir / "data" / "weather_client_core.py"
             if impl_file.exists():
@@ -168,7 +167,6 @@ class GUIAuditor:
 
                 if impl_match:
                     impl_params = impl_match.group(1)
-                    impl_has_lat = 'lat' in impl_params and 'latitude' not in impl_params
                     impl_has_latitude = 'latitude' in impl_params
 
                     if port_has_lat and impl_has_latitude:

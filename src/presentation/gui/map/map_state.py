@@ -18,6 +18,7 @@ class FoliumMapConfig:
     """
     🗺️ Folium térkép konfigurációs beállítások.
     """
+
     # Alap térkép beállítások
     center_lat: float = 47.1625  # Magyarország közepe
     center_lon: float = 19.5033
@@ -26,15 +27,17 @@ class FoliumMapConfig:
     max_zoom: int = 12
 
     # Térkép stílus
-    tiles: str = "OpenStreetMap"  # "OpenStreetMap", "CartoDB positron", "CartoDB dark_matter"
+    tiles: str = (
+        "OpenStreetMap"  # "OpenStreetMap", "CartoDB positron", "CartoDB dark_matter"
+    )
     attr: str = "Magyar Klímaanalitika"
 
     # County layer beállítások
     show_counties: bool = True
-    county_fill_color: str = COUNTY_STYLE_DEFAULT['fillColor']
-    county_fill_opacity: float = COUNTY_STYLE_DEFAULT['fillOpacity']
-    county_border_color: str = COUNTY_STYLE_DEFAULT['color']
-    county_border_weight: int = COUNTY_STYLE_DEFAULT['weight']
+    county_fill_color: str = COUNTY_STYLE_DEFAULT["fillColor"]
+    county_fill_opacity: float = COUNTY_STYLE_DEFAULT["fillOpacity"]
+    county_border_color: str = COUNTY_STYLE_DEFAULT["color"]
+    county_border_weight: int = COUNTY_STYLE_DEFAULT["weight"]
     county_hover_color: str = "#E74C3C"
 
     # Weather overlay
@@ -42,7 +45,9 @@ class FoliumMapConfig:
     weather_opacity: float = 0.6
 
     # Active overlay parameter
-    active_overlay_parameter: Optional[str] = None  # "temperature", "wind_speed", "precipitation"
+    active_overlay_parameter: Optional[str] = (
+        None  # "temperature", "wind_speed", "precipitation"
+    )
 
     # Interaktivitás
     disable_scroll_zoom: bool = False
@@ -63,6 +68,7 @@ class MapViewState:
     """
     🗺️ Térkép nézet állapota.
     """
+
     server_running: bool = False
     http_host: Optional[str] = None
     http_port: Optional[int] = None
@@ -76,6 +82,7 @@ class MapGenerationState:
     """
     🗺️ Térkép generálási állapota.
     """
+
     is_generating: bool = False
     progress: int = 0
     status_message: str = ""
@@ -84,7 +91,7 @@ class MapGenerationState:
 
 # Export
 __all__ = [
-    'FoliumMapConfig',
-    'MapViewState',
-    'MapGenerationState',
+    "FoliumMapConfig",
+    "MapViewState",
+    "MapGenerationState",
 ]

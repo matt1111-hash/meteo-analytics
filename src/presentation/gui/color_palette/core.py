@@ -25,7 +25,7 @@ class ColorPalette(
     ThemeManagementMixin,
     AdvancedFeaturesMixin,
     DataIOMixin,
-    UtilityMethodsMixin
+    UtilityMethodsMixin,
 ):
     """
     🎨 Dinamikus színpaletta kezelő rendszer - PIROS TÉMA VERZIÓ.

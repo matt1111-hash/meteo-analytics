@@ -1,19 +1,25 @@
 """Use case orchestration for multi-city analytics."""
+
 from __future__ import annotations
 
 import logging
 import time
 from typing import Any, Dict, List, Optional
 
-from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
-from src.domain.entities.weather import CityWeatherResult
-from src.domain.value_objects.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
 from src.domain.analytics.repositories import CityRepositoryProtocol
 from src.domain.analytics.services import (
     AnalyticsTransformService,
     RegionResolverService,
     WeatherFetchService,
+)
+from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
+from src.domain.entities.weather import CityWeatherResult
+from src.domain.value_objects.enums import (
+    AnalyticsMetric,
+    DataSource,
+    QuestionType,
+    RegionScope,
 )
 
 # pylint: disable=too-few-public-methods,too-many-arguments,too-many-locals,broad-exception-caught
@@ -91,23 +97,35 @@ class AnalyzeMultiCityUseCase:
                 query.query_type,
                 aggregate=aggregate,
             )
-            transformed_results = self._transform_results(processed_data, query.query_type)
+            transformed_results = self._transform_results(
+                processed_data, query.query_type
+            )
             if not transformed_results:
-                return self._fallback_result(query, "Nincsenek sikeres időjárási eredmények")
+                return self._fallback_result(
+                    query, "Nincsenek sikeres időjárási eredmények"
+                )
 
             # For daily time series (aggregate=False), don't limit results
             # For aggregated multi-city (aggregate=True), apply limit
             if aggregate:
-                result_limit = query.limit if query.limit is not None else query.max_cities
+                result_limit = (
+                    query.limit if query.limit is not None else query.max_cities
+                )
             else:
                 result_limit = None  # Return ALL daily records without limit
 
             stats = self.analytics_transform_service.calculate_statistics_for_results_none_safe(
                 transformed_results
             )
-            limited_results = self._apply_result_limit(transformed_results, result_limit)
-            provider_stats = self.analytics_transform_service.get_provider_stats(weather_data)
-            final_question = query.question or self._build_question(query_config, mapped_region)
+            limited_results = self._apply_result_limit(
+                transformed_results, result_limit
+            )
+            provider_stats = self.analytics_transform_service.get_provider_stats(
+                weather_data
+            )
+            final_question = query.question or self._build_question(
+                query_config, mapped_region
+            )
 
             return AnalyticsResult(
                 question=final_question,
@@ -119,7 +137,11 @@ class AnalyzeMultiCityUseCase:
                 provider_statistics=provider_stats,
             )
         except Exception as exc:  # pragma: no cover - defensive fallback
-            logger.error("Kritikus hiba az analyze_multi_city use case-ben: %s", exc, exc_info=True)
+            logger.error(
+                "Kritikus hiba az analyze_multi_city use case-ben: %s",
+                exc,
+                exc_info=True,
+            )
             return self._fallback_result(query, str(exc))
 
     def _transform_results(
@@ -132,9 +154,11 @@ class AnalyzeMultiCityUseCase:
             if not city_data.fetch_success:
                 continue
             try:
-                result_item = self.analytics_transform_service.transform_to_city_weather_result(
-                    city_data,
-                    query_type,
+                result_item = (
+                    self.analytics_transform_service.transform_to_city_weather_result(
+                        city_data,
+                        query_type,
+                    )
                 )
                 result_item.rank = idx + 1
                 results.append(result_item)
@@ -142,7 +166,9 @@ class AnalyzeMultiCityUseCase:
                 logger.error("Transform error for %s: %s", city_data.city, exc)
         return results
 
-    def _fallback_result(self, query: MultiCityQuery, error_msg: str) -> AnalyticsResult:
+    def _fallback_result(
+        self, query: MultiCityQuery, error_msg: str
+    ) -> AnalyticsResult:
         return self.analytics_transform_service.create_empty_analytics_result(
             query.question,
             error_msg,
@@ -164,7 +190,9 @@ class AnalyzeMultiCityUseCase:
             logger.warning("⚠️ Invalid limit type: %s", type(limit))
             return results
 
-    def _resolve_city_limit(self, query: MultiCityQuery, region_config: Dict[str, Any]) -> int:
+    def _resolve_city_limit(
+        self, query: MultiCityQuery, region_config: Dict[str, Any]
+    ) -> int:
         candidate = query.max_cities
         try:
             if candidate is None or int(candidate) <= 0:
@@ -183,8 +211,12 @@ class AnalyzeMultiCityUseCase:
             mapped_region,
         )
         region_scope = self._resolve_region_scope(mapped_region)
-        metric_enum = query_config.get("metric_enum", AnalyticsMetric.TEMPERATURE_2M_MAX)
-        question_text = query_config["question_template"].format(region=region_display_name)
+        metric_enum = query_config.get(
+            "metric_enum", AnalyticsMetric.TEMPERATURE_2M_MAX
+        )
+        question_text = query_config["question_template"].format(
+            region=region_display_name
+        )
 
         return AnalyticsQuestion(
             question_text=question_text,

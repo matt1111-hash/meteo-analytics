@@ -1,4 +1,5 @@
 """Buttons section builders."""
+
 from PySide6.QtWidgets import QHBoxLayout, QPushButton, QWidget
 
 

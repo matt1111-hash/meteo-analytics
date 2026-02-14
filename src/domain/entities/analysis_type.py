@@ -1,9 +1,11 @@
 """Analysis type enum for analytics."""
+
 from enum import Enum
 
 
 class AnalysisType(Enum):
     """Analysis types for user analytics freedom."""
+
     CURRENT_CONDITIONS = "current_conditions"
     TREND_ANALYSIS = "trend_analysis"
     ANOMALY_DETECTION = "anomaly_detection"
@@ -14,4 +16,4 @@ class AnalysisType(Enum):
     CUSTOM = "custom"
 
 
-__all__ = ['AnalysisType']
+__all__ = ["AnalysisType"]

@@ -23,21 +23,24 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from src.presentation.gui.theme_manager import get_theme_manager, register_widget_for_theming
+from src.presentation.gui.theme_manager import (
+    get_theme_manager,
+    register_widget_for_theming,
+)
 
 
 class AnalysisTypeWidget(QWidget):
     """
     🎯 ELEMZÉSI TÍPUS VÁLASZTÓ WIDGET - CLEAN ARCHITECTURE
-    
+
     Felelősség:
     - Analysis type radio buttonok (single_location/region/county)
     - State management és validation
     - Clean signal emission
-    
+
     Interface:
     - analysis_type_changed = Signal(str) - kimenő signal
-    - get_state() -> dict - aktuális állapot lekérdezése  
+    - get_state() -> dict - aktuális állapot lekérdezése
     - set_state(dict) - állapot beállítása
     - is_valid() -> bool - validáció
     """
@@ -48,7 +51,7 @@ class AnalysisTypeWidget(QWidget):
     def __init__(self, parent: Optional[QWidget] = None):
         """
         AnalysisTypeWidget inicializálása.
-        
+
         Args:
             parent: Szülő widget
         """
@@ -87,14 +90,18 @@ class AnalysisTypeWidget(QWidget):
         # Single location radio
         self.single_location_radio = QRadioButton("📍 Egyedi lokáció elemzés")
         self.single_location_radio.setChecked(True)
-        self.single_location_radio.setToolTip("Egy konkrét település részletes időjárási elemzése")
+        self.single_location_radio.setToolTip(
+            "Egy konkrét település részletes időjárási elemzése"
+        )
         self.single_location_radio.setMinimumHeight(24)
         self.button_group.addButton(self.single_location_radio, 0)
         group_layout.addWidget(self.single_location_radio)
 
         # Region radio
         self.region_radio = QRadioButton("🏞️ Régió elemzés (Multi-City)")
-        self.region_radio.setToolTip("Magyar statisztikai régiók összehasonlító elemzése")
+        self.region_radio.setToolTip(
+            "Magyar statisztikai régiók összehasonlító elemzése"
+        )
         self.region_radio.setMinimumHeight(24)
         self.button_group.addButton(self.region_radio, 1)
         group_layout.addWidget(self.region_radio)
@@ -154,27 +161,28 @@ class AnalysisTypeWidget(QWidget):
     def get_state(self) -> Dict[str, Any]:
         """
         Aktuális állapot lekérdezése.
-        
+
         Returns:
             Dict az aktuális állapottal
         """
-        return {
-            "analysis_type": self._current_type,
-            "is_valid": self.is_valid()
-        }
+        return {"analysis_type": self._current_type, "is_valid": self.is_valid()}
 
     def set_state(self, state: Dict[str, Any]) -> bool:
         """
         Állapot beállítása.
-        
+
         Args:
             state: Beállítandó állapot dict
-            
+
         Returns:
             bool: Sikeres volt-e a beállítás
         """
         analysis_type = state.get("analysis_type")
-        if not analysis_type or analysis_type not in ["single_location", "region", "county"]:
+        if not analysis_type or analysis_type not in [
+            "single_location",
+            "region",
+            "county",
+        ]:
             print(f"❌ ERROR: Invalid analysis type in state: {analysis_type}")
             return False
 
@@ -194,7 +202,9 @@ class AnalysisTypeWidget(QWidget):
             old_type = self._current_type
             self._current_type = analysis_type
 
-            print(f"🎯 DEBUG: Analysis type set programmatically: {old_type} → {analysis_type}")
+            print(
+                f"🎯 DEBUG: Analysis type set programmatically: {old_type} → {analysis_type}"
+            )
 
             return True
 
@@ -207,7 +217,7 @@ class AnalysisTypeWidget(QWidget):
     def is_valid(self) -> bool:
         """
         Validáció - analysis type widget mindig valid.
-        
+
         Returns:
             bool: Mindig True (valamelyik radio mindig be van jelölve)
         """
@@ -216,7 +226,7 @@ class AnalysisTypeWidget(QWidget):
     def get_current_type(self) -> str:
         """
         Aktuális elemzési típus lekérdezése.
-        
+
         Returns:
             str: "single_location", "region", vagy "county"
         """
@@ -225,10 +235,10 @@ class AnalysisTypeWidget(QWidget):
     def set_current_type(self, analysis_type: str) -> bool:
         """
         Elemzési típus programozott beállítása.
-        
+
         Args:
             analysis_type: Beállítandó típus
-            
+
         Returns:
             bool: Sikeres volt-e
         """
@@ -237,7 +247,7 @@ class AnalysisTypeWidget(QWidget):
     def set_enabled(self, enabled: bool) -> None:
         """
         Widget engedélyezése/letiltása.
-        
+
         Args:
             enabled: Engedélyezett állapot
         """

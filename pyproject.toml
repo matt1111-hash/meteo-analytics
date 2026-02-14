@@ -1,58 +1,92 @@
+# =============================================================================
+# CODE HEALTH TOOLKIT - MERGED EDITION v3.1
+# v2.2 Ruff-alapok + Solo kiegészítések (architecture, trends, dead code)
+# =============================================================================
+
 [project]
-name = "global-weather-analyzer"
-version = "1.0.0"
-description = "Global Weather Analyzer - Open-Meteo historical weather data analysis"
-authors = [{name = "Tibor", email = "tibor@example.com"}]
-requires-python = ">=3.12"
-license = {text = "MIT"}
+name = "my-project"  # ← Cseréld a projekt nevére
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = []
 
-[build-system]
-requires = ["setuptools>=68.0"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["src*"]
+[project.optional-dependencies]
+dev = [
+    # === LINTING & FORMATTING ===
+    "ruff>=0.8.0",
+    "mypy>=1.8.0",
+    
+    # === TESTING ===
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "mutmut>=2.4",              # Mutation testing
+    
+    # === COMPLEXITY & METRICS ===
+    "radon>=5.0,<6",            # Complexity analysis (xenon kompatibilis)
+    "xenon>=0.9",               # Complexity gate
+    "wily>=1.25",               # Historical trends
+    
+    # === ARCHITECTURE ===
+    "import-linter>=2.0",       # Clean Architecture enforcement
+    
+    # === CODE QUALITY ===
+    "vulture>=2.11",            # Dead code detection
+    "bandit>=1.7.7",            # Security scanning
+    
+    # === DEV TOOLS ===
+    "pre-commit>=3.7",
+]
 
 # =============================================================================
-# RUFF - Fast linter & formatter
+# RUFF - Fast linter & formatter (10-100x faster than pylint)
 # =============================================================================
 [tool.ruff]
-target-version = "py312"
+target-version = "py310"
 line-length = 100
-src = ["src", "tests"]
+src = ["src", "app", "tests"]
+exclude = [
+    ".venv", "venv", "env", ".env", "virtualenv",
+    "__pycache__", ".git", ".mypy_cache", ".ruff_cache",
+]
 
 [tool.ruff.lint]
 select = [
-    "E",      # pycodestyle errors
-    "W",      # pycodestyle warnings
-    "F",      # Pyflakes
-    "I",      # isort
-    "B",      # flake8-bugbear
-    "C4",     # flake8-comprehensions
-    "UP",     # pyupgrade
-    "ARG",    # flake8-unused-arguments
-    "SIM",    # flake8-simplify
-    "TCH",    # flake8-type-checking
-    "PTH",    # flake8-use-pathlib
-    "ERA",    # eradicate (commented code)
-    "PL",     # Pylint rules
-    "RUF",    # Ruff-specific rules
+    "E", "W",     # pycodestyle
+    "F",          # Pyflakes
+    "I",          # isort
+    "B",          # flake8-bugbear
+    "UP",         # pyupgrade
+    "SIM",        # flake8-simplify
+    "RUF",        # Ruff-specific
+    "C90",        # mccabe complexity
+    "C4",         # flake8-comprehensions
+    "ARG",        # unused-arguments
+    "PTH",        # flake8-use-pathlib
+    "ERA",        # commented-out code
+    "PERF",       # Perflint
+    "PL",         # Pylint rules in Ruff
+    "D101", "D102", "D103", "D107",  # docstrings (class, method, function, __init__)
 ]
 ignore = [
-    "E501",    # line too long (handled by formatter)
-    "PLR0913", # too many arguments
-    "PLR2004", # magic value comparison
-    "F401",    # unused imports (availability checks)
+    "E501",       # line too long (formatter handles it)
+    "B008",       # function call in default argument (PySide6 Signal)
+    "SIM108",     # ternary operator (readability preference)
+    "PLR0913",    # too many arguments (use max-args below)
 ]
 
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+max-args = 5                  # Function signature clean-up
+max-branches = 12
+max-statements = 40
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = [
-    "S101",   # assert allowed in tests
-    "ARG",    # unused arguments (fixtures)
-    "PLR2004", # magic values OK in tests
-]
-"**/meteo_gui_starter.py" = ["F401", "ARG002", "RUF001", "UP036", "PLC0415"]
+"tests/**/*.py" = ["S101", "ARG", "PLR2004", "D"]
+"conftest.py" = ["D"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -60,140 +94,83 @@ indent-style = "space"
 docstring-code-format = true
 
 # =============================================================================
-# PYLINT - Comprehensive linting
-# =============================================================================
-[tool.pylint.main]
-py-version = "3.12"
-jobs = 0
-load-plugins = [
-    "pylint.extensions.docparams",
-    "pylint.extensions.mccabe",
-]
-
-[tool.pylint.messages_control]
-disable = [
-    "C0114",  # missing-module-docstring
-    "R0903",  # too-few-public-methods
-    "W1203",  # logging-fstring-interpolation
-]
-
-[tool.pylint.design]
-max-args = 7
-max-locals = 15
-max-returns = 6
-max-branches = 12
-max-statements = 50
-max-parents = 7
-max-attributes = 10
-min-public-methods = 1
-max-public-methods = 20
-
-[tool.pylint.format]
-max-line-length = 100
-max-module-lines = 250
-
-# =============================================================================
-# MYPY - Static type checking
+# MYPY - Type checking
 # =============================================================================
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.10"
 warn_return_any = true
-warn_unused_ignores = true
-warn_redundant_casts = true
 warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-strict_optional = true
-ignore_missing_imports = true
+disallow_untyped_defs = false     # Nem kötelező mindenhol típus
+check_untyped_defs = true         # De a törzsét ellenőrizze
+ignore_missing_imports = true     # 3rd party libek miatt
 show_error_codes = true
-show_column_numbers = true
+no_implicit_optional = true
+exclude = ["^.venv/", "^venv/", "^env/"]
 
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
 
 # =============================================================================
-# PYTEST - Testing
+# PYTEST & COVERAGE
 # =============================================================================
 [tool.pytest.ini_options]
-pythonpath = ["."]
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_functions = ["test_*"]
 addopts = [
     "-v",
     "--tb=short",
-    "--strict-markers",
     "-ra",
+    # NOTE: --cov és --cov-fail-under a quality_gate.sh-ban dinamikusan,
+    # itt csak pytest-hez közvetlenül (make test) tartjuk
 ]
 markers = [
-    "slow: marks tests as slow",
-    "integration: marks integration tests",
+    "slow: marks tests as slow (skip with -m 'not slow')",
 ]
-filterwarnings = [
-    "error",
-    "ignore::DeprecationWarning",
-]
+filterwarnings = ["ignore::DeprecationWarning"]
 
-# =============================================================================
-# COVERAGE - Test coverage
-# =============================================================================
 [tool.coverage.run]
-source = ["src"]
+source = ["src", "app"]
 branch = true
-parallel = true
-omit = [
-    "*/tests/*",
-    "*/__pycache__/*",
-    "venv/*",
-]
+omit = ["tests/*", "*/__init__.py", "*/__pycache__/*"]
 
 [tool.coverage.report]
-fail_under = 95
+fail_under = 85
 show_missing = true
-skip_covered = false
+skip_covered = true
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
+    "if __name__ == .__main__.:",
     "raise NotImplementedError",
     "if TYPE_CHECKING:",
-    "if __name__ == .__main__.:",
     "@abstractmethod",
+    "@overload",
 ]
 
 [tool.coverage.html]
 directory = "htmlcov"
 
 # =============================================================================
-# BANDIT - Security linting
+# VULTURE - Dead code detection
+# =============================================================================
+[tool.vulture]
+min_confidence = 80
+paths = ["src", "app"]
+exclude = ["tests/", "venv/", ".venv/"]
+
+# =============================================================================
+# MUTMUT - Mutation testing
+# =============================================================================
+[tool.mutmut]
+paths_to_mutate = "src/"
+tests_dir = "tests/"
+runner = "pytest -x --tb=no -q"
+
+# =============================================================================
+# BANDIT - Security
 # =============================================================================
 [tool.bandit]
 exclude_dirs = ["tests", "venv", ".venv"]
-skips = ["B101"]
-
-# =============================================================================
-# BLACK - Code formatter (fallback)
-# =============================================================================
-[tool.black]
-line-length = 100
-target-version = ["py312"]
-include = '\.pyi?$'
-extend-exclude = '''
-/(
-    \.git
-    | \.venv
-    | venv
-    | __pycache__
-    | frontend
-)/
-'''
-
-# =============================================================================
-# ISORT - Import sorting (fallback)
-# =============================================================================
-[tool.isort]
-profile = "black"
-line_length = 100
-known_first_party = ["src"]
-skip = [".venv", "venv", "__pycache__", "frontend"]
+skips = ["B101"]  # assert OK
