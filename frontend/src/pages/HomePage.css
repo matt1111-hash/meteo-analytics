@@ -108,35 +108,6 @@
   line-height: 1.4;
 }
 
-/* Special layout for windy days card (now 8th card) */
-.feature-card:nth-child(8) {
-  grid-column: span 3;
-  background: linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%);
-  color: white;
-}
-
-.feature-card:nth-child(8) .card-text h3,
-.feature-card:nth-child(8) .card-text p {
-  color: white;
-}
-
-.feature-card:nth-child(8):hover {
-  background: linear-gradient(135deg, #4ab3e8 0%, #2573e6 100%);
-}
-
-/* Responsive for special card */
-@media (max-width: 768px) {
-  .feature-card:nth-child(8) {
-    grid-column: span 2;
-  }
-}
-
-@media (max-width: 480px) {
-  .feature-card:nth-child(8) {
-    grid-column: span 1;
-  }
-}
-
 /* Animation for cards */
 @keyframes fadeInUp {
   from {
