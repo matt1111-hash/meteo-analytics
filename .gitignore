@@ -53,3 +53,6 @@ python_files.txt
 sqlite3
 benchmark_results/
 *.pyc
+analysis_out/
+audit_results/
+*_audit*
