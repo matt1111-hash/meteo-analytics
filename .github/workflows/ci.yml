@@ -38,4 +38,5 @@ jobs:
           --cov-config=.coveragerc
           -q
           --timeout=10
+          -p no:qt
           --ignore=tests/gui
