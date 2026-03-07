@@ -31,12 +31,6 @@ jobs:
       - name: Ruff check
         run: python -m ruff check src/
 
-      - name: Pytest with coverage
-        run: >
-          python -m pytest tests/
-          --cov=src
-          --cov-config=.coveragerc
-          -q
-          --timeout=10
-          -p no:qt
-          --ignore=tests/gui
+      - name: Test + Coverage
+        run: |
+          python -m pytest tests/ --cov=src --cov-config=.coveragerc -q --timeout=10 -p no:qt --ignore=tests/gui
