@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .[dev]
-          pip install pytest-timeout fastapi==0.124.2 starlette==0.50.0
+          pip install pytest-timeout fastapi==0.124.2 starlette==0.50.0 httpx==0.27.0 trio
 
       - name: Ruff check
         run: python -m ruff check src/
