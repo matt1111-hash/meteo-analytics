@@ -35,4 +35,4 @@ jobs:
         env:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
         run: |
-          python -m pytest tests/ -p pytest_cov.plugin -p pytest_timeout -p anyio.pytest_plugin -p pytest_asyncio.plugin -p pytest_mock --cov=src --cov-config=.coveragerc -q --timeout=10 --ignore=tests/gui
+          python -m pytest tests/ -p pytest_cov.plugin -p pytest_timeout -p anyio.pytest_plugin -p pytest_asyncio.plugin --cov=src --cov-config=.coveragerc -q --timeout=10 --ignore=tests/gui
