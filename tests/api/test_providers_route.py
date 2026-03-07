@@ -11,9 +11,10 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
+import anyio
 import pytest
 from fastapi import status
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 # =============================================================================
 # FIXTURES
@@ -29,8 +30,33 @@ def app():
 
 @pytest.fixture
 def client(app):
-    """Create test client."""
-    return TestClient(app)
+    """Create sync wrapper around AsyncClient for API tests."""
+
+    class SyncClientAdapter:
+        def __init__(self, fastapi_app) -> None:
+            self._app = fastapi_app
+
+        def get(self, url: str, **kwargs):
+            async def _request():
+                async with AsyncClient(
+                    app=self._app,
+                    base_url="http://test",
+                ) as async_client:
+                    return await async_client.get(url, **kwargs)
+
+            return anyio.run(_request)
+
+        def post(self, url: str, **kwargs):
+            async def _request():
+                async with AsyncClient(
+                    app=self._app,
+                    base_url="http://test",
+                ) as async_client:
+                    return await async_client.post(url, **kwargs)
+
+            return anyio.run(_request)
+
+    return SyncClientAdapter(app)
 
 
 @pytest.fixture
@@ -305,6 +331,25 @@ class TestGetProviderStatus:
             data = response.json()
             assert data["is_selected"] is True
 
+    def test_get_provider_status_returns_500_on_usage_service_error(
+        self, client, mock_provider_config
+    ):
+        """Unexpected status lookup failures should return HTTP 500."""
+        with patch(
+            "src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config
+        ), patch(
+            "src.api.routes.providers.validate_provider_selection", return_value=True
+        ), patch(
+            "src.api.routes.providers.get_usage_service",
+            side_effect=Exception("usage service down"),
+        ):
+            response = client.get("/api/providers/open-meteo/status")
+
+            assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+            assert response.json()["detail"] == (
+                "Failed to retrieve status for provider 'open-meteo'"
+            )
+
 
 # =============================================================================
 # SELECT PROVIDER TESTS
@@ -361,6 +406,23 @@ class TestSelectProvider:
             assert data["success"] is False
             assert "message" in data
 
+    def test_select_provider_returns_500_on_unexpected_error(
+        self, client, mock_provider_config
+    ):
+        """Unexpected persistence errors should return HTTP 500."""
+        with patch(
+            "src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config
+        ), patch(
+            "src.api.routes.providers.UserPreferences.get_selected_provider",
+            side_effect=RuntimeError("prefs broken"),
+        ):
+            response = client.post("/api/providers/open-meteo/select")
+
+            assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+            assert response.json()["detail"] == (
+                "Failed to select provider 'open-meteo'"
+            )
+
 
 # =============================================================================
 # GET SELECTED PROVIDER TESTS
@@ -404,6 +466,21 @@ class TestGetSelectedProvider:
             assert response.status_code == status.HTTP_200_OK
             data = response.json()
             assert data["provider_id"] == "auto"
+
+    def test_get_selected_provider_returns_500_on_error(
+        self, client, mock_provider_config
+    ):
+        """Selected provider endpoint should return HTTP 500 on unexpected errors."""
+        with patch(
+            "src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config
+        ), patch(
+            "src.api.routes.providers.UserPreferences.get_selected_provider",
+            side_effect=RuntimeError("prefs broken"),
+        ):
+            response = client.get("/api/providers/selected")
+
+            assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+            assert response.json()["detail"] == "Failed to retrieve selected provider"
 
 
 # =============================================================================
@@ -476,3 +553,22 @@ class TestGetProviderUsage:
             data = response.json()
             assert data["estimated_cost_usd"] == 5.0
             assert data["budget_remaining_usd"] == 5.0
+
+    def test_get_provider_usage_returns_500_on_usage_error(
+        self, client, mock_provider_config
+    ):
+        """Usage endpoint should return HTTP 500 on unexpected service errors."""
+        with patch(
+            "src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config
+        ), patch(
+            "src.api.routes.providers.validate_provider_selection", return_value=True
+        ), patch(
+            "src.api.routes.providers.get_usage_service",
+            side_effect=RuntimeError("usage broken"),
+        ):
+            response = client.get("/api/providers/meteostat/usage")
+
+            assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+            assert response.json()["detail"] == (
+                "Failed to retrieve usage for provider 'meteostat'"
+            )

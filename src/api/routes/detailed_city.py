@@ -55,9 +55,6 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
     )
 
 
-use_case = _build_use_case()
-
-
 def _metric_to_query_type(metric: str) -> str:
     """Map metric name to query_type for QUERY_TYPES lookup."""
     metric_to_query = {
@@ -84,6 +81,7 @@ async def analyze_single_city_detailed(request: DetailedCityRequest) -> dict:
         - precipitation: precipitation_sum data
     """
     try:
+        use_case = _build_use_case()
         # Make 4 separate API calls to get each metric separately
         # This prevents data duplication that was happening with aggregate=False
         metrics = {

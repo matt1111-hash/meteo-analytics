@@ -13,7 +13,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import status
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 # =============================================================================
 # FIXTURES
@@ -21,10 +21,10 @@ from fastapi.testclient import TestClient
 
 
 @pytest.fixture
-def client():
-    """Create test client."""
+def app():
+    """Create FastAPI app."""
     from src.api.main import app
-    return TestClient(app)
+    return app
 
 
 # =============================================================================
@@ -35,16 +35,20 @@ def client():
 class TestHealthEndpoint:
     """Tests for /health endpoint (always public)."""
 
-    def test_health_no_auth_required(self, client):
+    @pytest.mark.anyio
+    async def test_health_no_auth_required(self, app):
         """Health endpoint should work without API key."""
-        response = client.get("/health")
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            response = await client.get("/health")
 
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == {"status": "ok"}
 
-    def test_health_ignores_invalid_api_key(self, client):
+    @pytest.mark.anyio
+    async def test_health_ignores_invalid_api_key(self, app):
         """Health endpoint should ignore any provided API key."""
-        response = client.get("/health", headers={"X-API-Key": "invalid"})
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            response = await client.get("/health", headers={"X-API-Key": "invalid"})
 
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == {"status": "ok"}
@@ -254,15 +258,19 @@ class TestVerifyAPIKey:
 class TestOpenAPIDocs:
     """Tests for OpenAPI documentation endpoints (public)."""
 
-    def test_docs_endpoint_no_auth_required(self, client):
+    @pytest.mark.anyio
+    async def test_docs_endpoint_no_auth_required(self, app):
         """Docs endpoint should work without API key."""
-        response = client.get("/docs")
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            response = await client.get("/docs")
 
         assert response.status_code == status.HTTP_200_OK
 
-    def test_openapi_json_no_auth_required(self, client):
+    @pytest.mark.anyio
+    async def test_openapi_json_no_auth_required(self, app):
         """OpenAPI JSON should work without API key."""
-        response = client.get("/openapi.json")
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            response = await client.get("/openapi.json")
 
         assert response.status_code == status.HTTP_200_OK
 

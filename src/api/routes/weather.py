@@ -46,9 +46,6 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
     )
 
 
-use_case = _build_use_case()
-
-
 @router.post("/multi-city")
 async def analyze_multi_city(
     request: WeatherAnalysisRequest,
@@ -65,6 +62,7 @@ async def analyze_multi_city(
                   If False, returns all daily records as time series.
     """
     try:
+        use_case = _build_use_case()
         query = to_multi_city_query(request)
         result = use_case.execute(query, aggregate=aggregate)
         return result.to_dict()

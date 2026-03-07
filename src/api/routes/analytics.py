@@ -8,6 +8,7 @@ from fastapi import APIRouter, HTTPException
 
 from src.api.dto.trend_request import TrendAnalysisRequest
 from src.application.use_cases.calculate_trend import CalculateTrendUseCase
+from src.infrastructure.container import get_city_manager_port, get_weather_client_port
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
@@ -43,7 +44,10 @@ async def calculate_trend(request: TrendAnalysisRequest) -> dict:
         }
     """
     try:
-        use_case = CalculateTrendUseCase()
+        use_case = CalculateTrendUseCase(
+            weather_client=get_weather_client_port(),
+            city_manager=get_city_manager_port(),
+        )
         result = use_case.execute(request)
         return result.to_dict()
 

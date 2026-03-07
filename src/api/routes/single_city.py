@@ -59,9 +59,6 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
     )
 
 
-use_case = _build_use_case()
-
-
 def _metric_to_query_type(metric: str) -> str:
     """Map metric name to query_type for QUERY_TYPES lookup."""
     metric_to_query = {
@@ -85,6 +82,7 @@ async def analyze_single_city_timeseries(request: SingleCityRequest) -> dict:
         Each day is a separate record in the results.
     """
     try:
+        use_case = _build_use_case()
         # Map metric to query_type
         query_type = _metric_to_query_type(request.metric)
 

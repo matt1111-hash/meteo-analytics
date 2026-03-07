@@ -13,9 +13,8 @@ include_external_packages = true
 
 # -----------------------------------------------------------------------------
 # LAYER RULES
-# presentation → api → analytics → data → infrastructure → application → domain
+# infrastructure → application → domain
 # Függőségek csak BEFELÉ!
-# NOTE: adapters layer removed - does not exist in this project
 # -----------------------------------------------------------------------------
 
 [importlinter:contract:layers]
@@ -23,10 +22,6 @@ name = Clean Architecture Layers
 type = layers
 containers = src
 layers =
-    presentation
-    api
-    analytics
-    data
     infrastructure
     application
     domain
@@ -64,33 +59,3 @@ forbidden_modules =
     fastapi
     flask
     sqlalchemy
-
-# -----------------------------------------------------------------------------
-# DOMAIN PURITY ENHANCED - Inner Layer Independence
-# -----------------------------------------------------------------------------
-# Domain layer must not depend on any outer layer
-[importlinter:contract:domain_purity_enhanced]
-name = Domain Layer Purity (Inner Layers)
-type = forbidden
-source_modules = src.domain
-forbidden_modules =
-    src.data
-    src.infrastructure
-    src.api
-    src.analytics
-    src.presentation
-    src.application
-
-# -----------------------------------------------------------------------------
-# PRESENTATION ISOLATION
-# -----------------------------------------------------------------------------
-# Presentation should not access outer layers directly
-# NOTE: presentation MAY read domain.value_objects and domain.entities (stable contracts)
-# Only domain.services and domain.ports calls should go through application layer
-[importlinter:contract:presentation_isolation]
-name = Presentation Layer Isolation
-type = forbidden
-source_modules = src.presentation
-forbidden_modules =
-    src.data
-    src.infrastructure

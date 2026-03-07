@@ -83,7 +83,6 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
     )
 
 
-weather_use_case = _build_use_case()
 anomaly_use_case = DetectAnomaliesUseCase()
 
 
@@ -106,6 +105,7 @@ async def detect_anomalies(request: AnomalyDetectionRequest) -> dict:
         Anomaly detection results for temperature, precipitation, and wind.
     """
     try:
+        weather_use_case = _build_use_case()
         # Fetch weather data for the city
         WeatherAnalysisRequest(
             cities=[request.city],
@@ -172,6 +172,8 @@ async def detect_anomalies(request: AnomalyDetectionRequest) -> dict:
             "thresholds_used": thresholds_dict,
         }
 
+    except HTTPException:
+        raise
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:

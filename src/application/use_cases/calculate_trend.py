@@ -12,8 +12,7 @@ from typing import Any, Dict, List, Optional
 from src.api.dto.trend_request import TrendAnalysisRequest
 from src.domain.analytics.services.trend_calculator import TrendCalculator
 from src.domain.entities.trend_result import TrendAnalysisResult
-from src.domain.ports import WeatherClientPort
-from src.infrastructure.container import get_weather_client_port
+from src.domain.ports import CityManagerPort, WeatherClientPort
 
 logger = logging.getLogger(__name__)
 
@@ -23,16 +22,19 @@ class CalculateTrendUseCase:
 
     def __init__(
         self,
-        weather_client: Optional[WeatherClientPort] = None,
+        weather_client: WeatherClientPort,
+        city_manager: CityManagerPort,
         trend_calculator: Optional[TrendCalculator] = None,
     ) -> None:
         """Initialize the use case with dependencies.
 
         Args:
-            weather_client: Weather client for fetching data (default: from port)
+            weather_client: Weather client for fetching data
+            city_manager: City manager for location lookup
             trend_calculator: Trend calculator (default: new instance)
         """
-        self._weather_client = weather_client or get_weather_client_port()
+        self._weather_client = weather_client
+        self._city_manager = city_manager
         self._trend_calculator = trend_calculator or TrendCalculator()
 
     def execute(self, request: TrendAnalysisRequest) -> TrendAnalysisResult:
@@ -89,11 +91,8 @@ class CalculateTrendUseCase:
 
         Uses the city manager to find coordinates by name.
         """
-        from src.infrastructure.container import get_city_manager_port
-
-        city_manager = get_city_manager_port()
         try:
-            coords = city_manager.find_city_by_name(location)
+            coords = self._city_manager.find_city_by_name(location)
             return coords
         except Exception as e:
             logger.error("Error finding coordinates for %s: %s", location, e)

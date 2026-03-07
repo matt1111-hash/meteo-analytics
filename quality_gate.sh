@@ -23,6 +23,7 @@ COVERAGE_THRESHOLD=85
 MAX_FILE_LINES=300
 CI_MODE=false
 STRICT_MODE=false
+SKIP_COVERAGE=false
 
 # === CONFIG ===
 CONFIG_FILE=".quality_gate.conf"
@@ -36,16 +37,20 @@ while [[ $# -gt 0 ]]; do
         --full|-f) MODE="full"; shift ;;
         --ci) MODE="ci"; CI_MODE=true; COVERAGE_THRESHOLD=90; MAX_FILE_LINES=250; shift ;;
         --strict|-s) MODE="strict"; CI_MODE=true; STRICT_MODE=true; COVERAGE_THRESHOLD=90; MAX_FILE_LINES=250; shift ;;
+        --no-coverage) SKIP_COVERAGE=true; shift ;;
         --trend|-t) MODE="trend"; shift ;;
         --health|-h) MODE="health"; shift ;;
         --help)
-            echo "Usage: ./quality_gate.sh [MODE]"
+            echo "Usage: ./quality_gate.sh [MODE] [OPTIONS]"
+            echo "Modes:"
             echo "  --quick, -q    Quick lint + format check"
             echo "  --full, -f     Full quality gate (default)"
             echo "  --ci           CI mode (strict thresholds)"
             echo "  --strict, -s   Strict: EVERY warning → fail"
             echo "  --trend, -t    Wily trend analysis"
             echo "  --health       Full health report"
+            echo "Options:"
+            echo "  --no-coverage  Skip coverage check (pl. TF/GPU hiánya esetén)"
             exit 0 ;;
         *) echo "Unknown: $1"; exit 1 ;;
     esac
@@ -99,11 +104,11 @@ require_tool() {
 # === DETECT PROJECT ===
 detect_src_dir() {
     for dir in "src" "app" "lib"; do
-        # FIXED: find|grep -q pipefail+SIGPIPE bug — find -print -quit nem kell pipe
-        if [ -d "$dir" ] && [ -n "$(find "$dir" -name "*.py" -type f -print -quit 2>/dev/null)" ]; then
+        if [ -d "$dir" ] && find "$dir" -name "*.py" -type f 2>/dev/null | grep -q .; then
             echo "$dir"; return
         fi
     done
+    # FIXED: glob nem működik [ -f ] -ben
     if compgen -G "*.py" > /dev/null 2>&1; then
         echo "."; return
     fi
@@ -192,6 +197,32 @@ check_mypy() {
 check_tests() {
     local src_dir="$1"
     local test_dir="$2"
+
+    # Skip coverage check if requested
+    if $SKIP_COVERAGE; then
+        print_step "Tests (coverage skipped)..."
+
+        if [ -z "$test_dir" ] || [ ! -d "$test_dir" ]; then
+            print_info "Nincs tests/ könyvtár - tests SKIPPED"
+            return
+        fi
+
+        require_tool "pytest" "pytest" || return
+
+        export PYTHONPATH="${src_dir}:${PYTHONPATH:-}"
+
+        local test_output
+        test_output=$(python -m pytest "$test_dir" -v --tb=short 2>&1)
+        local test_rc=$?
+        echo "$test_output"
+        if [ $test_rc -eq 0 ]; then
+            print_pass "Tests PASS (coverage skipped)"
+        else
+            fail_check "Tests failed"
+        fi
+        return
+    fi
+
     print_step "Tests + coverage (min: ${COVERAGE_THRESHOLD}%)..."
 
     if [ -z "$test_dir" ] || [ ! -d "$test_dir" ]; then
@@ -414,6 +445,8 @@ run_full() {
         print_info "MODE: STRICT (minden warning → fail)"
     elif $CI_MODE; then
         print_info "MODE: CI (strict: ${COVERAGE_THRESHOLD}% cov, ${MAX_FILE_LINES} LOC)"
+    elif $SKIP_COVERAGE; then
+        print_info "MODE: Local (${MAX_FILE_LINES} LOC, coverage SKIPPED)"
     else
         print_info "MODE: Local (${COVERAGE_THRESHOLD}% cov, ${MAX_FILE_LINES} LOC)"
     fi

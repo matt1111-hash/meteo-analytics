@@ -1,135 +1,215 @@
-# AGENTS.md — Jules (Google AI) Edition
-**Version: 1.0 (2026-02-13)**
-**Based on: AI CODING RULES v2.4**
+# AI CODING RULES — Terminal CLI Edition
+**Version: 2.4 (2025-12-23)**
+**Toolchain: Modern (Ruff + Pytest + Mypy)**
 
 ---
 
-## Project Context
+## 🔴 HIERARCHIA — LEGFONTOSABB!
 
-Meteo Analytics — Időjárási adatok elemzése és vizualizálása Clean Architecture alapokon. PySide6 GUI, OpenMeteo és Meteostat API integráció, trend analízis, anomália detektálás, szél analytics és hőmérséklet grafikonok.
+| Szerep | Felelősség |
+|--------|------------|
+| EMBER | Megrendelő, döntéshozó |
+| AGENT | Végrehajtó, kódoló, debuggoló |
+
+**AGENT KÖTELESSÉGEI:**
+- Az EMBER NEM DEBUGOL — az agent dolga
+- Az EMBER NEM BÖNGÉSZIK — kódelemzés az agent feladata
+- Az EMBER NEM CSELÉD — ne kérj tőle futtatást amit te is tudsz
 
 ---
 
-## Architecture
+## 🚨 CRITICAL RULES
 
+### ❌ TILOS:
+- Guessing — kérdezz, max 2 kérdés
+- Incomplete code — befejezni vagy INCOMPLETE.md
+- Placeholder comments — `# TODO`, `// FIXME`, `pass`
+- Code snippets — mindig teljes, futtatható fájl
+- Truncation — SOHA `...` vagy "rest unchanged"
+- God classes — >300 sor tilos
+- Unsafe code — `eval/exec/os.system` BANNED
+- Modifying tests — tesztek definiálják a spec-et!
+- Config manipulation — `.quality_gate.conf` TILOS módosítani!
+
+### ✅ KÖTELEZŐ:
+- Complete files — első sortól az utolsóig
+- Type hints — minden függvény, minden paraméter
+- Tesztek — MANDATORY, nincs kivétel
+- Clean Architecture — domain/application/infrastructure/presentation
+- Git status check — minden új mappa után
+
+---
+
+## 📊 QUALITY GATE (B OPCIÓ)
+
+### Küszöbök:
+| Metrika | Local | CI |
+|---------|-------|-----|
+| Coverage | ≥85% | ≥95% |
+| Max LOC/file | 300 | 250 |
+| Ruff errors | 0 | 0 |
+| Mypy | Warning | Strict |
+
+### Futtatás:
+```bash
+./quality_gate.sh          # Local (B opció)
+./quality_gate.sh --ci     # CI mód (szigorú)
+```
+
+### PASS után jelenthetsz KÉSZ-t!
+
+---
+
+## 🛠️ MODERN TOOLCHAIN
+
+### Ruff (linting + formatting)
+```bash
+# Lint check
+python -m ruff check src/
+
+# Auto-fix
+python -m ruff check --fix src/
+
+# Format
+python -m ruff format src/
+```
+
+### Pytest + Coverage
+```bash
+# Tesztek futtatása
+python -m pytest tests/ -v --cov=src --cov-report=term-missing
+
+# Coverage HTML report
+python -m pytest tests/ --cov=src --cov-report=html
+```
+
+### Mypy
+```bash
+python -m mypy src/ --ignore-missing-imports
+```
+
+---
+
+## 🏗️ CLEAN ARCHITECTURE
+
+```
 src/
-├── domain/           # Entities, value objects, repository interfaces (NO I/O!)
-│   ├── analytics/    # Analytics services, statistics
-│   ├── entities/     # Domain entities
-│   └── services/     # Domain services (anomaly detection)
-├── application/      # Use cases
-│   └── use_cases/    # Application business logic
-├── infrastructure/   # External services, repositories
-│   └── repositories/ # Data access implementations
-├── data/             # Weather providers, clients
-│   ├── openmeteo_provider.py
-│   └── meteostat_provider.py
-├── presentation/     # GUI layer
-│   └── gui/          # PySide6 components, charts, widgets
-├── config/           # Configuration management
-└── api/              # REST API routes
+├── domain/          # Entities, repository interfaces (no I/O!)
+├── application/     # Use cases, services
+├── infrastructure/  # SQLite, APIs, external services
+└── presentation/    # CLI, GUI (PySide6)
 
 tests/
-└── test_*.py         # Mirror src/ structure
-
-**Rules:**
-- Dependencies point INWARD only (domain ← application ← infrastructure/presentation)
-- Domain NEVER imports infrastructure or presentation
-- One file = one responsibility
-- Max 300 lines per file, max 200 lines per class, max 50 lines per function
-- Cyclomatic complexity < 8, nesting depth ≤ 3
-
----
-
-## Coding Standards
-
-**Type hints:** Required on ALL functions — parameters AND return types.
-**Docstrings:** Required on all public functions — brief, 1-2 lines.
-**Imports:** Alphabetical order: stdlib → third-party → internal. Use relative imports within packages.
-**Naming:** Hungarian variable/function names in domain layer are acceptable.
-
-**FORBIDDEN:**
-- `eval()`, `exec()`, `os.system()` — security risk
-- f-string SQL queries — use parameterized queries only
-- Hardcoded API keys or passwords — use environment variables
-- Placeholder code: `# TODO`, `// FIXME`, `pass` in production code
-- God classes over 300 lines
-
----
-
-## Quality Gate
-
-**These thresholds MUST be met before any PR:**
-
-| Metric | Threshold |
-|--------|-----------|
-| Test coverage | ≥ 85% |
-| Max lines per file | 300 |
-| Ruff errors | 0 |
-| Mypy | Pass (ignore-missing-imports) |
-
-**Validation commands (run in this order):**
-```
-python -m ruff check src/
-python -m ruff format --check src/
-python -m mypy src/ --ignore-missing-imports
-python -m pytest tests/ -v --cov=src --cov-report=term-missing
+└── test_*.py        # Tesztek - tükrözik a src/ struktúrát
 ```
 
-If any check fails, fix the issues before completing the task.
+### Szabályok:
+- Dependencies point INWARD only
+- Domain SOHA nem importál infrastructure-t
+- Egy fájl = egy felelősség
+- Max 300 sor / fájl
 
 ---
 
-## Testing Rules
+## 🔧 CODE QUALITY
 
-- Tests are MANDATORY — no exceptions
-- One test = one behavior (Arrange-Act-Assert)
-- Test file mirrors source: `src/domain/foo.py` → `tests/domain/test_foo.py`
-- Mock external dependencies (APIs, databases, file system)
-- Test edge cases and error paths
-- NEVER modify existing tests — tests define the specification
-- NEVER modify quality gate config files (`quality_gate.sh`, `pyproject.toml`, `.quality_gate.conf`)
+### Kötelező elemek:
+- Full type hints (params + returns)
+- Docstrings (brief, 1-2 sor)
+- Alphabetical imports (stdlib → third-party → internal)
 
----
-
-## Security
-
-- SQL: parameterized queries ONLY (`cursor.execute("... WHERE id = ?", (id,))`)
-- Secrets: environment variables ONLY, never hardcode
-- No `eval/exec/os.system`
+### Metrikák:
+| Metrika | Target |
+|---------|--------|
+| Lines/function | ≤50 |
+| Lines/class | ≤200 |
+| Lines/file | ≤300 |
+| Cyclomatic complexity | <8 |
+| Nesting depth | ≤3 |
 
 ---
 
-## Task Execution Guidelines
+## 🧪 TESTING RULES
 
-When Jules receives a task:
-
-1. **Understand scope** — read related files before making changes
-2. **Minimal changes** — only modify what the task requires
-3. **Complete files** — never truncate, never use `...` or "rest unchanged"
-4. **Run quality checks** — execute the validation commands above
-5. **Fix what you break** — if changes cause test failures, fix them (without modifying existing tests)
-
-**If a task is ambiguous or too large:**
-- Implement the clearest interpretation
-- Note assumptions in the PR description
-- Prefer smaller, focused changes over sweeping refactors
+- **TESTS ARE MANDATORY** — nincs kivétel!
+- Coverage target: ≥85% (local), ≥95% (CI)
+- One test = one behavior
+- Arrange-Act-Assert pattern
+- Test file mirrors source: `src/foo.py` → `tests/test_foo.py`
+- **NO test modification** — tesztek definiálják a spec-et!
 
 ---
 
-## Environment Setup
+## 🔒 SECURITY
 
+### SQL Safety:
+```python
+# ✅ CORRECT - parameterized
+cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+
+# ❌ FORBIDDEN - SQL injection
+cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")
+```
+
+### Secrets:
+- ✅ Environment variables
+- ❌ NEVER hardcode API keys, passwords
+
+---
+
+## 📋 WORKFLOW
+
+### Session Start:
 ```bash
-pip install -r requirements.txt
-pip install ruff pytest pytest-cov mypy
+pwd
+git status
+ls -la
+cat AGENTS.md
+```
+
+### Every Layer Complete:
+```bash
+./quality_gate.sh
+# CSAK PASS után mész tovább!
+```
+
+### Before "KÉSZ":
+```bash
+git status
+# Ha nincs commit → NEM KÉSZ!
 ```
 
 ---
 
-## Repo-specific notes
+## ⚠️ CONFIG MANIPULATION = CHEATING
 
-- Clean Architecture — szigorú dependency rule
-- PySide6 GUI — QThread workers a háttérfolyamatokhoz
-- OpenMeteo API (ingyenes) és Meteostat API
-- Chart rendering: matplotlib + PySide6 integration
-- `.env` fájl az API kulcsokhoz
+A következő fájlok **CSAK OLVASHATÓK**:
+- `.quality_gate.conf`
+- `quality_gate.sh`
+- `pyproject.toml`
+
+Ha a modell módosítja ezeket a coverage/lint elkerülésére = **AZONNALI FAIL**.
+
+---
+
+## 🎯 TL;DR
+
+1. 🔥 CHECK git status — minden új mappa után
+2. 📝 Write complete files — nincs truncation
+3. 🎯 Clean Architecture — modular, nem microservices
+4. ✅ Pass quality gate — ≥85% coverage, Ruff clean
+5. 🧪 Write tests — MANDATORY
+6. 📐 Respect limits — ≤300 lines/file
+7. 🚫 NO config manipulation — csalás!
+8. 🔍 DEBUG IN CODE — soha ne delegálj embernek
+
+**Remember: Code is written once, read many times. Git tracks everything - or it doesn't exist.** 🚀
+### 🔍 PROJEKT INTEGRITÁS — AGENT FELELŐSSÉGE:
+- Az agent MINDIG végigkövet minden hívási láncot: 
+  frontend → endpoint → DI → factory → inicializálás
+- Tünet alapú debuggolás TILOS — a gyökér okot kell megtalálni
+- Az agent MAGA fedezi fel az architektúra inkonzisztenciákat 
+  (párhuzamos singleton-ok, dupla factory, stb.)
+- Ha hibát keres: először a teljes dependency graph-ot térképezi fel, 
+  AZTÁN javasol megoldást
+- Az EMBER SOHA nem mutat rá a hibára — ez az agent dolga

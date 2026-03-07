@@ -14,10 +14,6 @@ from src.infrastructure.container import get_city_manager_port
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather", "wind"])
 
-# Initialize weather client and city manager
-_weather_client = WeatherClient()
-_city_manager = get_city_manager_port()
-
 
 # Pydantic models for request/response
 class WindRoseRequest(BaseModel):
@@ -267,9 +263,12 @@ async def get_wind_rose(request: WindRoseRequest) -> WindRoseResponse:
         WindRoseResponse with directions array and statistics
     """
     try:
+        city_manager = get_city_manager_port()
+        weather_client = WeatherClient()
+
         # Get city coordinates from city manager
         # find_city_by_name returns (latitude, longitude) tuple or None
-        coords = _city_manager.find_city_by_name(request.city.strip())
+        coords = city_manager.find_city_by_name(request.city.strip())
         if not coords:
             raise HTTPException(
                 status_code=404, detail=f"City not found: {request.city}"
@@ -279,7 +278,7 @@ async def get_wind_rose(request: WindRoseRequest) -> WindRoseResponse:
 
         # Fetch weather data directly from Open-Meteo
         # The OpenMeteoProvider returns data with winddirection_10m_dominant included
-        weather_records = _weather_client.get_weather_data(
+        weather_records = weather_client.get_weather_data(
             latitude=latitude,
             longitude=longitude,
             start_date=request.start,
