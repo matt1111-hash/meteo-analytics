@@ -165,9 +165,9 @@ Eredmény: (üres) → SOHA NEM VOLT COMMITOLVA
 
 ### .env tartalom:
 ```
-OPENMETEO_API_KEY=REMOVED
-METEOSTAT_API_KEY=REMOVED
-METEOSOURCE_API_KEY=REMOVED
+OPENMETEO_API_KEY=cdd1997ffb98c0273066efa5d2d257d1
+METEOSTAT_API_KEY=9b5e65efd7msh676934679d7ec95p11bf9cjsndcb3249f47d6
+METEOSOURCE_API_KEY=5x9f7qt5mh083jyo1td0lf15idik9i8zohlxzr95
 ```
 ⚠️ **MEGJEGYZÉS:** Valós API kulcsok vannak a fájlban, de NEM vannak git-tracked.
 
