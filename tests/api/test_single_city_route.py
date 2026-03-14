@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 from src.api.main import app
 from src.api.routes import single_city
@@ -34,7 +34,7 @@ async def test_analyze_single_city_timeseries_returns_daily_breakdown(
         ),
     )
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/single-city",
             json={
@@ -75,7 +75,7 @@ async def test_analyze_single_city_uses_default_mapping_for_unknown_metric(
         ),
     )
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/single-city",
             json={
@@ -110,7 +110,7 @@ async def test_analyze_single_city_maps_value_error_to_http_400(
         ),
     )
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/single-city",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
@@ -131,7 +131,7 @@ async def test_analyze_single_city_maps_unexpected_error_to_http_500(
         MagicMock(side_effect=RuntimeError("boom")),
     )
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/single-city",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},

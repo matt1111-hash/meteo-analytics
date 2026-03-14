@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 from src.api.main import app
 
@@ -11,7 +11,7 @@ from src.api.main import app
 @pytest.mark.anyio
 async def test_get_available_metrics_returns_expected_structure() -> None:
     """Metrics endpoint should expose metric metadata and enum values."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.get("/api/weather/metrics")
 
     assert response.status_code == 200
@@ -25,7 +25,7 @@ async def test_get_available_metrics_returns_expected_structure() -> None:
 @pytest.mark.anyio
 async def test_get_available_regions_returns_region_metadata() -> None:
     """Regions endpoint should return region names, limits, and country codes."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.get("/api/weather/regions")
 
     assert response.status_code == 200
@@ -39,7 +39,7 @@ async def test_get_available_regions_returns_region_metadata() -> None:
 @pytest.mark.anyio
 async def test_get_query_types_returns_frontend_friendly_config() -> None:
     """Query types endpoint should expose templates, metrics, and enum values."""
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.get("/api/weather/query-types")
 
     assert response.status_code == 200

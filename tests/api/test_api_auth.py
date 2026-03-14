@@ -13,7 +13,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import status
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 # =============================================================================
 # FIXTURES
@@ -38,7 +38,7 @@ class TestHealthEndpoint:
     @pytest.mark.anyio
     async def test_health_no_auth_required(self, app):
         """Health endpoint should work without API key."""
-        async with AsyncClient(app=app, base_url="http://test") as client:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             response = await client.get("/health")
 
         assert response.status_code == status.HTTP_200_OK
@@ -47,7 +47,7 @@ class TestHealthEndpoint:
     @pytest.mark.anyio
     async def test_health_ignores_invalid_api_key(self, app):
         """Health endpoint should ignore any provided API key."""
-        async with AsyncClient(app=app, base_url="http://test") as client:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             response = await client.get("/health", headers={"X-API-Key": "invalid"})
 
         assert response.status_code == status.HTTP_200_OK
@@ -261,7 +261,7 @@ class TestOpenAPIDocs:
     @pytest.mark.anyio
     async def test_docs_endpoint_no_auth_required(self, app):
         """Docs endpoint should work without API key."""
-        async with AsyncClient(app=app, base_url="http://test") as client:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             response = await client.get("/docs")
 
         assert response.status_code == status.HTTP_200_OK
@@ -269,7 +269,7 @@ class TestOpenAPIDocs:
     @pytest.mark.anyio
     async def test_openapi_json_no_auth_required(self, app):
         """OpenAPI JSON should work without API key."""
-        async with AsyncClient(app=app, base_url="http://test") as client:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             response = await client.get("/openapi.json")
 
         assert response.status_code == status.HTTP_200_OK

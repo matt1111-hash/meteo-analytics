@@ -6,7 +6,7 @@ from datetime import date
 from unittest.mock import MagicMock
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 from src.api.main import app
 from src.api.routes import anomalies
@@ -65,7 +65,7 @@ async def test_detect_anomalies_returns_serialized_response(
     monkeypatch.setattr(anomalies, "_build_use_case", MagicMock(return_value=weather_use_case))
     monkeypatch.setattr(anomalies, "anomaly_use_case", anomaly_use_case)
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/anomalies",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
@@ -90,7 +90,7 @@ async def test_detect_anomalies_returns_404_when_city_not_found(
     weather_use_case.city_repository.get_cities_by_names.return_value = []
     monkeypatch.setattr(anomalies, "_build_use_case", MagicMock(return_value=weather_use_case))
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/anomalies",
             json={"city": "Missing", "start": "2024-01-01", "end": "2024-01-03"},
@@ -110,7 +110,7 @@ async def test_detect_anomalies_returns_404_when_weather_data_missing(
     weather_use_case.weather_fetch_service.fetch_weather_data_dual_api_batch.return_value = []
     monkeypatch.setattr(anomalies, "_build_use_case", MagicMock(return_value=weather_use_case))
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/anomalies",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
@@ -140,7 +140,7 @@ async def test_detect_anomalies_maps_value_error_to_http_400(
     monkeypatch.setattr(anomalies, "_build_use_case", MagicMock(return_value=weather_use_case))
     monkeypatch.setattr(anomalies, "anomaly_use_case", anomaly_use_case)
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/anomalies",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
@@ -161,7 +161,7 @@ async def test_detect_anomalies_maps_unexpected_error_to_http_500(
         MagicMock(side_effect=RuntimeError("broken dependency graph")),
     )
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/anomalies",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},

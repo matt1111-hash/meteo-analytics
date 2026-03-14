@@ -14,7 +14,7 @@ from unittest.mock import patch
 import anyio
 import pytest
 from fastapi import status
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 # =============================================================================
 # FIXTURES
@@ -39,7 +39,7 @@ def client(app):
         def get(self, url: str, **kwargs):
             async def _request():
                 async with AsyncClient(
-                    app=self._app,
+                    transport=ASGITransport(app=self._app),
                     base_url="http://test",
                 ) as async_client:
                     return await async_client.get(url, **kwargs)
@@ -49,7 +49,7 @@ def client(app):
         def post(self, url: str, **kwargs):
             async def _request():
                 async with AsyncClient(
-                    app=self._app,
+                    transport=ASGITransport(app=self._app),
                     base_url="http://test",
                 ) as async_client:
                     return await async_client.post(url, **kwargs)

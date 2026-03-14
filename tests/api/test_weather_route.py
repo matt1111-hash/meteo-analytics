@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 from src.api.main import app
 from src.api.routes import weather
@@ -29,7 +29,7 @@ async def test_analyze_multi_city_returns_result_and_passes_aggregate_flag(
     monkeypatch.setattr(weather, "_build_use_case", MagicMock(return_value=use_case))
     monkeypatch.setattr(weather, "to_multi_city_query", MagicMock(return_value=query))
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/multi-city",
             params={"aggregate": "false"},
@@ -57,7 +57,7 @@ async def test_analyze_multi_city_maps_value_error_to_http_400(
         MagicMock(side_effect=ValueError("bad date range")),
     )
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/multi-city",
             json={
@@ -82,7 +82,7 @@ async def test_analyze_multi_city_maps_unexpected_error_to_http_500(
         MagicMock(side_effect=RuntimeError("dependency setup failed")),
     )
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
             "/api/weather/multi-city",
             json={

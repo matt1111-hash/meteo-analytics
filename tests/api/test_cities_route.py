@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 from src.api.main import app
 from src.api.routes import cities
@@ -31,7 +31,7 @@ async def test_search_cities_returns_transformed_results(
     ]
     monkeypatch.setattr(cities, "get_city_repository_port", MagicMock(return_value=city_repo))
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.get("/api/cities/search", params={"query": "bud", "limit": 5})
 
     assert response.status_code == 200
@@ -63,7 +63,7 @@ async def test_search_cities_returns_none_coordinates_when_missing(
     ]
     monkeypatch.setattr(cities, "get_city_repository_port", MagicMock(return_value=city_repo))
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.get("/api/cities/search", params={"query": "un", "limit": 5})
 
     assert response.status_code == 200
@@ -79,7 +79,7 @@ async def test_search_cities_returns_500_on_repository_error(
     city_repo.autocomplete_city_name.side_effect = RuntimeError("db offline")
     monkeypatch.setattr(cities, "get_city_repository_port", MagicMock(return_value=city_repo))
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.get("/api/cities/search", params={"query": "bud", "limit": 5})
 
     assert response.status_code == 500
