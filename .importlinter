@@ -5,15 +5,18 @@
 # =============================================================================
 
 [importlinter]
-# FONTOS: ez a könyvtár neve, NEM a Python package neve.
-# Ha a struktúrád src/mypackage/, akkor: root_packages = mypackage
-# és a layers containers-ben is mypackage legyen.
+# FONTOS: ez a Python package neve, nem a könyvtár neve.
+# Ha a struktúrád src/mypackage/, akkor:
+#   root_package = mypackage
+#   containers = mypackage
+# A mostani root_package = src csak olyan projekteknél jó, ahol az importok is src.* alakúak.
+# Más struktúránál cseréld le, különben a quality gate fallback basic checkre vált.
 root_package = src
 include_external_packages = true
 
 # -----------------------------------------------------------------------------
 # LAYER RULES
-# infrastructure → application → domain
+# infrastructure → adapters → application → domain
 # Függőségek csak BEFELÉ!
 # -----------------------------------------------------------------------------
 
@@ -23,6 +26,7 @@ type = layers
 containers = src
 layers =
     infrastructure
+    adapters
     application
     domain
 
@@ -33,8 +37,7 @@ layers =
 name = Domain Independence
 type = forbidden
 source_modules = src.domain
-forbidden_modules =
-    fastapi
+forbidden_modules = fastapi
     flask
     django
     sqlalchemy
@@ -55,7 +58,6 @@ forbidden_modules =
 name = Application Layer Isolation
 type = forbidden
 source_modules = src.application
-forbidden_modules =
-    fastapi
+forbidden_modules = fastapi
     flask
     sqlalchemy

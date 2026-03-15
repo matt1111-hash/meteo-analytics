@@ -1,5 +1,5 @@
 # =============================================================================
-# MAKEFILE - Code Health Toolkit v3.1 (Merged Edition)
+# MAKEFILE - Code Health Toolkit v3.2 (Merged Edition)
 # =============================================================================
 # SRC_DIR automatikusan detektálva, vagy felülírható: make lint SRC_DIR=app
 # =============================================================================
@@ -13,7 +13,7 @@ done)
 
 help:
 	@echo "═══════════════════════════════════════════════════════════════"
-	@echo "  CODE HEALTH TOOLKIT v3.1"
+	@echo "  CODE HEALTH TOOLKIT v3.2"
 	@echo "═══════════════════════════════════════════════════════════════"
 	@echo ""
 	@echo "  make install    - Első telepítés"
@@ -38,9 +38,27 @@ help:
 # =============================================================================
 
 install:
-	pip install -e ".[dev]"
-	pre-commit install
-	@command -v wily >/dev/null && wily build $(SRC_DIR) || true
+	python -m pip install -r requirements-dev.txt
+	python -m pre_commit install
+	@if [ ! -f .secrets.baseline ]; then \
+		if [ -x venv/bin/detect-secrets ]; then \
+			venv/bin/detect-secrets scan > .secrets.baseline; \
+		elif [ -x .venv/bin/detect-secrets ]; then \
+			.venv/bin/detect-secrets scan > .secrets.baseline; \
+		else \
+			detect-secrets scan > .secrets.baseline; \
+		fi; \
+		echo "✅ .secrets.baseline létrehozva"; \
+	else \
+		echo "ℹ️  .secrets.baseline már létezik"; \
+	fi
+	@if command -v wily >/dev/null 2>&1; then \
+		if git rev-parse --verify HEAD >/dev/null 2>&1; then \
+			wily build $(SRC_DIR) >/dev/null 2>&1 || true; \
+		else \
+			echo "ℹ️  Wily build skipped (no commits yet)"; \
+		fi; \
+	fi
 	@echo "✅ Installed!"
 
 # =============================================================================
@@ -101,7 +119,17 @@ dead:
 
 architecture:
 	@echo "🏛️  Architecture:"
-	@lint-imports || echo "No .importlinter config"
+	@if [ ! -f .importlinter ]; then \
+		echo "No .importlinter config"; \
+	elif grep -Eq '^[[:space:]]*root_package[[:space:]]*=[[:space:]]*src[[:space:]]*$$' .importlinter && [ ! -f src/__init__.py ]; then \
+		echo "Template .importlinter detected - customize root_package first"; \
+	elif [ -x venv/bin/lint-imports ]; then \
+		venv/bin/lint-imports; \
+	elif [ -x .venv/bin/lint-imports ]; then \
+		.venv/bin/lint-imports; \
+	else \
+		lint-imports; \
+	fi
 
 security:
 	@echo "🔒 Security:"

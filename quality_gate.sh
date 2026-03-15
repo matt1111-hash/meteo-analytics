@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Quality Gate v3.1 - Merged Edition (Fixed)
+# Quality Gate v3.2 - Merged Edition (Fixed)
 # =============================================================================
 # v2.2 Ruff-alapok + Solo kiegészítések (architecture, complexity, dead code)
 # Fixes: src_dir guard, glob bug, CI strictness, dependency checks, set -u
@@ -23,7 +23,6 @@ COVERAGE_THRESHOLD=85
 MAX_FILE_LINES=300
 CI_MODE=false
 STRICT_MODE=false
-SKIP_COVERAGE=false
 
 # === CONFIG ===
 CONFIG_FILE=".quality_gate.conf"
@@ -37,20 +36,16 @@ while [[ $# -gt 0 ]]; do
         --full|-f) MODE="full"; shift ;;
         --ci) MODE="ci"; CI_MODE=true; COVERAGE_THRESHOLD=90; MAX_FILE_LINES=250; shift ;;
         --strict|-s) MODE="strict"; CI_MODE=true; STRICT_MODE=true; COVERAGE_THRESHOLD=90; MAX_FILE_LINES=250; shift ;;
-        --no-coverage) SKIP_COVERAGE=true; shift ;;
         --trend|-t) MODE="trend"; shift ;;
         --health|-h) MODE="health"; shift ;;
         --help)
-            echo "Usage: ./quality_gate.sh [MODE] [OPTIONS]"
-            echo "Modes:"
+            echo "Usage: ./quality_gate.sh [MODE]"
             echo "  --quick, -q    Quick lint + format check"
             echo "  --full, -f     Full quality gate (default)"
             echo "  --ci           CI mode (strict thresholds)"
             echo "  --strict, -s   Strict: EVERY warning → fail"
             echo "  --trend, -t    Wily trend analysis"
             echo "  --health       Full health report"
-            echo "Options:"
-            echo "  --no-coverage  Skip coverage check (pl. TF/GPU hiánya esetén)"
             exit 0 ;;
         *) echo "Unknown: $1"; exit 1 ;;
     esac
@@ -101,6 +96,15 @@ require_tool() {
     return 0
 }
 
+is_template_importlinter_config() {
+    [ ! -f ".importlinter" ] && return 1
+    if grep -Eq '^[[:space:]]*root_package[[:space:]]*=[[:space:]]*src[[:space:]]*$' .importlinter &&
+       [ ! -f "src/__init__.py" ]; then
+        return 0
+    fi
+    return 1
+}
+
 # === DETECT PROJECT ===
 detect_src_dir() {
     for dir in "src" "app" "lib"; do
@@ -124,10 +128,14 @@ detect_test_dir() {
 
 # === VENV ===
 activate_venv() {
-    for venv in ".venv" "venv"; do
+    for venv in "venv" ".venv"; do
         if [ -f "$venv/bin/activate" ]; then
+            # set +u: a virtualenv activate szkript hivatkozhat definiálatlan
+            # változókra (pl. $PS1), ezért ideiglenesen kikapcsoljuk az ellenőrzést
+            set +u
             # shellcheck disable=SC1091
             source "$venv/bin/activate"
+            set -u
             print_info "Venv: $venv"
             return
         fi
@@ -184,7 +192,14 @@ check_mypy() {
 
     print_step "Mypy type checking..."
     local mypy_output
-    mypy_output=$(python -m mypy "$src_dir" --ignore-missing-imports 2>&1)
+    # --ignore-missing-imports: pyproject.toml-ban is be van állítva globálisan,
+    # itt csak a CLI override miatt szerepel. CI módban NEM adjuk át, hogy
+    # a belső importhibák láthatóak maradjanak.
+    local mypy_flags=()
+    if ! $CI_MODE; then
+        mypy_flags+=(--ignore-missing-imports)
+    fi
+    mypy_output=$(python -m mypy "$src_dir" "${mypy_flags[@]}" 2>&1)
     local mypy_rc=$?
     if [ $mypy_rc -eq 0 ]; then
         print_pass "Type check OK"
@@ -197,32 +212,6 @@ check_mypy() {
 check_tests() {
     local src_dir="$1"
     local test_dir="$2"
-
-    # Skip coverage check if requested
-    if $SKIP_COVERAGE; then
-        print_step "Tests (coverage skipped)..."
-
-        if [ -z "$test_dir" ] || [ ! -d "$test_dir" ]; then
-            print_info "Nincs tests/ könyvtár - tests SKIPPED"
-            return
-        fi
-
-        require_tool "pytest" "pytest" || return
-
-        export PYTHONPATH="${src_dir}:${PYTHONPATH:-}"
-
-        local test_output
-        test_output=$(python -m pytest "$test_dir" -v --tb=short 2>&1)
-        local test_rc=$?
-        echo "$test_output"
-        if [ $test_rc -eq 0 ]; then
-            print_pass "Tests PASS (coverage skipped)"
-        else
-            fail_check "Tests failed"
-        fi
-        return
-    fi
-
     print_step "Tests + coverage (min: ${COVERAGE_THRESHOLD}%)..."
 
     if [ -z "$test_dir" ] || [ ! -d "$test_dir" ]; then
@@ -277,8 +266,10 @@ check_complexity() {
 
     require_tool "xenon" "xenon" || return
 
+    # Kizárjuk a tests/, venv/, .venv/ könyvtárakat - hamis komplexitás elkerülése
     local xenon_output
-    xenon_output=$(xenon "$src_dir" --max-absolute=B --max-modules=A --max-average=A 2>&1)
+    xenon_output=$(xenon "$src_dir" --max-absolute=B --max-modules=A --max-average=A \
+        --exclude="tests,venv,.venv,__pycache__" 2>&1)
     local xenon_rc=$?
     if [ $xenon_rc -eq 0 ]; then
         print_pass "Complexity OK (max B)"
@@ -300,11 +291,11 @@ check_dead_code() {
         print_pass "No dead code"
     else
         echo "$result" | head -10
-        # FIXED: strict módban fail
-        if $STRICT_MODE; then
+        # CI és strict módban egyaránt fail; local módban csak warning
+        if $CI_MODE || $STRICT_MODE; then
             fail_check "Dead code found"
         else
-            print_warn "Dead code found (nem blokkoló)"
+            print_warn "Dead code found (local: nem blokkoló)"
             ((WARNINGS++))
         fi
     fi
@@ -314,7 +305,7 @@ check_architecture() {
     local src_dir="$1"
     print_step "Clean Architecture (import-linter)..."
 
-    if [ ! -f ".importlinter" ]; then
+    if [ ! -f ".importlinter" ] || is_template_importlinter_config; then
         # Fallback: grep-based check
         if [ -d "$src_dir/domain" ]; then
             if grep -rq "from infrastructure\|from src\.infrastructure" "$src_dir/domain/" 2>/dev/null; then
@@ -325,6 +316,9 @@ check_architecture() {
         else
             print_info "No domain/ - architecture check skipped"
             ((SKIPPED++))
+        fi
+        if is_template_importlinter_config; then
+            print_info "Template .importlinter detected - customize root_package to enable import-linter"
         fi
         return
     fi
@@ -416,7 +410,17 @@ run_health() {
     echo -e "${BOLD}🏛️  ARCHITECTURE${NC}"
     echo "────────────────────────────────────────"
     if [ -f ".importlinter" ]; then
-        lint-imports 2>&1 | head -10
+        if is_template_importlinter_config; then
+            echo "Template .importlinter detected - customize root_package to enable import-linter"
+        elif command -v lint-imports &> /dev/null; then
+            lint-imports 2>&1 | head -10
+        elif [ -x "venv/bin/lint-imports" ]; then
+            venv/bin/lint-imports 2>&1 | head -10
+        elif [ -x ".venv/bin/lint-imports" ]; then
+            .venv/bin/lint-imports 2>&1 | head -10
+        else
+            echo "lint-imports not installed"
+        fi
     else
         echo "No .importlinter config"
     fi
@@ -439,14 +443,12 @@ run_quick() {
 
 # === FULL MODE ===
 run_full() {
-    print_header "🚀 Quality Gate v3.1"
+    print_header "🚀 Quality Gate v3.2"
 
     if $STRICT_MODE; then
         print_info "MODE: STRICT (minden warning → fail)"
     elif $CI_MODE; then
         print_info "MODE: CI (strict: ${COVERAGE_THRESHOLD}% cov, ${MAX_FILE_LINES} LOC)"
-    elif $SKIP_COVERAGE; then
-        print_info "MODE: Local (${MAX_FILE_LINES} LOC, coverage SKIPPED)"
     else
         print_info "MODE: Local (${COVERAGE_THRESHOLD}% cov, ${MAX_FILE_LINES} LOC)"
     fi

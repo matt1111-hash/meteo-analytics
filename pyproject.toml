@@ -1,12 +1,12 @@
 # =============================================================================
-# CODE HEALTH TOOLKIT - MERGED EDITION v3.1
+# CODE HEALTH TOOLKIT - MERGED EDITION v3.2
 # v2.2 Ruff-alapok + Solo kiegészítések (architecture, trends, dead code)
 # =============================================================================
 
 [project]
 name = "my-project"  # ← Cseréld a projekt nevére
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = []
 
 [project.optional-dependencies]
@@ -32,6 +32,9 @@ dev = [
     "vulture>=2.11",            # Dead code detection
     "bandit>=1.7.7",            # Security scanning
     
+    # === SECRETS ===
+    "detect-secrets>=1.4",
+
     # === DEV TOOLS ===
     "pre-commit>=3.7",
 ]
@@ -40,7 +43,7 @@ dev = [
 # RUFF - Fast linter & formatter (10-100x faster than pylint)
 # =============================================================================
 [tool.ruff]
-target-version = "py310"
+target-version = "py312"
 line-length = 100
 src = ["src", "app", "tests"]
 exclude = [
@@ -97,7 +100,7 @@ docstring-code-format = true
 # MYPY - Type checking
 # =============================================================================
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false     # Nem kötelező mindenhol típus

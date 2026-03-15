@@ -1,9 +1,9 @@
 # =============================================================================
-# PRE-COMMIT - Merged Edition v3.1
+# PRE-COMMIT - Merged Edition v3.2
 # =============================================================================
 
 default_language_version:
-  python: python3.10
+  python: python3.12
 
 repos:
   # ---------------------------------------------------------------------------
@@ -36,12 +36,36 @@ repos:
   # ---------------------------------------------------------------------------
   # MYPY
   # ---------------------------------------------------------------------------
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
+  - repo: local
     hooks:
       - id: mypy
-        additional_dependencies: [pydantic, types-requests]
-        args: [--ignore-missing-imports]
+        name: mypy
+        entry: >-
+          bash -c 'for d in src app lib; do
+            if [ -d "$d" ] && find "$d" -name "*.py" -type f 2>/dev/null | grep -q .; then
+              SRC="$d";
+              break;
+            fi;
+          done;
+          if [ -z "${SRC:-}" ] && compgen -G "*.py" >/dev/null 2>&1; then
+            SRC=".";
+          fi;
+          if [ -z "${SRC:-}" ]; then
+            echo "No Python source found - mypy skipped";
+            exit 0;
+          fi;
+          if [ -x venv/bin/python ]; then
+            exec venv/bin/python -m mypy "$SRC" --ignore-missing-imports;
+          elif [ -x .venv/bin/python ]; then
+            exec .venv/bin/python -m mypy "$SRC" --ignore-missing-imports;
+          elif command -v python >/dev/null 2>&1; then
+            exec python -m mypy "$SRC" --ignore-missing-imports;
+          else
+            echo "python not found for mypy";
+            exit 1;
+          fi'
+        language: system
+        pass_filenames: false
 
   # ---------------------------------------------------------------------------
   # ARCHITECTURE (ha van .importlinter)
@@ -50,7 +74,26 @@ repos:
     hooks:
       - id: import-linter
         name: architecture check
-        entry: bash -c 'if [ -f .importlinter ]; then lint-imports; else echo "No .importlinter - skipped"; fi'
+        entry: >-
+          bash -c 'if [ ! -f .importlinter ]; then
+            echo "No .importlinter - skipped";
+            exit 0;
+          fi;
+          if grep -Eq "^[[:space:]]*root_package[[:space:]]*=[[:space:]]*src[[:space:]]*$" .importlinter &&
+             [ ! -f src/__init__.py ]; then
+            echo "Template .importlinter detected - customize root_package before enabling import-linter";
+            exit 0;
+          fi;
+          if [ -x venv/bin/lint-imports ]; then
+            exec venv/bin/lint-imports;
+          elif [ -x .venv/bin/lint-imports ]; then
+            exec .venv/bin/lint-imports;
+          elif command -v lint-imports >/dev/null 2>&1; then
+            exec lint-imports;
+          else
+            echo "lint-imports not installed (pip install -r requirements-dev.txt)";
+            exit 1;
+          fi'
         language: system
         pass_filenames: false
         always_run: true
@@ -63,7 +106,10 @@ repos:
     hooks:
       - id: complexity
         name: complexity check
-        entry: bash -c 'SRC=$(for d in src app lib; do [ -d "$d" ] && echo "$d" && break; done); command -v radon >/dev/null && radon cc "${SRC:-.}" -a -nc || true'
+        entry: >-
+          bash -c 'SRC=$(for d in src app lib; do [ -d "$d" ] && echo "$d" && break; done);
+          command -v radon >/dev/null &&
+          radon cc "${SRC:-.}" -e "tests/*,venv/*,.venv/*,__pycache__/*" -a -nc || true'
         language: system
         pass_filenames: false
         types: [python]
@@ -75,21 +121,54 @@ repos:
     hooks:
       - id: pytest
         name: quick test
-        entry: pytest
+        entry: >-
+          bash -c 'for d in src app lib; do
+            if [ -d "$d" ] && find "$d" -name "*.py" -type f 2>/dev/null | grep -q .; then
+              SRC="$d";
+              break;
+            fi;
+          done;
+          if [ -z "${SRC:-}" ] && compgen -G "*.py" >/dev/null 2>&1; then
+            SRC=".";
+          fi;
+          export PYTHONPATH="${SRC:-}${PYTHONPATH:+:$PYTHONPATH}";
+          if [ -x venv/bin/pytest ]; then
+            exec venv/bin/pytest -x -q --no-cov -m "not slow";
+          elif [ -x .venv/bin/pytest ]; then
+            exec .venv/bin/pytest -x -q --no-cov -m "not slow";
+          elif command -v pytest >/dev/null 2>&1; then
+            exec pytest -x -q --no-cov -m "not slow";
+          else
+            echo "pytest not installed (pip install -r requirements-dev.txt)";
+            exit 1;
+          fi'
         language: system
-        args: [-x, -q, --no-cov, -m, "not slow"]
         pass_filenames: false
         stages: [pre-commit]
 
   # ---------------------------------------------------------------------------
   # SECRETS
-  # FIXED: baseline fájl nélkül is működik
+  # FIXED: baseline hiányában nem blokkolja az első commitot
   # ---------------------------------------------------------------------------
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
+  - repo: local
     hooks:
       - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
+        name: detect secrets
+        entry: >-
+          bash -c 'if [ ! -f .secrets.baseline ]; then
+            echo "No .secrets.baseline - skipped (run detect-secrets scan > .secrets.baseline)";
+            exit 0;
+          fi;
+          if [ -x venv/bin/detect-secrets-hook ]; then
+            exec venv/bin/detect-secrets-hook --baseline .secrets.baseline "$@";
+          elif [ -x .venv/bin/detect-secrets-hook ]; then
+            exec .venv/bin/detect-secrets-hook --baseline .secrets.baseline "$@";
+          elif command -v detect-secrets-hook >/dev/null 2>&1; then
+            exec detect-secrets-hook --baseline .secrets.baseline "$@";
+          else
+            echo "detect-secrets not installed (pip install -r requirements-dev.txt)";
+            exit 1;
+          fi' --
+        language: system
         exclude: package.lock.json
-        # NOTE: első használat előtt futtasd:
-        #   detect-secrets scan > .secrets.baseline
+        stages: [pre-commit]
