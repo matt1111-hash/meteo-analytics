@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Meteo Analytics Frontend
+Comment=React frontend a Meteo Analytics projekthez
+Exec=/home/tibor/PythonProjects/meteo-analytics/scripts/launch_meteo_analytics_frontend.sh
+Icon=applications-internet
+Terminal=true
+Categories=Science;DataVisualization;Network;
+StartupNotify=true

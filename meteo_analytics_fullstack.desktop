@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Meteo Analytics Full Stack
+Comment=Backend API + React frontend egyben
+Exec=/home/tibor/PythonProjects/meteo-analytics/scripts/launch_meteo_analytics_fullstack.sh
+Icon=applications-science
+Terminal=true
+Categories=Science;DataVisualization;Network;
+StartupNotify=true
