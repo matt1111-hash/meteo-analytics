@@ -205,7 +205,6 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
           className="autocomplete-input"
           autoComplete="off"
           aria-label="City search"
-          aria-expanded={isOpen}
           aria-haspopup="listbox"
           aria-busy={loading}
         />

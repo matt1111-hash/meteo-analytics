@@ -25,14 +25,12 @@ const TrendAnalyticsView: React.FC = () => {
   const [city, setCity] = useState<string>('Budapest');
   const [metric, setMetric] = useState<TrendMetric>('temperature_2m_max');
   const [selectedPeriod, setSelectedPeriod] = useState<number>(10);
-  const [shouldAnalyze, setShouldAnalyze] = useState<boolean>(false);
 
   // Hook
   const { data, loading, error, fetchTrendData, resetData } = useTrendAnalytics();
 
   // Handle analysis trigger
   const handleAnalyze = () => {
-    setShouldAnalyze(true);
     fetchTrendData({
       location: city,
       metric,
@@ -44,14 +42,12 @@ const TrendAnalyticsView: React.FC = () => {
   const handleCityChange = (newCity: string) => {
     setCity(newCity);
     resetData();
-    setShouldAnalyze(false);
   };
 
   // Handle metric change
   const handleMetricChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setMetric(e.target.value as TrendMetric);
     resetData();
-    setShouldAnalyze(false);
   };
 
   // Export functions
