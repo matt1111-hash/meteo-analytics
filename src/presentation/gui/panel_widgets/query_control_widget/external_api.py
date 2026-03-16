@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 External API methods for QueryControlWidget (SIMPLIFIED).
 

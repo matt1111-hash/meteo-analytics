@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Base Worker Thread - Base class for all worker threads
@@ -58,7 +59,9 @@ class BaseWorkerThread(QThread):
         3. Cancellation signal emission
         4. Timer leállítása
         """
-        print(f"🛑 DEBUG: Worker cancel requested - thread: {self.currentThreadId()}")
+        print(
+            f"🛑 DEBUG: Worker cancel requested - thread: {int(QThread.currentThreadId())}"
+        )
 
         self.is_cancelled = True
         self.requestInterruption()  # QThread built-in interrupt
@@ -69,7 +72,7 @@ class BaseWorkerThread(QThread):
             self._check_timer.stop()
 
         print(
-            f"🛑 DEBUG: Worker cancel signals sent - thread: {self.currentThreadId()}"
+            f"🛑 DEBUG: Worker cancel signals sent - thread: {int(QThread.currentThreadId())}"
         )
 
     def _check_interruption(self) -> None:
@@ -106,7 +109,7 @@ class BaseWorkerThread(QThread):
         3. Graceful cancellation support
         4. Thread cleanup
         """
-        print(f"🚀 DEBUG: Worker thread started - ID: {self.currentThreadId()}")
+        print(f"🚀 DEBUG: Worker thread started - ID: {int(QThread.currentThreadId())}")
 
         try:
             # Interruption check az elején

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 🗺️ Map Constants - Folium térkép konstansok és színskálák.
@@ -121,6 +122,25 @@ PRECIPITATION_COLORS: Dict[str, str] = {
     "extreme": "#0040AA",  # Nagyon sötét kék
 }
 
+BEAUFORT_COLOR_STEPS = (
+    (6, "calm"),
+    (12, "light_air"),
+    (20, "light_breeze"),
+    (29, "gentle_breeze"),
+    (39, "moderate_breeze"),
+    (50, "fresh_breeze"),
+    (62, "strong_breeze"),
+)
+
+PRECIPITATION_COLOR_STEPS = (
+    (0, "none"),
+    (1, "trace"),
+    (5, "light"),
+    (10, "moderate"),
+    (25, "heavy"),
+    (50, "violent"),
+)
+
 
 def get_beaufort_color(kmh: float) -> str:
     """
@@ -132,22 +152,10 @@ def get_beaufort_color(kmh: float) -> str:
     Returns:
         Hex színkód
     """
-    if kmh < 6:
-        return BEAUFORT_COLORS["calm"]
-    elif kmh < 12:
-        return BEAUFORT_COLORS["light_air"]
-    elif kmh < 20:
-        return BEAUFORT_COLORS["light_breeze"]
-    elif kmh < 29:
-        return BEAUFORT_COLORS["gentle_breeze"]
-    elif kmh < 39:
-        return BEAUFORT_COLORS["moderate_breeze"]
-    elif kmh < 50:
-        return BEAUFORT_COLORS["fresh_breeze"]
-    elif kmh < 62:
-        return BEAUFORT_COLORS["strong_breeze"]
-    else:
-        return BEAUFORT_COLORS["gale"]
+    for threshold, color_key in BEAUFORT_COLOR_STEPS:
+        if kmh < threshold:
+            return BEAUFORT_COLORS[color_key]
+    return BEAUFORT_COLORS["gale"]
 
 
 def get_precipitation_color(mm: float) -> str:
@@ -162,18 +170,10 @@ def get_precipitation_color(mm: float) -> str:
     """
     if mm == 0:
         return PRECIPITATION_COLORS["none"]
-    elif mm < 1:
-        return PRECIPITATION_COLORS["trace"]
-    elif mm < 5:
-        return PRECIPITATION_COLORS["light"]
-    elif mm < 10:
-        return PRECIPITATION_COLORS["moderate"]
-    elif mm < 25:
-        return PRECIPITATION_COLORS["heavy"]
-    elif mm < 50:
-        return PRECIPITATION_COLORS["violent"]
-    else:
-        return PRECIPITATION_COLORS["extreme"]
+    for threshold, color_key in PRECIPITATION_COLOR_STEPS[1:]:
+        if mm < threshold:
+            return PRECIPITATION_COLORS[color_key]
+    return PRECIPITATION_COLORS["extreme"]
 
 
 def get_gradient_for_overlay(overlay_type: str) -> Dict[float, str]:

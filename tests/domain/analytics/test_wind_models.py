@@ -34,9 +34,18 @@ class TestConstants:
     def test_months_hu_are_hungarian(self) -> None:
         """MONTHS_HU should contain Hungarian month names."""
         expected = [
-            "Január", "Február", "Március", "Április",
-            "Május", "Június", "Július", "Augusztus",
-            "Szeptember", "Október", "November", "December",
+            "Január",
+            "Február",
+            "Március",
+            "Április",
+            "Május",
+            "Június",
+            "Július",
+            "Augusztus",
+            "Szeptember",
+            "Október",
+            "November",
+            "December",
         ]
         assert MONTHS_HU == expected
 
@@ -68,6 +77,7 @@ class TestWindyDayStats:
     def test_is_dataclass(self) -> None:
         """Should be a dataclass."""
         import dataclasses
+
         assert dataclasses.is_dataclass(WindyDayStats)
 
     def test_field_types(self) -> None:
@@ -128,6 +138,7 @@ class TestWindAnalysisResult:
     def test_is_dataclass(self) -> None:
         """Should be a dataclass."""
         import dataclasses
+
         assert dataclasses.is_dataclass(WindAnalysisResult)
 
     def test_optional_fields_can_be_none(self) -> None:

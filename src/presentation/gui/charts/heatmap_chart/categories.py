@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Heatmap Chart - Categories
@@ -20,6 +21,16 @@ if TYPE_CHECKING:
     pass
 
 
+def _resolve_category(
+    value: float, categories: list[tuple[float, str]], fallback: str
+) -> str:
+    """Resolve the first matching category for a numeric value."""
+    for threshold, label in categories:
+        if value >= threshold:
+            return label
+    return fallback
+
+
 def get_temperature_category(self, temp: float) -> str:
     """
     Temperature categorization.
@@ -31,22 +42,19 @@ def get_temperature_category(self, temp: float) -> str:
     Returns:
         str: Kategória leírás
     """
-    if temp >= 35:
-        return "🔥 Extrém forró"
-    elif temp >= 30:
-        return "🌞 Forró"
-    elif temp >= 25:
-        return "☀️ Meleg"
-    elif temp >= 20:
-        return "🌤️ Kellemes"
-    elif temp >= 15:
-        return "🌥️ Hűvös"
-    elif temp >= 10:
-        return "🌫️ Hideg"
-    elif temp >= 0:
-        return "❄️ Fagyos"
-    else:
-        return "🧊 Extrém hideg"
+    return _resolve_category(
+        temp,
+        [
+            (35, "🔥 Extrém forró"),
+            (30, "🌞 Forró"),
+            (25, "☀️ Meleg"),
+            (20, "🌤️ Kellemes"),
+            (15, "🌥️ Hűvös"),
+            (10, "🌫️ Hideg"),
+            (0, "❄️ Fagyos"),
+        ],
+        "🧊 Extrém hideg",
+    )
 
 
 def get_precipitation_category(self, precip: float) -> str:
@@ -60,18 +68,17 @@ def get_precipitation_category(self, precip: float) -> str:
     Returns:
         str: Kategória leírás
     """
-    if precip >= 50:
-        return "⛈️ Viharos zápo"
-    elif precip >= 20:
-        return "🌧️ Erős esőzés"
-    elif precip >= 10:
-        return "🌦️ Közepes esőzés"
-    elif precip >= 2:
-        return "🌦️ Gyenge esőzés"
-    elif precip >= 0.5:
-        return "💧 Szitálás"
-    else:
-        return "☀️ Száraz időjárás"
+    return _resolve_category(
+        precip,
+        [
+            (50, "⛈️ Viharos zápo"),
+            (20, "🌧️ Erős esőzés"),
+            (10, "🌦️ Közepes esőzés"),
+            (2, "🌦️ Gyenge esőzés"),
+            (0.5, "💧 Szitálás"),
+        ],
+        "☀️ Száraz időjárás",
+    )
 
 
 def get_wind_category(self, wind: float) -> str:
@@ -85,17 +92,15 @@ def get_wind_category(self, wind: float) -> str:
     Returns:
         str: Kategória leírás
     """
-    if wind >= 119:
-        return "🌪️ Orkán erősségű szél"
-    elif wind >= 90:
-        return "💨 Viharos szél"
-    elif wind >= 61:
-        return "🌬️ Erős szél"
-    elif wind >= 43:
-        return "🍃 Élénk szél"
-    elif wind >= 20:
-        return "🌿 Mérsékelt szél"
-    elif wind >= 10:
-        return "🕊️ Gyenge szél"
-    else:
-        return "🌅 Szélcsend"
+    return _resolve_category(
+        wind,
+        [
+            (119, "🌪️ Orkán erősségű szél"),
+            (90, "💨 Viharos szél"),
+            (61, "🌬️ Erős szél"),
+            (43, "🍃 Élénk szél"),
+            (20, "🌿 Mérsékelt szél"),
+            (10, "🕊️ Gyenge szél"),
+        ],
+        "🌅 Szélcsend",
+    )

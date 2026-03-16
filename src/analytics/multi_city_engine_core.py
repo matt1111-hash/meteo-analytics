@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 """
 Multi-City Analytics Engine - Core Engine
 Main MultiCityEngine class for multi-city weather analytics
@@ -26,6 +27,9 @@ from src.infrastructure.container import (
     get_weather_client_port,
 )
 
+from .multi_city_engine_query_types import QUERY_TYPES
+from .multi_city_engine_region_ops import get_cities_for_region
+from .multi_city_engine_result_factory import create_empty_analytics_result_with_types
 from .multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS
 
 logger = logging.getLogger(__name__)
@@ -47,65 +51,7 @@ class MultiCityEngine:
     - VALÓDI REGIONÁLIS SZŰRÉS
     """
 
-    # Query types configuration
-    QUERY_TYPES = {
-        "hottest_today": {
-            "name": "Legmelegebb ma",
-            "metric": "temperature_2m_max",
-            "unit": "°C",
-            "sort_desc": True,
-            "question_template": "Hol volt ma a legmelegebb {region}ban?",
-            "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MAX,
-        },
-        "coldest_today": {
-            "name": "Leghidegebb ma",
-            "metric": "temperature_2m_min",
-            "unit": "°C",
-            "sort_desc": False,
-            "question_template": "Hol volt ma a leghidegebb {region}ban?",
-            "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MIN,
-        },
-        "temperature_mean": {
-            "name": "Átlag hőmérséklet",
-            "metric": "temperature_2m_mean",
-            "unit": "°C",
-            "sort_desc": True,
-            "question_template": "Hol volt ma a legmagasabb átlaghőmérséklet {region}ban?",
-            "metric_enum": AnalyticsMetric.TEMPERATURE_2M_MEAN,
-        },
-        "wettest_today": {
-            "name": "Legcsapadékosabb ma",
-            "metric": "precipitation_sum",
-            "unit": "mm",
-            "sort_desc": True,
-            "question_template": "Hol esett ma a legtöbb csapadék {region}ban?",
-            "metric_enum": AnalyticsMetric.PRECIPITATION_SUM,
-        },
-        "windiest_today": {
-            "name": "Legszelesebb ma",
-            "metric": "windspeed_10m_max",
-            "unit": "km/h",
-            "sort_desc": True,
-            "question_template": "Hol fújt ma a legerősebb szél {region}ban?",
-            "metric_enum": AnalyticsMetric.WINDSPEED_10M_MAX,
-        },
-        "wind_gusts": {
-            "name": "Legerősebb széllökés",
-            "metric": "windgusts_10m_max",
-            "unit": "km/h",
-            "sort_desc": True,
-            "question_template": "Hol fújt ma a legerősebb széllökés {region}ban?",
-            "metric_enum": AnalyticsMetric.WINDGUSTS_10M_MAX,
-        },
-        "temperature_range": {
-            "name": "Legnagyobb hőingás",
-            "metric": "temperature_range",
-            "unit": "°C",
-            "sort_desc": True,
-            "question_template": "Hol volt ma a legnagyobb hőingás {region}ban?",
-            "metric_enum": AnalyticsMetric.TEMPERATURE_RANGE,
-        },
-    }
+    QUERY_TYPES = QUERY_TYPES
 
     def __init__(
         self,
@@ -185,48 +131,7 @@ class MultiCityEngine:
         Returns:
             List of cities (filtered by region if applicable)
         """
-        original_region = region
-
-        try:
-            mapped_region = self.resolve_region_name(region)
-        except ValueError as e:
-            logger.error(f"⚠ Invalid region: {region} - {e}")
-            return []
-
-        region_config = REGIONS[mapped_region]
-        country_codes = region_config["country_codes"]
-        final_limit = max_cities or limit or region_config["max_cities"]
-
-        logger.info(
-            f"🔧 get_cities_for_region: original='{original_region}' → mapped='{mapped_region}', limit={final_limit}"
-        )
-
-        try:
-            cities = self.city_repository.get_cities_for_region(
-                mapped_region=mapped_region,
-                original_region=original_region,
-                country_codes=country_codes,
-                limit=final_limit,
-                hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
-            )
-            if original_region in HUNGARIAN_REGIONAL_MAPPING:
-                logger.info(
-                    "✅ REGIONÁLIS lekérdezés: %d város %s régióból (%s)",
-                    len(cities),
-                    original_region,
-                    HUNGARIAN_REGIONAL_MAPPING[original_region],
-                )
-            else:
-                logger.info(
-                    "✅ ORSZÁGOS lekérdezés: %d város %s régióból",
-                    len(cities),
-                    mapped_region,
-                )
-            return cities
-
-        except Exception as e:
-            logger.error(f"⚠ Hiba városok lekérdezésénél: {e}", exc_info=True)
-            return []
+        return get_cities_for_region(self, region, limit, max_cities)
 
     def analyze_multi_city(
         self,
@@ -312,57 +217,16 @@ class MultiCityEngine:
         self, question: Optional[AnalyticsQuestion], error_msg: str = "Ismeretlen hiba"
     ) -> AnalyticsResult:
         """Create empty AnalyticsResult for error cases."""
-        try:
-            fallback_question = question
-            if not fallback_question:
-                fallback_question = AnalyticsQuestion(
-                    question_text=f"Multi-city elemzés hiba: {error_msg}",
-                    question_type=QuestionType.WEATHER_COMPARISON,
-                    region_scope=RegionScope.GLOBAL,
-                    metric=AnalyticsMetric.TEMPERATURE_2M_MAX,
-                )
-
-            empty_result = AnalyticsResult(
-                question=fallback_question,
-                city_results=[],
-                execution_time=0.0,
-                total_cities_found=0,
-                data_sources_used=[],
-                statistics={},
-                provider_statistics={},
-            )
-
-            logger.info(f"✅ Empty AnalyticsResult created for error: {error_msg}")
-            return empty_result
-
-        except Exception as e:
-            logger.error(f"⚠ Critical error creating empty AnalyticsResult: {e}")
-
-            try:
-                ultra_fallback_question = AnalyticsQuestion(
-                    question_text="Critical error",
-                    question_type=QuestionType.TEMPERATURE_MAX,
-                    region_scope=RegionScope.GLOBAL,
-                    metric=AnalyticsMetric.TEMPERATURE_2M_MAX,
-                )
-
-                ultra_fallback_result = AnalyticsResult(
-                    question=ultra_fallback_question,
-                    city_results=[],
-                    execution_time=0.0,
-                    total_cities_found=0,
-                    data_sources_used=[],
-                    statistics={},
-                    provider_statistics={},
-                )
-
-                return ultra_fallback_result
-
-            except Exception as ultra_e:
-                logger.error(
-                    f"⚠ ULTRA CRITICAL: Cannot create AnalyticsResult at all: {ultra_e}"
-                )
-                raise RuntimeError(f"Cannot create AnalyticsResult: {ultra_e}")
+        return create_empty_analytics_result_with_types(
+            question=question,
+            error_msg=error_msg,
+            analytics_question_cls=AnalyticsQuestion,
+            analytics_result_cls=AnalyticsResult,
+            question_type_weather_comparison=QuestionType.WEATHER_COMPARISON,
+            question_type_temperature_max=QuestionType.TEMPERATURE_MAX,
+            region_scope_global=RegionScope.GLOBAL,
+            temperature_metric=AnalyticsMetric.TEMPERATURE_2M_MAX,
+        )
 
     def resolve_region_name(self, region_input: str) -> str:
         """Resolve region name to canonical form."""

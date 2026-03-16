@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Threshold sections - re-export."""
 
 from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds.main import (

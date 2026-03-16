@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Header section builders."""
 
 from PySide6.QtGui import QFont

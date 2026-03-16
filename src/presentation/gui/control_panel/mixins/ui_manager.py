@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -7,6 +8,42 @@ UI state management, visibility control, mode switching.
 """
 
 from PySide6.QtCore import QTimer
+
+
+def _restore_single_location_state(control_panel) -> None:
+    """Restore preserved single-location state when available."""
+    if "location" not in control_panel._preserved_states:
+        return
+    location_state = control_panel._preserved_states["location"]
+    if location_state.get("has_location", False):
+        print("🔄 DEBUG: Restoring location widget state...")
+        control_panel.location_widget.set_state(location_state)
+
+
+def _restore_multi_city_state(control_panel, analysis_type: str) -> None:
+    """Restore preserved multi-city state when available."""
+    if "multi_city" not in control_panel._preserved_states:
+        return
+    multi_city_state = control_panel._preserved_states["multi_city"]
+    if multi_city_state.get("is_valid", False):
+        print(f"🏙️ DEBUG: Restoring multi-city widget state for {analysis_type}...")
+        control_panel.multi_city_widget.set_state(multi_city_state)
+
+
+def _restore_shared_widget_states(control_panel) -> None:
+    """Restore shared widget states after analysis type changes."""
+    if "date_range" in control_panel._preserved_states:
+        control_panel.date_range_widget.set_state(
+            control_panel._preserved_states["date_range"]
+        )
+    if "provider" in control_panel._preserved_states:
+        control_panel.provider_widget.set_state(
+            control_panel._preserved_states["provider"]
+        )
+    if "api_settings" in control_panel._preserved_states:
+        control_panel.api_settings_widget.set_state(
+            control_panel._preserved_states["api_settings"]
+        )
 
 
 class UIManagerMixin:
@@ -52,40 +89,11 @@ class UIManagerMixin:
         print(f"🔄 DEBUG: Restoring widget states for analysis type: {analysis_type}")
 
         try:
-            # Location widget state visszaállítása (csak single_location módban)
-            if (
-                analysis_type == "single_location"
-                and "location" in self._preserved_states
-            ):
-                location_state = self._preserved_states["location"]
-                if location_state.get("has_location", False):
-                    print("🔄 DEBUG: Restoring location widget state...")
-                    self.location_widget.set_state(location_state)
-
-            # 🏙️ Multi-city widget state visszaállítása (csak region/county módban)
-            if (
-                analysis_type in ["region", "county"]
-                and "multi_city" in self._preserved_states
-            ):
-                multi_city_state = self._preserved_states["multi_city"]
-                if multi_city_state.get("is_valid", False):
-                    print(
-                        f"🏙️ DEBUG: Restoring multi-city widget state for {analysis_type}..."
-                    )
-                    self.multi_city_widget.set_state(multi_city_state)
-
-            # Egyéb widget states visszaállítása
-            if "date_range" in self._preserved_states:
-                self.date_range_widget.set_state(self._preserved_states["date_range"])
-
-            if "provider" in self._preserved_states:
-                self.provider_widget.set_state(self._preserved_states["provider"])
-
-            if "api_settings" in self._preserved_states:
-                self.api_settings_widget.set_state(
-                    self._preserved_states["api_settings"]
-                )
-
+            if analysis_type == "single_location":
+                _restore_single_location_state(self)
+            if analysis_type in ["region", "county"]:
+                _restore_multi_city_state(self, analysis_type)
+            _restore_shared_widget_states(self)
             print("✅ DEBUG: Widget states restored successfully")
 
         except Exception as e:

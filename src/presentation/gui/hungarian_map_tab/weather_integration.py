@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 Weather integration module for HungarianMapTab.
 

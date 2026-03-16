@@ -58,16 +58,16 @@ class CityNameFlowTest:
         print(f"   Location widget type: {type(loc_widget)}")
         print(f"   Has signals: {hasattr(loc_widget, 'signals')}")
 
-        if hasattr(loc_widget, 'signals'):
+        if hasattr(loc_widget, "signals"):
             # Select city
             loc_widget.signals._on_city_selected(
-                'Balassagyarmat', 48.07, 19.29, {'country': 'Hungary'}
+                "Balassagyarmat", 48.07, 19.29, {"country": "Hungary"}
             )
             self.log("City selected: Balassagyarmat")
 
             # Check state
             state = loc_widget.get_state()
-            city_data = state.get('current_city_data', {})
+            city_data = state.get("current_city_data", {})
             print(f"   current_city_data keys: {list(city_data.keys())}")
             print(f"   Has 'name': {'name' in city_data}")
             print(f"   name value: {city_data.get('name')}")
@@ -97,10 +97,10 @@ class CityNameFlowTest:
         print(f"   Results panel type: {type(results_panel)}")
 
         # Check displayed city name
-        if hasattr(results_panel, 'current_city_name'):
+        if hasattr(results_panel, "current_city_name"):
             city_name = results_panel.current_city_name
             print(f"   ResultsPanel.current_city_name: {city_name}")
-            if city_name == 'Balassagyarmat':
+            if city_name == "Balassagyarmat":
                 self.log("✅ SUCCESS: City name correctly displayed!")
             else:
                 self.log(f"❌ FAIL: Expected 'Balassagyarmat', got '{city_name}'")

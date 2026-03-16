@@ -92,27 +92,29 @@ def test_fetch_flow_with_eventloop():
     start_date = end_date - timedelta(days=30)
 
     test_request = {
-        'analysis_type': 'single_location',
-        'location_data': {
-            'name': 'Balassagyarmat',
-            'latitude': 48.0768832,
-            'longitude': 19.2926037,
-            'display_name': 'Balassagyarmat',
-            'country': 'Hungary',
+        "analysis_type": "single_location",
+        "location_data": {
+            "name": "Balassagyarmat",
+            "latitude": 48.0768832,
+            "longitude": 19.2926037,
+            "display_name": "Balassagyarmat",
+            "country": "Hungary",
         },
-        'date_range': {
-            'start_date': start_date.strftime('%Y-%m-%d'),
-            'end_date': end_date.strftime('%Y-%m-%d'),
+        "date_range": {
+            "start_date": start_date.strftime("%Y-%m-%d"),
+            "end_date": end_date.strftime("%Y-%m-%d"),
         },
-        'api_settings': {
-            'cache': False,
-            'timeout': 60,
-            'timezone': 'auto',
+        "api_settings": {
+            "cache": False,
+            "timeout": 60,
+            "timezone": "auto",
         },
-        'provider': 'open-meteo',
+        "provider": "open-meteo",
     }
     print(f"   📍 Location: {test_request['location_data']['name']}")
-    print(f"   📅 Date range: {test_request['date_range']['start_date']} → {test_request['date_range']['end_date']}")
+    print(
+        f"   📅 Date range: {test_request['date_range']['start_date']} → {test_request['date_range']['end_date']}"
+    )
 
     # 5. Start analysis with timer
     print("\n5️⃣  Analysis indítása timer-rel...")
@@ -124,6 +126,7 @@ def test_fetch_flow_with_eventloop():
         except Exception as e:
             print(f"❌ Hiba: {e}")
             import traceback
+
             traceback.print_exc()
             app.quit()
 
@@ -152,17 +155,17 @@ def test_fetch_flow_with_eventloop():
         print(f"   - {sig}")
 
     # Check success
-    success = 'analysis_completed' in receiver.signals_received
+    success = "analysis_completed" in receiver.signals_received
 
     if success and receiver.result_data:
         print("\n✅ FETCH FLOW SIKERES!")
 
         # Check result structure
-        result_data = receiver.result_data.get('result_data', {})
+        result_data = receiver.result_data.get("result_data", {})
         if result_data:
             print(f"   📊 Weather data keys: {list(result_data.keys())}")
     else:
-        failed = 'analysis_failed' in receiver.signals_received
+        failed = "analysis_failed" in receiver.signals_received
         if failed:
             print("\n❌ FETCH FLOW SIKERTELEN")
         else:
@@ -184,7 +187,10 @@ def test_component_imports():
 
     components = [
         ("ControlPanel", "src.presentation.gui.control_panel"),
-        ("QueryControlWidget", "src.presentation.gui.panel_widgets.query_control_widget"),
+        (
+            "QueryControlWidget",
+            "src.presentation.gui.panel_widgets.query_control_widget",
+        ),
         ("LocationWidget", "src.presentation.gui.panel_widgets.location_widget"),
         ("ResultsPanel", "src.presentation.gui.results_panel"),
         ("AppController", "src.presentation.gui.controller.app_controller"),
@@ -194,8 +200,8 @@ def test_component_imports():
     failed = []
     for name, module_path in components:
         try:
-            parts = module_path.split('.')
-            __import__('.'.join(parts[:-1]), fromlist=[parts[-1]])
+            parts = module_path.split(".")
+            __import__(".".join(parts[:-1]), fromlist=[parts[-1]])
             print(f"   ✅ {name}")
         except Exception as e:
             print(f"   ❌ {name}: {e}")

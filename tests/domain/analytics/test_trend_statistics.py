@@ -26,10 +26,12 @@ class TestTrendStatisticsCalculator:
         dates = pd.date_range("2024-01-01", periods=12, freq="MS")
         # Increasing trend
         values = [10.0 + i * 0.5 for i in range(12)]
-        return pd.DataFrame({
-            "date": dates,
-            "avg_value": values,
-        })
+        return pd.DataFrame(
+            {
+                "date": dates,
+                "avg_value": values,
+            }
+        )
 
 
 class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
@@ -104,10 +106,12 @@ class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
         self, calculator: TrendStatisticsCalculator
     ) -> None:
         """Should handle constant values."""
-        df = pd.DataFrame({
-            "date": pd.date_range("2024-01-01", periods=12, freq="MS"),
-            "avg_value": [10.0] * 12,  # All same values
-        })
+        df = pd.DataFrame(
+            {
+                "date": pd.date_range("2024-01-01", periods=12, freq="MS"),
+                "avg_value": [10.0] * 12,  # All same values
+            }
+        )
         result = calculator.calculate_linear_regression(df)
         assert result is not None
         assert result["slope"] == 0
@@ -116,10 +120,12 @@ class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
         self, calculator: TrendStatisticsCalculator
     ) -> None:
         """Should handle negative trend."""
-        df = pd.DataFrame({
-            "date": pd.date_range("2024-01-01", periods=12, freq="MS"),
-            "avg_value": [20.0 - i * 0.5 for i in range(12)],  # Decreasing
-        })
+        df = pd.DataFrame(
+            {
+                "date": pd.date_range("2024-01-01", periods=12, freq="MS"),
+                "avg_value": [20.0 - i * 0.5 for i in range(12)],  # Decreasing
+            }
+        )
         result = calculator.calculate_linear_regression(df)
         assert result is not None
         assert result["slope"] < 0
@@ -128,9 +134,7 @@ class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
 class TestCalculateConfidenceInterval(TestTrendStatisticsCalculator):
     """Test _calculate_confidence_interval method."""
 
-    def test_returns_tuple(
-        self, calculator: TrendStatisticsCalculator
-    ) -> None:
+    def test_returns_tuple(self, calculator: TrendStatisticsCalculator) -> None:
         """Should return a tuple."""
         X = np.arange(12).reshape(-1, 1)
         y = np.array([10.0 + i * 0.5 for i in range(12)])
@@ -140,9 +144,7 @@ class TestCalculateConfidenceInterval(TestTrendStatisticsCalculator):
         assert isinstance(result, tuple)
         assert len(result) == 2
 
-    def test_lower_less_than_upper(
-        self, calculator: TrendStatisticsCalculator
-    ) -> None:
+    def test_lower_less_than_upper(self, calculator: TrendStatisticsCalculator) -> None:
         """Lower bound should be less than upper bound."""
         X = np.arange(12).reshape(-1, 1)
         y = np.array([10.0 + i * 0.5 for i in range(12)])

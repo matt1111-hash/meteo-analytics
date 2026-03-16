@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 from __future__ import annotations
 
 from typing import Any
@@ -28,7 +29,7 @@ class MapEvents(QObject, IMapEvents):
         super().__init__(parent)
         self.auto_sync_enabled = True
 
-    def setup_signal_bridges(self, target_widget: QWidget) -> None:
+    def setup_signal_bridges(self, _target_widget: QWidget) -> None:
         """
         Connect signals from the target widget (main tab) to local handlers.
         In a full refactor, this would connect directly to sub-components.

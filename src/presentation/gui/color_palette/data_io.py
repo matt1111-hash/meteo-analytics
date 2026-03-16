@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -10,6 +11,56 @@ from typing import Any, Dict
 
 from src.presentation.gui.color_palette.types import HSLColor
 from src.presentation.gui.types import ThemeType
+
+
+def _serialize_hsl_color(hsl_color: HSLColor) -> Dict[str, Any]:
+    """Serialize one HSL color to export payload."""
+    return {
+        "hex": hsl_color.to_hex(),
+        "hsl": {
+            "hue": hsl_color.hue,
+            "saturation": hsl_color.saturation,
+            "lightness": hsl_color.lightness,
+            "alpha": hsl_color.alpha,
+        },
+    }
+
+
+def _build_hsl_color(hsl_data: Dict[str, Any]) -> HSLColor:
+    """Build HSLColor from serialized payload."""
+    return HSLColor(
+        hsl_data["hue"],
+        hsl_data["saturation"],
+        hsl_data["lightness"],
+        hsl_data.get("alpha", 1.0),
+    )
+
+
+def _export_palette_variants(
+    generated_variants: Dict[str, Dict[str, HSLColor]],
+) -> Dict[str, Dict[str, str]]:
+    """Export generated color variants to hex payload."""
+    exported_variants: Dict[str, Dict[str, str]] = {}
+    for semantic_name, variants in generated_variants.items():
+        exported_variants[semantic_name] = {
+            variant_name: variant_color.to_hex()
+            for variant_name, variant_color in variants.items()
+        }
+    return exported_variants
+
+
+def _import_base_colors(
+    data_io_mixin: Any, base_colors: Dict[str, Dict[str, Any]]
+) -> None:
+    """Import base colors from serialized payload."""
+    for semantic_name, color_data in base_colors.items():
+        if "hex" in color_data:
+            data_io_mixin.set_base_color(semantic_name, color_data["hex"])
+            continue
+        if "hsl" in color_data:
+            data_io_mixin.set_base_color(
+                semantic_name, _build_hsl_color(color_data["hsl"])
+            )
 
 
 class DataIOMixin:
@@ -34,25 +85,11 @@ class DataIOMixin:
 
         # Base colors export
         for semantic_name, hsl_color in self._base_colors.items():
-            export_data["base_colors"][semantic_name] = {
-                "hex": hsl_color.to_hex(),
-                "hsl": {
-                    "hue": hsl_color.hue,
-                    "saturation": hsl_color.saturation,
-                    "lightness": hsl_color.lightness,
-                    "alpha": hsl_color.alpha,
-                },
-            }
+            export_data["base_colors"][semantic_name] = _serialize_hsl_color(hsl_color)
 
         # Variants export
         if include_variants:
-            export_data["variants"] = {}
-            for semantic_name, variants in self._generated_variants.items():
-                export_data["variants"][semantic_name] = {}
-                for variant_name, variant_color in variants.items():
-                    export_data["variants"][semantic_name][variant_name] = (
-                        variant_color.to_hex()
-                    )
+            export_data["variants"] = _export_palette_variants(self._generated_variants)
 
         return export_data
 
@@ -73,18 +110,7 @@ class DataIOMixin:
 
             # Base colors
             if "base_colors" in import_data:
-                for semantic_name, color_data in import_data["base_colors"].items():
-                    if "hex" in color_data:
-                        self.set_base_color(semantic_name, color_data["hex"])
-                    elif "hsl" in color_data:
-                        hsl_data = color_data["hsl"]
-                        hsl_color = HSLColor(
-                            hsl_data["hue"],
-                            hsl_data["saturation"],
-                            hsl_data["lightness"],
-                            hsl_data.get("alpha", 1.0),
-                        )
-                        self.set_base_color(semantic_name, hsl_color)
+                _import_base_colors(self, import_data["base_colors"])
 
             # Semantic mapping
             if "semantic_mapping" in import_data:

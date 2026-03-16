@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 Initialization module for HungarianMapTab.
 

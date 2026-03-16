@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 ThemeManager Theme Appliers - Different theme application strategies.

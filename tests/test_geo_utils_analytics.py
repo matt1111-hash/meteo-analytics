@@ -24,7 +24,9 @@ class TestOptimizeCitiesForWeatherAnalytics:
             {"lat": 47.1, "lon": 19.1, "population": 50000},
             {"lat": 47.2, "lon": 19.2, "population": 150000},
         ]
-        result = utils.optimize_cities_for_weather_analytics(cities, "temperature", max_cities=10)
+        result = utils.optimize_cities_for_weather_analytics(
+            cities, "temperature", max_cities=10
+        )
         # 100000+ lakos: 2 város, de 2 < 5, így fallback 50000+ -> 3 város
         assert len(result) == 3
         assert all(c["population"] >= 50000 for c in result)
@@ -37,7 +39,9 @@ class TestOptimizeCitiesForWeatherAnalytics:
             {"lat": 47.1, "lon": 19.1, "population": 30000},
             {"lat": 47.2, "lon": 19.2, "population": 100000},
         ]
-        result = utils.optimize_cities_for_weather_analytics(cities, "precipitation", max_cities=10)
+        result = utils.optimize_cities_for_weather_analytics(
+            cities, "precipitation", max_cities=10
+        )
         # 50000+ lakos: 2 város, de 2 < 5, így fallback 25000+ -> 3 város
         assert len(result) == 3
         assert all(c["population"] >= 25000 for c in result)
@@ -49,7 +53,9 @@ class TestOptimizeCitiesForWeatherAnalytics:
             {"lat": 47.0, "lon": 19.0, "population": 250000},
             {"lat": 47.1, "lon": 19.1, "population": 150000},
         ]
-        result = utils.optimize_cities_for_weather_analytics(cities, "wind", max_cities=10)
+        result = utils.optimize_cities_for_weather_analytics(
+            cities, "wind", max_cities=10
+        )
         # 200000+ lakos: 1 város, de 1 < 5, így fallback 100000+ -> 2 város
         assert len(result) == 2
         assert all(c["population"] >= 100000 for c in result)
@@ -61,7 +67,9 @@ class TestOptimizeCitiesForWeatherAnalytics:
             {"lat": 47.0, "lon": 19.0, "population": 600000},
             {"lat": 47.1, "lon": 19.1, "population": 400000},
         ]
-        result = utils.optimize_cities_for_weather_analytics(cities, "global", max_cities=10)
+        result = utils.optimize_cities_for_weather_analytics(
+            cities, "global", max_cities=10
+        )
         # Min 500000 lakos kell, de 400000 >= 250000 (fallback)
         # Mindkét város át kell hogy menjen a fallback miatt
         assert len(result) == 2
@@ -73,7 +81,9 @@ class TestOptimizeCitiesForWeatherAnalytics:
             {"lat": 47.0, "lon": 19.0, "population": 600000},
             {"lat": 47.1, "lon": 19.1, "population": 400000},
         ]
-        result = utils.optimize_cities_for_weather_analytics(cities, "unknown", max_cities=10)
+        result = utils.optimize_cities_for_weather_analytics(
+            cities, "unknown", max_cities=10
+        )
         # Ismeretlen típus -> global, de fallback miatt 2 város
         assert len(result) == 2
 
@@ -84,7 +94,9 @@ class TestOptimizeCitiesForWeatherAnalytics:
             {"lat": 47.0, "lon": 19.0, "population": 60000},
             {"lat": 47.1, "lon": 19.1, "population": 55000},
         ]
-        result = utils.optimize_cities_for_weather_analytics(cities, "temperature", max_cities=10)
+        result = utils.optimize_cities_for_weather_analytics(
+            cities, "temperature", max_cities=10
+        )
         # Csak 2 város van < 100000, de >= 50000
         assert len(result) == 2
 
@@ -92,10 +104,16 @@ class TestOptimizeCitiesForWeatherAnalytics:
         """Respektálja a max_cities limitet."""
         utils = GeoUtilsAnalytics()
         cities = [
-            {"lat": 47.0 + i * 0.1, "lon": 19.0 + i * 0.1, "population": 200000 + i * 10000}
+            {
+                "lat": 47.0 + i * 0.1,
+                "lon": 19.0 + i * 0.1,
+                "population": 200000 + i * 10000,
+            }
             for i in range(20)
         ]
-        result = utils.optimize_cities_for_weather_analytics(cities, "temperature", max_cities=5)
+        result = utils.optimize_cities_for_weather_analytics(
+            cities, "temperature", max_cities=5
+        )
         assert len(result) <= 5
 
 
@@ -192,16 +210,16 @@ class TestInheritance:
     def test_has_core_methods(self) -> None:
         """Rendelkezik az ősi osztály metódusaival."""
         utils = GeoUtilsAnalytics()
-        assert hasattr(utils, 'validate_coordinates')
-        assert hasattr(utils, 'calculate_bounding_box')
-        assert hasattr(utils, 'calculate_geographic_center')
-        assert hasattr(utils, 'calculate_region_from_cities')
-        assert hasattr(utils, 'group_cities_by_proximity')
+        assert hasattr(utils, "validate_coordinates")
+        assert hasattr(utils, "calculate_bounding_box")
+        assert hasattr(utils, "calculate_geographic_center")
+        assert hasattr(utils, "calculate_region_from_cities")
+        assert hasattr(utils, "group_cities_by_proximity")
 
     def test_has_region_cache(self) -> None:
         """Rendelkezik region_cache attribútummal."""
         utils = GeoUtilsAnalytics()
-        assert hasattr(utils, 'region_cache')
+        assert hasattr(utils, "region_cache")
         assert isinstance(utils.region_cache, dict)
 
 
@@ -212,11 +230,17 @@ class TestIntegration:
         """Optimalizálás és coverage számítás kombinációja."""
         utils = GeoUtilsAnalytics()
         cities = [
-            {"lat": 47.0 + i * 0.5, "lon": 19.0 + i * 0.5, "population": 100000 + i * 50000}
+            {
+                "lat": 47.0 + i * 0.5,
+                "lon": 19.0 + i * 0.5,
+                "population": 100000 + i * 50000,
+            }
             for i in range(10)
         ]
 
-        optimized = utils.optimize_cities_for_weather_analytics(cities, "global", max_cities=5)
+        optimized = utils.optimize_cities_for_weather_analytics(
+            cities, "global", max_cities=5
+        )
         coverage = utils.calculate_multi_city_coverage_area(optimized)
 
         assert len(optimized) <= 5

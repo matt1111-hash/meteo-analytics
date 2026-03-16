@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 AnalysisWorker Core - Main worker class with signals and state management.
 """

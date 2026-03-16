@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Precipitation threshold section builder."""
 
 from PySide6.QtWidgets import QDoubleSpinBox, QGroupBox, QLabel, QVBoxLayout

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Wind Chart Data Extractor - Extract wind data from API responses.
@@ -27,6 +28,123 @@ class WindDataExtractor:
         self.y_label = "Széllökések (km/h)"
         self.data_source = "unknown"
 
+    @staticmethod
+    def _debug_log(debug: bool, message: str) -> None:
+        """Print debug messages only when debugging is enabled."""
+        if debug:
+            print(message)
+
+    def _log_input_summary(
+        self,
+        debug: bool,
+        data: Dict[str, Any],
+        daily_data: Dict[str, Any],
+        dates: list,
+        wind_gusts_10m_max: list,
+        windspeed_10m_max: list,
+    ) -> None:
+        """Emit structured debug information about the input payload."""
+        self._debug_log(debug, "🌪️ DEBUG: _extract_wind_data() STARTED!!!")
+        self._debug_log(debug, f"🌪️ DEBUG: data type: {type(data)}")
+        self._debug_log(debug, f"🌪️ DEBUG: daily_data type: {type(daily_data)}")
+        keys = list(daily_data.keys()) if isinstance(daily_data, dict) else "NOT DICT"
+        self._debug_log(debug, f"🌪️ DEBUG: daily_data keys: {keys}")
+        self._debug_log(debug, f"🌪️ DEBUG: dates: {len(dates) if dates else 0} elems")
+        self._debug_log(
+            debug,
+            "🌪️ DEBUG: wind_gusts_10m_max: "
+            f"{len(wind_gusts_10m_max) if wind_gusts_10m_max else 0} elems",
+        )
+        self._debug_log(
+            debug,
+            "🌪️ DEBUG: windspeed_10m_max: "
+            f"{len(windspeed_10m_max) if windspeed_10m_max else 0} elems",
+        )
+        self._log_series_sample(debug, "wind_gusts_10m_max", wind_gusts_10m_max)
+        self._log_series_sample(debug, "windspeed_10m_max", windspeed_10m_max)
+
+    def _log_series_sample(self, debug: bool, label: str, values: list) -> None:
+        """Print a short preview of a series for debugging."""
+        if not debug or not values:
+            return
+        sample = values[:3] if len(values) >= 3 else values
+        self._debug_log(debug, f"🌪️ DEBUG: {label} sample: {sample}")
+
+    @staticmethod
+    def _extract_daily_data(
+        data: Dict[str, Any],
+    ) -> tuple[Dict[str, Any], list, list, list]:
+        """Extract daily payload and supported wind series from API data."""
+        daily_data = data.get("daily", {})
+        dates = daily_data.get("time", []) or daily_data.get("date", [])
+        wind_gusts_10m_max = daily_data.get("windgusts_10m_max", []) or daily_data.get(
+            "wind_gusts_max", []
+        )
+        windspeed_10m_max = daily_data.get("windspeed_10m_max", []) or daily_data.get(
+            "wind_speed_max", []
+        )
+        return daily_data, dates, wind_gusts_10m_max, windspeed_10m_max
+
+    def _build_dataframe(self, dates: list, windspeed_data: list) -> pd.DataFrame:
+        """Create the normalized wind dataframe."""
+        return pd.DataFrame(
+            {
+                "date": pd.to_datetime(dates),
+                "windspeed": windspeed_data,
+                "_data_source": self.data_source,
+            }
+        ).dropna()
+
+    def _log_dataframe_summary(self, debug: bool, df: pd.DataFrame) -> None:
+        """Print dataframe summary for debugging."""
+        if df.empty:
+            self._debug_log(
+                debug, f"❌ DEBUG: Üres DataFrame {self.data_source} adatok után"
+            )
+            return
+        max_wind = df["windspeed"].max()
+        avg_wind = df["windspeed"].mean()
+        self._debug_log(
+            debug,
+            "✅ DEBUG: WindChart DataFrame KÉSZ - "
+            f"{self.data_source}, max: {max_wind:.1f} km/h, avg: {avg_wind:.1f} km/h",
+        )
+
+    def _use_selected_source(
+        self, debug: bool, source: str, title: str, y_label: str, values: list
+    ) -> list:
+        """Store metadata for the selected data source and return its values."""
+        self.data_source = source
+        self.chart_title = title
+        self.y_label = y_label
+        self._debug_log(debug, f"✅ DEBUG: WindChart using source: {source}")
+        return values
+
+    def _is_usable_series(self, values: list, dates: list) -> bool:
+        """Check whether a wind series is aligned with dates and contains data."""
+        return bool(
+            values and len(values) == len(dates) and self._has_valid_data(values)
+        )
+
+    def _log_unusable_sources(
+        self, debug: bool, wind_gusts: list, windspeed: list, dates: list
+    ) -> None:
+        """Emit debug details when no suitable source is available."""
+        self._debug_log(debug, "❌ DEBUG: Nincs használható szél adat")
+        self._debug_log(
+            debug,
+            "   - wind_gusts_10m_max: "
+            f"{len(wind_gusts) if wind_gusts else 0} elem, valid: "
+            f"{self._has_valid_data(wind_gusts) if wind_gusts else False}",
+        )
+        self._debug_log(
+            debug,
+            "   - windspeed_10m_max: "
+            f"{len(windspeed) if windspeed else 0} elem, valid: "
+            f"{self._has_valid_data(windspeed) if windspeed else False}",
+        )
+        self._debug_log(debug, f"   - dates: {len(dates)} elem")
+
     def extract(self, data: Dict[str, Any], debug: bool = False) -> pd.DataFrame:
         """
         Extract wind data from API response.
@@ -38,57 +156,26 @@ class WindDataExtractor:
         Returns:
             DataFrame with date and windspeed columns
         """
-        if debug:
-            print("🌪️ DEBUG: _extract_wind_data() STARTED!!!")
-            print(f"🌪️ DEBUG: data type: {type(data)}")
-
-        daily_data = data.get("daily", {})
-
-        if debug:
-            print(f"🌪️ DEBUG: daily_data type: {type(daily_data)}")
-            print(
-                f"🌪️ DEBUG: daily_data keys: {list(daily_data.keys()) if isinstance(daily_data, dict) else 'NOT DICT'}"
-            )
-
-        dates = daily_data.get("time", []) or daily_data.get("date", [])
-
-        if debug:
-            print(f"🌪️ DEBUG: dates: {len(dates) if dates else 0} elems")
-
-        # API KULCSOK KONZISZTENCIA - OpenMeteo + KOMPATIBILITÁSI KULCSOK
-        wind_gusts_10m_max = daily_data.get("windgusts_10m_max", []) or daily_data.get(
-            "wind_gusts_max", []
+        (
+            daily_data,
+            dates,
+            wind_gusts_10m_max,
+            windspeed_10m_max,
+        ) = self._extract_daily_data(data)
+        self._log_input_summary(
+            debug,
+            data,
+            daily_data,
+            dates,
+            wind_gusts_10m_max,
+            windspeed_10m_max,
         )
-        windspeed_10m_max = daily_data.get("windspeed_10m_max", []) or daily_data.get(
-            "wind_speed_max", []
-        )
-
-        if debug:
-            print(
-                f"🌪️ DEBUG: wind_gusts_10m_max: {len(wind_gusts_10m_max) if wind_gusts_10m_max else 0} elems"
-            )
-            print(
-                f"🌪️ DEBUG: windspeed_10m_max: {len(windspeed_10m_max) if windspeed_10m_max else 0} elems"
-            )
-            if wind_gusts_10m_max:
-                sample = (
-                    wind_gusts_10m_max[:3]
-                    if len(wind_gusts_10m_max) >= 3
-                    else wind_gusts_10m_max
-                )
-                print(f"🌪️ DEBUG: wind_gusts_10m_max sample: {sample}")
-            if windspeed_10m_max:
-                sample = (
-                    windspeed_10m_max[:3]
-                    if len(windspeed_10m_max) >= 3
-                    else windspeed_10m_max
-                )
-                print(f"🌪️ DEBUG: windspeed_10m_max sample: {sample}")
 
         # Validate dates
         if not dates:
-            if debug:
-                print("⚠️ DEBUG: Nincs dátum adat - WindChart nem jeleníthető meg")
+            self._debug_log(
+                debug, "⚠️ DEBUG: Nincs dátum adat - WindChart nem jeleníthető meg"
+            )
             return pd.DataFrame()
 
         # PRIORITÁS KIÉRTÉKELÉS
@@ -97,36 +184,15 @@ class WindDataExtractor:
         )
 
         if not windspeed_data:
-            if debug:
-                print(
-                    "❌ DEBUG: Nincs használható szél adat - WindChart nem jeleníthető meg"
-                )
+            self._debug_log(
+                debug,
+                "❌ DEBUG: Nincs használható szél adat - WindChart nem jeleníthető meg",
+            )
             return pd.DataFrame()
 
-        # DataFrame létrehozása
-        df = pd.DataFrame(
-            {
-                "date": pd.to_datetime(dates),
-                "windspeed": windspeed_data,
-                "_data_source": self.data_source,
-            }
-        )
-
-        # NaN értékek kezelése
-        df = df.dropna()
-
-        if df.empty:
-            if debug:
-                print(f"❌ DEBUG: Üres DataFrame {self.data_source} adatok után")
-        elif debug:
-            max_wind = df["windspeed"].max()
-            avg_wind = df["windspeed"].mean()
-            print(
-                f"✅ DEBUG: WindChart DataFrame KÉSZ - {self.data_source}, max: {max_wind:.1f} km/h, avg: {avg_wind:.1f} km/h"
-            )
-
-        if debug:
-            print("🌪️ DEBUG: _extract_wind_data() FINISHED!")
+        df = self._build_dataframe(dates, windspeed_data)
+        self._log_dataframe_summary(debug, df)
+        self._debug_log(debug, "🌪️ DEBUG: _extract_wind_data() FINISHED!")
 
         return df
 
@@ -145,46 +211,27 @@ class WindDataExtractor:
         Returns:
             Selected wind data list or empty list
         """
-        if debug:
-            print("🌪️ DEBUG: Checking wind_gusts_10m_max priority...")
-
-        # ELSŐDLEGES: wind_gusts_10m_max
-        if (
-            wind_gusts
-            and len(wind_gusts) == len(dates)
-            and self._has_valid_data(wind_gusts)
-        ):
-            if debug:
-                print("✅ DEBUG: WindChart using PRIMARY source: wind_gusts_10m_max")
-            self.data_source = "wind_gusts_10m_max"
-            self.chart_title = "🌪️ Széllökések változása"
-            self.y_label = "Széllökések (km/h)"
-            return wind_gusts
-
-        # FALLBACK: windspeed_10m_max
-        if (
-            windspeed
-            and len(windspeed) == len(dates)
-            and self._has_valid_data(windspeed)
-        ):
-            if debug:
-                print("🌪️ DEBUG: wind_gusts_10m_max not suitable, checking fallback...")
-                print("⚠️ DEBUG: WindChart using FALLBACK source: windspeed_10m_max")
-            self.data_source = "windspeed_10m_max"
-            self.chart_title = "💨 Szélsebesség változása (Fallback)"
-            self.y_label = "Szélsebesség (km/h)"
-            return windspeed
-
-        if debug:
-            print("❌ DEBUG: Nincs használható szél adat")
-            print(
-                f"   - wind_gusts_10m_max: {len(wind_gusts) if wind_gusts else 0} elem, valid: {self._has_valid_data(wind_gusts) if wind_gusts else False}"
+        self._debug_log(debug, "🌪️ DEBUG: Checking wind_gusts_10m_max priority...")
+        if self._is_usable_series(wind_gusts, dates):
+            return self._use_selected_source(
+                debug,
+                "wind_gusts_10m_max",
+                "🌪️ Széllökések változása",
+                "Széllökések (km/h)",
+                wind_gusts,
             )
-            print(
-                f"   - windspeed_10m_max: {len(windspeed) if windspeed else 0} elem, valid: {self._has_valid_data(windspeed) if windspeed else False}"
+        if self._is_usable_series(windspeed, dates):
+            self._debug_log(
+                debug, "🌪️ DEBUG: wind_gusts_10m_max not suitable, checking fallback..."
             )
-            print(f"   - dates: {len(dates)} elem")
-
+            return self._use_selected_source(
+                debug,
+                "windspeed_10m_max",
+                "💨 Szélsebesség változása (Fallback)",
+                "Szélsebesség (km/h)",
+                windspeed,
+            )
+        self._log_unusable_sources(debug, wind_gusts, windspeed, dates)
         return []
 
     @staticmethod

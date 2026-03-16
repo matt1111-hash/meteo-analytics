@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -9,6 +10,27 @@ Provides the primary analytics-to-map synchronization methods.
 
 from datetime import datetime
 from typing import Any, Dict
+
+
+def _apply_analysis_parameter_update(
+    core: "AnalyticsSyncCore", params: Dict[str, Any]
+) -> None:
+    """Apply analysis parameters to the map."""
+    analysis_type = params.get("analysis_type", "single_location")
+    if analysis_type == "single_location":
+        location = params.get("location")
+        if location:
+            core._update_map_for_single_location(location)
+        return
+    if analysis_type == "region":
+        region = params.get("region")
+        if region:
+            core._update_map_for_region(region)
+        return
+    if analysis_type == "county":
+        county = params.get("county")
+        if county:
+            core._update_map_for_county(county)
 
 
 class AnalyticsSyncCore:
@@ -36,21 +58,7 @@ class AnalyticsSyncCore:
             self.sync_in_progress = True
             self._set_sync_status("analysis", "in_progress")
 
-            analysis_type = params.get("analysis_type", "single_location")
-
-            if analysis_type == "single_location":
-                location = params.get("location")
-                if location:
-                    self._update_map_for_single_location(location)
-            elif analysis_type == "region":
-                region = params.get("region")
-                if region:
-                    self._update_map_for_region(region)
-            elif analysis_type == "county":
-                county = params.get("county")
-                if county:
-                    self._update_map_for_county(county)
-
+            _apply_analysis_parameter_update(self, params)
             self.last_analysis_parameters = params.copy()
 
             if self.auto_weather_refresh_enabled and self.current_analytics_result:

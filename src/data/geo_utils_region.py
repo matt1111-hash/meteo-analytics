@@ -115,6 +115,65 @@ class GeoUtilsRegion(GeoUtils):
         groups.sort(key=len, reverse=True)
         return groups
 
+    def _filter_cities_in_region(
+        self,
+        all_cities: List[Dict[str, Any]],
+        region_bbox: Optional[BoundingBox],
+    ) -> List[Dict[str, Any]]:
+        """Filter cities by bounding box when provided."""
+        if region_bbox is None:
+            return all_cities
+
+        filtered_cities: List[Dict[str, Any]] = []
+        for city in all_cities:
+            point = GeoPoint(city["lat"], city["lon"])
+            if region_bbox.contains_point(point):
+                filtered_cities.append(city)
+        return filtered_cities
+
+    def _split_cities_by_population(
+        self, cities: List[Dict[str, Any]]
+    ) -> tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+        """Split cities into with/without population buckets."""
+        cities_with_pop = [city for city in cities if city.get("population", 0) > 0]
+        cities_without_pop = [city for city in cities if city.get("population", 0) <= 0]
+        cities_with_pop.sort(key=lambda c: c.get("population", 0), reverse=True)
+        return cities_with_pop, cities_without_pop
+
+    def _calculate_city_selection_score(
+        self,
+        city: Dict[str, Any],
+        selected_cities: List[Dict[str, Any]],
+    ) -> float:
+        """Calculate spacing and population score for one city."""
+        min_distance = float("inf")
+        for selected in selected_cities:
+            distance = self.distance_calculator.haversine_distance(
+                city["lat"], city["lon"], selected["lat"], selected["lon"]
+            )
+            min_distance = min(min_distance, distance)
+
+        distance_score = min(min_distance / 1000, 1.0)
+        population_score = min(city.get("population", 1) / 1000000, 1.0)
+        return distance_score * 0.7 + population_score * 0.3
+
+    def _select_best_remaining_city(
+        self,
+        remaining_cities: List[Dict[str, Any]],
+        selected_cities: List[Dict[str, Any]],
+    ) -> Optional[Dict[str, Any]]:
+        """Select the best remaining city based on distance and population."""
+        best_city: Optional[Dict[str, Any]] = None
+        best_score = -1.0
+
+        for city in remaining_cities:
+            combined_score = self._calculate_city_selection_score(city, selected_cities)
+            if combined_score > best_score:
+                best_score = combined_score
+                best_city = city
+
+        return best_city
+
     def find_optimal_cities_for_region(
         self,
         all_cities: List[Dict[str, Any]],
@@ -122,26 +181,14 @@ class GeoUtilsRegion(GeoUtils):
         region_bbox: Optional[BoundingBox] = None,
     ) -> List[Dict[str, Any]]:
         """Find optimal cities for region analytics."""
-        filtered_cities = all_cities
-        if region_bbox:
-            filtered_cities = []
-            for city in all_cities:
-                point = GeoPoint(city["lat"], city["lon"])
-                if region_bbox.contains_point(point):
-                    filtered_cities.append(city)
+        filtered_cities = self._filter_cities_in_region(all_cities, region_bbox)
 
         if len(filtered_cities) <= target_count:
             return filtered_cities
 
-        cities_with_pop = [
-            city for city in filtered_cities if city.get("population", 0) > 0
-        ]
-        cities_without_pop = [
-            city for city in filtered_cities if city.get("population", 0) <= 0
-        ]
-
-        cities_with_pop.sort(key=lambda c: c.get("population", 0), reverse=True)
-
+        cities_with_pop, cities_without_pop = self._split_cities_by_population(
+            filtered_cities
+        )
         selected_cities = []
         remaining_cities = cities_with_pop + cities_without_pop
 
@@ -149,26 +196,9 @@ class GeoUtilsRegion(GeoUtils):
             selected_cities.append(remaining_cities.pop(0))
 
         while len(selected_cities) < target_count and remaining_cities:
-            best_city = None
-            best_score = -1
-
-            for city in remaining_cities:
-                min_distance = float("inf")
-                for selected in selected_cities:
-                    distance = self.distance_calculator.haversine_distance(
-                        city["lat"], city["lon"], selected["lat"], selected["lon"]
-                    )
-                    min_distance = min(min_distance, distance)
-
-                distance_score = min(min_distance / 1000, 1.0)
-                population_score = min(city.get("population", 1) / 1000000, 1.0)
-
-                combined_score = distance_score * 0.7 + population_score * 0.3
-
-                if combined_score > best_score:
-                    best_score = combined_score
-                    best_city = city
-
+            best_city = self._select_best_remaining_city(
+                remaining_cities, selected_cities
+            )
             if best_city:
                 selected_cities.append(best_city)
                 remaining_cities.remove(best_city)

@@ -21,10 +21,12 @@ class TestModuleStructure:
     def test_has_all_export(self) -> None:
         """A modul rendelkezik __all__-lal."""
         from src.data.city_manager_demo import __all__
-        assert __all__ == ['demo_dual_database_city_manager']
+
+        assert __all__ == ["demo_dual_database_city_manager"]
 
     def test_module_docstring_exists(self) -> None:
         """A modul rendelkezik dokumentációval."""
         from src.data.city_manager_demo import __doc__
+
         assert __doc__ is not None
         assert len(__doc__) > 0

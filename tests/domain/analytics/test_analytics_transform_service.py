@@ -1,4 +1,5 @@
 """Tests for AnalyticsTransformService."""
+
 from __future__ import annotations
 
 from datetime import date
@@ -36,7 +37,11 @@ def _service() -> AnalyticsTransformService:
     return AnalyticsTransformService(QUERY_TYPES)
 
 
-def _city(windspeed: float | None = 10.0, temp_max: float | None = 20.0, temp_min: float | None = 10.0) -> CityWeatherData:
+def _city(
+    windspeed: float | None = 10.0,
+    temp_max: float | None = 20.0,
+    temp_min: float | None = 10.0,
+) -> CityWeatherData:
     return CityWeatherData(
         city="Test",
         country="X",
@@ -72,7 +77,9 @@ def test_transform_falls_back_when_metric_missing() -> None:
 
     result = service.transform_to_city_weather_result(city, "windiest_today")
 
-    assert result.value == pytest.approx(20.0)  # fallback from temp max/min diff or other fields
+    assert result.value == pytest.approx(
+        20.0
+    )  # fallback from temp max/min diff or other fields
 
 
 def test_process_weather_results_sorts_and_computes_temp_range() -> None:
@@ -80,9 +87,14 @@ def test_process_weather_results_sorts_and_computes_temp_range() -> None:
     a = _city(windspeed=5.0, temp_max=18.0, temp_min=12.0)
     b = _city(windspeed=15.0, temp_max=25.0, temp_min=5.0)
 
-    processed = service.process_weather_results([a, b], "windiest_today", aggregate=False)
+    processed = service.process_weather_results(
+        [a, b], "windiest_today", aggregate=False
+    )
 
-    assert [c.city for c in processed] == ["Test", "Test"]  # same name, order matters by windspeed desc
+    assert [c.city for c in processed] == [
+        "Test",
+        "Test",
+    ]  # same name, order matters by windspeed desc
     assert processed[0].windspeed_10m_max == 15.0
 
 

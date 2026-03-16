@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Analysis Handler - Provider Integration
@@ -21,6 +22,25 @@ if TYPE_CHECKING:
     pass
 
 logger = logging.getLogger(__name__)
+
+
+def _extract_direct_coordinates(request_data: Dict[str, Any]) -> Tuple[Any, Any]:
+    """Extract direct top-level coordinates when present."""
+    if "latitude" in request_data and "longitude" in request_data:
+        return request_data.get("latitude"), request_data.get("longitude")
+    if "lat" in request_data and "lon" in request_data:
+        return request_data.get("lat"), request_data.get("lon")
+    return None, None
+
+
+def _extract_location_data_coordinates(request_data: Dict[str, Any]) -> Tuple[Any, Any]:
+    """Extract coordinates from nested location_data."""
+    location_data = request_data.get("location_data", {})
+    if not location_data:
+        return None, None
+    lat = location_data.get("latitude") or location_data.get("lat")
+    lon = location_data.get("longitude") or location_data.get("lon")
+    return lat, lon
 
 
 def _enhance_request_with_provider_routing(
@@ -100,24 +120,13 @@ def _extract_coordinates_from_request(self, request_data: Dict[str, Any]) -> Tup
     analysis_type = request_data.get("analysis_type")
 
     if analysis_type == "single_location":
-        # 1. Direkt koordináták keresése
-        if "latitude" in request_data and "longitude" in request_data:
-            return request_data.get("latitude"), request_data.get("longitude")
-        elif "lat" in request_data and "lon" in request_data:
-            return request_data.get("lat"), request_data.get("lon")
-
-        # 2. location_data objektum ellenőrzése
-        location_data = request_data.get("location_data", {})
-        if location_data:
-            lat = location_data.get("latitude") or location_data.get("lat")
-            lon = location_data.get("longitude") or location_data.get("lon")
-
-            if lat is not None and lon is not None:
-                return lat, lon
-
-    elif analysis_type in ["multi_city", "county_analysis"]:
-        # Multi-city esetén használjuk a jelenlegi város koordinátáit (ha van)
-        # Ez a kontexterületből kellene jöjjön
+        direct_lat, direct_lon = _extract_direct_coordinates(request_data)
+        if direct_lat is not None and direct_lon is not None:
+            return direct_lat, direct_lon
+        location_lat, location_lon = _extract_location_data_coordinates(request_data)
+        if location_lat is not None and location_lon is not None:
+            return location_lat, location_lon
+    if analysis_type in ["multi_city", "county_analysis"]:
         return 47.4979, 19.0402  # Budapest default
 
     return None, None

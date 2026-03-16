@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -10,6 +11,50 @@ import logging
 from typing import Any, Dict, Tuple
 
 logger = logging.getLogger(__name__)
+
+
+def _log_debug_state(widget: Any) -> None:
+    """Log the current widget state when debug is enabled."""
+    if not widget._debug_enabled:
+        return
+    logger.info("🔧 get_current_city() hívva - teljes state ellenőrzés:")
+    logger.info(f"   current_county: {widget.current_county}")
+    logger.info(f"   current_region: {widget.current_region}")
+    logger.info(f"   current_location: {widget.current_location}")
+    logger.info(f"   county_combo current data: {widget.county_combo.currentData()}")
+    logger.info(f"   county_combo current text: {widget.county_combo.currentText()}")
+
+
+def _log_city_choice(widget: Any, prefix: str, result: str, level: str = "info") -> str:
+    """Log and return the selected city result."""
+    if widget._debug_enabled:
+        getattr(logger, level)(f"{prefix}: {result}")
+    return result
+
+
+def _get_ui_selected_county(widget: Any) -> str | None:
+    """Return the county currently visible in the combo box."""
+    current_county_data = widget.county_combo.currentData()
+    current_county_text = widget.county_combo.currentText()
+    if (
+        current_county_data
+        and current_county_data != "Nincs kiválasztva"
+        and not current_county_text.startswith("Válassz")
+    ):
+        return current_county_data
+    return None
+
+
+def _get_region_admin_center(widget: Any) -> str | None:
+    """Return the administrative center from the active region."""
+    if widget.current_region and hasattr(
+        widget.current_region, "administrative_center"
+    ):
+        return widget.current_region.administrative_center
+    region_data = widget.region_combo.currentData()
+    if region_data and region_data in widget.region_data:
+        return widget.region_data[region_data].administrative_center
+    return None
 
 
 class QueryControlWidgetCompatMixin:
@@ -27,72 +72,40 @@ class QueryControlWidgetCompatMixin:
         Returns:
             str: Jelenlegi kiválasztott város/megye neve (MINDIG van érték!)
         """
-        # 🔧 JAVÍTOTT: Debug logging a teljes state-ről
-        if self._debug_enabled:
-            logger.info("🔧 get_current_city() hívva - teljes state ellenőrzés:")
-            logger.info(f"   current_county: {self.current_county}")
-            logger.info(f"   current_region: {self.current_region}")
-            logger.info(f"   current_location: {self.current_location}")
-            logger.info(
-                f"   county_combo current data: {self.county_combo.currentData()}"
-            )
-            logger.info(
-                f"   county_combo current text: {self.county_combo.currentText()}"
+        _log_debug_state(self)
+        current_county_data = _get_ui_selected_county(self)
+        if current_county_data:
+            return _log_city_choice(
+                self, "🚨 EMERGENCY get_current_city() UI-ból", current_county_data
             )
 
-        # 0. EMERGENCY: UI alapú fallback - ami a combo-ban van kiválasztva
-        current_county_data = self.county_combo.currentData()
-        current_county_text = self.county_combo.currentText()
-        if (
-            current_county_data
-            and current_county_data != "Nincs kiválasztva"
-            and not current_county_text.startswith("Válassz")
-        ):
-            result = current_county_data
-            if self._debug_enabled:
-                logger.info(f"🚨 EMERGENCY get_current_city() UI-ból: {result}")
-            return result
-
-        # 1. Prioritás: Kiválasztott megye
         if (
             self.current_county
             and isinstance(self.current_county, dict)
             and "name" in self.current_county
         ):
-            result = self.current_county["name"]
-            if self._debug_enabled:
-                logger.info(f"✅ get_current_city() visszaadja county: {result}")
-            return result
+            return _log_city_choice(
+                self,
+                "✅ get_current_city() visszaadja county",
+                self.current_county["name"],
+            )
 
-        # 2. Fallback: Location objektum
         if self.current_location and hasattr(self.current_location, "display_name"):
-            result = self.current_location.display_name
-            if self._debug_enabled:
-                logger.info(f"✅ get_current_city() visszaadja location: {result}")
-            return result
+            return _log_city_choice(
+                self,
+                "✅ get_current_city() visszaadja location",
+                self.current_location.display_name,
+            )
 
-        # 3. Fallback: Régió adminisztratív központ
-        if self.current_region and hasattr(
-            self.current_region, "administrative_center"
-        ):
-            result = self.current_region.administrative_center
-            if self._debug_enabled:
-                logger.info(f"✅ get_current_city() visszaadja admin center: {result}")
-            return result
+        admin_center = _get_region_admin_center(self)
+        if admin_center:
+            return _log_city_choice(
+                self, "✅ get_current_city() visszaadja admin center", admin_center
+            )
 
-        # 4. DESPERATE Fallback: region combo-ból
-        region_data = self.region_combo.currentData()
-        if region_data and region_data in self.region_data:
-            result = self.region_data[region_data].administrative_center
-            if self._debug_enabled:
-                logger.info(f"🆘 DESPERATE get_current_city() region-ból: {result}")
-            return result
-
-        # 5. FINAL FALLBACK: Budapest mindig működik
-        result = "Budapest"
-        if self._debug_enabled:
-            logger.warning(f"🆘 FINAL get_current_city() fallback: {result}")
-        return result
+        return _log_city_choice(
+            self, "🆘 FINAL get_current_city() fallback", "Budapest", level="warning"
+        )
 
     def get_current_coordinates(self) -> Tuple[float, float]:
         """

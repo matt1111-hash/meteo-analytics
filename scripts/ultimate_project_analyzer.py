@@ -21,6 +21,7 @@ Output Formats (via --format flag):
 - `dot`:  Import graph in Graphviz DOT format (color-coded layers + red violation edges).
 - `csv`:  CSV reports for hotspots and Qt signals/slots.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -40,9 +41,20 @@ from typing import Any, DefaultDict, Dict, List, Optional, Set, Tuple
 
 # ----- Configuration Constants -----
 EXCLUDE_DIRS_DEFAULT = {
-    "venv", ".venv", ".git", "__pycache__", ".pytest_cache", "analysis_out",
-    "build", "dist", ".mypy_cache", ".ruff_cache", ".tox", "deepmap_out",
-    "node_modules", ".ipynb_checkpoints"
+    "venv",
+    ".venv",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "analysis_out",
+    "build",
+    "dist",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".tox",
+    "deepmap_out",
+    "node_modules",
+    ".ipynb_checkpoints",
 }
 
 LAYER_RULES = {
@@ -65,41 +77,37 @@ QT_THREAD_NAMES = {"QThread", "QRunnable", "QThreadPool"}
 ALLOWED_DEPENDENCIES = {
     # Domain layer: Core business logic, NO dependencies on other layers
     "domain": {"domain"},
-
     # Application layer: Use cases, can depend on domain
     "application": {"domain", "application"},
-
     # Infrastructure layer: External services, APIs, persistence
     "infrastructure": {"domain", "application", "infrastructure"},
-
     # GUI layer: Presentation, can use application and infrastructure
     "gui": {"application", "infrastructure", "gui"},
-
     # Entrypoints: Composition root, can depend on everything
     "entrypoints": {"domain", "application", "infrastructure", "gui", "entrypoints"},
-
     # Tests: Can test everything
     "tests": {"domain", "application", "infrastructure", "gui"},
-
     # Unknown/external: Skip validation
-    "unknown": set()
+    "unknown": set(),
 }
 
 # Layer colors for DOT graph visualization
 LAYER_COLORS = {
-    "domain": "#4169E1",        # Blue (stable core)
-    "application": "#32CD32",   # Green (orchestration)
-    "infrastructure": "#FF6347", # Red (adapters)
-    "gui": "#FFD700",           # Gold (presentation)
-    "entrypoints": "#9370DB",   # Purple (composition root)
-    "tests": "#A9A9A9",         # Gray
-    "unknown": "#FFFFFF"        # White
+    "domain": "#4169E1",  # Blue (stable core)
+    "application": "#32CD32",  # Green (orchestration)
+    "infrastructure": "#FF6347",  # Red (adapters)
+    "gui": "#FFD700",  # Gold (presentation)
+    "entrypoints": "#9370DB",  # Purple (composition root)
+    "tests": "#A9A9A9",  # Gray
+    "unknown": "#FFFFFF",  # White
 }
+
 
 # ----- Data Structures -----
 @dataclass
 class FunctionInfo:
     """Stores metrics for a single function or method."""
+
     name: str
     lineno: int
     end_lineno: int
@@ -109,9 +117,11 @@ class FunctionInfo:
     is_async: bool = False
     docstring: str = ""
 
+
 @dataclass
 class ClassInfo:
     """Stores metrics for a single class."""
+
     name: str
     lineno: int
     end_lineno: int
@@ -122,9 +132,11 @@ class ClassInfo:
     complexity: int = 1
     docstring: str = ""
 
+
 @dataclass
 class ModuleInfo:
     """Stores analysis results for a single .py file."""
+
     path: Path
     module_name: str
     loc: int = 0
@@ -137,6 +149,7 @@ class ModuleInfo:
     uses_threading: bool = False
     is_ui_ml_mixed: bool = False
     docstring: str = ""
+
 
 @dataclass
 class CouplingMetrics:
@@ -151,13 +164,16 @@ class CouplingMetrics:
 
     Ideal: Domain = low I (stable), GUI = high I (unstable)
     """
+
     ca: int  # Afferent (incoming)
     ce: int  # Efferent (outgoing)
     instability: float  # I = Ce / (Ca + Ce)
 
+
 @dataclass
 class AnalysisResult:
     """Top-level container for the entire analysis."""
+
     root: Path
     modules: Dict[str, ModuleInfo] = field(default_factory=dict)
     graph: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
@@ -175,18 +191,15 @@ class AnalysisResult:
     layer_violations: List[Tuple[str, str, str]] = field(default_factory=list)
     coupling_metrics: Dict[str, CouplingMetrics] = field(default_factory=dict)
 
+
 # ----- AST Parser -----
 class AstParser:
     """
     Parses a single Python file using the AST module.
     Extracts metrics, imports, classes, functions, and Qt-specific patterns.
     """
-    def __init__(
-        self,
-        path: Path,
-        root: Path,
-        internal_module_names: Set[str]
-    ):
+
+    def __init__(self, path: Path, root: Path, internal_module_names: Set[str]):
         self.path: Path = path
         self.root: Path = root
         self.internal_module_names: Set[str] = internal_module_names
@@ -195,10 +208,7 @@ class AstParser:
         self.source_text: str = ""
         self.source_lines: List[str] = []
 
-        self.module_info = ModuleInfo(
-            path=path,
-            module_name=self.module_name
-        )
+        self.module_info = ModuleInfo(path=path, module_name=self.module_name)
 
     @staticmethod
     def _path_to_module(path: Path, root: Path) -> str:
@@ -206,11 +216,11 @@ class AstParser:
         try:
             rel = path.relative_to(root)
             parts = list(rel.parts)
-            if parts[-1].endswith('.py'):
+            if parts[-1].endswith(".py"):
                 parts[-1] = parts[-1][:-3]
-            if parts[-1] == '__init__':
+            if parts[-1] == "__init__":
                 parts.pop()
-            return '.'.join(parts)
+            return ".".join(parts)
         except ValueError:
             return path.name
 
@@ -220,10 +230,13 @@ class AstParser:
         if isinstance(node, ast.Module):
             if not self.source_lines:
                 return 0
-            return len([
-                line for line in self.source_lines
-                if line.strip() and not line.strip().startswith('#')
-            ])
+            return len(
+                [
+                    line
+                    for line in self.source_lines
+                    if line.strip() and not line.strip().startswith("#")
+                ]
+            )
 
         # For other nodes (Class, Function) - use lineno
         start = node.lineno
@@ -234,7 +247,7 @@ class AstParser:
         loc = 0
         for i in range(start - 1, min(end, len(self.source_lines))):
             line = self.source_lines[i].strip()
-            if line and not line.startswith('#'):
+            if line and not line.startswith("#"):
                 loc += 1
         return loc
 
@@ -254,7 +267,7 @@ class AstParser:
     def parse(self) -> ModuleInfo:
         """Main entry point: Parse the file and return ModuleInfo."""
         try:
-            self.source_text = self.path.read_text(encoding='utf-8', errors='ignore')
+            self.source_text = self.path.read_text(encoding="utf-8", errors="ignore")
             self.source_lines = self.source_text.splitlines()
 
             tree = ast.parse(self.source_text, filename=str(self.path))
@@ -282,6 +295,7 @@ class AstParser:
         if has_ui and has_ml:
             self.module_info.is_ui_ml_mixed = True
 
+
 class _ModuleVisitor(ast.NodeVisitor):
     """
     AST visitor that collects:
@@ -290,6 +304,7 @@ class _ModuleVisitor(ast.NodeVisitor):
     - Classes (with methods, LOC, CC)
     - Qt signals and connections
     """
+
     def __init__(self, parser: AstParser):
         self.parser = parser
         self.current_class: Optional[str] = None
@@ -298,7 +313,7 @@ class _ModuleVisitor(ast.NodeVisitor):
         """Handle `import foo` - collect FULL module path for internal imports"""
         for alias in node.names:
             full_module_name = alias.name
-            root_pkg = full_module_name.split('.')[0]
+            root_pkg = full_module_name.split(".")[0]
 
             if root_pkg in self.parser.internal_module_names:
                 # Add FULL module path (e.g., "src.domain.services.rsi_calculator")
@@ -322,7 +337,7 @@ class _ModuleVisitor(ast.NodeVisitor):
 
             # Go back node.level steps
             if node.level <= len(current_parts):
-                base_parts = current_parts[:-node.level]
+                base_parts = current_parts[: -node.level]
             else:
                 base_parts = []
 
@@ -333,7 +348,7 @@ class _ModuleVisitor(ast.NodeVisitor):
                 full_module = ".".join(base_parts) if base_parts else ""
 
             if full_module:
-                root_pkg = full_module.split('.')[0]
+                root_pkg = full_module.split(".")[0]
                 if root_pkg in self.parser.internal_module_names:
                     self.parser.module_info.imports_internal.add(full_module)
                 else:
@@ -348,7 +363,7 @@ class _ModuleVisitor(ast.NodeVisitor):
             return
 
         base_module = node.module
-        root_pkg = base_module.split('.')[0]
+        root_pkg = base_module.split(".")[0]
 
         if root_pkg in self.parser.internal_module_names:
             # Add the base module path (e.g., "src.domain.services.rsi_calculator")
@@ -368,8 +383,8 @@ class _ModuleVisitor(ast.NodeVisitor):
             name=node.name,
             lineno=node.lineno,
             end_lineno=node.end_lineno or node.lineno,
-            is_public=not node.name.startswith('_'),
-            is_async=False
+            is_public=not node.name.startswith("_"),
+            is_async=False,
         )
 
         func_info.loc = self.parser._get_loc(node)
@@ -390,8 +405,8 @@ class _ModuleVisitor(ast.NodeVisitor):
             name=node.name,
             lineno=node.lineno,
             end_lineno=node.end_lineno or node.lineno,
-            is_public=not node.name.startswith('_'),
-            is_async=True
+            is_public=not node.name.startswith("_"),
+            is_async=True,
         )
 
         func_info.loc = self.parser._get_loc(node)
@@ -414,7 +429,7 @@ class _ModuleVisitor(ast.NodeVisitor):
             name=node.name,
             lineno=node.lineno,
             end_lineno=node.end_lineno or node.lineno,
-            bases=bases
+            bases=bases,
         )
 
         class_info.loc = self.parser._get_loc(node)
@@ -433,7 +448,7 @@ class _ModuleVisitor(ast.NodeVisitor):
                                 signal_info = {
                                     "name": target.id,
                                     "class": node.name,
-                                    "lineno": item.lineno
+                                    "lineno": item.lineno,
                                 }
                                 class_info.qt_signals.append(signal_info)
                                 self.parser.module_info.qt_signals.append(signal_info)
@@ -468,12 +483,14 @@ class _ModuleVisitor(ast.NodeVisitor):
 
         self.generic_visit(node)
 
+
 # ----- Main Analyzer -----
 class ProjectAnalyzer:
     """
     Main orchestrator: Collects all Python files, runs AST parsing,
     builds import graph, detects cycles, and identifies hotspots.
     """
+
     def __init__(self, root: Path, out_dir: Path, ignore_file: Optional[str] = None):
         self.root = root
         self.out_dir = out_dir
@@ -481,10 +498,10 @@ class ProjectAnalyzer:
 
         self.exclude_dirs = EXCLUDE_DIRS_DEFAULT.copy()
         if ignore_file and Path(ignore_file).exists():
-            with open(ignore_file, 'r') as f:
+            with open(ignore_file, "r") as f:
                 for line in f:
                     line = line.strip()
-                    if line and not line.startswith('#'):
+                    if line and not line.startswith("#"):
                         self.exclude_dirs.add(line)
 
         self.result = AnalysisResult(root=root)
@@ -521,7 +538,9 @@ class ProjectAnalyzer:
 
         # Debug info
         total_edges = sum(len(deps) for deps in self.result.graph.values())
-        unknown_count = sum(1 for m in self.result.modules.keys() if self._get_layer(m) == "unknown")
+        unknown_count = sum(
+            1 for m in self.result.modules.keys() if self._get_layer(m) == "unknown"
+        )
 
         print("✅ Analízis kész!")
         print(f"   📊 {len(self.result.modules)} modul, {total_edges} függőség")
@@ -547,7 +566,7 @@ class ProjectAnalyzer:
             try:
                 rel = py_file.relative_to(self.root)
                 if rel.parts:
-                    internal.add(rel.parts[0].replace('.py', ''))
+                    internal.add(rel.parts[0].replace(".py", ""))
             except ValueError:
                 pass
         return internal
@@ -607,24 +626,17 @@ class ProjectAnalyzer:
                     god_class_modules.add(module_name)
 
                 # Class-level LOC/CC
-                loc_cc_items.append((
-                    f"{module_name}.{cls_name}",
-                    cls_info
-                ))
+                loc_cc_items.append((f"{module_name}.{cls_name}", cls_info))
 
                 # Method-level LOC/CC
                 for method_name, method_info in cls_info.methods.items():
-                    loc_cc_items.append((
-                        f"{module_name}.{cls_name}.{method_name}",
-                        method_info
-                    ))
+                    loc_cc_items.append(
+                        (f"{module_name}.{cls_name}.{method_name}", method_info)
+                    )
 
             # Function-level LOC/CC
             for func_name, func_info in module_info.functions.items():
-                loc_cc_items.append((
-                    f"{module_name}.{func_name}",
-                    func_info
-                ))
+                loc_cc_items.append((f"{module_name}.{func_name}", func_info))
 
             # Mixed layers
             if module_info.is_ui_ml_mixed:
@@ -655,11 +667,20 @@ class ProjectAnalyzer:
         """
         if module_name.startswith("src.domain") or module_name.startswith("domain"):
             return "domain"
-        elif module_name.startswith("src.application") or module_name.startswith("application"):
+        elif module_name.startswith("src.application") or module_name.startswith(
+            "application"
+        ):
             return "application"
-        elif module_name.startswith("src.infrastructure") or module_name.startswith("infrastructure"):
+        elif module_name.startswith("src.infrastructure") or module_name.startswith(
+            "infrastructure"
+        ):
             return "infrastructure"
-        elif module_name.startswith("src.gui") or module_name.startswith("gui") or module_name.startswith("src.ui") or module_name.startswith("ui"):
+        elif (
+            module_name.startswith("src.gui")
+            or module_name.startswith("gui")
+            or module_name.startswith("src.ui")
+            or module_name.startswith("ui")
+        ):
             return "gui"
         elif module_name in ("main", "src.main", "app", "src.app"):
             return "entrypoints"
@@ -721,24 +742,26 @@ class ProjectAnalyzer:
             # Handle division by zero
             instability = ce / (ca + ce) if (ca + ce) > 0 else 0.0
 
-            metrics[module] = CouplingMetrics(
-                ca=ca,
-                ce=ce,
-                instability=instability
-            )
+            metrics[module] = CouplingMetrics(ca=ca, ce=ce, instability=instability)
 
         self.result.coupling_metrics = metrics
+
 
 # ----- Report Generator -----
 class ReportGenerator:
     """Generates output reports in multiple formats: MD, JSON, HTML, DOT, CSV."""
+
     def __init__(self, result: AnalysisResult, out_dir: Path):
         self.result = result
         self.out_dir = out_dir
 
     def generate(self, format_choice: str, open_html: bool = False) -> None:
         """Generate reports based on format choice."""
-        formats = [format_choice] if format_choice != "all" else ["md", "json", "html", "dot", "csv"]
+        formats = (
+            [format_choice]
+            if format_choice != "all"
+            else ["md", "json", "html", "dot", "csv"]
+        )
 
         html_file = None
         for fmt in formats:
@@ -761,7 +784,7 @@ class ReportGenerator:
         """Generate comprehensive Markdown report with 6 sections."""
         md_file = self.out_dir / "analysis_summary.md"
 
-        with open(md_file, 'w', encoding='utf-8') as f:
+        with open(md_file, "w", encoding="utf-8") as f:
             f.write(f"# Projekt Analízis Riport: {self.result.root.name}\n\n")
             f.write(f"**Generálva:** {self.result.timestamp}\n\n")
             f.write("---\n\n")
@@ -772,7 +795,9 @@ class ReportGenerator:
             total_modules = len(self.result.modules)
             total_loc = sum(m.loc for m in self.result.modules.values())
             total_classes = sum(len(m.classes) for m in self.result.modules.values())
-            total_functions = sum(len(m.functions) for m in self.result.modules.values())
+            total_functions = sum(
+                len(m.functions) for m in self.result.modules.values()
+            )
 
             f.write(f"- **Modulok:** {total_modules}\n")
             f.write(f"- **LOC (összesen):** {total_loc:,}\n")
@@ -792,7 +817,9 @@ class ReportGenerator:
                 for mod in self.result.hotspots_god_class[:10]:
                     for cls_name, cls_info in mod.classes.items():
                         if cls_info.loc > 300:
-                            f.write(f"- **{mod.module_name}.{cls_name}**: {cls_info.loc} LOC\n")
+                            f.write(
+                                f"- **{mod.module_name}.{cls_name}**: {cls_info.loc} LOC\n"
+                            )
                 f.write("\n")
 
             f.write("### Complex Functions/Methods (Top 10)\n")
@@ -813,9 +840,7 @@ class ReportGenerator:
 
             f.write("### Top 10 Fan-In (Legtöbb bejövő függőség)\n")
             sorted_fan_in = sorted(
-                self.result.fan_in.items(),
-                key=lambda x: x[1],
-                reverse=True
+                self.result.fan_in.items(), key=lambda x: x[1], reverse=True
             )[:10]
 
             for module, count in sorted_fan_in:
@@ -824,9 +849,7 @@ class ReportGenerator:
 
             f.write("### Top 10 Fan-Out (Legtöbb kimenő függőség)\n")
             sorted_fan_out = sorted(
-                self.result.fan_out.items(),
-                key=lambda x: x[1],
-                reverse=True
+                self.result.fan_out.items(), key=lambda x: x[1], reverse=True
             )[:10]
 
             for module, count in sorted_fan_out:
@@ -848,9 +871,7 @@ class ReportGenerator:
             f.write("## 4. 📦 Részletes Modul Breakdown (Top 50)\n\n")
 
             modules_sorted = sorted(
-                self.result.modules.values(),
-                key=lambda m: m.loc,
-                reverse=True
+                self.result.modules.values(), key=lambda m: m.loc, reverse=True
             )[:50]
 
             for mod in modules_sorted:
@@ -859,17 +880,23 @@ class ReportGenerator:
                 f.write(f"- **Classes:** {len(mod.classes)}\n")
                 f.write(f"- **Functions:** {len(mod.functions)}\n")
                 f.write(f"- **Fan-In:** {self.result.fan_in.get(mod.module_name, 0)}\n")
-                f.write(f"- **Fan-Out:** {self.result.fan_out.get(mod.module_name, 0)}\n")
+                f.write(
+                    f"- **Fan-Out:** {self.result.fan_out.get(mod.module_name, 0)}\n"
+                )
 
                 if mod.classes:
                     f.write("- **Classes:**\n")
                     for cls_name, cls_info in list(mod.classes.items())[:5]:
-                        f.write(f"  - `{cls_name}`: {cls_info.loc} LOC, {cls_info.complexity} CC\n")
+                        f.write(
+                            f"  - `{cls_name}`: {cls_info.loc} LOC, {cls_info.complexity} CC\n"
+                        )
 
                 if mod.functions:
                     f.write("- **Functions:**\n")
                     for func_name, func_info in list(mod.functions.items())[:5]:
-                        f.write(f"  - `{func_name}`: {func_info.loc} LOC, {func_info.complexity} CC\n")
+                        f.write(
+                            f"  - `{func_name}`: {func_info.loc} LOC, {func_info.complexity} CC\n"
+                        )
 
                 f.write("\n")
 
@@ -878,25 +905,36 @@ class ReportGenerator:
 
             # Count unknown modules
             unknown_modules = [
-                mod for mod in self.result.modules.keys()
+                mod
+                for mod in self.result.modules.keys()
                 if self._get_layer(mod) == "unknown"
             ]
 
             if unknown_modules:
-                f.write(f"⚠️ **FIGYELEM:** {len(unknown_modules)} modul nem kategorizálható (unknown layer).\n")
-                f.write("Ezek a modulok nem lesznek ellenőrizve Clean Architecture szabályok ellen.\n")
+                f.write(
+                    f"⚠️ **FIGYELEM:** {len(unknown_modules)} modul nem kategorizálható (unknown layer).\n"
+                )
+                f.write(
+                    "Ezek a modulok nem lesznek ellenőrizve Clean Architecture szabályok ellen.\n"
+                )
                 f.write(f"Példák: {', '.join(list(unknown_modules)[:5])}\n\n")
 
             if not self.result.layer_violations:
-                f.write("✅ **Nem találtunk réteg sértéseket!** Clean Architecture OK.\n\n")
+                f.write(
+                    "✅ **Nem találtunk réteg sértéseket!** Clean Architecture OK.\n\n"
+                )
                 f.write("A projekt követi a Clean Architecture Dependency Rule-t:\n")
                 f.write("- Domain réteg NEM függ senkitől ✅\n")
                 f.write("- Application csak Domain-től függ ✅\n")
                 f.write("- Infrastructure Domain + Application-től függ ✅\n")
                 f.write("- GUI Application + Infrastructure-től függ ✅\n\n")
             else:
-                f.write(f"⚠️ **{len(self.result.layer_violations)} réteg sértés találva:**\n\n")
-                f.write("A Clean Architecture Dependency Rule alapján ezek a függőségek TILOSAK:\n\n")
+                f.write(
+                    f"⚠️ **{len(self.result.layer_violations)} réteg sértés találva:**\n\n"
+                )
+                f.write(
+                    "A Clean Architecture Dependency Rule alapján ezek a függőségek TILOSAK:\n\n"
+                )
 
                 # Group by from_layer
                 by_layer = defaultdict(list)
@@ -931,7 +969,7 @@ class ReportGenerator:
             sorted_modules = sorted(
                 self.result.coupling_metrics.items(),
                 key=lambda x: x[1].instability,
-                reverse=True
+                reverse=True,
             )[:10]
 
             f.write("| Modul | Ca (in) | Ce (out) | Instability | Értékelés |\n")
@@ -945,16 +983,17 @@ class ReportGenerator:
                 else:
                     assessment = "✅ Stabil"
 
-                f.write(f"| `{module}` | {metrics.ca} | {metrics.ce} | "
-                        f"{metrics.instability:.2f} | {assessment} |\n")
+                f.write(
+                    f"| `{module}` | {metrics.ca} | {metrics.ce} | "
+                    f"{metrics.instability:.2f} | {assessment} |\n"
+                )
 
             f.write("\n")
 
             f.write("### Top 10 Legstabilabb Modulok\n\n")
 
             sorted_stable = sorted(
-                self.result.coupling_metrics.items(),
-                key=lambda x: x[1].instability
+                self.result.coupling_metrics.items(), key=lambda x: x[1].instability
             )[:10]
 
             f.write("| Modul | Ca (in) | Ce (out) | Instability | Értékelés |\n")
@@ -968,8 +1007,10 @@ class ReportGenerator:
                 else:
                     assessment = "🟡 Közepesen stabil"
 
-                f.write(f"| `{module}` | {metrics.ca} | {metrics.ce} | "
-                        f"{metrics.instability:.2f} | {assessment} |\n")
+                f.write(
+                    f"| `{module}` | {metrics.ca} | {metrics.ce} | "
+                    f"{metrics.instability:.2f} | {assessment} |\n"
+                )
 
             f.write("\n")
 
@@ -979,11 +1020,20 @@ class ReportGenerator:
         """Helper method for markdown report - determines layer (NO trailing dot!)"""
         if module_name.startswith("src.domain") or module_name.startswith("domain"):
             return "domain"
-        elif module_name.startswith("src.application") or module_name.startswith("application"):
+        elif module_name.startswith("src.application") or module_name.startswith(
+            "application"
+        ):
             return "application"
-        elif module_name.startswith("src.infrastructure") or module_name.startswith("infrastructure"):
+        elif module_name.startswith("src.infrastructure") or module_name.startswith(
+            "infrastructure"
+        ):
             return "infrastructure"
-        elif module_name.startswith("src.gui") or module_name.startswith("gui") or module_name.startswith("src.ui") or module_name.startswith("ui"):
+        elif (
+            module_name.startswith("src.gui")
+            or module_name.startswith("gui")
+            or module_name.startswith("src.ui")
+            or module_name.startswith("ui")
+        ):
             return "gui"
         elif module_name in ("main", "src.main", "app", "src.app"):
             return "entrypoints"
@@ -1012,32 +1062,35 @@ class ReportGenerator:
             "summary": {
                 "total_modules": len(self.result.modules),
                 "total_loc": sum(m.loc for m in self.result.modules.values()),
-                "total_classes": sum(len(m.classes) for m in self.result.modules.values()),
-                "total_functions": sum(len(m.functions) for m in self.result.modules.values()),
+                "total_classes": sum(
+                    len(m.classes) for m in self.result.modules.values()
+                ),
+                "total_functions": sum(
+                    len(m.functions) for m in self.result.modules.values()
+                ),
                 "cycles_count": len(self.result.cycles),
                 "external_deps_count": len(self.result.external_deps),
-                "layer_violations_count": len(self.result.layer_violations)
+                "layer_violations_count": len(self.result.layer_violations),
             },
             "modules": {
                 name: dataclasses.asdict(mod)
                 for name, mod in self.result.modules.items()
             },
-            "graph": {
-                module: list(deps)
-                for module, deps in self.result.graph.items()
-            },
+            "graph": {module: list(deps) for module, deps in self.result.graph.items()},
             "fan_in": dict(self.result.fan_in),
             "fan_out": dict(self.result.fan_out),
             "cycles": self.result.cycles,
             "external_deps": dict(self.result.external_deps),
             "hotspots": {
                 "god_classes": [m.module_name for m in self.result.hotspots_god_class],
-                "mixed_layers": [m.module_name for m in self.result.hotspots_mixed_layer],
+                "mixed_layers": [
+                    m.module_name for m in self.result.hotspots_mixed_layer
+                ],
                 "threading": [m.module_name for m in self.result.hotspots_threading],
                 "loc_cc_top_20": [
                     {"name": name, "loc": info.loc, "complexity": info.complexity}
                     for name, info in self.result.hotspots_loc_cc[:20]
-                ]
+                ],
             },
             "layer_violations": [
                 {"from": from_mod, "to": to_mod, "reason": reason}
@@ -1046,10 +1099,10 @@ class ReportGenerator:
             "coupling_metrics": {
                 module: dataclasses.asdict(metrics)
                 for module, metrics in self.result.coupling_metrics.items()
-            }
+            },
         }
 
-        with open(json_file, 'w', encoding='utf-8') as f:
+        with open(json_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, default=default_encoder, ensure_ascii=False)
 
         print(f"✅ JSON struktura létrehozva: {json_file}")
@@ -1066,11 +1119,11 @@ class ReportGenerator:
         # Build violations set for quick lookup
         violations_set = {(v[0], v[1]) for v in self.result.layer_violations}
 
-        with open(dot_file, 'w', encoding='utf-8') as f:
-            f.write('digraph ImportGraph {\n')
-            f.write('  rankdir=LR;\n')
-            f.write('  node [shape=box, style=filled];\n')
-            f.write('  edge [color=gray];\n\n')
+        with open(dot_file, "w", encoding="utf-8") as f:
+            f.write("digraph ImportGraph {\n")
+            f.write("  rankdir=LR;\n")
+            f.write("  node [shape=box, style=filled];\n")
+            f.write("  edge [color=gray];\n\n")
 
             # Apply layer-based colors to nodes
             for module in self.result.graph.keys():
@@ -1090,7 +1143,7 @@ class ReportGenerator:
                         # Normal edge
                         f.write(f'  "{module}" -> "{dep}";\n')
 
-            f.write('}\n')
+            f.write("}\n")
 
         print(f"✅ DOT gráf létrehozva: {dot_file}")
 
@@ -1098,10 +1151,10 @@ class ReportGenerator:
         png_file = self.out_dir / "import_graph.png"
         try:
             result = subprocess.run(
-                ['dot', '-Tpng', str(dot_file), '-o', str(png_file)],
+                ["dot", "-Tpng", str(dot_file), "-o", str(png_file)],
                 capture_output=True,
                 text=True,
-                timeout=30
+                timeout=30,
             )
             if result.returncode == 0:
                 print(f"✅ PNG gráf generálva: {png_file}")
@@ -1118,7 +1171,7 @@ class ReportGenerator:
         """Generate CSV reports for hotspots and Qt signals/slots."""
         # Hotspots CSV
         hotspots_csv = self.out_dir / "hotspots.csv"
-        with open(hotspots_csv, 'w', newline='', encoding='utf-8') as f:
+        with open(hotspots_csv, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(["Type", "Module", "Name", "LOC", "Complexity"])
 
@@ -1126,43 +1179,43 @@ class ReportGenerator:
             for mod in self.result.hotspots_god_class[:30]:
                 for cls_name, cls_info in mod.classes.items():
                     if cls_info.loc > 300:
-                        writer.writerow([
-                            "GodClass",
-                            mod.module_name,
-                            cls_name,
-                            cls_info.loc,
-                            cls_info.complexity
-                        ])
+                        writer.writerow(
+                            [
+                                "GodClass",
+                                mod.module_name,
+                                cls_name,
+                                cls_info.loc,
+                                cls_info.complexity,
+                            ]
+                        )
 
             # Long/Complex Functions
             for name, info in self.result.hotspots_loc_cc[:50]:
-                parts = name.rsplit('.', 1)
+                parts = name.rsplit(".", 1)
                 module = parts[0] if len(parts) > 1 else name
                 func_name = parts[1] if len(parts) > 1 else name
-                writer.writerow([
-                    "Function",
-                    module,
-                    func_name,
-                    info.loc,
-                    info.complexity
-                ])
+                writer.writerow(
+                    ["Function", module, func_name, info.loc, info.complexity]
+                )
 
         print(f"✅ Hotspots CSV létrehozva: {hotspots_csv}")
 
         # Qt Signals/Slots CSV
         qt_csv = self.out_dir / "qt_signals_slots.csv"
-        with open(qt_csv, 'w', newline='', encoding='utf-8') as f:
+        with open(qt_csv, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(["Module", "Class", "Signal", "Line"])
 
             for mod in self.result.modules.values():
                 for signal_info in mod.qt_signals:
-                    writer.writerow([
-                        mod.module_name,
-                        signal_info.get("class", ""),
-                        signal_info.get("name", ""),
-                        signal_info.get("lineno", "")
-                    ])
+                    writer.writerow(
+                        [
+                            mod.module_name,
+                            signal_info.get("class", ""),
+                            signal_info.get("name", ""),
+                            signal_info.get("lineno", ""),
+                        ]
+                    )
 
         print(f"✅ Qt signals CSV létrehozva: {qt_csv}")
 
@@ -1179,11 +1232,9 @@ class ReportGenerator:
         for module, deps in self.result.graph.items():
             for dep in deps:
                 is_violation = (module, dep) in violations_set
-                links.append({
-                    "source": module,
-                    "target": dep,
-                    "violation": is_violation
-                })
+                links.append(
+                    {"source": module, "target": dep, "violation": is_violation}
+                )
 
         # Prepare hotspots table HTML
         hotspot_rows = []
@@ -1192,21 +1243,21 @@ class ReportGenerator:
         for mod in self.result.hotspots_god_class[:30]:
             for cls_name, cls_info in mod.classes.items():
                 hotspot_rows.append(
-                    f'<tr><td>GodClass</td><td>{mod.module_name}</td>'
-                    f'<td>{cls_name}</td><td>{cls_info.loc}</td><td>{cls_info.complexity}</td></tr>'
+                    f"<tr><td>GodClass</td><td>{mod.module_name}</td>"
+                    f"<td>{cls_name}</td><td>{cls_info.loc}</td><td>{cls_info.complexity}</td></tr>"
                 )
 
         # Add long/complex functions
         for name, info in self.result.hotspots_loc_cc[:50]:
-            parts = name.rsplit('.', 1)
+            parts = name.rsplit(".", 1)
             module = parts[0] if len(parts) > 1 else name
             func_name = parts[1] if len(parts) > 1 else name
             hotspot_rows.append(
-                f'<tr><td>method</td><td>{module}</td>'
-                f'<td>{func_name}</td><td>{info.loc}</td><td>{info.complexity}</td></tr>'
+                f"<tr><td>method</td><td>{module}</td>"
+                f"<td>{func_name}</td><td>{info.loc}</td><td>{info.complexity}</td></tr>"
             )
 
-        hotspots_html = '\n'.join(hotspot_rows)
+        hotspots_html = "\n".join(hotspot_rows)
 
         # Prepare violations table HTML
         violations_html = ""
@@ -1214,9 +1265,9 @@ class ReportGenerator:
             violations_rows = []
             for from_mod, to_mod, reason in self.result.layer_violations[:50]:
                 violations_rows.append(
-                    f'<tr><td>{from_mod}</td><td>{to_mod}</td><td>{reason}</td></tr>'
+                    f"<tr><td>{from_mod}</td><td>{to_mod}</td><td>{reason}</td></tr>"
                 )
-            violations_html = '\n'.join(violations_rows)
+            violations_html = "\n".join(violations_rows)
 
         violations_section = ""
         if self.result.layer_violations:
@@ -1449,11 +1500,12 @@ class ReportGenerator:
 </body>
 </html>"""
 
-        with open(html_file, 'w', encoding='utf-8') as f:
+        with open(html_file, "w", encoding="utf-8") as f:
             f.write(html_content)
 
         print(f"✅ HTML riport létrehozva: {html_file}")
         return html_file
+
 
 # ----- CLI -----
 def main():
@@ -1478,14 +1530,14 @@ def main():
           - Detects layer violations (e.g., GUI → Domain direct call)
           - Calculates coupling metrics (Ca, Ce, Instability)
           - Color-coded visualization (Blue=Domain, Green=Application, etc.)
-        """)
+        """),
     )
 
     parser.add_argument(
         "--root",
         type=str,
         default=".",
-        help="A projekt gyökérkönyvtára (default: aktuális könyvtár)"
+        help="A projekt gyökérkönyvtára (default: aktuális könyvtár)",
     )
 
     parser.add_argument(
@@ -1493,26 +1545,26 @@ def main():
         type=str,
         choices=["all", "html", "md", "json", "dot", "csv"],
         default="all",
-        help="Kimeneti formátum (default: all = minden formátum)"
+        help="Kimeneti formátum (default: all = minden formátum)",
     )
 
     parser.add_argument(
         "--out",
         type=str,
         default="analysis_out",
-        help="Kimeneti könyvtár (default: analysis_out)"
+        help="Kimeneti könyvtár (default: analysis_out)",
     )
 
     parser.add_argument(
         "--open",
         action="store_true",
-        help="HTML riport automatikus megnyitása böngészőben"
+        help="HTML riport automatikus megnyitása böngészőben",
     )
 
     parser.add_argument(
         "--ignore-file",
         type=str,
-        help="Kizárandó könyvtárak listája (soronként egy név)"
+        help="Kizárandó könyvtárak listája (soronként egy név)",
     )
 
     args = parser.parse_args()
@@ -1525,6 +1577,7 @@ def main():
 
     generator = ReportGenerator(result, out_dir)
     generator.generate(args.format, args.open)
+
 
 if __name__ == "__main__":
     main()

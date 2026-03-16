@@ -14,6 +14,108 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/hungary", tags=["hungary"])
 
 
+def _normalize_county_name(county_name: str) -> str:
+    """Normalize special county labels."""
+    return "Budapest" if county_name.lower() in ["főváros", "budapest"] else county_name
+
+
+def _sort_counties(counties: list[str]) -> list[str]:
+    """Sort counties alphabetically with Budapest normalized."""
+    return sorted(
+        counties,
+        key=lambda county_name: (
+            "Budapest" if county_name == "Budapest" else county_name
+        ).lower(),
+    )
+
+
+def _build_coordinate_payload(
+    city_data: dict, fallback_county: Optional[str] = None
+) -> dict | None:
+    """Build optional coordinate payload."""
+    if not city_data.get("lat") or not city_data.get("lon"):
+        return None
+    return {
+        "lat": city_data.get("lat"),
+        "lon": city_data.get("lon"),
+    }
+
+
+def _serialize_settlement(city_data: dict, fallback_county: Optional[str]) -> dict:
+    """Serialize one settlement payload."""
+    return {
+        "name": city_data.get("city"),
+        "county": city_data.get("megye") or fallback_county,
+        "settlement_type": city_data.get("settlement_type"),
+        "coordinates": _build_coordinate_payload(city_data, fallback_county),
+        "population": city_data.get("population"),
+        "region_priority": city_data.get("region_priority"),
+    }
+
+
+def _serialize_station(city_data: dict) -> dict:
+    """Serialize one weather station payload."""
+    return {
+        "id": f"HU-{city_data.get('id')}",
+        "name": city_data.get("city"),
+        "county": city_data.get("megye"),
+        "settlement_type": city_data.get("settlement_type"),
+        "coordinates": _build_coordinate_payload(city_data),
+        "population": city_data.get("population"),
+        "region_priority": city_data.get("region_priority"),
+    }
+
+
+def _fetch_settlements(
+    city_manager: CityManagerPort, county: Optional[str], limit: int
+) -> list[dict]:
+    """Fetch settlement data with optional county filter."""
+    if county:
+        return city_manager.get_cities_for_hungarian_county(county)
+    return city_manager.get_cities_for_region("Hungary", limit=limit)
+
+
+def _filter_settlements_by_type(
+    cities: list[dict], settlement_type: Optional[str]
+) -> list[dict]:
+    """Filter settlement results by settlement type when requested."""
+    if not settlement_type:
+        return cities
+    return [city for city in cities if city.get("settlement_type") == settlement_type]
+
+
+def _build_settlements_response(
+    cities: list[dict],
+    county: Optional[str],
+    settlement_type: Optional[str],
+) -> dict:
+    """Build serialized settlement response payload."""
+    return {
+        "count": len(cities),
+        "filter": {"county": county, "settlement_type": settlement_type},
+        "settlements": [
+            _serialize_settlement(city_data, county) for city_data in cities
+        ],
+    }
+
+
+def _fetch_station_candidates(
+    city_manager: CityManagerPort, county: Optional[str], limit: int
+) -> list[dict]:
+    """Fetch candidate station settlements."""
+    if county:
+        return city_manager.get_cities_for_hungarian_county(county)[:limit]
+
+    all_cities: list[dict] = []
+    for county_name in city_manager.get_hungarian_counties():
+        if not county_name:
+            continue
+        all_cities.extend(city_manager.get_cities_for_hungarian_county(county_name))
+        if len(all_cities) >= limit * 2:
+            break
+    return all_cities
+
+
 def _get_city_manager() -> CityManagerPort:
     """Get city manager instance through port (CA compliant)."""
     return get_city_manager_port()
@@ -33,19 +135,12 @@ async def get_hungarian_counties() -> dict:
         counties = city_manager.get_hungarian_counties()
 
         # Clean up: remove empty strings, normalize "főváros" → "Budapest"
-        cleaned = []
-        for c in counties:
-            if not c or not c.strip():
-                continue
-            if c.lower() in ["főváros", "budapest"]:
-                cleaned.append("Budapest")
-            else:
-                cleaned.append(c)
-
-        # Sort alphabetically (Budapest first)
-        cleaned = sorted(
-            cleaned, key=lambda x: ("Budapest" if x == "Budapest" else x).lower()
-        )
+        cleaned = [
+            _normalize_county_name(county_name)
+            for county_name in counties
+            if county_name and county_name.strip()
+        ]
+        cleaned = _sort_counties(cleaned)
 
         return {"count": len(cleaned), "counties": cleaned}
 
@@ -105,43 +200,10 @@ async def get_hungarian_settlements(
     """
     try:
         city_manager = _get_city_manager()
-
-        if county:
-            # Get settlements for specific county
-            cities = city_manager.get_cities_for_hungarian_county(county)
-        else:
-            # Get all Hungarian settlements (limited)
-            cities = city_manager.get_cities_for_region("Hungary", limit=limit)
-
-        # Apply additional filters if needed
-        if settlement_type:
-            # Filter by settlement type
-            cities = [c for c in cities if c.get("settlement_type") == settlement_type]
-
-        # Limit results
+        cities = _fetch_settlements(city_manager, county, limit)
+        cities = _filter_settlements_by_type(cities, settlement_type)
         cities = cities[:limit]
-
-        return {
-            "count": len(cities),
-            "filter": {"county": county, "settlement_type": settlement_type},
-            "settlements": [
-                {
-                    "name": city_data.get("city"),
-                    "county": city_data.get("megye")
-                    or county,  # Use megye field or filter county
-                    "settlement_type": city_data.get("settlement_type"),
-                    "coordinates": {
-                        "lat": city_data.get("lat"),
-                        "lon": city_data.get("lon"),
-                    }
-                    if city_data.get("lat") and city_data.get("lon")
-                    else None,
-                    "population": city_data.get("population"),
-                    "region_priority": city_data.get("region_priority"),
-                }
-                for city_data in cities
-            ],
-        }
+        return _build_settlements_response(cities, county, settlement_type)
 
     except Exception as exc:
         logger.error("Error getting Hungarian settlements: %s", exc, exc_info=True)
@@ -169,41 +231,8 @@ async def get_hungarian_weather_stations(
     """
     try:
         city_manager = _get_city_manager()
-
-        # Get all Hungarian settlements by searching for each county
-        all_cities = []
-        if county:
-            # Get settlements for specific county
-            cities = city_manager.get_cities_for_hungarian_county(county)
-            all_cities = cities[:limit]
-        else:
-            # Get settlements from all counties (limit per county)
-            for county_name in city_manager.get_hungarian_counties():
-                if not county_name:
-                    continue
-                cities = city_manager.get_cities_for_hungarian_county(county_name)
-                all_cities.extend(cities)
-                if len(all_cities) >= limit * 2:  # Get more than needed for filtering
-                    break
-
-        # Transform to station format
-        stations = [
-            {
-                "id": f"HU-{city_data.get('id')}",
-                "name": city_data.get("city"),
-                "county": city_data.get("megye"),
-                "settlement_type": city_data.get("settlement_type"),
-                "coordinates": {
-                    "lat": city_data.get("lat"),
-                    "lon": city_data.get("lon"),
-                }
-                if city_data.get("lat") and city_data.get("lon")
-                else None,
-                "population": city_data.get("population"),
-                "region_priority": city_data.get("region_priority"),
-            }
-            for city_data in all_cities[:limit]
-        ]
+        all_cities = _fetch_station_candidates(city_manager, county, limit)
+        stations = [_serialize_station(city_data) for city_data in all_cities[:limit]]
 
         return {
             "count": len(stations),

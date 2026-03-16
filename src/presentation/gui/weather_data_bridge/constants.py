@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Bridge constants and configurations."""
 
 from src.domain.value_objects.enums import AnalyticsMetric

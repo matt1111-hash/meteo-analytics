@@ -11,6 +11,12 @@ import pytest
 from src import config
 
 
+@pytest.fixture(params=["asyncio"])
+def anyio_backend() -> str:
+    """Run anyio tests only on the supported asyncio backend."""
+    return "asyncio"
+
+
 @pytest.fixture(name="config_fs")
 def fixture_config_fs(monkeypatch: pytest.MonkeyPatch) -> Dict[str, str]:
     """Egyszerű in-memory fájlrendszer a konfig tesztekhez."""

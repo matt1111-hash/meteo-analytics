@@ -4,7 +4,7 @@ import pytest
 
 pd = pytest.importorskip("pandas")
 
-from src.analytics import wind_analysis as wa
+from src.analytics import wind_analysis as wa  # noqa: E402
 
 
 def test_extract_daily_wind_data_prefers_gusts_and_filters_invalid_values():
@@ -76,7 +76,9 @@ def test_analyze_wind_patterns_computes_summary_across_months():
         }
     )
 
-    analysis = wa.analyze_wind_patterns(weather, location_name="Budapest", threshold_kmh=45.0)
+    analysis = wa.analyze_wind_patterns(
+        weather, location_name="Budapest", threshold_kmh=45.0
+    )
 
     assert analysis.location_name == "Budapest"
     assert analysis.total_days == 3

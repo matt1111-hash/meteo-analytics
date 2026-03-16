@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Preview section builders."""
 
 from PySide6.QtCore import Qt

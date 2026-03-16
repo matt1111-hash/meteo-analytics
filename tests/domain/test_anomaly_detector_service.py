@@ -1,4 +1,5 @@
 """Tests for AnomalyDetectorService."""
+
 from __future__ import annotations
 
 from datetime import date
@@ -227,21 +228,6 @@ def test_empty_inputs_return_none() -> None:
     thresholds = AnomalyThresholdSet.default()
     service = AnomalyDetectorService(thresholds)
 
-    assert (
-        service.detect_temperature_anomaly(
-            "Nowhere", date.today(), [], []
-        )
-        is None
-    )
-    assert (
-        service.detect_precipitation_anomaly(
-            "Nowhere", date.today(), []
-        )
-        is None
-    )
-    assert (
-        service.detect_wind_anomaly(
-            "Nowhere", date.today(), []
-        )
-        is None
-    )
+    assert service.detect_temperature_anomaly("Nowhere", date.today(), [], []) is None
+    assert service.detect_precipitation_anomaly("Nowhere", date.today(), []) is None
+    assert service.detect_wind_anomaly("Nowhere", date.today(), []) is None

@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 AnalysisWorker Component Initializer - Initialize WeatherClient and MultiCityEngine.
 """

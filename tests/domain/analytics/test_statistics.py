@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Tests for statistics helpers."""
+
+from __future__ import annotations
 
 from math import isclose
 from typing import List

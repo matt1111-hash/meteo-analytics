@@ -1,4 +1,5 @@
 """Tests for AnomalyThresholdSet value object."""
+
 from __future__ import annotations
 
 import pytest

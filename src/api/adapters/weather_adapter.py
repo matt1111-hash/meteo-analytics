@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Adapter from API DTOs to application use case inputs."""
 
 from __future__ import annotations

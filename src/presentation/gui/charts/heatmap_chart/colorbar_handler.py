@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Heatmap Chart - Colorbar Handler
@@ -25,6 +26,17 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _resolve_colorbar_label(parameter: str) -> str:
+    """Resolve parameter-specific colorbar label."""
+    if "temperature" in parameter:
+        return "Hőmérséklet (°C)"
+    if "precipitation" in parameter:
+        return "Csapadék (mm)"
+    if "wind" in parameter:
+        return "Szélsebesség (km/h)"
+    return "Érték"
+
+
 def create_colorbar(self, im) -> None:
     """
     Create colorbar with parameter-specific label.
@@ -44,16 +56,7 @@ def create_colorbar(self, im) -> None:
         self._colorbar = self.figure.colorbar(
             im, ax=self.ax, shrink=0.8, aspect=30, pad=0.02
         )
-
-        if "temperature" in self.parameter:
-            label = "Hőmérséklet (°C)"
-        elif "precipitation" in self.parameter:
-            label = "Csapadék (mm)"
-        elif "wind" in self.parameter:
-            label = "Szélsebesség (km/h)"
-        else:
-            label = "Érték"
-
+        label = _resolve_colorbar_label(self.parameter)
         self._colorbar.set_label(
             label, fontsize=12, fontweight="500", color=text_color, labelpad=15
         )

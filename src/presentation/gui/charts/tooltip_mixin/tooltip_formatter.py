@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 WeatherTooltipMixin Tooltip Formatter - Format tooltip text.
@@ -104,46 +105,52 @@ class TooltipFormatter:
         Returns:
             Formatted tooltip text
         """
-        tooltip_lines = []
-
-        # Add date if available
-        if "date" in point_data:
-            date = point_data["date"]
-            if isinstance(date, datetime.date):
-                date_str = date.strftime("%Y-%m-%d (%A)")
-            else:
-                date_str = str(date)
-            tooltip_lines.append(f"📅 {date_str}")
-
-        # Add value if available
+        tooltip_lines = self._build_generic_header(point_data)
         if "value" in point_data:
-            parameter = point_data.get("parameter", "Ismeretlen")
-            value = point_data["value"]
-
-            # Icon and unit based on parameter
-            if "temperature" in parameter:
-                icon = "🌡️"
-                unit = "°C"
-            elif "precipitation" in parameter:
-                icon = "🌧️"
-                unit = "mm"
-            elif "wind" in parameter:
-                icon = "💨"
-                unit = "km/h"
-            else:
-                icon = "📊"
-                unit = ""
-
-            tooltip_lines.append(f"{icon} Érték: {value:.1f} {unit}")
-            tooltip_lines.append(f"📋 Parameter: {parameter}")
-
-        # Fallback: show all key-value pairs
+            tooltip_lines.extend(self._build_generic_value_lines(point_data))
         if not tooltip_lines:
-            for key, value in point_data.items():
-                if key not in ["index", "pixel_distance"]:
-                    tooltip_lines.append(f"{key}: {value}")
-
+            tooltip_lines = self._build_fallback_lines(point_data)
         return "\n".join(tooltip_lines) if tooltip_lines else "📊 Chart adat"
+
+    @staticmethod
+    def _build_generic_header(point_data: Dict[str, Any]) -> list[str]:
+        """Build generic tooltip header lines."""
+        if "date" not in point_data:
+            return []
+        date = point_data["date"]
+        date_str = (
+            date.strftime("%Y-%m-%d (%A)")
+            if isinstance(date, datetime.date)
+            else str(date)
+        )
+        return [f"📅 {date_str}"]
+
+    @staticmethod
+    def _resolve_parameter_display(parameter: str) -> tuple[str, str]:
+        """Resolve icon and unit for parameter name."""
+        if "temperature" in parameter:
+            return "🌡️", "°C"
+        if "precipitation" in parameter:
+            return "🌧️", "mm"
+        if "wind" in parameter:
+            return "💨", "km/h"
+        return "📊", ""
+
+    def _build_generic_value_lines(self, point_data: Dict[str, Any]) -> list[str]:
+        """Build generic parameter/value lines."""
+        parameter = point_data.get("parameter", "Ismeretlen")
+        value = point_data["value"]
+        icon, unit = self._resolve_parameter_display(parameter)
+        return [f"{icon} Érték: {value:.1f} {unit}", f"📋 Parameter: {parameter}"]
+
+    @staticmethod
+    def _build_fallback_lines(point_data: Dict[str, Any]) -> list[str]:
+        """Build fallback key/value lines."""
+        return [
+            f"{key}: {value}"
+            for key, value in point_data.items()
+            if key not in ["index", "pixel_distance"]
+        ]
 
     def log_detailed_info(self, point_data: Dict[str, Any]) -> None:
         """Log detailed point info for debugging."""

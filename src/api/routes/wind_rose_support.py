@@ -1,0 +1,20 @@
+# ruff: noqa: F401,noqa: F401
+# mypy: ignore-errors
+"""Wind Rose API route - wind direction and speed distribution analysis."""
+
+from __future__ import annotations
+
+import logging
+from typing import Any, Dict, List
+
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, Field
+
+from src.data.weather_client_core import WeatherClient
+from src.infrastructure.container import get_city_manager_port
+
+logger = logging.getLogger(__name__)
+router = APIRouter(prefix="/api/weather", tags=["weather", "wind"])
+
+
+# Pydantic models for request/response

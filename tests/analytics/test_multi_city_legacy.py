@@ -4,7 +4,6 @@ Tests for src/analytics/multi_city_legacy.py
 Legacy wrapper functions for statistics
 """
 
-
 from src.analytics.multi_city_legacy import (
     safe_mean,
     safe_median,

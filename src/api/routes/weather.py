@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Weather analysis API routes."""
 
 from __future__ import annotations

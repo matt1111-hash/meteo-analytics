@@ -28,12 +28,13 @@ def test_location_to_universal_location_preserves_metadata() -> None:
     )
     # Convert Location to UniversalLocation using factory function
     from src.domain.entities.location_factories import create_universal_location
+
     converted = create_universal_location(
         location_type=LocationType.MICRO_REGION,
         identifier=location.identifier,
         display_name=location.display_name,
         coordinates=(location.latitude, location.longitude),
-        climate_zone=location.metadata.get("climate_zone")
+        climate_zone=location.metadata.get("climate_zone"),
     )
     assert converted.type == LocationType.MICRO_REGION
     assert converted.coordinates == (47.4979, 19.0402)

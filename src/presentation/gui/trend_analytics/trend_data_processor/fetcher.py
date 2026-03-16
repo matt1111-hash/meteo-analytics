@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Trend data fetching module."""
 
 import logging

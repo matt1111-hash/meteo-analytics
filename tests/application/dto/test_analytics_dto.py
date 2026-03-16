@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Tests for application DTOs."""
 
-import pytest
 from datetime import date
 
 from src.application.dto.analytics_dto import (

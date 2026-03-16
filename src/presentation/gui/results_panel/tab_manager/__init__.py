@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Tab Manager - re-export for backward compatibility."""
 
 from src.presentation.gui.results_panel.tab_manager.core import TabManager

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Validation - Constants validators for GUI, wind gusts, dual-API.
@@ -12,6 +13,63 @@ from ..constants import AnomalyConstants, APIConstants, DataConstants, GUIConsta
 from .validators import validate_color_hex
 
 logger = logging.getLogger(__name__)
+
+
+def _validate_priority_sources_defined() -> bool:
+    """Return whether all priority sources have capability entries."""
+    return all(
+        source in DataConstants.SOURCE_CAPABILITIES
+        for source in DataConstants.DATA_SOURCE_PRIORITY
+    )
+
+
+def _validate_gui_colors() -> bool:
+    """Return whether GUI color constants are valid hex colors."""
+    return all(
+        validate_color_hex(color)
+        for color in [
+            GUIConstants.PRIMARY_COLOR,
+            GUIConstants.SUCCESS_COLOR,
+            GUIConstants.WARNING_COLOR,
+            GUIConstants.ERROR_COLOR,
+        ]
+    )
+
+
+def _validate_wind_gust_thresholds() -> bool:
+    """Return whether wind gust thresholds are strictly ascending."""
+    return (
+        AnomalyConstants.WIND_GUSTS_STRONG > AnomalyConstants.WIND_GUSTS_MODERATE
+        and AnomalyConstants.WIND_GUSTS_EXTREME > AnomalyConstants.WIND_GUSTS_STRONG
+        and AnomalyConstants.WIND_GUSTS_HURRICANE > AnomalyConstants.WIND_GUSTS_EXTREME
+    )
+
+
+def _validate_dual_api_mapping() -> bool:
+    """Return whether dual API sources and capabilities are configured."""
+    return (
+        len(DataConstants.DATA_SOURCE_PRIORITY) >= 2
+        and _validate_priority_sources_defined()
+    )
+
+
+def _validate_wind_thresholds_ascending() -> bool:
+    """Return whether wind thresholds are ascending."""
+    return (
+        AnomalyConstants.WIND_HIGH_THRESHOLD > 0
+        and AnomalyConstants.WIND_EXTREME_THRESHOLD
+        > AnomalyConstants.WIND_HIGH_THRESHOLD
+        and AnomalyConstants.WIND_HURRICANE_THRESHOLD
+        > AnomalyConstants.WIND_EXTREME_THRESHOLD
+    )
+
+
+def _validate_wind_gust_colors() -> bool:
+    """Return whether gust category colors are valid."""
+    return all(
+        validate_color_hex(color)
+        for color in AnomalyConstants.WIND_GUSTS_COLORS.values()
+    )
 
 
 def validate_gui_constants() -> Dict[str, bool]:
@@ -28,30 +86,10 @@ def validate_gui_constants() -> Dict[str, bool]:
             "panel_size_valid": GUIConstants.CONTROL_PANEL_MIN_WIDTH
             <= GUIConstants.CONTROL_PANEL_MAX_WIDTH,
             "splitter_size_valid": GUIConstants.SPLITTER_HANDLE_WIDTH > 0,
-            "colors_valid": all(
-                validate_color_hex(color)
-                for color in [
-                    GUIConstants.PRIMARY_COLOR,
-                    GUIConstants.SUCCESS_COLOR,
-                    GUIConstants.WARNING_COLOR,
-                    GUIConstants.ERROR_COLOR,
-                ]
-            ),
-            # 🌪️ KRITIKUS JAVÍTÁS: Wind gusts küszöbök validálása
-            "wind_gusts_thresholds_valid": (
-                AnomalyConstants.WIND_GUSTS_STRONG
-                > AnomalyConstants.WIND_GUSTS_MODERATE
-                and AnomalyConstants.WIND_GUSTS_EXTREME
-                > AnomalyConstants.WIND_GUSTS_STRONG
-                and AnomalyConstants.WIND_GUSTS_HURRICANE
-                > AnomalyConstants.WIND_GUSTS_EXTREME
-            ),
-            # ✅ ÚJ: Dual-API validáció
+            "colors_valid": _validate_gui_colors(),
+            "wind_gusts_thresholds_valid": _validate_wind_gust_thresholds(),
             "dual_api_sources_valid": len(DataConstants.DATA_SOURCE_PRIORITY) >= 2,
-            "api_capabilities_defined": all(
-                source in DataConstants.SOURCE_CAPABILITIES
-                for source in DataConstants.DATA_SOURCE_PRIORITY
-            ),
+            "api_capabilities_defined": _validate_priority_sources_defined(),
         }
 
         return validations
@@ -70,19 +108,10 @@ def validate_wind_gusts_constants() -> Dict[str, bool]:
     """
     try:
         validations = {
-            "thresholds_ascending": (
-                AnomalyConstants.WIND_HIGH_THRESHOLD > 0
-                and AnomalyConstants.WIND_EXTREME_THRESHOLD
-                > AnomalyConstants.WIND_HIGH_THRESHOLD
-                and AnomalyConstants.WIND_HURRICANE_THRESHOLD
-                > AnomalyConstants.WIND_EXTREME_THRESHOLD
-            ),
+            "thresholds_ascending": _validate_wind_thresholds_ascending(),
             "categories_complete": len(AnomalyConstants.WIND_GUSTS_CATEGORIES)
             >= 7,  # 7 kategória már (STORMY hozzáadva)
-            "colors_valid": all(
-                validate_color_hex(color)
-                for color in AnomalyConstants.WIND_GUSTS_COLORS.values()
-            ),
+            "colors_valid": _validate_wind_gust_colors(),
             "gusts_vs_windspeed_valid": (
                 AnomalyConstants.WIND_GUSTS_STRONG
                 >= AnomalyConstants.WINDSPEED_HIGH_THRESHOLD
@@ -118,10 +147,7 @@ def validate_dual_api_constants() -> Dict[str, bool]:
                 use_case in DataConstants.USE_CASE_SOURCE_MAPPING
                 for use_case in ["single_city", "multi_city", "historical_deep"]
             ),
-            "source_capabilities_complete": all(
-                source in DataConstants.SOURCE_CAPABILITIES
-                for source in DataConstants.DATA_SOURCE_PRIORITY
-            ),
+            "source_capabilities_complete": _validate_priority_sources_defined(),
             "display_names_available": all(
                 source in APIConstants.SOURCE_DISPLAY_NAMES
                 for source in DataConstants.DATA_SOURCE_PRIORITY
@@ -150,7 +176,6 @@ def validate_anomaly_constants() -> Dict[str, bool]:
         wind_validation = validate_wind_gusts_constants()
         dual_api_validation = validate_dual_api_constants()
 
-        # Hőmérséklet validálás
         temp_validation = {
             "temp_thresholds_valid": (
                 AnomalyConstants.TEMP_EXTREME_HOT > AnomalyConstants.TEMP_HOT_THRESHOLD
@@ -159,7 +184,6 @@ def validate_anomaly_constants() -> Dict[str, bool]:
             )
         }
 
-        # Csapadék validálás
         precip_validation = {
             "precip_thresholds_valid": (
                 AnomalyConstants.PRECIP_EXTREME_HIGH

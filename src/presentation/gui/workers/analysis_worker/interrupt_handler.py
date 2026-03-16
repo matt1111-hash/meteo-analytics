@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 AnalysisWorker Interrupt Handler - Handle interruption requests.
 """

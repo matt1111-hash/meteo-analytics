@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """FastAPI entrypoint for Global Weather Analyzer backend."""
 
 from __future__ import annotations

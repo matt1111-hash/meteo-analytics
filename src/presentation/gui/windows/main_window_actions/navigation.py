@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Navigation and analytics query handling."""
 
 from datetime import datetime

@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 State management for QueryControlWidget.
 

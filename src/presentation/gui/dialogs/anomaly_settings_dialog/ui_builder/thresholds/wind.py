@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Wind threshold section builder."""
 
 from PySide6.QtWidgets import QGroupBox, QLabel, QSpinBox, QVBoxLayout

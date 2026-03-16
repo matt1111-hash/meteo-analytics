@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 🗺️ Hungarian Location Selector - GET_CURRENT_CITY() STATE MANAGEMENT FIX

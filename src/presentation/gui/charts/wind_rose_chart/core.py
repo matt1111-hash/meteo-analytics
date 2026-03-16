@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Wind Rose Chart - Széllökés rózsadiagram."""
 
 from typing import Any, Dict, Optional

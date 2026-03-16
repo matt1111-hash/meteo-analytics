@@ -4,7 +4,6 @@ Tests for src/analytics/multi_city_types.py
 Type aliases, constants, and configuration mappings
 """
 
-
 from src.analytics.multi_city_types import (
     HUNGARIAN_REGIONAL_MAPPING,
     REGIONS,
@@ -148,7 +147,13 @@ class TestRegions:
 
     def test_all_regions_have_required_fields(self) -> None:
         """Each region should have required configuration fields."""
-        required_fields = ["name", "country_codes", "max_cities", "batch_size", "rate_limit_delay"]
+        required_fields = [
+            "name",
+            "country_codes",
+            "max_cities",
+            "batch_size",
+            "rate_limit_delay",
+        ]
         for region_name, config in REGIONS.items():
             for field in required_fields:
                 assert field in config, f"Missing field {field} in {region_name}"
@@ -157,21 +162,27 @@ class TestRegions:
         """max_cities should be positive integers."""
         for region_name, config in REGIONS.items():
             max_cities = config["max_cities"]
-            assert isinstance(max_cities, int), f"max_cities in {region_name} is not int"
+            assert isinstance(max_cities, int), (
+                f"max_cities in {region_name} is not int"
+            )
             assert max_cities > 0, f"max_cities in {region_name} is not positive"
 
     def test_batch_sizes_are_positive_integers(self) -> None:
         """batch_size should be positive integers."""
         for region_name, config in REGIONS.items():
             batch_size = config["batch_size"]
-            assert isinstance(batch_size, int), f"batch_size in {region_name} is not int"
+            assert isinstance(batch_size, int), (
+                f"batch_size in {region_name} is not int"
+            )
             assert batch_size > 0, f"batch_size in {region_name} is not positive"
 
     def test_rate_limit_delays_are_positive_numbers(self) -> None:
         """rate_limit_delay should be positive numbers."""
         for region_name, config in REGIONS.items():
             delay = config["rate_limit_delay"]
-            assert isinstance(delay, (int, float)), f"rate_limit_delay in {region_name} is not number"
+            assert isinstance(delay, (int, float)), (
+                f"rate_limit_delay in {region_name} is not number"
+            )
             assert delay > 0, f"rate_limit_delay in {region_name} is not positive"
 
     def test_europe_contains_hungary(self) -> None:
@@ -206,6 +217,11 @@ class TestExports:
         """All items in __all__ should be accessible."""
         from src.analytics import multi_city_types
 
-        expected_exports = ["Number", "NumberOrNone", "HUNGARIAN_REGIONAL_MAPPING", "REGIONS"]
+        expected_exports = [
+            "Number",
+            "NumberOrNone",
+            "HUNGARIAN_REGIONAL_MAPPING",
+            "REGIONS",
+        ]
         for export in expected_exports:
             assert hasattr(multi_city_types, export), f"Missing export: {export}"

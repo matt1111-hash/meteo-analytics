@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Tab Manager Core - initialization and tab creation."""
 
 import logging

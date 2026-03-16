@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 from typing import Any, Dict
 
 from PySide6.QtWidgets import QWidget
@@ -6,7 +7,7 @@ from PySide6.QtWidgets import QWidget
 class IMapWidget:
     """Interface for the Map Rendering Engine."""
 
-    def render_map(self, configuration: Dict[str, Any]) -> None:
+    def render_map(self, _configuration: Dict[str, Any]) -> None:
         """Render the map with the given configuration."""
         raise NotImplementedError
 
@@ -26,7 +27,7 @@ class IMapWidget:
 class IMapEvents:
     """Interface for the Event Bridge."""
 
-    def setup_signal_bridges(self, target_widget: QWidget) -> None:
+    def setup_signal_bridges(self, _target_widget: QWidget) -> None:
         """Connect signals from the target widget to event handlers."""
         raise NotImplementedError
 

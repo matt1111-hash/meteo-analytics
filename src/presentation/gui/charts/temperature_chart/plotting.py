@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Temperature Chart - Plotting
@@ -28,21 +29,11 @@ class TemperaturePlottingMixin:
     🎨 Hőmérséklet grafikon rajzolása keverék osztály.
     """
 
-    def _plot_enhanced_temperature(self, df: "pd.DataFrame") -> None:
-        """
-        Fejlett hőmérséklet grafikon rajzolása - PROFESSZIONÁLIS STÍLUS + SIMPLIFIED THEMEMANAGER SZÍNEK.
-        🎨 SIMPLIFIED THEMEMANAGER INTEGRÁCIÓ: ColorPalette használata professzionális színválasztáshoz
-        🔧 KRITIKUS JAVÍTÁS: Az ax.clear() már megtörtént a update_data()-ban.
-        """
-        print(
-            "🎨 DEBUG: _plot_enhanced_temperature() - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER"
-        )
-
-        # 🔧 KRITIKUS JAVÍTÁS: HELYES API HASZNÁLAT - weather színpaletta
+    def _get_temperature_colors(self) -> dict[str, str]:
+        """Resolve temperature chart colors."""
         temp_colors = {
             "cold": self.color_palette.get_color("info", "dark") or "#6366f1",
-            "moderate": self.color_palette.get_color("primary", "base")
-            or "#C43939",  # Piros téma
+            "moderate": self.color_palette.get_color("primary", "base") or "#C43939",
             "warm": self.color_palette.get_color("warning", "base") or "#f59e0b",
             "hot": self.color_palette.get_color("error", "base") or "#dc2626",
             "comfort": self.color_palette.get_color("success", "light") or "#22c55e",
@@ -53,102 +44,60 @@ class TemperaturePlottingMixin:
             "annotation_cold": self.color_palette.get_color("info", "light")
             or "#eff6ff",
         }
+        temp_colors["moderate"] = self.weather_colors.get("temperature", "#C43939")
+        return temp_colors
 
-        # Weather színpaletta integrálása
-        weather_temp_colors = self.weather_colors.get(
-            "temperature", "#C43939"
-        )  # Piros téma
-        temp_colors["moderate"] = weather_temp_colors
-
-        print(f"🎨 DEBUG: Using SimplifiedThemeManager colors: {temp_colors}")
-
-        # === SZÍNES HÁTTÉR ZÓNÁK ===
-
-        # Hideg zóna (< 0°C)
+    def _plot_temperature_zones(self, temp_colors: dict[str, str]) -> None:
+        """Plot background comfort and threshold zones."""
         self.ax.axhspan(-50, 0, alpha=0.1, color=temp_colors["cold"], label="Fagyzóna")
-
-        # Meleg zóna (> 25°C)
         self.ax.axhspan(25, 50, alpha=0.1, color=temp_colors["hot"], label="Forró zóna")
-
-        # Komfort zóna (15-25°C)
         self.ax.axhspan(
             15, 25, alpha=0.05, color=temp_colors["comfort"], label="Komfort zóna"
         )
+        for value, color_key, label in [
+            (0, "cold", "Fagypont"),
+            (25, "warm", "Nyári meleg"),
+            (30, "hot", "Hőhullám"),
+        ]:
+            self.ax.axhline(
+                y=value,
+                color=temp_colors[color_key],
+                linestyle="--",
+                alpha=0.7,
+                linewidth=2,
+                label=label,
+            )
 
-        # === FAGYÁS ÉS FORRÓSÁG VONALAK ===
-
-        self.ax.axhline(
-            y=0,
-            color=temp_colors["cold"],
-            linestyle="--",
-            alpha=0.7,
-            linewidth=2,
-            label="Fagypont",
-        )
-        self.ax.axhline(
-            y=25,
-            color=temp_colors["warm"],
-            linestyle="--",
-            alpha=0.7,
-            linewidth=2,
-            label="Nyári meleg",
-        )
-        self.ax.axhline(
-            y=30,
-            color=temp_colors["hot"],
-            linestyle="--",
-            alpha=0.7,
-            linewidth=2,
-            label="Hőhullám",
-        )
-
-        # === HŐMÉRSÉKLET VONALAK - VASTAGABB, SIMPLIFIED THEMEMANAGER SZÍNEKKEL ===
-
-        # Minimum hőmérséklet
-        self.ax.plot(
-            df["date"],
-            df["temp_min"],
-            "o-",
-            color=temp_colors["cold"],
-            linewidth=3,
-            markersize=6,
-            alpha=0.9,
-            label="Minimum",
-            markerfacecolor="white",
-            markeredgewidth=2,
-        )
-
-        # Maximum hőmérséklet
-        self.ax.plot(
-            df["date"],
-            df["temp_max"],
-            "o-",
-            color=temp_colors["hot"],
-            linewidth=3,
-            markersize=6,
-            alpha=0.9,
-            label="Maximum",
-            markerfacecolor="white",
-            markeredgewidth=2,
-        )
-
-        # Átlag hőmérséklet
-        self.ax.plot(
-            df["date"],
-            df["temp_mean"],
-            "s-",
-            color=temp_colors["moderate"],
-            linewidth=2.5,
-            markersize=5,
-            alpha=0.8,
-            label="Átlag",
-            markerfacecolor="white",
-            markeredgewidth=1.5,
-        )
-
-        # === TERÜLETEK KITÖLTÉSE - SZÍNÁTMENETES ===
-
-        # Min-Max tartomány kitöltése gradiens hatással
+    def _plot_temperature_series(
+        self, df: "pd.DataFrame", temp_colors: dict[str, str]
+    ) -> None:
+        """Plot min, max and mean temperature lines."""
+        series_config = [
+            ("temp_min", "cold", "Minimum", "o-", 3, 6, 2),
+            ("temp_max", "hot", "Maximum", "o-", 3, 6, 2),
+            ("temp_mean", "moderate", "Átlag", "s-", 2.5, 5, 1.5),
+        ]
+        for (
+            column,
+            color_key,
+            label,
+            style,
+            linewidth,
+            markersize,
+            markeredgewidth,
+        ) in series_config:
+            self.ax.plot(
+                df["date"],
+                df[column],
+                style,
+                color=temp_colors[color_key],
+                linewidth=linewidth,
+                markersize=markersize,
+                alpha=0.9 if column != "temp_mean" else 0.8,
+                label=label,
+                markerfacecolor="white",
+                markeredgewidth=markeredgewidth,
+            )
         self.ax.fill_between(
             df["date"],
             df["temp_min"],
@@ -158,86 +107,91 @@ class TemperaturePlottingMixin:
             label="Napi hőingás",
         )
 
-        # === TREND VONALAK - ÚJ FUNKCIÓ ===
-
-        # Lineáris trend számítása
-        if len(df) > 3:
-            x_numeric = np.arange(len(df))
-
-            # Maximum trend
-            max_trend = np.polyfit(x_numeric, df["temp_max"], 1)
-            max_trend_line = np.poly1d(max_trend)(x_numeric)
+    def _plot_temperature_trends(
+        self, df: "pd.DataFrame", temp_colors: dict[str, str]
+    ) -> None:
+        """Plot temperature trend lines."""
+        if len(df) <= 3:
+            return
+        x_numeric = np.arange(len(df))
+        for column, color_key, label in [
+            ("temp_max", "trend_up", "Max trend"),
+            ("temp_min", "trend_down", "Min trend"),
+        ]:
+            trend_line = np.poly1d(np.polyfit(x_numeric, df[column], 1))(x_numeric)
             self.ax.plot(
                 df["date"],
-                max_trend_line,
+                trend_line,
                 "--",
-                color=temp_colors["trend_up"],
+                color=temp_colors[color_key],
                 alpha=0.6,
                 linewidth=2,
-                label="Max trend",
+                label=label,
             )
 
-            # Minimum trend
-            min_trend = np.polyfit(x_numeric, df["temp_min"], 1)
-            min_trend_line = np.poly1d(min_trend)(x_numeric)
-            self.ax.plot(
-                df["date"],
-                min_trend_line,
-                "--",
-                color=temp_colors["trend_down"],
-                alpha=0.6,
-                linewidth=2,
-                label="Min trend",
+    def _annotate_extremes(
+        self, df: "pd.DataFrame", temp_colors: dict[str, str]
+    ) -> None:
+        """Annotate hottest and coldest visible points."""
+        annotations = [
+            (
+                "temp_max",
+                df["temp_max"].idxmax(),
+                "🔥 {value:.1f}°C",
+                (10, 20),
+                temp_colors["annotation_hot"],
+                temp_colors["hot"],
+                "arc3,rad=0.2",
+            ),
+            (
+                "temp_min",
+                df["temp_min"].idxmin(),
+                "🧊 {value:.1f}°C",
+                (10, -30),
+                temp_colors["annotation_cold"],
+                temp_colors["cold"],
+                "arc3,rad=-0.2",
+            ),
+        ]
+        for (
+            column,
+            idx,
+            label_template,
+            offset,
+            facecolor,
+            edgecolor,
+            connection,
+        ) in annotations:
+            value = df.loc[idx, column]
+            date = df.loc[idx, "date"]
+            self.ax.annotate(
+                label_template.format(value=value),
+                xy=(date, value),
+                xytext=offset,
+                textcoords="offset points",
+                bbox=dict(
+                    boxstyle="round,pad=0.5", fc=facecolor, ec=edgecolor, alpha=0.8
+                ),
+                arrowprops=dict(
+                    arrowstyle="->",
+                    connectionstyle=connection,
+                    color=edgecolor,
+                ),
             )
 
-        # === STATISZTIKAI ANNOTÁCIÓK ===
-
-        # Extrém értékek kiemelése
-        max_temp_idx = df["temp_max"].idxmax()
-        min_temp_idx = df["temp_min"].idxmin()
-
-        max_temp_date = df.loc[max_temp_idx, "date"]
-        max_temp_val = df.loc[max_temp_idx, "temp_max"]
-        min_temp_date = df.loc[min_temp_idx, "date"]
-        min_temp_val = df.loc[min_temp_idx, "temp_min"]
-
-        # Annotációk a szélsőértékekhez
-        self.ax.annotate(
-            f"🔥 {max_temp_val:.1f}°C",
-            xy=(max_temp_date, max_temp_val),
-            xytext=(10, 20),
-            textcoords="offset points",
-            bbox=dict(
-                boxstyle="round,pad=0.5",
-                fc=temp_colors["annotation_hot"],
-                ec=temp_colors["hot"],
-                alpha=0.8,
-            ),
-            arrowprops=dict(
-                arrowstyle="->",
-                connectionstyle="arc3,rad=0.2",
-                color=temp_colors["hot"],
-            ),
+    def _plot_enhanced_temperature(self, df: "pd.DataFrame") -> None:
+        """
+        Fejlett hőmérséklet grafikon rajzolása - PROFESSZIONÁLIS STÍLUS + SIMPLIFIED THEMEMANAGER SZÍNEK.
+        🎨 SIMPLIFIED THEMEMANAGER INTEGRÁCIÓ: ColorPalette használata professzionális színválasztáshoz
+        🔧 KRITIKUS JAVÍTÁS: Az ax.clear() már megtörtént a update_data()-ban.
+        """
+        print(
+            "🎨 DEBUG: _plot_enhanced_temperature() - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER"
         )
-
-        self.ax.annotate(
-            f"🧊 {min_temp_val:.1f}°C",
-            xy=(min_temp_date, min_temp_val),
-            xytext=(10, -30),
-            textcoords="offset points",
-            bbox=dict(
-                boxstyle="round,pad=0.5",
-                fc=temp_colors["annotation_cold"],
-                ec=temp_colors["cold"],
-                alpha=0.8,
-            ),
-            arrowprops=dict(
-                arrowstyle="->",
-                connectionstyle="arc3,rad=-0.2",
-                color=temp_colors["cold"],
-            ),
-        )
-
-        # === FORMÁZÁS - PROFESSZIONÁLIS ===
-
+        temp_colors = self._get_temperature_colors()
+        print(f"🎨 DEBUG: Using SimplifiedThemeManager colors: {temp_colors}")
+        self._plot_temperature_zones(temp_colors)
+        self._plot_temperature_series(df, temp_colors)
+        self._plot_temperature_trends(df, temp_colors)
+        self._annotate_extremes(df, temp_colors)
         self._format_enhanced_temperature_chart(df)

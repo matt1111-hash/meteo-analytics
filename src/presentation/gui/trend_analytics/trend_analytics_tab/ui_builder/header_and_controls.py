@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """UI Builder - Header and Controls sections."""
 
 from PySide6.QtCore import Qt

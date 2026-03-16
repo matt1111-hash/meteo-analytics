@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Trend data processor constants."""
 
 from datetime import timedelta

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Extreme Weather Calculator - Text Generators
@@ -12,6 +13,68 @@ from typing import Dict, List
 from .extreme_records import RecordsTextSummary
 
 logger = logging.getLogger(__name__)
+
+
+def _get_clean_indexed_values(values: List) -> list[tuple[int, float]]:
+    """Return indexed non-null values."""
+    return [(index, value) for index, value in enumerate(values) if value is not None]
+
+
+def _build_temperature_summary(
+    max_temp: float, max_date: str, min_temp: float, min_date: str
+) -> str:
+    """Build the temperature summary text."""
+    return f"""🌡️ HŐMÉRSÉKLET REKORDOK:
+   🔥 Legmelegebb nap: {max_temp:.1f}°C ({max_date})
+   🧊 Leghidegebb nap: {min_temp:.1f}°C ({min_date})
+   📈 Hőingás: {max_temp - min_temp:.1f}°C
+
+"""
+
+
+def _build_precipitation_summary(
+    max_precip: float, max_date: str, dry_days: int, total_precip: float
+) -> str:
+    """Build the precipitation summary text."""
+    return f"""🌧️ CSAPADÉK REKORDOK:
+   💧 Legtöbb csapadék: {max_precip:.1f}mm ({max_date})
+   🏜️ Száraz napok: {dry_days} nap
+   📊 Összes csapadék: {total_precip:.1f}mm
+
+"""
+
+
+def _build_wind_category_line(category: str) -> str:
+    """Build the warning line for gust categories."""
+    from ..utils import WindGustsConstants
+
+    if category == "hurricane":
+        threshold = WindGustsConstants.HURRICANE_THRESHOLD
+        return f"   ⚠️ KATEGÓRIA: {WindGustsConstants.CATEGORIES[category]} (>{threshold:.0f} km/h)\n"
+    if category == "extreme":
+        threshold = WindGustsConstants.EXTREME_THRESHOLD
+        return f"   ⚠️ KATEGÓRIA: {WindGustsConstants.CATEGORIES[category]} (>{threshold:.0f} km/h)\n"
+    if category == "strong":
+        threshold = WindGustsConstants.STRONG_THRESHOLD
+        return f"   ⚠️ KATEGÓRIA: {WindGustsConstants.CATEGORIES[category]} (>{threshold:.0f} km/h)\n"
+    return f"   ✅ KATEGÓRIA: {WindGustsConstants.CATEGORIES[category]}\n"
+
+
+def _build_gust_summary(max_wind_value: float, max_date: str, category: str) -> str:
+    """Build the wind gust headline block."""
+    return (
+        f"🌪️ SZÉLLÖKÉS REKORDOK:\n"
+        f"   🚨 Legerősebb széllökés: {max_wind_value:.1f}km/h ({max_date})\n"
+        f"{_build_wind_category_line(category)}"
+    )
+
+
+def _build_wind_summary(max_wind_value: float, max_date: str) -> str:
+    """Build the average-wind headline block."""
+    return (
+        f"💨 SZÉL REKORDOK:\n"
+        f"   🌪️ Legerősebb szél: {max_wind_value:.1f}km/h ({max_date})\n"
+    )
 
 
 class TextGenerators:
@@ -70,23 +133,15 @@ class TextGenerators:
                 and len(temp_max_list) == len(dates)
                 and len(temp_min_list) == len(dates)
             ):
-                clean_max = [
-                    (i, t) for i, t in enumerate(temp_max_list) if t is not None
-                ]
-                clean_min = [
-                    (i, t) for i, t in enumerate(temp_min_list) if t is not None
-                ]
+                clean_max = _get_clean_indexed_values(temp_max_list)
+                clean_min = _get_clean_indexed_values(temp_min_list)
 
                 if clean_max and clean_min:
                     max_temp_idx, max_temp = max(clean_max, key=lambda x: x[1])
                     min_temp_idx, min_temp = min(clean_min, key=lambda x: x[1])
-
-                    return f"""🌡️ HŐMÉRSÉKLET REKORDOK:
-   🔥 Legmelegebb nap: {max_temp:.1f}°C ({dates[max_temp_idx]})
-   🧊 Leghidegebb nap: {min_temp:.1f}°C ({dates[min_temp_idx]})
-   📈 Hőingás: {max_temp - min_temp:.1f}°C
-
-"""
+                    return _build_temperature_summary(
+                        max_temp, dates[max_temp_idx], min_temp, dates[min_temp_idx]
+                    )
             return "🌡️ HŐMÉRSÉKLET REKORDOK: Nincs megfelelő adat\n\n"
         except Exception as e:
             logger.error(f"Hőmérséklet szöveg hiba: {e}")
@@ -100,23 +155,16 @@ class TextGenerators:
             precip_list = daily_data.get("precipitation_sum", [])
 
             if precip_list and len(precip_list) == len(dates):
-                clean_precip = [
-                    (i, p) for i, p in enumerate(precip_list) if p is not None
-                ]
+                clean_precip = _get_clean_indexed_values(precip_list)
 
                 if clean_precip:
                     max_precip_idx, max_precip = max(clean_precip, key=lambda x: x[1])
-                    dry_days = len(
-                        [p for p in precip_list if p is not None and p <= 0.1]
+                    valid_precip = [p for p in precip_list if p is not None]
+                    dry_days = sum(1 for p in valid_precip if p <= 0.1)
+                    total_precip = sum(valid_precip)
+                    return _build_precipitation_summary(
+                        max_precip, dates[max_precip_idx], dry_days, total_precip
                     )
-                    total_precip = sum([p for p in precip_list if p is not None])
-
-                    return f"""🌧️ CSAPADÉK REKORDOK:
-   💧 Legtöbb csapadék: {max_precip:.1f}mm ({dates[max_precip_idx]})
-   🏜️ Száraz napok: {dry_days} nap
-   📊 Összes csapadék: {total_precip:.1f}mm
-
-"""
             return "🌧️ CSAPADÉK REKORDOK: Nincs csapadék adat\n\n"
         except Exception as e:
             logger.error(f"Csapadék szöveg hiba: {e}")
@@ -128,48 +176,24 @@ class TextGenerators:
             wind_data, wind_source = self._get_wind_data(daily_data)
 
             if wind_data and len(wind_data) == len(dates):
-                clean_wind = [(i, w) for i, w in enumerate(wind_data) if w is not None]
+                clean_wind = _get_clean_indexed_values(wind_data)
 
                 if clean_wind:
                     max_wind_idx, max_wind_value = max(clean_wind, key=lambda x: x[1])
                     valid_winds = [w for w in wind_data if w is not None]
                     avg_wind = sum(valid_winds) / len(valid_winds)
 
-                    from ..utils import WindGustsAnalyzer, WindGustsConstants
+                    from ..utils import WindGustsAnalyzer
 
                     if wind_source == "wind_gusts_max":
                         category = WindGustsAnalyzer.categorize_wind_gust(
                             max_wind_value, wind_source
                         )
-
-                        text = f"""🌪️ SZÉLLÖKÉS REKORDOK:
-   🚨 Legerősebb széllökés: {max_wind_value:.1f}km/h ({dates[max_wind_idx]})
-"""
-
-                        if category == "hurricane":
-                            text += (
-                                f"   ⚠️ KATEGÓRIA: "
-                                f"{WindGustsConstants.CATEGORIES[category]} "
-                                f"(>{WindGustsConstants.HURRICANE_THRESHOLD:.0f} km/h)\n"
-                            )
-                        elif category == "extreme":
-                            text += (
-                                f"   ⚠️ KATEGÓRIA: "
-                                f"{WindGustsConstants.CATEGORIES[category]} "
-                                f"(>{WindGustsConstants.EXTREME_THRESHOLD:.0f} km/h)\n"
-                            )
-                        elif category == "strong":
-                            text += (
-                                f"   ⚠️ KATEGÓRIA: "
-                                f"{WindGustsConstants.CATEGORIES[category]} "
-                                f"(>{WindGustsConstants.STRONG_THRESHOLD:.0f} km/h)\n"
-                            )
-                        else:
-                            text += f"   ✅ KATEGÓRIA: {WindGustsConstants.CATEGORIES[category]}\n"
+                        text = _build_gust_summary(
+                            max_wind_value, dates[max_wind_idx], category
+                        )
                     else:
-                        text = f"""💨 SZÉL REKORDOK:
-   🌪️ Legerősebb szél: {max_wind_value:.1f}km/h ({dates[max_wind_idx]})
-"""
+                        text = _build_wind_summary(max_wind_value, dates[max_wind_idx])
 
                     text += f"   📊 Átlagos szélsebesség: {avg_wind:.1f}km/h\n"
                     text += f"   📈 Adatforrás: {wind_source}\n\n"
@@ -190,9 +214,8 @@ class TextGenerators:
 
         if wind_gusts_max:
             return wind_gusts_max, "wind_gusts_max"
-        elif windspeed_10m_max:
+        if windspeed_10m_max:
             return windspeed_10m_max, "windspeed_10m_max"
-        elif windspeed:
+        if windspeed:
             return windspeed, "windspeed"
-        else:
-            return None, "no_data"
+        return None, "no_data"

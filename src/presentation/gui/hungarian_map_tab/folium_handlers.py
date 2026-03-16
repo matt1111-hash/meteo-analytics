@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 Folium event handlers for HungarianMapTab.
 

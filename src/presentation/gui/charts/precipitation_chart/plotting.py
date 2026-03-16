@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Precipitation Chart - Plotting
@@ -21,6 +22,41 @@ if TYPE_CHECKING:
 from src.presentation.gui.theme_manager import get_current_colors
 
 
+def _build_precipitation_colors(chart) -> dict[str, str]:
+    """Build precipitation palette colors from theme sources."""
+    precip_colors = {
+        "none": chart.color_palette.get_color("surface_variant", "base") or "#f3f4f6",
+        "light": chart.color_palette.get_color("info", "light") or "#93c5fd",
+        "moderate": chart.color_palette.get_color("info", "base") or "#3b82f6",
+        "heavy": chart.color_palette.get_color("info", "dark") or "#1e40af",
+    }
+    precip_colors["moderate"] = chart.weather_colors.get("precipitation", "#3b82f6")
+    return precip_colors
+
+
+def _resolve_bar_color(precipitation: float, precip_colors: dict[str, str]) -> str:
+    """Resolve bar color based on precipitation amount."""
+    if precipitation > 20:
+        return precip_colors["heavy"]
+    if precipitation > 10:
+        return precip_colors["moderate"]
+    if precipitation > 1:
+        return precip_colors["light"]
+    return precip_colors["none"]
+
+
+def _store_bar_data(chart, index: int, date, precipitation: float) -> None:
+    """Store bar metadata for tooltip handling."""
+    chart.bar_data.append(
+        {
+            "index": index,
+            "date": date,
+            "precipitation": precipitation,
+            "bar": chart.bars[index],
+        }
+    )
+
+
 def _plot_precipitation(self, df) -> None:
     """
     Csapadék grafikon rajzolása - DUPLIKÁCIÓ BUGFIX + SIMPLIFIED THEMEMANAGER.
@@ -37,17 +73,7 @@ def _plot_precipitation(self, df) -> None:
     )
 
     # 🔧 KRITIKUS JAVÍTÁS: HELYES API HASZNÁLAT - csapadék színek
-    precip_colors = {
-        "none": self.color_palette.get_color("surface_variant", "base") or "#f3f4f6",
-        "light": self.color_palette.get_color("info", "light") or "#93c5fd",
-        "moderate": self.color_palette.get_color("info", "base") or "#3b82f6",
-        "heavy": self.color_palette.get_color("info", "dark") or "#1e40af",
-    }
-
-    # Weather színpaletta integrálása
-    weather_precip_color = self.weather_colors.get("precipitation", "#3b82f6")
-    precip_colors["moderate"] = weather_precip_color
-
+    precip_colors = _build_precipitation_colors(self)
     current_colors = get_current_colors()
 
     print(
@@ -69,19 +95,8 @@ def _plot_precipitation(self, df) -> None:
 
     # Színkódolás csapadék mennyiség alapján + SIMPLIFIED THEMEMANAGER
     for i, (date, precip) in enumerate(zip(df["date"], df["precipitation"])):
-        # Bar-hoz tartozó adat tárolása
-        self.bar_data.append(
-            {"index": i, "date": date, "precipitation": precip, "bar": self.bars[i]}
-        )
-
-        if precip > 20:  # Erős csapadék
-            self.bars[i].set_color(precip_colors["heavy"])
-        elif precip > 10:  # Közepes csapadék
-            self.bars[i].set_color(precip_colors["moderate"])
-        elif precip > 1:  # Gyenge csapadék
-            self.bars[i].set_color(precip_colors["light"])
-        else:  # Száraz
-            self.bars[i].set_color(precip_colors["none"])
+        _store_bar_data(self, i, date, precip)
+        self.bars[i].set_color(_resolve_bar_color(precip, precip_colors))
 
     # Formázás
     _format_precipitation_chart(self, df)

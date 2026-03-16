@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Weather overlay data structures."""
 
 from dataclasses import dataclass

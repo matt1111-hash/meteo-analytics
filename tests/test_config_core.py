@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
+from typing import Dict
 
 import pytest
 
 from src import config
 
 
-def test_user_preferences_loads_defaults_when_file_missing(config_fs: Dict[str, str]) -> None:
+def test_user_preferences_loads_defaults_when_file_missing(
+    config_fs: Dict[str, str],
+) -> None:
     """Hiányzó fájl esetén a default beállítások térnek vissza."""
     config_fs.pop("prefs", None)
     prefs = config.UserPreferences.load_provider_preferences()
@@ -30,7 +33,9 @@ def test_user_preferences_merges_saved_fields(config_fs: Dict[str, str]) -> None
     assert prefs["monthly_budget_usd"] == config.ProviderConfig.MONTHLY_BUDGET_USD
 
 
-def test_user_preferences_load_handles_corrupted_json(config_fs: Dict[str, str]) -> None:
+def test_user_preferences_load_handles_corrupted_json(
+    config_fs: Dict[str, str],
+) -> None:
     """Sérült tartalom esetén is default értékek érkeznek."""
     config_fs["prefs"] = "{ not valid json"
     prefs = config.UserPreferences.load_provider_preferences()
@@ -46,23 +51,42 @@ def test_user_preferences_save_updates_timestamp(config_fs: Dict[str, str]) -> N
     assert "last_updated" in saved
 
 
-def test_user_preferences_save_handles_failure(monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]) -> None:
+def test_user_preferences_save_handles_failure(
+    monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]
+) -> None:
     """Mentési hiba esetén ne jöjjön létre fájl."""
-    monkeypatch.setattr(config, "ensure_directories", lambda: (_ for _ in ()).throw(OSError("boom")))
-    result = config.UserPreferences.save_provider_preferences({"selected_provider": "meteostat"})
+    monkeypatch.setattr(
+        config, "ensure_directories", lambda: (_ for _ in ()).throw(OSError("boom"))
+    )
+    result = config.UserPreferences.save_provider_preferences(
+        {"selected_provider": "meteostat"}
+    )
     assert result is False
     assert "prefs" not in config_fs
+
+
 # Lefedett ág: save_provider_preferences kivétel esetén (src/config.py:345-364)
 
 
-def test_usage_tracker_load_resets_new_month(monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]) -> None:
+def test_usage_tracker_load_resets_new_month(
+    monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]
+) -> None:
     """Hónapváltáskor resetelődjön az API usage."""
-    config_fs["usage"] = json.dumps({
-        "current_month": "2024-06",
-        "total_requests": 42,
-        "meteostat": {"requests_this_month": 10, "estimated_cost_usd": 5.0, "daily_breakdown": {"2024-06-10": 10}},
-        "open_meteo": {"requests_this_month": 5, "daily_breakdown": {"2024-06-10": 5}},
-    })
+    config_fs["usage"] = json.dumps(
+        {
+            "current_month": "2024-06",
+            "total_requests": 42,
+            "meteostat": {
+                "requests_this_month": 10,
+                "estimated_cost_usd": 5.0,
+                "daily_breakdown": {"2024-06-10": 10},
+            },
+            "open_meteo": {
+                "requests_this_month": 5,
+                "daily_breakdown": {"2024-06-10": 5},
+            },
+        }
+    )
 
     fixed_now = datetime(2024, 7, 15, 12, 0, 0)
 
@@ -84,10 +108,14 @@ def test_usage_tracker_load_resets_new_month(monkeypatch: pytest.MonkeyPatch, co
     assert usage["meteostat"]["daily_breakdown"] == {}
     assert usage["open_meteo"]["requests_this_month"] == 0
     assert usage["open_meteo"]["daily_breakdown"] == {}
+
+
 # Lefedett ág: UsageTracker.load_usage_data hónapváltás reset (src/config.py:395–436)
 
 
-def test_usage_tracker_load_handles_json_error(monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]) -> None:
+def test_usage_tracker_load_handles_json_error(
+    monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]
+) -> None:
     """JSON parse hiba esetén default usage térjen vissza."""
     config_fs["usage"] = "invalid"
 
@@ -114,6 +142,8 @@ def test_usage_tracker_load_handles_json_error(monkeypatch: pytest.MonkeyPatch, 
     assert usage["meteostat"]["daily_breakdown"] == {}
     assert usage["open_meteo"]["requests_this_month"] == 0
     assert usage["current_month"] == "2024-07"
+
+
 # Lefedett ág: UsageTracker.load_usage_data JSON hiba fallback (src/config.py:422–436)
 def test_validate_api_keys_checks_length(monkeypatch: pytest.MonkeyPatch) -> None:
     """A Meteostat kulcs csak megfelelő hossz esetén tekinthető érvényesnek."""
@@ -133,7 +163,11 @@ def test_usage_tracker_reset_clears_monthly_stats() -> None:
         "current_month": "2024-06",
         "month_start_date": "2024-06-01",
         "total_requests": 42,
-        "meteostat": {"requests_this_month": 10, "estimated_cost_usd": 5.0, "daily_breakdown": {"2024-06-10": 10}},
+        "meteostat": {
+            "requests_this_month": 10,
+            "estimated_cost_usd": 5.0,
+            "daily_breakdown": {"2024-06-10": 10},
+        },
         "open_meteo": {"requests_this_month": 5, "daily_breakdown": {"2024-06-10": 5}},
     }
     updated = config.UsageTracker._reset_monthly_usage(usage, "2024-07")
@@ -144,7 +178,9 @@ def test_usage_tracker_reset_clears_monthly_stats() -> None:
     assert updated["total_requests"] == 0
 
 
-def test_get_resolved_provider_prefers_override_and_auto(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_resolved_provider_prefers_override_and_auto(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Az override elsőbbséget élvez, egyébként az auto routing érvényesül."""
     monkeypatch.setattr(
         config.UserPreferences,
@@ -152,7 +188,10 @@ def test_get_resolved_provider_prefers_override_and_auto(monkeypatch: pytest.Mon
         staticmethod(lambda: "auto"),
     )
     assert config.get_resolved_provider("multi_city") == "meteostat"
-    assert config.get_resolved_provider("single_city", user_override="open-meteo") == "open-meteo"
+    assert (
+        config.get_resolved_provider("single_city", user_override="open-meteo")
+        == "open-meteo"
+    )
 
     monkeypatch.setattr(
         config.UserPreferences,

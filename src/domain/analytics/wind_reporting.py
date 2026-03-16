@@ -4,9 +4,59 @@ from __future__ import annotations
 
 import logging
 
-from src.domain.analytics.wind_models import WindAnalysisResult, WindChartData
+from src.domain.analytics.wind_models import (
+    WindAnalysisResult,
+    WindChartData,
+    WindyDayStats,
+)
 
 logger = logging.getLogger(__name__)
+
+
+def _build_extreme_month_line(
+    label: str,
+    month_stat: WindyDayStats | None,
+) -> str:
+    """Build one extreme-month summary line."""
+    if month_stat is None:
+        return f"{label}: N/A (0 nap)"
+    return f"{label}: {month_stat.month_name} ({month_stat.windy_days_count} nap)"
+
+
+def _build_summary_body(analysis: WindAnalysisResult) -> str:
+    """Build wind analysis summary text."""
+    start_str = analysis.analysis_period[0].strftime("%Y-%m-%d")
+    end_str = analysis.analysis_period[1].strftime("%Y-%m-%d")
+    lines = [
+        f"Szél Analízis - {analysis.location_name}",
+        "=" * 50,
+        "",
+        f"Időszak: {start_str} - {end_str}",
+        f"Küszöbérték: {analysis.threshold_kmh} km/h",
+        "",
+        "Összegzés:",
+        f"- Összes nap: {analysis.total_days}",
+        f"- Szeles napok: {analysis.total_windy_days}",
+        f"- Szeles napok aránya: {analysis.overall_windy_percentage:.1f}%",
+        "",
+        _build_extreme_month_line("Legszélesebb hónap", analysis.windiest_month),
+        _build_extreme_month_line("Legcsendesebb hónap", analysis.calmest_month),
+    ]
+    return "\n".join(lines)
+
+
+def _build_chart_label(
+    month_label: str, windy_days_count: int, percentage: float
+) -> str:
+    """Build chart label for one month."""
+    if windy_days_count <= 0:
+        return f"{month_label}: 0 szeles nap"
+    return f"{month_label}: {windy_days_count} szeles nap ({percentage:.1f}%)"
+
+
+def _resolve_month_label(stat: WindyDayStats, has_multiple_years: bool) -> str:
+    """Resolve month label with year when needed."""
+    return f"{stat.year} {stat.month_name}" if has_multiple_years else stat.month_name
 
 
 def format_wind_analysis_summary(analysis: WindAnalysisResult) -> str:
@@ -26,26 +76,7 @@ def format_wind_analysis_summary(analysis: WindAnalysisResult) -> str:
                 f"{analysis.location_name} helyszínre."
             )
 
-        start_str = analysis.analysis_period[0].strftime("%Y-%m-%d")
-        end_str = analysis.analysis_period[1].strftime("%Y-%m-%d")
-
-        summary = f"""
-Szél Analízis - {analysis.location_name}
-{"=" * 50}
-
-Időszak: {start_str} - {end_str}
-Küszöbérték: {analysis.threshold_kmh} km/h
-
-Összegzés:
-- Összes nap: {analysis.total_days}
-- Szeles napok: {analysis.total_windy_days}
-- Szeles napok aránya: {analysis.overall_windy_percentage:.1f}%
-
-Legszélesebb hónap: {analysis.windiest_month.month_name if analysis.windiest_month else "N/A"} ({analysis.windiest_month.windy_days_count if analysis.windiest_month else 0} nap)
-Legcsendesebb hónap: {analysis.calmest_month.month_name if analysis.calmest_month else "N/A"} ({analysis.calmest_month.windy_days_count if analysis.calmest_month else 0} nap)
-"""
-
-        return summary.strip()
+        return _build_summary_body(analysis).strip()
 
     except Exception as e:
         logger.error(f"❌ Hiba az összefoglaló formázásában: {e}")
@@ -77,31 +108,22 @@ def get_chart_data_for_monthly_windy_days(
             }
 
         sorted_stats = sorted(analysis.monthly_stats, key=lambda x: (x.year, x.month))
-
+        has_multiple_years = len({stat.year for stat in sorted_stats}) > 1
         months = []
         counts = []
         percentages = []
         labels = []
 
         for stat in sorted_stats:
-            unique_years = {s.year for s in sorted_stats}
-            if len(unique_years) > 1:
-                month_label = f"{stat.year} {stat.month_name}"
-            else:
-                month_label = stat.month_name
-
+            month_label = _resolve_month_label(stat, has_multiple_years)
             months.append(month_label)
             counts.append(stat.windy_days_count)
             percentages.append(stat.windy_percentage)
-
-            if stat.windy_days_count > 0:
-                label = (
-                    f"{month_label}: {stat.windy_days_count} szeles nap "
-                    f"({stat.windy_percentage:.1f}%)"
+            labels.append(
+                _build_chart_label(
+                    month_label, stat.windy_days_count, stat.windy_percentage
                 )
-            else:
-                label = f"{month_label}: 0 szeles nap"
-            labels.append(label)
+            )
 
         logger.info(f"📊 Chart adatok előkészítve: {len(months)} hónap")
         logger.info(f"📊 Chart hónapok: {months}")

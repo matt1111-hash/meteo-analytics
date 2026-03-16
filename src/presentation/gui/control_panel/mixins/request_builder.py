@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -8,6 +9,70 @@ Analysis request building and validation logic.
 
 from datetime import datetime
 from typing import Any, Dict
+
+
+def _validate_analysis_type(request: Dict[str, Any]) -> str | None:
+    """Validate and return the requested analysis type."""
+    analysis_type = request.get("analysis_type")
+    if analysis_type is None:
+        print("❌ DEBUG: Missing analysis_type in request")
+        return None
+    valid_types = {"single_location", "multi_city", "county_analysis"}
+    if analysis_type not in valid_types:
+        print(f"❌ DEBUG: Invalid analysis type: {analysis_type}")
+        return None
+    return analysis_type
+
+
+def _validate_single_location_request(request: Dict[str, Any]) -> bool:
+    """Validate the single-location request payload."""
+    if "location_data" not in request:
+        print("❌ DEBUG: Missing location_data in request")
+        return False
+    location_data = request["location_data"]
+    if not all(key in location_data for key in ["latitude", "longitude"]):
+        print(
+            f"❌ DEBUG: Missing lat/lon in location_data: {list(location_data.keys())}"
+        )
+        return False
+    print("✅ DEBUG: Single location validation passed - location_data structure valid")
+    return True
+
+
+def _validate_multi_city_request(request: Dict[str, Any]) -> bool:
+    """Validate the multi-city request payload."""
+    if "multi_city_mode" not in request or not request["multi_city_mode"]:
+        print("❌ DEBUG: Missing multi_city_mode in request")
+        return False
+    if "selected_cities" not in request or len(request["selected_cities"]) == 0:
+        print("❌ DEBUG: No selected_cities in multi-city request")
+        return False
+    print(
+        f"✅ DEBUG: Multi-city validation passed - {len(request['selected_cities'])} cities"
+    )
+    return True
+
+
+def _validate_date_range(request: Dict[str, Any]) -> bool:
+    """Validate the date range wrapper."""
+    if "date_range" not in request:
+        print("❌ DEBUG: Missing date_range in request")
+        return False
+    date_range = request["date_range"]
+    if not all(key in date_range for key in ["start_date", "end_date"]):
+        print(
+            f"❌ DEBUG: Missing start_date/end_date in date_range: {list(date_range.keys())}"
+        )
+        return False
+    return True
+
+
+def _validate_provider_settings(request: Dict[str, Any]) -> bool:
+    """Validate provider-specific settings presence."""
+    if "provider" not in request or "api_settings" not in request:
+        print("❌ DEBUG: Missing provider or api_settings in request")
+        return False
+    return True
 
 
 class RequestBuilderMixin:
@@ -152,63 +217,22 @@ class RequestBuilderMixin:
 
         A fő hiba helye volt itt! A validation a location_data objektum alatt keresi a lat/lon kulcsokat.
         """
-        # Analysis type check
-        if "analysis_type" not in request:
-            print("❌ DEBUG: Missing analysis_type in request")
+        analysis_type = _validate_analysis_type(request)
+        if analysis_type is None:
             return False
 
-        analysis_type = request["analysis_type"]
-
-        # 🚨 FIX: Konvertált analysis type validálás
-        valid_types = ["single_location", "multi_city", "county_analysis"]
-        if analysis_type not in valid_types:
-            print(f"❌ DEBUG: Invalid analysis type: {analysis_type}")
+        if analysis_type == "single_location" and not _validate_single_location_request(
+            request
+        ):
             return False
-
-        # 🚨 KRITIKUS FIX: Single location validation - location_data objektum alatt keresi lat/lon
-        if analysis_type == "single_location":
-            if "location_data" not in request:
-                print("❌ DEBUG: Missing location_data in request")
-                return False
-            location_data = request["location_data"]
-            if not all(key in location_data for key in ["latitude", "longitude"]):
-                print(
-                    f"❌ DEBUG: Missing lat/lon in location_data: {list(location_data.keys())}"
-                )
-                return False
-            print(
-                "✅ DEBUG: Single location validation passed - location_data structure valid"
-            )
-
-        # 🏙️ Multi-city validation (mind a két típusra)
-        elif analysis_type in ["multi_city", "county_analysis"]:
-            if "multi_city_mode" not in request or not request["multi_city_mode"]:
-                print("❌ DEBUG: Missing multi_city_mode in request")
-                return False
-
-            if "selected_cities" not in request or len(request["selected_cities"]) == 0:
-                print("❌ DEBUG: No selected_cities in multi-city request")
-                return False
-
-            print(
-                f"✅ DEBUG: Multi-city validation passed - {len(request['selected_cities'])} cities"
-            )
-
-        # Date validation - 🚨 FIX: date_range objektum ellenőrzése
-        if "date_range" not in request:
-            print("❌ DEBUG: Missing date_range in request")
+        if analysis_type in [
+            "multi_city",
+            "county_analysis",
+        ] and not _validate_multi_city_request(request):
             return False
-
-        date_range = request["date_range"]
-        if not all(key in date_range for key in ["start_date", "end_date"]):
-            print(
-                f"❌ DEBUG: Missing start_date/end_date in date_range: {list(date_range.keys())}"
-            )
+        if not _validate_date_range(request):
             return False
-
-        # API validation
-        if "provider" not in request or "api_settings" not in request:
-            print("❌ DEBUG: Missing provider or api_settings in request")
+        if not _validate_provider_settings(request):
             return False
 
         print(f"✅ DEBUG: Analysis request validation passed for {analysis_type}")

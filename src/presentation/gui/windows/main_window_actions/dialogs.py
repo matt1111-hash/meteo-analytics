@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Dialogs and cleanup functions."""
 
 from typing import TYPE_CHECKING

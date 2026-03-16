@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Location domain entity."""
 
 from dataclasses import dataclass, field

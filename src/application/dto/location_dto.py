@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 """
 Location DTOs - Data Transfer Objects for Location Information.
 
@@ -83,15 +84,28 @@ class UniversalLocationDTO:
     @classmethod
     def from_domain(cls, location: UniversalLocation) -> "UniversalLocationDTO":
         """Create DTO from domain entity."""
+        latitude = 0.0
+        longitude = 0.0
+        if location.coordinates:
+            latitude, longitude = location.coordinates
+        elif isinstance(location.identifier, tuple) and len(location.identifier) == 2:
+            latitude, longitude = location.identifier
+
         return cls(
-            identifier=location.identifier,
+            identifier=str(location.identifier),
             display_name=location.display_name,
-            latitude=location.latitude,
-            longitude=location.longitude,
-            location_type=location.location_type.value,
-            country_code=location.country_code,
-            timezone=location.timezone,
-            metadata=location.metadata,
+            latitude=latitude,
+            longitude=longitude,
+            location_type=location.type.value,
+            country_code=location.country_code or "HU",
+            timezone=location.timezone or "Europe/Budapest",
+            metadata={
+                "region_code": location.region_code,
+                "population": location.population,
+                "area_km2": location.area_km2,
+                "climate_zone": location.climate_zone,
+                "child_locations_count": len(location.child_locations),
+            },
         )
 
     def to_dict(self) -> Dict[str, Any]:

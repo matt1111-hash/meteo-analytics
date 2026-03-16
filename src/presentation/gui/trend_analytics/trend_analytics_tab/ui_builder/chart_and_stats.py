@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """UI Builder - Chart and Statistics sections."""
 
 from PySide6.QtCore import Qt

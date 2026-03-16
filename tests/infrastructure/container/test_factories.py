@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Tests for infrastructure container factory functions."""
 
-import pytest
-
 from src.infrastructure.container import (
     get_anomaly_profile_port,
     get_city_manager_port,
@@ -51,7 +49,9 @@ class TestContainerFactories:
         db_path.touch()
         hungarian_db_path.touch()
 
-        port = get_city_repo_port_direct(db_path=db_path, hungarian_db_path=hungarian_db_path)
+        port = get_city_repo_port_direct(
+            db_path=db_path, hungarian_db_path=hungarian_db_path
+        )
 
         assert str(port.db_path) == str(db_path)
         assert str(port.hungarian_db_path) == str(hungarian_db_path)

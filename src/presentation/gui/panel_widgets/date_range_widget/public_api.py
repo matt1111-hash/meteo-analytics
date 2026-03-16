@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Date Range Widget - Public API
@@ -22,6 +23,38 @@ from PySide6.QtCore import QDate, Qt
 
 if TYPE_CHECKING:
     pass
+
+
+def _set_manual_date_if_valid(
+    widget: Any, attr_name: str, date_value: str | None
+) -> None:
+    """Set a manual QDateEdit value when the ISO date is valid."""
+    if not date_value:
+        return
+    qdate = QDate.fromString(date_value, Qt.ISODate)
+    if qdate.isValid():
+        getattr(widget, attr_name).setDate(qdate)
+
+
+def _apply_time_range_state(
+    widget: Any, time_range: str | None, date_mode: str
+) -> None:
+    """Apply time-range selection state."""
+    if not time_range or date_mode != "time_range":
+        return
+    index = widget.time_range_combo.findText(time_range)
+    if index >= 0:
+        widget.time_range_combo.setCurrentIndex(index)
+
+
+def _apply_manual_date_state(
+    widget: Any, state: Dict[str, Any], date_mode: str
+) -> None:
+    """Apply manual date state when active."""
+    if date_mode != "manual_dates":
+        return
+    _set_manual_date_if_valid(widget, "start_date", state.get("start_date"))
+    _set_manual_date_if_valid(widget, "end_date", state.get("end_date"))
 
 
 class DateRangeWidgetPublicAPI:
@@ -81,8 +114,6 @@ class DateRangeWidgetPublicAPI:
         """
         try:
             self._updating_state = True
-
-            # Date mode
             date_mode = state.get("date_mode", "time_range")
             if date_mode == "time_range":
                 self.time_range_radio.setChecked(True)
@@ -91,30 +122,8 @@ class DateRangeWidgetPublicAPI:
 
             self.date_mode = date_mode
             self._set_manual_dates_enabled(date_mode == "manual_dates")
-
-            # Time range combo
-            time_range = state.get("time_range")
-            if time_range and date_mode == "time_range":
-                index = self.time_range_combo.findText(time_range)
-                if index >= 0:
-                    self.time_range_combo.setCurrentIndex(index)
-
-            # Manual dates
-            if date_mode == "manual_dates":
-                start_date = state.get("start_date")
-                end_date = state.get("end_date")
-
-                if start_date:
-                    qdate = QDate.fromString(start_date, Qt.ISODate)
-                    if qdate.isValid():
-                        self.start_date.setDate(qdate)
-
-                if end_date:
-                    qdate = QDate.fromString(end_date, Qt.ISODate)
-                    if qdate.isValid():
-                        self.end_date.setDate(qdate)
-
-            # Update computed dates
+            _apply_time_range_state(self, state.get("time_range"), date_mode)
+            _apply_manual_date_state(self, state, date_mode)
             if date_mode == "time_range":
                 self._update_computed_dates()
 

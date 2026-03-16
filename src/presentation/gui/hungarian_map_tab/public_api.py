@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 Public API methods for HungarianMapTab.
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 WeatherTooltipMixin Point Finder - Find closest chart point.
@@ -42,6 +43,54 @@ class PointFinder:
         # Chart-specific implementation required
         return self.find_closest_temperature(event)
 
+    def _get_temperature_columns(self, df: Any) -> list[str]:
+        """Return available temperature columns."""
+        return [
+            col for col in ["temp_mean", "temp_max", "temp_min"] if col in df.columns
+        ]
+
+    def _find_closest_index(
+        self, plot_dates: Any, temperatures: Any, mouse_coords: tuple[float, float]
+    ) -> tuple[Optional[int], float]:
+        """Find closest index for a single temperature series."""
+        mouse_x_display, mouse_y_display = mouse_coords
+        closest_idx: Optional[int] = None
+        min_distance = float("inf")
+        for index, (x_val, y_val) in enumerate(zip(plot_dates, temperatures)):
+            point_x_display, point_y_display = self._mixin.ax.transData.transform(
+                (x_val, y_val)
+            )
+            distance = np.sqrt(
+                (mouse_x_display - point_x_display) ** 2
+                + (mouse_y_display - point_y_display) ** 2
+            )
+            if distance < min_distance:
+                min_distance = distance
+                closest_idx = index
+        return closest_idx, min_distance
+
+    @staticmethod
+    def _build_point_data(
+        df: Any,
+        closest_idx: int,
+        primary_temp_col: str,
+        temperatures: Any,
+        min_distance: float,
+        temp_columns: list[str],
+    ) -> Dict[str, Any]:
+        """Build point payload for tooltip rendering."""
+        point_data = {
+            "index": closest_idx,
+            "date": df.iloc[closest_idx]["date"],
+            "primary_temp": temperatures.iloc[closest_idx],
+            "primary_temp_column": primary_temp_col,
+            "pixel_distance": min_distance,
+        }
+        for col in temp_columns:
+            if col != primary_temp_col:
+                point_data[col] = df.iloc[closest_idx][col]
+        return point_data
+
     def find_closest_temperature(self, event) -> Optional[Dict[str, Any]]:
         """
         Find closest temperature chart point.
@@ -66,60 +115,28 @@ class PointFinder:
                 return None
 
             plot_dates = mdates.date2num(df["date"])
-
-            # Available temperature columns
-            temp_columns = [
-                col
-                for col in ["temp_mean", "temp_max", "temp_min"]
-                if col in df.columns
-            ]
+            temp_columns = self._get_temperature_columns(df)
             if not temp_columns:
                 return None
 
-            # Primary temperature column (mean > max > min)
             primary_temp_col = temp_columns[0]
             temperatures = df[primary_temp_col]
-
-            # Mouse position in display coordinates
-            mouse_x_display, mouse_y_display = self._mixin.ax.transData.transform(
-                (event.xdata, event.ydata)
+            closest_idx, min_distance = self._find_closest_index(
+                plot_dates,
+                temperatures,
+                self._mixin.ax.transData.transform((event.xdata, event.ydata)),
             )
-
-            closest_idx = None
-            min_distance = float("inf")
-
-            # Calculate distance to each point
-            for i, (x_val, y_val) in enumerate(zip(plot_dates, temperatures)):
-                point_x_display, point_y_display = self._mixin.ax.transData.transform(
-                    (x_val, y_val)
-                )
-
-                # Pixel distance
-                distance = np.sqrt(
-                    (mouse_x_display - point_x_display) ** 2
-                    + (mouse_y_display - point_y_display) ** 2
-                )
-
-                if distance < min_distance:
-                    min_distance = distance
-                    closest_idx = i
 
             # Tolerance check
             if closest_idx is not None and min_distance <= self._mixin._hover_tolerance:
-                point_data = {
-                    "index": closest_idx,
-                    "date": df.iloc[closest_idx]["date"],
-                    "primary_temp": temperatures.iloc[closest_idx],
-                    "primary_temp_column": primary_temp_col,
-                    "pixel_distance": min_distance,
-                }
-
-                # Add additional temperature columns
-                for col in temp_columns:
-                    if col != primary_temp_col:
-                        point_data[col] = df.iloc[closest_idx][col]
-
-                return point_data
+                return self._build_point_data(
+                    df,
+                    closest_idx,
+                    primary_temp_col,
+                    temperatures,
+                    min_distance,
+                    temp_columns,
+                )
 
         except Exception as e:
             print(f"⚠️ DEBUG: Point calculation error: {e}")

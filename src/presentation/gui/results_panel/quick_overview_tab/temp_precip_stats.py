@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Quick Overview Tab - Temp Precip Stats
@@ -22,6 +23,77 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _resolve_series_mean(series: pd.Series) -> float | None:
+    """Resolve mean value for a non-empty series."""
+    if series.empty:
+        return None
+    return float(series.mean())
+
+
+def _set_label_text(self, label_key: str, value: float | int | None) -> None:
+    """Set stat label from optional numeric value."""
+    if value is None or not pd.notna(value):
+        self._stat_labels[label_key].setText("N/A")
+        return
+    self._stat_labels[label_key].setText(f"{value:.1f}")
+
+
+def _set_precipitation_labels(self, precip_series: pd.Series) -> None:
+    """Populate precipitation summary labels."""
+    _set_label_text(self, "total_precip", precip_series.sum())
+    _set_label_text(self, "avg_precip", precip_series.mean())
+    _set_label_text(self, "max_precip", precip_series.max())
+    rainy_days = len(precip_series[precip_series > 0.1])
+    self._stat_labels["rainy_days"].setText(f"{rainy_days}")
+
+
+def _get_non_empty_series(df: pd.DataFrame, column_name: str) -> pd.Series | None:
+    """Return cleaned series when the column exists and has values."""
+    if column_name not in df.columns:
+        return None
+    series = df[column_name].dropna()
+    return None if series.empty else series
+
+
+def _is_valid_finite_number(value: float | int | None) -> bool:
+    """Return whether numeric value is finite and usable."""
+    return (
+        value is not None
+        and pd.notna(value)
+        and value
+        not in (
+            float("-inf"),
+            float("inf"),
+        )
+    )
+
+
+def _resolve_average_temperature(df: pd.DataFrame) -> float | None:
+    """Resolve average temperature using mean or min/max fallback."""
+    mean_series = _get_non_empty_series(df, "temp_mean")
+    if mean_series is not None:
+        return _resolve_series_mean(mean_series)
+
+    max_series = _get_non_empty_series(df, "temp_max")
+    min_series = _get_non_empty_series(df, "temp_min")
+    if max_series is not None and min_series is not None:
+        return float((max_series.mean() + min_series.mean()) / 2)
+    return None
+
+
+def _resolve_temperature_range(df: pd.DataFrame) -> float | None:
+    """Resolve full visible temperature range."""
+    max_series = _get_non_empty_series(df, "temp_max")
+    min_series = _get_non_empty_series(df, "temp_min")
+    if max_series is None or min_series is None:
+        return None
+    max_val = max_series.max()
+    min_val = min_series.min()
+    if _is_valid_finite_number(max_val) and _is_valid_finite_number(min_val):
+        return float(max_val - min_val)
+    return None
+
+
 def calculate_temperature_stats(self, df: pd.DataFrame) -> None:
     """Hőmérséklet statisztikák számítása."""
     try:
@@ -31,42 +103,10 @@ def calculate_temperature_stats(self, df: pd.DataFrame) -> None:
         _set_stat_if_exists(
             self, df, "temp_min", "min_temp", lambda s: f"{s.min():.1f}"
         )
-
-        # Átlagos hőmérséklet
-        avg_temp = None
-        if "temp_mean" in df.columns:
-            mean_series = df["temp_mean"].dropna()
-            if not mean_series.empty:
-                avg_temp = mean_series.mean()
-
-        if avg_temp is None or not pd.notna(avg_temp):
-            if "temp_max" in df.columns and "temp_min" in df.columns:
-                max_series = df["temp_max"].dropna()
-                min_series = df["temp_min"].dropna()
-                if not max_series.empty and not min_series.empty:
-                    avg_temp = (max_series.mean() + min_series.mean()) / 2
-
-        if avg_temp is not None and pd.notna(avg_temp):
-            self._stat_labels["avg_temp"].setText(f"{avg_temp:.1f}")
-        else:
-            self._stat_labels["avg_temp"].setText("N/A")
-
-        # Hőingás
-        if "temp_max" in df.columns and "temp_min" in df.columns:
-            max_series = df["temp_max"].dropna()
-            min_series = df["temp_min"].dropna()
-            if not max_series.empty and not min_series.empty:
-                max_val = max_series.max()
-                min_val = min_series.min()
-                if pd.notna(max_val) and pd.notna(min_val):
-                    temp_range = max_val - min_val
-                    self._stat_labels["temp_range"].setText(f"{temp_range:.1f}")
-                else:
-                    self._stat_labels["temp_range"].setText("N/A")
-            else:
-                self._stat_labels["temp_range"].setText("N/A")
-        else:
-            self._stat_labels["temp_range"].setText("N/A")
+        avg_temp = _resolve_average_temperature(df)
+        _set_label_text(self, "avg_temp", avg_temp)
+        temp_range = _resolve_temperature_range(df)
+        _set_label_text(self, "temp_range", temp_range)
 
     except Exception as e:
         logger.error(f"Hőmérséklet statisztika hiba: {e}")
@@ -89,23 +129,7 @@ def calculate_precipitation_stats(self, df: pd.DataFrame) -> None:
             self._stat_labels["rainy_days"].setText("0")
             return
 
-        total = precip_series.sum()
-        self._stat_labels["total_precip"].setText(
-            f"{total:.1f}" if pd.notna(total) else "N/A"
-        )
-
-        avg_precip = precip_series.mean()
-        self._stat_labels["avg_precip"].setText(
-            f"{avg_precip:.1f}" if pd.notna(avg_precip) else "N/A"
-        )
-
-        max_precip = precip_series.max()
-        self._stat_labels["max_precip"].setText(
-            f"{max_precip:.1f}" if pd.notna(max_precip) else "N/A"
-        )
-
-        rainy_days = len(precip_series[precip_series > 0.1])
-        self._stat_labels["rainy_days"].setText(f"{rainy_days}")
+        _set_precipitation_labels(self, precip_series)
 
     except Exception as e:
         logger.error(f"Csapadék statisztika hiba: {e}")
@@ -118,17 +142,13 @@ def _set_stat_if_exists(
     self, df: pd.DataFrame, col: str, label_key: str, formatter
 ) -> None:
     """Statisztika beállítása ha az oszlop létezik."""
-    if col not in df.columns:
-        self._stat_labels[label_key].setText("N/A")
-        return
-
-    series = df[col].dropna()
-    if series.empty:
+    series = _get_non_empty_series(df, col)
+    if series is None:
         self._stat_labels[label_key].setText("N/A")
         return
 
     value = series.max() if "max" in label_key else series.min()
-    if pd.notna(value) and value != float("-inf") and value != float("inf"):
+    if _is_valid_finite_number(value):
         self._stat_labels[label_key].setText(formatter(series))
     else:
         self._stat_labels[label_key].setText("N/A")

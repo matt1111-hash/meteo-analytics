@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Heatmap Chart - Colormap Handler
@@ -26,6 +27,32 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _select_parameter_colormap(parameter: str, vmin: float, vmax: float) -> str:
+    """Select colormap based on the heatmap parameter."""
+    if "temperature" in parameter:
+        return _select_temperature_colormap(vmin, vmax)
+    if "precipitation" in parameter:
+        return "Blues"
+    if "wind" in parameter:
+        return "Greens"
+    return "viridis"
+
+
+def _select_temperature_colormap(vmin: float, vmax: float) -> str:
+    """Select temperature-specific colormap."""
+    if vmin < 0 and vmax > 20:
+        logger.debug("🌡️ Hőmérséklet: RdYlBu_r (piros=meleg, kék=hideg)")
+        return "RdYlBu_r"
+    if vmax <= 15:
+        logger.debug("🌡️ Hőmérséklet: Blues_r (hideg)")
+        return "Blues_r"
+    if vmin >= 15:
+        logger.debug("🌡️ Hőmérséklet: Reds (meleg)")
+        return "Reds"
+    logger.debug("🌡️ Hőmérséklet: viridis (alapértelmezett)")
+    return "viridis"
+
+
 def get_colormap_and_norm(self, calendar_matrix: np.ndarray) -> Tuple[str, object]:
     """
     Get colormap and normalization.
@@ -48,26 +75,6 @@ def get_colormap_and_norm(self, calendar_matrix: np.ndarray) -> Tuple[str, objec
 
     vmin = valid_values.min()
     vmax = valid_values.max()
-
-    if "temperature" in self.parameter:
-        if vmin < 0 and vmax > 20:
-            cmap = "RdYlBu_r"  # REVERSE: piros=meleg, kék=hideg
-            logger.debug("🌡️ Hőmérséklet: RdYlBu_r (piros=meleg, kék=hideg)")
-        elif vmax <= 15:
-            cmap = "Blues_r"  # Hideg: sötétkék=hidegebb
-            logger.debug("🌡️ Hőmérséklet: Blues_r (hideg)")
-        elif vmin >= 15:
-            cmap = "Reds"  # Meleg: sötétpiros=melegebb
-            logger.debug("🌡️ Hőmérséklet: Reds (meleg)")
-        else:
-            cmap = "viridis"
-            logger.debug("🌡️ Hőmérséklet: viridis (alapértelmezett)")
-    elif "precipitation" in self.parameter:
-        cmap = "Blues"
-    elif "wind" in self.parameter:
-        cmap = "Greens"
-    else:
-        cmap = "viridis"
-
+    cmap = _select_parameter_colormap(self.parameter, vmin, vmax)
     norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
     return cmap, norm

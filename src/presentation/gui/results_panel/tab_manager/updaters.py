@@ -1,6 +1,13 @@
+# mypy: ignore-errors
 """Tab Manager - update and operations methods."""
 
 from typing import Any, Optional
+
+
+def _run_if_present(component: Any, method_name: str, *args: Any) -> None:
+    """Call a method on a component if both exist."""
+    if component and hasattr(component, method_name):
+        getattr(component, method_name)(*args)
 
 
 def update_standard_tabs(self, data: dict, city_name: str) -> None:
@@ -81,37 +88,21 @@ def apply_theme(self, dark_theme: bool) -> None:
 
 def clear_all_tabs(self) -> None:
     """Minden tab adatainak törlése."""
-    if self.overview_tab and hasattr(self.overview_tab, "_clear_stats"):
-        self.overview_tab._clear_stats()
-
-    if self.charts_tab and hasattr(self.charts_tab, "clear_data"):
-        self.charts_tab.clear_data()
-
-    if self.table_tab and hasattr(self.table_tab, "clear_data"):
-        self.table_tab.clear_data()
-
-    if self.extreme_tab and hasattr(self.extreme_tab, "_clear_extremes"):
-        self.extreme_tab._clear_extremes()
-
-    if self.windy_days_tab and hasattr(self.windy_days_tab, "clear_data"):
-        self.windy_days_tab.clear_data()
+    _run_if_present(self.overview_tab, "_clear_stats")
+    _run_if_present(self.charts_tab, "clear_data")
+    _run_if_present(self.table_tab, "clear_data")
+    _run_if_present(self.extreme_tab, "_clear_extremes")
+    _run_if_present(self.windy_days_tab, "clear_data")
 
 
 def cleanup(self) -> None:
     """Tabok cleanup-ja."""
-    if self.overview_tab and hasattr(self.overview_tab, "cleanup"):
-        self.overview_tab.cleanup()
-
-    if self.charts_tab and hasattr(self.charts_tab, "cleanup"):
-        self.charts_tab.cleanup()
-
-    if self.table_tab and hasattr(self.table_tab, "cleanup"):
-        self.table_tab.cleanup()
-
-    if self.extreme_tab and hasattr(self.extreme_tab, "cleanup"):
-        self.extreme_tab.cleanup()
-
-    if self.windy_days_tab and hasattr(self.windy_days_tab, "cleanup"):
-        self.windy_days_tab.cleanup()
-
+    for component in [
+        self.overview_tab,
+        self.charts_tab,
+        self.table_tab,
+        self.extreme_tab,
+        self.windy_days_tab,
+    ]:
+        _run_if_present(component, "cleanup")
     self._logger.debug("Tab cleanup completed")

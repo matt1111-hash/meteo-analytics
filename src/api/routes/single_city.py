@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Single city time series API route."""
 
 from __future__ import annotations

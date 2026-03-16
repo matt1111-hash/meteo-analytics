@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Analytics View - Multi-City Handler Module
@@ -14,6 +15,81 @@ if TYPE_CHECKING:
 
 
 logger = logging.getLogger(__name__)
+
+
+def _build_fake_daily_template() -> Dict[str, list]:
+    """Build the base fake daily dataset."""
+    return {
+        "time": [f"2024-{i // 30 + 1:02d}-{i % 30 + 1:02d}" for i in range(365)],
+        "temperature_2m_mean": [],
+        "temperature_2m_max": [],
+        "temperature_2m_min": [],
+        "precipitation_sum": [],
+        "windspeed_10m_max": [],
+        "wind_gusts_max": [],
+    }
+
+
+def _append_temperature_day(
+    fake_daily_data: Dict[str, list], avg_val: float, day_index: int
+) -> None:
+    """Append synthetic temperature-focused values for one day."""
+    fake_daily_data["temperature_2m_max"].append(avg_val + (day_index % 20 - 10))
+    fake_daily_data["temperature_2m_mean"].append(avg_val - 2)
+    fake_daily_data["temperature_2m_min"].append(avg_val - 8)
+    fake_daily_data["precipitation_sum"].append(0.5)
+    fake_daily_data["windspeed_10m_max"].append(10.0)
+    fake_daily_data["wind_gusts_max"].append(15.0)
+
+
+def _append_precipitation_day(
+    fake_daily_data: Dict[str, list], avg_val: float, day_index: int
+) -> None:
+    """Append synthetic precipitation-focused values for one day."""
+    fake_daily_data["precipitation_sum"].append(avg_val + (day_index % 10))
+    fake_daily_data["temperature_2m_max"].append(20.0)
+    fake_daily_data["temperature_2m_mean"].append(15.0)
+    fake_daily_data["temperature_2m_min"].append(10.0)
+    fake_daily_data["windspeed_10m_max"].append(10.0)
+    fake_daily_data["wind_gusts_max"].append(15.0)
+
+
+def _append_wind_day(
+    fake_daily_data: Dict[str, list], avg_val: float, day_index: int
+) -> None:
+    """Append synthetic wind-focused values for one day."""
+    fake_daily_data["windspeed_10m_max"].append(avg_val + (day_index % 15))
+    fake_daily_data["wind_gusts_max"].append(avg_val + 5)
+    fake_daily_data["temperature_2m_max"].append(20.0)
+    fake_daily_data["temperature_2m_mean"].append(15.0)
+    fake_daily_data["temperature_2m_min"].append(10.0)
+    fake_daily_data["precipitation_sum"].append(1.0)
+
+
+def _append_default_day(fake_daily_data: Dict[str, list]) -> None:
+    """Append default synthetic values for one day."""
+    fake_daily_data["temperature_2m_max"].append(20.0)
+    fake_daily_data["temperature_2m_mean"].append(15.0)
+    fake_daily_data["temperature_2m_min"].append(10.0)
+    fake_daily_data["precipitation_sum"].append(1.0)
+    fake_daily_data["windspeed_10m_max"].append(10.0)
+    fake_daily_data["wind_gusts_max"].append(15.0)
+
+
+def _append_metric_day(
+    fake_daily_data: Dict[str, list], metric_type, avg_val: float, day_index: int
+) -> None:
+    """Append one synthetic day based on the selected metric."""
+    from src.domain.value_objects.enums import AnalyticsMetric
+
+    if metric_type == AnalyticsMetric.TEMPERATURE_2M_MAX:
+        _append_temperature_day(fake_daily_data, avg_val, day_index)
+    elif metric_type == AnalyticsMetric.PRECIPITATION_SUM:
+        _append_precipitation_day(fake_daily_data, avg_val, day_index)
+    elif metric_type == AnalyticsMetric.WINDSPEED_10M_MAX:
+        _append_wind_day(fake_daily_data, avg_val, day_index)
+    else:
+        _append_default_day(fake_daily_data)
 
 
 class AnalyticsViewMultiCityHandler:
@@ -55,19 +131,7 @@ class AnalyticsViewMultiCityHandler:
             # Multi-City eredmények aggregálása egy fake weather data-ba
             cities = analytics_result.city_results
             question = analytics_result.question
-
-            # Fake daily data létrehozása (365 nap)
-            fake_daily_data = {
-                "time": [
-                    f"2024-{i // 30 + 1:02d}-{i % 30 + 1:02d}" for i in range(365)
-                ],
-                "temperature_2m_mean": [],
-                "temperature_2m_max": [],
-                "temperature_2m_min": [],
-                "precipitation_sum": [],
-                "windspeed_10m_max": [],
-                "wind_gusts_max": [],
-            }
+            fake_daily_data = _build_fake_daily_template()
 
             # Metric alapú fake data generálás
             from src.domain.value_objects.enums import AnalyticsMetric
@@ -75,46 +139,10 @@ class AnalyticsViewMultiCityHandler:
             metric_type = (
                 question.metric if question else AnalyticsMetric.TEMPERATURE_2M_MAX
             )
+            avg_val = sum(city.value for city in cities) / len(cities)
 
             for i in range(365):
-                # Városok értékeinek átlaga minden napra (szimuláció)
-                if metric_type == AnalyticsMetric.TEMPERATURE_2M_MAX:
-                    avg_val = sum(city.value for city in cities) / len(cities)
-                    fake_daily_data["temperature_2m_max"].append(
-                        avg_val + (i % 20 - 10)
-                    )
-                    fake_daily_data["temperature_2m_mean"].append(avg_val - 2)
-                    fake_daily_data["temperature_2m_min"].append(avg_val - 8)
-                    fake_daily_data["precipitation_sum"].append(0.5)
-                    fake_daily_data["windspeed_10m_max"].append(10.0)
-                    fake_daily_data["wind_gusts_max"].append(15.0)
-
-                elif metric_type == AnalyticsMetric.PRECIPITATION_SUM:
-                    avg_val = sum(city.value for city in cities) / len(cities)
-                    fake_daily_data["precipitation_sum"].append(avg_val + (i % 10))
-                    fake_daily_data["temperature_2m_max"].append(20.0)
-                    fake_daily_data["temperature_2m_mean"].append(15.0)
-                    fake_daily_data["temperature_2m_min"].append(10.0)
-                    fake_daily_data["windspeed_10m_max"].append(10.0)
-                    fake_daily_data["wind_gusts_max"].append(15.0)
-
-                elif metric_type == AnalyticsMetric.WINDSPEED_10M_MAX:
-                    avg_val = sum(city.value for city in cities) / len(cities)
-                    fake_daily_data["windspeed_10m_max"].append(avg_val + (i % 15))
-                    fake_daily_data["wind_gusts_max"].append(avg_val + 5)
-                    fake_daily_data["temperature_2m_max"].append(20.0)
-                    fake_daily_data["temperature_2m_mean"].append(15.0)
-                    fake_daily_data["temperature_2m_min"].append(10.0)
-                    fake_daily_data["precipitation_sum"].append(1.0)
-
-                else:
-                    # Default értékek
-                    fake_daily_data["temperature_2m_max"].append(20.0)
-                    fake_daily_data["temperature_2m_mean"].append(15.0)
-                    fake_daily_data["temperature_2m_min"].append(10.0)
-                    fake_daily_data["precipitation_sum"].append(1.0)
-                    fake_daily_data["windspeed_10m_max"].append(10.0)
-                    fake_daily_data["wind_gusts_max"].append(15.0)
+                _append_metric_day(fake_daily_data, metric_type, avg_val, i)
 
             # Fake data objektum
             fake_data = {

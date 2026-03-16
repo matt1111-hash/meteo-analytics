@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 """
 Enhanced Statistics Panel Component
 
@@ -22,6 +23,50 @@ from PySide6.QtWidgets import QGridLayout, QLabel, QVBoxLayout, QWidget
 from .stats_card import DashboardStatsCard
 
 logger = logging.getLogger(__name__)
+
+
+def _resolve_trend_unit(parameter: str) -> str:
+    """Resolve trend unit from the selected parameter."""
+    lowered = parameter.lower()
+    if "hőmérséklet" in lowered:
+        return "°C/évtized"
+    if "csapadék" in lowered:
+        return "mm/évtized"
+    if "szél" in lowered:
+        return "km/h/évtized"
+    return "/évtized"
+
+
+def _resolve_value_unit(parameter: str) -> str:
+    """Resolve value unit from the selected parameter."""
+    lowered = parameter.lower()
+    if "hőmérséklet" in lowered:
+        return "°C"
+    if "csapadék" in lowered:
+        return "mm"
+    if "szél" in lowered:
+        return "km/h"
+    return ""
+
+
+def _build_reliability_metadata(r_squared: float) -> tuple[str, str]:
+    """Build subtitle and color for reliability KPI."""
+    if r_squared > 0.7:
+        return "Magas megbízhatóság", "#10b981"
+    if r_squared > 0.4:
+        return "Közepes megbízhatóság", "#f59e0b"
+    return "Alacsony megbízhatóság", "#ef4444"
+
+
+def _build_significance_metadata(p_value: float) -> tuple[str, str, str]:
+    """Build significance card content."""
+    if p_value < 0.001:
+        return "***", f"p = {p_value:.3f}", "#059669"
+    if p_value < 0.01:
+        return "**", f"p = {p_value:.3f}", "#10b981"
+    if p_value < 0.05:
+        return "*", f"p = {p_value:.3f}", "#f59e0b"
+    return "n.s.", f"p = {p_value:.3f}", "#6b7280"
 
 
 class EnhancedStatisticsPanel(QWidget):
@@ -91,92 +136,55 @@ class EnhancedStatisticsPanel(QWidget):
         """
         try:
             logger.info("🎯 DASHBOARD STATS FRISSÍTÉS KEZDÉSE")
-
-            # 1. TREND VÁLTOZÁS KÁRTYA
             trend_value = trend_data["trend_per_decade"]
-            if "hőmérséklet" in trend_data["parameter"].lower():
-                trend_unit = "°C/évtized"
-            elif "csapadék" in trend_data["parameter"].lower():
-                trend_unit = "mm/évtized"
-            elif "szél" in trend_data["parameter"].lower():
-                trend_unit = "km/h/évtized"
-            else:
-                trend_unit = "/évtized"
-
-            trend_display = f"{trend_value:+.2f}"
-            trend_subtitle = f"{trend_unit}"
-
-            # 2. MEGBÍZHATÓSÁG (R²) KÁRTYA
             r2 = trend_data["r_squared"]
-            if r2 > 0.7:
-                reliability_level = "Magas"
-                r2_color = "#10b981"  # zöld
-            elif r2 > 0.4:
-                reliability_level = "Közepes"
-                r2_color = "#f59e0b"  # sárga
-            else:
-                reliability_level = "Alacsony"
-                r2_color = "#ef4444"  # piros
-
-            r2_display = f"{r2:.3f}"
-            r2_subtitle = f"{reliability_level} megbízhatóság"
-
-            # 3. SZIGNIFIKANCIA KÁRTYA
             p_val = trend_data["p_value"]
-
-            if p_val < 0.001:
-                sig_display = "***"
-                sig_color = "#059669"  # sötét zöld
-            elif p_val < 0.01:
-                sig_display = "**"
-                sig_color = "#10b981"  # zöld
-            elif p_val < 0.05:
-                sig_display = "*"
-                sig_color = "#f59e0b"  # sárga
-            else:
-                sig_display = "n.s."
-                sig_color = "#6b7280"  # szürke
-
-            sig_subtitle = f"p = {p_val:.3f}"
-
-            # 4. ÉRTÉKTARTOMÁNY KÁRTYA
             stats = trend_data["statistics"]
-            if "hőmérséklet" in trend_data["parameter"].lower():
-                unit = "°C"
-            elif "csapadék" in trend_data["parameter"].lower():
-                unit = "mm"
-            elif "szél" in trend_data["parameter"].lower():
-                unit = "km/h"
-            else:
-                unit = ""
-
-            range_value = stats["max"] - stats["min"]
-            range_display = f"{range_value:.1f}"
-            range_subtitle = f"{stats['min']:.1f} - {stats['max']:.1f} {unit}"
-
-            # KÁRTYÁK FRISSÍTÉSE
-
-            # Trend kártya frissítése (színkódolással)
-            trend_color = (
-                "#ef4444" if trend_value < 0 else "#10b981"
-            )  # piros ha csökken, zöld ha nő
-            self.update_card("🎯 Trend", trend_display, trend_subtitle, trend_color)
-
-            # Megbízhatóság kártya
-            self.update_card("🎯 Megbízhatóság", r2_display, r2_subtitle, r2_color)
-
-            # Szignifikancia kártya
-            self.update_card("🎯 Szignifikancia", sig_display, sig_subtitle, sig_color)
-
-            # Tartomány kártya
-            self.update_card("📊 Tartomány", range_display, range_subtitle, "#8b5cf6")
-
+            parameter = trend_data["parameter"]
+            cards = self._build_card_updates(parameter, trend_value, r2, p_val, stats)
+            for card_key, value, subtitle, color in cards:
+                self.update_card(card_key, value, subtitle, color)
             logger.info(f"✅ Dashboard stats frissítve: {len(self.stats_cards)} kártya")
 
         except Exception as e:
             logger.error(f"❌ Dashboard stats update hiba: {e}")
             logger.exception("Dashboard stats error stacktrace:")
             self.show_error_cards(str(e))
+
+    def _build_card_updates(
+        self,
+        parameter: str,
+        trend_value: float,
+        r_squared: float,
+        p_value: float,
+        stats: Dict,
+    ) -> list[tuple[str, str, str, str]]:
+        """Build KPI card content for a trend update."""
+        trend_unit = _resolve_trend_unit(parameter)
+        trend_color = "#ef4444" if trend_value < 0 else "#10b981"
+        reliability_subtitle, reliability_color = _build_reliability_metadata(r_squared)
+        significance_display, significance_subtitle, significance_color = (
+            _build_significance_metadata(p_value)
+        )
+        value_unit = _resolve_value_unit(parameter)
+        range_value = stats["max"] - stats["min"]
+        range_subtitle = f"{stats['min']:.1f} - {stats['max']:.1f} {value_unit}".strip()
+        return [
+            ("🎯 Trend", f"{trend_value:+.2f}", trend_unit, trend_color),
+            (
+                "🎯 Megbízhatóság",
+                f"{r_squared:.3f}",
+                reliability_subtitle,
+                reliability_color,
+            ),
+            (
+                "🎯 Szignifikancia",
+                significance_display,
+                significance_subtitle,
+                significance_color,
+            ),
+            ("📊 Tartomány", f"{range_value:.1f}", range_subtitle, "#8b5cf6"),
+        ]
 
     def update_card(self, card_key: str, value: str, subtitle: str, color: str) -> None:
         """

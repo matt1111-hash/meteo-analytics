@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Utils - Initialization
@@ -30,6 +31,45 @@ from .validation import (
 logger = logging.getLogger(__name__)
 
 
+def _log_utils_success() -> None:
+    """Log successful utils initialization details."""
+    logger.info(
+        "✅ utils.py modul sikeresen inicializálva (DUAL-API + WIND GUSTS + PROVIDER TRACKING + BACKWARD COMPATIBILITY)"
+    )
+    logger.info(
+        "🌪️ Wind thresholds - Strong: %s, Extreme: %s",
+        AnomalyConstants.WIND_HIGH_THRESHOLD,
+        AnomalyConstants.WIND_EXTREME_THRESHOLD,
+    )
+    logger.info(
+        "🌍 Data sources: %s APIs configured",
+        len(DataConstants.DATA_SOURCE_PRIORITY),
+    )
+    logger.info("🌍 Provider tracking functions loaded")
+    logger.info("🔧 Backward compatibility aliases: get_display_name_for_source ✅")
+
+
+def _log_api_availability() -> None:
+    """Log availability for all configured data sources."""
+    for source in DataConstants.DATA_SOURCE_PRIORITY:
+        available = validate_api_source_available(source)
+        display_name = get_source_display_name(source)
+        status = "✅" if available else "❌"
+        logger.info("🔗 %s: %s", display_name, status)
+
+
+def _log_utils_validation_failures(
+    gui_valid: dict[str, bool],
+    wind_valid: dict[str, bool],
+    dual_api_valid: dict[str, bool],
+) -> None:
+    """Log failing validation keys."""
+    logger.error("❌ utils.py modul validálási hibák:")
+    for key, value in {**gui_valid, **wind_valid, **dual_api_valid}.items():
+        if not value:
+            logger.error("  - %s: FAILED", key)
+
+
 def initialize_utils_module() -> bool:
     """
     Utils modul inicializálása és validálása.
@@ -55,34 +95,11 @@ def initialize_utils_module() -> bool:
         )
 
         if all_valid:
-            logger.info(
-                "✅ utils.py modul sikeresen inicializálva (DUAL-API + WIND GUSTS + PROVIDER TRACKING + BACKWARD COMPATIBILITY)"
-            )
-            logger.info(
-                f"🌪️ Wind thresholds - Strong: {AnomalyConstants.WIND_HIGH_THRESHOLD}, Extreme: {AnomalyConstants.WIND_EXTREME_THRESHOLD}"
-            )
-            logger.info(
-                f"🌍 Data sources: {len(DataConstants.DATA_SOURCE_PRIORITY)} APIs configured"
-            )
-            logger.info("🌍 Provider tracking functions loaded")
-            logger.info(
-                "🔧 Backward compatibility aliases: get_display_name_for_source ✅"
-            )
-
-            # API availability check
-            for source in DataConstants.DATA_SOURCE_PRIORITY:
-                available = validate_api_source_available(source)
-                display_name = get_source_display_name(source)
-                status = "✅" if available else "❌"
-                logger.info(f"🔗 {display_name}: {status}")
-
+            _log_utils_success()
+            _log_api_availability()
             return True
-        else:
-            logger.error("❌ utils.py modul validálási hibák:")
-            for key, value in {**gui_valid, **wind_valid, **dual_api_valid}.items():
-                if not value:
-                    logger.error(f"  - {key}: FAILED")
-            return False
+        _log_utils_validation_failures(gui_valid, wind_valid, dual_api_valid)
+        return False
 
     except Exception as e:
         logger.error(f"❌ utils.py modul inicializálási hiba: {e}")

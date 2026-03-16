@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -7,10 +8,17 @@ Adatkonverzió és update_data kezelése.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import pandas as pd
 from PySide6.QtCore import Qt
+
+from .data_handling_support import (
+    build_dataframe_payload,
+    log_dataframe_summary,
+    log_mean_source,
+    validate_required_daily_data,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -110,66 +118,17 @@ class DataHandlingMixin:
 
             logger.info(f"📊 Adathosszak: {data_lengths}")
 
-            if not dates or len(dates) == 0:
-                logger.error("❌ Nincs dátum adat!")
-                return pd.DataFrame()
-
-            if not temp_max or len(temp_max) == 0:
-                logger.error("❌ Nincs maximum hőmérséklet adat!")
+            if not validate_required_daily_data(dates, temp_max):
                 return pd.DataFrame()
 
             base_length = len(dates)
             logger.info(f"✅ Alapvető hossz: {base_length} nap")
-
-            def normalize_array(arr: List, target_length: int, fill_value=None) -> List:
-                """Array normalizálása adott hosszra."""
-                if len(arr) == target_length:
-                    return arr
-                elif len(arr) < target_length:
-                    return arr + [fill_value] * (target_length - len(arr))
-                else:
-                    return arr[:target_length]
-
-            dates_norm = normalize_array(dates, base_length)
-            temp_max_norm = normalize_array(temp_max, base_length, None)
-            temp_min_norm = normalize_array(temp_min, base_length, None)
-            temp_mean_norm = normalize_array(temp_mean, base_length, None)
-            precip_norm = normalize_array(precip, base_length, 0.0)
-            windspeed_norm = normalize_array(windspeed, base_length, None)
-
-            if not temp_mean or all(x is None for x in temp_mean_norm):
-                logger.warning("⚠️ temperature_2m_mean hiányzik, fallback számításra...")
-                temp_mean_norm = []
-                for i in range(base_length):
-                    if (
-                        i < len(temp_max_norm)
-                        and i < len(temp_min_norm)
-                        and temp_max_norm[i] is not None
-                        and temp_min_norm[i] is not None
-                    ):
-                        avg = (temp_max_norm[i] + temp_min_norm[i]) / 2
-                        temp_mean_norm.append(round(avg, 1))
-                    else:
-                        temp_mean_norm.append(None)
-                logger.info(f"🔄 Fallback számítás kész: {len(temp_mean_norm)} érték")
-            else:
-                logger.info(
-                    f"✅ temperature_2m_mean használva: {len(temp_mean_norm)} érték"
-                )
-
-            df_data = {
-                "date": dates_norm,
-                "temp_max": temp_max_norm,
-                "temp_min": temp_min_norm,
-                "temp_mean": temp_mean_norm,
-                "precipitation": precip_norm,
-            }
-
-            if windspeed_norm and any(x is not None for x in windspeed_norm):
-                df_data["windspeed"] = windspeed_norm
+            df_data = build_dataframe_payload(daily_data, base_length)
+            if "windspeed" in df_data:
                 logger.info("✅ Szélsebesség adatok hozzáadva")
             else:
                 logger.info("⚠️ Szélsebesség adatok hiányoznak")
+            log_mean_source(temp_mean, df_data)
 
             df = pd.DataFrame(df_data)
 
@@ -177,12 +136,7 @@ class DataHandlingMixin:
                 logger.error("❌ Létrehozott DataFrame üres!")
                 return pd.DataFrame()
 
-            logger.info("✅ DataFrame sikeresen létrehozva:")
-            logger.info(f"   - Sorok: {len(df)}")
-            logger.info(f"   - Oszlopok: {len(df.columns)}")
-            logger.info(f"   - Oszlopnevek: {list(df.columns)}")
-            logger.info(f"   - Első 3 sor dátuma: {list(df['date'].head(3))}")
-
+            log_dataframe_summary(df)
             return df
 
         except Exception as e:

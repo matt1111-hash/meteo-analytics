@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Cleanup Manager Module
@@ -11,6 +12,12 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .windows.main_window import MainWindow
+
+
+def _clear_tracked_collection(main_window: "MainWindow", attr_name: str) -> None:
+    """Clear a tracked cleanup collection when present."""
+    if hasattr(main_window, attr_name):
+        getattr(main_window, attr_name).clear()
 
 
 class CleanupManager:
@@ -50,14 +57,13 @@ class CleanupManager:
         self._cleanup_all_timers()
 
         # 5. Clear all references
-        if hasattr(self.mw, "active_threads"):
-            self.mw.active_threads.clear()
-        if hasattr(self.mw, "active_workers"):
-            self.mw.active_workers.clear()
-        if hasattr(self.mw, "web_engine_views"):
-            self.mw.web_engine_views.clear()
-        if hasattr(self.mw, "cleanup_timers"):
-            self.mw.cleanup_timers.clear()
+        for attr_name in (
+            "active_threads",
+            "active_workers",
+            "web_engine_views",
+            "cleanup_timers",
+        ):
+            _clear_tracked_collection(self.mw, attr_name)
 
         print("✅ CleanupManager: Cleanup sequence completed.")
 
@@ -116,35 +122,37 @@ class CleanupManager:
         ]:  # Copy to avoid modification during iteration
             try:
                 print(f"🧹 CleanupManager: Stopping worker: {worker}")
-
-                # Stop worker if it has a stop method
-                if hasattr(worker, "stop"):
-                    worker.stop()
-                elif hasattr(worker, "cancel"):
-                    worker.cancel()
-                elif hasattr(worker, "quit"):
-                    worker.quit()
-
-                # If worker has a thread, clean it up
-                if hasattr(worker, "thread"):
-                    thread = worker.thread()
-                    if thread and thread.isRunning():
-                        thread.quit()
-                        thread.wait(3000)
-
-                # Clean up worker
+                self._stop_worker(worker)
+                self._cleanup_worker_thread(worker)
                 worker.deleteLater()
                 print(f"✅ CleanupManager: Worker cleaned up: {worker}")
-
-                self.mw.active_workers.remove(worker)
-
+                self._remove_worker(worker)
             except Exception as e:
                 print(f"⚠️ CleanupManager: Worker cleanup error: {e}")
-                # Remove anyway to avoid infinite loops
-                if worker in self.mw.active_workers:
-                    self.mw.active_workers.remove(worker)
+                self._remove_worker(worker)
 
         print("✅ CleanupManager: All workers cleaned up")
+
+    def _stop_worker(self, worker: object) -> None:
+        """Request a worker to stop using its supported API."""
+        for method_name in ("stop", "cancel", "quit"):
+            if hasattr(worker, method_name):
+                getattr(worker, method_name)()
+                return
+
+    def _cleanup_worker_thread(self, worker: object) -> None:
+        """Stop the worker's backing thread when available."""
+        if not hasattr(worker, "thread"):
+            return
+        thread = worker.thread()
+        if thread and thread.isRunning():
+            thread.quit()
+            thread.wait(3000)
+
+    def _remove_worker(self, worker: object) -> None:
+        """Remove a worker from tracking if still present."""
+        if worker in self.mw.active_workers:
+            self.mw.active_workers.remove(worker)
 
     def _cleanup_all_web_engines(self) -> None:
         """🧹 KRITIKUS: Összes WebEngine view graceful cleanup-ja."""

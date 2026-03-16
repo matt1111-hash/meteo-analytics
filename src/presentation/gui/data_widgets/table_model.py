@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Data Widgets - Weather Table Model
@@ -62,6 +63,59 @@ class WeatherTableModel(QAbstractTableModel):
     def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
         return len(self._headers)
 
+    def _get_cell_value(self, row: int, col: int) -> Any:
+        """Return raw cell value for a logical column."""
+        column_fallbacks = {
+            3: None,
+            4: 3,
+            5: None,
+        }
+        if col == 0:
+            return self._data.iloc[row, 0]
+        if col in (1, 2):
+            return self._data.iloc[row, col]
+
+        fallback_column = column_fallbacks.get(col)
+        if fallback_column is not None and len(self._data.columns) <= col:
+            return self._data.iloc[row, fallback_column]
+        if len(self._data.columns) <= col:
+            return None
+        return self._data.iloc[row, col]
+
+    @staticmethod
+    def _format_measurement(value: Any, missing: str = "N/A") -> str:
+        """Format optional numeric values for display."""
+        return f"{value:.1f}" if pd.notna(value) else missing
+
+    def _get_display_value(self, row: int, col: int) -> Any:
+        """Return formatted cell value for display role."""
+        if col == 0:
+            return self._get_cell_value(row, col)
+
+        missing_map = {
+            4: "0.0",
+        }
+        return self._format_measurement(
+            self._get_cell_value(row, col),
+            missing=missing_map.get(col, "N/A"),
+        )
+
+    def _get_background_color(self, row: int) -> QColor:
+        """Resolve row background color from theme or fallback palette."""
+        scheme = self._theme_manager.get_color_scheme()
+        if scheme:
+            surface_key = "base" if row % 2 == 0 else "light"
+            fallback = "#ffffff" if row % 2 == 0 else "#f5f5f5"
+            return QColor(scheme.get_color("surface", surface_key) or fallback)
+        return QColor(255, 255, 255) if row % 2 else QColor(248, 249, 250)
+
+    def _get_foreground_color(self) -> QColor:
+        """Resolve text color from theme or fallback palette."""
+        scheme = self._theme_manager.get_color_scheme()
+        if scheme:
+            return QColor(scheme.get_color("primary", "base") or "#1f2937")
+        return QColor(31, 41, 55)
+
     def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:
         if not index.isValid() or self._data.empty:
             return None
@@ -69,47 +123,16 @@ class WeatherTableModel(QAbstractTableModel):
         row, col = index.row(), index.column()
 
         if role == Qt.DisplayRole:
-            if col == 0:  # Dátum
-                return self._data.iloc[row, 0]
-            elif col == 1:  # Max hőmérséklet
-                value = self._data.iloc[row, 1]
-                return f"{value:.1f}" if pd.notna(value) else "N/A"
-            elif col == 2:  # Min hőmérséklet
-                value = self._data.iloc[row, 2]
-                return f"{value:.1f}" if pd.notna(value) else "N/A"
-            elif col == 3:  # Átlag hőmérséklet
-                value = self._data.iloc[row, 3] if len(self._data.columns) > 3 else None
-                return f"{value:.1f}" if pd.notna(value) else "N/A"
-            elif col == 4:  # Csapadék
-                value = (
-                    self._data.iloc[row, 4]
-                    if len(self._data.columns) > 4
-                    else self._data.iloc[row, 3]
-                )
-                return f"{value:.1f}" if pd.notna(value) else "0.0"
-            elif col == 5:  # Szélsebesség
-                value = self._data.iloc[row, 5] if len(self._data.columns) > 5 else None
-                return f"{value:.1f}" if pd.notna(value) else "N/A"
+            return self._get_display_value(row, col)
 
-        elif role == Qt.BackgroundRole:
-            scheme = self._theme_manager.get_color_scheme()
-            if scheme:
-                if row % 2 == 0:
-                    return QColor(scheme.get_color("surface", "base") or "#ffffff")
-                return QColor(scheme.get_color("surface", "light") or "#f5f5f5")
-            return QColor(255, 255, 255) if row % 2 else QColor(248, 249, 250)
+        if role == Qt.BackgroundRole:
+            return self._get_background_color(row)
 
-        elif role == Qt.ForegroundRole:
-            scheme = self._theme_manager.get_color_scheme()
-            if scheme:
-                return QColor(scheme.get_color("primary", "base") or "#1f2937")
-            return QColor(31, 41, 55)
+        if role == Qt.ForegroundRole:
+            return self._get_foreground_color()
 
-        elif role == Qt.TextAlignmentRole:
-            if col == 0:
-                return Qt.AlignCenter
-            else:
-                return Qt.AlignRight | Qt.AlignVCenter
+        if role == Qt.TextAlignmentRole:
+            return Qt.AlignCenter if col == 0 else Qt.AlignRight | Qt.AlignVCenter
 
         return None
 

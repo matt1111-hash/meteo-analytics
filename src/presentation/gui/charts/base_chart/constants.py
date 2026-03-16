@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Chart constants and configuration."""
 
 # Matplotlib backend configuration

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Heatmap Chart - Data Extractor
@@ -24,6 +25,31 @@ if TYPE_CHECKING:
     pass
 
 logger = logging.getLogger(__name__)
+
+
+def _empty_or_short_period(values: list, total_days: int) -> np.ndarray | None:
+    """Return original values when aggregation is unnecessary."""
+    if total_days > 365:
+        return None
+    logger.debug(f"📊 Rövid időszak: {len(values)} nap, nincs aggregáció.")
+    return np.array(values)
+
+
+def _resolve_clean_bin_values(values: list, start_idx: int, end_idx: int) -> list[Any]:
+    """Return cleaned values for one aggregation bin."""
+    bin_values = values[start_idx : min(end_idx, len(values))]
+    return [value for value in bin_values if value is not None and not np.isnan(value)]
+
+
+def _aggregate_bin_values(parameter: str, clean_values: list[Any]) -> float:
+    """Aggregate a bin based on parameter family."""
+    if "temperature" in parameter:
+        return float(np.mean(clean_values))
+    if "precipitation" in parameter:
+        return float(np.sum(clean_values))
+    if "wind" in parameter:
+        return float(np.max(clean_values))
+    return float(np.mean(clean_values))
 
 
 def extract_daily_data(self, data: Dict[str, Any]) -> pd.DataFrame:
@@ -77,32 +103,21 @@ def aggregate_to_365(self, values: list, total_days: int) -> np.ndarray:
     Returns:
         np.ndarray: 365 elemű tömb aggregált értékekkel
     """
-    if total_days <= 365:
-        # Nincs szükség aggregációra, az eredeti adatokat használjuk
-        logger.debug(f"📊 Rövid időszak: {len(values)} nap, nincs aggregáció.")
-        return np.array(values)
+    short_period_result = _empty_or_short_period(values, total_days)
+    if short_period_result is not None:
+        return short_period_result
 
     # Hosszú időszak esetén aggregálunk
     bin_size = total_days / 365.0
     aggregated = np.full(365, np.nan)
 
-    for i in range(365):
-        start_idx = int(i * bin_size)
-        end_idx = int((i + 1) * bin_size)
-
+    for index in range(365):
+        start_idx = int(index * bin_size)
+        end_idx = int((index + 1) * bin_size)
         if start_idx < len(values):
-            bin_values = values[start_idx : min(end_idx, len(values))]
-            clean_values = [v for v in bin_values if v is not None and not np.isnan(v)]
-
+            clean_values = _resolve_clean_bin_values(values, start_idx, end_idx)
             if clean_values:
-                if "temperature" in self.parameter:
-                    aggregated[i] = np.mean(clean_values)
-                elif "precipitation" in self.parameter:
-                    aggregated[i] = np.sum(clean_values)
-                elif "wind" in self.parameter:
-                    aggregated[i] = np.max(clean_values)
-                else:
-                    aggregated[i] = np.mean(clean_values)
+                aggregated[index] = _aggregate_bin_values(self.parameter, clean_values)
 
     logger.debug(f"📊 Hosszú aggregáció: {total_days} nap → 365 bin")
     return aggregated

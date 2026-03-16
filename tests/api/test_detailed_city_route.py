@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
 from src.api.main import app
 from src.api.routes import detailed_city
@@ -24,7 +24,9 @@ async def test_analyze_single_city_detailed_returns_all_metric_groups(
         MagicMock(to_dict=MagicMock(return_value={"city_results": [{"value": 60.0}]})),
         MagicMock(to_dict=MagicMock(return_value={"city_results": [{"value": 5.0}]})),
     ]
-    monkeypatch.setattr(detailed_city, "_build_use_case", MagicMock(return_value=use_case))
+    monkeypatch.setattr(
+        detailed_city, "_build_use_case", MagicMock(return_value=use_case)
+    )
     monkeypatch.setattr(
         detailed_city,
         "to_multi_city_query",
@@ -37,7 +39,9 @@ async def test_analyze_single_city_detailed_returns_all_metric_groups(
         ),
     )
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         response = await client.post(
             "/api/weather/single-city-detailed",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
@@ -51,7 +55,9 @@ async def test_analyze_single_city_detailed_returns_all_metric_groups(
     assert data["wind_gusts_data"] == [{"value": 60.0}]
     assert data["precipitation_data"] == [{"value": 5.0}]
 
-    executed_query_types = [call.args[0].query_type for call in use_case.execute.call_args_list]
+    executed_query_types = [
+        call.args[0].query_type for call in use_case.execute.call_args_list
+    ]
     assert executed_query_types == [
         "temperature_mean",
         "windiest_today",
@@ -67,7 +73,9 @@ async def test_analyze_single_city_detailed_maps_value_error_to_http_400(
     """Detailed city endpoint should map value errors to HTTP 400."""
     use_case = MagicMock()
     use_case.execute.side_effect = ValueError("bad request")
-    monkeypatch.setattr(detailed_city, "_build_use_case", MagicMock(return_value=use_case))
+    monkeypatch.setattr(
+        detailed_city, "_build_use_case", MagicMock(return_value=use_case)
+    )
     monkeypatch.setattr(
         detailed_city,
         "to_multi_city_query",
@@ -80,7 +88,9 @@ async def test_analyze_single_city_detailed_maps_value_error_to_http_400(
         ),
     )
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         response = await client.post(
             "/api/weather/single-city-detailed",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
@@ -101,7 +111,9 @@ async def test_analyze_single_city_detailed_maps_unexpected_error_to_http_500(
         MagicMock(side_effect=RuntimeError("boom")),
     )
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         response = await client.post(
             "/api/weather/single-city-detailed",
             json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},

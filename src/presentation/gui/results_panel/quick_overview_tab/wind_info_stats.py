@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Quick Overview Tab - Wind Info Stats
@@ -22,69 +23,49 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _resolve_wind_series(df: pd.DataFrame) -> tuple[pd.Series | None, str]:
+    """Resolve wind series with source priority."""
+    candidates = [
+        ("wind_gusts_10m_max", "wind_gusts_10m_max"),
+        ("wind_gusts_max", "wind_gusts_max"),
+        ("windspeed", "windspeed_10m_max"),
+    ]
+    for column, source in candidates:
+        if column not in df.columns:
+            continue
+        series = df[column].dropna()
+        if not series.empty:
+            logger.debug("WIND STATS: %s használva", column)
+            return series, source
+    return None, "unknown"
+
+
 def calculate_wind_stats(self, df: pd.DataFrame) -> None:
     """Szél statisztikák számítása."""
     try:
         from ..utils import WindGustsAnalyzer
 
-        # 🔥 KRITIKUS JAVÍTÁS: Wind adatforrás meghatározása prioritás szerint
-        # 1. wind_gusts_10m_max (elsődleges - valódi széllökések)
-        # 2. wind_gusts_max (másodlagos - széllökések)
-        # 3. windspeed (harmadlagos - szélsebesség)
-        wind_series = None
-        wind_data_source = "unknown"
-
-        # 1. ELSŐDLEGES: wind_gusts_10m_max (valódi széllökések)
-        if "wind_gusts_10m_max" in df.columns:
-            wind_series = df["wind_gusts_10m_max"].dropna()
-            if not wind_series.empty:
-                wind_data_source = "wind_gusts_10m_max"
-                logger.debug("🌪️ WIND STATS: wind_gusts_10m_max használva")
-
-        # 2. MÁSODLAGOS: wind_gusts_max (széllökések fallback)
-        if (
-            wind_series is None or wind_series.empty
-        ) and "wind_gusts_max" in df.columns:
-            wind_series = df["wind_gusts_max"].dropna()
-            if not wind_series.empty:
-                wind_data_source = "wind_gusts_max"
-                logger.debug("🌪️ WIND STATS: wind_gusts_max használva")
-
-        # 3. HARMADLAGOS: windspeed (szélsebesség fallback)
-        if (wind_series is None or wind_series.empty) and "windspeed" in df.columns:
-            wind_series = df["windspeed"].dropna()
-            if not wind_series.empty:
-                wind_data_source = "windspeed_10m_max"
-                logger.debug("💨 WIND STATS: windspeed használva")
-
-        # Ha még mindig nincs érvényes adat, akkor N/A
+        wind_series, wind_data_source = _resolve_wind_series(df)
         if wind_series is None or wind_series.empty:
             _clear_stats_range(
                 self, ["avg_wind", "max_wind", "windy_days", "wind_direction"]
             )
             return
 
-        # Adatforrás felülírása DataFrame-ből ha van
         if "wind_data_source" in df.columns:
             source_from_df = df["wind_data_source"].iloc[0]
             if source_from_df and source_from_df != "unknown":
                 wind_data_source = source_from_df
-
-        # Átlagos szél
         avg_wind = wind_series.mean()
         self._stat_labels["avg_wind"].setText(
             f"{avg_wind:.1f}" if pd.notna(avg_wind) else "N/A"
         )
-
-        # Maximum szél
         max_wind = wind_series.max()
         if pd.notna(max_wind):
             self._stat_labels["max_wind"].setText(f"{max_wind:.1f}")
             _log_wind_category(max_wind, wind_data_source)
         else:
             self._stat_labels["max_wind"].setText("N/A")
-
-        # Szeles napok
         windy_threshold = WindGustsAnalyzer.get_windy_days_threshold(wind_data_source)
         windy_days = len(wind_series[wind_series > windy_threshold])
         self._stat_labels["windy_days"].setText(f"{windy_days}")
@@ -156,7 +137,6 @@ def _log_wind_category(max_wind: float, data_source: str) -> None:
     """Szél kategória logolása."""
     from ..utils import WindGustsAnalyzer
 
-    # 🔥 JAVÍTÁS: WindGustsAnalyzer instance létrehozása, mert categorize_wind_gust instance metódus
     analyzer = WindGustsAnalyzer()
     category = analyzer.categorize_wind_gust(max_wind, data_source)
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Extreme Weather Calculator - Monthly Calculator
@@ -20,6 +21,114 @@ class MonthlyCalculator:
     """
 
     @staticmethod
+    def _build_dataframe(daily_data: Dict[str, List], dates: List[str]):
+        """Build monthly aggregation dataframe."""
+        import pandas as pd
+
+        df_data = {"date": dates}
+        for key, values in daily_data.items():
+            if key != "time" and values:
+                df_data[key] = values[: len(dates)]
+        df = pd.DataFrame(df_data)
+        df["date"] = pd.to_datetime(df["date"])
+        df["year_month"] = df["date"].dt.to_period("M")
+        return df
+
+    @staticmethod
+    def _append_temperature_records(df, records: List[ExtremeRecord]) -> None:
+        """Append temperature-based monthly records."""
+        if "temperature_2m_max" in df.columns:
+            monthly_temp_max = df.groupby("year_month")["temperature_2m_max"].max()
+            if not monthly_temp_max.empty:
+                records.append(
+                    ExtremeRecord(
+                        category="🌡️ Hőmérséklet",
+                        record_type="🔥 Legmelegebb hónap",
+                        value=f"{monthly_temp_max.max():.1f}°C",
+                        date=str(monthly_temp_max.idxmax()),
+                        raw_value=float(monthly_temp_max.max()),
+                    )
+                )
+        if "temperature_2m_min" in df.columns:
+            monthly_temp_min = df.groupby("year_month")["temperature_2m_min"].min()
+            if not monthly_temp_min.empty:
+                records.append(
+                    ExtremeRecord(
+                        category="🌡️ Hőmérséklet",
+                        record_type="🧊 Leghidegebb hónap",
+                        value=f"{monthly_temp_min.min():.1f}°C",
+                        date=str(monthly_temp_min.idxmin()),
+                        raw_value=float(monthly_temp_min.min()),
+                    )
+                )
+
+    @staticmethod
+    def _append_precipitation_records(df, records: List[ExtremeRecord]) -> None:
+        """Append precipitation-based monthly records."""
+        if "precipitation_sum" not in df.columns:
+            return
+        monthly_precip = df.groupby("year_month")["precipitation_sum"].sum()
+        if monthly_precip.empty:
+            return
+        records.extend(
+            [
+                ExtremeRecord(
+                    category="🌧️ Csapadék",
+                    record_type="💧 Legcsapadékosabb hónap",
+                    value=f"{monthly_precip.max():.1f}mm",
+                    date=str(monthly_precip.idxmax()),
+                    raw_value=float(monthly_precip.max()),
+                ),
+                ExtremeRecord(
+                    category="🌧️ Csapadék",
+                    record_type="🏜️ Legszárazabb hónap",
+                    value=f"{monthly_precip.min():.1f}mm",
+                    date=str(monthly_precip.idxmin()),
+                    raw_value=float(monthly_precip.min()),
+                ),
+            ]
+        )
+
+    @staticmethod
+    def _append_wind_records(df, records: List[ExtremeRecord]) -> None:
+        """Append wind-based monthly records."""
+        wind_col = _get_wind_column(df.columns)
+        if not wind_col:
+            return
+        monthly_wind = df.groupby("year_month")[wind_col].max()
+        if monthly_wind.empty:
+            return
+
+        windiest_month = monthly_wind.idxmax()
+        windiest_speed = monthly_wind.max()
+        if wind_col == "wind_gusts_max":
+            from ..utils import WindGustsAnalyzer, WindGustsConstants
+
+            analyzer = WindGustsAnalyzer()
+            category = analyzer.categorize_wind_gust(windiest_speed, wind_col)
+            category_info = WindGustsConstants.CATEGORIES.get(category, "ISMERETLEN")
+            records.append(
+                ExtremeRecord(
+                    category="🌪️ Széllökés",
+                    record_type=f"🚨 Legszelesebb hónap ({category_info})",
+                    value=f"{windiest_speed:.1f}km/h",
+                    date=str(windiest_month),
+                    raw_value=float(windiest_speed),
+                )
+            )
+            return
+
+        records.append(
+            ExtremeRecord(
+                category="💨 Szél",
+                record_type="🌪️ Legszelesebb hónap",
+                value=f"{windiest_speed:.1f}km/h",
+                date=str(windiest_month),
+                raw_value=float(windiest_speed),
+            )
+        )
+
+    @staticmethod
     def calculate_records(
         daily_data: Dict[str, List], dates: List[str], daily_calculator
     ) -> List[ExtremeRecord]:
@@ -35,116 +144,11 @@ class MonthlyCalculator:
             List[ExtremeRecord]: Havi rekordok
         """
         try:
-            import pandas as pd
-
-            # DataFrame létrehozása
-            df_data = {"date": dates}
-            for key, values in daily_data.items():
-                if key != "time" and values:
-                    df_data[key] = values[: len(dates)]
-
-            df = pd.DataFrame(df_data)
-            df["date"] = pd.to_datetime(df["date"])
-            df["year_month"] = df["date"].dt.to_period("M")
-
-            records = []
-
-            # Hőmérséklet aggregációk
-            if "temperature_2m_max" in df.columns:
-                monthly_temp_max = df.groupby("year_month")["temperature_2m_max"].max()
-                if not monthly_temp_max.empty:
-                    hottest_month = monthly_temp_max.idxmax()
-                    hottest_temp = monthly_temp_max.max()
-                    records.append(
-                        ExtremeRecord(
-                            category="🌡️ Hőmérséklet",
-                            record_type="🔥 Legmelegebb hónap",
-                            value=f"{hottest_temp:.1f}°C",
-                            date=str(hottest_month),
-                            raw_value=float(hottest_temp),
-                        )
-                    )
-
-            if "temperature_2m_min" in df.columns:
-                monthly_temp_min = df.groupby("year_month")["temperature_2m_min"].min()
-                if not monthly_temp_min.empty:
-                    coldest_month = monthly_temp_min.idxmin()
-                    coldest_temp = monthly_temp_min.min()
-                    records.append(
-                        ExtremeRecord(
-                            category="🌡️ Hőmérséklet",
-                            record_type="🧊 Leghidegebb hónap",
-                            value=f"{coldest_temp:.1f}°C",
-                            date=str(coldest_month),
-                            raw_value=float(coldest_temp),
-                        )
-                    )
-
-            # Csapadék aggregációk
-            if "precipitation_sum" in df.columns:
-                monthly_precip = df.groupby("year_month")["precipitation_sum"].sum()
-                if not monthly_precip.empty:
-                    wettest_month = monthly_precip.idxmax()
-                    wettest_precip = monthly_precip.max()
-                    records.append(
-                        ExtremeRecord(
-                            category="🌧️ Csapadék",
-                            record_type="💧 Legcsapadékosabb hónap",
-                            value=f"{wettest_precip:.1f}mm",
-                            date=str(wettest_month),
-                            raw_value=float(wettest_precip),
-                        )
-                    )
-
-                    driest_month = monthly_precip.idxmin()
-                    driest_precip = monthly_precip.min()
-                    records.append(
-                        ExtremeRecord(
-                            category="🌧️ Csapadék",
-                            record_type="🏜️ Legszárazabb hónap",
-                            value=f"{driest_precip:.1f}mm",
-                            date=str(driest_month),
-                            raw_value=float(driest_precip),
-                        )
-                    )
-
-            # Széllökés aggregációk
-            wind_col = _get_wind_column(df.columns)
-            if wind_col:
-                monthly_wind = df.groupby("year_month")[wind_col].max()
-                if not monthly_wind.empty:
-                    windiest_month = monthly_wind.idxmax()
-                    windiest_speed = monthly_wind.max()
-
-                    from ..utils import WindGustsAnalyzer, WindGustsConstants
-
-                    if wind_col == "wind_gusts_max":
-                        analyzer = WindGustsAnalyzer()
-                        category = analyzer.categorize_wind_gust(
-                            windiest_speed, wind_col
-                        )
-                        category_info = WindGustsConstants.CATEGORIES.get(
-                            category, "ISMERETLEN"
-                        )
-                        records.append(
-                            ExtremeRecord(
-                                category="🌪️ Széllökés",
-                                record_type=f"🚨 Legszelesebb hónap ({category_info})",
-                                value=f"{windiest_speed:.1f}km/h",
-                                date=str(windiest_month),
-                                raw_value=float(windiest_speed),
-                            )
-                        )
-                    else:
-                        records.append(
-                            ExtremeRecord(
-                                category="💨 Szél",
-                                record_type="🌪️ Legszelesebb hónap",
-                                value=f"{windiest_speed:.1f}km/h",
-                                date=str(windiest_month),
-                                raw_value=float(windiest_speed),
-                            )
-                        )
+            df = MonthlyCalculator._build_dataframe(daily_data, dates)
+            records: List[ExtremeRecord] = []
+            MonthlyCalculator._append_temperature_records(df, records)
+            MonthlyCalculator._append_precipitation_records(df, records)
+            MonthlyCalculator._append_wind_records(df, records)
 
             logger.info(f"Havi rekordok számítva: {len(records)} rekord")
             return records

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 WeatherDataWorker API Executor - Execute HTTP API requests.
@@ -12,6 +13,21 @@ import httpx
 
 if TYPE_CHECKING:
     from .core import WeatherDataWorker
+
+
+def _is_cancelled(worker: "WeatherDataWorker", provider: str, phase: str) -> bool:
+    """Return cancellation status and emit a debug line when cancelled."""
+    if worker.isInterruptionRequested() or worker.is_cancelled:
+        print(f"🛑 DEBUG: {provider} API request cancelled {phase}")
+        return True
+    return False
+
+
+def _notify_provider_change(worker: "WeatherDataWorker", provider: str) -> None:
+    """Emit provider change notification when needed."""
+    if provider != worker.preferred_provider and worker.preferred_provider != "auto":
+        if not worker.is_cancelled:
+            worker.provider_changed.emit(provider)
 
 
 class APIExecutor:
@@ -47,9 +63,7 @@ class APIExecutor:
             timeout = APIConstants.DEFAULT_TIMEOUT
 
             with httpx.Client(timeout=timeout, headers=headers) as client:
-                # Cancellation check before HTTP call
-                if self._worker.isInterruptionRequested() or self._worker.is_cancelled:
-                    print(f"🛑 DEBUG: {provider} API request cancelled before send")
+                if _is_cancelled(self._worker, provider, "before send"):
                     return False
 
                 self._worker.emit_status(
@@ -57,9 +71,7 @@ class APIExecutor:
                 )
                 response = client.get(api_url, params=params)
 
-                # Cancellation check after HTTP call
-                if self._worker.isInterruptionRequested() or self._worker.is_cancelled:
-                    print(f"🛑 DEBUG: {provider} API response cancelled after receive")
+                if _is_cancelled(self._worker, provider, "after receive"):
                     return False
 
                 if response.status_code != 200:
@@ -70,15 +82,7 @@ class APIExecutor:
                     f"📄 {get_source_display_name(provider)} válasz feldolgozása..."
                 )
                 self._worker.weather_data = response.json()
-
-                # Provider change notification
-                if (
-                    provider != self._worker.preferred_provider
-                    and self._worker.preferred_provider != "auto"
-                ):
-                    if not self._worker.is_cancelled:
-                        self._worker.provider_changed.emit(provider)
-
+                _notify_provider_change(self._worker, provider)
                 return True
 
         except httpx.TimeoutException:

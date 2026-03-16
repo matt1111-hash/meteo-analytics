@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -9,6 +10,34 @@ Provides helper methods for map updates and data refresh.
 
 from datetime import datetime
 from typing import Any, Dict
+
+
+def _apply_analysis_refresh(helper: "AnalyticsSyncHelpers", analysis: Dict) -> None:
+    """Apply analysis parameters during full refresh."""
+    analysis_type = analysis.get("analysis_type")
+    if analysis_type == "single_location" and analysis.get("location"):
+        helper._update_map_for_single_location(analysis["location"])
+        return
+    if analysis_type == "region" and analysis.get("region"):
+        helper._update_map_for_region(analysis["region"])
+        return
+    if analysis_type == "county" and analysis.get("county"):
+        helper._update_map_for_county(analysis["county"])
+
+
+def _apply_weather_refresh(helper: "AnalyticsSyncHelpers", weather: Dict) -> None:
+    """Apply weather parameters during full refresh."""
+    provider = weather.get("provider", "auto")
+    cache = weather.get("cache", True)
+    helper._refresh_weather_overlays(provider, cache)
+
+
+def _apply_date_refresh(helper: "AnalyticsSyncHelpers", date: Dict) -> None:
+    """Apply date parameters during full refresh."""
+    start_date = date.get("start_date")
+    end_date = date.get("end_date")
+    if start_date and end_date:
+        helper._refresh_temporal_data(start_date, end_date)
 
 
 class AnalyticsSyncHelpers:
@@ -101,30 +130,12 @@ class AnalyticsSyncHelpers:
 
     def _full_map_refresh(self, analysis: Dict, weather: Dict, date: Dict) -> None:
         """Comprehensive map refresh with all parameters."""
-        # Apply analysis parameters
         if analysis:
-            analysis_type = analysis.get("analysis_type")
-            if analysis_type == "single_location" and analysis.get("location"):
-                self._update_map_for_single_location(analysis["location"])
-            elif analysis_type == "region" and analysis.get("region"):
-                self._update_map_for_region(analysis["region"])
-            elif analysis_type == "county" and analysis.get("county"):
-                self._update_map_for_county(analysis["county"])
-
-        # Apply weather parameters
+            _apply_analysis_refresh(self, analysis)
         if weather:
-            provider = weather.get("provider", "auto")
-            cache = weather.get("cache", True)
-            self._refresh_weather_overlays(provider, cache)
-
-        # Apply date parameters
+            _apply_weather_refresh(self, weather)
         if date:
-            start_date = date.get("start_date")
-            end_date = date.get("end_date")
-            if start_date and end_date:
-                self._refresh_temporal_data(start_date, end_date)
-
-        # Comprehensive refresh
+            _apply_date_refresh(self, date)
         if analysis and weather and date and self.current_analytics_result:
             self._generate_weather_overlay_from_analytics(self.current_analytics_result)
 

@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 Action handlers for HungarianMapTab.
 

@@ -11,14 +11,14 @@ class TestCityManagerReExport:
         from src.data import city_manager
 
         expected = {
-            'CityManager',
-            'City',
-            'CityDatabaseError',
-            'CityManagerDB',
-            'CityManagerHungarian',
-            'CityManagerSearch',
-            'CityManagerStats',
-            'demo_dual_database_city_manager'
+            "CityManager",
+            "City",
+            "CityDatabaseError",
+            "CityManagerDB",
+            "CityManagerHungarian",
+            "CityManagerSearch",
+            "CityManagerStats",
+            "demo_dual_database_city_manager",
         }
         for symbol in expected:
             assert hasattr(city_manager, symbol)
@@ -40,15 +40,15 @@ class TestGeoUtilsReExport:
         from src.data import geo_utils
 
         expected = {
-            'DistanceUnit',
-            'GeoPoint',
-            'BoundingBox',
-            'GeographicRegion',
-            'DistanceCalculator',
-            'GeoUtils',
-            'GeoUtilsRegion',
-            'GeoUtilsAnalytics',
-            'demo_geo_utils'
+            "DistanceUnit",
+            "GeoPoint",
+            "BoundingBox",
+            "GeographicRegion",
+            "DistanceCalculator",
+            "GeoUtils",
+            "GeoUtilsRegion",
+            "GeoUtilsAnalytics",
+            "demo_geo_utils",
         }
         for symbol in expected:
             assert hasattr(geo_utils, symbol)
@@ -63,7 +63,7 @@ class TestAnomalyProfileManagerReExport:
         from src.data.anomaly_profile import manager
 
         # Verify the symbols are accessible from submodules
-        assert hasattr(manager, 'AnomalyProfileManager')
+        assert hasattr(manager, "AnomalyProfileManager")
         # Note: demo_anomaly_profile_manager causes circular import, skip that test
 
 
@@ -76,12 +76,12 @@ class TestEnumsModule:
 
         # Check that the module has expected attributes from domain.value_objects.enums
         expected = {
-            'AnalysisType',
-            'AnalyticsMetric',
-            'RegionType',
-            'DataProvider',
-            'AnomalyType',
-            'AnomalySeverity'
+            "AnalysisType",
+            "AnalyticsMetric",
+            "RegionType",
+            "DataProvider",
+            "AnomalyType",
+            "AnomalySeverity",
         }
         for symbol in expected:
             assert hasattr(enums, symbol)
@@ -90,8 +90,8 @@ class TestEnumsModule:
         """enums module has display functions."""
         from src.data import enums
 
-        assert hasattr(enums, 'get_metric_display_name')
-        assert hasattr(enums, 'get_severity_color')
+        assert hasattr(enums, "get_metric_display_name")
+        assert hasattr(enums, "get_severity_color")
 
 
 class TestModelsModule:
@@ -103,15 +103,15 @@ class TestModelsModule:
 
         # Check that the module exports expected symbols
         expected = [
-            'City',
-            'CityQuery',
-            'CityDatabaseError',
-            'LocationType',
-            'Location',
-            'CityWeatherResult',
-            'AnomalyResult',
-            'TimeGranularity',
-            'AnalysisType'
+            "City",
+            "CityQuery",
+            "CityDatabaseError",
+            "LocationType",
+            "Location",
+            "CityWeatherResult",
+            "AnomalyResult",
+            "TimeGranularity",
+            "AnalysisType",
         ]
         for symbol in expected:
             assert hasattr(models, symbol)

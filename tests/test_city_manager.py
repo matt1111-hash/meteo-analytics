@@ -36,14 +36,20 @@ class TestCityManagerReexports:
         assert hasattr(city_manager, "CityManagerStats")
 
         assert city_manager.CityManagerDB is city_manager_db.CityManagerDB
-        assert city_manager.CityManagerHungarian is city_manager_hungarian.CityManagerHungarian
+        assert (
+            city_manager.CityManagerHungarian
+            is city_manager_hungarian.CityManagerHungarian
+        )
         assert city_manager.CityManagerSearch is city_manager_search.CityManagerSearch
         assert city_manager.CityManagerStats is city_manager_stats.CityManagerStats
 
     def test_reexports_demo_function(self) -> None:
         """A demo függvény elérhető."""
         assert hasattr(city_manager, "demo_dual_database_city_manager")
-        assert city_manager.demo_dual_database_city_manager is city_manager_demo.demo_dual_database_city_manager
+        assert (
+            city_manager.demo_dual_database_city_manager
+            is city_manager_demo.demo_dual_database_city_manager
+        )
 
     def test_all_exports_defined(self) -> None:
         """A __all__ lista tartalmazza az összes exportot."""
@@ -117,18 +123,29 @@ class TestClassHierarchy:
 
     def test_city_manager_hungarian_inherits_from_db(self) -> None:
         """A CityManagerHungarian a CityManagerDB-ból származik."""
-        assert issubclass(city_manager_hungarian.CityManagerHungarian, city_manager_db.CityManagerDB)
+        assert issubclass(
+            city_manager_hungarian.CityManagerHungarian, city_manager_db.CityManagerDB
+        )
 
     def test_city_manager_search_inherits_from_hungarian(self) -> None:
         """A CityManagerSearch a CityManagerHungarian-ból származik."""
-        assert issubclass(city_manager_search.CityManagerSearch, city_manager_hungarian.CityManagerHungarian)
+        assert issubclass(
+            city_manager_search.CityManagerSearch,
+            city_manager_hungarian.CityManagerHungarian,
+        )
 
     def test_city_manager_stats_inherits_from_search(self) -> None:
         """A CityManagerStats a CityManagerSearch-ből származik."""
-        assert issubclass(city_manager_stats.CityManagerStats, city_manager_search.CityManagerSearch)
+        assert issubclass(
+            city_manager_stats.CityManagerStats, city_manager_search.CityManagerSearch
+        )
 
     def test_city_manager_inherits_from_all_parents(self) -> None:
         """A CityManager (CityManagerStats) az összes szülőből származik."""
-        assert issubclass(city_manager.CityManager, city_manager_search.CityManagerSearch)
-        assert issubclass(city_manager.CityManager, city_manager_hungarian.CityManagerHungarian)
+        assert issubclass(
+            city_manager.CityManager, city_manager_search.CityManagerSearch
+        )
+        assert issubclass(
+            city_manager.CityManager, city_manager_hungarian.CityManagerHungarian
+        )
         assert issubclass(city_manager.CityManager, city_manager_db.CityManagerDB)

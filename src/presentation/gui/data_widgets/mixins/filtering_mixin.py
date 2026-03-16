@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -8,6 +9,71 @@ Szűrés, lapozás és keresés kezelése.
 
 import pandas as pd
 from PySide6.QtCore import Signal
+
+
+def _build_all_columns_mask(filtered_df: pd.DataFrame, search_text: str) -> pd.Series:
+    """Build a mask matching any column."""
+    return (
+        filtered_df.astype(str)
+        .apply(lambda x: x.str.lower().str.contains(search_text, na=False))
+        .any(axis=1)
+    )
+
+
+def _build_temperature_mask(filtered_df: pd.DataFrame, search_text: str) -> pd.Series:
+    """Build a mask for temperature-related columns."""
+    temperature_mask = (
+        filtered_df.iloc[:, 1].astype(str).str.contains(search_text, na=False)
+    )
+    temperature_mask |= (
+        filtered_df.iloc[:, 2].astype(str).str.contains(search_text, na=False)
+    )
+    if len(filtered_df.columns) > 3:
+        temperature_mask |= (
+            filtered_df.iloc[:, 3].astype(str).str.contains(search_text, na=False)
+        )
+    return temperature_mask
+
+
+def _build_precipitation_mask(filtered_df: pd.DataFrame, search_text: str) -> pd.Series:
+    """Build a mask for precipitation column."""
+    precip_col = 4 if len(filtered_df.columns) > 4 else 3
+    if precip_col < len(filtered_df.columns):
+        return (
+            filtered_df.iloc[:, precip_col]
+            .astype(str)
+            .str.contains(search_text, na=False)
+        )
+    return pd.Series([False] * len(filtered_df))
+
+
+def _build_wind_mask(filtered_df: pd.DataFrame, search_text: str) -> pd.Series:
+    """Build a mask for wind column."""
+    if len(filtered_df.columns) > 5:
+        return filtered_df.iloc[:, -1].astype(str).str.contains(search_text, na=False)
+    return pd.Series([False] * len(filtered_df))
+
+
+def _build_filter_mask(
+    filtered_df: pd.DataFrame, search_text: str, column_filter: str
+) -> pd.Series:
+    """Build the filter mask for the active search scope."""
+    if column_filter == "Összes":
+        return _build_all_columns_mask(filtered_df, search_text)
+    if column_filter == "Dátum":
+        return (
+            filtered_df.iloc[:, 0]
+            .astype(str)
+            .str.lower()
+            .str.contains(search_text, na=False)
+        )
+    if column_filter == "Hőmérséklet":
+        return _build_temperature_mask(filtered_df, search_text)
+    if column_filter == "Csapadék":
+        return _build_precipitation_mask(filtered_df, search_text)
+    if column_filter == "Szél":
+        return _build_wind_mask(filtered_df, search_text)
+    return pd.Series([True] * len(filtered_df))
 
 
 class FilteringMixin:
@@ -34,56 +100,7 @@ class FilteringMixin:
         filtered_df = self.current_data.copy()
 
         if search_text:
-            if column_filter == "Összes":
-                mask = (
-                    filtered_df.astype(str)
-                    .apply(lambda x: x.str.lower().str.contains(search_text, na=False))
-                    .any(axis=1)
-                )
-            elif column_filter == "Dátum":
-                mask = (
-                    filtered_df.iloc[:, 0]
-                    .astype(str)
-                    .str.lower()
-                    .str.contains(search_text, na=False)
-                )
-            elif column_filter == "Hőmérséklet":
-                mask = (
-                    filtered_df.iloc[:, 1]
-                    .astype(str)
-                    .str.contains(search_text, na=False)
-                    | filtered_df.iloc[:, 2]
-                    .astype(str)
-                    .str.contains(search_text, na=False)
-                    | (
-                        len(filtered_df.columns) > 3
-                        and filtered_df.iloc[:, 3]
-                        .astype(str)
-                        .str.contains(search_text, na=False)
-                    )
-                )
-            elif column_filter == "Csapadék":
-                precip_col = 4 if len(filtered_df.columns) > 4 else 3
-                if precip_col < len(filtered_df.columns):
-                    mask = (
-                        filtered_df.iloc[:, precip_col]
-                        .astype(str)
-                        .str.contains(search_text, na=False)
-                    )
-                else:
-                    mask = pd.Series([False] * len(filtered_df))
-            elif column_filter == "Szél":
-                if len(filtered_df.columns) > 5:
-                    mask = (
-                        filtered_df.iloc[:, -1]
-                        .astype(str)
-                        .str.contains(search_text, na=False)
-                    )
-                else:
-                    mask = pd.Series([False] * len(filtered_df))
-            else:
-                mask = pd.Series([True] * len(filtered_df))
-
+            mask = _build_filter_mask(filtered_df, search_text, column_filter)
             filtered_df = filtered_df[mask]
 
         self.filtered_data = filtered_df

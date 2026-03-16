@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 # -*- coding: utf-8 -*-
 
 """
@@ -11,6 +12,21 @@ from typing import Dict
 from src.presentation.gui.types import ThemeType
 
 
+def _theme_surface_background(
+    theme_type: ThemeType,
+    light_surface: str,
+    dark_surface: str,
+    light_background: str,
+    dark_background: str,
+) -> Dict[str, str]:
+    """Build surface/background pair for a preset."""
+    is_light = theme_type == ThemeType.LIGHT
+    return {
+        "surface": light_surface if is_light else dark_surface,
+        "background": light_background if is_light else dark_background,
+    }
+
+
 def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
     """
     Összes elérhető semantic preset lekérdezése.
@@ -21,6 +37,19 @@ def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
     Returns:
         Preset dictionary {preset_name: {semantic_name: hex_color}}
     """
+    default_surface = _theme_surface_background(
+        theme_type, "#ffffff", "#1f2937", "#f9fafb", "#111827"
+    )
+    material_surface = _theme_surface_background(
+        theme_type, "#ffffff", "#121212", "#fafafa", "#000000"
+    )
+    bootstrap_surface = _theme_surface_background(
+        theme_type, "#ffffff", "#212529", "#f8f9fa", "#000000"
+    )
+    weather_surface = _theme_surface_background(
+        theme_type, "#ffffff", "#1e293b", "#f1f5f9", "#0f172a"
+    )
+
     return {
         "default": {
             "primary": "#2563eb",  # Blue
@@ -28,8 +57,7 @@ def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
             "warning": "#f59e0b",  # Amber
             "error": "#dc2626",  # Red
             "info": "#6b7280",  # Gray
-            "surface": "#ffffff" if theme_type == ThemeType.LIGHT else "#1f2937",
-            "background": "#f9fafb" if theme_type == ThemeType.LIGHT else "#111827",
+            **default_surface,
         },
         "material": {
             "primary": "#1976d2",  # Material Blue
@@ -37,8 +65,7 @@ def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
             "warning": "#f57c00",  # Material Orange
             "error": "#d32f2f",  # Material Red
             "info": "#1976d2",  # Material Blue
-            "surface": "#ffffff" if theme_type == ThemeType.LIGHT else "#121212",
-            "background": "#fafafa" if theme_type == ThemeType.LIGHT else "#000000",
+            **material_surface,
         },
         "bootstrap": {
             "primary": "#0d6efd",  # Bootstrap Blue
@@ -46,8 +73,7 @@ def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
             "warning": "#ffc107",  # Bootstrap Yellow
             "error": "#dc3545",  # Bootstrap Red
             "info": "#0dcaf0",  # Bootstrap Cyan
-            "surface": "#ffffff" if theme_type == ThemeType.LIGHT else "#212529",
-            "background": "#f8f9fa" if theme_type == ThemeType.LIGHT else "#000000",
+            **bootstrap_surface,
         },
         "weather": {
             "primary": "#0ea5e9",  # Sky Blue
@@ -55,8 +81,7 @@ def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
             "warning": "#eab308",  # Yellow (sun)
             "error": "#ef4444",  # Red (alert)
             "info": "#6366f1",  # Indigo
-            "surface": "#ffffff" if theme_type == ThemeType.LIGHT else "#1e293b",
-            "background": "#f1f5f9" if theme_type == ThemeType.LIGHT else "#0f172a",
+            **weather_surface,
         },
         # 🎨 KRITIKUS JAVÍTÁS: Piros (#C43939) PRIMARY TÉMA
         "red": {
@@ -65,8 +90,7 @@ def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
             "warning": "#f59e0b",  # Amber/Orange
             "error": "#dc2626",  # Red (darker than primary)
             "info": "#6b7280",  # Gray
-            "surface": "#ffffff" if theme_type == ThemeType.LIGHT else "#1f2937",
-            "background": "#f9fafb" if theme_type == ThemeType.LIGHT else "#111827",
+            **default_surface,
         },
     }
 

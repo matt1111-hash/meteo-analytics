@@ -35,7 +35,7 @@ except ImportError as e:
 # Project imports
 try:
     from src.config import AppInfo, ensure_directories
-    from src.presentation.gui.windows import MainWindow
+    from src.presentation.gui.windows import MainWindow  # noqa: F401
 except ImportError as e:
     print("❌ Modul import hiba!")
     print("Ellenőrizze a projekt struktúrát és a PYTHONPATH-t.")
@@ -221,7 +221,12 @@ def check_requirements() -> bool:
         project_root / "src" / "config.py",
         project_root / "src" / "presentation" / "gui",
         project_root / "src" / "presentation" / "gui" / "windows" / "main_window.py",
-        project_root / "src" / "presentation" / "gui" / "controller" / "app_controller.py",
+        project_root
+        / "src"
+        / "presentation"
+        / "gui"
+        / "controller"
+        / "app_controller.py",
     ]
 
     missing_files = []
@@ -239,7 +244,8 @@ def check_requirements() -> bool:
 
     try:
         from src.presentation.gui.controller import AppController  # noqa: F401
-        from src.presentation.gui.windows import MainWindow
+        from src.presentation.gui.windows import MainWindow  # noqa: F401
+
         print("✅ GUI modul struktúra: OK")
     except ImportError as e:
         print(f"❌ GUI modul import hiba: {e}")
@@ -250,18 +256,22 @@ def check_requirements() -> bool:
     try:
         # PySide6 ellenőrzése
         import PySide6
+
         print(f"✅ PySide6 verzió: {PySide6.__version__}")
 
         # httpx ellenőrzése
         import httpx
+
         print(f"✅ httpx verzió: {httpx.__version__}")
 
         # pandas ellenőrzése
         import pandas
+
         print(f"✅ pandas verzió: {pandas.__version__}")
 
         # matplotlib ellenőrzése
         import matplotlib
+
         print(f"✅ matplotlib verzió: {matplotlib.__version__}")
 
     except ImportError as e:

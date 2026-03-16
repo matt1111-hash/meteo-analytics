@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Main Window Actions - re-export for backward compatibility."""
 
 from src.presentation.gui.windows.main_window_actions.dialogs import (

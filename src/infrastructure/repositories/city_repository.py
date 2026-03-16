@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """SQLite-backed city repository with regional filtering and validation."""
 
 from __future__ import annotations

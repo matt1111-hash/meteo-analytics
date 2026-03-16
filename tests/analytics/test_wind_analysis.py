@@ -5,8 +5,6 @@ Wind analysis compatibility wrapper
 """
 
 
-
-
 class TestWindAnalysisImports:
     """Test that wind_analysis properly re-exports domain components."""
 

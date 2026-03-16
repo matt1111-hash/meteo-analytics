@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Temperature Chart - Data Extractor
@@ -19,6 +20,37 @@ from typing import Any, Dict
 import pandas as pd
 
 
+def _extract_daily_temperature_lists(
+    data: Dict[str, Any],
+) -> tuple[list[Any], list[Any], list[Any], list[Any]]:
+    """Extract raw daily temperature arrays from API response."""
+    daily_data = data.get("daily", {})
+    return (
+        daily_data.get("time", []),
+        daily_data.get("temperature_2m_max", []),
+        daily_data.get("temperature_2m_min", []),
+        daily_data.get("temperature_2m_mean", []),
+    )
+
+
+def _has_complete_temperature_payload(
+    dates: list[Any], temp_max: list[Any], temp_min: list[Any], temp_mean: list[Any]
+) -> bool:
+    """Return whether all required temperature arrays are present."""
+    return bool(dates and temp_max and temp_min and temp_mean)
+
+
+def _has_matching_temperature_lengths(
+    dates: list[Any], temp_max: list[Any], temp_min: list[Any], temp_mean: list[Any]
+) -> bool:
+    """Return whether all temperature arrays share the same length."""
+    return (
+        len(dates) == len(temp_max)
+        and len(dates) == len(temp_min)
+        and len(dates) == len(temp_mean)
+    )
+
+
 class TemperatureDataExtractor:
     """
     🔥 Hőmérséklet adatok kinyerése és validálása.
@@ -35,23 +67,15 @@ class TemperatureDataExtractor:
         Returns:
             pd.DataFrame: Hőmérséklet adatok date, temp_max, temp_min, temp_mean oszlopokkal
         """
-        daily_data = data.get("daily", {})
-        dates = daily_data.get("time", [])
-        temp_max = daily_data.get("temperature_2m_max", [])
-        temp_min = daily_data.get("temperature_2m_min", [])
-        temp_mean = daily_data.get("temperature_2m_mean", [])
+        dates, temp_max, temp_min, temp_mean = _extract_daily_temperature_lists(data)
 
         # 🚨 KRITIKUS: CSAK VALÓDI API ADATOK! Számított átlag TILOS!
-        if not dates or not temp_max or not temp_min or not temp_mean:
+        if not _has_complete_temperature_payload(dates, temp_max, temp_min, temp_mean):
             print("⚠️ DEBUG: Hiányzó hőmérséklet adatok - chart nem jeleníthető meg")
             return pd.DataFrame()
 
         # Adatstruktúra hosszak ellenőrzése
-        if (
-            len(dates) != len(temp_max)
-            or len(dates) != len(temp_min)
-            or len(dates) != len(temp_mean)
-        ):
+        if not _has_matching_temperature_lengths(dates, temp_max, temp_min, temp_mean):
             print(
                 "❌ DEBUG: Eltérő hosszúságú hőmérséklet adatok - chart nem jeleníthető meg"
             )

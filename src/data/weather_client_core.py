@@ -1,23 +1,14 @@
 #!/usr/bin/env python3
-"""
-Weather Client - Main Client Class
-Global Weather Analyzer project
-
-Part of the weather_client refactoring - split into focused modules.
-"""
+"""Weather client core."""
 
 import logging
 import time
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional
 
-from src.config import (
-    APIConfig,
-    get_optimal_data_source,
-)
+from src.config import APIConfig, get_optimal_data_source
 
 
-# _log_provider_usage_mock is a GUI-specific function, not needed in core
 def _log_provider_usage_mock(provider: str, event_type: str, **kwargs) -> None:
     """Mock function for provider usage logging (GUI-specific)."""
     pass
@@ -135,33 +126,50 @@ class WeatherClient:
             f"All providers failed. Last error: {last_error}"
         )
 
+    def _is_valid_provider(self, provider_name: str) -> bool:
+        """Return True when provider exists and validates."""
+        return (
+            provider_name in self.providers
+            and self.providers[provider_name].validate_provider()
+        )
+
+    def _select_override_provider(self, user_override: Optional[str]) -> Optional[str]:
+        """Return valid override provider when available."""
+        if user_override and self._is_valid_provider(user_override):
+            return user_override
+        return None
+
+    def _select_auto_provider(self) -> Optional[str]:
+        """Select best available provider in auto mode."""
+        optimal = get_optimal_data_source("single_city", prefer_free=True)
+        if self._is_valid_provider(optimal):
+            return optimal
+        return self._select_first_valid_provider()
+
+    def _select_first_valid_provider(self) -> Optional[str]:
+        """Select the first valid provider from configured providers."""
+        for provider_id, provider in self.providers.items():
+            if provider.validate_provider():
+                return provider_id
+        return None
+
+    def _select_preferred_provider(self) -> Optional[str]:
+        """Select explicitly preferred provider or recurse to auto fallback."""
+        if self.preferred_provider in self.providers:
+            if self.providers[self.preferred_provider].validate_provider():
+                return self.preferred_provider
+            return self._select_provider(None)
+        return None
+
     def _select_provider(self, user_override: Optional[str] = None) -> Optional[str]:
         """Select the best provider for the request."""
-        if user_override:
-            if (
-                user_override in self.providers
-                and self.providers[user_override].validate_provider()
-            ):
-                return user_override
+        override_provider = self._select_override_provider(user_override)
+        if override_provider is not None:
+            return override_provider
 
         if self.preferred_provider == "auto":
-            optimal = get_optimal_data_source("single_city", prefer_free=True)
-            if (
-                optimal in self.providers
-                and self.providers[optimal].validate_provider()
-            ):
-                return optimal
-
-            for provider_id, provider in self.providers.items():
-                if provider.validate_provider():
-                    return provider_id
-            return None
-        else:
-            if self.preferred_provider in self.providers:
-                if self.providers[self.preferred_provider].validate_provider():
-                    return self.preferred_provider
-                return self._select_provider(None)
-            return None
+            return self._select_auto_provider()
+        return self._select_preferred_provider()
 
     def _get_provider_fallback_chain(self, primary_provider: str) -> List[str]:
         """Get provider fallback chain."""

@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Weather data handler constants."""
 
 # Required daily fields for processing

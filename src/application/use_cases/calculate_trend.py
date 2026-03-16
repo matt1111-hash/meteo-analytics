@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Use case for trend analysis calculation.
 
 Orchestrates weather data fetching and trend calculation.

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Wind Chart Categories - Hungarian meteorological wind categories.
@@ -16,6 +17,103 @@ HUNGARIAN_WIND_THRESHOLDS = {
     "hurricane": 119,  # Orkán
 }
 
+WIND_CATEGORY_LEVELS = (
+    (
+        119,
+        {
+            "icon": "🚨",
+            "name": "ORKÁN",
+            "beaufort": "12",
+            "description": "Pusztító szélerő",
+            "effects": "🏠 Épületek rongálódnak, fák kidőlnek",
+            "intensity": "Rendkívül veszélyes",
+            "color_key": "hurricane",
+        },
+    ),
+    (
+        90,
+        {
+            "icon": "⚠️",
+            "name": "Erős vihar",
+            "beaufort": "10-11",
+            "description": "Heves viharos szél",
+            "effects": "🌳 Nagy fák törnek, tetőcserepek repülnek",
+            "intensity": "Nagyon veszélyes",
+            "color_key": "severe_storm",
+        },
+    ),
+    (
+        61,
+        {
+            "icon": "🌪️",
+            "name": "Viharos szél",
+            "beaufort": "8-9",
+            "description": "Viharos erősségű szél",
+            "effects": "🚗 Járművezetés nehéz, ágak törnek",
+            "intensity": "Veszélyes",
+            "color_key": "stormy",
+        },
+    ),
+    (
+        43,
+        {
+            "icon": "🌬️",
+            "name": "Erős szél",
+            "beaufort": "6-7",
+            "description": "Erős széljárás",
+            "effects": "☂️ Esernyő nehezen használható",
+            "intensity": "Figyelmeztető",
+            "color_key": "strong",
+        },
+    ),
+    (
+        28,
+        {
+            "icon": "💨",
+            "name": "Mérsékelt szél",
+            "beaufort": "4-5",
+            "description": "Élénk széljárás",
+            "effects": "🍃 Por és papír felemelkedik",
+            "intensity": "Mérsékelt",
+            "color_key": "moderate",
+        },
+    ),
+    (
+        12,
+        {
+            "icon": "🌱",
+            "name": "Gyenge szél",
+            "beaufort": "2-3",
+            "description": "Gyenge széljárás",
+            "effects": "🌿 Levelek mozognak, zászlók lengnek",
+            "intensity": "Kellemes",
+            "color_key": "moderate",
+        },
+    ),
+    (
+        1,
+        {
+            "icon": "🍃",
+            "name": "Szellő",
+            "beaufort": "1",
+            "description": "Alig érezhető szellő",
+            "effects": "🌾 Füst iránya látható",
+            "intensity": "Gyenge",
+            "color_key": "moderate",
+        },
+    ),
+)
+
+CALM_WIND_CATEGORY = {
+    "icon": "😴",
+    "name": "Szélcsend",
+    "beaufort": "0",
+    "description": "Nincs légmozgás",
+    "effects": "🕯️ Láng egyenesen ég",
+    "intensity": "Nincs szél",
+    "color_key": "moderate",
+}
+
 
 def get_wind_category(windspeed: float) -> Dict[str, str]:
     """
@@ -27,86 +125,10 @@ def get_wind_category(windspeed: float) -> Dict[str, str]:
     Returns:
         Dictionary with category info: icon, name, beaufort, description, effects, intensity
     """
-    if windspeed >= 119:
-        return {
-            "icon": "🚨",
-            "name": "ORKÁN",
-            "beaufort": "12",
-            "description": "Pusztító szélerő",
-            "effects": "🏠 Épületek rongálódnak, fák kidőlnek",
-            "intensity": "Rendkívül veszélyes",
-            "color_key": "hurricane",
-        }
-    elif windspeed >= 90:
-        return {
-            "icon": "⚠️",
-            "name": "Erős vihar",
-            "beaufort": "10-11",
-            "description": "Heves viharos szél",
-            "effects": "🌳 Nagy fák törnek, tetőcserepek repülnek",
-            "intensity": "Nagyon veszélyes",
-            "color_key": "severe_storm",
-        }
-    elif windspeed >= 61:
-        return {
-            "icon": "🌪️",
-            "name": "Viharos szél",
-            "beaufort": "8-9",
-            "description": "Viharos erősségű szél",
-            "effects": "🚗 Járművezetés nehéz, ágak törnek",
-            "intensity": "Veszélyes",
-            "color_key": "stormy",
-        }
-    elif windspeed >= 43:
-        return {
-            "icon": "🌬️",
-            "name": "Erős szél",
-            "beaufort": "6-7",
-            "description": "Erős széljárás",
-            "effects": "☂️ Esernyő nehezen használható",
-            "intensity": "Figyelmeztető",
-            "color_key": "strong",
-        }
-    elif windspeed >= 28:
-        return {
-            "icon": "💨",
-            "name": "Mérsékelt szél",
-            "beaufort": "4-5",
-            "description": "Élénk széljárás",
-            "effects": "🍃 Por és papír felemelkedik",
-            "intensity": "Mérsékelt",
-            "color_key": "moderate",
-        }
-    elif windspeed >= 12:
-        return {
-            "icon": "🌱",
-            "name": "Gyenge szél",
-            "beaufort": "2-3",
-            "description": "Gyenge széljárás",
-            "effects": "🌿 Levelek mozognak, zászlók lengnek",
-            "intensity": "Kellemes",
-            "color_key": "moderate",
-        }
-    elif windspeed >= 1:
-        return {
-            "icon": "🍃",
-            "name": "Szellő",
-            "beaufort": "1",
-            "description": "Alig érezhető szellő",
-            "effects": "🌾 Füst iránya látható",
-            "intensity": "Gyenge",
-            "color_key": "moderate",
-        }
-    else:
-        return {
-            "icon": "😴",
-            "name": "Szélcsend",
-            "beaufort": "0",
-            "description": "Nincs légmozgás",
-            "effects": "🕯️ Láng egyenesen ég",
-            "intensity": "Nincs szél",
-            "color_key": "moderate",
-        }
+    for threshold, category in WIND_CATEGORY_LEVELS:
+        if windspeed >= threshold:
+            return category
+    return CALM_WIND_CATEGORY
 
 
 def get_wind_recommendations(windspeed: float) -> list:

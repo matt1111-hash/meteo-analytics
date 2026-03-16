@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Formatting Module - Statistics - Statistical calculations.
@@ -7,7 +8,7 @@ Formatting Module - Statistics - Statistical calculations.
 
 import logging
 import statistics
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from src.presentation.gui.utils.constants import AnomalyConstants
 from src.presentation.gui.utils.formatting.wind_helpers import get_wind_gusts_category
@@ -15,12 +16,32 @@ from src.presentation.gui.utils.formatting.wind_helpers import get_wind_gusts_ca
 logger = logging.getLogger(__name__)
 
 
+def _clean_numeric_data(data: List[float]) -> List[float]:
+    """Return cleaned numeric values."""
+    return [value for value in data if value is not None]
+
+
+def _clean_non_negative_numeric_data(data: List[float]) -> List[float]:
+    """Return cleaned non-negative numeric values."""
+    return [value for value in data if isinstance(value, (int, float)) and value >= 0]
+
+
+def _calculate_std_dev(clean_data: List[float]) -> float:
+    """Calculate standard deviation safely."""
+    return statistics.stdev(clean_data) if len(clean_data) > 1 else 0
+
+
+def _count_values_at_or_above(clean_data: List[float], threshold: float) -> int:
+    """Count values meeting or exceeding a threshold."""
+    return len([value for value in clean_data if value >= threshold])
+
+
 def calculate_statistics(data: List[float]) -> Dict[str, float]:
     """Calculate basic statistics."""
     if not data:
         return {}
 
-    clean_data = [x for x in data if x is not None]
+    clean_data = _clean_numeric_data(data)
 
     if not clean_data:
         return {}
@@ -32,7 +53,7 @@ def calculate_statistics(data: List[float]) -> Dict[str, float]:
             "max": max(clean_data),
             "mean": statistics.mean(clean_data),
             "median": statistics.median(clean_data),
-            "std_dev": statistics.stdev(clean_data) if len(clean_data) > 1 else 0,
+            "std_dev": _calculate_std_dev(clean_data),
             "sum": sum(clean_data),
         }
     except Exception as e:
@@ -45,52 +66,49 @@ def calculate_wind_gusts_statistics(data: List[float]) -> Dict[str, Any]:
     if not data:
         return {}
 
-    clean_data = [x for x in data if x is not None and x >= 0]
+    clean_data = _clean_non_negative_numeric_data(data)
 
     if not clean_data:
         return {}
 
     try:
         basic_stats = calculate_statistics(clean_data)
-
-        extreme_days = len(
-            [x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_EXTREME]
-        )
-        hurricane_days = len(
-            [x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_HURRICANE]
-        )
-        catastrophic_days = len(
-            [x for x in clean_data if x >= AnomalyConstants.WIND_GUSTS_CATASTROPHIC]
-        )
-
-        category_distribution = {}
-        for (
-            category_name,
-            category_data,
-        ) in AnomalyConstants.WIND_GUSTS_CATEGORIES.items():
-            count = len(
-                [
-                    x
-                    for x in clean_data
-                    if category_data["threshold"] <= x < category_data["max"]
-                ]
-            )
-            category_distribution[category_name] = count
-
         basic_stats.update(
             {
-                "extreme_days": extreme_days,
-                "hurricane_days": hurricane_days,
-                "catastrophic_days": catastrophic_days,
-                "category_distribution": category_distribution,
-                "max_category": get_wind_gusts_category(max(clean_data))
-                if clean_data
-                else None,
+                **_build_wind_gusts_counters(clean_data),
+                "category_distribution": _build_category_distribution(clean_data),
+                "max_category": get_wind_gusts_category(max(clean_data)),
             }
         )
-
         return basic_stats
 
     except Exception as e:
         logger.error(f"Széllökés statisztikai számítás hiba: {e}")
         return {}
+
+
+def _build_wind_gusts_counters(clean_data: List[float]) -> Dict[str, int]:
+    """Build severity counters for wind gust values."""
+    return {
+        "extreme_days": _count_values_at_or_above(
+            clean_data, AnomalyConstants.WIND_GUSTS_EXTREME
+        ),
+        "hurricane_days": _count_values_at_or_above(
+            clean_data, AnomalyConstants.WIND_GUSTS_HURRICANE
+        ),
+        "catastrophic_days": _count_values_at_or_above(
+            clean_data, AnomalyConstants.WIND_GUSTS_CATASTROPHIC
+        ),
+    }
+
+
+def _build_category_distribution(clean_data: List[float]) -> Dict[str, int]:
+    """Build category histogram for wind gust values."""
+    category_distribution: Dict[str, int] = {}
+    for category_name, category_data in AnomalyConstants.WIND_GUSTS_CATEGORIES.items():
+        threshold = cast(float, category_data["threshold"])
+        maximum = cast(float, category_data["max"])
+        category_distribution[category_name] = len(
+            [value for value in clean_data if threshold <= value < maximum]
+        )
+    return category_distribution

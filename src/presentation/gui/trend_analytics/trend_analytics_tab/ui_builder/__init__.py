@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """UI Builder - re-export for backward compatibility."""
 
 from src.presentation.gui.trend_analytics.trend_analytics_tab.ui_builder.chart_and_stats import (

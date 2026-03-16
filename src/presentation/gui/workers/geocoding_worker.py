@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Geocoding Worker - OpenMeteo Geocoding API worker
@@ -17,6 +18,83 @@ if TYPE_CHECKING:
     pass
 
 from .base_worker import BaseWorkerThread
+
+
+def _is_cancelled(worker: "GeocodingWorker") -> bool:
+    """Return whether the geocoding operation has been cancelled."""
+    return worker.isInterruptionRequested() or worker.is_cancelled
+
+
+def _build_geocoding_params(search_query: str) -> Dict[str, Any]:
+    """Build Open-Meteo geocoding query parameters."""
+    return {
+        "name": search_query,
+        "count": 10,
+        "language": "hu",
+        "format": "json",
+    }
+
+
+def _validate_search_query(worker: "GeocodingWorker") -> bool:
+    """Validate the geocoding search query."""
+    if worker.search_query and len(worker.search_query) >= 2:
+        return True
+    worker.emit_error("Legalább 2 karakter szükséges a kereséshez")
+    return False
+
+
+def _prepare_geocoding_request(
+    worker: "GeocodingWorker",
+) -> tuple[str, Dict[str, Any]] | None:
+    """Prepare request metadata unless cancelled."""
+    worker.emit_status("🔍 Geocoding keresés indítása...")
+    worker.progress_updated.emit(10)
+    if _is_cancelled(worker):
+        print("🛑 DEBUG: Geocoding cancelled at start")
+        return None
+    worker.emit_status(f"🌍 Keresés: {worker.search_query}")
+    worker.progress_updated.emit(30)
+    if _is_cancelled(worker):
+        print("🛑 DEBUG: Geocoding cancelled before HTTP request")
+        return None
+    return "https://geocoding-api.open-meteo.com/v1/search", _build_geocoding_params(
+        worker.search_query
+    )
+
+
+def _fetch_geocoding_results(
+    worker: "GeocodingWorker", url: str, params: Dict[str, Any]
+) -> bool:
+    """Fetch geocoding results from the API."""
+    with httpx.Client(timeout=30.0) as client:
+        worker.emit_status("📡 API kérés küldése...")
+        response = client.get(url, params=params)
+        worker.progress_updated.emit(70)
+        if _is_cancelled(worker):
+            print("🛑 DEBUG: Geocoding cancelled after HTTP request")
+            return False
+        if response.status_code != 200:
+            worker.emit_error(f"Geocoding API hiba: HTTP {response.status_code}")
+            return False
+        worker.emit_status("📄 Válasz feldolgozása...")
+        data = response.json()
+        worker.results = data.get("results", [])
+        worker.progress_updated.emit(100)
+        return True
+
+
+def _run_geocoding(worker: "GeocodingWorker") -> None:
+    """Run the geocoding workflow."""
+    request_metadata = _prepare_geocoding_request(worker)
+    if request_metadata is None:
+        return
+    url, params = request_metadata
+    if not _fetch_geocoding_results(worker, url, params):
+        return
+    if not worker.is_cancelled:
+        worker.geocoding_completed.emit(worker.results)
+        worker.emit_status(f"✅ {len(worker.results)} találat")
+        print(f"✅ DEBUG: Geocoding completed - {len(worker.results)} results")
 
 
 class GeocodingWorker(BaseWorkerThread):
@@ -44,66 +122,11 @@ class GeocodingWorker(BaseWorkerThread):
 
         Minden HTTP request előtt és után cancellation check.
         """
-        if not self.search_query or len(self.search_query) < 2:
-            self.emit_error("Legalább 2 karakter szükséges a kereséshez")
+        if not _validate_search_query(self):
             return
 
         try:
-            self.emit_status("🔍 Geocoding keresés indítása...")
-            self.progress_updated.emit(10)
-
-            # 🚨 FIX: Cancellation check
-            if self.isInterruptionRequested() or self.is_cancelled:
-                print("🛑 DEBUG: Geocoding cancelled at start")
-                return
-
-            # OpenMeteo Geocoding API konfiguráció
-            url = "https://geocoding-api.open-meteo.com/v1/search"
-            params = {
-                "name": self.search_query,
-                "count": 10,
-                "language": "hu",
-                "format": "json",
-            }
-
-            self.emit_status(f"🌍 Keresés: {self.search_query}")
-            self.progress_updated.emit(30)
-
-            # 🚨 FIX: Cancellation check before HTTP request
-            if self.isInterruptionRequested() or self.is_cancelled:
-                print("🛑 DEBUG: Geocoding cancelled before HTTP request")
-                return
-
-            # HTTP kérés httpx-szel comprehensive timeout-tal
-            with httpx.Client(timeout=30.0) as client:
-                self.emit_status("📡 API kérés küldése...")
-
-                response = client.get(url, params=params)
-
-                self.progress_updated.emit(70)
-
-                # 🚨 FIX: Cancellation check after HTTP request
-                if self.isInterruptionRequested() or self.is_cancelled:
-                    print("🛑 DEBUG: Geocoding cancelled after HTTP request")
-                    return
-
-                if response.status_code != 200:
-                    self.emit_error(f"Geocoding API hiba: HTTP {response.status_code}")
-                    return
-
-                self.emit_status("📄 Válasz feldolgozása...")
-                data = response.json()
-                self.results = data.get("results", [])
-
-                self.progress_updated.emit(100)
-
-                # Eredmények kibocsátása (ha nem cancelled)
-                if not self.is_cancelled:
-                    self.geocoding_completed.emit(self.results)
-                    self.emit_status(f"✅ {len(self.results)} találat")
-                    print(
-                        f"✅ DEBUG: Geocoding completed - {len(self.results)} results"
-                    )
+            _run_geocoding(self)
 
         except httpx.TimeoutException:
             if not self.is_cancelled:

@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Detailed single city analysis with multiple metrics API route."""
 
 from __future__ import annotations

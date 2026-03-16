@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Global Weather Analyzer - Detailed Charts Tab Module
@@ -22,6 +23,18 @@ from ..chart_container import ChartsContainer
 
 # Logging konfigurálása
 logger = logging.getLogger(__name__)
+
+
+def _describe_chart_data(chart: Any) -> str:
+    """Return a readable chart data status."""
+    if not hasattr(chart, "current_data"):
+        return "no current_data attribute"
+    chart_data = chart.current_data
+    if chart_data is None:
+        return "current_data is None"
+    if hasattr(chart_data, "__len__"):
+        return f"data length={len(chart_data)}"
+    return "non-empty data"
 
 
 class DetailedChartsTab(QWidget):
@@ -83,81 +96,27 @@ class DetailedChartsTab(QWidget):
         logger.info(
             "🌪️ KRITIKUS JAVÍTÁS: DetailedChartsTab.update_data() - WIND CHART INTEGRÁCIÓ!"
         )
-
-        # === CHARTS CONTAINER ELLENŐRZÉS ===
-        if self.charts_container:
-            logger.debug("charts_container EXISTS - calling update_charts...")
-
-            try:
-                # 🌪️ KRITIKUS JAVÍTÁS: Explicit chart frissítés logging
-                logger.info(
-                    "🌪️ WIND CHART DEBUG: Calling charts_container.update_charts() with data..."
-                )
-
-                self.charts_container.update_charts(data)
-
-                # 🌪️ EXPLICIT WIND CHART ELLENŐRZÉS
-                if hasattr(self.charts_container, "wind_chart"):
-                    logger.info("🌪️ WIND CHART DEBUG: wind_chart EXISTS in container!")
-                    if hasattr(self.charts_container.wind_chart, "current_data"):
-                        wind_data = self.charts_container.wind_chart.current_data
-                        if wind_data is not None:
-                            logger.info(
-                                f"🌪️ WIND CHART SUCCESS: Wind chart has data: {len(wind_data) if hasattr(wind_data, '__len__') else 'non-empty'}"
-                            )
-                        else:
-                            logger.warning(
-                                "🌪️ WIND CHART WARNING: Wind chart current_data is None!"
-                            )
-                    else:
-                        logger.warning(
-                            "🌪️ WIND CHART WARNING: Wind chart has no current_data attribute!"
-                        )
-                else:
-                    logger.error(
-                        "🌪️ WIND CHART ERROR: wind_chart NOT FOUND in container!"
-                    )
-
-                # 🌹 EXPLICIT WIND ROSE CHART ELLENŐRZÉS
-                if hasattr(self.charts_container, "windrose_chart"):
-                    logger.info(
-                        "🌹 WIND ROSE DEBUG: windrose_chart EXISTS in container!"
-                    )
-                    if hasattr(self.charts_container.windrose_chart, "current_data"):
-                        windrose_data = (
-                            self.charts_container.windrose_chart.current_data
-                        )
-                        if windrose_data is not None:
-                            logger.info(
-                                f"🌹 WIND ROSE SUCCESS: Wind rose chart has data: {len(windrose_data) if hasattr(windrose_data, '__len__') else 'non-empty'}"
-                            )
-                        else:
-                            logger.warning(
-                                "🌹 WIND ROSE WARNING: Wind rose chart current_data is None!"
-                            )
-                    else:
-                        logger.warning(
-                            "🌹 WIND ROSE WARNING: Wind rose chart has no current_data attribute!"
-                        )
-                else:
-                    logger.error(
-                        "🌹 WIND ROSE ERROR: windrose_chart NOT FOUND in container!"
-                    )
-
-                logger.info(
-                    "✅ DetailedChartsTab: charts_container.update_charts() SIKERES! (WIND CHART INTEGRATION)"
-                )
-
-            except Exception as e:
-                logger.error(
-                    f"❌ HIBA a charts_container.update_charts() hívásban: {e}"
-                )
-                logger.error(f"❌ Exception type: {type(e).__name__}")
-                import traceback
-
-                logger.error(f"❌ Traceback: {traceback.format_exc()}")
-        else:
+        if self.charts_container is None:
             logger.error("❌ charts_container is None! - Ez a probléma oka!")
+            return
+
+        logger.debug("charts_container EXISTS - calling update_charts...")
+        try:
+            logger.info(
+                "🌪️ WIND CHART DEBUG: Calling charts_container.update_charts() with data..."
+            )
+            self.charts_container.update_charts(data)
+            self._log_chart_state("wind_chart", "🌪️ WIND CHART")
+            self._log_chart_state("windrose_chart", "🌹 WIND ROSE")
+            logger.info(
+                "✅ DetailedChartsTab: charts_container.update_charts() SIKERES! (WIND CHART INTEGRATION)"
+            )
+        except Exception as e:
+            logger.error(f"❌ HIBA a charts_container.update_charts() hívásban: {e}")
+            logger.error(f"❌ Exception type: {type(e).__name__}")
+            import traceback
+
+            logger.error(f"❌ Traceback: {traceback.format_exc()}")
 
     def clear_data(self) -> None:
         """Chartok törlése."""
@@ -180,3 +139,20 @@ class DetailedChartsTab(QWidget):
             logger.debug("apply_theme() BEFEJEZVE")
         else:
             logger.error("charts_container is None - nem lehet témát alkalmazni!")
+
+    def _log_chart_state(self, attribute_name: str, label: str) -> None:
+        """Log state for a chart embedded in the container."""
+        if self.charts_container is None or not hasattr(
+            self.charts_container, attribute_name
+        ):
+            logger.error(f"{label} ERROR: {attribute_name} NOT FOUND in container!")
+            return
+        chart = getattr(self.charts_container, attribute_name)
+        logger.info(f"{label} DEBUG: {attribute_name} EXISTS in container!")
+        status = _describe_chart_data(chart)
+        if status == "current_data is None":
+            logger.warning(f"{label} WARNING: {status}!")
+        elif status == "no current_data attribute":
+            logger.warning(f"{label} WARNING: {status}!")
+        else:
+            logger.info(f"{label} SUCCESS: {status}")

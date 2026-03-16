@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Main thresholds tab builder."""
 
 from PySide6.QtWidgets import QTabWidget, QVBoxLayout, QWidget

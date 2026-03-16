@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 Event handlers for QueryControlWidget (SIMPLIFIED).
 

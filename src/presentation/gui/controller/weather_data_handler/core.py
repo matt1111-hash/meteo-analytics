@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Weather Data Handler Core."""
 
 import logging

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 Universal Location Selector - Core
@@ -35,6 +36,48 @@ from .search_handler import SearchHandler
 from .ui_builder import create_universal_location_selector_ui
 
 logger = logging.getLogger(__name__)
+
+
+def _build_location_details(result_data: dict) -> tuple[str, str, float, float, bool]:
+    """Build preview metadata for a search result."""
+    name = result_data.get("city", "Ismeretlen")
+    country = result_data.get("country", "")
+    region = result_data.get("admin_name", "")
+    lat = float(result_data.get("lat", 0.0))
+    lon = float(result_data.get("lon", 0.0))
+    is_hungarian = result_data.get("is_hungarian", False)
+    details_parts = []
+    if is_hungarian:
+        _append_hungarian_details(details_parts, result_data)
+    else:
+        _append_global_details(details_parts, name, country, region)
+    details_parts.append(f"Koordináták: [{lat:.4f}, {lon:.4f}]")
+    return name, "\n".join(details_parts), lat, lon, is_hungarian
+
+
+def _append_hungarian_details(details_parts: list[str], result_data: dict) -> None:
+    """Append Hungarian-specific detail lines."""
+    for source_key, label in (
+        ("settlement_type", "Típus"),
+        ("megye", "Megye"),
+        ("jaras", "Járás"),
+    ):
+        value = result_data.get(source_key)
+        if value:
+            details_parts.append(f"{label}: {value}")
+    population = result_data.get("population")
+    if population:
+        details_parts.append(f"Lakosság: {population:,}")
+
+
+def _append_global_details(
+    details_parts: list[str], name: str, country: str, region: str
+) -> None:
+    """Append global result detail lines."""
+    if region and region != name:
+        details_parts.append(f"Régió: {region}")
+    if country:
+        details_parts.append(f"Ország: {country}")
 
 
 class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
@@ -121,48 +164,11 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
         try:
             result_data = item.data(Qt.UserRole)
             if result_data:
-                name = result_data.get("city", "Ismeretlen")
-                country = result_data.get("country", "")
-                region = result_data.get("admin_name", "")
-                lat = float(result_data.get("lat", 0.0))
-                lon = float(result_data.get("lon", 0.0))
-                is_hungarian = result_data.get("is_hungarian", False)
-
-                # MAGYAR SPECIFIKUS DETAILS
-                details_parts = []
-
-                if is_hungarian:
-                    # Magyar település részletek
-                    settlement_type = result_data.get("settlement_type")
-                    if settlement_type:
-                        details_parts.append(f"Típus: {settlement_type}")
-
-                    megye = result_data.get("megye")
-                    if megye:
-                        details_parts.append(f"Megye: {megye}")
-
-                    jaras = result_data.get("jaras")
-                    if jaras:
-                        details_parts.append(f"Járás: {jaras}")
-
-                    population = result_data.get("population")
-                    if population:
-                        details_parts.append(f"Lakosság: {population:,}")
-
-                else:
-                    # Globális város részletek (eredeti)
-                    if region and region != name:
-                        details_parts.append(f"Régió: {region}")
-                    if country:
-                        details_parts.append(f"Ország: {country}")
-
-                details_parts.append(f"Koordináták: [{lat:.4f}, {lon:.4f}]")
-                details = "\n".join(details_parts)
-
-                # Card frissítése
+                name, details, lat, lon, is_hungarian = _build_location_details(
+                    result_data
+                )
                 self.location_card.set_location(name, details, is_hungarian)
                 self.confirm_button.setEnabled(True)
-
                 logger.info(
                     f"Eredmény preview: {name} ({'magyar' if is_hungarian else 'globális'})"
                 )

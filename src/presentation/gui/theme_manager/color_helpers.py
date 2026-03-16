@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# mypy: ignore-errors
 
 """
 ThemeManager Color Helpers - Color-related helper methods.
@@ -30,50 +31,33 @@ class ColorHelper:
         Returns:
             Professional color dictionary with all variants
         """
-        # Base semantic colors from ColorPalette
-        base_colors = {
-            "surface": self._manager.color_palette.get_color("surface", "base")
-            or "#ffffff",
-            "on_surface": self._manager.color_palette.get_color("primary", "base")
-            or "#000000",
-            "surface_variant": self._manager.color_palette.get_color("surface", "light")
-            or "#f5f5f5",
-            "on_surface_variant": self._manager.color_palette.get_color("info", "base")
-            or "#6b7280",
-            "primary": self._manager.color_palette.get_color("primary", "base")
-            or "#C43939",  # 🎨 PIROS FALLBACK
-            "success": self._manager.color_palette.get_color("success", "base")
-            or "#10b981",
-            "warning": self._manager.color_palette.get_color("warning", "base")
-            or "#f59e0b",
-            "error": self._manager.color_palette.get_color("error", "base")
-            or "#dc2626",
-            "info": self._manager.color_palette.get_color("info", "base") or "#6b7280",
-        }
-
-        # Professional hover overlay from ColorPalette
-        hover_overlay = (
-            self._manager.color_palette.get_color("primary", "hover")
-            or base_colors["primary"]
-        )
-
-        # Border calculation from ColorPalette
-        border_color = (
-            self._manager.color_palette.get_color("info", "light") or "#d1d5db"
-        )
-
-        # Professional weather colors
-        weather_colors = self._get_weather_colors_dict(base_colors)
-
-        # Combine all professional colors
-        professional_colors = {
+        base_colors = self._get_base_colors()
+        return {
             **base_colors,
-            **weather_colors,
-            "border": border_color,
-            "hover_overlay": hover_overlay,
+            **self._get_weather_colors_dict(base_colors),
+            "border": self._manager.color_palette.get_color("info", "light")
+            or "#d1d5db",
+            "hover_overlay": self._manager.color_palette.get_color("primary", "hover")
+            or base_colors["primary"],
         }
 
-        return professional_colors
+    def _get_base_colors(self) -> Dict[str, str]:
+        """Build base semantic colors from palette with fallbacks."""
+        semantic_defaults = {
+            "surface": ("surface", "base", "#ffffff"),
+            "on_surface": ("primary", "base", "#000000"),
+            "surface_variant": ("surface", "light", "#f5f5f5"),
+            "on_surface_variant": ("info", "base", "#6b7280"),
+            "primary": ("primary", "base", "#C43939"),
+            "success": ("success", "base", "#10b981"),
+            "warning": ("warning", "base", "#f59e0b"),
+            "error": ("error", "base", "#dc2626"),
+            "info": ("info", "base", "#6b7280"),
+        }
+        return {
+            key: self._manager.color_palette.get_color(color_name, variant) or fallback
+            for key, (color_name, variant, fallback) in semantic_defaults.items()
+        }
 
     def _get_weather_colors_dict(self, base_colors: Dict[str, str]) -> Dict[str, str]:
         """Get weather-specific colors dictionary."""

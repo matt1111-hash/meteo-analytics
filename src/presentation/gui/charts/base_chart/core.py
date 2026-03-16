@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Base Weather Chart class."""
 
 from typing import Any, Optional

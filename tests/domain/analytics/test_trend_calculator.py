@@ -51,9 +51,7 @@ class TestCalculateTrend(TestTrendCalculator):
         )
         assert result is None
 
-    def test_returns_none_for_unknown_metric(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_none_for_unknown_metric(self, calculator: TrendCalculator) -> None:
         """Should return None for unknown metric."""
         # Create a mock metric that's not in the map
         mock_metric = MagicMock()
@@ -90,16 +88,12 @@ class TestGetApiField(TestTrendCalculator):
         result = calculator._get_api_field(AnalyticsMetric.TEMPERATURE_2M_MAX)
         assert result == "temperature_2m_max"
 
-    def test_returns_field_for_precipitation(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_field_for_precipitation(self, calculator: TrendCalculator) -> None:
         """Should return field for PRECIPITATION_SUM."""
         result = calculator._get_api_field(AnalyticsMetric.PRECIPITATION_SUM)
         assert result == "precipitation_sum"
 
-    def test_returns_none_for_unknown_metric(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_none_for_unknown_metric(self, calculator: TrendCalculator) -> None:
         """Should return None for unknown metric."""
         result = calculator._get_api_field(MagicMock())
         assert result is None
@@ -129,9 +123,7 @@ class TestClassifyTrendDirection(TestTrendCalculator):
         result = calculator._classify_trend_direction(0.5, 0.1)  # > 0.05
         assert result == "stable"
 
-    def test_returns_stable_for_edge_case(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_stable_for_edge_case(self, calculator: TrendCalculator) -> None:
         """Should return 'stable' when p-value equals threshold."""
         result = calculator._classify_trend_direction(0.5, 0.05)
         assert result == "stable"
@@ -147,9 +139,7 @@ class TestAssessSignificance(TestTrendCalculator):
         result = calculator._assess_significance(0.0001)
         assert result == "highly_significant"
 
-    def test_returns_significant_for_low_p(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_significant_for_low_p(self, calculator: TrendCalculator) -> None:
         """Should return 'significant' for p < 0.01."""
         result = calculator._assess_significance(0.005)
         assert result == "significant"
@@ -172,9 +162,7 @@ class TestAssessSignificance(TestTrendCalculator):
 class TestCalculateMultiplePeriods(TestTrendCalculator):
     """Test calculate_multiple_periods method."""
 
-    def test_returns_result_structure(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_result_structure(self, calculator: TrendCalculator) -> None:
         """Should return TrendAnalysisResult structure."""
         # Not enough data for actual calculation, but should return structure
         data = [{"date": "2024-01-01", "temperature_2m_max": 10.0}]
@@ -186,9 +174,7 @@ class TestCalculateMultiplePeriods(TestTrendCalculator):
         assert hasattr(result, "periods")
         assert result.location_name == "Test"
 
-    def test_sorts_data_by_date(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_sorts_data_by_date(self, calculator: TrendCalculator) -> None:
         """Should sort data by date."""
         data = [
             {"date": "2024-03-01", "temperature_2m_max": 15.0},
@@ -200,9 +186,7 @@ class TestCalculateMultiplePeriods(TestTrendCalculator):
         )
         assert result is not None
 
-    def test_handles_empty_data(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_handles_empty_data(self, calculator: TrendCalculator) -> None:
         """Should handle empty data."""
         result = calculator.calculate_multiple_periods(
             [], AnalyticsMetric.TEMPERATURE_2M_MAX, "Test", [1]
@@ -210,9 +194,7 @@ class TestCalculateMultiplePeriods(TestTrendCalculator):
         assert result.total_data_points == 0
         assert result.periods == []
 
-    def test_uses_custom_end_date(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_uses_custom_end_date(self, calculator: TrendCalculator) -> None:
         """Should use custom end date."""
         data = [{"date": "2024-01-01", "temperature_2m_max": 10.0}]
         result = calculator.calculate_multiple_periods(
@@ -224,9 +206,7 @@ class TestCalculateMultiplePeriods(TestTrendCalculator):
         )
         assert result is not None
 
-    def test_handles_invalid_end_date(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_handles_invalid_end_date(self, calculator: TrendCalculator) -> None:
         """Should handle invalid end date format."""
         data = [{"date": "2024-01-01", "temperature_2m_max": 10.0}]
         result = calculator.calculate_multiple_periods(
