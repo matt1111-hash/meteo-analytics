@@ -4,6 +4,10 @@
 
 from __future__ import annotations
 
+from .extreme_events_tab_support import (
+    _extreme_calculator_available,
+    _profile_manager_available,
+)
 from .extreme_events_tab_part2_support import *
 
 

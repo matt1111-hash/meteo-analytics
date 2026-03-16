@@ -116,9 +116,29 @@ class ChartManager:
     def _debug_final_status(self) -> None:
         """Debug final chart status."""
         if hasattr(self._container.wind_chart, "current_data"):
-            status = "VAN" if self._container.wind_chart.current_data else "NINCS"
+            status = (
+                "VAN"
+                if self._has_chart_data(self._container.wind_chart.current_data)
+                else "NINCS"
+            )
             print(f"🌪️ FINAL DEBUG: wind_chart.current_data: {status}")
 
         if hasattr(self._container.windrose_chart, "current_data"):
-            status = "VAN" if self._container.windrose_chart.current_data else "NINCS"
+            status = (
+                "VAN"
+                if self._has_chart_data(self._container.windrose_chart.current_data)
+                else "NINCS"
+            )
             print(f"🌹 FINAL DEBUG: windrose_chart.current_data: {status}")
+
+    @staticmethod
+    def _has_chart_data(value: Any) -> bool:
+        """Return whether a chart current_data payload is non-empty."""
+        if value is None:
+            return False
+        if hasattr(value, "empty"):
+            return not value.empty
+        try:
+            return len(value) > 0
+        except Exception:
+            return True

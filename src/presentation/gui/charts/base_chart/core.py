@@ -96,6 +96,12 @@ class WeatherChart(FigureCanvas):
         except Exception as e:
             print(f"Theme redraw error: {e}")
 
+    def _apply_theme_to_chart(self) -> None:
+        """Apply current theme colors to the active axes and figure."""
+        current_colors = get_current_colors()
+        self.figure.patch.set_facecolor(current_colors.get("surface", "#ffffff"))
+        apply_theme_to_axis(self.ax, self.theme_manager, self.grid_enabled)
+
     def _on_click(self, event: Any) -> None:
         """Handle chart click."""
         if event.inaxes and event.xdata and event.ydata:

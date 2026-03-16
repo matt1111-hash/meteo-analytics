@@ -4,6 +4,11 @@
 
 from __future__ import annotations
 
+from .ui_builder_part2 import (
+    _get_confirm_button_style,
+    _get_results_list_style,
+    _get_status_label_style,
+)
 from .ui_builder_support import *
 
 

@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+from .dataframe_extractor_part2 import DataFrameExtractorPart2Mixin
 from .dataframe_extractor_support import *
 
 
@@ -77,12 +78,18 @@ class DataFrameExtractorPart1Mixin:
         max_length = len(dates)
         df_data = {
             "date": dates,
-            "temp_max": DataFrameExtractor._ensure_length(temp_max, max_length),
-            "temp_min": DataFrameExtractor._ensure_length(temp_min, max_length),
-            "precipitation": DataFrameExtractor._ensure_length(precip, max_length),
+            "temp_max": DataFrameExtractorPart2Mixin._ensure_length(
+                temp_max, max_length
+            ),
+            "temp_min": DataFrameExtractorPart2Mixin._ensure_length(
+                temp_min, max_length
+            ),
+            "precipitation": DataFrameExtractorPart2Mixin._ensure_length(
+                precip, max_length
+            ),
         }
         if temp_mean:
-            df_data["temp_mean"] = DataFrameExtractor._ensure_length(
+            df_data["temp_mean"] = DataFrameExtractorPart2Mixin._ensure_length(
                 temp_mean, max_length
             )
         return df_data
@@ -94,10 +101,10 @@ class DataFrameExtractorPart1Mixin:
         """Populate gust-related dataframe columns."""
         has_valid_wind_gusts = bool(
             wind_gusts_10m_max
-            and DataFrameExtractor._has_valid_data(wind_gusts_10m_max)
+            and DataFrameExtractorPart2Mixin._has_valid_data(wind_gusts_10m_max)
         )
         if wind_gusts_10m_max:
-            df_data["wind_gusts_max"] = DataFrameExtractor._ensure_length(
+            df_data["wind_gusts_max"] = DataFrameExtractorPart2Mixin._ensure_length(
                 wind_gusts_10m_max, max_length
             )
             df_data["wind_data_source"] = ["wind_gusts_10m_max"] * max_length
@@ -127,14 +134,15 @@ class DataFrameExtractorPart1Mixin:
     ) -> None:
         """Populate the windspeed column, with gust fallback when necessary."""
         has_valid_windspeed = bool(
-            windspeed_10m_max and DataFrameExtractor._has_valid_data(windspeed_10m_max)
+            windspeed_10m_max
+            and DataFrameExtractorPart2Mixin._has_valid_data(windspeed_10m_max)
         )
         has_valid_gusts = bool(
             wind_gusts_10m_max
-            and DataFrameExtractor._has_valid_data(wind_gusts_10m_max)
+            and DataFrameExtractorPart2Mixin._has_valid_data(wind_gusts_10m_max)
         )
         if has_valid_windspeed:
-            df_data["windspeed"] = DataFrameExtractor._ensure_length(
+            df_data["windspeed"] = DataFrameExtractorPart2Mixin._ensure_length(
                 windspeed_10m_max, max_length
             )
             logger.debug(
@@ -159,7 +167,7 @@ class DataFrameExtractorPart1Mixin:
         """Populate the wind direction column when present."""
         if not winddirection:
             return
-        df_data["winddirection"] = DataFrameExtractor._ensure_length(
+        df_data["winddirection"] = DataFrameExtractorPart2Mixin._ensure_length(
             winddirection, max_length
         )
         logger.debug(

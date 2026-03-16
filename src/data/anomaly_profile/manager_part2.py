@@ -77,7 +77,7 @@ class AnomalyProfileManagerPart2Mixin:
         try:
             cached = self.storage.load_current_settings()
             if cached:
-                return cached
+                return AnomalyProfileSettings.from_dict(cached).to_dict()
 
             return self.load_profile(self.get_active_profile())
 

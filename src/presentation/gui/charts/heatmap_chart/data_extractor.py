@@ -27,6 +27,26 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _resolve_parameter_values(self, daily_data: Dict[str, Any]) -> list[Any]:
+    """Resolve requested parameter values, adding temperature mean fallback."""
+    parameter_values = daily_data.get(self.parameter, [])
+    if parameter_values or self.parameter != "temperature_2m_mean":
+        return parameter_values
+
+    temp_max = daily_data.get("temperature_2m_max", [])
+    temp_min = daily_data.get("temperature_2m_min", [])
+    if not temp_max or not temp_min or len(temp_max) != len(temp_min):
+        return []
+
+    logger.info("⚠️ temperature_2m_mean hiányzik, fallback számításra...")
+    return [
+        round((t_max + t_min) / 2, 1)
+        if t_max is not None and t_min is not None
+        else None
+        for t_max, t_min in zip(temp_max, temp_min)
+    ]
+
+
 def _empty_or_short_period(values: list, total_days: int) -> np.ndarray | None:
     """Return original values when aggregation is unnecessary."""
     if total_days > 365:
@@ -65,7 +85,7 @@ def extract_daily_data(self, data: Dict[str, Any]) -> pd.DataFrame:
     """
     daily_data = data.get("daily", {})
     dates = daily_data.get("time", [])
-    parameter_values = daily_data.get(self.parameter, [])
+    parameter_values = _resolve_parameter_values(self, daily_data)
 
     logger.debug(f"🔍 Paraméter keresése: {self.parameter}")
     logger.debug(f"  📊 Dates: {len(dates)} elem")

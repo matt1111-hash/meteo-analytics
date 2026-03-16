@@ -4,6 +4,12 @@
 
 from __future__ import annotations
 
+from .analytics_tabs_part1 import (
+    PrecipitationTabWidget,
+    TemperatureTabWidget,
+    WindTabWidget,
+)
+from .analytics_tabs_part2 import WindGustTabWidget
 from .analytics_tabs_support import *
 
 

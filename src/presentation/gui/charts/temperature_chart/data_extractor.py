@@ -33,6 +33,22 @@ def _extract_daily_temperature_lists(
     )
 
 
+def _build_temp_mean(
+    temp_max: list[Any], temp_min: list[Any], temp_mean: list[Any]
+) -> list[Any]:
+    """Return API mean temperatures or compute a safe fallback from min/max."""
+    if temp_mean:
+        return temp_mean
+    if not temp_max or not temp_min or len(temp_max) != len(temp_min):
+        return []
+    return [
+        round((t_max + t_min) / 2, 1)
+        if t_max is not None and t_min is not None
+        else None
+        for t_max, t_min in zip(temp_max, temp_min)
+    ]
+
+
 def _has_complete_temperature_payload(
     dates: list[Any], temp_max: list[Any], temp_min: list[Any], temp_mean: list[Any]
 ) -> bool:
@@ -68,8 +84,8 @@ class TemperatureDataExtractor:
             pd.DataFrame: Hőmérséklet adatok date, temp_max, temp_min, temp_mean oszlopokkal
         """
         dates, temp_max, temp_min, temp_mean = _extract_daily_temperature_lists(data)
+        temp_mean = _build_temp_mean(temp_max, temp_min, temp_mean)
 
-        # 🚨 KRITIKUS: CSAK VALÓDI API ADATOK! Számított átlag TILOS!
         if not _has_complete_temperature_payload(dates, temp_max, temp_min, temp_mean):
             print("⚠️ DEBUG: Hiányzó hőmérséklet adatok - chart nem jeleníthető meg")
             return pd.DataFrame()

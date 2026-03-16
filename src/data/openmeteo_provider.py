@@ -95,6 +95,8 @@ class OpenMeteoProvider(WeatherProvider):
                 # Extended parameters for extreme events
                 "relative_humidity_2m_max",
                 "relative_humidity_2m_min",
+                "pressure_msl_max",
+                "pressure_msl_min",
                 "surface_pressure_max",
                 "surface_pressure_min",
                 "sunshine_duration",

@@ -37,6 +37,20 @@ def _is_valid_series(values: List, dates: List[str]) -> bool:
     return bool(values) and len(values) == len(dates)
 
 
+def _get_pressure_series(
+    daily_data: Dict[str, List], max_key: str, min_key: str
+) -> tuple[List, List]:
+    """Prefer sea-level pressure and fall back to surface pressure."""
+    pressure_max = daily_data.get(max_key, [])
+    pressure_min = daily_data.get(min_key, [])
+    if pressure_max or pressure_min:
+        return pressure_max, pressure_min
+    return (
+        daily_data.get("surface_pressure_max", []),
+        daily_data.get("surface_pressure_min", []),
+    )
+
+
 def _append_max_record(
     records: list[ExtremeRecord],
     values: List,
@@ -148,8 +162,9 @@ class CategoryCalculatorsPart2Mixin:
         records = []
 
         try:
-            pressure_max = daily_data.get("surface_pressure_max", [])
-            pressure_min = daily_data.get("surface_pressure_min", [])
+            pressure_max, pressure_min = _get_pressure_series(
+                daily_data, "pressure_msl_max", "pressure_msl_min"
+            )
             _append_max_record(
                 records,
                 pressure_max,

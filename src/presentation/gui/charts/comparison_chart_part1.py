@@ -63,19 +63,15 @@ class MultiYearComparisonChartPart1Mixin:
         dates = daily_data.get("time", [])
         temp_max = daily_data.get("temperature_2m_max", [])
         temp_min = daily_data.get("temperature_2m_min", [])
-        temp_mean = daily_data.get("temperature_2m_mean", [])
+        temp_mean = build_temp_mean_fallback(
+            temp_max, temp_min, daily_data.get("temperature_2m_mean", [])
+        )
 
-        # 🚨 KRITIKUS: CSAK VALÓDI API ADATOK! Számított átlag TILOS!
-        if not dates or not temp_max or not temp_min or not temp_mean:
+        if not has_complete_temperature_payload(dates, temp_max, temp_min, temp_mean):
             print("⚠️ DEBUG: Hiányzó többévi adatok - chart nem jeleníthető meg")
             return pd.DataFrame()
 
-        # Adatstruktúra hosszak ellenőrzése
-        if (
-            len(dates) != len(temp_max)
-            or len(dates) != len(temp_min)
-            or len(dates) != len(temp_mean)
-        ):
+        if not has_matching_temperature_lengths(dates, temp_max, temp_min, temp_mean):
             print(
                 "❌ DEBUG: Eltérő hosszúságú többévi adatok - chart nem jeleníthető meg"
             )

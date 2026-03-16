@@ -134,6 +134,8 @@ class TestGetWeatherDataSingle:
             # Extended params for extreme events
             assert "relative_humidity_2m_max" in daily_params
             assert "relative_humidity_2m_min" in daily_params
+            assert "pressure_msl_max" in daily_params
+            assert "pressure_msl_min" in daily_params
             assert "surface_pressure_max" in daily_params
             assert "surface_pressure_min" in daily_params
             assert "sunshine_duration" in daily_params

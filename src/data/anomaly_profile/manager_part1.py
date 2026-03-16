@@ -147,4 +147,11 @@ class AnomalyProfileManagerPart1Mixin:
             )
             profile_name = "default"
 
-        return profiles.get(profile_name, {}).copy()
+        raw_settings = profiles.get(profile_name, {})
+        try:
+            return AnomalyProfileSettings.from_dict(raw_settings).to_dict()
+        except Exception as exc:
+            logger.warning(
+                f"📁 Profil normalizálási hiba ({profile_name}): {exc}, default használata"
+            )
+            return AnomalyProfileSettings(profile_name=profile_name).to_dict()
