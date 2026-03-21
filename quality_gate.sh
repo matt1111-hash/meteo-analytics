@@ -30,6 +30,10 @@ CONFIG_FILE=".quality_gate.conf"
 
 # === CLI ARGS ===
 MODE="full"
+TARGET="both"   # both | backend | frontend
+BE_DIR="backend"
+FE_DIR="frontend"
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         --quick|-q) MODE="quick"; shift ;;
@@ -38,14 +42,22 @@ while [[ $# -gt 0 ]]; do
         --strict|-s) MODE="strict"; CI_MODE=true; STRICT_MODE=true; COVERAGE_THRESHOLD=90; MAX_FILE_LINES=250; shift ;;
         --trend|-t) MODE="trend"; shift ;;
         --health|-h) MODE="health"; shift ;;
+        --backend|-b) TARGET="backend"; shift ;;
+        --frontend) TARGET="frontend"; shift ;;
         --help)
-            echo "Usage: ./quality_gate.sh [MODE]"
+            echo "Usage: ./quality_gate.sh [TARGET] [MODE]"
+            echo ""
+            echo "  TARGET (default: both)"
+            echo "  --backend, -b  Csak Python backend"
+            echo "  --frontend     Csak React/Vite frontend"
+            echo ""
+            echo "  MODE"
             echo "  --quick, -q    Quick lint + format check"
             echo "  --full, -f     Full quality gate (default)"
             echo "  --ci           CI mode (strict thresholds)"
             echo "  --strict, -s   Strict: EVERY warning → fail"
-            echo "  --trend, -t    Wily trend analysis"
-            echo "  --health       Full health report"
+            echo "  --trend, -t    Wily trend analysis (backend only)"
+            echo "  --health       Full health report (backend only)"
             exit 0 ;;
         *) echo "Unknown: $1"; exit 1 ;;
     esac
@@ -515,9 +527,120 @@ run_full() {
 }
 
 # === MAIN ===
+# Frontend gate futtatása
+run_frontend() {
+    print_header "⚛️  Frontend Quality Gate (${FE_DIR})"
+
+    if [ ! -f "${FE_DIR}/package.json" ]; then
+        print_warn "Nincs ${FE_DIR}/package.json – frontend skip"
+        return 0
+    fi
+
+    local fe_failed=0
+
+    # TypeScript typecheck
+    print_step "TypeScript typecheck..."
+    if (cd "${FE_DIR}" && npx tsc --noEmit 2>&1); then
+        print_pass "TypeScript OK"
+    else
+        if $CI_MODE; then
+            fail_check "TypeScript hibák"
+            ((fe_failed++))
+        else
+            print_warn "TypeScript hibák (local módban nem blokkol)"
+            ((WARNINGS++))
+        fi
+    fi
+
+    echo ""
+
+    # ESLint
+    print_step "ESLint..."
+    if (cd "${FE_DIR}" && npx eslint src --max-warnings 0 2>&1); then
+        print_pass "ESLint OK"
+    else
+        fail_check "ESLint hibák"
+        ((fe_failed++))
+    fi
+
+    echo ""
+
+    # Prettier
+    print_step "Prettier format check..."
+    if (cd "${FE_DIR}" && npx prettier --check src 2>&1); then
+        print_pass "Prettier OK"
+    else
+        if $CI_MODE; then
+            fail_check "Prettier: formázás szükséges (npx prettier --write src)"
+            ((fe_failed++))
+        else
+            print_warn "Prettier: formázás szükséges"
+            ((WARNINGS++))
+        fi
+    fi
+
+    echo ""
+
+    # Vitest + coverage
+    print_step "Vitest tesztek..."
+    if $CI_MODE; then
+        if (cd "${FE_DIR}" && npx vitest run --coverage 2>&1); then
+            print_pass "Vitest OK"
+        else
+            fail_check "Frontend tesztek sikertelenek"
+            ((fe_failed++))
+        fi
+    else
+        if (cd "${FE_DIR}" && npx vitest run 2>&1); then
+            print_pass "Vitest OK"
+        else
+            fail_check "Frontend tesztek sikertelenek"
+            ((fe_failed++))
+        fi
+    fi
+
+    if [ $fe_failed -eq 0 ]; then
+        echo -e "\n${GREEN}✅ Frontend: PASSED${NC}"
+    else
+        echo -e "\n${RED}❌ Frontend: FAILED ($fe_failed check)${NC}"
+        FAILED=$((FAILED + fe_failed))
+    fi
+}
+
+# Backend gate – az eredeti run_full() átnevezve
+run_backend() {
+    print_header "🐍 Backend Quality Gate (${BE_DIR})"
+
+    if [ ! -d "${BE_DIR}" ]; then
+        print_warn "Nincs ${BE_DIR}/ mappa – backend skip"
+        return 0
+    fi
+
+    # Belépés backend könyvtárba a detekciókhoz
+    pushd "${BE_DIR}" > /dev/null
+    run_full
+    popd > /dev/null
+}
+
 case $MODE in
-    quick) run_quick ;;
-    full|ci|strict) run_full ;;
-    trend) run_trend ;;
-    health) run_health ;;
+    quick)
+        [[ "$TARGET" == "both" || "$TARGET" == "backend" ]] && (pushd "${BE_DIR}" > /dev/null && run_quick && popd > /dev/null)
+        [[ "$TARGET" == "both" || "$TARGET" == "frontend" ]] && {
+            print_header "⚡ Frontend Quick Check"
+            if [ -d "${FE_DIR}" ]; then
+                (cd "${FE_DIR}" && npx eslint src --fix && npx prettier --write src)
+                echo -e "${GREEN}✅ Done${NC}"
+            fi
+        }
+        ;;
+    full|ci|strict)
+        [[ "$TARGET" == "both" || "$TARGET" == "backend" ]] && run_backend
+        [[ "$TARGET" == "both" || "$TARGET" == "frontend" ]] && run_frontend
+        ;;
+    trend)
+        run_backend  # trend csak backendnél van
+        ;;
+    health)
+        run_backend  # health csak backendnél van
+        ;;
 esac
