@@ -1,13 +1,11 @@
 {
-  "current_month": "2026-01",
+  "current_month": "2026-03",
   "meteostat": {
-    "requests_this_month": 84,
-    "estimated_cost_usd": 0.084,
-    "last_request": "2026-01-31T18:17:39.511570",
+    "requests_this_month": 6,
+    "estimated_cost_usd": 0.006,
+    "last_request": "2026-03-16T17:15:15.956931",
     "daily_breakdown": {
-      "2026-01-24": 2,
-      "2026-01-30": 27,
-      "2026-01-31": 55
+      "2026-03-16": 6
     }
   },
   "open_meteo": {
@@ -15,7 +13,7 @@
     "last_request": null,
     "daily_breakdown": {}
   },
-  "total_requests": 84,
-  "month_start_date": "2026-01-01",
-  "last_updated": "2026-01-31T18:17:39.511606"
+  "total_requests": 6,
+  "month_start_date": "2026-03-01",
+  "last_updated": "2026-03-16T17:15:15.957079"
 }

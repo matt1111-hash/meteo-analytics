@@ -7,10 +7,12 @@ show_error() {
   local message="$2"
 
   if command -v zenity >/dev/null 2>&1; then
-    zenity --error --title="$title" --text="$message"
-  else
-    printf '%s\n\n%s\n' "$title" "$message" >&2
+    if zenity --error --title="$title" --text="$message" >/dev/null 2>&1; then
+      return 0
+    fi
   fi
+
+  printf '%s\n\n%s\n' "$title" "$message" >&2
 }
 
 require_dir() {
@@ -76,6 +78,16 @@ fi
 if ! command -v curl >/dev/null 2>&1; then
   show_error "Indítási hiba" "A curl nem található a PATH-ban."
   exit 1
+fi
+
+if [[ "${1:-run}" == "--check" ]]; then
+  require_dir "$FRONTEND_DIR/node_modules" "frontend node_modules"
+  require_file "$PROJECT_ROOT/src/api/main.py" "FastAPI belépési pont"
+  printf 'OK %s -> fullstack launcher backend %s frontend %s\n' \
+    "$PROJECT_ROOT" \
+    "$BACKEND_HEALTH_URL" \
+    "$FRONTEND_URL"
+  exit 0
 fi
 
 if [[ ! -d "$FRONTEND_DIR/node_modules" ]]; then
