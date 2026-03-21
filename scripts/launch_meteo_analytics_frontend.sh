@@ -44,6 +44,12 @@ if ! command -v npm >/dev/null 2>&1; then
   exit 1
 fi
 
+if [[ "${1:-run}" == "--check" ]]; then
+  require_dir "$PROJECT_DIR/node_modules" "frontend node_modules"
+  printf 'OK %s -> frontend launcher on %s\n' "$PROJECT_DIR" "$APP_URL"
+  exit 0
+fi
+
 if [[ ! -d "$PROJECT_DIR/node_modules" ]]; then
   if command -v zenity >/dev/null 2>&1; then
     zenity --info \
