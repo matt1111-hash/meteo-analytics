@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Képességek:
 Fájl: src/presentation/gui/panel_widgets/multi_city_widget/public_api.py
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from PySide6.QtWidgets import QComboBox, QGroupBox, QPushButton
 
@@ -33,8 +32,8 @@ class MultiCityWidgetPublicAPI:
 
     # State
     _current_mode: str
-    _selected_region: Optional[str]
-    _selected_county: Optional[str]
+    _selected_region: str | None
+    _selected_county: str | None
     _updating_state: bool
 
     # Widgets
@@ -45,7 +44,7 @@ class MultiCityWidgetPublicAPI:
     # Dependencies
     city_manager: Any  # CityManager
 
-    def get_state(self) -> Dict[str, Any]:
+    def get_state(self) -> dict[str, Any]:
         """
         Aktuális állapot lekérdezése.
 
@@ -64,7 +63,7 @@ class MultiCityWidgetPublicAPI:
             "selection_text": self._get_selection_display_text(),
         }
 
-    def set_state(self, state: Dict[str, Any]) -> bool:
+    def set_state(self, state: dict[str, Any]) -> bool:
         """
         Állapot beállítása.
 
@@ -93,9 +92,7 @@ class MultiCityWidgetPublicAPI:
             self._combo_handler.restore_selection(
                 self._current_mode, self._selected_region, self._selected_county
             )
-            self._combo_handler.update_info_label(
-                self._current_mode, self._get_current_selection()
-            )
+            self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
             self._update_clear_button()
 
             print("✅ DEBUG: MultiCityWidget state restored successfully")
@@ -116,7 +113,7 @@ class MultiCityWidgetPublicAPI:
         """
         return self._get_current_selection() is not None
 
-    def get_selected_cities(self) -> List[Dict[str, Any]]:
+    def get_selected_cities(self) -> list[dict[str, Any]]:
         """
         Kiválasztott régió/megye városainak lekérdezése.
 
@@ -134,10 +131,8 @@ class MultiCityWidgetPublicAPI:
                 # Régió esetén a régióhoz tartozó megyék városai
                 counties = get_counties_for_region(current_selection)
                 for county in counties:
-                    county_cities = (
-                        self.city_manager.get_hungarian_settlements_by_county(
-                            county, limit=50
-                        )
+                    county_cities = self.city_manager.get_hungarian_settlements_by_county(
+                        county, limit=50
                     )
                     cities.extend([city.to_dict() for city in county_cities])
 
@@ -189,13 +184,11 @@ class MultiCityWidgetPublicAPI:
         self.clear_btn.setEnabled(enabled and self.is_valid())
 
         print(f"🏙️ DEBUG: MultiCityWidget enabled state: {enabled}")
-        print(
-            f"🔧 DEBUG: ComboBox enabled after set_enabled: {self.combo_box.isEnabled()}"
-        )
+        print(f"🔧 DEBUG: ComboBox enabled after set_enabled: {self.combo_box.isEnabled()}")
 
     # === HELPER METHODS ===
 
-    def _get_current_selection(self) -> Optional[str]:
+    def _get_current_selection(self) -> str | None:
         """Aktuális kiválasztás lekérdezése mode szerint."""
         if self._current_mode == "region":
             return self._selected_region

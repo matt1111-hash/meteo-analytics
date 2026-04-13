@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import List
 
 import pytest
-
 from src.data.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
 from src.data.models import (
     AnalyticsQuestion,
@@ -68,7 +66,7 @@ def test_analytics_result_statistics_summary_aggregates_metrics() -> None:
         "metric": AnalyticsMetric.TEMPERATURE_2M_MAX,
         "date": date(2024, 1, 1),
     }
-    results: List[CityWeatherResult] = [
+    results: list[CityWeatherResult] = [
         CityWeatherResult(value=10.0, **base_kwargs),
         CityWeatherResult(value=20.0, **base_kwargs),
         CityWeatherResult(value=30.0, **base_kwargs),

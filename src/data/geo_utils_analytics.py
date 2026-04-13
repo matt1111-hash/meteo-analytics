@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Global Weather Analyzer - Geo Utils Analytics
@@ -10,7 +9,7 @@ Part of the geo_utils refactoring - split into focused modules.
 
 import logging
 import statistics
-from typing import Any, Dict, List
+from typing import Any
 
 from .geo_utils_region import GeoUtilsRegion
 
@@ -29,20 +28,18 @@ def _resolve_filter_config(analytics_type: str) -> dict[str, float]:
 
 
 def _filter_cities_by_population(
-    cities_data: List[Dict[str, Any]], minimum_population: float
-) -> List[Dict[str, Any]]:
+    cities_data: list[dict[str, Any]], minimum_population: float
+) -> list[dict[str, Any]]:
     """Filter cities by minimum population."""
-    return [
-        city for city in cities_data if city.get("population", 0) >= minimum_population
-    ]
+    return [city for city in cities_data if city.get("population", 0) >= minimum_population]
 
 
 def _build_coverage_distances(
     geo_utils: "GeoUtilsAnalytics",
-    cities_data: List[Dict[str, Any]],
+    cities_data: list[dict[str, Any]],
     center_lat: float,
     center_lon: float,
-) -> List[float]:
+) -> list[float]:
     """Build city-to-center distances."""
     return [
         geo_utils.distance_calculator.haversine_distance(
@@ -56,9 +53,9 @@ def _build_coverage_stats(
     bbox: Any,
     center: Any,
     area_km2: float,
-    cities_data: List[Dict[str, Any]],
-    distances: List[float],
-) -> Dict[str, Any]:
+    cities_data: list[dict[str, Any]],
+    distances: list[float],
+) -> dict[str, Any]:
     """Build coverage statistics payload."""
     max_distance = max(distances) if distances else 0
     avg_distance = statistics.mean(distances) if distances else 0
@@ -87,15 +84,13 @@ class GeoUtilsAnalytics(GeoUtilsRegion):
 
     def optimize_cities_for_weather_analytics(
         self,
-        cities_data: List[Dict[str, Any]],
+        cities_data: list[dict[str, Any]],
         analytics_type: str,
         max_cities: int = 50,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Optimize cities for weather analytics type."""
         filter_config = _resolve_filter_config(analytics_type)
-        filtered_cities = _filter_cities_by_population(
-            cities_data, filter_config["min_population"]
-        )
+        filtered_cities = _filter_cities_by_population(cities_data, filter_config["min_population"])
 
         if len(filtered_cities) < max_cities // 2:
             filtered_cities = _filter_cities_by_population(
@@ -103,9 +98,7 @@ class GeoUtilsAnalytics(GeoUtilsRegion):
             )
 
         if len(filtered_cities) > max_cities:
-            filtered_cities = self.find_optimal_cities_for_region(
-                filtered_cities, max_cities
-            )
+            filtered_cities = self.find_optimal_cities_for_region(filtered_cities, max_cities)
 
         logger.info(
             f"Weather analytics cities optimized ({analytics_type}): {len(filtered_cities)}"
@@ -113,8 +106,8 @@ class GeoUtilsAnalytics(GeoUtilsRegion):
         return filtered_cities
 
     def calculate_multi_city_coverage_area(
-        self, cities_data: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        self, cities_data: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         """Calculate multi-city analytics coverage area."""
         if not cities_data:
             return {}

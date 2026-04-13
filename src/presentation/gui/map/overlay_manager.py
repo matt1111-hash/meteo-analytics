@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -7,8 +6,6 @@
 
 FÁJL: src/presentation/gui/map/overlay_manager.py
 """
-
-from typing import Dict, List
 
 try:
     import folium
@@ -30,7 +27,7 @@ class OverlayManager:
     🌤️ Időjárási overlay kezelő.
     """
 
-    def __init__(self, weather_data: Dict):
+    def __init__(self, weather_data: dict):
         """
         Args:
             weather_data: Időjárási adatok dictionary
@@ -93,10 +90,10 @@ class OverlayManager:
         except Exception as e:
             print(f"⚠️ Temperature heatmap error: {e}")
 
-    def _build_temperature_heatmap_points(self) -> List[List[float]]:
+    def _build_temperature_heatmap_points(self) -> list[list[float]]:
         """Heatmap pontok összeállítása normalizált intenzitással."""
-        temp_data: List[List[float]] = []
-        for _, data in self.weather_data.get("temperature", {}).items():
+        temp_data: list[list[float]] = []
+        for data in self.weather_data.get("temperature", {}).values():
             if "coordinates" not in data or "value" not in data:
                 continue
             lat, lon = data["coordinates"]

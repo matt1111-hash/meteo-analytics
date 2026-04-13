@@ -7,7 +7,6 @@ Main MultiCityEngine class for multi-city weather analytics
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from src.analytics.multi_city_engine_core import MultiCityEngine
 from src.domain.analytics.models import MultiCityQuery
 from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for MultiCityWidget."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .core_support import *
 
 
-class MultiCityWidgetPart2Mixin:
+class MultiCityWidgetPart2Mixin:  # noqa: D101
     def _clear_current_selection(self) -> None:
         """Aktuális mode selection törlése."""
         if self._current_mode == "region":
@@ -17,9 +17,7 @@ class MultiCityWidgetPart2Mixin:
             self._selected_county = None
             print("🏛️ DEBUG: Megye selection törölve")
 
-        self._combo_handler.update_info_label(
-            self._current_mode, self._get_current_selection()
-        )
+        self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
         self._update_clear_button()
         self._emit_selection_changed()
 

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for AnalyticsTransformService."""
 
@@ -7,11 +7,9 @@ from __future__ import annotations
 from .analytics_transform_service_support import *
 
 
-class AnalyticsTransformServicePart2Mixin:
+class AnalyticsTransformServicePart2Mixin:  # noqa: D101
     @staticmethod
-    def _compute_temperature_ranges(
-        weather_data: List[CityWeatherData], metric: str
-    ) -> None:
+    def _compute_temperature_ranges(weather_data: List[CityWeatherData], metric: str) -> None:
         """Compute temperature range for eligible records."""
         if metric != "temperature_range":
             return
@@ -51,9 +49,7 @@ class AnalyticsTransformServicePart2Mixin:
         return list(city_aggregates.values())
 
     @staticmethod
-    def _log_filtered_records(
-        aggregated_data: List[CityWeatherData], metric: str
-    ) -> None:
+    def _log_filtered_records(aggregated_data: List[CityWeatherData], metric: str) -> None:
         """Log records removed from result candidates."""
         for item in aggregated_data:
             metric_value = getattr(item, metric, None)
@@ -126,9 +122,7 @@ class AnalyticsTransformServicePart2Mixin:
             logger.info("AGGREGATED TO: %d unique cities", len(aggregated_data))
         else:
             aggregated_data = weather_data
-            logger.info(
-                "NO AGGREGATION: Returning all %d daily records", len(aggregated_data)
-            )
+            logger.info("NO AGGREGATION: Returning all %d daily records", len(aggregated_data))
         self._log_filtered_records(aggregated_data, metric)
         valid_data = self._filter_valid_records(aggregated_data, metric)
         if not valid_data:
@@ -176,9 +170,7 @@ class AnalyticsTransformServicePart2Mixin:
         logger.info("STATS RESULT: %s", stats)
         return stats
 
-    def get_provider_stats(
-        self, weather_data: Iterable[CityWeatherData]
-    ) -> Dict[str, int]:
+    def get_provider_stats(self, weather_data: Iterable[CityWeatherData]) -> Dict[str, int]:
         """Count provider usage from CityWeatherData list."""
         stats: Dict[str, int] = {}
         for item in weather_data:

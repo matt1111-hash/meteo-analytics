@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for AnalysisRunners."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .analysis_runners_support import *
 
 
-class AnalysisRunnersPart1Mixin:
-    def __init__(self, worker: "AnalysisWorker"):
+class AnalysisRunnersPart1Mixin:  # noqa: D101
+    def __init__(self, worker: AnalysisWorker):
         """
         Initialize analysis runners.
 
@@ -87,5 +87,5 @@ class AnalysisRunnersPart1Mixin:
             self._worker.analysis_completed.emit(structured_result)
 
         except Exception as e:
-            self._logger.error(f"Multi-city elemzés hiba: {str(e)}")
-            self._worker._emit_error(f"Multi-city elemzés sikertelen: {str(e)}")
+            self._logger.error(f"Multi-city elemzés hiba: {e!s}")
+            self._worker._emit_error(f"Multi-city elemzés sikertelen: {e!s}")

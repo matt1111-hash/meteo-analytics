@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -19,9 +18,9 @@ from .wind_categories import (
 )
 
 __all__ = [
-    "WindChart",
     "HUNGARIAN_WIND_THRESHOLDS",
+    "WindChart",
+    "calculate_y_axis_max",
     "get_wind_category",
     "get_wind_recommendations",
-    "calculate_y_axis_max",
 ]

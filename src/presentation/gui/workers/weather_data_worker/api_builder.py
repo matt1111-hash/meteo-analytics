@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 WeatherDataWorker API Builder - Build API requests for different providers.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, Tuple
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .core import WeatherDataWorker
@@ -24,7 +23,7 @@ class APIBuilder:
         """
         self._worker = worker
 
-    def build_request(self, provider: str) -> Tuple[str, Dict[str, Any]]:
+    def build_request(self, provider: str) -> tuple[str, dict[str, Any]]:
         """
         Build provider-specific API request.
 
@@ -41,7 +40,7 @@ class APIBuilder:
         else:
             raise ValueError(f"Ismeretlen provider: {provider}")
 
-    def build_openmeteo_request(self) -> Tuple[str, Dict[str, Any]]:
+    def build_openmeteo_request(self) -> tuple[str, dict[str, Any]]:
         """
         Build Open-Meteo API request with wind gusts support.
 
@@ -66,7 +65,7 @@ class APIBuilder:
 
         return url, params
 
-    def build_meteostat_request(self) -> Tuple[str, Dict[str, Any]]:
+    def build_meteostat_request(self) -> tuple[str, dict[str, Any]]:
         """
         Build Meteostat API request (future expansion).
 

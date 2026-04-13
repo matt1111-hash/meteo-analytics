@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for AnalyticsStatistics."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .analytics_statistics_support import *
 
 
-class AnalyticsStatisticsPart2Mixin:
+class AnalyticsStatisticsPart2Mixin:  # noqa: D101
     @staticmethod
     def _build_single_day_record(
         values: List[Any],
@@ -37,9 +37,7 @@ class AnalyticsStatisticsPart2Mixin:
         }
 
     @staticmethod
-    def _build_driest_record(
-        precip_list: List[Any], dates: List[str]
-    ) -> Dict[str, Dict[str, str]]:
+    def _build_driest_record(precip_list: List[Any], dates: List[str]) -> Dict[str, Dict[str, str]]:
         """Build driest streak record if available."""
         if not precip_list or len(precip_list) != len(dates):
             return {}
@@ -59,9 +57,7 @@ class AnalyticsStatisticsPart2Mixin:
         daily_data: Dict[str, Any], dates: List[str]
     ) -> Dict[str, Dict[str, str]]:
         """Build windiest record preferring gust data."""
-        wind_data = daily_data.get("wind_gusts_max", []) or daily_data.get(
-            "windspeed_10m_max", []
-        )
+        wind_data = daily_data.get("wind_gusts_max", []) or daily_data.get("windspeed_10m_max", [])
         return AnalyticsStatisticsPart2Mixin._build_single_day_record(
             wind_data,
             dates,
@@ -113,12 +109,8 @@ class AnalyticsStatisticsPart2Mixin:
                     require_positive=True,
                 )
             )
-            records.update(
-                AnalyticsStatisticsPart2Mixin._build_driest_record(precip_list, dates)
-            )
-            records.update(
-                AnalyticsStatisticsPart2Mixin._build_windiest_record(daily_data, dates)
-            )
+            records.update(AnalyticsStatisticsPart2Mixin._build_driest_record(precip_list, dates))
+            records.update(AnalyticsStatisticsPart2Mixin._build_windiest_record(daily_data, dates))
 
             logger.info(
                 f"Napi rekordok számítva: {len(records)} kategória (max széllökés prioritással)"

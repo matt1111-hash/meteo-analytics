@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -18,7 +17,7 @@ from .extreme_calculator import ExtremeCalculator
 from .extreme_records import ExtremeRecord, RecordsTextSummary
 
 __all__ = [
+    "ExtremeCalculator",
     "ExtremeRecord",
     "RecordsTextSummary",
-    "ExtremeCalculator",
 ]

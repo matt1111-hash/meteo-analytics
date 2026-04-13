@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,7 +7,6 @@ Magyar város adatstruktúrák és régió osztályozás.
 """
 
 from dataclasses import dataclass
-from typing import List, Optional
 
 
 @dataclass
@@ -20,11 +18,11 @@ class HungarianCity:
     country_code: str
     lat: float
     lon: float
-    population: Optional[int] = None
-    admin_name: Optional[str] = None
-    meteostat_station_id: Optional[str] = None
-    data_quality_score: Optional[float] = None
-    region: Optional[str] = None
+    population: int | None = None
+    admin_name: str | None = None
+    meteostat_station_id: str | None = None
+    data_quality_score: float | None = None
+    region: str | None = None
 
 
 class HungarianRegions:
@@ -33,7 +31,7 @@ class HungarianRegions:
     """
 
     # Régió mappingek népszerű városok alapján
-    REGION_MAPPING = {
+    REGION_MAPPING = {  # noqa: RUF012
         # Alföld
         "Debrecen": "Alföld",
         "Szeged": "Alföld",
@@ -71,7 +69,7 @@ class HungarianRegions:
         "Balassagyarmat": "Északi-régió",
     }
 
-    REGION_DISPLAY_NAMES = {
+    REGION_DISPLAY_NAMES = {  # noqa: RUF012
         "Alföld": "🌾 Alföld",
         "Dunántúl": "🏔️ Dunántúl",
         "Közép-Magyarország": "🏛️ Közép-Magyarország",
@@ -79,7 +77,7 @@ class HungarianRegions:
         "Egyéb": "🏘️ Egyéb",
     }
 
-    REGION_DESCRIPTIONS = {
+    REGION_DESCRIPTIONS = {  # noqa: RUF012
         "Alföld": "Nagy Magyar Alföld - síkvidéki klíma",
         "Dunántúl": "Dunántúli-dombság és középhegység",
         "Közép-Magyarország": "Főváros és agglomeráció",
@@ -101,14 +99,12 @@ class HungarianRegions:
         return cls.REGION_MAPPING.get(city_name, "Egyéb")
 
     @classmethod
-    def get_all_regions(cls) -> List[str]:
+    def get_all_regions(cls) -> list[str]:
         """Összes régió listája"""
         return list(cls.REGION_DISPLAY_NAMES.keys())
 
     @classmethod
-    def get_cities_by_region(
-        cls, region: str, cities: List[HungarianCity]
-    ) -> List[HungarianCity]:
+    def get_cities_by_region(cls, region: str, cities: list[HungarianCity]) -> list[HungarianCity]:
         """
         Városok szűrése régió alapján.
 

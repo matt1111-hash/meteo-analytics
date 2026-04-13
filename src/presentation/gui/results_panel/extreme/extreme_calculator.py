@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,6 @@ Extreme Weather Calculator - Main API
 """
 
 import logging
-from typing import Dict, List
 
 from .category_calculators import CategoryCalculators
 from .extreme_records import ExtremeRecord, RecordsTextSummary
@@ -47,8 +45,8 @@ class ExtremeCalculator:
         self.text_gen = TextGenerators()
 
     def calculate_records_by_period(
-        self, daily_data: Dict[str, List], dates: List[str], period_type: str = "daily"
-    ) -> List[ExtremeRecord]:
+        self, daily_data: dict[str, list], dates: list[str], period_type: str = "daily"
+    ) -> list[ExtremeRecord]:
         """
         🏆 Rekordok számítása időszak típus szerint.
 
@@ -61,9 +59,7 @@ class ExtremeCalculator:
             List[ExtremeRecord]: Rekordok listája
         """
         try:
-            logger.info(
-                f"Rekordok számítása - Időszak: {period_type}, Napok: {len(dates)}"
-            )
+            logger.info(f"Rekordok számítása - Időszak: {period_type}, Napok: {len(dates)}")
 
             if period_type == "daily":
                 return self.period_calcs.calculate_daily_records(daily_data, dates)
@@ -72,9 +68,7 @@ class ExtremeCalculator:
             elif period_type == "yearly":
                 return self.period_calcs.calculate_yearly_records(daily_data, dates)
             else:
-                logger.warning(
-                    f"Ismeretlen period_type: {period_type}, fallback daily-re"
-                )
+                logger.warning(f"Ismeretlen period_type: {period_type}, fallback daily-re")
                 return self.period_calcs.calculate_daily_records(daily_data, dates)
 
         except Exception as e:
@@ -82,7 +76,7 @@ class ExtremeCalculator:
             return []
 
     def generate_text_summary(
-        self, daily_data: Dict[str, List], dates: List[str]
+        self, daily_data: dict[str, list], dates: list[str]
     ) -> RecordsTextSummary:
         """
         📋 Szöveges rekord összefoglaló generálása.

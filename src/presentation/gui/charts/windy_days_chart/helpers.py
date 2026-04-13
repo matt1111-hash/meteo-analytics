@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/charts/windy_days_chart/helpers.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
@@ -46,7 +45,7 @@ def _plot_no_data_message(self) -> None:
             ha="center",
             va="center",
             fontsize=12,
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="lightgray", alpha=0.5),
+            bbox={"boxstyle": "round,pad=0.3", "facecolor": "lightgray", "alpha": 0.5},
         )
 
         ax.set_xlim(0, 1)
@@ -81,7 +80,7 @@ def _plot_error_message(self, error_msg: str) -> None:
             va="center",
             fontsize=10,
             color="red",
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="mistyrose", alpha=0.7),
+            bbox={"boxstyle": "round,pad=0.3", "facecolor": "mistyrose", "alpha": 0.7},
         )
 
         ax.set_xlim(0, 1)
@@ -145,7 +144,7 @@ def export_chart(self, file_path: str, dpi: int = 300) -> bool:
         return False
 
 
-def get_chart_info(self) -> Dict[str, Any]:
+def get_chart_info(self) -> dict[str, Any]:
     """
     Chart információk lekérdezése.
 

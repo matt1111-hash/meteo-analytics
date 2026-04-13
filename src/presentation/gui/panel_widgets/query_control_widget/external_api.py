@@ -6,7 +6,7 @@ Egyszerűsített verzió: csak az állapotkezelő API-k maradnak.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtCore import QTimer
 
@@ -45,11 +45,10 @@ class QueryControlExternalAPI:
             self._state.set_state(self._state.STATE_FETCHING)
             if message and self._ui.progress_text_label:
                 self._ui.progress_text_label.setText(message)
+        elif self._state.cancel_requested:
+            self._state.set_state(self._state.STATE_IDLE)
         else:
-            if self._state.cancel_requested:
-                self._state.set_state(self._state.STATE_IDLE)
-            else:
-                self._state.set_state(self._state.STATE_SUCCESS)
+            self._state.set_state(self._state.STATE_SUCCESS)
 
         logger.debug(f"External fetching state set: {is_fetching}")
 
@@ -89,10 +88,7 @@ class QueryControlExternalAPI:
         if self._state._auto_reset_timer and self._state._auto_reset_timer.isActive():
             self._state._auto_reset_timer.stop()
 
-        if (
-            self._state._progress_update_timer
-            and self._state._progress_update_timer.isActive()
-        ):
+        if self._state._progress_update_timer and self._state._progress_update_timer.isActive():
             self._state._progress_update_timer.stop()
 
         self._state.set_state(self._state.STATE_IDLE)
@@ -122,15 +118,15 @@ class QueryControlExternalAPI:
         """Jelenlegi állapot lekérdezése."""
         return self._state.current_state
 
-    def get_last_query_params(self) -> Optional[Dict[str, Any]]:
+    def get_last_query_params(self) -> dict[str, Any] | None:
         """Utolsó query paraméterek lekérdezése."""
         return self._events.last_query_params
 
-    def set_last_query_params(self, params: Dict[str, Any]) -> None:
+    def set_last_query_params(self, params: dict[str, Any]) -> None:
         """Utolsó query paraméterek beállítása."""
         self._events.last_query_params = params
 
-    def save_state(self) -> Dict[str, Any]:
+    def save_state(self) -> dict[str, Any]:
         """Állapot mentése."""
         return {
             "current_state": self._state.current_state,
@@ -139,7 +135,7 @@ class QueryControlExternalAPI:
             "cancel_requested": self._state.cancel_requested,
         }
 
-    def restore_state(self, state: Dict[str, Any]) -> bool:
+    def restore_state(self, state: dict[str, Any]) -> bool:
         """Állapot visszaállítása."""
         try:
             if "current_state" in state:
@@ -153,7 +149,7 @@ class QueryControlExternalAPI:
             logger.error(f"State restore failed: {e}")
             return False
 
-    def get_debug_info(self) -> Dict[str, Any]:
+    def get_debug_info(self) -> dict[str, Any]:
         """Debug információk lekérdezése."""
         return {
             "state": self._state.current_state,

@@ -37,9 +37,7 @@ def create_header(parent_widget: QWidget) -> QWidget:
     title.setAlignment(Qt.AlignCenter)
     layout.addWidget(title)
 
-    subtitle = QLabel(
-        "Globális trend elemzés dinamikus KPI dashboard-dal - Hibamentesen javított!"
-    )
+    subtitle = QLabel("Globális trend elemzés dinamikus KPI dashboard-dal - Hibamentesen javított!")
     subtitle.setFont(QFont("Arial", 11))
     subtitle.setStyleSheet("color: rgba(255,255,255,0.9); margin: 5px 0 0 0;")
     subtitle.setAlignment(Qt.AlignCenter)
@@ -50,7 +48,7 @@ def create_header(parent_widget: QWidget) -> QWidget:
     return header
 
 
-def create_controls_panel(parent_widget: QWidget) -> dict:
+def create_controls_panel(parent_widget: QWidget) -> dict:  # noqa: PLR0915
     """Elemzési paraméterek panel."""
     panel = QFrame()
     panel.setFrameStyle(QFrame.Box)

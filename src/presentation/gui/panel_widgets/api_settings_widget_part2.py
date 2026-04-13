@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for ApiSettingsWidget."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .api_settings_widget_support import *
 
 
-class ApiSettingsWidgetPart2Mixin:
+class ApiSettingsWidgetPart2Mixin:  # noqa: D101
     def set_api_settings(self, settings: Dict[str, Any]) -> bool:
         """API beállítások beállítása (compatibility)."""
         try:
@@ -38,7 +38,7 @@ class ApiSettingsWidgetPart2Mixin:
 
     def set_timeout_value(self, timeout: int) -> bool:
         """Timeout érték beállítása."""
-        if 30 <= timeout <= 300:
+        if 30 <= timeout <= 300:  # noqa: PLR2004
             self.api_timeout.setValue(timeout)
             return True
         return False

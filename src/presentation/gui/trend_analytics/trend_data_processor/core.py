@@ -2,10 +2,8 @@
 """Trend Data Processor Core - API-based trend data processing."""
 
 import logging
-from typing import Optional
 
 from PySide6.QtCore import QObject, Signal
-
 from src.infrastructure.container import (
     get_city_manager_port,
     get_weather_client_port,
@@ -43,7 +41,7 @@ class TrendDataProcessor(QObject):
     data_received = Signal(dict)
     error_occurred = Signal(str)
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:  # noqa: D107
         super().__init__()
         self.city_manager = get_city_manager_port()
         self.weather_client = get_weather_client_port()
@@ -52,13 +50,11 @@ class TrendDataProcessor(QObject):
 
         logger.info("TrendDataProcessor initialized")
 
-    def get_settlement_coordinates(self, settlement_name: str) -> Optional[tuple]:
+    def get_settlement_coordinates(self, settlement_name: str) -> tuple | None:
         """Get settlement coordinates from CityManager."""
         return get_settlement_coordinates(self.city_manager, settlement_name)
 
-    def fetch_trend_data(
-        self, settlement_name: str, parameter: str, time_range: str
-    ) -> None:
+    def fetch_trend_data(self, settlement_name: str, parameter: str, time_range: str) -> None:
         """Fetch trend data via API (background thread)."""
         try:
             self.progress_updated.emit(10)
@@ -110,4 +106,4 @@ class TrendDataProcessor(QObject):
 
         except Exception as e:
             logger.error(f"Trend fetch error: {e}")
-            self.error_occurred.emit(f"Critical error: {str(e)}")
+            self.error_occurred.emit(f"Critical error: {e!s}")

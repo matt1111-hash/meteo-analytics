@@ -1,11 +1,10 @@
 # mypy: ignore-errors
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-
 from src.domain.entities.analytics_models import AnalyticsResult
 from src.presentation.gui.map import HungarianMapVisualizer
 from src.presentation.gui.weather_data_bridge import WeatherDataBridge
@@ -28,8 +27,8 @@ class MapWidget(QWidget, IMapWidget):
     export_completed = Signal(str)
     error_occurred = Signal(str)
 
-    def __init__(
-        self, visualizer: Optional[HungarianMapVisualizer] = None, parent=None
+    def __init__(  # noqa: D107
+        self, visualizer: HungarianMapVisualizer | None = None, parent=None
     ):
         super().__init__(parent)
         self._layout = QVBoxLayout(self)
@@ -62,7 +61,7 @@ class MapWidget(QWidget, IMapWidget):
 
     # --- IMapWidget Implementation ---
 
-    def render_map(self, _configuration: Dict[str, Any]) -> None:
+    def render_map(self, _configuration: dict[str, Any]) -> None:
         """Render the map with the given configuration."""
         # For now, just triggers the visualizer's refresh or setup
         # In a full impl, this would pass config to map_visualizer
@@ -90,7 +89,7 @@ class MapWidget(QWidget, IMapWidget):
 
     def generate_weather_overlay_from_analytics(
         self, analytics_result: AnalyticsResult
-    ) -> Optional[Any]:
+    ) -> Any | None:
         """
         Generate weather overlay data from analytics result.
         Uses WeatherDataBridge for conversion.
@@ -100,9 +99,7 @@ class MapWidget(QWidget, IMapWidget):
 
         try:
             # WeatherDataBridge handles the complexity of data conversion
-            overlay_data = self.weather_bridge.create_overlay_from_analytics(
-                analytics_result
-            )
+            overlay_data = self.weather_bridge.create_overlay_from_analytics(analytics_result)
             return overlay_data
         except Exception as e:
             self.error_occurred.emit(f"Overlay generation error: {e}")
@@ -125,5 +122,5 @@ class MapWidget(QWidget, IMapWidget):
         """Pass GeoDataFrame to visualizer."""
         self.map_visualizer.set_counties_geodataframe(gdf)
 
-    def is_folium_available(self) -> bool:
+    def is_folium_available(self) -> bool:  # noqa: D102
         return self.map_visualizer.is_folium_available()

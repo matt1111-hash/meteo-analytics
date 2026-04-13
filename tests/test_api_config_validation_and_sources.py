@@ -8,9 +8,7 @@ import pytest
 class TestValidateApiKeys:
     """Test cases for validate_api_keys() function."""
 
-    def test_no_meteostat_key_returns_not_present(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_no_meteostat_key_returns_not_present(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """When Meteostat API key is not set, validation should reflect that."""
         from src.config.api_config import APIConfig, validate_api_keys
 
@@ -21,9 +19,7 @@ class TestValidateApiKeys:
         assert result["meteostat_key_valid"] is False
         assert result["openmeteo_available"] is True
 
-    def test_short_meteostat_key_returns_invalid(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_short_meteostat_key_returns_invalid(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Short Meteostat API key should be marked as invalid."""
         from src.config.api_config import APIConfig, validate_api_keys
 
@@ -33,9 +29,7 @@ class TestValidateApiKeys:
         assert result["meteostat_key_present"] is True
         assert result["meteostat_key_valid"] is False
 
-    def test_valid_meteostat_key_returns_valid(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_valid_meteostat_key_returns_valid(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Valid length Meteostat API key should pass validation."""
         from src.config.api_config import APIConfig, validate_api_keys
 
@@ -99,9 +93,7 @@ class TestGetActiveDataSources:
             "real-time",
         }
 
-    def test_meteostat_inactive_without_key(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_meteostat_inactive_without_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Meteostat should be marked inactive without valid API key."""
         from src.config.api_config import APIConfig, get_active_data_sources
 
@@ -114,9 +106,7 @@ class TestGetActiveDataSources:
         assert "inactive" in sources["meteostat"]["status"]
         assert sources["meteostat"]["cost"] == "$10 USD/month"
 
-    def test_meteostat_active_with_valid_key(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_meteostat_active_with_valid_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Meteostat should be marked active with valid API key."""
         from src.config.api_config import APIConfig, get_active_data_sources
 
@@ -127,9 +117,7 @@ class TestGetActiveDataSources:
         assert sources["meteostat"]["status"] == "active"
         assert sources["meteostat"]["rate_limit"] == "10000 requests/month"
 
-    def test_meteostat_inactive_use_cases(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_meteostat_inactive_use_cases(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Meteostat use cases should be defined even when inactive."""
         from src.config.api_config import APIConfig, get_active_data_sources
 
@@ -157,9 +145,7 @@ class TestGetActiveDataSources:
             "station-based",
         }
 
-    def test_returns_dict_with_both_sources(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_returns_dict_with_both_sources(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Should return a dict with both sources regardless of key status."""
         from src.config.api_config import APIConfig, get_active_data_sources
 

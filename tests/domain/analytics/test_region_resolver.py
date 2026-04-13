@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.domain.analytics.services.region_resolver import RegionResolverService
 
 

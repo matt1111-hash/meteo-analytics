@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pytest
-
 from src.application.use_cases.analyze_multi_city import AnalyzeMultiCityUseCase
 from src.data.enums import AnalyticsMetric
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
@@ -42,9 +41,9 @@ HUNGARIAN_MAPPING = {"Budapest": ["Budapest"]}
 class FakeCityRepository(CityRepositoryProtocol):
     """In-memory city repository for tests."""
 
-    def __init__(self, cities: List[Dict[str, Any]]) -> None:
+    def __init__(self, cities: list[dict[str, Any]]) -> None:
         self.cities = cities
-        self.last_limit: Optional[int] = None
+        self.last_limit: int | None = None
 
     def validate_paths(self) -> None:
         return None
@@ -53,10 +52,10 @@ class FakeCityRepository(CityRepositoryProtocol):
         self,
         mapped_region: str,
         original_region: str,
-        country_codes: List[str],
+        country_codes: list[str],
         limit: int,
-        hungarian_mapping: Dict[str, List[str]],
-    ) -> List[Dict[str, object]]:
+        hungarian_mapping: dict[str, list[str]],
+    ) -> list[dict[str, object]]:
         self.last_limit = limit
         return self.cities
 
@@ -64,16 +63,16 @@ class FakeCityRepository(CityRepositoryProtocol):
 class FakeWeatherFetchService:
     """Returns pre-seeded weather data."""
 
-    def __init__(self, weather_data: List[CityWeatherData]) -> None:
+    def __init__(self, weather_data: list[CityWeatherData]) -> None:
         self.weather_data = weather_data
 
     def fetch_weather_data_dual_api_batch(
         self,
-        cities: List[Dict[str, Any]],
+        cities: list[dict[str, Any]],
         date: str,
-        region_config: Dict[str, Any],
+        region_config: dict[str, Any],
         **kwargs: Any,
-    ) -> List[CityWeatherData]:
+    ) -> list[CityWeatherData]:
         return self.weather_data
 
 
@@ -92,8 +91,8 @@ def _city(name: str, windspeed: float) -> CityWeatherData:
 
 
 def _use_case(
-    repo: Optional[FakeCityRepository] = None,
-    weather_data: Optional[List[CityWeatherData]] = None,
+    repo: FakeCityRepository | None = None,
+    weather_data: list[CityWeatherData] | None = None,
 ) -> AnalyzeMultiCityUseCase:
     resolver = RegionResolverService()
     transform_service = AnalyticsTransformService(QUERY_TYPES)

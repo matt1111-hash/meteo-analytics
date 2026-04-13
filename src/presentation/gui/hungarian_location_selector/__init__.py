@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -21,9 +20,9 @@ from .worker import GEOPANDAS_AVAILABLE, HungarianLocationWorker
 
 # Re-export for backward compatibility
 __all__ = [
-    "HungarianLocationSelector",
-    "HungarianStatisticalRegion",
-    "HungarianRegionData",
-    "HungarianLocationWorker",
     "GEOPANDAS_AVAILABLE",
+    "HungarianLocationSelector",
+    "HungarianLocationWorker",
+    "HungarianRegionData",
+    "HungarianStatisticalRegion",
 ]

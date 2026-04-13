@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -15,7 +14,7 @@ Képességek:
 Fájl: src/presentation/gui/panel_widgets/provider_widget/provider_data.py
 """
 
-from typing import Any, Dict
+from typing import Any
 
 
 def get_providers_list() -> list:
@@ -34,7 +33,7 @@ def get_providers_list() -> list:
     ]
 
 
-def get_status_messages() -> Dict[str, str]:
+def get_status_messages() -> dict[str, str]:
     """
     Status üzenetek lekérdezése.
 
@@ -50,7 +49,7 @@ def get_status_messages() -> Dict[str, str]:
     }
 
 
-def generate_mock_usage_data() -> Dict[str, Any]:
+def generate_mock_usage_data() -> dict[str, Any]:
     """
     Mock usage adatok generálása teszteléshez.
 
@@ -78,7 +77,7 @@ def generate_mock_usage_data() -> Dict[str, Any]:
     }
 
 
-def get_default_warning_thresholds() -> Dict[str, Any]:
+def get_default_warning_thresholds() -> dict[str, Any]:
     """
     Alapértelmezett warning thresholdök.
 

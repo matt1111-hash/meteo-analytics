@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 Location Widget - Core class with state and public interface.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
-
 from src.domain.entities.universal_location import UniversalLocation
 from src.domain.ports import CityManagerPort
 from src.presentation.gui.theme_manager import get_theme_manager
@@ -38,11 +36,9 @@ class LocationWidget(QWidget):
     # === KIMENŐ SIGNALOK ===
     search_requested = Signal(str)  # search_query
     location_changed = Signal(object)  # UniversalLocation object
-    city_selected = Signal(
-        str, float, float, dict
-    )  # name, lat, lon, metadata (compatibility)
+    city_selected = Signal(str, float, float, dict)  # name, lat, lon, metadata (compatibility)
 
-    def __init__(self, city_manager: CityManagerPort, parent: Optional[QWidget] = None):
+    def __init__(self, city_manager: CityManagerPort, parent: QWidget | None = None):
         """
         LocationWidget inicializálása.
 
@@ -57,8 +53,8 @@ class LocationWidget(QWidget):
         self.theme_manager = get_theme_manager()
 
         # State
-        self.current_location: Optional[UniversalLocation] = None
-        self.current_city_data: Optional[Dict[str, Any]] = None
+        self.current_location: UniversalLocation | None = None
+        self.current_city_data: dict[str, Any] | None = None
         self._updating_state = False
 
         # UI init
@@ -80,7 +76,7 @@ class LocationWidget(QWidget):
 
     # === PUBLIKUS INTERFACE ===
 
-    def get_state(self) -> Dict[str, Any]:
+    def get_state(self) -> dict[str, Any]:
         """
         Aktuális állapot lekérdezése.
 
@@ -94,7 +90,7 @@ class LocationWidget(QWidget):
             "is_valid": self.is_valid(),
         }
 
-    def set_state(self, state: Dict[str, Any]) -> bool:
+    def set_state(self, state: dict[str, Any]) -> bool:
         """
         Állapot beállítása.
 
@@ -163,11 +159,11 @@ class LocationWidget(QWidget):
 
         print(f"🌍 DEBUG: LocationWidget enabled state: {enabled}")
 
-    def get_current_city_data(self) -> Optional[Dict[str, Any]]:
+    def get_current_city_data(self) -> dict[str, Any] | None:
         """Aktuális city data lekérdezése (compatibility)."""
         return self.current_city_data
 
-    def get_current_location(self) -> Optional[UniversalLocation]:
+    def get_current_location(self) -> UniversalLocation | None:
         """Aktuális UniversalLocation lekérdezése."""
         return self.current_location
 

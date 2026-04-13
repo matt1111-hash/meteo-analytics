@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 WeatherTooltipMixin Core - Main mixin class for chart tooltips.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from .event_handlers import EventHandlers
 from .event_manager import EventManager
@@ -92,15 +91,15 @@ class WeatherTooltipMixin:
         print("🛑 DEBUG: Tooltips kikapcsolva")
 
     # Delegate to helper components
-    def _find_closest_chart_point(self, event) -> Dict[str, Any]:
+    def _find_closest_chart_point(self, event) -> dict[str, Any]:
         """Find closest chart point to mouse event."""
         return self._point_finder.find_closest(event)
 
-    def _find_closest_temperature_point(self, event) -> Dict[str, Any]:
+    def _find_closest_temperature_point(self, event) -> dict[str, Any]:
         """Find closest temperature chart point."""
         return self._point_finder.find_closest_temperature(event)
 
-    def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
+    def _show_tooltip(self, event, point_data: dict[str, Any]) -> None:
         """Show tooltip for point data."""
         self._tooltip_display.show(event, point_data)
 
@@ -108,7 +107,7 @@ class WeatherTooltipMixin:
         """Hide tooltip."""
         self._tooltip_display.hide()
 
-    def _format_tooltip_text(self, point_data: Dict[str, Any]) -> str:
+    def _format_tooltip_text(self, point_data: dict[str, Any]) -> str:
         """Format tooltip text."""
         return self._tooltip_formatter.format(point_data)
 
@@ -124,6 +123,6 @@ class WeatherTooltipMixin:
         """Handle mouse click event."""
         self._event_handlers.on_mouse_click(event)
 
-    def _log_detailed_point_info(self, point_data: Dict[str, Any]) -> None:
+    def _log_detailed_point_info(self, point_data: dict[str, Any]) -> None:
         """Log detailed point info for debugging."""
         self._tooltip_formatter.log_detailed_info(point_data)

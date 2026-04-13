@@ -39,9 +39,7 @@ class TestUsageTrackerTrackRequest:
         usage = UsageTracker.load_usage_data()
         assert usage["meteostat"]["requests_this_month"] == 8
 
-    def test_track_request_updates_daily_breakdown(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_track_request_updates_daily_breakdown(self, config_fs: dict[str, str]) -> None:
         """Tracking should update daily breakdown."""
         from src.config.usage_config import UsageTracker
 

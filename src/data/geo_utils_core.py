@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Global Weather Analyzer - Geo Utils Core
@@ -11,7 +10,6 @@ Part of the geo_utils refactoring - split into focused modules.
 import logging
 import math
 import statistics
-from typing import List, Optional, Tuple
 
 from .distance_calculator import DistanceCalculator
 from .geo_types import BoundingBox, GeoPoint
@@ -29,25 +27,23 @@ class GeoUtils:
     - Coordinate validation and transformation
     """
 
-    def __init__(self, distance_calculator: Optional[DistanceCalculator] = None):
+    def __init__(self, distance_calculator: DistanceCalculator | None = None):
         """Initialize GeoUtils."""
         self.distance_calculator = distance_calculator or DistanceCalculator()
         logger.debug("GeoUtils initialized")
 
     def validate_coordinates(self, latitude: float, longitude: float) -> bool:
         """Validate coordinates."""
-        return (-90 <= latitude <= 90) and (-180 <= longitude <= 180)
+        return (-90 <= latitude <= 90) and (-180 <= longitude <= 180)  # noqa: PLR2004
 
-    def normalize_coordinates(
-        self, latitude: float, longitude: float
-    ) -> Tuple[float, float]:
+    def normalize_coordinates(self, latitude: float, longitude: float) -> tuple[float, float]:
         """Normalize coordinates."""
         norm_lat = max(-90, min(90, latitude))
         norm_lon = ((longitude + 180) % 360) - 180
         return norm_lat, norm_lon
 
     def calculate_bounding_box(
-        self, points: List[Tuple[float, float]], padding_degrees: float = 0.0
+        self, points: list[tuple[float, float]], padding_degrees: float = 0.0
     ) -> BoundingBox:
         """Calculate bounding box for points."""
         if not points:
@@ -68,9 +64,7 @@ class GeoUtils:
 
         return bbox
 
-    def calculate_geographic_center(
-        self, points: List[Tuple[float, float]]
-    ) -> GeoPoint:
+    def calculate_geographic_center(self, points: list[tuple[float, float]]) -> GeoPoint:
         """Calculate geographic center (centroid) of points."""
         if not points:
             raise ValueError("Points list is empty")
@@ -104,9 +98,7 @@ class GeoUtils:
             name="Geographic Center",
         )
 
-    def convert_to_web_mercator(
-        self, latitude: float, longitude: float
-    ) -> Tuple[float, float]:
+    def convert_to_web_mercator(self, latitude: float, longitude: float) -> tuple[float, float]:
         """Convert WGS84 coordinates to Web Mercator projection."""
         x = longitude * 20037508.34 / 180
         y = math.log(math.tan((90 + latitude) * math.pi / 360)) / (math.pi / 180)
@@ -119,7 +111,7 @@ class GeoUtils:
         world_width = 256
 
         zoom = 0
-        while zoom < 18:
+        while zoom < 18:  # noqa: PLR2004
             if world_width >= map_width_px * lon_span / 360:
                 break
             world_width *= 2

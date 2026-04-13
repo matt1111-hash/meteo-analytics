@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for DataProcessor."""
 
@@ -10,14 +10,12 @@ from .data_processor_support import *
 def _find_fallback_wind_source(daily_data: Dict[str, Any]) -> tuple[Any, Any]:
     """Find first usable fallback wind source."""
     for key in ["wind_gusts_10m_max", "windspeed_10m_max", "wind_speed"]:
-        if key in daily_data and daily_data[key]:
+        if daily_data.get(key):
             return daily_data[key], key
     return None, None
 
 
-def _build_fallback_dataframe(
-    times: list[Any], wind_data: Any, wind_source: str
-) -> Any:
+def _build_fallback_dataframe(times: list[Any], wind_data: Any, wind_source: str) -> Any:
     """Build fallback dataframe for wind data."""
     import pandas as pd
 
@@ -36,7 +34,7 @@ def _extract_fallback_daily_data(data: Dict[str, Any]) -> Dict[str, Any]:
     return data.get("daily", {}) or data.get("hourly", {})
 
 
-class DataProcessorPart1Mixin:
+class DataProcessorPart1Mixin:  # noqa: D101
     def __init__(self, parent=None):
         """
         DataProcessor inicializálása.
@@ -75,9 +73,7 @@ class DataProcessorPart1Mixin:
                 df = self.DataFrameExtractor.extract_safely(data)
 
                 if df.empty:
-                    self._logger.error(
-                        "❌ DataFrameExtractor üres DataFrame-et adott vissza!"
-                    )
+                    self._logger.error("❌ DataFrameExtractor üres DataFrame-et adott vissza!")
                     return self._empty_dataframe_fallback()
 
                 # DataFrame tartalom ellenőrzése
@@ -112,9 +108,7 @@ class DataProcessorPart1Mixin:
         if "wind_gusts_max" in df.columns:
             # WindyDaysTab wind_speed oszlopot vár!
             df["wind_speed"] = df["wind_gusts_max"]
-            self._logger.info(
-                "🔥 WIND_SPEED OSZLOP JAVÍTÁS: wind_gusts_max → wind_speed mapping!"
-            )
+            self._logger.info("🔥 WIND_SPEED OSZLOP JAVÍTÁS: wind_gusts_max → wind_speed mapping!")
 
             wind_data = df["wind_speed"].dropna()
             if len(wind_data) > 0:
@@ -170,9 +164,7 @@ class DataProcessorPart1Mixin:
 
             self._logger.info(f"🎯 FALLBACK wind source: {wind_source}")
             df = _build_fallback_dataframe(times, wind_data, wind_source)
-            self._logger.info(
-                f"🔄 FALLBACK DataFrame: {len(df)} sor, source: {wind_source}"
-            )
+            self._logger.info(f"🔄 FALLBACK DataFrame: {len(df)} sor, source: {wind_source}")
             return df
 
         except Exception as fallback_error:

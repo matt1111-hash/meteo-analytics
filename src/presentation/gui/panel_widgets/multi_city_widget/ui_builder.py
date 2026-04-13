@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -31,7 +30,7 @@ if TYPE_CHECKING:
     from src.presentation.gui.theme_manager import ThemeManager
 
 
-def create_multi_city_ui(parent_widget: QWidget, theme_manager: "ThemeManager") -> dict:
+def create_multi_city_ui(parent_widget: QWidget, theme_manager: "ThemeManager") -> dict:  # noqa: ARG001
     """
     UI elemek létrehozása multi-city widget-hez.
 
@@ -93,7 +92,7 @@ def create_multi_city_ui(parent_widget: QWidget, theme_manager: "ThemeManager") 
 
 
 def register_widget_for_theming(
-    theme_manager: "ThemeManager",
+    theme_manager: "ThemeManager",  # noqa: ARG001
     widget: QWidget,
     group: QGroupBox,
     combo_box: QComboBox,
@@ -120,9 +119,7 @@ def register_widget_for_theming(
     register_widget_for_theming(info_label, "text")
 
 
-def apply_label_styling(
-    label: QLabel, theme_manager: "ThemeManager", style_type: str
-) -> None:
+def apply_label_styling(label: QLabel, theme_manager: "ThemeManager", style_type: str) -> None:
     """
     Label styling alkalmazása.
 

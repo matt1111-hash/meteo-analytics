@@ -6,7 +6,7 @@ Ez a modul tartalmazza a HungarianMapTab fő osztályát és a signalokat.
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
@@ -67,7 +67,7 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
     weather_data_updated = Signal(object)
     analytics_sync_completed = Signal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None):  # noqa: PLR0915
         """HungarianMapTab inicializálása."""
         super().__init__(parent)
 
@@ -75,12 +75,12 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
         self.color_palette = ColorPalette()
 
         # Komponens referenciák
-        self.location_selector: Optional[HungarianLocationSelector] = None
-        self.map_visualizer: Optional[HungarianMapVisualizer] = None
+        self.location_selector: HungarianLocationSelector | None = None
+        self.map_visualizer: HungarianMapVisualizer | None = None
 
         # Weather integráció komponensek
-        self.weather_bridge: Optional[WeatherDataBridge] = None
-        self.multi_city_engine: Optional[MultiCityEngine] = None
+        self.weather_bridge: WeatherDataBridge | None = None
+        self.multi_city_engine: MultiCityEngine | None = None
 
         # Adatok
         self.counties_gdf = None
@@ -89,17 +89,17 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
         self.is_folium_ready = False
 
         # Weather data állapot
-        self.current_analytics_result: Optional[AnalyticsResult] = None
-        self.current_weather_overlay: Optional[WeatherOverlayData] = None
+        self.current_analytics_result: AnalyticsResult | None = None
+        self.current_weather_overlay: WeatherOverlayData | None = None
         self.weather_data_available = False
 
         # Analytics paraméter memória
-        self.current_analytics_parameter: Optional[str] = None
+        self.current_analytics_parameter: str | None = None
 
         # Analytics → Map Sync állapot
-        self.last_analysis_parameters: Optional[Dict[str, Any]] = None
-        self.last_weather_parameters: Optional[Dict[str, Any]] = None
-        self.last_date_parameters: Optional[Dict[str, Any]] = None
+        self.last_analysis_parameters: dict[str, Any] | None = None
+        self.last_weather_parameters: dict[str, Any] | None = None
+        self.last_date_parameters: dict[str, Any] | None = None
         self.sync_in_progress = False
         self.auto_weather_refresh_enabled = True
 
@@ -153,51 +153,35 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
         initialize_components_steps(self)
 
         # Bind methods
-        self.set_analytics_parameter = lambda param: set_analytics_parameter(
-            self, param
-        )
+        self.set_analytics_parameter = lambda param: set_analytics_parameter(self, param)
         self.set_analytics_result = lambda result: set_analytics_result(self, result)
         self._refresh_weather_overlay = lambda: _refresh_weather_overlay(self)
         self._generate_weather_overlay_from_analytics = (
             lambda result: _generate_weather_overlay_from_analytics(self, result)
         )
         self.load_weather_data_from_analytics = (
-            lambda *args, **kwargs: load_weather_data_from_analytics(
-                self, *args, **kwargs
-            )
+            lambda *args, **kwargs: load_weather_data_from_analytics(self, *args, **kwargs)
         )
 
         # Folium handlers
         self._on_county_selected = lambda *args: on_county_selected(self, *args)
-        self._on_map_update_requested = lambda bounds: on_map_update_requested(
-            self, bounds
-        )
-        self._on_location_selected = lambda location: on_location_selected(
-            self, location
-        )
+        self._on_map_update_requested = lambda bounds: on_map_update_requested(self, bounds)
+        self._on_location_selected = lambda location: on_location_selected(self, location)
         self._on_selection_changed = lambda: on_selection_changed(self)
         self._on_folium_map_ready = lambda: on_folium_map_ready(self)
-        self._on_folium_county_clicked = lambda name: on_folium_county_clicked(
-            self, name
+        self._on_folium_county_clicked = lambda name: on_folium_county_clicked(self, name)
+        self._on_folium_coordinates_clicked = lambda lat, lon: on_folium_coordinates_clicked(
+            self, lat, lon
         )
-        self._on_folium_coordinates_clicked = (
-            lambda lat, lon: on_folium_coordinates_clicked(self, lat, lon)
-        )
-        self._on_folium_map_moved = lambda lat, lon, zoom: on_folium_map_moved(
-            self, lat, lon, zoom
-        )
-        self._on_folium_county_hovered = lambda name: on_folium_county_hovered(
-            self, name
-        )
+        self._on_folium_map_moved = lambda lat, lon, zoom: on_folium_map_moved(self, lat, lon, zoom)
+        self._on_folium_county_hovered = lambda name: on_folium_county_hovered(self, name)
         self._on_export_completed = lambda path: on_export_completed(self, path)
         self._on_error_occurred = lambda msg: on_error_occurred(self, msg)
 
         # Actions
-        self._on_auto_sync_toggled = lambda enabled: _on_auto_sync_toggled(
+        self._on_auto_sync_toggled = lambda enabled: _on_auto_sync_toggled(self, enabled)
+        self._on_auto_weather_refresh_toggled = lambda enabled: _on_auto_weather_refresh_toggled(
             self, enabled
-        )
-        self._on_auto_weather_refresh_toggled = (
-            lambda enabled: _on_auto_weather_refresh_toggled(self, enabled)
         )
         self._reset_map_view = lambda: _reset_map_view(self)
         self._export_map = lambda: _export_map(self)

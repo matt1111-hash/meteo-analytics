@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for ProviderRouting."""
 
@@ -24,7 +24,7 @@ def _analyze_request_window(start_date: str, end_date: str) -> tuple[int, bool, 
     days_requested = (end - start).days + 1
     historical_threshold = datetime.now() - timedelta(days=60)
     is_historical = start < historical_threshold
-    is_large_request = days_requested > 90
+    is_large_request = days_requested > 90  # noqa: PLR2004
     return days_requested, is_historical, is_large_request
 
 
@@ -51,16 +51,12 @@ def _log_provider_warning(
     warning_level = usage_summary.get("warning_level", "normal")
     usage_percent = usage_summary.get("meteostat_percentage", 0)
     if warning_level == "critical":
-        logger_obj.critical(
-            f"🚨 Provider {provider_name} usage critical: {usage_percent:.1f}%"
-        )
+        logger_obj.critical(f"🚨 Provider {provider_name} usage critical: {usage_percent:.1f}%")
     elif warning_level == "warning":
-        logger_obj.warning(
-            f"⚠️ Provider {provider_name} usage warning: {usage_percent:.1f}%"
-        )
+        logger_obj.warning(f"⚠️ Provider {provider_name} usage warning: {usage_percent:.1f}%")
 
 
-class ProviderRoutingPart1Mixin:
+class ProviderRoutingPart1Mixin:  # noqa: D101
     def __init__(self, provider_config, user_preferences, usage_tracker):
         """
         ProviderRouting inicializálása.
@@ -76,15 +72,17 @@ class ProviderRoutingPart1Mixin:
         self._logger = logging.getLogger(__name__)
 
         self._logger.info("🌐 Provider routing komponensek betöltve:")
-        self._logger.info(
-            f"🌐 - Default provider: {self.user_preferences.get_selected_provider()}"
-        )
+        self._logger.info(f"🌐 - Default provider: {self.user_preferences.get_selected_provider()}")
         self._logger.info(
             f"🌐 - Available providers: {list(self.provider_config.PROVIDERS.keys())}"
         )
 
     def select_provider_for_request(
-        self, latitude: float, longitude: float, start_date: str, end_date: str
+        self,
+        latitude: float,  # noqa: ARG002
+        longitude: float,  # noqa: ARG002
+        start_date: str,
+        end_date: str,
     ) -> str:
         """
         Smart provider selection a kérés alapján.
@@ -130,9 +128,7 @@ class ProviderRoutingPart1Mixin:
             return "open-meteo"
         return user_provider
 
-    def _select_automatic_provider(
-        self, is_historical: bool, is_large_request: bool
-    ) -> str:
+    def _select_automatic_provider(self, is_historical: bool, is_large_request: bool) -> str:
         """Select provider automatically for request profile."""
         if not (is_historical or is_large_request):
             self._logger.info("🌐 Selected Open-Meteo for recent data")

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,7 +7,7 @@ Formatting Module - Statistics - Statistical calculations.
 
 import logging
 import statistics
-from typing import Any, Dict, List, cast
+from typing import Any, cast
 
 from src.presentation.gui.utils.constants import AnomalyConstants
 from src.presentation.gui.utils.formatting.wind_helpers import get_wind_gusts_category
@@ -16,27 +15,27 @@ from src.presentation.gui.utils.formatting.wind_helpers import get_wind_gusts_ca
 logger = logging.getLogger(__name__)
 
 
-def _clean_numeric_data(data: List[float]) -> List[float]:
+def _clean_numeric_data(data: list[float]) -> list[float]:
     """Return cleaned numeric values."""
     return [value for value in data if value is not None]
 
 
-def _clean_non_negative_numeric_data(data: List[float]) -> List[float]:
+def _clean_non_negative_numeric_data(data: list[float]) -> list[float]:
     """Return cleaned non-negative numeric values."""
-    return [value for value in data if isinstance(value, (int, float)) and value >= 0]
+    return [value for value in data if isinstance(value, int | float) and value >= 0]
 
 
-def _calculate_std_dev(clean_data: List[float]) -> float:
+def _calculate_std_dev(clean_data: list[float]) -> float:
     """Calculate standard deviation safely."""
     return statistics.stdev(clean_data) if len(clean_data) > 1 else 0
 
 
-def _count_values_at_or_above(clean_data: List[float], threshold: float) -> int:
+def _count_values_at_or_above(clean_data: list[float], threshold: float) -> int:
     """Count values meeting or exceeding a threshold."""
     return len([value for value in clean_data if value >= threshold])
 
 
-def calculate_statistics(data: List[float]) -> Dict[str, float]:
+def calculate_statistics(data: list[float]) -> dict[str, float]:
     """Calculate basic statistics."""
     if not data:
         return {}
@@ -61,7 +60,7 @@ def calculate_statistics(data: List[float]) -> Dict[str, float]:
         return {}
 
 
-def calculate_wind_gusts_statistics(data: List[float]) -> Dict[str, Any]:
+def calculate_wind_gusts_statistics(data: list[float]) -> dict[str, Any]:
     """Calculate wind gusts specific statistics."""
     if not data:
         return {}
@@ -87,12 +86,10 @@ def calculate_wind_gusts_statistics(data: List[float]) -> Dict[str, Any]:
         return {}
 
 
-def _build_wind_gusts_counters(clean_data: List[float]) -> Dict[str, int]:
+def _build_wind_gusts_counters(clean_data: list[float]) -> dict[str, int]:
     """Build severity counters for wind gust values."""
     return {
-        "extreme_days": _count_values_at_or_above(
-            clean_data, AnomalyConstants.WIND_GUSTS_EXTREME
-        ),
+        "extreme_days": _count_values_at_or_above(clean_data, AnomalyConstants.WIND_GUSTS_EXTREME),
         "hurricane_days": _count_values_at_or_above(
             clean_data, AnomalyConstants.WIND_GUSTS_HURRICANE
         ),
@@ -102,9 +99,9 @@ def _build_wind_gusts_counters(clean_data: List[float]) -> Dict[str, int]:
     }
 
 
-def _build_category_distribution(clean_data: List[float]) -> Dict[str, int]:
+def _build_category_distribution(clean_data: list[float]) -> dict[str, int]:
     """Build category histogram for wind gust values."""
-    category_distribution: Dict[str, int] = {}
+    category_distribution: dict[str, int] = {}
     for category_name, category_data in AnomalyConstants.WIND_GUSTS_CATEGORIES.items():
         threshold = cast(float, category_data["threshold"])
         maximum = cast(float, category_data["max"])

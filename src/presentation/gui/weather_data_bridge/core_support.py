@@ -4,7 +4,7 @@
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from src.domain.entities.analytics_models import AnalyticsResult
 from src.domain.entities.weather import CityWeatherResult

@@ -6,12 +6,12 @@ Ez a modul tartalmazza a publikus API metódusokat.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 
-def create_public_api_methods(self) -> None:
+def create_public_api_methods(self) -> None:  # noqa: C901, PLR0915
     """Publikus API metódusok létrehozása."""
 
     def get_location_selector() -> Optional:
@@ -32,7 +32,7 @@ def create_public_api_methods(self) -> None:
     def get_current_weather_overlay() -> Optional:
         return self.current_weather_overlay
 
-    def get_current_analytics_parameter() -> Optional[str]:
+    def get_current_analytics_parameter() -> str | None:
         return self.current_analytics_parameter
 
     def has_weather_data() -> bool:
@@ -70,7 +70,7 @@ def create_public_api_methods(self) -> None:
             print(f"❌ DEBUG: Focus on county error: {e}")
         return False
 
-    def get_available_counties() -> List[str]:
+    def get_available_counties() -> list[str]:
         if self.location_selector:
             return self.location_selector.get_available_counties()
         return []
@@ -98,7 +98,7 @@ def create_public_api_methods(self) -> None:
             self.map_visualizer.set_map_style(theme)
             print(f"🎨 DEBUG: Folium theme set to: {theme}")
 
-    def set_weather_data(weather_data: Dict[str, Any]) -> None:
+    def set_weather_data(weather_data: dict[str, Any]) -> None:
         if self.map_visualizer:
             self.map_visualizer.set_weather_data(weather_data)
             print("🌤️ DEBUG: Weather data set for Folium overlay (legacy method)")
@@ -110,11 +110,11 @@ def create_public_api_methods(self) -> None:
         if self.map_visualizer:
             self.map_visualizer._refresh_map()
         if self.current_analytics_result:
-            from .weather_integration import _generate_weather_overlay_from_analytics
-
-            _generate_weather_overlay_from_analytics(
-                self, self.current_analytics_result
+            from .weather_integration import (
+                _generate_weather_overlay_from_analytics,
             )
+
+            _generate_weather_overlay_from_analytics(self, self.current_analytics_result)
         self.loading_status.setText("🔄 Folium komponensek frissítve...")
 
     def clear_selection() -> None:
@@ -145,7 +145,7 @@ def create_public_api_methods(self) -> None:
     def toggle_auto_weather_refresh(enabled: bool) -> None:
         self.auto_weather_refresh_check.setChecked(enabled)
 
-    def get_analytics_sync_status() -> Dict[str, Any]:
+    def get_analytics_sync_status() -> dict[str, Any]:
         return {
             "sync_in_progress": self.sync_in_progress,
             "auto_weather_refresh_enabled": self.auto_weather_refresh_enabled,
@@ -155,7 +155,7 @@ def create_public_api_methods(self) -> None:
             "last_date_parameters": self.last_date_parameters,
         }
 
-    def get_integration_status() -> Dict[str, Any]:
+    def get_integration_status() -> dict[str, Any]:
         return {
             "data_loaded": self.is_data_loaded,
             "folium_ready": self.is_folium_ready,

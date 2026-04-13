@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 ThemeManager Accessibility - WCAG accessibility compliance features.
 """
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .core import ProfessionalThemeManager
@@ -24,7 +23,7 @@ class AccessibilityHelper:
         """
         self._manager = manager
 
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """
         ♿ PROFESSIONAL ACCESSIBILITY - Get accessibility compliance info.
 
@@ -43,15 +42,11 @@ class AccessibilityHelper:
         # Check contrast ratios
         if hasattr(self._manager.color_palette, "calculate_contrast_ratio"):
             try:
-                primary_surface_contrast = (
-                    self._manager.color_palette.calculate_contrast_ratio(
-                        colors["primary"], colors["surface"]
-                    )
+                primary_surface_contrast = self._manager.color_palette.calculate_contrast_ratio(
+                    colors["primary"], colors["surface"]
                 )
-                text_surface_contrast = (
-                    self._manager.color_palette.calculate_contrast_ratio(
-                        colors["on_surface"], colors["surface"]
-                    )
+                text_surface_contrast = self._manager.color_palette.calculate_contrast_ratio(
+                    colors["on_surface"], colors["surface"]
                 )
 
                 accessibility_info["contrast_ratios"] = {
@@ -61,18 +56,18 @@ class AccessibilityHelper:
 
                 # WCAG compliance
                 accessibility_info["wcag_compliance"] = {
-                    "primary_aa": primary_surface_contrast >= 4.5,
-                    "primary_aaa": primary_surface_contrast >= 7.0,
-                    "text_aa": text_surface_contrast >= 4.5,
-                    "text_aaa": text_surface_contrast >= 7.0,
+                    "primary_aa": primary_surface_contrast >= 4.5,  # noqa: PLR2004
+                    "primary_aaa": primary_surface_contrast >= 7.0,  # noqa: PLR2004
+                    "text_aa": text_surface_contrast >= 4.5,  # noqa: PLR2004
+                    "text_aaa": text_surface_contrast >= 7.0,  # noqa: PLR2004
                 }
 
                 # Recommendations
-                if primary_surface_contrast < 4.5:
+                if primary_surface_contrast < 4.5:  # noqa: PLR2004
                     accessibility_info["recommendations"].append(
                         "Primary color contrast below WCAG AA standard"
                     )
-                if text_surface_contrast < 4.5:
+                if text_surface_contrast < 4.5:  # noqa: PLR2004
                     accessibility_info["recommendations"].append(
                         "Text color contrast below WCAG AA standard"
                     )

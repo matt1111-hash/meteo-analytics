@@ -37,7 +37,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 # ----- Configuration Constants -----
 EXCLUDE_DIRS_DEFAULT = {
@@ -125,9 +125,9 @@ class ClassInfo:
     name: str
     lineno: int
     end_lineno: int
-    bases: List[str] = field(default_factory=list)
-    methods: Dict[str, FunctionInfo] = field(default_factory=dict)
-    qt_signals: List[Dict[str, Any]] = field(default_factory=list)
+    bases: list[str] = field(default_factory=list)
+    methods: dict[str, FunctionInfo] = field(default_factory=dict)
+    qt_signals: list[dict[str, Any]] = field(default_factory=list)
     loc: int = 0
     complexity: int = 1
     docstring: str = ""
@@ -140,12 +140,12 @@ class ModuleInfo:
     path: Path
     module_name: str
     loc: int = 0
-    imports_external: Set[str] = field(default_factory=set)
-    imports_internal: Set[str] = field(default_factory=set)
-    functions: Dict[str, FunctionInfo] = field(default_factory=dict)
-    classes: Dict[str, ClassInfo] = field(default_factory=dict)
-    qt_signals: List[Dict[str, Any]] = field(default_factory=list)
-    qt_connections: List[Dict[str, Any]] = field(default_factory=list)
+    imports_external: set[str] = field(default_factory=set)
+    imports_internal: set[str] = field(default_factory=set)
+    functions: dict[str, FunctionInfo] = field(default_factory=dict)
+    classes: dict[str, ClassInfo] = field(default_factory=dict)
+    qt_signals: list[dict[str, Any]] = field(default_factory=list)
+    qt_connections: list[dict[str, Any]] = field(default_factory=list)
     uses_threading: bool = False
     is_ui_ml_mixed: bool = False
     docstring: str = ""
@@ -175,21 +175,21 @@ class AnalysisResult:
     """Top-level container for the entire analysis."""
 
     root: Path
-    modules: Dict[str, ModuleInfo] = field(default_factory=dict)
-    graph: Dict[str, Set[str]] = field(default_factory=lambda: defaultdict(set))
-    fan_in: DefaultDict[str, int] = field(default_factory=lambda: defaultdict(int))
-    fan_out: DefaultDict[str, int] = field(default_factory=lambda: defaultdict(int))
-    cycles: List[List[str]] = field(default_factory=list)
-    hotspots_loc_cc: List[Tuple[str, Any]] = field(default_factory=list)
-    hotspots_god_class: List[ModuleInfo] = field(default_factory=list)
-    hotspots_mixed_layer: List[ModuleInfo] = field(default_factory=list)
-    hotspots_threading: List[ModuleInfo] = field(default_factory=list)
+    modules: dict[str, ModuleInfo] = field(default_factory=dict)
+    graph: dict[str, set[str]] = field(default_factory=lambda: defaultdict(set))
+    fan_in: defaultdict[str, int] = field(default_factory=lambda: defaultdict(int))
+    fan_out: defaultdict[str, int] = field(default_factory=lambda: defaultdict(int))
+    cycles: list[list[str]] = field(default_factory=list)
+    hotspots_loc_cc: list[tuple[str, Any]] = field(default_factory=list)
+    hotspots_god_class: list[ModuleInfo] = field(default_factory=list)
+    hotspots_mixed_layer: list[ModuleInfo] = field(default_factory=list)
+    hotspots_threading: list[ModuleInfo] = field(default_factory=list)
     external_deps: Counter = field(default_factory=Counter)
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
 
     # NEW: Layer violations and coupling metrics
-    layer_violations: List[Tuple[str, str, str]] = field(default_factory=list)
-    coupling_metrics: Dict[str, CouplingMetrics] = field(default_factory=dict)
+    layer_violations: list[tuple[str, str, str]] = field(default_factory=list)
+    coupling_metrics: dict[str, CouplingMetrics] = field(default_factory=dict)
 
 
 # ----- AST Parser -----
@@ -199,14 +199,14 @@ class AstParser:
     Extracts metrics, imports, classes, functions, and Qt-specific patterns.
     """
 
-    def __init__(self, path: Path, root: Path, internal_module_names: Set[str]):
+    def __init__(self, path: Path, root: Path, internal_module_names: set[str]):  # noqa: D107
         self.path: Path = path
         self.root: Path = root
-        self.internal_module_names: Set[str] = internal_module_names
+        self.internal_module_names: set[str] = internal_module_names
 
         self.module_name: str = self._path_to_module(path, root)
         self.source_text: str = ""
-        self.source_lines: List[str] = []
+        self.source_lines: list[str] = []
 
         self.module_info = ModuleInfo(path=path, module_name=self.module_name)
 
@@ -258,7 +258,7 @@ class AstParser:
         """
         cc = 1
         for child in ast.walk(node):
-            if isinstance(child, (ast.If, ast.While, ast.For, ast.ExceptHandler)):
+            if isinstance(child, (ast.If, ast.While, ast.For, ast.ExceptHandler)):  # noqa: UP038
                 cc += 1
             elif isinstance(child, ast.BoolOp):
                 cc += len(child.values) - 1
@@ -307,7 +307,7 @@ class _ModuleVisitor(ast.NodeVisitor):
 
     def __init__(self, parser: AstParser):
         self.parser = parser
-        self.current_class: Optional[str] = None
+        self.current_class: str | None = None
 
     def visit_Import(self, node: ast.Import):
         """Handle `import foo` - collect FULL module path for internal imports"""
@@ -343,7 +343,7 @@ class _ModuleVisitor(ast.NodeVisitor):
 
             # Add the module part if exists
             if node.module:
-                full_module = ".".join(base_parts + [node.module])
+                full_module = ".".join(base_parts + [node.module])  # noqa: RUF005
             else:
                 full_module = ".".join(base_parts) if base_parts else ""
 
@@ -442,8 +442,8 @@ class _ModuleVisitor(ast.NodeVisitor):
         for item in node.body:
             if isinstance(item, ast.Assign):
                 for target in item.targets:
-                    if isinstance(target, ast.Name):
-                        if isinstance(item.value, ast.Call):
+                    if isinstance(target, ast.Name):  # noqa: SIM102
+                        if isinstance(item.value, ast.Call):  # noqa: SIM102
                             if self._is_qt_signal(item.value):
                                 signal_info = {
                                     "name": target.id,
@@ -491,16 +491,16 @@ class ProjectAnalyzer:
     builds import graph, detects cycles, and identifies hotspots.
     """
 
-    def __init__(self, root: Path, out_dir: Path, ignore_file: Optional[str] = None):
+    def __init__(self, root: Path, out_dir: Path, ignore_file: str | None = None):  # noqa: D107
         self.root = root
         self.out_dir = out_dir
         self.out_dir.mkdir(parents=True, exist_ok=True)
 
         self.exclude_dirs = EXCLUDE_DIRS_DEFAULT.copy()
         if ignore_file and Path(ignore_file).exists():
-            with open(ignore_file, "r") as f:
+            with open(ignore_file) as f:  # noqa: PTH123
                 for line in f:
-                    line = line.strip()
+                    line = line.strip()  # noqa: PLW2901
                     if line and not line.startswith("#"):
                         self.exclude_dirs.add(line)
 
@@ -539,7 +539,9 @@ class ProjectAnalyzer:
         # Debug info
         total_edges = sum(len(deps) for deps in self.result.graph.values())
         unknown_count = sum(
-            1 for m in self.result.modules.keys() if self._get_layer(m) == "unknown"
+            1
+            for m in self.result.modules.keys()  # noqa: SIM118
+            if self._get_layer(m) == "unknown"  # noqa: RUF100, SIM118
         )
 
         print("✅ Analízis kész!")
@@ -550,7 +552,7 @@ class ProjectAnalyzer:
 
         return self.result
 
-    def _collect_py_files(self) -> List[Path]:
+    def _collect_py_files(self) -> list[Path]:
         """Recursively collect all .py files, excluding specified directories."""
         py_files = []
         for path in self.root.rglob("*.py"):
@@ -559,7 +561,7 @@ class ProjectAnalyzer:
             py_files.append(path)
         return py_files
 
-    def _extract_internal_module_names(self, py_files: List[Path]) -> Set[str]:
+    def _extract_internal_module_names(self, py_files: list[Path]) -> set[str]:
         """Extract top-level package names from collected files."""
         internal = set()
         for py_file in py_files:
@@ -590,7 +592,7 @@ class ProjectAnalyzer:
         visited = set()
         rec_stack = set()
 
-        def dfs(node: str, path: List[str]) -> None:
+        def dfs(node: str, path: list[str]) -> None:
             if node in rec_stack:
                 cycle_start = path.index(node)
                 cycle = path[cycle_start:] + [node]
@@ -605,11 +607,11 @@ class ProjectAnalyzer:
             rec_stack.add(node)
 
             for neighbor in self.result.graph.get(node, set()):
-                dfs(neighbor, path + [node])
+                dfs(neighbor, path + [node])  # noqa: RUF005
 
             rec_stack.remove(node)
 
-        for module in self.result.modules.keys():
+        for module in self.result.modules.keys():  # noqa: SIM118
             if module not in visited:
                 dfs(module, [])
 
@@ -621,7 +623,7 @@ class ProjectAnalyzer:
         for module_name, module_info in self.result.modules.items():
             # God Classes (LOC > 300)
             for cls_name, cls_info in module_info.classes.items():
-                if cls_info.loc > 300 and module_name not in god_class_modules:
+                if cls_info.loc > 300 and module_name not in god_class_modules:  # noqa: PLR2004
                     self.result.hotspots_god_class.append(module_info)
                     god_class_modules.add(module_name)
 
@@ -630,9 +632,7 @@ class ProjectAnalyzer:
 
                 # Method-level LOC/CC
                 for method_name, method_info in cls_info.methods.items():
-                    loc_cc_items.append(
-                        (f"{module_name}.{cls_name}.{method_name}", method_info)
-                    )
+                    loc_cc_items.append((f"{module_name}.{cls_name}.{method_name}", method_info))
 
             # Function-level LOC/CC
             for func_name, func_info in module_info.functions.items():
@@ -650,7 +650,7 @@ class ProjectAnalyzer:
         loc_cc_items.sort(key=lambda x: (x[1].loc + x[1].complexity * 10), reverse=True)
         self.result.hotspots_loc_cc = loc_cc_items
 
-    def _get_layer(self, module_name: str) -> str:
+    def _get_layer(self, module_name: str) -> str:  # noqa: PLR0911
         """
         Determines which architectural layer a module belongs to.
 
@@ -667,9 +667,7 @@ class ProjectAnalyzer:
         """
         if module_name.startswith("src.domain") or module_name.startswith("domain"):
             return "domain"
-        elif module_name.startswith("src.application") or module_name.startswith(
-            "application"
-        ):
+        elif module_name.startswith("src.application") or module_name.startswith("application"):
             return "application"
         elif module_name.startswith("src.infrastructure") or module_name.startswith(
             "infrastructure"
@@ -734,11 +732,11 @@ class ProjectAnalyzer:
         """
         metrics = {}
 
-        for module in self.result.modules.keys():
+        for module in self.result.modules.keys():  # noqa: SIM118
             ca = self.result.fan_in.get(module, 0)
             ce = self.result.fan_out.get(module, 0)
 
-            # Instability: I = Ce / (Ca + Ce)
+            # Instability: I = Ce / (Ca + Ce)  # noqa: ERA001
             # Handle division by zero
             instability = ce / (ca + ce) if (ca + ce) > 0 else 0.0
 
@@ -751,16 +749,14 @@ class ProjectAnalyzer:
 class ReportGenerator:
     """Generates output reports in multiple formats: MD, JSON, HTML, DOT, CSV."""
 
-    def __init__(self, result: AnalysisResult, out_dir: Path):
+    def __init__(self, result: AnalysisResult, out_dir: Path):  # noqa: D107
         self.result = result
         self.out_dir = out_dir
 
     def generate(self, format_choice: str, open_html: bool = False) -> None:
         """Generate reports based on format choice."""
         formats = (
-            [format_choice]
-            if format_choice != "all"
-            else ["md", "json", "html", "dot", "csv"]
+            [format_choice] if format_choice != "all" else ["md", "json", "html", "dot", "csv"]
         )
 
         html_file = None
@@ -780,11 +776,11 @@ class ReportGenerator:
             print("🌐 HTML riport megnyitása böngészőben...")
             webbrowser.open(f"file://{html_file.resolve()}")
 
-    def _write_markdown(self) -> None:
+    def _write_markdown(self) -> None:  # noqa: C901, PLR0912, PLR0915
         """Generate comprehensive Markdown report with 6 sections."""
         md_file = self.out_dir / "analysis_summary.md"
 
-        with open(md_file, "w", encoding="utf-8") as f:
+        with open(md_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             f.write(f"# Projekt Analízis Riport: {self.result.root.name}\n\n")
             f.write(f"**Generálva:** {self.result.timestamp}\n\n")
             f.write("---\n\n")
@@ -795,9 +791,7 @@ class ReportGenerator:
             total_modules = len(self.result.modules)
             total_loc = sum(m.loc for m in self.result.modules.values())
             total_classes = sum(len(m.classes) for m in self.result.modules.values())
-            total_functions = sum(
-                len(m.functions) for m in self.result.modules.values()
-            )
+            total_functions = sum(len(m.functions) for m in self.result.modules.values())
 
             f.write(f"- **Modulok:** {total_modules}\n")
             f.write(f"- **LOC (összesen):** {total_loc:,}\n")
@@ -816,10 +810,8 @@ class ReportGenerator:
             else:
                 for mod in self.result.hotspots_god_class[:10]:
                     for cls_name, cls_info in mod.classes.items():
-                        if cls_info.loc > 300:
-                            f.write(
-                                f"- **{mod.module_name}.{cls_name}**: {cls_info.loc} LOC\n"
-                            )
+                        if cls_info.loc > 300:  # noqa: PLR2004
+                            f.write(f"- **{mod.module_name}.{cls_name}**: {cls_info.loc} LOC\n")
                 f.write("\n")
 
             f.write("### Complex Functions/Methods (Top 10)\n")
@@ -839,18 +831,18 @@ class ReportGenerator:
             f.write("## 3. 🕸️  Import Gráf Áttekintés\n\n")
 
             f.write("### Top 10 Fan-In (Legtöbb bejövő függőség)\n")
-            sorted_fan_in = sorted(
-                self.result.fan_in.items(), key=lambda x: x[1], reverse=True
-            )[:10]
+            sorted_fan_in = sorted(self.result.fan_in.items(), key=lambda x: x[1], reverse=True)[
+                :10
+            ]
 
             for module, count in sorted_fan_in:
                 f.write(f"- **{module}**: {count} bejövő\n")
             f.write("\n")
 
             f.write("### Top 10 Fan-Out (Legtöbb kimenő függőség)\n")
-            sorted_fan_out = sorted(
-                self.result.fan_out.items(), key=lambda x: x[1], reverse=True
-            )[:10]
+            sorted_fan_out = sorted(self.result.fan_out.items(), key=lambda x: x[1], reverse=True)[
+                :10
+            ]
 
             for module, count in sorted_fan_out:
                 f.write(f"- **{module}**: {count} kimenő\n")
@@ -863,7 +855,7 @@ class ReportGenerator:
                 f.write(f"⚠️ **{len(self.result.cycles)} ciklus találva:**\n\n")
                 for cycle in self.result.cycles[:5]:
                     f.write(f"- {' → '.join(cycle)}\n")
-                if len(self.result.cycles) > 5:
+                if len(self.result.cycles) > 5:  # noqa: PLR2004
                     f.write(f"- ...és még {len(self.result.cycles) - 5} ciklus\n")
                 f.write("\n")
 
@@ -880,16 +872,12 @@ class ReportGenerator:
                 f.write(f"- **Classes:** {len(mod.classes)}\n")
                 f.write(f"- **Functions:** {len(mod.functions)}\n")
                 f.write(f"- **Fan-In:** {self.result.fan_in.get(mod.module_name, 0)}\n")
-                f.write(
-                    f"- **Fan-Out:** {self.result.fan_out.get(mod.module_name, 0)}\n"
-                )
+                f.write(f"- **Fan-Out:** {self.result.fan_out.get(mod.module_name, 0)}\n")
 
                 if mod.classes:
                     f.write("- **Classes:**\n")
                     for cls_name, cls_info in list(mod.classes.items())[:5]:
-                        f.write(
-                            f"  - `{cls_name}`: {cls_info.loc} LOC, {cls_info.complexity} CC\n"
-                        )
+                        f.write(f"  - `{cls_name}`: {cls_info.loc} LOC, {cls_info.complexity} CC\n")
 
                 if mod.functions:
                     f.write("- **Functions:**\n")
@@ -906,8 +894,8 @@ class ReportGenerator:
             # Count unknown modules
             unknown_modules = [
                 mod
-                for mod in self.result.modules.keys()
-                if self._get_layer(mod) == "unknown"
+                for mod in self.result.modules.keys()  # noqa: SIM118
+                if self._get_layer(mod) == "unknown"  # noqa: RUF100, SIM118
             ]
 
             if unknown_modules:
@@ -920,18 +908,14 @@ class ReportGenerator:
                 f.write(f"Példák: {', '.join(list(unknown_modules)[:5])}\n\n")
 
             if not self.result.layer_violations:
-                f.write(
-                    "✅ **Nem találtunk réteg sértéseket!** Clean Architecture OK.\n\n"
-                )
+                f.write("✅ **Nem találtunk réteg sértéseket!** Clean Architecture OK.\n\n")
                 f.write("A projekt követi a Clean Architecture Dependency Rule-t:\n")
                 f.write("- Domain réteg NEM függ senkitől ✅\n")
                 f.write("- Application csak Domain-től függ ✅\n")
                 f.write("- Infrastructure Domain + Application-től függ ✅\n")
                 f.write("- GUI Application + Infrastructure-től függ ✅\n\n")
             else:
-                f.write(
-                    f"⚠️ **{len(self.result.layer_violations)} réteg sértés találva:**\n\n"
-                )
+                f.write(f"⚠️ **{len(self.result.layer_violations)} réteg sértés találva:**\n\n")
                 f.write(
                     "A Clean Architecture Dependency Rule alapján ezek a függőségek TILOSAK:\n\n"
                 )
@@ -947,7 +931,7 @@ class ReportGenerator:
                     for from_mod, to_mod, reason in items[:20]:  # Max 20 per layer
                         f.write(f"- **{from_mod}** → **{to_mod}**\n")
                         f.write(f"  - ⚠️ {reason}\n")
-                    if len(items) > 20:
+                    if len(items) > 20:  # noqa: PLR2004
                         f.write(f"  - ...és még {len(items) - 20} sértés\n")
                     f.write("\n")
 
@@ -976,9 +960,9 @@ class ReportGenerator:
             f.write("|-------|---------|----------|-------------|------------|\n")
 
             for module, metrics in sorted_modules:
-                if metrics.instability > 0.8:
+                if metrics.instability > 0.8:  # noqa: PLR2004
                     assessment = "⚠️ Nagyon instabil"
-                elif metrics.instability > 0.5:
+                elif metrics.instability > 0.5:  # noqa: PLR2004
                     assessment = "🟡 Instabil"
                 else:
                     assessment = "✅ Stabil"
@@ -1000,9 +984,9 @@ class ReportGenerator:
             f.write("|-------|---------|----------|-------------|------------|\n")
 
             for module, metrics in sorted_stable:
-                if metrics.instability < 0.2:
+                if metrics.instability < 0.2:  # noqa: PLR2004
                     assessment = "✅ Nagyon stabil"
-                elif metrics.instability < 0.5:
+                elif metrics.instability < 0.5:  # noqa: PLR2004
                     assessment = "✅ Stabil"
                 else:
                     assessment = "🟡 Közepesen stabil"
@@ -1016,13 +1000,11 @@ class ReportGenerator:
 
         print(f"✅ Markdown riport létrehozva: {md_file}")
 
-    def _get_layer(self, module_name: str) -> str:
+    def _get_layer(self, module_name: str) -> str:  # noqa: PLR0911
         """Helper method for markdown report - determines layer (NO trailing dot!)"""
         if module_name.startswith("src.domain") or module_name.startswith("domain"):
             return "domain"
-        elif module_name.startswith("src.application") or module_name.startswith(
-            "application"
-        ):
+        elif module_name.startswith("src.application") or module_name.startswith("application"):
             return "application"
         elif module_name.startswith("src.infrastructure") or module_name.startswith(
             "infrastructure"
@@ -1051,7 +1033,7 @@ class ReportGenerator:
             if isinstance(obj, Path):
                 return str(obj)
             if isinstance(obj, set):
-                return sorted(list(obj))  # Convert set to sorted list for proper JSON
+                return sorted(list(obj))  # Convert set to sorted list for proper JSON  # noqa: C414
             if dataclasses.is_dataclass(obj):
                 return dataclasses.asdict(obj)
             return obj.__dict__
@@ -1062,20 +1044,13 @@ class ReportGenerator:
             "summary": {
                 "total_modules": len(self.result.modules),
                 "total_loc": sum(m.loc for m in self.result.modules.values()),
-                "total_classes": sum(
-                    len(m.classes) for m in self.result.modules.values()
-                ),
-                "total_functions": sum(
-                    len(m.functions) for m in self.result.modules.values()
-                ),
+                "total_classes": sum(len(m.classes) for m in self.result.modules.values()),
+                "total_functions": sum(len(m.functions) for m in self.result.modules.values()),
                 "cycles_count": len(self.result.cycles),
                 "external_deps_count": len(self.result.external_deps),
                 "layer_violations_count": len(self.result.layer_violations),
             },
-            "modules": {
-                name: dataclasses.asdict(mod)
-                for name, mod in self.result.modules.items()
-            },
+            "modules": {name: dataclasses.asdict(mod) for name, mod in self.result.modules.items()},
             "graph": {module: list(deps) for module, deps in self.result.graph.items()},
             "fan_in": dict(self.result.fan_in),
             "fan_out": dict(self.result.fan_out),
@@ -1083,9 +1058,7 @@ class ReportGenerator:
             "external_deps": dict(self.result.external_deps),
             "hotspots": {
                 "god_classes": [m.module_name for m in self.result.hotspots_god_class],
-                "mixed_layers": [
-                    m.module_name for m in self.result.hotspots_mixed_layer
-                ],
+                "mixed_layers": [m.module_name for m in self.result.hotspots_mixed_layer],
                 "threading": [m.module_name for m in self.result.hotspots_threading],
                 "loc_cc_top_20": [
                     {"name": name, "loc": info.loc, "complexity": info.complexity}
@@ -1102,7 +1075,7 @@ class ReportGenerator:
             },
         }
 
-        with open(json_file, "w", encoding="utf-8") as f:
+        with open(json_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             json.dump(data, f, indent=2, default=default_encoder, ensure_ascii=False)
 
         print(f"✅ JSON struktura létrehozva: {json_file}")
@@ -1119,14 +1092,14 @@ class ReportGenerator:
         # Build violations set for quick lookup
         violations_set = {(v[0], v[1]) for v in self.result.layer_violations}
 
-        with open(dot_file, "w", encoding="utf-8") as f:
+        with open(dot_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             f.write("digraph ImportGraph {\n")
             f.write("  rankdir=LR;\n")
             f.write("  node [shape=box, style=filled];\n")
             f.write("  edge [color=gray];\n\n")
 
             # Apply layer-based colors to nodes
-            for module in self.result.graph.keys():
+            for module in self.result.graph.keys():  # noqa: SIM118
                 layer = self._get_layer(module)
                 color = LAYER_COLORS.get(layer, "#FFFFFF")
                 f.write(f'  "{module}" [fillcolor="{color}"];\n')
@@ -1155,6 +1128,7 @@ class ReportGenerator:
                 capture_output=True,
                 text=True,
                 timeout=30,
+                check=False,
             )
             if result.returncode == 0:
                 print(f"✅ PNG gráf generálva: {png_file}")
@@ -1171,14 +1145,14 @@ class ReportGenerator:
         """Generate CSV reports for hotspots and Qt signals/slots."""
         # Hotspots CSV
         hotspots_csv = self.out_dir / "hotspots.csv"
-        with open(hotspots_csv, "w", newline="", encoding="utf-8") as f:
+        with open(hotspots_csv, "w", newline="", encoding="utf-8") as f:  # noqa: PTH123
             writer = csv.writer(f)
             writer.writerow(["Type", "Module", "Name", "LOC", "Complexity"])
 
             # God Classes
             for mod in self.result.hotspots_god_class[:30]:
                 for cls_name, cls_info in mod.classes.items():
-                    if cls_info.loc > 300:
+                    if cls_info.loc > 300:  # noqa: PLR2004
                         writer.writerow(
                             [
                                 "GodClass",
@@ -1194,15 +1168,13 @@ class ReportGenerator:
                 parts = name.rsplit(".", 1)
                 module = parts[0] if len(parts) > 1 else name
                 func_name = parts[1] if len(parts) > 1 else name
-                writer.writerow(
-                    ["Function", module, func_name, info.loc, info.complexity]
-                )
+                writer.writerow(["Function", module, func_name, info.loc, info.complexity])
 
         print(f"✅ Hotspots CSV létrehozva: {hotspots_csv}")
 
         # Qt Signals/Slots CSV
         qt_csv = self.out_dir / "qt_signals_slots.csv"
-        with open(qt_csv, "w", newline="", encoding="utf-8") as f:
+        with open(qt_csv, "w", newline="", encoding="utf-8") as f:  # noqa: PTH123
             writer = csv.writer(f)
             writer.writerow(["Module", "Class", "Signal", "Line"])
 
@@ -1224,7 +1196,7 @@ class ReportGenerator:
         html_file = self.out_dir / "analysis_report.html"
 
         # Prepare D3.js nodes - EVERY module should be a node (not just those with outgoing edges)
-        nodes = [{"id": module_name} for module_name in self.result.modules.keys()]
+        nodes = [{"id": module_name} for module_name in self.result.modules.keys()]  # noqa: SIM118
 
         links = []
         violations_set = {(v[0], v[1]) for v in self.result.layer_violations}
@@ -1232,9 +1204,7 @@ class ReportGenerator:
         for module, deps in self.result.graph.items():
             for dep in deps:
                 is_violation = (module, dep) in violations_set
-                links.append(
-                    {"source": module, "target": dep, "violation": is_violation}
-                )
+                links.append({"source": module, "target": dep, "violation": is_violation})
 
         # Prepare hotspots table HTML
         hotspot_rows = []
@@ -1500,7 +1470,7 @@ class ReportGenerator:
 </body>
 </html>"""
 
-        with open(html_file, "w", encoding="utf-8") as f:
+        with open(html_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             f.write(html_content)
 
         print(f"✅ HTML riport létrehozva: {html_file}")
@@ -1508,7 +1478,7 @@ class ReportGenerator:
 
 
 # ----- CLI -----
-def main():
+def main():  # noqa: D103
     parser = argparse.ArgumentParser(
         description="Ultimate Project Analyzer - Clean Architecture Validation",
         formatter_class=argparse.RawDescriptionHelpFormatter,

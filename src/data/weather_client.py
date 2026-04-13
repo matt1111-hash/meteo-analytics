@@ -44,18 +44,18 @@ from src.data.weather_types import (
 )
 
 __all__ = [
-    # Types
-    "WeatherData",
-    "WeatherAPIError",
-    "ProviderNotAvailableError",
-    "ProviderValidationError",
-    # Base class
-    "WeatherProvider",
+    "MeteostatProvider",
     # Providers
     "OpenMeteoProvider",
-    "MeteostatProvider",
+    "ProviderNotAvailableError",
+    "ProviderValidationError",
+    "WeatherAPIError",
     # Main client (with extensions)
     "WeatherClient",
     # Core client (without extensions)
     "WeatherClientCore",
+    # Types
+    "WeatherData",
+    # Base class
+    "WeatherProvider",
 ]

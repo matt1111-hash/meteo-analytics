@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/controller/analysis_handler/request_handler.py
 
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import QTimer
 
@@ -28,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 def handle_analysis_request(
-    self, request_data: Dict[str, Any], provider_routing, start_analysis_callback
+    self, request_data: dict[str, Any], provider_routing, start_analysis_callback
 ) -> None:
     """
     Központi elemzési kérés kezelő.
@@ -46,9 +45,7 @@ def handle_analysis_request(
 
     from .state_management import stop_current_analysis
 
-    logger.info(
-        f"🎯 ANALYSIS REQUEST received: {request_data.get('analysis_type', 'unknown')}"
-    )
+    logger.info(f"🎯 ANALYSIS REQUEST received: {request_data.get('analysis_type', 'unknown')}")
 
     try:
         # Aktuális analysis leállítása
@@ -66,9 +63,7 @@ def handle_analysis_request(
             return
 
         # Új analysis azonnali indítása
-        _start_new_analysis(
-            self, request_data, provider_routing, start_analysis_callback
-        )
+        _start_new_analysis(self, request_data, provider_routing, start_analysis_callback)
 
     except Exception as e:
         logger.error(f"Analysis request hiba: {e}")
@@ -76,7 +71,7 @@ def handle_analysis_request(
 
 
 def _start_new_analysis(
-    self, request_data: Dict[str, Any], provider_routing, start_analysis_callback
+    self, request_data: dict[str, Any], provider_routing, start_analysis_callback
 ) -> None:
     """
     ÚJ ANALYSIS INDÍTÁSA - Validálás és callback hívás.

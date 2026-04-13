@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -80,18 +79,14 @@ class UIBuilder:
         # Grid toggle
         self._container.grid_check = QCheckBox("Rácsvonalak")
         self._container.grid_check.setChecked(True)
-        self._container.grid_check.toggled.connect(
-            self._container._toggle_grid_optimized
-        )
+        self._container.grid_check.toggled.connect(self._container._toggle_grid_optimized)
         register_widget_for_theming(self._container.grid_check, "input")
         layout.addWidget(self._container.grid_check)
 
         # Legend toggle
         self._container.legend_check = QCheckBox("Jelmagyarázat")
         self._container.legend_check.setChecked(True)
-        self._container.legend_check.toggled.connect(
-            self._container._toggle_legend_optimized
-        )
+        self._container.legend_check.toggled.connect(self._container._toggle_legend_optimized)
         register_widget_for_theming(self._container.legend_check, "input")
         layout.addWidget(self._container.legend_check)
 
@@ -126,9 +121,7 @@ class UIBuilder:
 
         # 5. Wind Rose chart
         self._container.windrose_chart = WindRoseChart()
-        self._container.tabs.addTab(
-            self._container.windrose_chart, "🌹 Széllökés Rózsa"
-        )
+        self._container.tabs.addTab(self._container.windrose_chart, "🌹 Széllökés Rózsa")
 
         # 6. Comparison chart
         self._container.comparison_chart = MultiYearComparisonChart()

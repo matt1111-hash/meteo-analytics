@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for TemperatureTooltipHandlerMixin."""
 
@@ -7,14 +7,10 @@ from __future__ import annotations
 from .tooltip_handler_support import *
 
 
-class TemperatureTooltipHandlerMixinPart1Mixin:
+class TemperatureTooltipHandlerMixinPart1Mixin:  # noqa: D101
     def _get_temperature_columns(self, df: pd.DataFrame) -> list[str]:
         """Return available temperature columns in priority order."""
-        return [
-            column
-            for column in ["temp_mean", "temp_max", "temp_min"]
-            if column in df.columns
-        ]
+        return [column for column in ["temp_mean", "temp_max", "temp_min"] if column in df.columns]
 
     def _get_mouse_display_coordinates(self, event) -> tuple[float, float]:
         """Convert mouse data coordinates to display coordinates."""
@@ -35,12 +31,10 @@ class TemperatureTooltipHandlerMixinPart1Mixin:
         closest_temp_value: Any = None
 
         for temp_col in temp_columns:
-            for index, (x_val, y_val) in enumerate(zip(plot_dates, df[temp_col])):
+            for index, (x_val, y_val) in enumerate(zip(plot_dates, df[temp_col], strict=False)):
                 if pd.isna(y_val):
                     continue
-                point_x_display, point_y_display = self.ax.transData.transform(
-                    (x_val, y_val)
-                )
+                point_x_display, point_y_display = self.ax.transData.transform((x_val, y_val))
                 distance = np.sqrt(
                     (mouse_x_display - point_x_display) ** 2
                     + (mouse_y_display - point_y_display) ** 2

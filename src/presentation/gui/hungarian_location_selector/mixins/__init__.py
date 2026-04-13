@@ -13,8 +13,8 @@ from .setup_mixin import SetupMixin
 from .signal_handlers import SignalHandlersMixin
 
 __all__ = [
+    "PublicApiMixin",
+    "QueryControlWidgetCompatMixin",
     "SetupMixin",
     "SignalHandlersMixin",
-    "QueryControlWidgetCompatMixin",
-    "PublicApiMixin",
 ]

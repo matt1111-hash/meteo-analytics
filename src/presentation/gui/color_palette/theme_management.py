@@ -25,12 +25,10 @@ class ThemeManagementMixin:
             self._theme_type = theme_type
 
             # Összes variáns újragenerálása új téma típussal
-            for semantic_name in self._base_colors.keys():
+            for semantic_name in self._base_colors:
                 self._generate_variants_for_color(semantic_name)
 
-            print(
-                f"🎨 DEBUG: Theme type changed to {theme_type.value}, variants regenerated"
-            )
+            print(f"🎨 DEBUG: Theme type changed to {theme_type.value}, variants regenerated")
 
     def get_theme_type(self) -> ThemeType:
         """Jelenlegi téma típus lekérdezése."""

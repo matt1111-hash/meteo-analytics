@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Compatibility wrapper for core.py."""
 
@@ -22,4 +22,4 @@ class HeatmapCalendarChart(
     - ✅ 365 konstans téglalap logika aggregációval
     - ✅ Kalendár mátrix építés (7×53 cellák)
     - ✅ Valódi hónap címkék
-    """
+    """  # noqa: RUF002

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
 from src.domain.analytics.repositories import CityRepositoryProtocol

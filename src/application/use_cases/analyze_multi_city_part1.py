@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for AnalyzeMultiCityUseCase."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .analyze_multi_city_support import *
 
 
-class AnalyzeMultiCityUseCasePart1Mixin:
-    def __init__(
+class AnalyzeMultiCityUseCasePart1Mixin:  # noqa: D101
+    def __init__(  # noqa: D107
         self,
         *,
         region_resolver: RegionResolverService,
@@ -75,35 +75,23 @@ class AnalyzeMultiCityUseCasePart1Mixin:
                 query.query_type,
                 aggregate=aggregate,
             )
-            transformed_results = self._transform_results(
-                processed_data, query.query_type
-            )
+            transformed_results = self._transform_results(processed_data, query.query_type)
             if not transformed_results:
-                return self._fallback_result(
-                    query, "Nincsenek sikeres időjárási eredmények"
-                )
+                return self._fallback_result(query, "Nincsenek sikeres időjárási eredmények")
 
             # For daily time series (aggregate=False), don't limit results
             # For aggregated multi-city (aggregate=True), apply limit
             if aggregate:
-                result_limit = (
-                    query.limit if query.limit is not None else query.max_cities
-                )
+                result_limit = query.limit if query.limit is not None else query.max_cities
             else:
                 result_limit = None  # Return ALL daily records without limit
 
             stats = self.analytics_transform_service.calculate_statistics_for_results_none_safe(
                 transformed_results
             )
-            limited_results = self._apply_result_limit(
-                transformed_results, result_limit
-            )
-            provider_stats = self.analytics_transform_service.get_provider_stats(
-                weather_data
-            )
-            final_question = query.question or self._build_question(
-                query_config, mapped_region
-            )
+            limited_results = self._apply_result_limit(transformed_results, result_limit)
+            provider_stats = self.analytics_transform_service.get_provider_stats(weather_data)
+            final_question = query.question or self._build_question(query_config, mapped_region)
 
             return AnalyticsResult(
                 question=final_question,
@@ -132,11 +120,9 @@ class AnalyzeMultiCityUseCasePart1Mixin:
             if not city_data.fetch_success:
                 continue
             try:
-                result_item = (
-                    self.analytics_transform_service.transform_to_city_weather_result(
-                        city_data,
-                        query_type,
-                    )
+                result_item = self.analytics_transform_service.transform_to_city_weather_result(
+                    city_data,
+                    query_type,
                 )
                 result_item.rank = idx + 1
                 results.append(result_item)
@@ -144,9 +130,7 @@ class AnalyzeMultiCityUseCasePart1Mixin:
                 logger.error("Transform error for %s: %s", city_data.city, exc)
         return results
 
-    def _fallback_result(
-        self, query: MultiCityQuery, error_msg: str
-    ) -> AnalyticsResult:
+    def _fallback_result(self, query: MultiCityQuery, error_msg: str) -> AnalyticsResult:
         return self.analytics_transform_service.create_empty_analytics_result(
             query.question,
             error_msg,

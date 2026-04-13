@@ -1,7 +1,7 @@
 # mypy: ignore-errors
 """Tab Manager - update and operations methods."""
 
-from typing import Any, Optional
+from typing import Any
 
 
 def _run_if_present(component: Any, method_name: str, *args: Any) -> None:
@@ -33,7 +33,7 @@ def update_standard_tabs(self, data: dict, city_name: str) -> None:
         self.extreme_tab.update_data(data, city_name)
 
 
-def update_windy_days_tab(self, data: Any, city_name: str, weather_df: Any) -> None:
+def update_windy_days_tab(self, data: Any, city_name: str, weather_df: Any) -> None:  # noqa: ARG001
     """WindyDaysTab frissítése adatokkal."""
     if not self.windy_days_tab:
         self._logger.error("WindyDaysTab nem elérhető!")
@@ -54,19 +54,19 @@ def update_windy_days_tab(self, data: Any, city_name: str, weather_df: Any) -> N
         self._logger.error(f"WindyDaysTab frissítési hiba: {e}")
 
 
-def get_windy_days_tab(self) -> Optional[Any]:
+def get_windy_days_tab(self) -> Any | None:
     """WindyDaysTab referencia."""
     return self.windy_days_tab if self._windy_days_available else None
 
 
-def get_charts_container(self) -> Optional[Any]:
+def get_charts_container(self) -> Any | None:
     """Charts container referenciája."""
     if self.charts_tab and hasattr(self.charts_tab, "charts_container"):
         return self.charts_tab.charts_container
     return None
 
 
-def get_data_table(self) -> Optional[Any]:
+def get_data_table(self) -> Any | None:
     """Data table referenciája."""
     if self.table_tab and hasattr(self.table_tab, "data_table"):
         return self.table_tab.data_table

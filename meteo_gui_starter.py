@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Global Weather Analyzer - Main Application Entry Point (MVC Refactored)
@@ -18,7 +17,6 @@ import signal
 import sys
 import traceback
 from pathlib import Path
-from typing import Optional
 
 # PySide6 import with error handling
 try:
@@ -35,7 +33,7 @@ except ImportError as e:
 # Project imports
 try:
     from src.config import AppInfo, ensure_directories
-    from src.presentation.gui.windows import MainWindow  # noqa: F401
+    from src.presentation.gui.windows import MainWindow
 except ImportError as e:
     print("❌ Modul import hiba!")
     print("Ellenőrizze a projekt struktúrát és a PYTHONPATH-t.")
@@ -55,8 +53,8 @@ class WeatherAnalyzerApp:
 
     def __init__(self):
         """Alkalmazás inicializálása."""
-        self.app: Optional[QApplication] = None
-        self.main_window: Optional[MainWindow] = None
+        self.app: QApplication | None = None
+        self.main_window: MainWindow | None = None
 
         # Signal handlers beállítása
         self._setup_signal_handlers()
@@ -66,7 +64,7 @@ class WeatherAnalyzerApp:
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
-    def _signal_handler(self, signum, frame) -> None:
+    def _signal_handler(self, signum, frame) -> None:  # noqa: ARG002
         """System signal kezelő."""
         print(f"\n🛑 Signal {signum} fogadva. Alkalmazás leállítása...")
         self.shutdown()
@@ -124,7 +122,7 @@ class WeatherAnalyzerApp:
             if icon_path.exists():
                 self.app.setWindowIcon(QIcon(str(icon_path)))
             else:
-                print("ℹ️ Alkalmazás ikon nem található (nem kritikus)")
+                print("ℹ️ Alkalmazás ikon nem található (nem kritikus)")  # noqa: RUF001
         except Exception as e:
             print(f"⚠️ Ikon beállítási hiba: {e}")
 
@@ -206,7 +204,7 @@ def check_requirements() -> bool:
     """
     # === PYTHON VERZIÓ ===
 
-    if sys.version_info < (3, 8):
+    if sys.version_info < (3, 8):  # noqa: UP036
         print("❌ Python 3.8+ szükséges!")
         print(f"Jelenlegi verzió: {sys.version}")
         return False
@@ -221,18 +219,13 @@ def check_requirements() -> bool:
         project_root / "src" / "config.py",
         project_root / "src" / "presentation" / "gui",
         project_root / "src" / "presentation" / "gui" / "windows" / "main_window.py",
-        project_root
-        / "src"
-        / "presentation"
-        / "gui"
-        / "controller"
-        / "app_controller.py",
+        project_root / "src" / "presentation" / "gui" / "controller" / "app_controller.py",
     ]
 
     missing_files = []
     for path in required_paths:
         if not path.exists():
-            missing_files.append(str(path))
+            missing_files.append(str(path))  # noqa: PERF401
 
     if missing_files:
         print("❌ Hiányzó fájlok:")

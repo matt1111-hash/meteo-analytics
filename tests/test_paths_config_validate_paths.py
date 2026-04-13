@@ -59,9 +59,7 @@ class TestValidatePaths:
                 "src.config.paths_config.USER_PREFS_DIR",
                 tmp_path / "data" / "user_preferences",
             ),
-            patch(
-                "src.config.paths_config.LEGACY_DB_PATH", tmp_path / "nonexistent.db"
-            ),
+            patch("src.config.paths_config.LEGACY_DB_PATH", tmp_path / "nonexistent.db"),
         ):
             result = validate_paths()
 
@@ -75,9 +73,7 @@ class TestValidatePaths:
 
         with (
             patch("src.config.paths_config.DATA_DIR", non_existent_dir / "data"),
-            patch(
-                "src.config.paths_config.CACHE_DIR", non_existent_dir / "data" / "cache"
-            ),
+            patch("src.config.paths_config.CACHE_DIR", non_existent_dir / "data" / "cache"),
             patch(
                 "src.config.paths_config.USER_PREFS_DIR",
                 non_existent_dir / "data" / "user_preferences",
@@ -103,9 +99,7 @@ class TestValidatePaths:
         with (
             patch("src.config.paths_config.DATA_DIR", data_dir),
             patch("src.config.paths_config.CACHE_DIR", data_dir / "cache"),
-            patch(
-                "src.config.paths_config.USER_PREFS_DIR", data_dir / "user_preferences"
-            ),
+            patch("src.config.paths_config.USER_PREFS_DIR", data_dir / "user_preferences"),
             patch("src.config.paths_config.LEGACY_DB_PATH", tmp_path / "legacy.db"),
             patch(
                 "src.config.paths_config.Path.write_text",
@@ -116,13 +110,9 @@ class TestValidatePaths:
 
             assert result["write_permissions"] is False
             assert len(result["issues"]) > 0
-            assert any(
-                "write permissions" in issue.lower() for issue in result["issues"]
-            )
+            assert any("write permissions" in issue.lower() for issue in result["issues"])
 
-    def test_validate_paths_missing_directory_after_ensure(
-        self, tmp_path: Path
-    ) -> None:
+    def test_validate_paths_missing_directory_after_ensure(self, tmp_path: Path) -> None:
         """validate_paths should detect directories that don't exist after ensure_directories."""
         from src.config.paths_config import validate_paths
 
@@ -137,9 +127,7 @@ class TestValidatePaths:
             patch("src.config.paths_config.DATA_DIR", data_dir),
             patch("src.config.paths_config.CACHE_DIR", cache_dir),
             patch("src.config.paths_config.USER_PREFS_DIR", user_prefs_dir),
-            patch(
-                "src.config.paths_config.ensure_directories", side_effect=lambda: None
-            ),
+            patch("src.config.paths_config.ensure_directories", side_effect=lambda: None),
             patch("src.config.paths_config.LEGACY_DB_PATH", tmp_path / "legacy.db"),
         ):
             result = validate_paths()

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001  # noqa: RUF100
 # mypy: ignore-errors
 """Split definitions from wind_rose.py."""
 
@@ -88,9 +88,7 @@ def _rebuild_daily_data_from_flat_records(
         "winddirection_10m_dominant": _extract_flat_series(
             weather_records, "winddirection_10m_dominant"
         ),
-        "wind_gusts_10m_max": _extract_flat_series(
-            weather_records, "wind_gusts_10m_max"
-        ),
+        "wind_gusts_10m_max": _extract_flat_series(weather_records, "wind_gusts_10m_max"),
         "windspeed_10m_max": _extract_flat_series(weather_records, "windspeed_10m_max"),
     }
 
@@ -105,14 +103,10 @@ def _extract_daily_data(weather_records: list[dict[str, Any]]) -> dict[str, Any]
     if daily_data:
         return daily_data
 
-    raise HTTPException(
-        status_code=400, detail="No daily weather data available in response"
-    )
+    raise HTTPException(status_code=400, detail="No daily weather data available in response")
 
 
-def _build_response(
-    request: WindRoseRequest, wind_rose_data: dict[str, Any]
-) -> WindRoseResponse:
+def _build_response(request: WindRoseRequest, wind_rose_data: dict[str, Any]) -> WindRoseResponse:
     """Build the WindRoseResponse from processed wind data."""
     return WindRoseResponse(
         city=request.city,

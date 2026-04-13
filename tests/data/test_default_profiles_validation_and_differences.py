@@ -75,7 +75,7 @@ class TestProfileDifferences:
         tropical_hot = profiles["tropical"]["temp_hot"]
 
         for profile_name, profile in profiles.items():
-            if profile_name != "tropical" and profile_name != "mediterranean":
+            if profile_name != "tropical" and profile_name != "mediterranean":  # noqa: PLR1714
                 assert (
                     profile["temp_hot"] <= tropical_hot
                 ), f"{profile_name} should be cooler than tropical"

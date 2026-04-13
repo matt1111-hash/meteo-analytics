@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -72,13 +71,9 @@ class CleanupManager:
         if not hasattr(self.mw, "active_threads"):
             return
 
-        print(
-            f"🧹 CleanupManager: Starting thread cleanup - {len(self.mw.active_threads)} threads"
-        )
+        print(f"🧹 CleanupManager: Starting thread cleanup - {len(self.mw.active_threads)} threads")
 
-        for thread in self.mw.active_threads[
-            :
-        ]:  # Copy to avoid modification during iteration
+        for thread in self.mw.active_threads[:]:  # Copy to avoid modification during iteration
             try:
                 if thread.isRunning():
                     print(f"🧹 CleanupManager: Stopping thread: {thread}")
@@ -113,13 +108,9 @@ class CleanupManager:
         if not hasattr(self.mw, "active_workers"):
             return
 
-        print(
-            f"🧹 CleanupManager: Starting worker cleanup - {len(self.mw.active_workers)} workers"
-        )
+        print(f"🧹 CleanupManager: Starting worker cleanup - {len(self.mw.active_workers)} workers")
 
-        for worker in self.mw.active_workers[
-            :
-        ]:  # Copy to avoid modification during iteration
+        for worker in self.mw.active_workers[:]:  # Copy to avoid modification during iteration
             try:
                 print(f"🧹 CleanupManager: Stopping worker: {worker}")
                 self._stop_worker(worker)
@@ -163,9 +154,7 @@ class CleanupManager:
             f"🧹 CleanupManager: Starting WebEngine cleanup - {len(self.mw.web_engine_views)} views"
         )
 
-        for web_view in self.mw.web_engine_views[
-            :
-        ]:  # Copy to avoid modification during iteration
+        for web_view in self.mw.web_engine_views[:]:  # Copy to avoid modification during iteration
             try:
                 print(f"🧹 CleanupManager: Stopping WebEngine view: {web_view}")
 
@@ -192,13 +181,9 @@ class CleanupManager:
         if not hasattr(self.mw, "cleanup_timers"):
             return
 
-        print(
-            f"🧹 CleanupManager: Starting timer cleanup - {len(self.mw.cleanup_timers)} timers"
-        )
+        print(f"🧹 CleanupManager: Starting timer cleanup - {len(self.mw.cleanup_timers)} timers")
 
-        for timer in self.mw.cleanup_timers[
-            :
-        ]:  # Copy to avoid modification during iteration
+        for timer in self.mw.cleanup_timers[:]:  # Copy to avoid modification during iteration
             try:
                 print(f"🧹 CleanupManager: Stopping timer: {timer}")
 

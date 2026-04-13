@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for CategoryCalculators."""
 
@@ -101,7 +101,7 @@ def _append_min_record(
     )
 
 
-class CategoryCalculatorsPart2Mixin:
+class CategoryCalculatorsPart2Mixin:  # noqa: D101
     def calculate_wind_speed_records(
         self, daily_data: Dict[str, List], dates: List[str]
     ) -> List[ExtremeRecord]:
@@ -109,9 +109,7 @@ class CategoryCalculatorsPart2Mixin:
         records = []
 
         try:
-            speed_list = daily_data.get("windspeed_10m_max", []) or daily_data.get(
-                "windspeed", []
-            )
+            speed_list = daily_data.get("windspeed_10m_max", []) or daily_data.get("windspeed", [])
             _append_max_record(
                 records,
                 speed_list,
@@ -212,9 +210,7 @@ class CategoryCalculatorsPart2Mixin:
         return records
 
     @staticmethod
-    def _get_positive_sunshine_values(
-        sunshine: List, dates: List[str]
-    ) -> list[tuple[int, Any]]:
+    def _get_positive_sunshine_values(sunshine: List, dates: List[str]) -> list[tuple[int, Any]]:
         """Return positive sunshine values when lengths align."""
         if not _is_valid_series(sunshine, dates):
             return []

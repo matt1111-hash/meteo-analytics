@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,10 +7,8 @@ Keresés és szűrés logika magyar városokhoz.
 """
 
 import logging
-from typing import List
 
 from PySide6.QtCore import QTimer, Signal
-
 from src.presentation.gui.hungarian_city_selector.types import (
     HungarianCity,
     HungarianRegions,
@@ -27,7 +24,7 @@ class HungarianCitySearchFilter:
 
     def __init__(
         self,
-        all_cities: List[HungarianCity],
+        all_cities: list[HungarianCity],
         search_completed_signal: Signal,
         region_selected_signal: Signal,
         stats_update_callback: callable,
@@ -51,7 +48,7 @@ class HungarianCitySearchFilter:
 
         self.current_region = "Összes"
         self.current_search_term = ""
-        self.filtered_cities: List[HungarianCity] = []
+        self.filtered_cities: list[HungarianCity] = []
 
         # Keresési debounce timer
         self.search_timer = QTimer()
@@ -67,7 +64,7 @@ class HungarianCitySearchFilter:
         """Keresés szöveg változásának kezelése."""
         self.current_search_term = text.strip()
 
-        if len(self.current_search_term) >= 2:
+        if len(self.current_search_term) >= 2:  # noqa: PLR2004
             # Debounce: 300ms késleltetés
             self.search_timer.stop()
             self.search_timer.start(300)
@@ -143,9 +140,7 @@ class HungarianCitySearchFilter:
             if self.current_search_term:
                 search_term_lower = self.current_search_term.lower()
                 base_cities = [
-                    city
-                    for city in base_cities
-                    if search_term_lower in city.city.lower()
+                    city for city in base_cities if search_term_lower in city.city.lower()
                 ]
 
             # Régió szűrés
@@ -156,14 +151,10 @@ class HungarianCitySearchFilter:
             self._update_region_stats()
 
         # Signal - régió kiválasztás
-        region_cities = (
-            self.filtered_cities if self.filtered_cities else self.all_cities
-        )
-        self.region_selected_signal.emit(
-            self.current_region, [city.city for city in region_cities]
-        )
+        region_cities = self.filtered_cities if self.filtered_cities else self.all_cities
+        self.region_selected_signal.emit(self.current_region, [city.city for city in region_cities])
 
-    def get_filtered_cities(self) -> List[HungarianCity]:
+    def get_filtered_cities(self) -> list[HungarianCity]:
         """Szűrt városok lekérdezése."""
         return self.filtered_cities if self.filtered_cities else self.all_cities
 

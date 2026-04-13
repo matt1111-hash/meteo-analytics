@@ -18,7 +18,7 @@ Fájl: src/presentation/gui/charts/temperature_chart/tooltip_handler.py
 """
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 import numpy as np
 import pandas as pd

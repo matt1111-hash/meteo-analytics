@@ -10,7 +10,7 @@ For full city data with all fields, use src.data.city_types.City.
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -42,10 +42,10 @@ class CityInfo:
     lon: float
     country_code: str
     country: str = ""
-    display_name: Optional[str] = None
-    population: Optional[int] = None
-    timezone: Optional[str] = None
-    admin_name: Optional[str] = None
+    display_name: str | None = None
+    population: int | None = None
+    timezone: str | None = None
+    admin_name: str | None = None
     is_hungarian: bool = False
 
     def __post_init__(self) -> None:
@@ -59,7 +59,7 @@ class CityInfo:
                 parts.append(self.country)
             object.__setattr__(self, "display_name", ", ".join(parts))
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "id": self.id,
@@ -76,7 +76,7 @@ class CityInfo:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CityInfo":
+    def from_dict(cls, data: dict[str, Any]) -> "CityInfo":
         """
         Create CityInfo from dictionary.
 

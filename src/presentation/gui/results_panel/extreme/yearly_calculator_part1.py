@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from yearly_calculator.py."""
 
@@ -152,20 +152,16 @@ class YearlyCalculator:
             records: List[ExtremeRecord] = []
             years = sorted(df["year"].unique())
 
-            logger.info(
-                f"Éves rekordok számítása: {len(years)} év ({years[0]}-{years[-1]})"
-            )
+            logger.info(f"Éves rekordok számítása: {len(years)} év ({years[0]}-{years[-1]})")
             YearlyCalculator._append_temperature_records(df, records)
             YearlyCalculator._append_precipitation_records(df, records)
             YearlyCalculator._append_wind_records(df, records)
 
             # Klímaváltozási trendek (10+ év esetén)
-            if len(years) >= 10:
+            if len(years) >= 10:  # noqa: PLR2004
                 records.extend(_calculate_climate_trends(df, years))
 
-            logger.info(
-                f"Éves rekordok számítva: {len(records)} rekord {len(years)} évhez"
-            )
+            logger.info(f"Éves rekordok számítva: {len(records)} rekord {len(years)} évhez")
             return records
 
         except Exception as e:

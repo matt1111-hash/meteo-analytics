@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -13,7 +12,6 @@ Moduláris struktúra:
 """
 
 import logging
-from typing import Dict, List
 
 from .extreme_records import ExtremeRecord
 from .monthly_calculator import MonthlyCalculator
@@ -43,8 +41,8 @@ class PeriodCalculators:
         self.yearly_calc = YearlyCalculator()
 
     def calculate_daily_records(
-        self, daily_data: Dict[str, List], dates: List[str]
-    ) -> List[ExtremeRecord]:
+        self, daily_data: dict[str, list], dates: list[str]
+    ) -> list[ExtremeRecord]:
         """
         📊 Napi rekordok számítása.
 
@@ -59,39 +57,25 @@ class PeriodCalculators:
 
         try:
             # Hőmérséklet rekordok
-            records.extend(
-                self.category_calcs.calculate_temperature_records(daily_data, dates)
-            )
+            records.extend(self.category_calcs.calculate_temperature_records(daily_data, dates))
 
             # Csapadék rekordok
-            records.extend(
-                self.category_calcs.calculate_precipitation_records(daily_data, dates)
-            )
+            records.extend(self.category_calcs.calculate_precipitation_records(daily_data, dates))
 
             # Széllökés rekordok
-            records.extend(
-                self.category_calcs.calculate_wind_records(daily_data, dates)
-            )
+            records.extend(self.category_calcs.calculate_wind_records(daily_data, dates))
 
             # Szélsebesség rekordok (külön)
-            records.extend(
-                self.category_calcs.calculate_wind_speed_records(daily_data, dates)
-            )
+            records.extend(self.category_calcs.calculate_wind_speed_records(daily_data, dates))
 
             # Páratartalom rekordok
-            records.extend(
-                self.category_calcs.calculate_humidity_records(daily_data, dates)
-            )
+            records.extend(self.category_calcs.calculate_humidity_records(daily_data, dates))
 
             # Légnyomás rekordok
-            records.extend(
-                self.category_calcs.calculate_pressure_records(daily_data, dates)
-            )
+            records.extend(self.category_calcs.calculate_pressure_records(daily_data, dates))
 
             # Napsütés rekordok
-            records.extend(
-                self.category_calcs.calculate_sunshine_records(daily_data, dates)
-            )
+            records.extend(self.category_calcs.calculate_sunshine_records(daily_data, dates))
 
             # UV index rekordok
             records.extend(self.category_calcs.calculate_uv_records(daily_data, dates))
@@ -104,8 +88,8 @@ class PeriodCalculators:
             return []
 
     def calculate_monthly_records(
-        self, daily_data: Dict[str, List], dates: List[str]
-    ) -> List[ExtremeRecord]:
+        self, daily_data: dict[str, list], dates: list[str]
+    ) -> list[ExtremeRecord]:
         """
         📅 Havi rekordok számítása.
 
@@ -116,13 +100,11 @@ class PeriodCalculators:
         Returns:
             List[ExtremeRecord]: Havi rekordok
         """
-        return self.monthly_calc.calculate_records(
-            daily_data, dates, self.calculate_daily_records
-        )
+        return self.monthly_calc.calculate_records(daily_data, dates, self.calculate_daily_records)
 
     def calculate_yearly_records(
-        self, daily_data: Dict[str, List], dates: List[str]
-    ) -> List[ExtremeRecord]:
+        self, daily_data: dict[str, list], dates: list[str]
+    ) -> list[ExtremeRecord]:
         """
         🗓️ Éves rekordok számítása.
 

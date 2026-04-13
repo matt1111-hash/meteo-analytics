@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for ProviderRouting."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .provider_routing_support import *
 
 
-class ProviderRoutingPart2Mixin:
+class ProviderRoutingPart2Mixin:  # noqa: D101
     def handle_provider_change(self, provider_name: str) -> str:
         """
         Provider változás kezelése GUI-ból.

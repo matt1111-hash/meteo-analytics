@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,11 +15,8 @@ Képességek:
 Fájl: src/presentation/gui/panel_widgets/provider_widget/core.py
 """
 
-from typing import Optional
-
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QComboBox, QLabel, QProgressBar, QTextEdit, QWidget
-
 from src.presentation.gui.theme_manager import register_widget_for_theming
 
 from .monitoring import _update_usage_display
@@ -85,12 +81,12 @@ class ProviderWidget(QWidget):
 
         # === UI KOMPONENSEK ===
 
-        self.provider_combo: Optional[QComboBox] = None
-        self.status_label: Optional[QLabel] = None
-        self.usage_progress: Optional[QProgressBar] = None
-        self.usage_label: Optional[QLabel] = None
-        self.cost_label: Optional[QLabel] = None
-        self.details_text: Optional[QTextEdit] = None
+        self.provider_combo: QComboBox | None = None
+        self.status_label: QLabel | None = None
+        self.usage_progress: QProgressBar | None = None
+        self.usage_label: QLabel | None = None
+        self.cost_label: QLabel | None = None
+        self.details_text: QTextEdit | None = None
 
         # === TIMER SETUP ===
 
@@ -111,9 +107,7 @@ class ProviderWidget(QWidget):
     def _setup_signals(self) -> None:
         """Signal connections beállítása."""
         # Provider selection change
-        self.provider_combo.currentTextChanged.connect(
-            self._on_provider_selection_changed
-        )
+        self.provider_combo.currentTextChanged.connect(self._on_provider_selection_changed)
 
         print("✅ DEBUG: ProviderWidget signals connected")
 
@@ -125,9 +119,7 @@ class ProviderWidget(QWidget):
                 old_provider = self.current_provider
                 self.current_provider = current_data
 
-                print(
-                    f"🌍 DEBUG: Provider changed: {old_provider} → {self.current_provider}"
-                )
+                print(f"🌍 DEBUG: Provider changed: {old_provider} → {self.current_provider}")
 
                 # Status update
                 status_messages = get_status_messages()
@@ -143,41 +135,41 @@ class ProviderWidget(QWidget):
             print(f"❌ DEBUG: Provider selection change error: {e}")
 
     # Public API methods
-    def set_provider(self, provider_name: str) -> None:
+    def set_provider(self, provider_name: str) -> None:  # noqa: D102
         set_provider(self, provider_name)
 
-    def get_current_provider(self) -> str:
+    def get_current_provider(self) -> str:  # noqa: D102
         return get_current_provider(self)
 
-    def update_usage_stats(self, stats: dict) -> None:
+    def update_usage_stats(self, stats: dict) -> None:  # noqa: D102
         update_usage_stats(self, stats)
 
-    def get_usage_summary(self) -> dict:
+    def get_usage_summary(self) -> dict:  # noqa: D102
         return get_usage_summary(self)
 
-    def stop_monitoring(self) -> None:
+    def stop_monitoring(self) -> None:  # noqa: D102
         stop_monitoring(self)
 
-    def start_monitoring(self) -> None:
+    def start_monitoring(self) -> None:  # noqa: D102
         start_monitoring(self)
 
-    def get_state(self) -> dict:
+    def get_state(self) -> dict:  # noqa: D102
         return get_state(self)
 
-    def set_state(self, state: dict) -> bool:
+    def set_state(self, state: dict) -> bool:  # noqa: D102
         return set_state(self, state)
 
-    def is_valid(self) -> bool:
+    def is_valid(self) -> bool:  # noqa: D102
         return is_valid(self)
 
-    def set_enabled(self, enabled: bool) -> None:
+    def set_enabled(self, enabled: bool) -> None:  # noqa: D102
         set_enabled(self, enabled)
 
-    def refresh_usage_display(self) -> None:
+    def refresh_usage_display(self) -> None:  # noqa: D102
         refresh_usage_display(self)
 
-    def cleanup(self) -> None:
+    def cleanup(self) -> None:  # noqa: D102
         cleanup(self)
 
-    def closeEvent(self, event) -> None:
+    def closeEvent(self, event) -> None:  # noqa: D102
         closeEvent(self, event)

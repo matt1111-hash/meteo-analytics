@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Protocol
+from typing import Any, Protocol
 
 from src.domain.analytics.models import MultiCityQuery
 from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
@@ -14,29 +14,29 @@ from src.domain.ports import CityRepositoryPort
 class MultiCityEnginePort(Protocol):
     """Port for multi-city analytics operations."""
 
-    def analyze_multi_city(
+    def analyze_multi_city(  # noqa: D102
         self,
         query_type: str,
         region: str,
         date: str,
-        limit: Optional[int] = None,
-        question: Optional[AnalyticsQuestion] = None,
+        limit: int | None = None,
+        question: AnalyticsQuestion | None = None,
     ) -> AnalyticsResult: ...
 
-    def execute_analytics_query(
+    def execute_analytics_query(  # noqa: D102
         self,
         query: MultiCityQuery,
-        progress_callback: Optional[callable] = None,
+        progress_callback: callable | None = None,
     ) -> AnalyticsResult: ...
 
-    def get_cities_for_region(
+    def get_cities_for_region(  # noqa: D102
         self,
         region: str,
-        limit: Optional[int] = None,
-        max_cities: Optional[int] = None,
-    ) -> List[Dict[str, Any]]: ...
+        limit: int | None = None,
+        max_cities: int | None = None,
+    ) -> list[dict[str, Any]]: ...
 
-    def resolve_region_name(self, region_input: str) -> str: ...
+    def resolve_region_name(self, region_input: str) -> str: ...  # noqa: D102
 
 
 @dataclass
@@ -50,9 +50,9 @@ class MultiCityEngineConfig:
 
 
 def get_multi_city_engine_port(
-    city_repository: Optional[CityRepositoryPort] = None,
-    weather_client: Optional[object] = None,
-    config: Optional[MultiCityEngineConfig] = None,
+    city_repository: CityRepositoryPort | None = None,
+    weather_client: object | None = None,  # noqa: ARG001
+    config: MultiCityEngineConfig | None = None,  # noqa: ARG001
 ) -> MultiCityEnginePort:
     """Factory function to get a MultiCityEnginePort implementation."""
     from pathlib import Path

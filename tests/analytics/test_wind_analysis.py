@@ -36,7 +36,7 @@ class TestWindAnalysisImports:
         """Should export WINDY_DAY_THRESHOLD_KMH constant."""
         from src.analytics.wind_analysis import WINDY_DAY_THRESHOLD_KMH
 
-        assert isinstance(WINDY_DAY_THRESHOLD_KMH, (int, float))
+        assert isinstance(WINDY_DAY_THRESHOLD_KMH, (int, float))  # noqa: UP038
         assert WINDY_DAY_THRESHOLD_KMH > 0
 
     def test_exports_wind_analysis_result(self) -> None:
@@ -66,7 +66,9 @@ class TestWindAnalysisImports:
 
     def test_exports_get_chart_data_for_monthly_windy_days(self) -> None:
         """Should export get_chart_data_for_monthly_windy_days function."""
-        from src.analytics.wind_analysis import get_chart_data_for_monthly_windy_days
+        from src.analytics.wind_analysis import (
+            get_chart_data_for_monthly_windy_days,
+        )
 
         assert callable(get_chart_data_for_monthly_windy_days)
 

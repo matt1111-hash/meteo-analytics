@@ -17,7 +17,7 @@ Fájl: src/presentation/gui/results_panel/utils/dataframe_extractor.py
 """
 
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 import pandas as pd
 

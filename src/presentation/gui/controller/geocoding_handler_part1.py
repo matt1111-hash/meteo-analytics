@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for GeocodingHandler."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .geocoding_handler_support import *
 
 
-class GeocodingHandlerPart1Mixin:
+class GeocodingHandlerPart1Mixin:  # noqa: D101
     def __init__(self, worker_manager, database_manager, parent=None):
         """
         GeocodingHandler inicializálása.
@@ -34,7 +34,7 @@ class GeocodingHandlerPart1Mixin:
         self._logger.info(f"🔍 handle_search_request called with: '{search_query}'")
 
         # Alapszintű validáció
-        if not search_query or len(search_query.strip()) < 2:
+        if not search_query or len(search_query.strip()) < 2:  # noqa: PLR2004
             error_msg = "Legalább 2 karakter szükséges a kereséshez"
             self._logger.error(f"Validation error: {error_msg}")
             self.error_occurred.emit(error_msg)
@@ -55,16 +55,12 @@ class GeocodingHandlerPart1Mixin:
 
             self._logger.info("🚀 Creating GeocodingWorker...")
             worker = GeocodingWorker(self.active_search_query)
-            self._logger.info(
-                f"✅ GeocodingWorker created for query: '{self.active_search_query}'"
-            )
+            self._logger.info(f"✅ GeocodingWorker created for query: '{self.active_search_query}'")
 
             # WorkerManager központi használata
             self._logger.info("🚀 Starting worker via WorkerManager...")
             worker_id = self.worker_manager.start_geocoding(worker)
-            self._logger.info(
-                f"✅ GeocodingWorker started via WorkerManager with ID: {worker_id}"
-            )
+            self._logger.info(f"✅ GeocodingWorker started via WorkerManager with ID: {worker_id}")
 
         except Exception as e:
             error_msg = f"Geocoding worker indítási hiba: {e}"
@@ -75,9 +71,7 @@ class GeocodingHandlerPart1Mixin:
             self.error_occurred.emit(error_msg)
             return
 
-        self._logger.info(
-            f"✅ handle_search_request completed successfully for '{search_query}'"
-        )
+        self._logger.info(f"✅ handle_search_request completed successfully for '{search_query}'")
 
     @Slot(list)
     def on_geocoding_completed(self, results: List[Dict[str, Any]]) -> None:
@@ -87,9 +81,7 @@ class GeocodingHandlerPart1Mixin:
         Args:
             results: Település találatok listája
         """
-        self._logger.info(
-            f"🔍 on_geocoding_completed called with {len(results)} results"
-        )
+        self._logger.info(f"🔍 on_geocoding_completed called with {len(results)} results")
 
         try:
             if not results:
@@ -114,9 +106,7 @@ class GeocodingHandlerPart1Mixin:
             self._logger.info("📡 Emitting geocoding_results_ready signal...")
             self.geocoding_results_ready.emit(processed_results)
 
-            self._logger.info(
-                f"✅ Geocoding befejezve: {len(processed_results)} találat"
-            )
+            self._logger.info(f"✅ Geocoding befejezve: {len(processed_results)} találat")
 
         except Exception as e:
             self._logger.error(f"Geocoding feldolgozási hiba: {e}")
@@ -125,9 +115,7 @@ class GeocodingHandlerPart1Mixin:
             traceback.print_exc()
             self.error_occurred.emit(f"Keresési eredmények feldolgozási hiba: {e}")
 
-    def _process_geocoding_results(
-        self, raw_results: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+    def _process_geocoding_results(self, raw_results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Geocoding eredmények feldolgozása és gazdagítása.
 
@@ -163,7 +151,7 @@ class GeocodingHandlerPart1Mixin:
                 processed.append(processed_result)
 
                 # Debug információ minden 5. eredményhez
-                if i < 5 or i % 5 == 0:
+                if i < 5 or i % 5 == 0:  # noqa: PLR2004
                     name = processed_result["name"]
                     country = processed_result["country"]
                     self._logger.debug(f"🔍 Result {i}: {name}, {country}")

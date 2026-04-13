@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -12,10 +11,9 @@ külön handler osztályokra bontva a funkcionális területek szerint.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtCore import QObject, Signal
-
 from src.config import (
     DATA_DIR,
     ProviderConfig,
@@ -84,19 +82,17 @@ class AppController(
     provider_warning = Signal(str, int)  # provider_name, usage_percent
     provider_fallback = Signal(str, str)  # from_provider, to_provider
 
-    def __init__(self, parent: Optional[QObject] = None):
+    def __init__(self, parent: QObject | None = None):
         """Controller inicializálása CLEAN ARCHITECTURE támogatással."""
         super().__init__(parent)
 
         self._logger = logging.getLogger(__name__)
-        self._logger.info(
-            "🎯 AppController __init__ started (CLEAN ARCHITECTURE REFACTORED)"
-        )
+        self._logger.info("🎯 AppController __init__ started (CLEAN ARCHITECTURE REFACTORED)")
 
         # === CLEAN ARCHITECTURE STATE ===
-        self.current_city_data: Optional[Dict[str, Any]] = None
-        self.current_weather_data: Optional[Dict[str, Any]] = None
-        self.active_search_query: Optional[str] = None
+        self.current_city_data: dict[str, Any] | None = None
+        self.current_weather_data: dict[str, Any] | None = None
+        self.active_search_query: str | None = None
 
         # === KOMPONENSEK INICIALIZÁLÁSA ===
 
@@ -119,9 +115,7 @@ class AppController(
         self._logger.info("✅ WorkerManager created")
 
         # 4. Geocoding Handler
-        self.geocoding_handler = GeocodingHandler(
-            self.worker_manager, self.database_manager, self
-        )
+        self.geocoding_handler = GeocodingHandler(self.worker_manager, self.database_manager, self)
         self._connect_geocoding_signals()
         self._logger.info("✅ GeocodingHandler initialized")
 
@@ -138,6 +132,4 @@ class AppController(
         # Provider preferences betöltése
         self._load_user_preferences()
 
-        self._logger.info(
-            "✅ AppController inicializálva (CLEAN ARCHITECTURE REFACTORED)"
-        )
+        self._logger.info("✅ AppController inicializálva (CLEAN ARCHITECTURE REFACTORED)")

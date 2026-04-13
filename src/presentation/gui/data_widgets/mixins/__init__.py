@@ -14,9 +14,9 @@ from .filtering_mixin import FilteringMixin
 from .sorting_mixin import SortingMixin
 
 __all__ = [
-    "SortingMixin",
-    "FilteringMixin",
-    "ExportMixin",
     "DataHandlingMixin",
     "DisplayMixin",
+    "ExportMixin",
+    "FilteringMixin",
+    "SortingMixin",
 ]

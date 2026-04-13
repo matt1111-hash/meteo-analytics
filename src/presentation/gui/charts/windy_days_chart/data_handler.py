@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -15,7 +14,7 @@ Fájl: src/presentation/gui/charts/windy_days_chart/data_handler.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
@@ -23,7 +22,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def update_data(self, chart_data: Dict[str, Any]) -> None:
+def update_data(self, chart_data: dict[str, Any]) -> None:
     """
     Chart adatok frissítése és újrarajzolás.
 
@@ -52,9 +51,7 @@ def update_data(self, chart_data: Dict[str, Any]) -> None:
         # Új chart rajzolása
         _plot_windy_days_chart(self)
 
-        logger.info(
-            f"WindyDaysChart frissítve: {len(self.chart_data.get('months', []))} hónap"
-        )
+        logger.info(f"WindyDaysChart frissítve: {len(self.chart_data.get('months', []))} hónap")
 
     except Exception as e:
         logger.error(f"Hiba a WindyDaysChart adatok frissítésében: {e}")

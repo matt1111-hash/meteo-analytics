@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -42,9 +41,7 @@ def demo_anomaly_settings_dialog():
         dialog.settings_changed.connect(
             lambda settings: print(f"🔧 Beállítások változtak: {settings}")
         )
-        dialog.profile_changed.connect(
-            lambda profile: print(f"📁 Profil váltva: {profile}")
-        )
+        dialog.profile_changed.connect(lambda profile: print(f"📁 Profil váltva: {profile}"))
         dialog.exec()
 
     open_btn.clicked.connect(open_dialog)

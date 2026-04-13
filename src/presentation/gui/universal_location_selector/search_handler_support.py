@@ -17,11 +17,11 @@ Fájl: src/presentation/gui/universal_location_selector/search_handler.py
 """
 
 import logging
-from typing import Any, Callable, Dict, Iterable, List, Optional
+from collections.abc import Callable, Iterable
+from typing import Any, Optional
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QLabel, QLineEdit, QListWidget, QListWidgetItem
-
 from src.domain.ports import CityManagerPort
 
 logger = logging.getLogger(__name__)

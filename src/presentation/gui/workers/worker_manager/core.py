@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 WorkerManager Core - Main worker management class with signals.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from PySide6.QtCore import QMutex, QObject, QWaitCondition, Signal
 
@@ -63,12 +62,12 @@ class WorkerManager(QObject):
         super().__init__(parent)
 
         # Aktív worker threadek tárolása
-        self.active_workers: Dict[str, "BaseWorkerThread"] = {}
+        self.active_workers: dict[str, BaseWorkerThread] = {}
         self.worker_counter = 0
 
         # Provider state tracking
-        self.provider_states: Dict[str, Dict[str, Any]] = {}
-        self.last_successful_provider: Optional[str] = None
+        self.provider_states: dict[str, dict[str, Any]] = {}
+        self.last_successful_provider: str | None = None
 
         # Thread safe mutex
         self.mutex = QMutex()
@@ -80,9 +79,7 @@ class WorkerManager(QObject):
         self._provider_manager = ProviderManager(self)
         self._shutdown_manager = ShutdownManager(self)
 
-        print(
-            "✅ DEBUG: WorkerManager inicializálva (COMPLETION SIGNAL FIX + PROVIDER ROUTING)"
-        )
+        print("✅ DEBUG: WorkerManager inicializálva (COMPLETION SIGNAL FIX + PROVIDER ROUTING)")
 
     def _get_worker_id(self, worker_type: str) -> str:
         """
@@ -128,11 +125,11 @@ class WorkerManager(QObject):
         self.cancel_all_workers()
 
     # Provider management methods (delegated to ProviderManager)
-    def get_provider_states(self) -> Dict[str, Dict[str, Any]]:
+    def get_provider_states(self) -> dict[str, dict[str, Any]]:
         """Get provider states."""
         return self._provider_manager.get_states()
 
-    def get_last_successful_provider(self) -> Optional[str]:
+    def get_last_successful_provider(self) -> str | None:
         """Get last successful provider."""
         return self._provider_manager.get_last_successful()
 
@@ -153,9 +150,7 @@ class WorkerManager(QObject):
         """Check if worker type is active."""
         self.mutex.lock()
         try:
-            return any(
-                wid.startswith(worker_type) for wid in self.active_workers.keys()
-            )
+            return any(wid.startswith(worker_type) for wid in self.active_workers)
         finally:
             self.mutex.unlock()
 

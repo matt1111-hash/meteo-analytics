@@ -7,7 +7,6 @@ Trend statistics calculator for linear regression analysis
 import numpy as np
 import pandas as pd
 import pytest
-
 from src.domain.analytics.services.trend_statistics import TrendStatisticsCalculator
 
 
@@ -102,9 +101,7 @@ class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
         expected = result["slope"] * 12 * 10
         assert abs(result["slope_per_decade"] - expected) < 0.01
 
-    def test_handles_constant_values(
-        self, calculator: TrendStatisticsCalculator
-    ) -> None:
+    def test_handles_constant_values(self, calculator: TrendStatisticsCalculator) -> None:
         """Should handle constant values."""
         df = pd.DataFrame(
             {
@@ -116,9 +113,7 @@ class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
         assert result is not None
         assert result["slope"] == 0
 
-    def test_handles_negative_trend(
-        self, calculator: TrendStatisticsCalculator
-    ) -> None:
+    def test_handles_negative_trend(self, calculator: TrendStatisticsCalculator) -> None:
         """Should handle negative trend."""
         df = pd.DataFrame(
             {

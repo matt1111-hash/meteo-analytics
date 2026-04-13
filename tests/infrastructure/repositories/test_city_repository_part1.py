@@ -23,9 +23,7 @@ def test_validate_paths_logs_warning_when_only_hungarian_db_missing(
     """validate_paths logs warnings but does not raise when one database exists."""
     cities_path = tmp_path / "cities.db"
     cities_path.touch()
-    repository = build_repository(
-        db_path=cities_path, hungarian_db_path=tmp_path / "hungarian.db"
-    )
+    repository = build_repository(db_path=cities_path, hungarian_db_path=tmp_path / "hungarian.db")
     repository.hungarian_db_path = tmp_path / "missing_hungarian.db"
     with caplog.at_level("WARNING"):
         repository.validate_paths()

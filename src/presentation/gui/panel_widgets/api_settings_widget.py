@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Compatibility wrapper for api_settings_widget.py."""
 
@@ -9,9 +9,7 @@ from .api_settings_widget_part2 import ApiSettingsWidgetPart2Mixin
 from .api_settings_widget_support import *
 
 
-class ApiSettingsWidget(
-    ApiSettingsWidgetPart1Mixin, ApiSettingsWidgetPart2Mixin, QWidget
-):
+class ApiSettingsWidget(ApiSettingsWidgetPart1Mixin, ApiSettingsWidgetPart2Mixin, QWidget):
     """
     ⚙️ API BEÁLLÍTÁSOK WIDGET - CLEAN ARCHITECTURE
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -27,9 +26,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def build_calendar_matrix(
-    self, values: np.ndarray, start_date: pd.Timestamp
-) -> np.ndarray:
+def build_calendar_matrix(self, values: np.ndarray, start_date: pd.Timestamp) -> np.ndarray:
     """
     Build 7x53 calendar matrix, considering the start day's weekday.
 

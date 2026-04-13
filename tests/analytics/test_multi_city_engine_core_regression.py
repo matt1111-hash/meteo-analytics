@@ -50,9 +50,7 @@ def test_init_wires_weather_client_into_fetch_service() -> None:
         patch("src.analytics.multi_city_engine_core.RegionResolverService"),
         patch("src.analytics.multi_city_engine_core.AnalyticsTransformService"),
         patch("src.analytics.multi_city_engine_core.AnalyzeMultiCityUseCase"),
-        patch(
-            "src.analytics.multi_city_engine_core.WeatherFetchService"
-        ) as fetch_service,
+        patch("src.analytics.multi_city_engine_core.WeatherFetchService") as fetch_service,
     ):
         MultiCityEngine()
 

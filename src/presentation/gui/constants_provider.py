@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -7,15 +6,13 @@ Constants Provider - Dependency Injection Implementation
 🎯 Single Responsibility Principle
 """
 
-from typing import Dict
-
 from src.presentation.gui.interfaces import IConstantsProvider, IWindspeedConstants
 
 
 class ConstantsProvider(IConstantsProvider):
     """Concrete implementation of constants provider."""
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         # Wind thresholds (moved from utils to here)
         self._wind_thresholds = {
             "high": 70.0,  # WIND_HIGH_THRESHOLD
@@ -27,7 +24,7 @@ class ConstantsProvider(IConstantsProvider):
         """Get wind threshold by type."""
         return self._wind_thresholds.get(threshold_type, 70.0)
 
-    def get_all_thresholds(self) -> Dict[str, float]:
+    def get_all_thresholds(self) -> dict[str, float]:
         """Get all available thresholds."""
         return self._wind_thresholds.copy()
 

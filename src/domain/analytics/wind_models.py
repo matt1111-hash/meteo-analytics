@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import dataclasses
 import datetime
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 # Konstansok
 WINDY_DAY_THRESHOLD_KMH = 43.0
@@ -50,8 +50,8 @@ class WindAnalysisResult:
     total_windy_days: int
     total_days: int
     overall_windy_percentage: float
-    windiest_month: Optional[WindyDayStats]
-    calmest_month: Optional[WindyDayStats]
+    windiest_month: WindyDayStats | None
+    calmest_month: WindyDayStats | None
 
 
 class WindChartData(TypedDict):

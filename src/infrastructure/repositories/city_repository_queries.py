@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 import sqlite3
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Dict, List, Sequence
 
 
 class CityRepositoryQueries:
@@ -16,7 +16,7 @@ class CityRepositoryQueries:
         self.db_path = db_path
         self.hungarian_db_path = hungarian_db_path
 
-    def get_cities_by_names(self, city_names: List[str]) -> List[Dict[str, object]]:
+    def get_cities_by_names(self, city_names: list[str]) -> list[dict[str, object]]:
         """Fetch cities by explicit city names (case-insensitive).
 
         For each city name, returns the match with highest population.
@@ -62,22 +62,20 @@ class CityRepositoryQueries:
         self,
         mapped_region: str,
         original_region: str,
-        country_codes: List[str],
+        country_codes: list[str],
         limit: int,
-        hungarian_mapping: Dict[str, List[str]],
-    ) -> List[Dict[str, object]]:
+        hungarian_mapping: dict[str, list[str]],
+    ) -> list[dict[str, object]]:
         """Fetch cities for a region with optional Hungarian filtering."""
         if mapped_region == "Global":
             return self.query_global(limit)
         if mapped_region == "Hungary":
             if original_region in hungarian_mapping:
-                return self.query_hungarian_region(
-                    original_region, hungarian_mapping, limit
-                )
+                return self.query_hungarian_region(original_region, hungarian_mapping, limit)
             return self.query_hungarian_all(limit)
         return self.query_countries(country_codes, limit)
 
-    def query_global(self, limit: int) -> List[Dict[str, object]]:
+    def query_global(self, limit: int) -> list[dict[str, object]]:
         """Query global cities database."""
         base_select = (
             "SELECT city, country, country_code, lat, lon, population, "
@@ -87,7 +85,7 @@ class CityRepositoryQueries:
         )
         return self._execute(self.db_path, base_select, [limit])
 
-    def query_hungarian_all(self, limit: int) -> List[Dict[str, object]]:
+    def query_hungarian_all(self, limit: int) -> list[dict[str, object]]:
         """Query all Hungarian settlements."""
         base_select = (
             "SELECT city, country, country_code, lat, lon, population, "
@@ -102,9 +100,9 @@ class CityRepositoryQueries:
     def query_hungarian_region(
         self,
         original_region: str,
-        hungarian_mapping: Dict[str, List[str]],
+        hungarian_mapping: dict[str, list[str]],
         limit: int,
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         """Query Hungarian settlements by region (megye)."""
         target_counties = hungarian_mapping.get(original_region, [])
         if not target_counties:
@@ -123,14 +121,14 @@ class CityRepositoryQueries:
             "THEN population ELSE 0 END DESC "
             "LIMIT ?"
         )
-        params: List[object] = list(target_counties) + [limit]
+        params: list[object] = [*list(target_counties), limit]
         return self._execute_hungarian(self.hungarian_db_path, base_select, params)
 
     def query_countries(
         self,
-        country_codes: List[str],
+        country_codes: list[str],
         limit: int,
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         """Query cities by country codes."""
         # Safe: in_clause contains only '?' placeholders, params passed separately
         in_clause = ",".join(["?"] * len(country_codes))
@@ -143,14 +141,12 @@ class CityRepositoryQueries:
             "THEN population ELSE 0 END DESC "
             "LIMIT ?"
         )
-        params: List[object] = list(country_codes) + [limit]
+        params: list[object] = [*list(country_codes), limit]
         return self._execute(self.db_path, base_select, params)
 
-    def autocomplete_city_name(
-        self, query: str, limit: int = 20
-    ) -> List[Dict[str, object]]:
+    def autocomplete_city_name(self, query: str, limit: int = 20) -> list[dict[str, object]]:
         """Autocomplete city names by partial match."""
-        if not query or len(query.strip()) < 2:
+        if not query or len(query.strip()) < 2:  # noqa: PLR2004
             return []
 
         query_str = query.strip().lower()
@@ -199,7 +195,7 @@ class CityRepositoryQueries:
         database_path: Path,
         query: str,
         params: Sequence[object],
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         """Execute query on global database."""
         with sqlite3.connect(database_path) as conn:
             cursor = conn.cursor()
@@ -224,7 +220,7 @@ class CityRepositoryQueries:
         database_path: Path,
         query: str,
         params: Sequence[object],
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         """Execute query on Hungarian database with proper column mapping."""
         with sqlite3.connect(database_path) as conn:
             cursor = conn.cursor()

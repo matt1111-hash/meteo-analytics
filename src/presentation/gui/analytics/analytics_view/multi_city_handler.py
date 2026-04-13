@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,7 +7,7 @@ Multi-City régió elemzés logika és signal kibocsátás.
 """
 
 import logging
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.presentation.gui.analytics.analytics_view.core import AnalyticsView
@@ -17,7 +16,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _build_fake_daily_template() -> Dict[str, list]:
+def _build_fake_daily_template() -> dict[str, list]:
     """Build the base fake daily dataset."""
     return {
         "time": [f"2024-{i // 30 + 1:02d}-{i % 30 + 1:02d}" for i in range(365)],
@@ -31,7 +30,7 @@ def _build_fake_daily_template() -> Dict[str, list]:
 
 
 def _append_temperature_day(
-    fake_daily_data: Dict[str, list], avg_val: float, day_index: int
+    fake_daily_data: dict[str, list], avg_val: float, day_index: int
 ) -> None:
     """Append synthetic temperature-focused values for one day."""
     fake_daily_data["temperature_2m_max"].append(avg_val + (day_index % 20 - 10))
@@ -43,7 +42,7 @@ def _append_temperature_day(
 
 
 def _append_precipitation_day(
-    fake_daily_data: Dict[str, list], avg_val: float, day_index: int
+    fake_daily_data: dict[str, list], avg_val: float, day_index: int
 ) -> None:
     """Append synthetic precipitation-focused values for one day."""
     fake_daily_data["precipitation_sum"].append(avg_val + (day_index % 10))
@@ -54,9 +53,7 @@ def _append_precipitation_day(
     fake_daily_data["wind_gusts_max"].append(15.0)
 
 
-def _append_wind_day(
-    fake_daily_data: Dict[str, list], avg_val: float, day_index: int
-) -> None:
+def _append_wind_day(fake_daily_data: dict[str, list], avg_val: float, day_index: int) -> None:
     """Append synthetic wind-focused values for one day."""
     fake_daily_data["windspeed_10m_max"].append(avg_val + (day_index % 15))
     fake_daily_data["wind_gusts_max"].append(avg_val + 5)
@@ -66,7 +63,7 @@ def _append_wind_day(
     fake_daily_data["precipitation_sum"].append(1.0)
 
 
-def _append_default_day(fake_daily_data: Dict[str, list]) -> None:
+def _append_default_day(fake_daily_data: dict[str, list]) -> None:
     """Append default synthetic values for one day."""
     fake_daily_data["temperature_2m_max"].append(20.0)
     fake_daily_data["temperature_2m_mean"].append(15.0)
@@ -77,7 +74,7 @@ def _append_default_day(fake_daily_data: Dict[str, list]) -> None:
 
 
 def _append_metric_day(
-    fake_daily_data: Dict[str, list], metric_type, avg_val: float, day_index: int
+    fake_daily_data: dict[str, list], metric_type, avg_val: float, day_index: int
 ) -> None:
     """Append one synthetic day based on the selected metric."""
     from src.domain.value_objects.enums import AnalyticsMetric
@@ -113,15 +110,11 @@ class AnalyticsViewMultiCityHandler:
         self.view.multi_city_query_requested.emit(query_type, region_name)
 
         # UI visszajelzés
-        self.view._update_status(
-            f"🚀 Multi-City kérés elküldve: {region_name} ({query_type})"
-        )
+        self.view._update_status(f"🚀 Multi-City kérés elküldve: {region_name} ({query_type})")
 
-        logger.info(
-            f"🚀 Multi-City query request emitted: {query_type} for {region_name}"
-        )
+        logger.info(f"🚀 Multi-City query request emitted: {query_type} for {region_name}")
 
-    def create_fake_single_city_data_from_multi_city(self, analytics_result) -> Dict:
+    def create_fake_single_city_data_from_multi_city(self, analytics_result) -> dict:
         """🎯 Fake single-city data létrehozása Multi-City eredményekből a heatmap megjelenítéshez."""
         try:
             if not analytics_result or not analytics_result.city_results:
@@ -136,9 +129,7 @@ class AnalyticsViewMultiCityHandler:
             # Metric alapú fake data generálás
             from src.domain.value_objects.enums import AnalyticsMetric
 
-            metric_type = (
-                question.metric if question else AnalyticsMetric.TEMPERATURE_2M_MAX
-            )
+            metric_type = question.metric if question else AnalyticsMetric.TEMPERATURE_2M_MAX
             avg_val = sum(city.value for city in cities) / len(cities)
 
             for i in range(365):
@@ -164,9 +155,7 @@ class AnalyticsViewMultiCityHandler:
             logger.error(f"❌ Fake data creation hiba: {e}")
             return {}
 
-    def create_fake_records_from_multi_city(
-        self, analytics_result
-    ) -> Dict[str, Dict[str, str]]:
+    def create_fake_records_from_multi_city(self, analytics_result) -> dict[str, dict[str, str]]:
         """🏆 Fake rekordok létrehozása Multi-City eredményekből."""
         try:
             if not analytics_result.city_results:
@@ -185,7 +174,7 @@ class AnalyticsViewMultiCityHandler:
                     else str(top_city.date),
                 }
 
-            if len(cities) >= 2:
+            if len(cities) >= 2:  # noqa: PLR2004
                 second_city = cities[1]
                 records["windiest"] = {
                     "value": f"{second_city.value:.1f}km/h",
@@ -194,7 +183,7 @@ class AnalyticsViewMultiCityHandler:
                     else str(second_city.date),
                 }
 
-            if len(cities) >= 3:
+            if len(cities) >= 3:  # noqa: PLR2004
                 third_city = cities[2]
                 records["wettest"] = {
                     "value": f"{third_city.value:.1f}mm",

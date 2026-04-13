@@ -33,17 +33,11 @@ def _restore_multi_city_state(control_panel, analysis_type: str) -> None:
 def _restore_shared_widget_states(control_panel) -> None:
     """Restore shared widget states after analysis type changes."""
     if "date_range" in control_panel._preserved_states:
-        control_panel.date_range_widget.set_state(
-            control_panel._preserved_states["date_range"]
-        )
+        control_panel.date_range_widget.set_state(control_panel._preserved_states["date_range"])
     if "provider" in control_panel._preserved_states:
-        control_panel.provider_widget.set_state(
-            control_panel._preserved_states["provider"]
-        )
+        control_panel.provider_widget.set_state(control_panel._preserved_states["provider"])
     if "api_settings" in control_panel._preserved_states:
-        control_panel.api_settings_widget.set_state(
-            control_panel._preserved_states["api_settings"]
-        )
+        control_panel.api_settings_widget.set_state(control_panel._preserved_states["api_settings"])
 
 
 class UIManagerMixin:
@@ -68,9 +62,7 @@ class UIManagerMixin:
             }
 
             location_valid = self._preserved_states["location"].get("is_valid", False)
-            multi_city_valid = self._preserved_states["multi_city"].get(
-                "is_valid", False
-            )
+            multi_city_valid = self._preserved_states["multi_city"].get("is_valid", False)
             print(
                 f"✅ DEBUG: Widget states preserved - location: {location_valid}, multi-city: {multi_city_valid}"
             )
@@ -109,9 +101,7 @@ class UIManagerMixin:
         print(f"🔧 DEBUG: _update_ui_for_analysis_type_fixed called: {analysis_type}")
 
         if analysis_type == "single_location":
-            print(
-                "🔧 DEBUG: Setting UI to single_location mode - LocationWidget MEGJELENÍTÉSE..."
-            )
+            print("🔧 DEBUG: Setting UI to single_location mode - LocationWidget MEGJELENÍTÉSE...")
 
             # === LOCATION WIDGET MEGJELENÍTÉSE ===
             self.location_widget.setVisible(True)

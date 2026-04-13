@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for DistanceCalculator."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .distance_calculator_support import *
 
 
-class DistanceCalculatorPart2Mixin:
+class DistanceCalculatorPart2Mixin:  # noqa: D101
     def _resolve_distance_unit(self, unit: Optional[DistanceUnit]) -> DistanceUnit:
         """Resolve explicit or default distance unit."""
         return self.default_unit if unit is None else unit
@@ -50,7 +50,7 @@ class DistanceCalculatorPart2Mixin:
         cos_2sigma_m = 0.0
         sigma = 0.0
 
-        while abs(lambda_val - lambda_prev) > 1e-12 and iteration < iteration_limit:
+        while abs(lambda_val - lambda_prev) > 1e-12 and iteration < iteration_limit:  # noqa: PLR2004
             lambda_prev = lambda_val
             (
                 lambda_val,
@@ -92,8 +92,7 @@ class DistanceCalculatorPart2Mixin:
         sin_lambda = math.sin(lambda_val)
         cos_lambda = math.cos(lambda_val)
         sin_sigma = math.sqrt(
-            (cos_u2 * sin_lambda) ** 2
-            + (cos_u1 * sin_u2 - sin_u1 * cos_u2 * cos_lambda) ** 2
+            (cos_u2 * sin_lambda) ** 2 + (cos_u1 * sin_u2 - sin_u1 * cos_u2 * cos_lambda) ** 2
         )
         if sin_sigma == 0:
             return lambda_val, 0.0, 0.0, 0.0, 0.0, 0.0
@@ -104,9 +103,7 @@ class DistanceCalculatorPart2Mixin:
         cos2_alpha = 1 - sin_alpha**2
         cos_2sigma_m = calculate_cos_2sigma_m(cos_sigma, sin_u1, sin_u2, cos2_alpha)
         coefficient = calculate_vincenty_coefficient(self.WGS84_F, cos2_alpha)
-        next_lambda = longitude_difference + (
-            1 - coefficient
-        ) * self.WGS84_F * sin_alpha * (
+        next_lambda = longitude_difference + (1 - coefficient) * self.WGS84_F * sin_alpha * (
             sigma
             + coefficient
             * sin_sigma
@@ -129,13 +126,9 @@ class DistanceCalculatorPart2Mixin:
         Slower than Haversine, but higher accuracy (< 0.01% error).
         """
         unit = self._resolve_distance_unit(unit)
-        lat1_rad, lon1_rad, lat2_rad, lon2_rad = self._to_radians(
-            lat1, lon1, lat2, lon2
-        )
+        lat1_rad, lon1_rad, lat2_rad, lon2_rad = self._to_radians(lat1, lon1, lat2, lon2)
         longitude_difference = lon2_rad - lon1_rad
-        sin_u1, cos_u1, sin_u2, cos_u2 = self._calculate_reduced_latitudes(
-            lat1_rad, lat2_rad
-        )
+        sin_u1, cos_u1, sin_u2, cos_u2 = self._calculate_reduced_latitudes(lat1_rad, lat2_rad)
 
         # Check for identical points first
         if longitude_difference == 0 and lat1_rad == lat2_rad:
@@ -149,9 +142,7 @@ class DistanceCalculatorPart2Mixin:
             cos_sigma,
             cos_2sigma_m,
             sigma,
-        ) = self._iterate_vincenty_lambda(
-            longitude_difference, sin_u1, cos_u1, sin_u2, cos_u2
-        )
+        ) = self._iterate_vincenty_lambda(longitude_difference, sin_u1, cos_u1, sin_u2, cos_u2)
 
         if sin_sigma == 0:
             return 0.0

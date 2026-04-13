@@ -1,12 +1,12 @@
 # mypy: ignore-errors
 """Wind rose data extraction."""
 
-from typing import Any, Dict
+from typing import Any
 
 import pandas as pd
 
 
-def _get_winddirection_data(daily_data: Dict[str, Any]) -> list:
+def _get_winddirection_data(daily_data: dict[str, Any]) -> list:
     """Return available wind direction series."""
     return daily_data.get("winddirection_10m_dominant", []) or daily_data.get(
         "wind_direction_10m_dominant", []
@@ -15,24 +15,18 @@ def _get_winddirection_data(daily_data: Dict[str, Any]) -> list:
 
 def _has_valid_data(data_list: list) -> bool:
     """Check whether a sequence contains valid numeric values."""
-    return any(
-        value is not None and isinstance(value, (int, float)) for value in data_list
-    )
+    return any(value is not None and isinstance(value, int | float) for value in data_list)
 
 
-def _get_preferred_windspeed_data(
-    daily_data: Dict[str, Any], dates: list
-) -> tuple[list, str]:
+def _get_preferred_windspeed_data(daily_data: dict[str, Any], dates: list) -> tuple[list, str]:
     """Select preferred windspeed source and label."""
     candidates = [
         (
-            daily_data.get("windgusts_10m_max", [])
-            or daily_data.get("wind_gusts_max", []),
+            daily_data.get("windgusts_10m_max", []) or daily_data.get("wind_gusts_max", []),
             "wind_gusts_max",
         ),
         (
-            daily_data.get("windspeed_10m_max", [])
-            or daily_data.get("wind_speed_max", []),
+            daily_data.get("windspeed_10m_max", []) or daily_data.get("wind_speed_max", []),
             "windspeed_10m_max",
         ),
     ]
@@ -42,7 +36,7 @@ def _get_preferred_windspeed_data(
     return [], ""
 
 
-def extract_wind_data(data: Dict[str, Any]) -> pd.DataFrame:
+def extract_wind_data(data: dict[str, Any]) -> pd.DataFrame:
     """
     Széllökés adatok kinyerése rózsadiagramhoz.
 
@@ -69,5 +63,5 @@ def extract_wind_data(data: Dict[str, Any]) -> pd.DataFrame:
         }
     )
     df = df.dropna()
-    valid_direction_mask = (df["winddirection"] >= 0) & (df["winddirection"] <= 360)
+    valid_direction_mask = (df["winddirection"] >= 0) & (df["winddirection"] <= 360)  # noqa: PLR2004
     return df[valid_direction_mask]

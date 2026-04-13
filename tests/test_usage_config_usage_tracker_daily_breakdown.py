@@ -16,9 +16,7 @@ class TestUsageTrackerDailyBreakdown:
 
         assert isinstance(result, dict)
 
-    def test_get_daily_breakdown_with_tracked_requests(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_get_daily_breakdown_with_tracked_requests(self, config_fs: dict[str, str]) -> None:
         """Should return tracked daily breakdown."""
         from src.config.usage_config import UsageTracker
 
@@ -38,9 +36,7 @@ class TestUsageTrackerDailyBreakdown:
 
         assert len(result) == 7
 
-    def test_get_daily_breakdown_chronological_order(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_get_daily_breakdown_chronological_order(self, config_fs: dict[str, str]) -> None:
         """Should return data in chronological order."""
         from src.config.usage_config import UsageTracker
 

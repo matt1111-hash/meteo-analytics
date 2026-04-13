@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403,noqa: I001
 # mypy: ignore-errors
 """Compatibility wrapper for analytics_tabs.py."""
 
@@ -14,9 +14,9 @@ from .analytics_tabs_part3 import ClimateTabWidget
 from .analytics_tabs_support import *
 
 __all__ = [
-    "TemperatureTabWidget",
-    "PrecipitationTabWidget",
-    "WindTabWidget",
-    "WindGustTabWidget",
     "ClimateTabWidget",
+    "PrecipitationTabWidget",
+    "TemperatureTabWidget",
+    "WindGustTabWidget",
+    "WindTabWidget",
 ]

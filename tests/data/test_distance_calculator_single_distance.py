@@ -41,9 +41,7 @@ class TestHaversineDistance:
         """haversine_distance uses explicit unit."""
         calc = DistanceCalculator()
 
-        distance_miles = calc.haversine_distance(
-            47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.MILES
-        )
+        distance_miles = calc.haversine_distance(47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.MILES)
 
         assert distance_miles > 0
         distance_km = calc.haversine_distance(47.5, 19.0, 48.0, 20.0)
@@ -65,17 +63,13 @@ class TestHaversineDistance:
     def test_nautical_miles(self) -> None:
         """haversine_distance returns correct value in nautical miles."""
         calc = DistanceCalculator()
-        distance = calc.haversine_distance(
-            47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.NAUTICAL_MILES
-        )
+        distance = calc.haversine_distance(47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.NAUTICAL_MILES)
         assert distance > 0
 
     def test_meters(self) -> None:
         """haversine_distance returns correct value in meters."""
         calc = DistanceCalculator()
-        distance = calc.haversine_distance(
-            47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.METERS
-        )
+        distance = calc.haversine_distance(47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.METERS)
         assert 70000 < distance < 100000
 
 
@@ -111,17 +105,13 @@ class TestVincentyDistance:
     def test_explicit_unit(self) -> None:
         """vincenty_distance uses explicit unit."""
         calc = DistanceCalculator()
-        distance_miles = calc.vincenty_distance(
-            47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.MILES
-        )
+        distance_miles = calc.vincenty_distance(47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.MILES)
         assert distance_miles > 0
 
     def test_meters_output(self) -> None:
         """vincenty_distance returns distance in meters when requested."""
         calc = DistanceCalculator()
-        distance = calc.vincenty_distance(
-            47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.METERS
-        )
+        distance = calc.vincenty_distance(47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.METERS)
         assert distance > 70000
 
     def test_increments_calculation_count(self) -> None:

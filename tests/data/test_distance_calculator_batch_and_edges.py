@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.data.distance_calculator import DistanceCalculator
 from src.data.geo_types import DistanceUnit
 
@@ -183,11 +182,7 @@ class TestDistanceCalculatorEdgeCases:
     def test_mixed_unit_calculations(self) -> None:
         """DistanceCalculator handles mixed unit calculations."""
         calc = DistanceCalculator(default_unit=DistanceUnit.KILOMETERS)
-        distance_km = calc.haversine_distance(
-            47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.KILOMETERS
-        )
-        distance_miles = calc.haversine_distance(
-            47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.MILES
-        )
+        distance_km = calc.haversine_distance(47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.KILOMETERS)
+        distance_miles = calc.haversine_distance(47.5, 19.0, 48.0, 20.0, unit=DistanceUnit.MILES)
         ratio = distance_miles / distance_km
         assert 0.60 < ratio < 0.65

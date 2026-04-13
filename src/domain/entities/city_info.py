@@ -1,7 +1,7 @@
 """City info domain entity."""
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 @dataclass
@@ -20,11 +20,11 @@ class CityInfo:
     country_code: str
 
     # Optional fields
-    population: Optional[int] = None
-    continent: Optional[str] = None
-    admin_name: Optional[str] = None
-    capital: Optional[str] = None
-    timezone: Optional[str] = None
+    population: int | None = None
+    continent: str | None = None
+    admin_name: str | None = None
+    capital: str | None = None
+    timezone: str | None = None
 
     def get_display_name(self) -> str:
         """Get display name."""
@@ -38,7 +38,7 @@ class CityInfo:
         """Check if capital."""
         return self.capital == "primary"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "id": self.id,

@@ -19,7 +19,7 @@ def _connect_signals_if_present(source: Any, signal_map: list[tuple[str, Any]]) 
 class MainWindowAnalysisMixin:
     """Signal wiring and analysis lifecycle handlers."""
 
-    def _connect_mvc_signals(self: "MainWindow") -> None:
+    def _connect_mvc_signals(self: MainWindow) -> None:
         """Connect controller and widget signals."""
         _connect_signals_if_present(
             self.controller,
@@ -53,12 +53,12 @@ class MainWindowAnalysisMixin:
             [("query_requested", self._handle_analytics_view_query)],
         )
 
-    def _on_local_error(self: "MainWindow", error_message: str) -> None:
+    def _on_local_error(self: MainWindow, error_message: str) -> None:
         """Display local UI errors."""
         self.status_bar.showMessage(f"❌ {error_message}", 5000)
         self._show_error(error_message)
 
-    def _on_analysis_requested(self: "MainWindow", request: dict[str, Any]) -> None:
+    def _on_analysis_requested(self: MainWindow, request: dict[str, Any]) -> None:
         """Forward analysis requests to the controller."""
         print("=" * 80)
         print("🚨 DEBUG: MainWindow._on_analysis_requested() MEGHÍVVA!")
@@ -77,13 +77,13 @@ class MainWindowAnalysisMixin:
             self.status_bar.showMessage(f"❌ Hiba: {exc}")
             self._show_error(f"Elemzési hiba: {exc}")
 
-    def _on_provider_selected(self: "MainWindow", provider_name: str) -> None:
+    def _on_provider_selected(self: MainWindow, provider_name: str) -> None:
         """Handle provider selection changes."""
         self.state.provider.current_provider = provider_name
         self._update_provider_status_display()
 
     def _on_provider_usage_updated(
-        self: "MainWindow", usage_stats: dict[str, dict[str, Any]]
+        self: MainWindow, usage_stats: dict[str, dict[str, Any]]
     ) -> None:
         """Refresh provider usage state."""
         self.state.provider.provider_usage_stats = usage_stats
@@ -91,24 +91,22 @@ class MainWindowAnalysisMixin:
         self._update_provider_status_display()
 
     def _on_provider_warning(
-        self: "MainWindow", provider_name: str, usage_percent: int
+        self: MainWindow,
+        provider_name: str,  # noqa: ARG002
+        usage_percent: int,  # noqa: ARG002
     ) -> None:
         """Refresh the provider status when warnings change."""
         self._update_provider_status_display()
 
-    def _on_provider_fallback(
-        self: "MainWindow", from_provider: str, to_provider: str
-    ) -> None:
+    def _on_provider_fallback(self: MainWindow, from_provider: str, to_provider: str) -> None:
         """Display provider fallback information."""
-        self.status_bar.showMessage(
-            f"⚠️ Provider fallback: {from_provider} → {to_provider}"
-        )
+        self.status_bar.showMessage(f"⚠️ Provider fallback: {from_provider} → {to_provider}")
 
-    def _on_analysis_started(self: "MainWindow", analysis_type: str) -> None:
+    def _on_analysis_started(self: MainWindow, analysis_type: str) -> None:
         """Show analysis start feedback."""
         self.status_bar.showMessage(f"🔄 {analysis_type} elemzés indítása...")
 
-    def _on_analysis_completed(self: "MainWindow", result_data: dict[str, Any]) -> None:
+    def _on_analysis_completed(self: MainWindow, result_data: dict[str, Any]) -> None:
         """Push completed analysis results into the results panel."""
         print("=" * 80)
         print("🚨 DEBUG: MainWindow._on_analysis_completed() ELEJE")
@@ -137,11 +135,11 @@ class MainWindowAnalysisMixin:
         else:
             print("⚠️ WARNING: results_panel has no update_data method")
 
-    def _on_analysis_failed(self: "MainWindow", error_message: str) -> None:
+    def _on_analysis_failed(self: MainWindow, error_message: str) -> None:
         """Handle failed analyses."""
         self.status_bar.showMessage(f"❌ Elemzés hiba: {error_message}")
         self._show_error(error_message)
 
-    def _on_analysis_cancelled(self: "MainWindow") -> None:
+    def _on_analysis_cancelled(self: MainWindow) -> None:
         """Handle cancelled analyses."""
         self.status_bar.showMessage("⚠️ Elemzés megszakítva")

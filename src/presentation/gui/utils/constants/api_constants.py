@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -34,7 +33,7 @@ class APIConstants:
     METEOSTAT_MONTHLY_LIMIT = 10000
 
     # Source Display Names
-    SOURCE_DISPLAY_NAMES = {
+    SOURCE_DISPLAY_NAMES = {  # noqa: RUF012
         "open-meteo": "🌍 Open-Meteo API",
         "meteostat": "💎 Meteostat API",
     }

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for ProfessionalThemeManager."""
 
@@ -7,14 +7,14 @@ from __future__ import annotations
 from .core_support import *
 
 
-class ProfessionalThemeManagerPart1Mixin:
-    def __new__(cls) -> "ProfessionalThemeManager":
+class ProfessionalThemeManagerPart1Mixin:  # noqa: D101
+    def __new__(cls) -> ProfessionalThemeManager:
         """Singleton pattern - professional implementation."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         if hasattr(self, "_initialized"):
             return
 
@@ -25,9 +25,7 @@ class ProfessionalThemeManagerPart1Mixin:
         self.app = QApplication.instance()
 
         # 🎨 PIROS (#C43939) TÉMA INTEGRÁCIÓ
-        self.color_palette = create_color_palette(
-            preset_name="red", theme_type=ThemeType.LIGHT
-        )
+        self.color_palette = create_color_palette(preset_name="red", theme_type=ThemeType.LIGHT)
         self.weather_palette = create_weather_palette(
             base_temperature="#C43939", theme_type=ThemeType.LIGHT
         )
@@ -77,9 +75,7 @@ class ProfessionalThemeManagerPart1Mixin:
             Professional theme applied successfully
         """
         if theme_name not in ["light", "dark"]:
-            print(
-                f"❌ Invalid theme: {theme_name}. Professional themes: 'light' or 'dark'"
-            )
+            print(f"❌ Invalid theme: {theme_name}. Professional themes: 'light' or 'dark'")
             return False
 
         old_theme = self.current_theme
@@ -100,9 +96,7 @@ class ProfessionalThemeManagerPart1Mixin:
         if success:
             self.theme_changed.emit(theme_name)
             self.color_scheme_updated.emit(self.color_palette)
-            print(
-                f"✅ Professional RED (#C43939) theme successfully applied: {theme_name}"
-            )
+            print(f"✅ Professional RED (#C43939) theme successfully applied: {theme_name}")
         else:
             # Professional rollback
             self.current_theme = old_theme
@@ -137,9 +131,7 @@ class ProfessionalThemeManagerPart1Mixin:
         # PRIORITY 3: Professional ColorPalette fallback
         try:
             apply_color_palette_theme(theme_name, self)
-            print(
-                f"✅ Professional ColorPalette RED (#C43939) theme applied: {theme_name}"
-            )
+            print(f"✅ Professional ColorPalette RED (#C43939) theme applied: {theme_name}")
             return True
         except Exception as e:
             print(f"❌ All professional theme methods failed: {e}")

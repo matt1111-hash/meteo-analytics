@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import date, datetime
-from typing import Any, Dict, Optional
+from typing import Any
 
 from src.domain.value_objects.enums import (
     AnalyticsMetric,
@@ -30,10 +30,10 @@ class CityWeatherResult:
     value: float  # Fő metrika értéke
     metric: AnalyticsMetric  # Metrika típusa
     date: date  # Adat dátuma
-    rank: Optional[int] = None  # 🔧 FIX: UI compatibility - eredmény rangsor
+    rank: int | None = None  # 🔧 FIX: UI compatibility - eredmény rangsor
 
     # Additional data
-    additional_data: Dict[str, Any] = field(default_factory=dict)
+    additional_data: dict[str, Any] = field(default_factory=dict)
 
     # Metadata
     data_source: DataSource = DataSource.AUTO
@@ -41,10 +41,10 @@ class CityWeatherResult:
     confidence: float = 1.0  # 0.0-1.0 megbízhatóság
 
     # Geographical context
-    population: Optional[int] = None
-    elevation: Optional[float] = None
-    timezone: Optional[str] = None
-    admin_name: Optional[str] = None  # Régió/állam
+    population: int | None = None
+    elevation: float | None = None
+    timezone: str | None = None
+    admin_name: str | None = None  # Régió/állam
 
     def __str__(self) -> str:
         """String reprezentáció."""
@@ -63,7 +63,7 @@ class CityWeatherResult:
         """Koordináták tuple-ként."""
         return (self.latitude, self.longitude)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Dictionary konverzió."""
         return {
             "city_name": self.city_name,
@@ -107,8 +107,8 @@ class AnomalyResult:
     confidence: float = 1.0
 
     # Statistical context
-    percentile: Optional[float] = None
-    z_score: Optional[float] = None
+    percentile: float | None = None
+    z_score: float | None = None
 
     # Metadata
     detected_at: datetime = field(default_factory=datetime.now)
@@ -122,7 +122,7 @@ class AnomalyResult:
         """Súlyosság színkód."""
         return get_severity_color(self.severity)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Dictionary konverzió."""
         return {
             "date": self.date.isoformat(),

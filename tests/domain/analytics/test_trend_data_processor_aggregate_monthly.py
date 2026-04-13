@@ -15,9 +15,7 @@ from tests.domain.analytics.trend_data_processor_support import (
 class TestAggregateMonthly(TestTrendDataProcessor):
     """Test aggregate_monthly method."""
 
-    def test_returns_none_for_insufficient_data(
-        self, processor: TrendDataProcessor
-    ) -> None:
+    def test_returns_none_for_insufficient_data(self, processor: TrendDataProcessor) -> None:
         """Should return None for insufficient data."""
         df = pd.DataFrame(
             {
@@ -38,12 +36,7 @@ class TestAggregateMonthly(TestTrendDataProcessor):
         dates6 = pd.date_range("2026-06-01", periods=10)
 
         all_dates = (
-            list(dates)
-            + list(dates2)
-            + list(dates3)
-            + list(dates4)
-            + list(dates5)
-            + list(dates6)
+            list(dates) + list(dates2) + list(dates3) + list(dates4) + list(dates5) + list(dates6)
         )
         values = list(range(60))
 
@@ -62,12 +55,7 @@ class TestAggregateMonthly(TestTrendDataProcessor):
         dates6 = pd.date_range("2026-06-01", periods=10)
 
         all_dates = (
-            list(dates)
-            + list(dates2)
-            + list(dates3)
-            + list(dates4)
-            + list(dates5)
-            + list(dates6)
+            list(dates) + list(dates2) + list(dates3) + list(dates4) + list(dates5) + list(dates6)
         )
         values = list(range(60))
 
@@ -95,12 +83,7 @@ class TestAggregateMonthly(TestTrendDataProcessor):
         dates6 = pd.date_range("2026-06-01", periods=10)
 
         all_dates = (
-            list(dates)
-            + list(dates2)
-            + list(dates3)
-            + list(dates4)
-            + list(dates5)
-            + list(dates6)
+            list(dates) + list(dates2) + list(dates3) + list(dates4) + list(dates5) + list(dates6)
         )
         values = [10.0] * 60
 
@@ -109,9 +92,7 @@ class TestAggregateMonthly(TestTrendDataProcessor):
         assert result is not None
         assert all(result["avg_value"] == 10.0)
 
-    def test_filters_months_with_insufficient_days(
-        self, processor: TrendDataProcessor
-    ) -> None:
+    def test_filters_months_with_insufficient_days(self, processor: TrendDataProcessor) -> None:
         """Should filter months with less than MIN_DAYS_PER_MONTH days."""
         dates = pd.date_range("2026-01-01", periods=10)
         dates2 = pd.date_range("2026-02-01", periods=3)

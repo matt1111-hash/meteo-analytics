@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,12 +7,11 @@ Validation - Basic validators for dates, filenames, colors.
 
 import logging
 import re
-from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
 
-def validate_date_range(start_date: str, end_date: str) -> Tuple[bool, str]:
+def validate_date_range(start_date: str, end_date: str) -> tuple[bool, str]:
     """
     Dátum tartomány validálása.
 
@@ -36,7 +34,7 @@ def validate_date_range(start_date: str, end_date: str) -> Tuple[bool, str]:
         if end > datetime.now():
             return False, "A befejező dátum nem lehet jövőbeli"
 
-        if (end - start).days > 365:
+        if (end - start).days > 365:  # noqa: PLR2004
             return False, "Maximum 365 napos időszak választható"
 
         if (end - start).days < 1:
@@ -65,7 +63,7 @@ def sanitize_filename(filename: str) -> str:
     filename = re.sub(r"\s+", "_", filename)
 
     # Maximum hossz korlátozása
-    if len(filename) > 200:
+    if len(filename) > 200:  # noqa: PLR2004
         filename = filename[:200]
 
     return filename
@@ -85,7 +83,7 @@ def validate_color_hex(color: str) -> bool:
     return bool(re.match(pattern, color))
 
 
-def get_contrast_ratio(color1: str, color2: str) -> float:
+def get_contrast_ratio(color1: str, color2: str) -> float:  # noqa: ARG001
     """
     Két szín közötti kontraszt arány számítása.
 
@@ -102,8 +100,8 @@ def get_contrast_ratio(color1: str, color2: str) -> float:
 
 
 __all__ = [
-    "validate_date_range",
+    "get_contrast_ratio",
     "sanitize_filename",
     "validate_color_hex",
-    "get_contrast_ratio",
+    "validate_date_range",
 ]

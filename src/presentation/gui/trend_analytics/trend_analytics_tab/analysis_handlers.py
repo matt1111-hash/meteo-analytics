@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/trend_analytics/trend_analytics_tab/analysis_handler
 """
 
 import logging
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import Signal
 
@@ -45,7 +44,7 @@ class TrendAnalysisHandlerMixin:
     parameter_combo: any
     time_combo: any
 
-    # Signals (delegált)
+    # Signals (delegált)  # noqa: ERA001
     analysis_started: Signal
     analysis_completed: Signal
     error_occurred: Signal
@@ -66,7 +65,7 @@ class TrendAnalysisHandlerMixin:
                 self.error_occurred.emit("Kérlek válassz várost!")
                 return
 
-            if len(location) < 2:
+            if len(location) < 2:  # noqa: PLR2004
                 self.error_occurred.emit("Legalább 2 karakteres város név szükséges!")
                 return
 
@@ -100,14 +99,12 @@ class TrendAnalysisHandlerMixin:
 
         except Exception as e:
             logger.error(f"❌ Enhanced trend analysis start hiba: {e}")
-            self.on_analysis_error(f"Elemzés indítási hiba: {str(e)}")
+            self.on_analysis_error(f"Elemzés indítási hiba: {e!s}")
 
-    def on_analysis_completed(self, trend_results: Dict) -> None:
+    def on_analysis_completed(self, trend_results: dict) -> None:
         """🎉 ENHANCED TREND ELEMZÉS BEFEJEZÉSE"""
         try:
-            logger.info(
-                f"🎉 ENHANCED TREND ANALYSIS COMPLETED: {trend_results['settlement_name']}"
-            )
+            logger.info(f"🎉 ENHANCED TREND ANALYSIS COMPLETED: {trend_results['settlement_name']}")
 
             # 🎨 PLOTLY CHART FRISSÍTÉSE
             self.chart.update_chart(trend_results)
@@ -123,7 +120,7 @@ class TrendAnalysisHandlerMixin:
 
         except Exception as e:
             logger.error(f"❌ Enhanced analysis completion handling hiba: {e}")
-            self.on_analysis_error(f"Eredmény feldolgozási hiba: {str(e)}")
+            self.on_analysis_error(f"Eredmény feldolgozási hiba: {e!s}")
 
     def on_analysis_error(self, error_message: str) -> None:
         """❌ ENHANCED TREND ELEMZÉS HIBA KEZELÉSE"""

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,11 +15,8 @@ Képességek:
 Fájl: src/presentation/gui/panel_widgets/date_range_widget/core.py
 """
 
-from typing import Optional
-
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-
 from src.presentation.gui.theme_manager import get_theme_manager
 
 from .date_handlers import DateHandlerMixin
@@ -55,7 +51,7 @@ class DateRangeWidget(QWidget, DateHandlerMixin, DateRangeWidgetPublicAPI):
     date_range_changed = Signal(str, str)  # start_date, end_date (ISO format)
     date_mode_changed = Signal(str)  # "time_range" vagy "manual_dates"
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         """
         DateRangeWidget inicializálása.
 

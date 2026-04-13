@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -18,7 +17,7 @@ Fájl: src/presentation/gui/charts/windy_days_chart/styling.py
 """
 
 import logging
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
 
@@ -28,7 +27,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _get_bar_colors(self, counts: List[int]) -> List[str]:
+def _get_bar_colors(self, counts: list[int]) -> list[str]:  # noqa: ARG001
     """
     Oszlopok színeinek meghatározása a szeles napok száma alapján.
 
@@ -76,7 +75,11 @@ def _get_bar_colors(self, counts: List[int]) -> List[str]:
 
 
 def _add_value_labels(
-    self, ax, bars, counts: List[int], percentages: List[float]
+    self,  # noqa: ARG001
+    ax,
+    bars,
+    counts: list[int],
+    percentages: list[float],
 ) -> None:
     """
     Értékek hozzáadása az oszlopok tetejére.
@@ -89,7 +92,7 @@ def _add_value_labels(
         percentages: Százalékok
     """
     try:
-        for bar, count, percentage in zip(bars, counts, percentages):
+        for bar, count, percentage in zip(bars, counts, percentages, strict=False):
             height = bar.get_height()
 
             # Érték szöveg
@@ -112,7 +115,7 @@ def _add_value_labels(
         logger.error(f"Hiba az értékcímkék hozzáadásában: {e}")
 
 
-def _setup_chart_axes(self, ax, months: List[str], counts: List[int]) -> None:
+def _setup_chart_axes(self, ax, months: list[str], counts: list[int]) -> None:  # noqa: ARG001
     """
     Chart tengelyek beállítása.
 

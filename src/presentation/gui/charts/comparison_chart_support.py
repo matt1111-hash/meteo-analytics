@@ -17,11 +17,10 @@ Több év összehasonlító chart widget trend elemzéssel.
 ✅ Optimális legend pozícionálás
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import pandas as pd
 from PySide6.QtWidgets import QWidget
-
 from src.presentation.gui.theme_manager import get_current_colors
 
 from .base_chart import WeatherChart
@@ -37,7 +36,7 @@ def build_temp_mean_fallback(
         return []
 
     result: list[Any] = []
-    for t_max, t_min in zip(temp_max, temp_min):
+    for t_max, t_min in zip(temp_max, temp_min, strict=False):
         if t_max is None or t_min is None:
             result.append(None)
             continue

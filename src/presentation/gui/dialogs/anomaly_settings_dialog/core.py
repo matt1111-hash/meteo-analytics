@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -11,7 +10,6 @@ import logging
 
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import QDialog, QMessageBox, QVBoxLayout
-
 from src.domain.ports import AnomalyProfilePort
 from src.infrastructure.container import get_anomaly_profile_port
 
@@ -75,10 +73,7 @@ class AnomalySettingsDialog(QDialog):
 
         # Window icon és flags
         self.setWindowFlags(
-            Qt.Dialog
-            | Qt.WindowTitleHint
-            | Qt.WindowCloseButtonHint
-            | Qt.WindowMaximizeButtonHint
+            Qt.Dialog | Qt.WindowTitleHint | Qt.WindowCloseButtonHint | Qt.WindowMaximizeButtonHint
         )
 
     def _init_ui(self) -> None:
@@ -95,7 +90,7 @@ class AnomalySettingsDialog(QDialog):
         main_tabs = self.ui_builder.create_main_tabs()
         layout.addWidget(main_tabs)
 
-        # Gombok (mentés, mégse, alkalmazás)
+        # Gombok (mentés, mégse, alkalmazás)  # noqa: ERA001
         buttons_section = self.ui_builder.create_buttons_section()
         layout.addWidget(buttons_section)
 

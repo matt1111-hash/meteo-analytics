@@ -182,7 +182,7 @@ class TestCreateProfilesData:
 
         assert set(data["profiles"].keys()) == set(profiles.keys())
 
-        for profile_name in profiles.keys():
+        for profile_name in profiles.keys():  # noqa: SIM118
             data_profile = data["profiles"][profile_name]
             default_profile = profiles[profile_name]
             for key in default_profile:

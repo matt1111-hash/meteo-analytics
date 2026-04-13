@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,11 +7,10 @@ Global Weather Analyzer - Data Table Tab Module
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
-
 from src.presentation.gui.theme_manager import (
     get_theme_manager,
     register_widget_for_theming,
@@ -27,14 +25,14 @@ logger = logging.getLogger(__name__)
 class DataTableTab(QWidget):
     """📋 "Adattáblázat" TAB - Teljes képernyős táblázat kezelő."""
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):  # noqa: D107
         super().__init__(parent)
 
         self.theme_manager = get_theme_manager()
 
-        self.data_table: Optional[WeatherDataTable] = None
-        self.csv_btn: Optional[QPushButton] = None
-        self.excel_btn: Optional[QPushButton] = None
+        self.data_table: WeatherDataTable | None = None
+        self.csv_btn: QPushButton | None = None
+        self.excel_btn: QPushButton | None = None
 
         self._init_ui()
         self._register_widgets_for_theming()
@@ -89,7 +87,7 @@ class DataTableTab(QWidget):
 
         logger.debug("DataTableTab - Összes widget regisztrálva ColorPalette API-hez")
 
-    def update_data(self, data: Dict[str, Any]) -> None:
+    def update_data(self, data: dict[str, Any]) -> None:
         """Táblázat adatok frissítése."""
         if self.data_table:
             self.data_table.update_data(data)

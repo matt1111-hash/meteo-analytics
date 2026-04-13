@@ -1,7 +1,7 @@
 # mypy: ignore-errors
 """Weather analysis API routes."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import logging
 
@@ -38,9 +38,7 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
             max_retries=engine.max_retries,
             retry_delay=engine.retry_delay,
         ),
-        analytics_transform_service=AnalyticsTransformService(
-            MultiCityEngine.QUERY_TYPES
-        ),
+        analytics_transform_service=AnalyticsTransformService(MultiCityEngine.QUERY_TYPES),
         query_types=MultiCityEngine.QUERY_TYPES,
         regions=REGIONS,
         hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,

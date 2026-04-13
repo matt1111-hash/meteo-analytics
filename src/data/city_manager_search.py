@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -10,7 +9,6 @@ Part of the city_manager refactoring - split into focused modules.
 """
 
 import logging
-from typing import List, Optional, Tuple
 
 from .city_manager_hungarian import CityManagerHungarian
 from .city_types import City
@@ -22,9 +20,7 @@ class CityManagerSearch(CityManagerHungarian):
     """Global cities and unified search methods."""
 
     @staticmethod
-    def _find_exact_match(
-        city_name: str, candidates: List[City]
-    ) -> Optional[Tuple[float, float]]:
+    def _find_exact_match(city_name: str, candidates: list[City]) -> tuple[float, float] | None:
         """Return coordinates for an exact case-insensitive city match."""
         exact_match = next(
             (city for city in candidates if city.city.lower() == city_name.lower()),
@@ -35,16 +31,14 @@ class CityManagerSearch(CityManagerHungarian):
         return (exact_match.lat, exact_match.lon)
 
     @staticmethod
-    def _find_best_match(
-        candidates: List[City], key_func
-    ) -> Optional[Tuple[float, float]]:
+    def _find_best_match(candidates: list[City], key_func) -> tuple[float, float] | None:
         """Return coordinates for the best ranked candidate."""
         if not candidates:
             return None
         best_match = max(candidates, key=key_func)
         return (best_match.lat, best_match.lon)
 
-    def _resolve_hungarian_match(self, city_name: str) -> Optional[Tuple[float, float]]:
+    def _resolve_hungarian_match(self, city_name: str) -> tuple[float, float] | None:
         """Resolve a city from the Hungarian database when available."""
         if not self.hungarian_connection:
             return None
@@ -59,7 +53,7 @@ class CityManagerSearch(CityManagerHungarian):
             key_func=lambda city: (city.region_priority or 0, city.population or 0),
         )
 
-    def _resolve_global_match(self, city_name: str) -> Optional[Tuple[float, float]]:
+    def _resolve_global_match(self, city_name: str) -> tuple[float, float] | None:
         """Resolve a city from the global database when available."""
         if not self.connection:
             return None
@@ -69,11 +63,9 @@ class CityManagerSearch(CityManagerHungarian):
         if exact_match:
             return exact_match
 
-        return self._find_best_match(
-            global_results, key_func=lambda city: city.population or 0
-        )
+        return self._find_best_match(global_results, key_func=lambda city: city.population or 0)
 
-    def find_city_by_name(self, city_name: str) -> Optional[Tuple[float, float]]:
+    def find_city_by_name(self, city_name: str) -> tuple[float, float] | None:
         """
         Find single city coordinates for TrendDataProcessor support.
 
@@ -107,7 +99,7 @@ class CityManagerSearch(CityManagerHungarian):
         limit: int = 20,
         hungarian_priority: bool = True,
         global_limit_ratio: float = 0.3,
-    ) -> List[City]:
+    ) -> list[City]:
         """
         COMBINED SEARCH - Hungarian Settlements + Global Cities.
 
@@ -124,9 +116,7 @@ class CityManagerSearch(CityManagerHungarian):
             global_limit = int(limit * max(normalized_ratio, 0.5))
             hungarian_limit = limit - global_limit
 
-        hungarian_results = self.search_hungarian_settlements(
-            search_term, limit=hungarian_limit
-        )
+        hungarian_results = self.search_hungarian_settlements(search_term, limit=hungarian_limit)
         results.extend(hungarian_results)
 
         global_results = self.search_cities(search_term, limit=global_limit)
@@ -146,8 +136,8 @@ class CityManagerSearch(CityManagerHungarian):
         return results[:limit]
 
     def search_cities(
-        self, search_term: str, limit: int = 20, country_filter: Optional[str] = None
-    ) -> List[City]:
+        self, search_term: str, limit: int = 20, country_filter: str | None = None
+    ) -> list[City]:
         """Global city search by name (ORIGINAL FUNCTION)."""
         if not self.connection:
             logger.warning("Global cities database not available")
@@ -174,8 +164,8 @@ class CityManagerSearch(CityManagerHungarian):
         return cities
 
     def get_cities_by_country(
-        self, country_code: str, limit: int = 20, min_population: Optional[int] = None
-    ) -> List[City]:
+        self, country_code: str, limit: int = 20, min_population: int | None = None
+    ) -> list[City]:
         """Country-based city query (original)."""
         if country_code.upper() == "HU":
             return self._get_hungarian_cities_combined(limit, min_population)
@@ -199,8 +189,8 @@ class CityManagerSearch(CityManagerHungarian):
         return [City.from_db_row(tuple(row)) for row in rows]
 
     def _get_hungarian_cities_combined(
-        self, limit: int, min_population: Optional[int] = None
-    ) -> List[City]:
+        self, limit: int, min_population: int | None = None
+    ) -> list[City]:
         """Hungarian cities combined query (settlements + global)."""
         results = []
 
@@ -213,9 +203,7 @@ class CityManagerSearch(CityManagerHungarian):
                 sql_parts.append("WHERE population >= ?")
                 params.append(min_population)
 
-            sql_parts.append(
-                "ORDER BY region_priority DESC, population DESC NULLS LAST"
-            )
+            sql_parts.append("ORDER BY region_priority DESC, population DESC NULLS LAST")
             sql_parts.append(f"LIMIT {hungarian_limit}")
 
             sql = " ".join(sql_parts)

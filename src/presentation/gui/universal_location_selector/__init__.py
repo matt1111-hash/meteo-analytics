@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -19,4 +18,4 @@ Fájl: src/presentation/gui/universal_location_selector/__init__.py
 from .core import UniversalLocationSelector
 from .location_card import LocationCard
 
-__all__ = ["UniversalLocationSelector", "LocationCard"]
+__all__ = ["LocationCard", "UniversalLocationSelector"]

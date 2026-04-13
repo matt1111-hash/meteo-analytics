@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from ui_builder.py."""
 
@@ -82,7 +82,7 @@ def create_time_range_group(parent_widget: QWidget) -> dict:
     }
 
 
-def create_manual_dates_group(parent_widget: QWidget) -> dict:
+def create_manual_dates_group(parent_widget: QWidget) -> dict:  # noqa: PLR0915
     """
     Manual dates csoport létrehozása.
 

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for AnalyticsTransformService."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .analytics_transform_service_support import *
 
 
-class AnalyticsTransformServicePart1Mixin:
-    def __init__(self, query_types: Dict[str, Dict[str, Any]]) -> None:
+class AnalyticsTransformServicePart1Mixin:  # noqa: D101
+    def __init__(self, query_types: Dict[str, Dict[str, Any]]) -> None:  # noqa: D107
         if not query_types:
             raise ValueError("query_types mapping is required")
         self.query_types = query_types
@@ -24,9 +24,7 @@ class AnalyticsTransformServicePart1Mixin:
         metric_enum = query_config["metric_enum"]
         metric_value = self._extract_metric_value(city_data, metric_name)
         self._log_transform_inputs(city_data, metric_name, metric_value)
-        final_value = self._resolve_final_metric_value(
-            city_data, metric_value, metric_enum
-        )
+        final_value = self._resolve_final_metric_value(city_data, metric_value, metric_enum)
 
         return CityWeatherResult(
             city_name=city_data.city,
@@ -73,9 +71,7 @@ class AnalyticsTransformServicePart1Mixin:
         )
 
     @staticmethod
-    def _resolve_fallback_value(
-        city_data: CityWeatherData, metric_enum: AnalyticsMetric
-    ) -> float:
+    def _resolve_fallback_value(city_data: CityWeatherData, metric_enum: AnalyticsMetric) -> float:
         """Resolve fallback metric value."""
         if metric_enum == AnalyticsMetric.PRECIPITATION_SUM:
             return 0.0

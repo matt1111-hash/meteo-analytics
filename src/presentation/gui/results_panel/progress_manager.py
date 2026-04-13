@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -10,7 +9,6 @@ timeout kezelést és a progress frissítéseket.
 """
 
 import logging
-from typing import Optional
 
 from PySide6.QtCore import QObject, QTimer, Signal
 from PySide6.QtWidgets import QLabel
@@ -43,7 +41,7 @@ class ProgressManager(QObject):
 
         # Állapot változók
         self._is_loading: bool = False
-        self._loading_timer: Optional[QTimer] = None
+        self._loading_timer: QTimer | None = None
         self._progress_text: str = ""
 
     def initialize(self, progress_indicator: QLabel) -> None:
@@ -83,9 +81,7 @@ class ProgressManager(QObject):
         if self._loading_timer:
             self._loading_timer.start(30000)
 
-        self._logger.debug(
-            f"📊 DEBUG: ResultsPanel loading indicator shown - {message}"
-        )
+        self._logger.debug(f"📊 DEBUG: ResultsPanel loading indicator shown - {message}")
 
     def hide_loading(self) -> None:
         """Loading indicator elrejtése."""

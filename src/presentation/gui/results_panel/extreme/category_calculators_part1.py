@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for CategoryCalculators."""
 
@@ -66,18 +66,16 @@ def _append_temperature_extremes(
             )
 
 
-def _build_daily_ranges(
-    temp_max_list: List, temp_min_list: List
-) -> list[tuple[int, float]]:
+def _build_daily_ranges(temp_max_list: List, temp_min_list: List) -> list[tuple[int, float]]:
     """Build daily temperature ranges for days with complete data."""
     daily_ranges: list[tuple[int, float]] = []
     for i in range(min(len(temp_max_list), len(temp_min_list))):
         if temp_max_list[i] is not None and temp_min_list[i] is not None:
-            daily_ranges.append((i, temp_max_list[i] - temp_min_list[i]))
+            daily_ranges.append((i, temp_max_list[i] - temp_min_list[i]))  # noqa: PERF401
     return daily_ranges
 
 
-class CategoryCalculatorsPart1Mixin:
+class CategoryCalculatorsPart1Mixin:  # noqa: D101
     def calculate_temperature_records(
         self, daily_data: Dict[str, List], dates: List[str]
     ) -> List[ExtremeRecord]:
@@ -152,9 +150,7 @@ class CategoryCalculatorsPart1Mixin:
                     if wind_source == "wind_gusts_max":
                         analyzer = WindGustsAnalyzer()
                         category = analyzer.categorize_wind_gust(max_wind, wind_source)
-                        category_info = WindGustsConstants.CATEGORIES.get(
-                            category, "ISMERETLEN"
-                        )
+                        category_info = WindGustsConstants.CATEGORIES.get(category, "ISMERETLEN")
                         _append_record(
                             records,
                             "🌪️ Széllökés",

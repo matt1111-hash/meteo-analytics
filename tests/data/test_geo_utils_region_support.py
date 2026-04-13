@@ -1,15 +1,25 @@
 """Tests for GeoUtilsRegion from geo_utils_region.py."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
 from src.data.distance_calculator import DistanceCalculator
 from src.data.geo_types import BoundingBox, GeoPoint, GeographicRegion
-from src.data.geo_utils_core import GeoUtils
 from src.data.geo_utils_region import GeoUtilsRegion
+
+__all__ = [
+    "BoundingBox",
+    "DistanceCalculator",
+    "GeoPoint",
+    "GeoUtilsRegion",
+    "GeographicRegion",
+    "geo_utils",
+    "pytest",
+    "sample_cities",
+]
 
 
 @pytest.fixture
@@ -19,7 +29,7 @@ def geo_utils() -> GeoUtilsRegion:
 
 
 @pytest.fixture
-def sample_cities() -> List[Dict[str, Any]]:
+def sample_cities() -> list[dict[str, Any]]:
     """Sample city data for testing."""
     return [
         {"city": "Budapest", "lat": 47.4979, "lon": 19.0402, "population": 1752286},

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for GeocodingHandler."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .geocoding_handler_support import *
 
 
-class GeocodingHandlerPart2Mixin:
+class GeocodingHandlerPart2Mixin:  # noqa: D101
     def _create_display_name(self, result: Dict[str, Any]) -> str:
         """
         Felhasználóbarát megjelenítési név létrehozása.

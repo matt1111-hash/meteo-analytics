@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,10 +7,8 @@ Téma kezelési logika a HungarianCitySelector widgethez.
 """
 
 import logging
-from typing import List
 
 from PySide6.QtWidgets import QPushButton, QWidget
-
 from src.presentation.gui.theme_manager import (
     get_current_colors,
     get_theme_manager,
@@ -45,7 +42,7 @@ class HungarianCityThemeHandler:
         search_box,
         region_combo,
         city_list,
-        quick_access_buttons: List[QPushButton],
+        quick_access_buttons: list[QPushButton],
     ) -> None:
         """
         Widgetek regisztrálása theminghez.

@@ -19,12 +19,11 @@ Fájl: src/presentation/gui/results_panel/results_panel/public_api.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
 
 logger = logging.getLogger(__name__)
-
 
 # === PROGRESS API ===

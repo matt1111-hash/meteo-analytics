@@ -7,7 +7,7 @@ Control Panel - Public API Mixin
 Public API methods and legacy compatibility.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class PublicAPIMixin:
@@ -18,7 +18,7 @@ class PublicAPIMixin:
 
     # === PUBLIC API - STATE MANAGEMENT + MULTI-CITY ===
 
-    def get_current_state(self) -> Dict[str, Any]:
+    def get_current_state(self) -> dict[str, Any]:
         """Teljes panel állapot lekérdezése + MULTI-CITY."""
         return {
             "analysis_type": self.analysis_type_widget.get_state(),
@@ -30,11 +30,11 @@ class PublicAPIMixin:
             "query_control": self.query_control_widget.get_state(),
         }
 
-    def _get_all_widget_states(self) -> Dict[str, Any]:
+    def _get_all_widget_states(self) -> dict[str, Any]:
         """Összes widget state lekérdezése (internal) + MULTI-CITY."""
         return self.get_current_state()
 
-    def set_panel_state(self, state: Dict[str, Any]) -> bool:
+    def set_panel_state(self, state: dict[str, Any]) -> bool:
         """Teljes panel állapot beállítása + MULTI-CITY."""
         success = True
 
@@ -100,7 +100,7 @@ class PublicAPIMixin:
 
     # === LEGACY COMPATIBILITY API (MINIMÁLIS) ===
 
-    def get_selected_city_data(self) -> Optional[Dict[str, Any]]:
+    def get_selected_city_data(self) -> dict[str, Any] | None:
         """Legacy: Kiválasztott város adatok."""
         return self.location_widget.get_current_city_data()
 
@@ -121,10 +121,10 @@ class PublicAPIMixin:
         return self.query_control_widget._is_fetching
 
     # 🏙️ ÚJ LEGACY API: Multi-city support
-    def get_selected_multi_city_data(self) -> Dict[str, Any]:
+    def get_selected_multi_city_data(self) -> dict[str, Any]:
         """ÚJ: Multi-city selection adatok."""
         return self.multi_city_widget.get_state()
 
-    def get_selected_cities(self) -> List[Dict[str, Any]]:
+    def get_selected_cities(self) -> list[dict[str, Any]]:
         """ÚJ: Kiválasztott városok listája multi-city módban."""
         return self.multi_city_widget.get_selected_cities()

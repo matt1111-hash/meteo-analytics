@@ -6,7 +6,6 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pandas as pd
-
 from src.application.services import wind_analysis_service
 from src.application.services.wind_analysis_service import (
     WindAnalysisResultDTO,

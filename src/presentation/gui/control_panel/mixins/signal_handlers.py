@@ -7,7 +7,7 @@ Control Panel - Widget Signal Handlers Mixin
 Kezeli az összes widget signal routingot a ControlPanel-ben.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 
 class SignalHandlersMixin:
@@ -20,9 +20,7 @@ class SignalHandlersMixin:
         """Widget signalok összekötése - CLEAN SIGNAL ROUTING + MULTI-CITY."""
 
         # === 1. ANALYSIS TYPE WIDGET ===
-        self.analysis_type_widget.analysis_type_changed.connect(
-            self._on_analysis_type_changed
-        )
+        self.analysis_type_widget.analysis_type_changed.connect(self._on_analysis_type_changed)
 
         # === 2. LOCATION WIDGET ===
         # Kompatibilitási signalok (AppController számára)
@@ -33,9 +31,7 @@ class SignalHandlersMixin:
         self.location_widget.location_changed.connect(self._on_location_changed)
 
         # 🏙️ === 3. MULTI-CITY WIDGET (ÚJ) ===
-        self.multi_city_widget.selection_changed.connect(
-            self._on_multi_city_selection_changed
-        )
+        self.multi_city_widget.selection_changed.connect(self._on_multi_city_selection_changed)
 
         # === 4. DATE RANGE WIDGET ===
         self.date_range_widget.date_range_changed.connect(self._on_date_range_changed)
@@ -45,9 +41,7 @@ class SignalHandlersMixin:
         self.provider_widget.provider_changed.connect(self._on_provider_changed)
 
         # === 6. API SETTINGS WIDGET ===
-        self.api_settings_widget.api_settings_changed.connect(
-            self._on_api_settings_changed
-        )
+        self.api_settings_widget.api_settings_changed.connect(self._on_api_settings_changed)
 
         # === 7. QUERY CONTROL WIDGET ===
         self.query_control_widget.fetch_requested.connect(self._on_fetch_requested)
@@ -92,7 +86,7 @@ class SignalHandlersMixin:
         # Fetch button state frissítése
         self._update_fetch_button_state_comprehensive()
 
-    def _on_multi_city_selection_changed(self, selection_data: Dict[str, Any]) -> None:
+    def _on_multi_city_selection_changed(self, selection_data: dict[str, Any]) -> None:
         """
         🏙️ ÚJ: Multi-city selection változás kezelése.
 
@@ -104,7 +98,7 @@ class SignalHandlersMixin:
         selected = selection_data.get("selected", [])
 
         print(f"🏙️ Multi-city selection changed: {mode} mode, {count} items selected")
-        print(f"📋 Selected items: {selected[:3]}{'...' if len(selected) > 3 else ''}")
+        print(f"📋 Selected items: {selected[:3]}{'...' if len(selected) > 3 else ''}")  # noqa: PLR2004
 
         # Fetch button state frissítése
         self._update_fetch_button_state_comprehensive()
@@ -130,7 +124,7 @@ class SignalHandlersMixin:
         # Fetch button state frissítése
         self._update_fetch_button_state_comprehensive()
 
-    def _on_api_settings_changed(self, settings: Dict[str, Any]) -> None:
+    def _on_api_settings_changed(self, settings: dict[str, Any]) -> None:
         """API settings változás kezelése."""
         print(f"⚙️ API settings changed: {settings}")
 
@@ -147,9 +141,7 @@ class SignalHandlersMixin:
         3. Validálás
         4. analysis_requested(dict) signal emit
         """
-        print(
-            "🚀 Fetch requested - generating clean analysis request + multi-city support"
-        )
+        print("🚀 Fetch requested - generating clean analysis request + multi-city support")
 
         # Comprehensive analysis request összeállítása
         analysis_request = self._build_analysis_request()
@@ -161,9 +153,7 @@ class SignalHandlersMixin:
             # 🎯 FŐSIGNAL KIBOCSÁTÁSA - CLEAN ARCHITECTURE
             self.analysis_requested.emit(analysis_request)
 
-            print(
-                f"🎯 CLEAN: analysis_requested emitted → {analysis_request['analysis_type']}"
-            )
+            print(f"🎯 CLEAN: analysis_requested emitted → {analysis_request['analysis_type']}")
 
             # 🔧 AUTO-RESET FETCH STATE - Error esetére timeout
             from PySide6.QtCore import QTimer

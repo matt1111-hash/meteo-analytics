@@ -7,12 +7,10 @@ Color Palette Weather Module
 Időjárás-specifikus színpaletta generálás.
 """
 
-from typing import Dict, List
-
 from src.presentation.gui.color_palette.types import HSLColor
 
 
-def generate_weather_palette(base_temperature: str, hex_to_hsl_func) -> Dict[str, str]:
+def generate_weather_palette(base_temperature: str, hex_to_hsl_func) -> dict[str, str]:
     """
     Időjárás-specifikus színpaletta generálása hőmérséklet base színből.
 
@@ -42,9 +40,7 @@ def generate_weather_palette(base_temperature: str, hex_to_hsl_func) -> Dict[str
     return weather_palette
 
 
-def generate_alert_gradient(
-    base_alert: str, hex_to_hsl_func, levels: int = 5
-) -> List[str]:
+def generate_alert_gradient(base_alert: str, hex_to_hsl_func, levels: int = 5) -> list[str]:
     """
     Alert szintek gradiens generálása.
 

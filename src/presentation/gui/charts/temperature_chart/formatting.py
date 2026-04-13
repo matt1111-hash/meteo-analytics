@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -53,7 +52,7 @@ def _format_chart_titles(chart, current_colors: dict[str, str]) -> None:
 def _format_temperature_dates(chart, df: "pd.DataFrame") -> None:
     """Apply smart date locator/formatter selection."""
     total_days = len(df)
-    if total_days <= 31:
+    if total_days <= 31:  # noqa: PLR2004
         chart.ax.xaxis.set_major_locator(DayLocator(interval=max(1, total_days // 10)))
         chart.ax.xaxis.set_major_formatter(DateFormatter("%m-%d"))
         return
@@ -77,9 +76,7 @@ def _apply_temperature_grid(chart, current_colors: dict[str, str]) -> None:
         return
     grid_color = current_colors.get("border", "#d1d5db")
     grid_alpha = 0.3 if chart.theme_manager.get_current_theme() == "light" else 0.2
-    chart.ax.grid(
-        True, alpha=grid_alpha, linestyle="-", linewidth=0.8, color=grid_color
-    )
+    chart.ax.grid(True, alpha=grid_alpha, linestyle="-", linewidth=0.8, color=grid_color)
     chart.ax.set_axisbelow(True)
 
 

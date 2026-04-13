@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,6 @@ from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QFileDialog
-
 from src.domain.analytics.wind_analysis_service import analyze_wind_patterns
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 from src.domain.analytics.wind_reporting import (
@@ -31,7 +29,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def handle_analyze_clicked(self: "WindyDaysTab") -> None:
+def handle_analyze_clicked(self: WindyDaysTab) -> None:
     """Analízis gomb kattintás kezelése."""
     try:
         logger.info("Szeles napok analízis indítása")
@@ -47,7 +45,7 @@ def handle_analyze_clicked(self: "WindyDaysTab") -> None:
         self.error_occurred.emit(f"Hiba az analízis indításában: {e}")
 
 
-def handle_export_clicked(self: "WindyDaysTab") -> None:
+def handle_export_clicked(self: WindyDaysTab) -> None:
     """Export gomb kattintás kezelése."""
     try:
         if self.chart and self.current_analysis_result:
@@ -70,18 +68,14 @@ def handle_export_clicked(self: "WindyDaysTab") -> None:
         self.error_occurred.emit(f"Export hiba: {e}")
 
 
-def handle_threshold_changed(self: "WindyDaysTab", value: int) -> None:
+def handle_threshold_changed(self: WindyDaysTab, value: int) -> None:
     """Küszöbérték változás kezelése."""
     try:
         logger.info(f"Küszöbérték változott: {value} km/h")
 
         # Automatikus frissítés ha be van kapcsolva
         auto_update = getattr(self, "auto_update_checkbox", None)
-        if (
-            auto_update
-            and auto_update.isChecked()
-            and self.current_weather_data is not None
-        ):
+        if auto_update and auto_update.isChecked() and self.current_weather_data is not None:
             # Kis késleltetés a túl gyakori frissítés elkerülésére
             QTimer.singleShot(500, lambda: _start_analysis(self))
 
@@ -89,7 +83,7 @@ def handle_threshold_changed(self: "WindyDaysTab", value: int) -> None:
         logger.error(f"Hiba a küszöbérték változás kezelésében: {e}")
 
 
-def handle_auto_update_toggled(self: "WindyDaysTab", checked: bool) -> None:
+def handle_auto_update_toggled(self: WindyDaysTab, checked: bool) -> None:  # noqa: ARG001
     """Automatikus frissítés toggle kezelése."""
     try:
         logger.info(f"Automatikus frissítés: {'be' if checked else 'ki'}kapcsolva")
@@ -98,7 +92,7 @@ def handle_auto_update_toggled(self: "WindyDaysTab", checked: bool) -> None:
         logger.error(f"Hiba az auto update toggle kezelésében: {e}")
 
 
-def _start_analysis(self: "WindyDaysTab") -> None:
+def _start_analysis(self: WindyDaysTab) -> None:
     """
     Analízis indítása - DUPLA KONVERZIÓ NÉLKÜL!
 
@@ -108,21 +102,15 @@ def _start_analysis(self: "WindyDaysTab") -> None:
         # UI állapot
         _set_analysis_state(self, True)
 
-        logger.info(
-            "KONVERZIÓ NÉLKÜLI ANALÍZIS: Megbízunk a ResultsPanel km/h konverziójában"
-        )
+        logger.info("KONVERZIÓ NÉLKÜLI ANALÍZIS: Megbízunk a ResultsPanel km/h konverziójában")
 
         # Paraméterek
         threshold = (
-            self.threshold_spinbox.value()
-            if self.threshold_spinbox
-            else WINDY_DAY_THRESHOLD_KMH
+            self.threshold_spinbox.value() if self.threshold_spinbox else WINDY_DAY_THRESHOLD_KMH
         )
         location = self.current_location
 
-        logger.info(
-            f"ANALÍZIS PARAMÉTEREI: threshold={threshold} km/h, location={location}"
-        )
+        logger.info(f"ANALÍZIS PARAMÉTEREI: threshold={threshold} km/h, location={location}")
         logger.info(
             f"WEATHER DATA: {len(self.current_weather_data)} sor, oszlopok: {list(self.current_weather_data.columns)}"
         )
@@ -181,7 +169,7 @@ def _start_analysis(self: "WindyDaysTab") -> None:
 
 
 def _display_analysis_results(
-    self: "WindyDaysTab", analysis_result, chart_data: dict, threshold: float
+    self: WindyDaysTab, analysis_result, chart_data: dict, threshold: float
 ) -> None:
     """Analízis eredmények megjelenítése."""
     try:
@@ -217,14 +205,12 @@ def _display_analysis_results(
         logger.error(f"Hiba az eredmények megjelenítésében: {e}")
 
 
-def _set_analysis_state(self: "WindyDaysTab", running: bool) -> None:
+def _set_analysis_state(self: WindyDaysTab, running: bool) -> None:
     """Analízis állapot UI frissítése."""
     try:
         if self.analyze_button:
             self.analyze_button.setEnabled(not running)
-            self.analyze_button.setText(
-                "Elemzés..." if running else "Analízis Futtatása"
-            )
+            self.analyze_button.setText("Elemzés..." if running else "Analízis Futtatása")
 
         if self.progress_bar:
             self.progress_bar.setVisible(running)

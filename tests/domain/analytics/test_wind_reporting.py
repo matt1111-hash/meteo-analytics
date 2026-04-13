@@ -34,9 +34,7 @@ def create_test_analysis_result(
         monthly_stats=monthly_stats or [],
         total_windy_days=total_windy_days,
         total_days=total_days,
-        overall_windy_percentage=(total_windy_days / total_days * 100)
-        if total_days > 0
-        else 0.0,
+        overall_windy_percentage=(total_windy_days / total_days * 100) if total_days > 0 else 0.0,
         windiest_month=windiest_month,
         calmest_month=calmest_month,
     )
@@ -55,9 +53,7 @@ def create_test_monthly_stat(
         month_name="Január" if month == 1 else "Február",
         windy_days_count=windy_days_count,
         total_days=total_days,
-        windy_percentage=(windy_days_count / total_days * 100)
-        if total_days > 0
-        else 0.0,
+        windy_percentage=(windy_days_count / total_days * 100) if total_days > 0 else 0.0,
         max_wind_speed=80.0,
         avg_wind_speed=50.0,
         windy_days_list=[],

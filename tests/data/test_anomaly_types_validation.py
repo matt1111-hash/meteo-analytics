@@ -19,18 +19,14 @@ class TestAnomalyProfileSettingsValidation:
         settings = AnomalyProfileSettings(temp_hot=20.0, temp_cold=20.0)
         errors = settings.validate()
         assert len(errors) > 0
-        assert any(
-            "Meleg küszöb nem lehet kisebb vagy egyenlő" in err for err in errors
-        )
+        assert any("Meleg küszöb nem lehet kisebb vagy egyenlő" in err for err in errors)
 
     def test_validate_error_hot_threshold_less_than_cold(self) -> None:
         """Error when temp_hot is less than temp_cold."""
         settings = AnomalyProfileSettings(temp_hot=10.0, temp_cold=20.0)
         errors = settings.validate()
         assert len(errors) > 0
-        assert any(
-            "Meleg küszöb nem lehet kisebb vagy egyenlő" in err for err in errors
-        )
+        assert any("Meleg küszöb nem lehet kisebb vagy egyenlő" in err for err in errors)
 
     def test_validate_error_hot_threshold_too_high(self) -> None:
         """Error when temp_hot exceeds maximum."""
@@ -65,20 +61,14 @@ class TestAnomalyProfileSettingsValidation:
         settings = AnomalyProfileSettings(precip_high=50.0, precip_low=50.0)
         errors = settings.validate()
         assert len(errors) > 0
-        assert any(
-            "Magas csapadék küszöb nem lehet kisebb vagy egyenlő" in err
-            for err in errors
-        )
+        assert any("Magas csapadék küszöb nem lehet kisebb vagy egyenlő" in err for err in errors)
 
     def test_validate_error_precip_high_less_than_low(self) -> None:
         """Error when precip_high is less than precip_low."""
         settings = AnomalyProfileSettings(precip_high=20.0, precip_low=50.0)
         errors = settings.validate()
         assert len(errors) > 0
-        assert any(
-            "Magas csapadék küszöb nem lehet kisebb vagy egyenlő" in err
-            for err in errors
-        )
+        assert any("Magas csapadék küszöb nem lehet kisebb vagy egyenlő" in err for err in errors)
 
     def test_validate_error_precip_low_too_high(self) -> None:
         """Error when precip_low exceeds maximum."""
@@ -115,9 +105,7 @@ class TestAnomalyProfileSettingsValidation:
         )
         errors = settings.validate()
         assert len(errors) > 0
-        assert any(
-            "Szél küszöbök nem növekvő sorrendben vannak" in err for err in errors
-        )
+        assert any("Szél küszöbök nem növekvő sorrendben vannak" in err for err in errors)
 
     def test_validate_error_wind_threshold_too_low(self) -> None:
         """Error when wind threshold is below minimum."""

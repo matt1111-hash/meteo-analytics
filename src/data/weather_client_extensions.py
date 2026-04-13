@@ -7,7 +7,7 @@ Part of the weather_client refactoring - split into focused modules.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from src.config import get_source_display_name
 
@@ -28,17 +28,15 @@ class WeatherClientExtensions(WeatherClient):
         """Set preferred provider."""
         if provider == "auto" or provider in self.providers:
             self.preferred_provider = provider
-            logger.info(
-                f"Preferred provider changed: {get_source_display_name(provider)}"
-            )
+            logger.info(f"Preferred provider changed: {get_source_display_name(provider)}")
         else:
             raise ValueError(f"Unknown provider: {provider}")
 
-    def get_current_provider(self) -> Optional[str]:
+    def get_current_provider(self) -> str | None:
         """Get current provider."""
         return self.current_provider
 
-    def get_available_providers(self) -> List[str]:
+    def get_available_providers(self) -> list[str]:
         """Get list of available providers."""
         return [
             provider_id
@@ -46,7 +44,7 @@ class WeatherClientExtensions(WeatherClient):
             if provider.validate_provider()
         ]
 
-    def get_provider_status(self) -> Dict[str, Dict[str, Any]]:
+    def get_provider_status(self) -> dict[str, dict[str, Any]]:
         """Get status of all providers."""
         status = {}
 
@@ -74,8 +72,8 @@ class WeatherClientExtensions(WeatherClient):
         self,
         latitude: float,
         longitude: float,
-        user_override_provider: Optional[str] = None,
-    ) -> Tuple[Optional[Dict[str, Any]], str]:
+        user_override_provider: str | None = None,
+    ) -> tuple[dict[str, Any] | None, str]:
         """Get current weather (backward compatibility)."""
         from datetime import datetime
 
@@ -100,8 +98,8 @@ class WeatherClientExtensions(WeatherClient):
         latitude: float,
         longitude: float,
         days_back: int = 7,
-        user_override_provider: Optional[str] = None,
-    ) -> Tuple[List[Dict[str, Any]], str]:
+        user_override_provider: str | None = None,
+    ) -> tuple[list[dict[str, Any]], str]:
         """Get weather for date range (backward compatibility)."""
         from datetime import datetime, timedelta
 
@@ -116,9 +114,7 @@ class WeatherClientExtensions(WeatherClient):
             user_override_provider,
         )
 
-        source = (
-            weather_data[0].get("data_source", "unknown") if weather_data else "no_data"
-        )
+        source = weather_data[0].get("data_source", "unknown") if weather_data else "no_data"
         return (weather_data, source)
 
 

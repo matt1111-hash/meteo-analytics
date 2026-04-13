@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -15,14 +14,13 @@ Fájl: src/presentation/gui/charts/windy_days_chart/factory.py
 """
 
 import logging
-from typing import Optional
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 
 logger = logging.getLogger(__name__)
 
 
-def create_windy_days_chart(parent: Optional[QWidget] = None):
+def create_windy_days_chart(parent: QWidget | None = None):
     """
     WindyDaysChart példány létrehozása.
 

@@ -14,12 +14,11 @@ Fájl: src/presentation/gui/results_panel/windy_days_tab/core.py
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
 import pandas as pd
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QCheckBox, QVBoxLayout, QWidget
-
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 from src.presentation.gui.charts.windy_days_chart import WindyDaysChart
 from src.presentation.gui.theme_manager import (

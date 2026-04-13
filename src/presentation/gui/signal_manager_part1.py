@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for SignalManager."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .signal_manager_support import *
 
 
-class SignalManagerPart1Mixin:
-    def __init__(self, main_window: "MainWindow"):
+class SignalManagerPart1Mixin:  # noqa: D101
+    def __init__(self, main_window: MainWindow):
         """
         SignalManager inicializálása.
 
@@ -34,9 +34,7 @@ class SignalManagerPart1Mixin:
 
     def _connect_control_panel(self) -> None:
         """ControlPanel signal-slot kapcsolatok."""
-        print(
-            "🎯 SignalManager: Setting up ControlPanel → AppController connections..."
-        )
+        print("🎯 SignalManager: Setting up ControlPanel → AppController connections...")
 
         if self.mw.control_panel:
             # 🚀 KRITIKUS: Egyetlen központi kapcsolat - minden elemzési kérést az AppController kezel
@@ -48,9 +46,7 @@ class SignalManagerPart1Mixin:
                     "✅ SignalManager: ControlPanel.analysis_requested → AppController.handle_analysis_request CONNECTED"
                 )
             else:
-                print(
-                    "⚠️ SignalManager: ControlPanel.analysis_requested signal NOT FOUND!"
-                )
+                print("⚠️ SignalManager: ControlPanel.analysis_requested signal NOT FOUND!")
 
             # 🛠 MEGSZAKÍTÁS GOMB BEKÖTÉSE
             if hasattr(self.mw.control_panel, "cancel_requested"):
@@ -61,9 +57,7 @@ class SignalManagerPart1Mixin:
                     "✅ SignalManager: ControlPanel.cancel_requested → AppController.stop_current_analysis CONNECTED"
                 )
             else:
-                print(
-                    "⚠️ SignalManager: ControlPanel.cancel_requested signal NOT FOUND!"
-                )
+                print("⚠️ SignalManager: ControlPanel.cancel_requested signal NOT FOUND!")
         else:
             print("⚠️ SignalManager: ControlPanel is None!")
 
@@ -120,9 +114,7 @@ class SignalManagerPart1Mixin:
             # 🚨 KRITIKUS: Analytics View multi_city_query_requested signal
             if hasattr(self.mw.analytics_panel, "multi_city_query_requested"):
 
-                def debug_analytics_multi_city_query_requested(
-                    query_type: str, region_name: str
-                ):
+                def debug_analytics_multi_city_query_requested(query_type: str, region_name: str):
                     print(
                         f"🚨 DEBUG [ANALYTICS→MAIN_WINDOW]: multi_city_query_requested: {query_type}, {region_name}"
                     )
@@ -144,19 +136,13 @@ class SignalManagerPart1Mixin:
             # Analytics további signalok
             if hasattr(self.mw.analytics_panel, "analysis_started"):
                 self.mw.analytics_panel.analysis_started.connect(
-                    lambda: self.mw.status_bar.showMessage(
-                        "📊 Analytics elemzés folyamatban..."
-                    )
+                    lambda: self.mw.status_bar.showMessage("📊 Analytics elemzés folyamatban...")
                 )
-                print(
-                    "✅ SignalManager: AnalyticsView.analysis_started signal connected"
-                )
+                print("✅ SignalManager: AnalyticsView.analysis_started signal connected")
 
             if hasattr(self.mw.analytics_panel, "error_occurred"):
                 self.mw.analytics_panel.error_occurred.connect(
-                    lambda msg: self.mw.status_bar.showMessage(
-                        f"❌ Analytics hiba: {msg}"
-                    )
+                    lambda msg: self.mw.status_bar.showMessage(f"❌ Analytics hiba: {msg}")
                 )
                 print("✅ SignalManager: AnalyticsView.error_occurred signal connected")
         else:

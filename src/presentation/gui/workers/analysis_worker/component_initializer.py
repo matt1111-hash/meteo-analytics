@@ -77,9 +77,9 @@ class ComponentInitializer:
             return True
 
         except Exception as e:
-            self._logger.error(f"❌ Inicializálási hiba: {str(e)}")
+            self._logger.error(f"❌ Inicializálási hiba: {e!s}")
             self._logger.error(traceback.format_exc())
-            self._worker._emit_error(f"Inicializálási hiba: {str(e)}")
+            self._worker._emit_error(f"Inicializálási hiba: {e!s}")
             return False
 
     def _init_weather_client(self) -> bool:
@@ -101,7 +101,9 @@ class ComponentInitializer:
             return False
 
     def _init_multi_city_engine(
-        self, global_db_path: Path, hungarian_db_path: Path
+        self,
+        global_db_path: Path,  # noqa: ARG002
+        hungarian_db_path: Path,  # noqa: ARG002
     ) -> bool:
         """
         Initialize MultiCityEngine via port (CA compliant).

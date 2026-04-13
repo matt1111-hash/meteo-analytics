@@ -77,7 +77,7 @@ class TestRetryWeatherRequest:
         provider = client.providers["open-meteo"]
         provider.get_weather_data.side_effect = WeatherAPIError("Always fails")
 
-        with patch("time.sleep"):
+        with patch("time.sleep"):  # noqa: SIM117
             with pytest.raises(WeatherAPIError, match="Always fails"):
                 client._retry_weather_request(provider, 47.5, 19.0, "2020-01-01", "2020-01-31")
 

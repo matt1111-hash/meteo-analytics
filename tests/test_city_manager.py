@@ -36,10 +36,7 @@ class TestCityManagerReexports:
         assert hasattr(city_manager, "CityManagerStats")
 
         assert city_manager.CityManagerDB is city_manager_db.CityManagerDB
-        assert (
-            city_manager.CityManagerHungarian
-            is city_manager_hungarian.CityManagerHungarian
-        )
+        assert city_manager.CityManagerHungarian is city_manager_hungarian.CityManagerHungarian
         assert city_manager.CityManagerSearch is city_manager_search.CityManagerSearch
         assert city_manager.CityManagerStats is city_manager_stats.CityManagerStats
 
@@ -142,10 +139,6 @@ class TestClassHierarchy:
 
     def test_city_manager_inherits_from_all_parents(self) -> None:
         """A CityManager (CityManagerStats) az összes szülőből származik."""
-        assert issubclass(
-            city_manager.CityManager, city_manager_search.CityManagerSearch
-        )
-        assert issubclass(
-            city_manager.CityManager, city_manager_hungarian.CityManagerHungarian
-        )
+        assert issubclass(city_manager.CityManager, city_manager_search.CityManagerSearch)
+        assert issubclass(city_manager.CityManager, city_manager_hungarian.CityManagerHungarian)
         assert issubclass(city_manager.CityManager, city_manager_db.CityManagerDB)

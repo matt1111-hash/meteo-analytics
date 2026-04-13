@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -10,7 +9,6 @@ Wind Chart Plotter - Plot wind data with Hungarian categories.
 from typing import TYPE_CHECKING
 
 import pandas as pd
-
 from src.presentation.gui.theme_manager import get_current_colors
 
 from .wind_categories import (
@@ -53,9 +51,7 @@ class WindPlotter:
         wind_colors = self._get_wind_colors()
 
         # Get data source
-        data_source = (
-            df["_data_source"].iloc[0] if "_data_source" in df.columns else "unknown"
-        )
+        data_source = df["_data_source"].iloc[0] if "_data_source" in df.columns else "unknown"
 
         # Plot wind line and fill
         line_label = (
@@ -112,7 +108,7 @@ class WindPlotter:
         max_wind = df["windspeed"].max() if not df.empty else 50
 
         # 43 km/h - Erős szél
-        if max_wind >= 30:
+        if max_wind >= 30:  # noqa: PLR2004
             self.chart.ax.axhline(
                 y=HUNGARIAN_WIND_THRESHOLDS["strong_wind"],
                 color=wind_colors["strong"],
@@ -123,7 +119,7 @@ class WindPlotter:
             )
 
         # 61 km/h - Viharos szél
-        if max_wind >= 45:
+        if max_wind >= 45:  # noqa: PLR2004
             self.chart.ax.axhline(
                 y=HUNGARIAN_WIND_THRESHOLDS["stormy_wind"],
                 color=wind_colors["stormy"],
@@ -134,7 +130,7 @@ class WindPlotter:
             )
 
         # 90 km/h - Erős vihar
-        if max_wind >= 70:
+        if max_wind >= 70:  # noqa: PLR2004
             self.chart.ax.axhline(
                 y=HUNGARIAN_WIND_THRESHOLDS["severe_storm"],
                 color=wind_colors["severe_storm"],
@@ -145,7 +141,7 @@ class WindPlotter:
             )
 
         # 119 km/h - Orkán
-        if max_wind >= 100:
+        if max_wind >= 100:  # noqa: PLR2004
             self.chart.ax.axhline(
                 y=HUNGARIAN_WIND_THRESHOLDS["hurricane"],
                 color=wind_colors["hurricane"],
@@ -183,16 +179,16 @@ class WindPlotter:
             xy=(max_wind_date, max_wind_val),
             xytext=(15, 25),
             textcoords="offset points",
-            bbox=dict(
-                boxstyle="round,pad=0.5",
-                facecolor=current_colors.get("surface_variant", "#f9fafb"),
-                edgecolor=annotation_color,
-                alpha=0.9,
-            ),
-            arrowprops=dict(
-                arrowstyle="->",
-                connectionstyle="arc3,rad=0.2",
-                color=annotation_color,
-                lw=2,
-            ),
+            bbox={
+                "boxstyle": "round,pad=0.5",
+                "facecolor": current_colors.get("surface_variant", "#f9fafb"),
+                "edgecolor": annotation_color,
+                "alpha": 0.9,
+            },
+            arrowprops={
+                "arrowstyle": "->",
+                "connectionstyle": "arc3,rad=0.2",
+                "color": annotation_color,
+                "lw": 2,
+            },
         )

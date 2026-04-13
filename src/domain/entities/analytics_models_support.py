@@ -4,7 +4,7 @@
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from src.domain.entities.weather import AnomalyResult, CityWeatherResult
 from src.domain.value_objects.enums import (

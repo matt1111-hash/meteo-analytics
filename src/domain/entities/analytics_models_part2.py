@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from analytics_models.py."""
 
@@ -73,7 +73,7 @@ class AnalyticsResult:
 
     def get_countries_represented(self) -> List[str]:
         """Get represented countries list."""
-        return list(set(r.country_code for r in self.city_results))
+        return list({r.country_code for r in self.city_results})
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""

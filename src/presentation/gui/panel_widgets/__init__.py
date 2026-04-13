@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -40,10 +39,10 @@ __author__ = "Universal Weather Research Platform Team"
 # Exportált komponensek
 __all__ = [
     "AnalysisTypeWidget",
-    "LocationWidget",
-    "DateRangeWidget",
-    "ProviderWidget",
     "ApiSettingsWidget",
+    "DateRangeWidget",
+    "LocationWidget",
+    "ProviderWidget",
     "QueryControlWidget",
 ]
 

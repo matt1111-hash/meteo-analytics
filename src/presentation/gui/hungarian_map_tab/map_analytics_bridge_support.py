@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 
 def run_sync_operation(
@@ -28,7 +28,7 @@ def run_sync_operation(
         bridge.sync_in_progress = False
 
 
-def apply_analysis_update(bridge: Any, params: Dict[str, Any]) -> None:
+def apply_analysis_update(bridge: Any, params: dict[str, Any]) -> None:
     """Apply analysis-specific map updates."""
     analysis_type = params.get("analysis_type", "single_location")
     update_actions = {
@@ -47,7 +47,7 @@ def apply_analysis_update(bridge: Any, params: Dict[str, Any]) -> None:
         handler(value)
 
 
-def apply_full_refresh(bridge: Any, analysis: Dict, weather: Dict, date: Dict) -> None:
+def apply_full_refresh(bridge: Any, analysis: dict, weather: dict, date: dict) -> None:
     """Apply full refresh steps in a consistent order."""
     if analysis:
         apply_analysis_update(bridge, analysis)
@@ -58,7 +58,7 @@ def apply_full_refresh(bridge: Any, analysis: Dict, weather: Dict, date: Dict) -
     _refresh_temporal_range(bridge, date)
 
 
-def _refresh_temporal_range(bridge: Any, date: Dict) -> None:
+def _refresh_temporal_range(bridge: Any, date: dict) -> None:
     """Refresh temporal map data when full date range is present."""
     if not date:
         return

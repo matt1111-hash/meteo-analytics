@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001  # noqa: RUF100
 # mypy: ignore-errors
 """Split definitions from provider_dto.py."""
 
@@ -71,7 +71,7 @@ class ProviderSelectionDTO:
     @classmethod
     def success_response(
         cls, provider_id: str, previous_provider_id: str | None
-    ) -> "ProviderSelectionDTO":
+    ) -> "ProviderSelectionDTO":  # noqa: UP037
         """Create success response.
 
         Args:
@@ -90,7 +90,7 @@ class ProviderSelectionDTO:
         )
 
     @classmethod
-    def error_response(cls, message: str) -> "ProviderSelectionDTO":
+    def error_response(cls, message: str) -> "ProviderSelectionDTO":  # noqa: UP037
         """Create error response.
 
         Args:
@@ -124,7 +124,7 @@ class ProviderListResponse:
     @classmethod
     def create(
         cls, providers: List[ProviderInfoDTO], default_provider: str
-    ) -> "ProviderListResponse":
+    ) -> "ProviderListResponse":  # noqa: UP037
         """Create provider list response.
 
         Args:

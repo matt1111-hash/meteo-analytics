@@ -7,7 +7,7 @@ A widget validáció és state aggregation a ControlPanel-ben történik.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtCore import Signal
 
@@ -33,12 +33,12 @@ class QueryControlEventHandlers:
         self._ui = ui_builder
 
         # Query params (külsőleg beállítva)
-        self._last_query_params: Optional[Dict[str, Any]] = None
+        self._last_query_params: dict[str, Any] | None = None
 
         # Signals (külsőleg beállítva)
-        self.query_requested: Optional[Signal] = None
-        self.fetch_requested: Optional[Signal] = None
-        self.cancel_requested: Optional[Signal] = None
+        self.query_requested: Signal | None = None
+        self.fetch_requested: Signal | None = None
+        self.cancel_requested: Signal | None = None
 
     def on_query_clicked(self) -> None:
         """Lekérdezés gomb kattintás kezelése."""
@@ -101,11 +101,11 @@ class QueryControlEventHandlers:
             logger.error(f"Button state update error: {e}")
 
     @property
-    def last_query_params(self) -> Optional[Dict[str, Any]]:
+    def last_query_params(self) -> dict[str, Any] | None:
         """Utolsó query paraméterek."""
         return self._last_query_params
 
     @last_query_params.setter
-    def last_query_params(self, value: Optional[Dict[str, Any]]) -> None:
+    def last_query_params(self, value: dict[str, Any] | None) -> None:
         """Utolsó query paraméterek beállítása."""
         self._last_query_params = value

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -47,8 +46,6 @@ class ThemeHandler:
                 try:
                     chart._redraw_with_new_theme()
                 except Exception as e:
-                    print(
-                        f"⚠️ DEBUG: Chart theme update error for {chart.__class__.__name__}: {e}"
-                    )
+                    print(f"⚠️ DEBUG: Chart theme update error for {chart.__class__.__name__}: {e}")
 
         print(f"✅ DEBUG: ChartsContainer theme updated: {theme_name}")

@@ -47,7 +47,7 @@ class TestConstants:
             "November",
             "December",
         ]
-        assert MONTHS_HU == expected
+        assert expected == MONTHS_HU
 
     def test_months_hu_are_strings(self) -> None:
         """MONTHS_HU entries should be strings."""

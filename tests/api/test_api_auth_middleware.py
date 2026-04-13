@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Tests for API Authentication middleware.
@@ -73,7 +72,6 @@ class TestAuthMiddlewareUnit:
     async def test_rejects_missing_api_key_when_enabled(self):
         """Middleware should reject requests without API key when auth enabled."""
         from fastapi import HTTPException
-
         from src.api.main import auth_middleware
 
         mock_request = MagicMock()
@@ -96,7 +94,6 @@ class TestAuthMiddlewareUnit:
     async def test_rejects_invalid_api_key_when_enabled(self):
         """Middleware should reject requests with invalid API key."""
         from fastapi import HTTPException
-
         from src.api.main import auth_middleware
 
         mock_request = MagicMock()

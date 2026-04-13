@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,I001
+# ruff: noqa: F403, F405
 # mypy: ignore-errors
 """Mixin part 2 for ExtremeEventsTab."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .extreme_events_tab_part2_support import *
 
 
-class ExtremeEventsTabPart2Mixin:
+class ExtremeEventsTabPart2Mixin:  # noqa: D101
     def update_data(self, data: Dict[str, Any], city_name: str = "") -> None:
         """📊 Adatok frissítése."""
         if not data:
@@ -94,9 +94,8 @@ class ExtremeEventsTabPart2Mixin:
             )
 
             dialog = AnomalySettingsDialog(self)
-            if dialog.exec():
-                if self.current_data:
-                    self.update_data(self.current_data)
+            if dialog.exec() and self.current_data:
+                self.update_data(self.current_data)
         except Exception as e:
             logger.error(f"Settings dialog error: {e}")
 

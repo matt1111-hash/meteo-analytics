@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-  # noqa: UP009
 
 """Provider Management API routes.
 
@@ -7,10 +7,10 @@ This module provides REST API endpoints for managing weather data providers,
 including listing providers, getting status, and selecting providers.
 """
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import logging
-from typing import List
+from typing import List  # noqa: UP035
 
 from fastapi import APIRouter, HTTPException, status
 
@@ -47,7 +47,7 @@ router = APIRouter(prefix="/api/providers", tags=["providers"])
 async def list_providers() -> ProviderListResponse:
     """Get list of all available providers."""
     try:
-        provider_dtos: List[ProviderInfoDTO] = [
+        provider_dtos: List[ProviderInfoDTO] = [  # noqa: UP006
             ProviderInfoDTO.from_config(provider_id, config)
             for provider_id, config in ProviderConfig.PROVIDERS.items()
         ]
@@ -65,20 +65,18 @@ async def list_providers() -> ProviderListResponse:
 
 @router.get(
     "/status",
-    response_model=List[ProviderStatusDTO],
+    response_model=List[ProviderStatusDTO],  # noqa: UP006
     summary="Get provider statuses",
     description="Returns status information for all providers.",
 )
-async def get_providers_status() -> List[ProviderStatusDTO]:
+async def get_providers_status() -> List[ProviderStatusDTO]:  # noqa: UP006
     """Get status of all providers."""
     try:
         usage_service = get_usage_service()
         selected_provider = UserPreferences.get_selected_provider()
 
         return [
-            usage_service.calculate_status(
-                provider_id, provider_id == selected_provider
-            )
+            usage_service.calculate_status(provider_id, provider_id == selected_provider)
             for provider_id in ProviderConfig.PROVIDERS
         ]
     except Exception as exc:
@@ -113,15 +111,11 @@ async def get_provider_status(provider_id: str) -> ProviderStatusDTO:
     try:
         usage_service = get_usage_service()
         selected_provider = UserPreferences.get_selected_provider()
-        return usage_service.calculate_status(
-            provider_id, provider_id == selected_provider
-        )
+        return usage_service.calculate_status(provider_id, provider_id == selected_provider)
     except HTTPException:
         raise
     except Exception as exc:
-        LOGGER.exception(
-            f"Error getting status for provider {provider_id}", exc_info=exc
-        )
+        LOGGER.exception(f"Error getting status for provider {provider_id}", exc_info=exc)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to retrieve status for provider '{provider_id}'",
@@ -155,9 +149,7 @@ async def get_provider_usage(provider_id: str) -> ProviderUsageDTO:
     except HTTPException:
         raise
     except Exception as exc:
-        LOGGER.exception(
-            f"Error getting usage for provider {provider_id}", exc_info=exc
-        )
+        LOGGER.exception(f"Error getting usage for provider {provider_id}", exc_info=exc)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to retrieve usage for provider '{provider_id}'",
@@ -190,9 +182,7 @@ async def select_provider(provider_id: str) -> ProviderSelectionDTO:
         success = UserPreferences.set_selected_provider(provider_id)
 
         if not success:
-            return ProviderSelectionDTO.error_response(
-                f"Failed to select provider '{provider_id}'"
-            )
+            return ProviderSelectionDTO.error_response(f"Failed to select provider '{provider_id}'")
 
         LOGGER.info(f"Provider changed from {previous_provider} to {provider_id}")
         return ProviderSelectionDTO.success_response(provider_id, previous_provider)

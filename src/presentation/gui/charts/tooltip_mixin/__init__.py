@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -31,9 +30,7 @@ def add_tooltips_to_chart(chart_instance, hover_tolerance: int = 15) -> None:
         chart_instance.enable_tooltips(hover_tolerance)
         print(f"✅ DEBUG: Tooltips aktiválva - {chart_instance.__class__.__name__}")
     else:
-        print(
-            f"⚠️ DEBUG: {chart_instance.__class__.__name__} nem támogatja a tooltip-okat"
-        )
+        print(f"⚠️ DEBUG: {chart_instance.__class__.__name__} nem támogatja a tooltip-okat")
 
 
 __all__ = ["WeatherTooltipMixin", "add_tooltips_to_chart"]

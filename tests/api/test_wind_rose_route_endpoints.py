@@ -6,7 +6,6 @@ from unittest.mock import MagicMock
 
 import pytest
 from fastapi import HTTPException
-
 from src.api.routes import wind_rose
 
 
@@ -18,11 +17,7 @@ async def test_get_wind_rose_reconstructs_daily_data_from_flat_records(
     monkeypatch.setattr(
         wind_rose,
         "get_city_manager_port",
-        MagicMock(
-            return_value=MagicMock(
-                find_city_by_name=MagicMock(return_value=(47.5, 19.0))
-            )
-        ),
+        MagicMock(return_value=MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))),
     )
     monkeypatch.setattr(
         wind_rose,
@@ -67,11 +62,7 @@ async def test_get_wind_rose_uses_embedded_daily_payload(
     monkeypatch.setattr(
         wind_rose,
         "get_city_manager_port",
-        MagicMock(
-            return_value=MagicMock(
-                find_city_by_name=MagicMock(return_value=(47.5, 19.0))
-            )
-        ),
+        MagicMock(return_value=MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))),
     )
     monkeypatch.setattr(
         wind_rose,
@@ -109,9 +100,7 @@ async def test_get_wind_rose_returns_404_for_unknown_city(
     monkeypatch.setattr(
         wind_rose,
         "get_city_manager_port",
-        MagicMock(
-            return_value=MagicMock(find_city_by_name=MagicMock(return_value=None))
-        ),
+        MagicMock(return_value=MagicMock(find_city_by_name=MagicMock(return_value=None))),
     )
     request = wind_rose.WindRoseRequest(
         city="Unknown",
@@ -133,11 +122,7 @@ async def test_get_wind_rose_returns_404_for_missing_weather_data(
     monkeypatch.setattr(
         wind_rose,
         "get_city_manager_port",
-        MagicMock(
-            return_value=MagicMock(
-                find_city_by_name=MagicMock(return_value=(47.5, 19.0))
-            )
-        ),
+        MagicMock(return_value=MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))),
     )
     monkeypatch.setattr(
         wind_rose,
@@ -147,9 +132,7 @@ async def test_get_wind_rose_returns_404_for_missing_weather_data(
 
     with pytest.raises(HTTPException, match="No weather data found") as exc_info:
         await wind_rose.get_wind_rose(
-            wind_rose.WindRoseRequest(
-                city="Budapest", start="2026-03-01", end="2026-03-02"
-            )
+            wind_rose.WindRoseRequest(city="Budapest", start="2026-03-01", end="2026-03-02")
         )
 
     assert exc_info.value.status_code == 404
@@ -163,11 +146,7 @@ async def test_get_wind_rose_returns_400_when_no_daily_weather_data(
     monkeypatch.setattr(
         wind_rose,
         "get_city_manager_port",
-        MagicMock(
-            return_value=MagicMock(
-                find_city_by_name=MagicMock(return_value=(47.5, 19.0))
-            )
-        ),
+        MagicMock(return_value=MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))),
     )
     monkeypatch.setattr(
         wind_rose,
@@ -179,13 +158,9 @@ async def test_get_wind_rose_returns_400_when_no_daily_weather_data(
         ),
     )
 
-    with pytest.raises(
-        HTTPException, match="No daily weather data available"
-    ) as exc_info:
+    with pytest.raises(HTTPException, match="No daily weather data available") as exc_info:
         await wind_rose.get_wind_rose(
-            wind_rose.WindRoseRequest(
-                city="Budapest", start="2026-03-01", end="2026-03-02"
-            )
+            wind_rose.WindRoseRequest(city="Budapest", start="2026-03-01", end="2026-03-02")
         )
 
     assert exc_info.value.status_code == 400
@@ -200,17 +175,13 @@ async def test_get_wind_rose_maps_value_error_to_400(
         wind_rose,
         "get_city_manager_port",
         MagicMock(
-            return_value=MagicMock(
-                find_city_by_name=MagicMock(side_effect=ValueError("bad city"))
-            )
+            return_value=MagicMock(find_city_by_name=MagicMock(side_effect=ValueError("bad city")))
         ),
     )
 
     with pytest.raises(HTTPException, match="bad city") as exc_info:
         await wind_rose.get_wind_rose(
-            wind_rose.WindRoseRequest(
-                city="Budapest", start="2026-03-01", end="2026-03-02"
-            )
+            wind_rose.WindRoseRequest(city="Budapest", start="2026-03-01", end="2026-03-02")
         )
 
     assert exc_info.value.status_code == 400
@@ -224,27 +195,19 @@ async def test_get_wind_rose_maps_unexpected_error_to_500(
     monkeypatch.setattr(
         wind_rose,
         "get_city_manager_port",
-        MagicMock(
-            return_value=MagicMock(
-                find_city_by_name=MagicMock(return_value=(47.5, 19.0))
-            )
-        ),
+        MagicMock(return_value=MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))),
     )
     monkeypatch.setattr(
         wind_rose,
         "WeatherClient",
         MagicMock(
-            return_value=MagicMock(
-                get_weather_data=MagicMock(side_effect=RuntimeError("boom"))
-            )
+            return_value=MagicMock(get_weather_data=MagicMock(side_effect=RuntimeError("boom")))
         ),
     )
 
     with pytest.raises(HTTPException, match="Internal server error") as exc_info:
         await wind_rose.get_wind_rose(
-            wind_rose.WindRoseRequest(
-                city="Budapest", start="2026-03-01", end="2026-03-02"
-            )
+            wind_rose.WindRoseRequest(city="Budapest", start="2026-03-01", end="2026-03-02")
         )
 
     assert exc_info.value.status_code == 500

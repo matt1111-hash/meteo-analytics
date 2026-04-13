@@ -18,7 +18,7 @@ Fájl: src/presentation/gui/results_panel/utils/wind_analyzer.py
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .wind_constants import WindGustsConstants
 

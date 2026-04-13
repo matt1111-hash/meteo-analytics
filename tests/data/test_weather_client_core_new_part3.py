@@ -22,9 +22,7 @@ class TestGetWeatherData:
         assert len(result) == 1
         assert result[0]["date"] == "2020-01-01"
 
-    def test_get_weather_data_falls_back_to_secondary_provider(
-        self, client: WeatherClient
-    ) -> None:
+    def test_get_weather_data_falls_back_to_secondary_provider(self, client: WeatherClient) -> None:
         """get_weather_data falls back to secondary provider on primary failure."""
         client.providers["open-meteo"].get_weather_data.side_effect = WeatherAPIError(
             "Primary failed"
@@ -42,12 +40,8 @@ class TestGetWeatherData:
         self, client: WeatherClient
     ) -> None:
         """get_weather_data raises ProviderNotAvailableError when all providers fail."""
-        client.providers["open-meteo"].get_weather_data.side_effect = WeatherAPIError(
-            "Failed"
-        )
-        client.providers["meteostat"].get_weather_data.side_effect = WeatherAPIError(
-            "Failed"
-        )
+        client.providers["open-meteo"].get_weather_data.side_effect = WeatherAPIError("Failed")
+        client.providers["meteostat"].get_weather_data.side_effect = WeatherAPIError("Failed")
 
         with pytest.raises(ProviderNotAvailableError, match="All providers failed"):
             client.get_weather_data(47.5, 19.0, "2020-01-01", "2020-01-31")
@@ -65,13 +59,9 @@ class TestGetWeatherData:
 
         assert client.provider_usage_stats.get("open-meteo") == 1
 
-    def test_get_weather_data_with_user_override_provider(
-        self, client: WeatherClient
-    ) -> None:
+    def test_get_weather_data_with_user_override_provider(self, client: WeatherClient) -> None:
         """get_weather_data uses user_override_provider when specified."""
-        client.providers["meteostat"].get_weather_data.return_value = [
-            {"date": "2020-01-01"}
-        ]
+        client.providers["meteostat"].get_weather_data.return_value = [{"date": "2020-01-01"}]
 
         result = client.get_weather_data(
             47.5, 19.0, "2020-01-01", "2020-01-31", user_override_provider="meteostat"
@@ -80,17 +70,13 @@ class TestGetWeatherData:
         assert len(result) == 1
         client.providers["meteostat"].get_weather_data.assert_called_once()
 
-    def test_get_weather_data_handles_fallback_callbacks(
-        self, client: WeatherClient
-    ) -> None:
+    def test_get_weather_data_handles_fallback_callbacks(self, client: WeatherClient) -> None:
         """get_weather_data triggers fallback callbacks correctly."""
         client.preferred_provider = "open-meteo"
         fallback_callback = Mock()
         client.set_provider_fallback_callback(fallback_callback)
 
-        client.providers["open-meteo"].get_weather_data.side_effect = WeatherAPIError(
-            "Failed"
-        )
+        client.providers["open-meteo"].get_weather_data.side_effect = WeatherAPIError("Failed")
         client.providers["meteostat"].get_weather_data.return_value = []
 
         client.get_weather_data(47.5, 19.0, "2020-01-01", "2020-01-31")
@@ -112,9 +98,7 @@ class TestProviderUsageStats:
 
         assert client.provider_usage_stats.get("open-meteo") == 2
 
-    def test_provider_usage_stats_track_multiple_providers(
-        self, client: WeatherClient
-    ) -> None:
+    def test_provider_usage_stats_track_multiple_providers(self, client: WeatherClient) -> None:
         """Provider usage stats track usage across multiple providers."""
         client.providers["open-meteo"].get_weather_data.return_value = []
         client.providers["meteostat"].get_weather_data.return_value = []

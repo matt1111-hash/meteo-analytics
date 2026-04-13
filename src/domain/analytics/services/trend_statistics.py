@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -17,9 +17,7 @@ logger = logging.getLogger(__name__)
 class TrendStatisticsCalculator:
     """Linear regression and confidence interval calculations."""
 
-    def calculate_linear_regression(
-        self, monthly_df: pd.DataFrame
-    ) -> Optional[Dict[str, Any]]:
+    def calculate_linear_regression(self, monthly_df: pd.DataFrame) -> dict[str, Any] | None:
         """Calculate linear regression statistics."""
         X = np.arange(len(monthly_df)).reshape(-1, 1)
         y = monthly_df["avg_value"].values
@@ -33,9 +31,7 @@ class TrendStatisticsCalculator:
 
         # Scipy stats for additional statistics
         try:
-            slope, intercept, r_value, p_value, std_err = stats.linregress(
-                X.flatten(), y
-            )
+            slope, intercept, r_value, p_value, std_err = stats.linregress(X.flatten(), y)
         except ValueError:
             slope = model.coef_[0]
             intercept = model.intercept_
@@ -61,7 +57,7 @@ class TrendStatisticsCalculator:
 
     def _calculate_confidence_interval(
         self, X: np.ndarray, y: np.ndarray, y_pred: np.ndarray
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate 95% confidence interval for the slope."""
         try:
             n = len(y)
@@ -72,9 +68,7 @@ class TrendStatisticsCalculator:
             x_sum_sq = np.sum((X.flatten() - x_mean) ** 2)
 
             # Standard error of prediction
-            se_pred = y_err * np.sqrt(
-                1 + 1 / n + (X.flatten() - x_mean) ** 2 / x_sum_sq
-            )
+            se_pred = y_err * np.sqrt(1 + 1 / n + (X.flatten() - x_mean) ** 2 / x_sum_sq)
 
             # Use the mean confidence interval width
             ci_mean = np.mean(se_pred) * t_val

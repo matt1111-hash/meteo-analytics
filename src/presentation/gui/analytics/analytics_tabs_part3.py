@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from analytics_tabs.py."""
 
@@ -16,15 +16,13 @@ from .analytics_tabs_support import *
 class ClimateTabWidget(QTabWidget):
     """🌡️ Klímakutató tab widget - 4 KONSTANS HEATMAP TAB + 2 DEDICATED WIND CHART - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ"""
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         super().__init__()
 
         # Tab widget-ek létrehozása - KONSTANS HEATMAP VERZIÓK
         self.temp_tab = TemperatureTabWidget()  # 🌡️ Hőmérséklet KONSTANS HEATMAP
         self.precip_tab = PrecipitationTabWidget()  # 🌧️ Csapadék KONSTANS HEATMAP
-        self.wind_tab = (
-            WindTabWidget()
-        )  # 💨 Szél KONSTANS HEATMAP (BEAUFORT, átlagos max)
+        self.wind_tab = WindTabWidget()  # 💨 Szél KONSTANS HEATMAP (BEAUFORT, átlagos max)
         self.windgust_tab = (
             WindGustTabWidget()
         )  # 🌪️ Max Széllökés KONSTANS HEATMAP (BEAUFORT, gusts)
@@ -58,18 +56,12 @@ class ClimateTabWidget(QTabWidget):
         # Tab-ok hozzáadása
         self.addTab(self.temp_tab, "🌡️ Hőmérséklet")  # KONSTANS HEATMAP
         self.addTab(self.precip_tab, "🌧️ Csapadék")  # KONSTANS HEATMAP (0mm=fehér)
-        self.addTab(
-            self.wind_tab, "💨 Szél"
-        )  # KONSTANS HEATMAP (BEAUFORT, átlagos max)
-        self.addTab(
-            self.windgust_tab, "🌪️ Max Széllökés"
-        )  # KONSTANS HEATMAP (BEAUFORT, max gusts)
+        self.addTab(self.wind_tab, "💨 Szél")  # KONSTANS HEATMAP (BEAUFORT, átlagos max)
+        self.addTab(self.windgust_tab, "🌪️ Max Széllökés")  # KONSTANS HEATMAP (BEAUFORT, max gusts)
 
         # 🌪️ DEDICATED WIND CHARTOK HOZZÁADÁSA
         self.addTab(self.dedicated_wind_chart, "🌪️ Széllökések")  # DEDICATED WindChart
-        self.addTab(
-            self.dedicated_windrose_chart, "🌹 Széllökés Rózsa"
-        )  # DEDICATED WindRoseChart
+        self.addTab(self.dedicated_windrose_chart, "🌹 Széllökés Rózsa")  # DEDICATED WindRoseChart
 
         # Tab styling
         self.setStyleSheet("""
@@ -151,19 +143,19 @@ class ClimateTabWidget(QTabWidget):
             elif index == 1:  # Csapadék tab (konstans heatmap, 0mm=fehér)
                 self.precip_tab.update_data(self.data_cache)
                 self.tabs_initialized["precip"] = True
-            elif index == 2:  # Szél tab (konstans heatmap, BEAUFORT, átlagos max)
+            elif index == 2:  # Szél tab (konstans heatmap, BEAUFORT, átlagos max)  # noqa: PLR2004
                 self.wind_tab.update_data(self.data_cache)
                 self.tabs_initialized["wind"] = True
             elif (
-                index == 3
+                index == 3  # noqa: PLR2004
             ):  # Max Széllökés tab (konstans heatmap, BEAUFORT, max gusts)
                 self.windgust_tab.update_data(self.data_cache)
                 self.tabs_initialized["windgust"] = True
-            elif index == 4:  # 🌪️ DEDICATED WindChart tab
+            elif index == 4:  # 🌪️ DEDICATED WindChart tab  # noqa: PLR2004
                 self.dedicated_wind_chart.update_data(self.data_cache)
                 self.tabs_initialized["wind_chart"] = True
                 logger.debug("DEDICATED WindChart tab aktívált és frissítve!")
-            elif index == 5:  # 🌹 DEDICATED WindRoseChart tab
+            elif index == 5:  # 🌹 DEDICATED WindRoseChart tab  # noqa: PLR2004
                 self.dedicated_windrose_chart.update_data(self.data_cache)
                 self.tabs_initialized["windrose_chart"] = True
                 logger.debug("DEDICATED WindRoseChart tab aktívált és frissítve!")

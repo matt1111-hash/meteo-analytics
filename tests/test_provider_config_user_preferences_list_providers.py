@@ -30,6 +30,6 @@ class TestUserPreferencesListProviders:
 
         providers = UserPreferences.list_available_providers()
 
-        for provider_id, provider_info in providers.items():
+        for provider_id, provider_info in providers.items():  # noqa: B007, PERF102
             assert "name" in provider_info
             assert "icon" in provider_info

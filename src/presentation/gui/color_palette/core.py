@@ -7,8 +7,6 @@ Color Palette Core Module
 Fő ColorPalette osztály - színpaletta kezelő rendszer.
 """
 
-from typing import Optional
-
 from src.presentation.gui.color_palette.advanced_features import AdvancedFeaturesMixin
 from src.presentation.gui.color_palette.color_management import ColorManagementMixin
 from src.presentation.gui.color_palette.data_io import DataIOMixin
@@ -43,7 +41,7 @@ class ColorPalette(
     - 🎨 PIROS (#C43939) PRIMARY TÉMA TÁMOGATÁS!
     """
 
-    def __init__(self, generator: Optional[ColorGenerator] = None):
+    def __init__(self, generator: ColorGenerator | None = None):
         """
         ColorPalette inicializálása.
 

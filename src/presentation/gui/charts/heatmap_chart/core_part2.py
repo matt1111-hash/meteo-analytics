@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for HeatmapCalendarChart."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .core_support import *
 
 
-class HeatmapCalendarChartPart2Mixin:
+class HeatmapCalendarChartPart2Mixin:  # noqa: D101
     def _plot_heatmap_placeholder(self) -> None:
         """Plot placeholder when insufficient data"""
         current_colors = get_current_colors()
@@ -17,7 +17,9 @@ class HeatmapCalendarChartPart2Mixin:
         placeholder_text = "📅 Konstans Heatmap (365 téglalap)\n\n"
         placeholder_text += "❌ Nincs elegendő adat\n\n"
         placeholder_text += f"Paraméter: {self.parameter}\n\n"
-        placeholder_text += "A heatmap megjelenítéséhez\nlegalább 10 valódi adat\nszükséges az API-ból.\n\n"
+        placeholder_text += (
+            "A heatmap megjelenítéséhez\nlegalább 10 valódi adat\nszükséges az API-ból.\n\n"
+        )
         placeholder_text += "🎯 FUNKCIÓK:\n"
         placeholder_text += "• Valódi hónap címkék\n"
         placeholder_text += "• 365 konstans felbontás\n"
@@ -34,11 +36,11 @@ class HeatmapCalendarChartPart2Mixin:
             fontsize=12,
             color=text_color,
             linespacing=1.5,
-            bbox=dict(
-                boxstyle="round,pad=0.5",
-                facecolor=surface_color,
-                edgecolor=current_colors.get("border", "#d1d5db"),
-            ),
+            bbox={
+                "boxstyle": "round,pad=0.5",
+                "facecolor": surface_color,
+                "edgecolor": current_colors.get("border", "#d1d5db"),
+            },
         )
 
         self.ax.set_title(

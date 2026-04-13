@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ if TYPE_CHECKING:
     from .main_window import MainWindow
 
 
-def create_menu_bar(window: "MainWindow") -> QMenuBar:
+def create_menu_bar(window: "MainWindow") -> QMenuBar:  # noqa: PLR0915
     """
     📔 Menüsor létrehozása.
 
@@ -81,15 +80,11 @@ def create_menu_bar(window: "MainWindow") -> QMenuBar:
     theme_menu = menu_bar.addMenu("Téma")
 
     light_action = QAction("Világos", window)
-    light_action.triggered.connect(
-        lambda: window._apply_theme(window._theme_from_str("light"))
-    )
+    light_action.triggered.connect(lambda: window._apply_theme(window._theme_from_str("light")))
     theme_menu.addAction(light_action)
 
     dark_action = QAction("Sötét", window)
-    dark_action.triggered.connect(
-        lambda: window._apply_theme(window._theme_from_str("dark"))
-    )
+    dark_action.triggered.connect(lambda: window._apply_theme(window._theme_from_str("dark")))
     theme_menu.addAction(dark_action)
 
     # === HELP MENÜ ===

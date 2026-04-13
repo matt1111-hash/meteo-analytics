@@ -9,7 +9,6 @@ Extreme Weather Calculator - Yearly Calculator
 """
 
 import logging
-from typing import Dict, List
 
 from .extreme_records import ExtremeRecord
 

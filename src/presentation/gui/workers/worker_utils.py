@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -9,12 +8,12 @@ Validációs és segédfüggvények a worker-ekhez.
 """
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 
 def validate_coordinates(latitude: float, longitude: float) -> bool:
     """Koordináták validálása."""
-    return (-90.0 <= latitude <= 90.0) and (-180.0 <= longitude <= 180.0)
+    return (-90.0 <= latitude <= 90.0) and (-180.0 <= longitude <= 180.0)  # noqa: PLR2004
 
 
 def validate_date_string(date_str: str) -> bool:
@@ -51,7 +50,7 @@ def format_api_error(status_code: int, response_text: str) -> str:
 
     user_message = error_messages.get(status_code, f"HTTP {status_code} hiba")
 
-    if len(response_text) < 200:
+    if len(response_text) < 200:  # noqa: PLR2004
         user_message += f" ({response_text})"
 
     return user_message
@@ -91,7 +90,7 @@ def create_weather_worker_with_provider(
     return worker
 
 
-def get_worker_manager_provider_summary(manager) -> Dict[str, Any]:
+def get_worker_manager_provider_summary(manager) -> dict[str, Any]:
     """
     🌍 WorkerManager provider összefoglaló lekérdezése.
 

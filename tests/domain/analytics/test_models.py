@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Dict
-
 from src.data.enums import RegionScope
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
 
@@ -63,7 +61,7 @@ def test_city_weather_data_to_dict_returns_copy() -> None:
         lat=48.2082,
         lon=16.3738,
     )
-    exported: Dict[str, object] = weather.to_dict()
+    exported: dict[str, object] = weather.to_dict()
     exported["city"] = "Graz"
     assert weather.city == "Vienna"
 

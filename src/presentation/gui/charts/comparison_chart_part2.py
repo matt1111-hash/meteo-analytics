@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for MultiYearComparisonChart."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .comparison_chart_support import *
 
 
-class MultiYearComparisonChartPart2Mixin:
+class MultiYearComparisonChartPart2Mixin:  # noqa: D101
     def _get_trend_colors(self) -> Dict[str, Any]:
         """Build comparison and trend color palette."""
         return {
@@ -28,9 +28,7 @@ class MultiYearComparisonChartPart2Mixin:
         """Plot yearly comparison lines and fill bands."""
         for index, year in enumerate(years):
             year_data = df[df["year"] == year].copy()
-            color = trend_colors["year_comparison"][
-                index % len(trend_colors["year_comparison"])
-            ]
+            color = trend_colors["year_comparison"][index % len(trend_colors["year_comparison"])]
             self.ax.plot(
                 year_data["day_of_year"],
                 year_data["temp_mean"],
@@ -39,7 +37,7 @@ class MultiYearComparisonChartPart2Mixin:
                 alpha=0.8,
                 label=f"{year}",
             )
-            if index < 2:
+            if index < 2:  # noqa: PLR2004
                 self.ax.fill_between(
                     year_data["day_of_year"],
                     year_data["temp_min"],
@@ -50,7 +48,7 @@ class MultiYearComparisonChartPart2Mixin:
 
     def _plot_average_trend(self, df: pd.DataFrame, trend_color: str) -> None:
         """Plot average trend line when enough data is available."""
-        if len(df) <= 30:
+        if len(df) <= 30:  # noqa: PLR2004
             return
         trend_data = df.groupby("day_of_year")["temp_mean"].mean().reset_index()
         self.ax.plot(
@@ -124,9 +122,7 @@ class MultiYearComparisonChartPart2Mixin:
 
         if self.grid_enabled:
             grid_color = current_colors.get("border", "#d1d5db")
-            grid_alpha = (
-                0.3 if self.theme_manager.get_current_theme() == "light" else 0.2
-            )
+            grid_alpha = 0.3 if self.theme_manager.get_current_theme() == "light" else 0.2
             self.ax.grid(True, alpha=grid_alpha, color=grid_color)
 
     def _configure_legend_and_stats(
@@ -161,12 +157,12 @@ class MultiYearComparisonChartPart2Mixin:
             fontsize=10,
             verticalalignment="top",
             color=text_color,
-            bbox=dict(
-                boxstyle="round,pad=0.3",
-                facecolor=current_colors.get("surface_variant", "#f9fafb"),
-                edgecolor=current_colors.get("border", "#d1d5db"),
-                alpha=0.8,
-            ),
+            bbox={
+                "boxstyle": "round,pad=0.3",
+                "facecolor": current_colors.get("surface_variant", "#f9fafb"),
+                "edgecolor": current_colors.get("border", "#d1d5db"),
+                "alpha": 0.8,
+            },
         )
 
     def _plot_multi_year_comparison(self, df: pd.DataFrame) -> None:
@@ -181,7 +177,7 @@ class MultiYearComparisonChartPart2Mixin:
         # Évek azonosítása
         years = sorted(df["year"].unique())
 
-        if len(years) < 2:
+        if len(years) < 2:  # noqa: PLR2004
             self._plot_comparison_placeholder()
             return
 

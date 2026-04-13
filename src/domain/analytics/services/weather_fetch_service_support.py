@@ -4,23 +4,18 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.domain.analytics.models import CityWeatherData
 
 
-def split_batches(
-    cities: List[Dict[str, Any]], batch_size: int
-) -> List[List[Dict[str, Any]]]:
+def split_batches(cities: list[dict[str, Any]], batch_size: int) -> list[list[dict[str, Any]]]:
     """Split cities into fixed-size batches."""
-    return [
-        cities[index : index + batch_size]
-        for index in range(0, len(cities), batch_size)
-    ]
+    return [cities[index : index + batch_size] for index in range(0, len(cities), batch_size)]
 
 
 def resolve_effective_dates(
-    date: str, start_date: Optional[str], end_date: Optional[str]
+    date: str, start_date: str | None, end_date: str | None
 ) -> tuple[str, str]:
     """Resolve effective date range for a query."""
     return start_date or date, end_date or date
@@ -28,7 +23,7 @@ def resolve_effective_dates(
 
 def normalize_weather_result(weather_result: Any) -> tuple[Any, str]:
     """Normalize weather client result and source."""
-    if isinstance(weather_result, tuple) and len(weather_result) == 2:
+    if isinstance(weather_result, tuple) and len(weather_result) == 2:  # noqa: PLR2004
         weather_data, source = weather_result
         return weather_data, source
     return weather_result, "auto"
@@ -45,8 +40,8 @@ def calculate_temperature_range(temp_max: Any, temp_min: Any) -> Any:
 
 
 def build_city_weather_record(
-    city: Dict[str, Any],
-    daily_data: Dict[str, Any],
+    city: dict[str, Any],
+    daily_data: dict[str, Any],
     start_date: str,
     source: str,
     attempt: int,
@@ -79,12 +74,12 @@ def build_city_weather_record(
 
 
 def create_city_results(
-    city: Dict[str, Any],
-    weather_data: List[Dict[str, Any]],
+    city: dict[str, Any],
+    weather_data: list[dict[str, Any]],
     start_date: str,
     source: str,
     attempt: int,
-) -> List[CityWeatherData]:
+) -> list[CityWeatherData]:
     """Create result records for a single city query."""
     return [
         build_city_weather_record(city, daily_data, start_date, source, attempt)
@@ -93,7 +88,7 @@ def create_city_results(
 
 
 def create_empty_city_data(
-    city: Dict[str, Any], error_msg: str = "Ismeretlen hiba"
+    city: dict[str, Any], error_msg: str = "Ismeretlen hiba"
 ) -> CityWeatherData:
     """Return empty CityWeatherData for failure cases."""
     return CityWeatherData(

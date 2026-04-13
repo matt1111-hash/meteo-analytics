@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,11 +7,10 @@ Statisztika kártyák létrehozása az AnalyticsViewhoz.
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
-
 from src.presentation.gui.analytics.analytics_statistics import AnalyticsStatistics
 
 if TYPE_CHECKING:
@@ -22,7 +20,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _build_temperature_items(stats: Dict[str, Any]) -> list[str]:
+def _build_temperature_items(stats: dict[str, Any]) -> list[str]:
     """Build temperature card lines."""
     return [
         f"• Átlag hőmérséklet: {stats.get('temp_avg', 0):.1f}°C"
@@ -39,7 +37,7 @@ def _build_temperature_items(stats: Dict[str, Any]) -> list[str]:
     ]
 
 
-def _build_precipitation_items(stats: Dict[str, Any]) -> list[str]:
+def _build_precipitation_items(stats: dict[str, Any]) -> list[str]:
     """Build precipitation card lines."""
     return [
         f"• Átlag csapadék: {stats.get('precip_avg', 0):.1f}mm/nap"
@@ -54,7 +52,7 @@ def _build_precipitation_items(stats: Dict[str, Any]) -> list[str]:
     ]
 
 
-def _build_wind_items(stats: Dict[str, Any]) -> list[str]:
+def _build_wind_items(stats: dict[str, Any]) -> list[str]:
     """Build wind card lines."""
     max_wind_line = "• Max szél: N/A"
     if stats.get("windgust_max"):
@@ -73,7 +71,7 @@ def _build_wind_items(stats: Dict[str, Any]) -> list[str]:
     ]
 
 
-def _build_period_items(stats: Dict[str, Any]) -> list[str]:
+def _build_period_items(stats: dict[str, Any]) -> list[str]:
     """Build period card lines."""
     return [
         f"• Időtartam: {stats.get('start_date', 'N/A')} - {stats.get('end_date', 'N/A')}",
@@ -91,14 +89,10 @@ class AnalyticsViewStatisticsCards:
         """Inicializálás."""
         self.view = view
 
-    def process_and_display_statistics(
-        self, data: Dict[str, Any], total_days: int
-    ) -> None:
+    def process_and_display_statistics(self, data: dict[str, Any], total_days: int) -> None:
         """🚨 JAVÍTOTT: Statisztikák feldolgozása és megjelenítése - KOMPAKT KÁRTYÁS RENDSZER."""
         try:
-            logger.info(
-                "🚨 _process_and_display_statistics() MEGHÍVVA - STATISZTIKÁK JAVÍTÁS"
-            )
+            logger.info("🚨 _process_and_display_statistics() MEGHÍVVA - STATISZTIKÁK JAVÍTÁS")
 
             # Statisztikai adatok számítása
             stats_data = AnalyticsStatistics.calculate_statistics_data(data, total_days)
@@ -114,12 +108,12 @@ class AnalyticsViewStatisticsCards:
         except Exception as e:
             logger.error(f"Statisztika feldolgozási hiba: {e}", exc_info=True)
             # Hiba esetén alapértelmezett üzenet
-            error_widget = QLabel(f"❌ Statisztika hiba: {str(e)}")
+            error_widget = QLabel(f"❌ Statisztika hiba: {e!s}")
             error_widget.setAlignment(Qt.AlignCenter)
             error_widget.setStyleSheet("color: red; padding: 20px;")
             self.view.statistics_area.setWidget(error_widget)
 
-    def create_statistics_cards_widget(self, stats: Dict[str, Any]) -> QWidget:
+    def create_statistics_cards_widget(self, stats: dict[str, Any]) -> QWidget:
         """🎯 KOMPAKT KÁRTYÁS STATISZTIKA WIDGET LÉTREHOZÁSA."""
         try:
             main_widget = QWidget()
@@ -151,12 +145,12 @@ class AnalyticsViewStatisticsCards:
             logger.error(f"Kártyás widget létrehozási hiba: {e}")
             error_widget = QWidget()
             error_layout = QVBoxLayout(error_widget)
-            error_label = QLabel(f"❌ Widget hiba: {str(e)}")
+            error_label = QLabel(f"❌ Widget hiba: {e!s}")
             error_label.setAlignment(Qt.AlignCenter)
             error_layout.addWidget(error_label)
             return error_widget
 
-    def _create_statistic_card(self, title: str, items: List[str]) -> QWidget:
+    def _create_statistic_card(self, title: str, items: list[str]) -> QWidget:
         """📋 EGYEDI STATISZTIKA KÁRTYA LÉTREHOZÁSA."""
         card = QWidget()
         layout = QVBoxLayout(card)

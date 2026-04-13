@@ -2,21 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
-
 from src.domain.analytics.models import CityWeatherData
 from src.domain.analytics.services.weather_fetch_service import WeatherFetchService
 
 
 class _DummyWeatherClient:
-    def __init__(
-        self, responses: List[Any] | None = None, raise_error: bool = False
-    ) -> None:
+    def __init__(self, responses: list[Any] | None = None, raise_error: bool = False) -> None:
         self.responses = responses or []
         self.raise_error = raise_error
-        self.calls: List[Dict[str, Any]] = []
+        self.calls: list[dict[str, Any]] = []
 
     def get_weather_data(self, lat: float, lon: float, start: str, end: str) -> Any:
         self.calls.append({"lat": lat, "lon": lon, "start": start, "end": end})
@@ -65,9 +62,7 @@ def test_fetch_weather_data_dual_api_batch_returns_success(
     ]
     region_config = {"batch_size": 1, "rate_limit_delay": 0.0}
 
-    results = service.fetch_weather_data_dual_api_batch(
-        cities, "2024-01-01", region_config
-    )
+    results = service.fetch_weather_data_dual_api_batch(cities, "2024-01-01", region_config)
 
     assert len(results) == 1
     city_data = results[0]
@@ -80,14 +75,10 @@ def test_fetch_weather_data_dual_api_batch_returns_success(
 
 def test_fetch_weather_data_dual_api_batch_returns_empty_on_missing_client() -> None:
     service = _service(None)
-    cities = [
-        {"city": "Test", "country": "X", "country_code": "XX", "lat": 0.0, "lon": 0.0}
-    ]
+    cities = [{"city": "Test", "country": "X", "country_code": "XX", "lat": 0.0, "lon": 0.0}]
     region_config = {"batch_size": 1, "rate_limit_delay": 0.0}
 
-    results = service.fetch_weather_data_dual_api_batch(
-        cities, "2024-01-01", region_config
-    )
+    results = service.fetch_weather_data_dual_api_batch(cities, "2024-01-01", region_config)
 
     assert len(results) == 1
     assert results[0].fetch_success is False

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for AnalyticsView."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .core_support import *
 
 
-class AnalyticsViewPart2Mixin:
-    def update_with_multi_city_result(self, result: "AnalyticsResult"):
+class AnalyticsViewPart2Mixin:  # noqa: D101
+    def update_with_multi_city_result(self, result: AnalyticsResult):
         """
         ✅ ÚJ: Frissíti a nézetet a MainWindow-tól kapott elemzési eredménnyel.
         """
@@ -22,20 +22,14 @@ class AnalyticsViewPart2Mixin:
                 return
 
             # Fake single-city data létrehozása a heatmap-ekhez
-            fake_data = (
-                self.multi_city_handler.create_fake_single_city_data_from_multi_city(
-                    result
-                )
-            )
+            fake_data = self.multi_city_handler.create_fake_single_city_data_from_multi_city(result)
 
             # Heatmap-ek frissítése
             if self.climate_tabs and fake_data:
                 self.climate_tabs.update_data(fake_data)
 
             # Fake rekordok (Multi-City eredményekből)
-            fake_records = self.multi_city_handler.create_fake_records_from_multi_city(
-                result
-            )
+            fake_records = self.multi_city_handler.create_fake_records_from_multi_city(result)
             if self.record_summary:
                 self.record_summary.update_records(fake_records)
 
@@ -55,9 +49,7 @@ class AnalyticsViewPart2Mixin:
 
     def clear_data(self) -> None:
         """Adatok törlése és UI visszaállítása."""
-        logger.info(
-            "Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok törlése"
-        )
+        logger.info("Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok törlése")
 
         self.current_data = None
         self.current_location = None
@@ -102,9 +94,7 @@ class AnalyticsViewPart2Mixin:
                 coords = (0.0, 0.0)
 
             if coords:
-                location_text = (
-                    f"📍 {display_name}\n🗺️ [{coords[0]:.3f}, {coords[1]:.3f}]"
-                )
+                location_text = f"📍 {display_name}\n🗺️ [{coords[0]:.3f}, {coords[1]:.3f}]"
             else:
                 location_text = f"📍 {display_name}"
 
@@ -113,13 +103,11 @@ class AnalyticsViewPart2Mixin:
 
         except Exception as e:
             logger.error(f"Lokció változás hiba: {e}")
-            self.error_occurred.emit(f"Lokció hiba: {str(e)}")
+            self.error_occurred.emit(f"Lokció hiba: {e!s}")
 
     def on_analysis_start(self) -> None:
         """Elemzés indítása."""
-        logger.info(
-            "Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés indítása"
-        )
+        logger.info("Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés indítása")
         self.analysis_started.emit()
         self._update_status(
             "⏳ Konstans heatmap dashboard + DEDICATED WIND CHARTOK elemzés folyamatban..."
@@ -129,9 +117,7 @@ class AnalyticsViewPart2Mixin:
         """Állapot üzenet frissítése."""
         if self.status_label:
             self.status_label.setText(message)
-        logger.info(
-            f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK állapot: {message}"
-        )
+        logger.info(f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK állapot: {message}")
 
     # === TÉMA API ===
 

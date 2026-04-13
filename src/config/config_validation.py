@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Configuration Validation
 Environment checking, configuration validation, and utility functions
@@ -87,9 +86,7 @@ def validate_config() -> dict[str, bool | str | None]:
             api_validation["meteostat_key_valid"] and status["api_configuration"]
         )
         status["provider_selector_ready"] = bool(
-            status["directories"]
-            and status["write_permissions"]
-            and USER_PREFS_DIR.exists()
+            status["directories"] and status["write_permissions"] and USER_PREFS_DIR.exists()
         )
     except PermissionError as exc:
         status["directories"] = False
@@ -117,7 +114,7 @@ def get_optimal_data_source(use_case: str, prefer_free: bool = True) -> str:
         optimal_source = DataConstants.USE_CASE_SOURCE_MAPPING[use_case]
 
         # Ha ingyenes forrást preferálunk és az optimális fizetős
-        if prefer_free and optimal_source == "meteostat":
+        if prefer_free and optimal_source == "meteostat":  # noqa: SIM102
             # Ellenőrizzük, hogy az open-meteo képes-e kezelni
             if DataConstants.SOURCE_CAPABILITIES["open-meteo"].get(
                 use_case.replace("_", "-"), False
@@ -140,9 +137,7 @@ def get_source_display_name(source_id: str) -> str:
     Returns:
         Felhasználóbarát megjelenítési név
     """
-    return APIConfig.SOURCE_DISPLAY_NAMES.get(
-        source_id, f"Unknown Source ({source_id})"
-    )
+    return APIConfig.SOURCE_DISPLAY_NAMES.get(source_id, f"Unknown Source ({source_id})")
 
 
 def validate_api_source_available(source_id: str) -> bool:
@@ -161,7 +156,7 @@ def validate_api_source_available(source_id: str) -> bool:
     elif source_id == "meteostat":
         # Environment variable ellenőrzése
         api_key = os.getenv("METEOSTAT_API_KEY")
-        return bool(api_key and len(api_key.strip()) >= 32)
+        return bool(api_key and len(api_key.strip()) >= 32)  # noqa: PLR2004
 
     return False
 
@@ -192,9 +187,9 @@ def get_fallback_source_chain(primary_source: str) -> list[str]:
 
 __all__ = [
     "check_environment",
-    "validate_config",
+    "get_fallback_source_chain",
     "get_optimal_data_source",
     "get_source_display_name",
     "validate_api_source_available",
-    "get_fallback_source_chain",
+    "validate_config",
 ]

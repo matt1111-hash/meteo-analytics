@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -14,7 +13,7 @@ Képességek:
 Fájl: src/presentation/gui/charts/precipitation_chart/data_handler.py
 """
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
@@ -22,7 +21,7 @@ if TYPE_CHECKING:
     pass
 
 
-def _extract_precipitation_data(self, data: Dict[str, Any]) -> pd.DataFrame:
+def _extract_precipitation_data(self, data: dict[str, Any]) -> pd.DataFrame:  # noqa: ARG001
     """
     Csapadék adatok kinyerése.
 
@@ -45,7 +44,7 @@ def _extract_precipitation_data(self, data: Dict[str, Any]) -> pd.DataFrame:
     return df
 
 
-def update_data(self, data: Dict[str, Any]) -> None:
+def update_data(self, data: dict[str, Any]) -> None:
     """
     🔧 KRITIKUS JAVÍTÁS: Duplikáció-mentes csapadék chart frissítés + SIMPLIFIED THEMEMANAGER.
 

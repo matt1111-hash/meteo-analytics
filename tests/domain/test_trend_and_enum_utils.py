@@ -27,9 +27,7 @@ from src.domain.value_objects.enums import (
 )
 
 
-def _build_period(
-    years: int, direction: str, significance: str, slope: float
-) -> TrendPeriodResult:
+def _build_period(years: int, direction: str, significance: str, slope: float) -> TrendPeriodResult:
     """Create a reusable trend period result."""
     return TrendPeriodResult(
         time_period=years,
@@ -103,9 +101,7 @@ def test_enum_utils_display_validation_and_metric_mapping_helpers() -> None:
     """Enum helpers cover known values, fallbacks, validation, and question mappings."""
     assert get_analysis_type_display_name(AnalysisType.TREND) == "Trend elemzés"
     assert get_data_provider_display_name(DataProvider.OPENWEATHER) == "OpenWeatherMap"
-    assert (
-        get_metric_display_name(AnalyticsMetric.PRECIPITATION_SUM) == "Csapadékösszeg"
-    )
+    assert get_metric_display_name(AnalyticsMetric.PRECIPITATION_SUM) == "Csapadékösszeg"
     assert get_metric_unit(AnalyticsMetric.UV_INDEX_MAX) == ""
     assert get_region_scope_display_name(RegionScope.GLOBAL) == "Globális"
     assert get_question_type_display_name(QuestionType.WIND_MAX) == "Legerősebb szél"

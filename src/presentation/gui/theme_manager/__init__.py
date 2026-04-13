@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -46,17 +45,17 @@ SimplifiedThemeManager = ProfessionalThemeManager
 __all__ = [
     # Core
     "ProfessionalThemeManager",
-    # Convenience API
-    "get_theme_manager",
-    "register_widget_for_theming",
-    "apply_theme_to_app",
-    "get_current_colors",
-    "get_weather_colors",
-    "toggle_app_theme",
-    "initialize_theme_system",
-    "get_accessibility_info",
-    "get_theme_debug_info",
+    "SimplifiedThemeManager",
     # Backward compatibility
     "ThemeManager",
-    "SimplifiedThemeManager",
+    "apply_theme_to_app",
+    "get_accessibility_info",
+    "get_current_colors",
+    "get_theme_debug_info",
+    # Convenience API
+    "get_theme_manager",
+    "get_weather_colors",
+    "initialize_theme_system",
+    "register_widget_for_theming",
+    "toggle_app_theme",
 ]

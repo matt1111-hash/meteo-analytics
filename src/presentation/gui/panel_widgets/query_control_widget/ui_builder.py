@@ -7,7 +7,6 @@ Csak vezérlőgombokat és progressz kijelzést tartalmaz.
 """
 
 import logging
-from typing import Optional
 
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
@@ -38,14 +37,14 @@ class QueryControlUIBuilder:
             parent_widget: Szülő widget
         """
         self._parent = parent_widget
-        self._layout: Optional[QVBoxLayout] = None
+        self._layout: QVBoxLayout | None = None
 
         # Widget references
-        self.query_button: Optional[QPushButton] = None
-        self.cancel_button: Optional[QPushButton] = None
-        self.progress_bar: Optional[QProgressBar] = None
-        self.status_label: Optional[QLabel] = None
-        self.progress_text_label: Optional[QLabel] = None
+        self.query_button: QPushButton | None = None
+        self.cancel_button: QPushButton | None = None
+        self.progress_bar: QProgressBar | None = None
+        self.status_label: QLabel | None = None
+        self.progress_text_label: QLabel | None = None
 
     def build_ui(self) -> QVBoxLayout:
         """

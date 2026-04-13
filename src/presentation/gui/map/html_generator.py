@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -149,8 +148,8 @@ def create_general_legend() -> str:
 
 # Export
 __all__ = [
+    "create_general_legend",
+    "create_precipitation_legend",
     "create_temperature_legend",
     "create_wind_legend",
-    "create_precipitation_legend",
-    "create_general_legend",
 ]

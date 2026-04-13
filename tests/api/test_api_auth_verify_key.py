@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Tests for API Authentication middleware.
@@ -32,7 +31,6 @@ class TestVerifyAPIKey:
     def test_raises_401_when_no_key_provided(self):
         """Should raise 401 when no API key is provided."""
         from fastapi import HTTPException
-
         from src.api.main import verify_api_key
 
         with patch("src.api.main.APIConfig") as mock_config:
@@ -47,7 +45,6 @@ class TestVerifyAPIKey:
     def test_raises_403_when_invalid_key(self):
         """Should raise 403 when invalid API key is provided."""
         from fastapi import HTTPException
-
         from src.api.main import verify_api_key
 
         with patch("src.api.main.APIConfig") as mock_config:

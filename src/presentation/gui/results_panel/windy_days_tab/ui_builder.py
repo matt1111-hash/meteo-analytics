@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -49,9 +48,7 @@ def create_header_section() -> tuple[QFrame, QLabel, QLabel]:
     title_label.setAlignment(Qt.AlignCenter)
 
     # Leírás
-    desc_label = QLabel(
-        "Havi szeles napok eloszlásának vizsgálata beállítható küszöbértékkel"
-    )
+    desc_label = QLabel("Havi szeles napok eloszlásának vizsgálata beállítható küszöbértékkel")
     desc_label.setObjectName("windy_days_desc")
     desc_label.setStyleSheet("font-size: 12px; color: #7f8c8d; font-style: italic;")
     desc_label.setAlignment(Qt.AlignCenter)

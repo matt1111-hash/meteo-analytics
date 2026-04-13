@@ -6,9 +6,7 @@ from __future__ import annotations
 class TestUsageTrackerGetSummary:
     """Test cases for UsageTracker.get_usage_summary() method."""
 
-    def test_get_usage_summary_returns_all_fields(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_get_usage_summary_returns_all_fields(self, config_fs: dict[str, str]) -> None:
         """Should return all summary fields."""
         from src.config.usage_config import UsageTracker
 
@@ -27,9 +25,7 @@ class TestUsageTrackerGetSummary:
 
         assert set(summary.keys()) == expected_keys
 
-    def test_get_usage_summary_with_tracked_requests(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_get_usage_summary_with_tracked_requests(self, config_fs: dict[str, str]) -> None:
         """Summary should reflect tracked requests."""
         from src.config.usage_config import UsageTracker
 

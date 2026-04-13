@@ -8,7 +8,7 @@ Private utility metódusok ColorPalette osztályhoz.
 """
 
 import colorsys
-from typing import Any, Dict
+from typing import Any
 
 from src.presentation.gui.color_palette.types import HSLColor
 
@@ -35,7 +35,7 @@ class UtilityMethodsMixin:
 
         print(f"🎨 DEBUG: Generated {len(variants)} variants for {semantic_name}")
 
-    def get_debug_info(self) -> Dict[str, Any]:
+    def get_debug_info(self) -> dict[str, Any]:
         """Debug információk lekérdezése."""
         return {
             "theme_type": self._theme_type.value,

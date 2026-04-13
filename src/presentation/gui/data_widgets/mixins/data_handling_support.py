@@ -7,14 +7,14 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def normalize_array(arr: List, target_length: int, fill_value: Any = None) -> List:
+def normalize_array(arr: list, target_length: int, fill_value: Any = None) -> list:
     """Normalize an array to the requested length."""
     if len(arr) == target_length:
         return arr
@@ -23,9 +23,9 @@ def normalize_array(arr: List, target_length: int, fill_value: Any = None) -> Li
     return arr[:target_length]
 
 
-def build_mean_fallback(temp_max: List, temp_min: List, base_length: int) -> List:
+def build_mean_fallback(temp_max: list, temp_min: list, base_length: int) -> list:
     """Build fallback daily mean temperatures."""
-    mean_values: List[Any] = []
+    mean_values: list[Any] = []
     for i in range(base_length):
         if (
             i < len(temp_max)
@@ -39,29 +39,15 @@ def build_mean_fallback(temp_max: List, temp_min: List, base_length: int) -> Lis
     return mean_values
 
 
-def build_dataframe_payload(
-    daily_data: Dict[str, Any], base_length: int
-) -> Dict[str, List]:
+def build_dataframe_payload(daily_data: dict[str, Any], base_length: int) -> dict[str, list]:
     """Build normalized dataframe payload from daily data."""
     dates_norm = normalize_array(daily_data.get("time", []), base_length)
-    temp_max_norm = normalize_array(
-        daily_data.get("temperature_2m_max", []), base_length, None
-    )
-    temp_min_norm = normalize_array(
-        daily_data.get("temperature_2m_min", []), base_length, None
-    )
-    temp_mean_norm = normalize_array(
-        daily_data.get("temperature_2m_mean", []), base_length, None
-    )
-    precip_norm = normalize_array(
-        daily_data.get("precipitation_sum", []), base_length, 0.0
-    )
-    windspeed_norm = normalize_array(
-        daily_data.get("windspeed_10m_max", []), base_length, None
-    )
-    if not daily_data.get("temperature_2m_mean", []) or all(
-        x is None for x in temp_mean_norm
-    ):
+    temp_max_norm = normalize_array(daily_data.get("temperature_2m_max", []), base_length, None)
+    temp_min_norm = normalize_array(daily_data.get("temperature_2m_min", []), base_length, None)
+    temp_mean_norm = normalize_array(daily_data.get("temperature_2m_mean", []), base_length, None)
+    precip_norm = normalize_array(daily_data.get("precipitation_sum", []), base_length, 0.0)
+    windspeed_norm = normalize_array(daily_data.get("windspeed_10m_max", []), base_length, None)
+    if not daily_data.get("temperature_2m_mean", []) or all(x is None for x in temp_mean_norm):
         temp_mean_norm = build_mean_fallback(temp_max_norm, temp_min_norm, base_length)
     payload = {
         "date": dates_norm,
@@ -75,7 +61,7 @@ def build_dataframe_payload(
     return payload
 
 
-def validate_required_daily_data(dates: List, temp_max: List) -> bool:
+def validate_required_daily_data(dates: list, temp_max: list) -> bool:
     """Validate required daily series before dataframe conversion."""
     if not dates or len(dates) == 0:
         logger.error("❌ Nincs dátum adat!")
@@ -86,7 +72,7 @@ def validate_required_daily_data(dates: List, temp_max: List) -> bool:
     return True
 
 
-def log_mean_source(temp_mean: List, df_data: Dict[str, List]) -> None:
+def log_mean_source(temp_mean: list, df_data: dict[str, list]) -> None:
     """Log whether source or fallback mean temperature values are used."""
     if not temp_mean or all(x is None for x in df_data["temp_mean"]):
         logger.warning("⚠️ temperature_2m_mean hiányzik, fallback számításra...")

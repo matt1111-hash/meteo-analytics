@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -14,10 +13,8 @@ Képességek:
 Fájl: src/presentation/gui/panel_widgets/multi_city_widget/regional_data.py
 """
 
-from typing import Dict, List
 
-
-def get_hungarian_regions() -> List[str]:
+def get_hungarian_regions() -> list[str]:
     """
     Magyar NUTS régiók listája (hungarian_settlements_importer.py alapján).
 
@@ -35,7 +32,7 @@ def get_hungarian_regions() -> List[str]:
     ]
 
 
-def get_region_county_mapping() -> Dict[str, List[str]]:
+def get_region_county_mapping() -> dict[str, list[str]]:
     """
     Régióhoz tartozó megyék listája (hungarian_settlements_importer.py alapján).
 
@@ -57,7 +54,7 @@ def get_region_county_mapping() -> Dict[str, List[str]]:
     }
 
 
-def get_counties_for_region(region: str) -> List[str]:
+def get_counties_for_region(region: str) -> list[str]:
     """
     Régióhoz tartozó megyék listája.
 

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for DisplayMixin."""
 
@@ -16,12 +16,12 @@ def _build_headers(column_count: int) -> list[str]:
         "Napi átlag (°C)",
         "Csapadék (mm)",
     ]
-    if column_count > 5:
+    if column_count > 5:  # noqa: PLR2004
         headers.append("Szélsebesség (km/h)")
     return headers
 
 
-def _format_numeric_value(column_index: int, numeric_value: float) -> str:
+def _format_numeric_value(column_index: int, numeric_value: float) -> str:  # noqa: ARG001
     """Format numeric table text."""
     return f"{numeric_value:.1f}"
 
@@ -37,9 +37,7 @@ def _create_table_item(value: Any, column_index: int) -> QTableWidgetItem:
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         return item
     numeric_value = float(value)
-    item = NumericTableWidgetItem(
-        _format_numeric_value(column_index, numeric_value), numeric_value
-    )
+    item = NumericTableWidgetItem(_format_numeric_value(column_index, numeric_value), numeric_value)
     item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
     return item
 
@@ -47,9 +45,7 @@ def _create_table_item(value: Any, column_index: int) -> QTableWidgetItem:
 def _apply_item_colors(item: QTableWidgetItem, row_index: int, scheme: Any) -> None:
     """Apply themed or fallback colors to a table item."""
     if scheme:
-        background_key = (
-            ("surface", "base") if row_index % 2 == 0 else ("surface", "light")
-        )
+        background_key = ("surface", "base") if row_index % 2 == 0 else ("surface", "light")
         background = scheme.get_color(*background_key) or (
             "#ffffff" if row_index % 2 == 0 else "#f5f5f5"
         )
@@ -57,13 +53,11 @@ def _apply_item_colors(item: QTableWidgetItem, row_index: int, scheme: Any) -> N
         item.setBackground(QColor(background))
         item.setForeground(QColor(foreground))
         return
-    item.setBackground(
-        QColor(248, 249, 250) if row_index % 2 == 0 else QColor(255, 255, 255)
-    )
+    item.setBackground(QColor(248, 249, 250) if row_index % 2 == 0 else QColor(255, 255, 255))
     item.setForeground(QColor(31, 41, 55))
 
 
-class DisplayMixinPart2Mixin:
+class DisplayMixinPart2Mixin:  # noqa: D101
     def _populate_table_with_numeric_items(self, data: pd.DataFrame) -> None:
         """Táblázat feltöltése NumericTableWidgetItem-ekkel."""
         rows, cols = data.shape
@@ -92,10 +86,7 @@ class DisplayMixinPart2Mixin:
         if total_rows == 0:
             self.rows_info.setText("Nincs megjeleníthető adat")
         else:
-            if (
-                self.rows_per_page_combo.currentText() == "Összes"
-                or displayed_rows == total_rows
-            ):
+            if self.rows_per_page_combo.currentText() == "Összes" or displayed_rows == total_rows:
                 info_text = f"Összesen: {total_rows} sor (mind megjelenítve)"
             else:
                 current_page = self.current_page + 1

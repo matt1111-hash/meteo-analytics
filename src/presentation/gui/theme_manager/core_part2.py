@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for ProfessionalThemeManager."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .core_support import *
 
 
-class ProfessionalThemeManagerPart2Mixin:
+class ProfessionalThemeManagerPart2Mixin:  # noqa: D101
     def get_semantic_colors(self) -> Dict[str, Dict[str, str]]:
         """
         🎯 PROFESSIONAL SEMANTIC API - All semantic colors with variants.
@@ -52,9 +52,7 @@ class ProfessionalThemeManagerPart2Mixin:
         """Load professional theme preferences."""
         self._preferences.load()
 
-    def create_weather_specific_palette(
-        self, base_temperature_color: str = "#C43939"
-    ) -> None:
+    def create_weather_specific_palette(self, base_temperature_color: str = "#C43939") -> None:
         """
         🌦️ PROFESSIONAL WEATHER SETUP - PIROS (#C43939) BASE TEMPERATURE.
 
@@ -63,14 +61,10 @@ class ProfessionalThemeManagerPart2Mixin:
         """
         self.weather_palette = create_weather_palette(
             base_temperature=base_temperature_color,
-            theme_type=ThemeType.DARK
-            if self.current_theme == "dark"
-            else ThemeType.LIGHT,
+            theme_type=ThemeType.DARK if self.current_theme == "dark" else ThemeType.LIGHT,
         )
 
-        print(
-            f"🌦️ Professional weather palette created with RED base: {base_temperature_color}"
-        )
+        print(f"🌦️ Professional weather palette created with RED base: {base_temperature_color}")
 
     def get_accessibility_info(self) -> Dict[str, Any]:
         """

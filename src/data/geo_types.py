@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Global Weather Analyzer - Geographic Data Types
@@ -10,7 +9,7 @@ Part of the geo_utils refactoring - split into focused modules.
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 class DistanceUnit(Enum):
@@ -37,19 +36,17 @@ class GeoPoint:
 
     latitude: float
     longitude: float
-    altitude: Optional[float] = None
-    name: Optional[str] = None
+    altitude: float | None = None
+    name: str | None = None
 
     def __post_init__(self):
         """Validate coordinates on initialization."""
         if not self.is_valid():
-            raise ValueError(
-                f"Invalid coordinates: lat={self.latitude}, lon={self.longitude}"
-            )
+            raise ValueError(f"Invalid coordinates: lat={self.latitude}, lon={self.longitude}")
 
     def is_valid(self) -> bool:
         """Check if coordinates are valid."""
-        return (-90 <= self.latitude <= 90) and (-180 <= self.longitude <= 180)
+        return (-90 <= self.latitude <= 90) and (-180 <= self.longitude <= 180)  # noqa: PLR2004
 
     def normalize(self) -> "GeoPoint":
         """Normalize coordinates."""
@@ -66,7 +63,7 @@ class GeoPoint:
             name=self.name,
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert GeoPoint to dictionary."""
         return {
             "latitude": self.latitude,
@@ -76,7 +73,7 @@ class GeoPoint:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "GeoPoint":
+    def from_dict(cls, data: dict[str, Any]) -> "GeoPoint":
         """Create GeoPoint from dictionary."""
         return cls(
             latitude=data["latitude"],
@@ -99,7 +96,7 @@ class BoundingBox:
         """Validate bounding box."""
         if self.min_latitude > self.max_latitude:
             raise ValueError("min_latitude > max_latitude")
-        if self.min_longitude > self.max_longitude:
+        if self.min_longitude > self.max_longitude:  # noqa: SIM102
             if not (self.min_longitude > 0 and self.max_longitude < 0):
                 raise ValueError("min_longitude > max_longitude")
 
@@ -126,7 +123,7 @@ class BoundingBox:
         else:
             # Dateline crossing
             center_lon = ((self.min_longitude + self.max_longitude + 360) / 2) % 360
-            if center_lon > 180:
+            if center_lon > 180:  # noqa: PLR2004
                 center_lon -= 360
 
         return GeoPoint(latitude=center_lat, longitude=center_lon)
@@ -140,7 +137,7 @@ class BoundingBox:
             max_longitude=min(180, self.max_longitude + padding_degrees),
         )
 
-    def to_dict(self) -> Dict[str, float]:
+    def to_dict(self) -> dict[str, float]:
         """Convert BoundingBox to dictionary."""
         return {
             "min_latitude": self.min_latitude,
@@ -157,10 +154,10 @@ class GeographicRegion:
     name: str
     bounding_box: BoundingBox
     center_point: GeoPoint
-    area_km2: Optional[float] = None
-    population: Optional[int] = None
-    cities_count: Optional[int] = None
-    timezone: Optional[str] = None
+    area_km2: float | None = None
+    population: int | None = None
+    cities_count: int | None = None
+    timezone: str | None = None
 
     def is_point_in_region(self, point: GeoPoint) -> bool:
         """Check if point is in region."""
@@ -168,9 +165,9 @@ class GeographicRegion:
 
 
 __all__ = [
-    "DistanceUnit",
-    "CoordinateSystem",
-    "GeoPoint",
     "BoundingBox",
+    "CoordinateSystem",
+    "DistanceUnit",
+    "GeoPoint",
     "GeographicRegion",
 ]

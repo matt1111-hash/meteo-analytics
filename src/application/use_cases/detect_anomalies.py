@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from datetime import date
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 from src.domain.entities.climate_anomaly import ClimateAnomaly
 from src.domain.services.anomaly_detector import AnomalyDetectorService
@@ -18,15 +19,15 @@ logger = logging.getLogger(__name__)
 class DetectAnomaliesUseCase:
     """Application layer orchestrator for anomaly detection."""
 
-    def __init__(self, today_provider: Optional[Callable[[], date]] = None) -> None:
+    def __init__(self, today_provider: Callable[[], date] | None = None) -> None:  # noqa: D107
         self.today_provider = today_provider or date.today
 
     def execute(
         self,
-        weather_data: Dict[str, List[Any]],
-        thresholds: Dict[str, Any],
+        weather_data: dict[str, list[Any]],
+        thresholds: dict[str, Any],
         location_name: str = "current_location",
-    ) -> Dict[str, Optional[ClimateAnomaly]]:
+    ) -> dict[str, ClimateAnomaly | None]:
         """Run anomaly detection for temperature, precipitation, and wind."""
         if weather_data is None:
             raise ValueError("weather_data is required")
@@ -43,9 +44,7 @@ class DetectAnomaliesUseCase:
         precipitation_anomaly = service.detect_precipitation_anomaly(
             location_name=location_name,
             analysis_date=analysis_date,
-            precipitation_values=self._safe_float_list(
-                weather_data.get("precipitation_sum")
-            ),
+            precipitation_values=self._safe_float_list(weather_data.get("precipitation_sum")),
         )
         wind_anomaly = service.detect_wind_anomaly(
             location_name=location_name,
@@ -59,7 +58,7 @@ class DetectAnomaliesUseCase:
             "wind": wind_anomaly,
         }
 
-    def _build_thresholds(self, thresholds: Dict[str, Any]) -> AnomalyThresholdSet:
+    def _build_thresholds(self, thresholds: dict[str, Any]) -> AnomalyThresholdSet:
         required_keys = [
             "temp_hot",
             "temp_cold",
@@ -88,9 +87,7 @@ class DetectAnomaliesUseCase:
             logger.error("Invalid threshold values: %s", thresholds)
             raise ValueError("Threshold values must be numeric") from exc
 
-    def _collect_wind_values(
-        self, weather_data: Dict[str, List[Any]]
-    ) -> List[Optional[float]]:
+    def _collect_wind_values(self, weather_data: dict[str, list[Any]]) -> list[float | None]:
         wind_fields = ["wind_speed_10m_max", "wind_gusts_10m_max", "windspeed_10m_max"]
         for field in wind_fields:
             values = self._safe_float_list(weather_data.get(field))
@@ -98,10 +95,10 @@ class DetectAnomaliesUseCase:
                 return values
         return []
 
-    def _safe_float_list(self, values: Optional[List[Any]]) -> List[Optional[float]]:
+    def _safe_float_list(self, values: list[Any] | None) -> list[float | None]:
         if not values:
             return []
-        result: List[Optional[float]] = []
+        result: list[float | None] = []
         for value in values:
             if value is None:
                 result.append(None)

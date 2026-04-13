@@ -4,24 +4,23 @@
 import ast
 import os
 from pathlib import Path
-from typing import List, Set
 
 import pytest
 
 
-def get_imports_from_file(file_path: Path) -> Set[str]:
+def get_imports_from_file(file_path: Path) -> set[str]:
     """Extract all imports from a Python file using AST."""
     imports = set()
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:  # noqa: PTH123
             tree = ast.parse(f.read())
 
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     imports.add(alias.name)
-            elif isinstance(node, ast.ImportFrom):
+            elif isinstance(node, ast.ImportFrom):  # noqa: SIM102
                 if node.module:
                     imports.add(node.module)
                     for alias in node.names:
@@ -32,7 +31,7 @@ def get_imports_from_file(file_path: Path) -> Set[str]:
     return imports
 
 
-def get_all_python_files(directory: Path, exclude_dirs: Set[str] = None) -> List[Path]:
+def get_all_python_files(directory: Path, exclude_dirs: set[str] = None) -> list[Path]:  # noqa: RUF013
     """Get all Python files in a directory, excluding specified directories."""
     if exclude_dirs is None:
         exclude_dirs = {"__pycache__", ".git", "venv", ".venv", "node_modules"}
@@ -43,7 +42,7 @@ def get_all_python_files(directory: Path, exclude_dirs: Set[str] = None) -> List
 
         for file in files:
             if file.endswith(".py"):
-                python_files.append(Path(root) / file)
+                python_files.append(Path(root) / file)  # noqa: PERF401
 
     return python_files
 

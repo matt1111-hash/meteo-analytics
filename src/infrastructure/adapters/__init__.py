@@ -9,6 +9,6 @@ Following Clean Architecture, these live in the infrastructure layer.
 from .city_adapter import city_dict_to_city_info, city_to_city_info
 
 __all__ = [
-    "city_to_city_info",
     "city_dict_to_city_info",
+    "city_to_city_info",
 ]

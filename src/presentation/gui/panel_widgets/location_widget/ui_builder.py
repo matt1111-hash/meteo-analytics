@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -52,9 +51,7 @@ class UIInitializer:
         group_layout.setSpacing(12)
 
         # UniversalLocationSelector
-        self.location_selector = UniversalLocationSelector(
-            self.widget.city_manager, self.widget
-        )
+        self.location_selector = UniversalLocationSelector(self.widget.city_manager, self.widget)
         self.location_selector.setMinimumHeight(420)
         self.location_selector.setMaximumHeight(500)
         group_layout.addWidget(self.location_selector)

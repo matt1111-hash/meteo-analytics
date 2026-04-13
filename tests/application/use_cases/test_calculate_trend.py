@@ -6,7 +6,6 @@ from datetime import datetime
 from unittest.mock import MagicMock
 
 import pytest
-
 from src.api.dto.trend_request import TrendAnalysisRequest
 from src.application.use_cases.calculate_trend import CalculateTrendUseCase
 from src.domain.entities.trend_result import TrendAnalysisResult
@@ -65,9 +64,7 @@ def test_execute_returns_empty_result_when_weather_data_missing() -> None:
     """Execute should return an empty result when no weather rows are fetched."""
     weather_client = MagicMock()
     weather_client.get_weather_data.return_value = []
-    city_manager = MagicMock(
-        find_city_by_name=MagicMock(return_value=(47.4979, 19.0402))
-    )
+    city_manager = MagicMock(find_city_by_name=MagicMock(return_value=(47.4979, 19.0402)))
     use_case = CalculateTrendUseCase(
         weather_client=weather_client,
         city_manager=city_manager,
@@ -85,9 +82,7 @@ def test_get_coordinates_returns_none_on_city_manager_error() -> None:
     """City manager failures should be converted to missing coordinates."""
     use_case = CalculateTrendUseCase(
         weather_client=MagicMock(),
-        city_manager=MagicMock(
-            find_city_by_name=MagicMock(side_effect=RuntimeError("boom"))
-        ),
+        city_manager=MagicMock(find_city_by_name=MagicMock(side_effect=RuntimeError("boom"))),
     )
 
     assert use_case._get_coordinates("Budapest") is None

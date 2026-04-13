@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 3 for TemperatureTooltipHandlerMixin."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .tooltip_handler_support import *
 
 
-class TemperatureTooltipHandlerMixinPart3Mixin:
-    def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
+class TemperatureTooltipHandlerMixinPart3Mixin:  # noqa: D101
+    def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:  # noqa: ARG002
         """
         💬 SMART TOOLTIP POSITIONING - DYNAMIC PLACEMENT
 
@@ -42,7 +42,7 @@ class TemperatureTooltipHandlerMixinPart3Mixin:
         y_relative = (y_pos - ylim[0]) / (ylim[1] - ylim[0])
 
         # Dynamic offset számítás
-        if y_relative > 0.7:  # Felső 30%-ban
+        if y_relative > 0.7:  # Felső 30%-ban  # noqa: PLR2004
             # Tooltip lefelé
             offset_y = -80
             va_align = "top"
@@ -53,7 +53,7 @@ class TemperatureTooltipHandlerMixinPart3Mixin:
             va_align = "bottom"
             print(f"🔼 DEBUG: Tooltip felfelé - y_relative: {y_relative:.2f}")
 
-        if x_relative > 0.8:  # Jobb 20%-ban
+        if x_relative > 0.8:  # Jobb 20%-ban  # noqa: PLR2004
             # Tooltip balra
             offset_x = -100
             ha_align = "right"
@@ -73,19 +73,19 @@ class TemperatureTooltipHandlerMixinPart3Mixin:
             xy=(x_pos, y_pos),
             xytext=(offset_x, offset_y),  # 🎯 DYNAMIC OFFSET
             textcoords="offset points",
-            bbox=dict(
-                boxstyle="round,pad=1.0",
-                facecolor="lightyellow",
-                edgecolor=current_colors.get("border", "#34495E"),
-                linewidth=2,
-                alpha=0.95,
-            ),
-            arrowprops=dict(
-                arrowstyle="->",
-                color=current_colors.get("border", "#34495E"),
-                lw=2,
-                alpha=0.8,
-            ),
+            bbox={
+                "boxstyle": "round,pad=1.0",
+                "facecolor": "lightyellow",
+                "edgecolor": current_colors.get("border", "#34495E"),
+                "linewidth": 2,
+                "alpha": 0.95,
+            },
+            arrowprops={
+                "arrowstyle": "->",
+                "color": current_colors.get("border", "#34495E"),
+                "lw": 2,
+                "alpha": 0.8,
+            },
             fontsize=10,
             fontweight="bold",
             ha=ha_align,  # 🎯 DYNAMIC HORIZONTAL ALIGNMENT

@@ -14,3 +14,17 @@ from .enum_ports import (
     RegionScopePort,
 )
 from .repository_ports import AnomalyProfilePort, CityRepositoryPort
+
+__all__ = [
+    "AnalyticsMetricPort",
+    "AnomalyProfilePort",
+    "CityManagerPort",
+    "CityRepositoryPort",
+    "DataSourcePort",
+    "QuestionTypePort",
+    "RegionScopePort",
+    "WeatherClientPort",
+    "WeatherDataProtocol",
+    "WeatherFetchParams",
+    "WeatherRepositoryPort",
+]

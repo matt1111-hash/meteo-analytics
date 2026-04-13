@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for MapView."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .core_support import *
 
 
-class MapViewPart1Mixin:
+class MapViewPart1Mixin:  # noqa: D101
     def __init__(self, parent=None):
         """
         MapView inicializálása.
@@ -58,9 +58,7 @@ class MapViewPart1Mixin:
             self.map_tab.map_interaction.connect(self.map_interaction.emit)
             self.map_tab.export_completed.connect(self.export_completed.emit)
             self.map_tab.error_occurred.connect(self.error_occurred.emit)
-            self.map_tab.data_loading_completed.connect(
-                self.data_loading_completed.emit
-            )
+            self.map_tab.data_loading_completed.connect(self.data_loading_completed.emit)
             self.map_tab.folium_ready.connect(self.folium_ready.emit)
 
             print("✅ DEBUG: MapView Folium signal forwarding setup complete")

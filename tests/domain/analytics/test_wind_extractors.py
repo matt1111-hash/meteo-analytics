@@ -5,7 +5,6 @@ Wind analysis extractors and classification helpers
 """
 
 import pandas as pd
-
 from src.domain.analytics.wind_extractors import (
     extract_daily_wind_data,
     identify_windy_days,

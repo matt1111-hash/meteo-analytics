@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi import HTTPException
-
 from src.api.routes import wind_rose
 
 
@@ -62,9 +61,7 @@ def test_process_wind_rose_data_falls_back_to_windspeed_and_counts_calms() -> No
 def test_process_wind_rose_data_rejects_missing_dates_or_direction() -> None:
     """Missing dates or direction data should raise a 400 error."""
     with pytest.raises(HTTPException, match="Missing required data"):
-        wind_rose._process_wind_rose_data(
-            {"time": [], "winddirection_10m_dominant": []}
-        )
+        wind_rose._process_wind_rose_data({"time": [], "winddirection_10m_dominant": []})
 
 
 def test_process_wind_rose_data_rejects_when_all_rows_filtered_out() -> None:

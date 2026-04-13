@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/panel_widgets/date_range_widget/date_handlers.py
 """
 
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QDate, Qt
 from PySide6.QtWidgets import QLabel
@@ -111,15 +110,13 @@ class DateHandlerMixin:
                 f"Számított időszak: {start_date.strftime('%Y-%m-%d')} → {end_date.strftime('%Y-%m-%d')} ({years} év)"
             )
 
-            print(
-                f"📅 DEBUG: Computed dates: {start_date} → {end_date} ({years} years)"
-            )
+            print(f"📅 DEBUG: Computed dates: {start_date} → {end_date} ({years} years)")
 
         except Exception as e:
             print(f"❌ ERROR: Computed dates update error: {e}")
             self.computed_dates_info.setText("Dátum számítási hiba")
 
-    def _get_effective_date_range(self) -> Tuple[str, str]:
+    def _get_effective_date_range(self) -> tuple[str, str]:
         """
         Effektív dátum tartomány lekérdezése.
 
@@ -183,9 +180,7 @@ class DateHandlerMixin:
         self.start_date.setDate(start)
         self.end_date.setDate(end)
 
-        print(
-            f"📅 DEBUG: Set {years} years back: {start.toString()} → {end.toString()}"
-        )
+        print(f"📅 DEBUG: Set {years} years back: {start.toString()} → {end.toString()}")
 
     def _set_manual_dates_enabled(self, enabled: bool) -> None:
         """

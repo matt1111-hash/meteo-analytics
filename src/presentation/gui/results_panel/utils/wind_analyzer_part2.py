@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for WindGustsAnalyzer."""
 
@@ -65,7 +65,7 @@ def _build_max_wind_details(max_speed: float, data_source: str) -> Dict[str, Any
     }
 
 
-class WindGustsAnalyzerPart2Mixin:
+class WindGustsAnalyzerPart2Mixin:  # noqa: D101
     @staticmethod
     def get_wind_risk_level(
         wind_speed: float, data_source: str = "wind_gusts_max"
@@ -168,14 +168,10 @@ class WindGustsAnalyzerPart2Mixin:
             analysis["windy_days"] = sum(1 for speed in clean_data if speed > threshold)
             analysis["risk_days"] = _count_risk_days(clean_data, data_source)
             max_speed = max(clean_data)
-            analysis["max_wind_details"] = _build_max_wind_details(
-                max_speed, data_source
-            )
-            logger.debug(
-                f"Wind series analysis completed: {len(clean_data)} days analyzed"
-            )
+            analysis["max_wind_details"] = _build_max_wind_details(max_speed, data_source)
+            logger.debug(f"Wind series analysis completed: {len(clean_data)} days analyzed")
             return analysis
 
         except Exception as e:
             logger.error(f"Wind series analysis hiba: {e}")
-            return {"error": f"Elemzési hiba: {str(e)}"}
+            return {"error": f"Elemzési hiba: {e!s}"}

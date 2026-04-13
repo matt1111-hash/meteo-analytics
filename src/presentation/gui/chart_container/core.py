@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -7,7 +6,7 @@ ChartContainer Core - Main ChartsContainer class.
 """
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
@@ -42,7 +41,7 @@ class ChartsContainer(QWidget):
     chart_exported = Signal(str, bool)  # filepath, success
     chart_settings_changed = Signal(dict)  # settings dict
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         """
         Initialize ChartsContainer.
 
@@ -53,7 +52,7 @@ class ChartsContainer(QWidget):
 
         # SimplifiedThemeManager integration
         self.theme_manager = get_theme_manager()
-        self.current_data: Optional[Dict[str, Any]] = None
+        self.current_data: dict[str, Any] | None = None
 
         # Charts collection
         self.temp_chart: EnhancedTemperatureChart = None
@@ -108,7 +107,7 @@ class ChartsContainer(QWidget):
 
     # === PUBLIC API DELEGATED TO HELPERS ===
 
-    def update_charts(self, data: Dict[str, Any]) -> None:
+    def update_charts(self, data: dict[str, Any]) -> None:
         """Update all charts with new data."""
         self._chart_manager.update_all(data)
 
@@ -133,9 +132,7 @@ class ChartsContainer(QWidget):
         current_widget = self.tabs.currentWidget()
         if hasattr(current_widget, "export_chart"):
             chart_name = self.tabs.tabText(self.tabs.currentIndex()).replace(" ", "_")
-            filepath = (
-                f"chart_{chart_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-            )
+            filepath = f"chart_{chart_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
             success = current_widget.export_chart(filepath)
             self.chart_exported.emit(filepath, success)
 
@@ -146,8 +143,6 @@ class ChartsContainer(QWidget):
         Args:
             dark_theme: Dark theme flag (DEPRECATED)
         """
-        print(
-            "⚠️ DEBUG: apply_theme() DEPRECATED - use SimplifiedThemeManager.set_theme()"
-        )
+        print("⚠️ DEBUG: apply_theme() DEPRECATED - use SimplifiedThemeManager.set_theme()")
         theme_name = "dark" if dark_theme else "light"
         self.theme_manager.set_theme(theme_name)

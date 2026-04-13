@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -7,7 +6,7 @@ Wind Chart Data Extractor - Extract wind data from API responses.
 🔧 KRITIKUS FIX v4.7: API KULCSOK KONZISZTENCIA JAVÍTÁS!
 """
 
-from typing import Any, Dict
+from typing import Any
 
 import pandas as pd
 
@@ -37,8 +36,8 @@ class WindDataExtractor:
     def _log_input_summary(
         self,
         debug: bool,
-        data: Dict[str, Any],
-        daily_data: Dict[str, Any],
+        data: dict[str, Any],
+        daily_data: dict[str, Any],
         dates: list,
         wind_gusts_10m_max: list,
         windspeed_10m_max: list,
@@ -67,13 +66,13 @@ class WindDataExtractor:
         """Print a short preview of a series for debugging."""
         if not debug or not values:
             return
-        sample = values[:3] if len(values) >= 3 else values
+        sample = values[:3] if len(values) >= 3 else values  # noqa: PLR2004
         self._debug_log(debug, f"🌪️ DEBUG: {label} sample: {sample}")
 
     @staticmethod
     def _extract_daily_data(
-        data: Dict[str, Any],
-    ) -> tuple[Dict[str, Any], list, list, list]:
+        data: dict[str, Any],
+    ) -> tuple[dict[str, Any], list, list, list]:
         """Extract daily payload and supported wind series from API data."""
         daily_data = data.get("daily", {})
         dates = daily_data.get("time", []) or daily_data.get("date", [])
@@ -98,9 +97,7 @@ class WindDataExtractor:
     def _log_dataframe_summary(self, debug: bool, df: pd.DataFrame) -> None:
         """Print dataframe summary for debugging."""
         if df.empty:
-            self._debug_log(
-                debug, f"❌ DEBUG: Üres DataFrame {self.data_source} adatok után"
-            )
+            self._debug_log(debug, f"❌ DEBUG: Üres DataFrame {self.data_source} adatok után")
             return
         max_wind = df["windspeed"].max()
         avg_wind = df["windspeed"].mean()
@@ -122,9 +119,7 @@ class WindDataExtractor:
 
     def _is_usable_series(self, values: list, dates: list) -> bool:
         """Check whether a wind series is aligned with dates and contains data."""
-        return bool(
-            values and len(values) == len(dates) and self._has_valid_data(values)
-        )
+        return bool(values and len(values) == len(dates) and self._has_valid_data(values))
 
     def _log_unusable_sources(
         self, debug: bool, wind_gusts: list, windspeed: list, dates: list
@@ -145,7 +140,7 @@ class WindDataExtractor:
         )
         self._debug_log(debug, f"   - dates: {len(dates)} elem")
 
-    def extract(self, data: Dict[str, Any], debug: bool = False) -> pd.DataFrame:
+    def extract(self, data: dict[str, Any], debug: bool = False) -> pd.DataFrame:
         """
         Extract wind data from API response.
 
@@ -173,9 +168,7 @@ class WindDataExtractor:
 
         # Validate dates
         if not dates:
-            self._debug_log(
-                debug, "⚠️ DEBUG: Nincs dátum adat - WindChart nem jeleníthető meg"
-            )
+            self._debug_log(debug, "⚠️ DEBUG: Nincs dátum adat - WindChart nem jeleníthető meg")
             return pd.DataFrame()
 
         # PRIORITÁS KIÉRTÉKELÉS
@@ -221,9 +214,7 @@ class WindDataExtractor:
                 wind_gusts,
             )
         if self._is_usable_series(windspeed, dates):
-            self._debug_log(
-                debug, "🌪️ DEBUG: wind_gusts_10m_max not suitable, checking fallback..."
-            )
+            self._debug_log(debug, "🌪️ DEBUG: wind_gusts_10m_max not suitable, checking fallback...")
             return self._use_selected_source(
                 debug,
                 "windspeed_10m_max",
@@ -245,4 +236,4 @@ class WindDataExtractor:
         Returns:
             True if list contains valid numeric data
         """
-        return any(x is not None and isinstance(x, (int, float)) for x in data_list)
+        return any(x is not None and isinstance(x, int | float) for x in data_list)

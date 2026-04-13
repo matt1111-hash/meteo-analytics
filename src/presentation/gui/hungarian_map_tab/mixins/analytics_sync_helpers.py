@@ -9,10 +9,10 @@ Provides helper methods for map updates and data refresh.
 """
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 
-def _apply_analysis_refresh(helper: "AnalyticsSyncHelpers", analysis: Dict) -> None:
+def _apply_analysis_refresh(helper: "AnalyticsSyncHelpers", analysis: dict) -> None:
     """Apply analysis parameters during full refresh."""
     analysis_type = analysis.get("analysis_type")
     if analysis_type == "single_location" and analysis.get("location"):
@@ -25,14 +25,14 @@ def _apply_analysis_refresh(helper: "AnalyticsSyncHelpers", analysis: Dict) -> N
         helper._update_map_for_county(analysis["county"])
 
 
-def _apply_weather_refresh(helper: "AnalyticsSyncHelpers", weather: Dict) -> None:
+def _apply_weather_refresh(helper: "AnalyticsSyncHelpers", weather: dict) -> None:
     """Apply weather parameters during full refresh."""
     provider = weather.get("provider", "auto")
     cache = weather.get("cache", True)
     helper._refresh_weather_overlays(provider, cache)
 
 
-def _apply_date_refresh(helper: "AnalyticsSyncHelpers", date: Dict) -> None:
+def _apply_date_refresh(helper: "AnalyticsSyncHelpers", date: dict) -> None:
     """Apply date parameters during full refresh."""
     start_date = date.get("start_date")
     end_date = date.get("end_date")
@@ -47,7 +47,7 @@ class AnalyticsSyncHelpers:
     Provides map update and data refresh helper functions.
     """
 
-    def _update_map_for_single_location(self, location: Dict[str, Any]) -> None:
+    def _update_map_for_single_location(self, location: dict[str, Any]) -> None:
         """Update map view for a single location."""
         if not self.map_visualizer or not self.is_folium_ready:
             return
@@ -113,22 +113,16 @@ class AnalyticsSyncHelpers:
         if self.multi_city_engine and hasattr(self.multi_city_engine, "set_date_range"):
             self.multi_city_engine.set_date_range(start_date, end_date)
 
-        self.loading_status.setText(
-            f"Temporal data refreshed: {start_date} to {end_date}"
-        )
+        self.loading_status.setText(f"Temporal data refreshed: {start_date} to {end_date}")
 
-    def _refresh_weather_overlay_with_new_dates(
-        self, start_date: str, end_date: str
-    ) -> None:
+    def _refresh_weather_overlay_with_new_dates(self, start_date: str, end_date: str) -> None:
         """Refresh weather overlay with new date range."""
         if not self.multi_city_engine:
             return
 
-        self.loading_status.setText(
-            f"Weather overlay refreshed: {start_date} to {end_date}"
-        )
+        self.loading_status.setText(f"Weather overlay refreshed: {start_date} to {end_date}")
 
-    def _full_map_refresh(self, analysis: Dict, weather: Dict, date: Dict) -> None:
+    def _full_map_refresh(self, analysis: dict, weather: dict, date: dict) -> None:
         """Comprehensive map refresh with all parameters."""
         if analysis:
             _apply_analysis_refresh(self, analysis)

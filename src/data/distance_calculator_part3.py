@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 3 for DistanceCalculator."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .distance_calculator_support import *
 
 
-class DistanceCalculatorPart3Mixin:
+class DistanceCalculatorPart3Mixin:  # noqa: D101
     def get_calculation_statistics(self) -> Dict[str, Any]:
         """Get calculation statistics."""
         return {

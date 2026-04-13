@@ -11,9 +11,7 @@ class TestGeographicRegion:
     def test_create_geographic_region(self) -> None:
         bbox = BoundingBox(45.0, 50.0, 15.0, 25.0)
         center = GeoPoint(latitude=47.5, longitude=20.0)
-        region = GeographicRegion(
-            name="Test Region", bounding_box=bbox, center_point=center
-        )
+        region = GeographicRegion(name="Test Region", bounding_box=bbox, center_point=center)
         assert region.name == "Test Region"
         assert region.bounding_box == bbox
         assert region.center_point == center
@@ -42,17 +40,13 @@ class TestGeographicRegion:
     def test_is_point_in_region_inside(self) -> None:
         bbox = BoundingBox(45.0, 50.0, 15.0, 25.0)
         center = GeoPoint(latitude=47.5, longitude=20.0)
-        region = GeographicRegion(
-            name="Test Region", bounding_box=bbox, center_point=center
-        )
+        region = GeographicRegion(name="Test Region", bounding_box=bbox, center_point=center)
         point = GeoPoint(latitude=47.0, longitude=20.0)
         assert region.is_point_in_region(point) is True
 
     def test_is_point_in_region_outside(self) -> None:
         bbox = BoundingBox(45.0, 50.0, 15.0, 25.0)
         center = GeoPoint(latitude=47.5, longitude=20.0)
-        region = GeographicRegion(
-            name="Test Region", bounding_box=bbox, center_point=center
-        )
+        region = GeographicRegion(name="Test Region", bounding_box=bbox, center_point=center)
         point = GeoPoint(latitude=55.0, longitude=20.0)
         assert region.is_point_in_region(point) is False

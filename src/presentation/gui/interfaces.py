@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,7 +7,6 @@ GUI Component Interfaces - Dependency Injection Pattern
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict
 
 
 class IAnomalyConstants(ABC):
@@ -42,7 +40,7 @@ class IConstantsProvider(ABC):
         pass
 
     @abstractmethod
-    def get_all_thresholds(self) -> Dict[str, float]:
+    def get_all_thresholds(self) -> dict[str, float]:
         """Get all available thresholds."""
         pass
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -40,14 +39,10 @@ class WorkerStarters:
         worker.geocoding_completed.connect(self._manager.geocoding_completed.emit)
         worker.error_occurred.connect(self._manager._worker_handlers._on_worker_error)
         worker.finished.connect(
-            lambda wid=worker_id: self._manager._worker_handlers._on_worker_finished(
-                wid
-            )
+            lambda wid=worker_id: self._manager._worker_handlers._on_worker_finished(wid)
         )
         worker.completion_signal.connect(
-            lambda wid=worker_id: self._manager._worker_handlers._on_worker_completion(
-                wid
-            )
+            lambda wid=worker_id: self._manager._worker_handlers._on_worker_completion(wid)
         )
         worker.progress_updated.connect(
             lambda p: self._manager.progress_updated.emit("geocoding", p)
@@ -81,14 +76,10 @@ class WorkerStarters:
         worker.weather_data_completed.connect(self._manager.weather_data_completed.emit)
         worker.error_occurred.connect(self._manager._worker_handlers._on_worker_error)
         worker.finished.connect(
-            lambda wid=worker_id: self._manager._worker_handlers._on_worker_finished(
-                wid
-            )
+            lambda wid=worker_id: self._manager._worker_handlers._on_worker_finished(wid)
         )
         worker.completion_signal.connect(
-            lambda wid=worker_id: self._manager._worker_handlers._on_worker_completion(
-                wid
-            )
+            lambda wid=worker_id: self._manager._worker_handlers._on_worker_completion(wid)
         )
         worker.progress_updated.connect(
             lambda p: self._manager.progress_updated.emit("weather_data", p)
@@ -96,9 +87,7 @@ class WorkerStarters:
         worker.status_updated.connect(lambda s: print(f"📊 Weather worker status: {s}"))
 
         # Provider routing signal connections
-        worker.provider_changed.connect(
-            self._manager._provider_manager._on_provider_changed
-        )
+        worker.provider_changed.connect(self._manager._provider_manager._on_provider_changed)
         worker.provider_fallback_occurred.connect(
             self._manager._provider_manager._on_provider_fallback
         )
@@ -134,14 +123,10 @@ class WorkerStarters:
         worker.query_completed.connect(self._manager.sql_query_completed.emit)
         worker.error_occurred.connect(self._manager._worker_handlers._on_worker_error)
         worker.finished.connect(
-            lambda wid=worker_id: self._manager._worker_handlers._on_worker_finished(
-                wid
-            )
+            lambda wid=worker_id: self._manager._worker_handlers._on_worker_finished(wid)
         )
         worker.completion_signal.connect(
-            lambda wid=worker_id: self._manager._worker_handlers._on_worker_completion(
-                wid
-            )
+            lambda wid=worker_id: self._manager._worker_handlers._on_worker_completion(wid)
         )
         worker.progress_updated.connect(
             lambda p: self._manager.progress_updated.emit("sql_query", p)

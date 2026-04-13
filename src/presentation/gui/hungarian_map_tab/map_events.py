@@ -25,7 +25,7 @@ class MapEvents(QObject, IMapEvents):
     # Internal coordination signals
     analytics_sync_requested = Signal(dict)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None):  # noqa: D107
         super().__init__(parent)
         self.auto_sync_enabled = True
 

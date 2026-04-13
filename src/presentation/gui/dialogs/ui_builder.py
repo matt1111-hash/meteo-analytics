@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -111,7 +110,7 @@ def _create_period_selection_group(self):
     return period_group
 
 
-def _create_extreme_table(self):
+def _create_extreme_table(self):  # noqa: ARG001
     """
     Extrém értékek táblázatának létrehozása - THEMEMANAGER KOMPATIBILIS.
 

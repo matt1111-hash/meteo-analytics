@@ -59,9 +59,7 @@ class SortingMixin:
             "Szélsebesség",
         ]
         column_name = (
-            headers[logical_index]
-            if logical_index < len(headers)
-            else f"Oszlop {logical_index}"
+            headers[logical_index] if logical_index < len(headers) else f"Oszlop {logical_index}"
         )
 
         self.table.sortItems(logical_index, self.current_sort_order)
@@ -71,13 +69,9 @@ class SortingMixin:
 
         if hasattr(self, "rows_info"):
             current_text = self.rows_info.text()
-            self.rows_info.setText(
-                f"{current_text} | Rendezve: {column_name} ({order_text})"
-            )
+            self.rows_info.setText(f"{current_text} | Rendezve: {column_name} ({order_text})")
 
     def get_sorting_info(self) -> tuple:
         """Jelenlegi rendezési állapot lekérdezése."""
-        order_text = (
-            "növekvő" if self.current_sort_order == Qt.AscendingOrder else "csökkenő"
-        )
+        order_text = "növekvő" if self.current_sort_order == Qt.AscendingOrder else "csökkenő"
         return (self.current_sort_column, order_text)

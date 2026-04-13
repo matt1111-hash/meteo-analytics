@@ -20,9 +20,7 @@ class TestPrepareDataframe(TestTrendDataProcessor):
         result = processor.prepare_dataframe([], "temperature")
         assert result is None
 
-    def test_returns_none_when_no_valid_records(
-        self, processor: TrendDataProcessor
-    ) -> None:
+    def test_returns_none_when_no_valid_records(self, processor: TrendDataProcessor) -> None:
         """Should return None when no valid records."""
         data = [
             {"date": None, "temperature": 10.0},
@@ -31,9 +29,7 @@ class TestPrepareDataframe(TestTrendDataProcessor):
         result = processor.prepare_dataframe(data, "temperature")
         assert result is None
 
-    def test_creates_dataframe_from_valid_data(
-        self, processor: TrendDataProcessor
-    ) -> None:
+    def test_creates_dataframe_from_valid_data(self, processor: TrendDataProcessor) -> None:
         """Should create DataFrame from valid data."""
         data = [
             {"date": "2026-01-01", "temperature": 10.0},
@@ -70,9 +66,7 @@ class TestPrepareDataframe(TestTrendDataProcessor):
         assert result is not None
         assert result["value"].dtype in [float, "float64"]
 
-    def test_skips_records_with_missing_date(
-        self, processor: TrendDataProcessor
-    ) -> None:
+    def test_skips_records_with_missing_date(self, processor: TrendDataProcessor) -> None:
         """Should skip records with missing date."""
         data = [
             {"date": "2026-01-01", "temperature": 10.0},
@@ -83,9 +77,7 @@ class TestPrepareDataframe(TestTrendDataProcessor):
         assert result is not None
         assert len(result) == 2
 
-    def test_skips_records_with_missing_value(
-        self, processor: TrendDataProcessor
-    ) -> None:
+    def test_skips_records_with_missing_value(self, processor: TrendDataProcessor) -> None:
         """Should skip records with missing value."""
         data = [
             {"date": "2026-01-01", "temperature": 10.0},

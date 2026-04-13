@@ -41,15 +41,11 @@ class TestWeatherData:
         assert data.data_source == "open-meteo"
 
     def test_post_init_calculates_temperature_range(self) -> None:
-        data = WeatherData(
-            date="2024-01-01", temperature_2m_max=25.0, temperature_2m_min=15.0
-        )
+        data = WeatherData(date="2024-01-01", temperature_2m_max=25.0, temperature_2m_min=15.0)
         assert data.temperature_range == 10.0
 
     def test_post_init_calculates_mean_temperature(self) -> None:
-        data = WeatherData(
-            date="2024-01-01", temperature_2m_max=25.0, temperature_2m_min=15.0
-        )
+        data = WeatherData(date="2024-01-01", temperature_2m_max=25.0, temperature_2m_min=15.0)
         assert data.temperature_2m_mean == 20.0
 
     def test_post_init_preserves_existing_mean_temperature(self) -> None:
@@ -76,16 +72,12 @@ class TestWeatherData:
         assert data.temperature_2m_mean is None
 
     def test_negative_temperatures(self) -> None:
-        data = WeatherData(
-            date="2024-01-01", temperature_2m_max=-5.0, temperature_2m_min=-15.0
-        )
+        data = WeatherData(date="2024-01-01", temperature_2m_max=-5.0, temperature_2m_min=-15.0)
         assert data.temperature_range == 10.0
         assert data.temperature_2m_mean == -10.0
 
     def test_zero_temperature_values(self) -> None:
-        data = WeatherData(
-            date="2024-01-01", temperature_2m_max=0.0, temperature_2m_min=-10.0
-        )
+        data = WeatherData(date="2024-01-01", temperature_2m_max=0.0, temperature_2m_min=-10.0)
         assert data.temperature_range == 10.0
         assert data.temperature_2m_mean == -5.0
 

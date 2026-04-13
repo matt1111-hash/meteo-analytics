@@ -2,10 +2,9 @@
 """Weather Data Handler Core."""
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtCore import QObject, Signal, Slot
-
 from src.presentation.gui.controller.weather_data_handler.processor import (
     calculate_daily_max_wind_gusts,
     process_weather_data,
@@ -28,19 +27,19 @@ class WeatherDataHandler(QObject):
     error_occurred = Signal(str)
     status_updated = Signal(str)
 
-    def __init__(self, database_manager: Any, parent: Optional[QObject] = None) -> None:
+    def __init__(self, database_manager: Any, parent: QObject | None = None) -> None:  # noqa: D107
         super().__init__(parent)
         self.database_manager = database_manager
         self._logger = logging.getLogger(__name__)
-        self.current_city_data: Optional[Dict[str, Any]] = None
-        self.current_weather_data: Optional[Dict[str, Any]] = None
+        self.current_city_data: dict[str, Any] | None = None
+        self.current_weather_data: dict[str, Any] | None = None
 
-    def set_current_city(self, city_data: Dict[str, Any]) -> None:
+    def set_current_city(self, city_data: dict[str, Any]) -> None:
         """Set current city."""
         self.current_city_data = city_data
 
     @Slot(dict)
-    def on_weather_data_completed(self, data: Dict[str, Any]) -> None:
+    def on_weather_data_completed(self, data: dict[str, Any]) -> None:
         """Handle completed weather data (backwards compatibility)."""
         self._logger.info("on_weather_data_completed called")
 
@@ -90,9 +89,7 @@ class WeatherDataHandler(QObject):
             self._logger.error(f"Weather data processing error: {e}")
             self.error_occurred.emit(f"Processing error: {e}")
 
-    def _process_weather_data(
-        self, raw_data: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
+    def _process_weather_data(self, raw_data: dict[str, Any]) -> dict[str, Any] | None:
         """Process weather data with wind support."""
         return process_weather_data(raw_data, self.current_city_data)
 
@@ -102,7 +99,7 @@ class WeatherDataHandler(QObject):
         """Calculate daily maximum wind gusts."""
         return calculate_daily_max_wind_gusts(hourly_gusts, hourly_times, daily_times)
 
-    def _save_weather_to_database(self, weather_data: Dict[str, Any]) -> None:
+    def _save_weather_to_database(self, weather_data: dict[str, Any]) -> None:
         """Save weather data to database."""
         try:
             success = self.database_manager.save_weather_to_database(
@@ -113,10 +110,10 @@ class WeatherDataHandler(QObject):
             self._logger.error(f"Database save error: {e}")
             self.weather_saved_to_db.emit(False)
 
-    def get_current_weather_data(self) -> Optional[Dict[str, Any]]:
+    def get_current_weather_data(self) -> dict[str, Any] | None:
         """Get current weather data."""
         return self.current_weather_data.copy() if self.current_weather_data else None
 
-    def get_current_city_data(self) -> Optional[Dict[str, Any]]:
+    def get_current_city_data(self) -> dict[str, Any] | None:
         """Get current city data."""
         return self.current_city_data.copy() if self.current_city_data else None

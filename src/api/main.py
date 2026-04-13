@@ -1,11 +1,11 @@
 # mypy: ignore-errors
 """FastAPI entrypoint for Global Weather Analyzer backend."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import logging
 import secrets
-from typing import Callable
+from typing import Callable  # noqa: UP035
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -115,7 +115,7 @@ async def health_check() -> dict[str, str]:
 
 
 @app.get("/auth/status")
-async def auth_status(api_key: str = Depends(verify_api_key)) -> dict[str, str | bool]:
+async def auth_status(api_key: str = Depends(verify_api_key)) -> dict[str, str | bool]:  # noqa: ARG001
     """Check authentication status (requires valid API key if enabled)."""
     return {
         "authenticated": True,

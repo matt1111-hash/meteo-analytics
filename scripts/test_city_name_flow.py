@@ -13,14 +13,13 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication
-
 from src.presentation.gui.windows.main_window import MainWindow
 
 
 class CityNameFlowTest:
     """Automated test for city_name flow."""
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         self.app = QApplication.instance() or QApplication(sys.argv)
         self.window = None
         self.results = []

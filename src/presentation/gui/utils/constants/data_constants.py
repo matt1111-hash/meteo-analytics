@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -11,7 +10,7 @@ class DataConstants:
     """Data handling constants - CLEAN DUAL-API VERSION."""
 
     # Open-Meteo API fields
-    OPEN_METEO_DAILY_FIELDS = [
+    OPEN_METEO_DAILY_FIELDS = [  # noqa: RUF012
         "temperature_2m_max",
         "temperature_2m_min",
         "temperature_2m_mean",
@@ -21,10 +20,10 @@ class DataConstants:
         "weathercode",
     ]
 
-    OPEN_METEO_HOURLY_FIELDS = ["wind_gusts_10m", "windspeed_10m"]
+    OPEN_METEO_HOURLY_FIELDS = ["wind_gusts_10m", "windspeed_10m"]  # noqa: RUF012
 
     # Meteostat API fields
-    METEOSTAT_DAILY_FIELDS = [
+    METEOSTAT_DAILY_FIELDS = [  # noqa: RUF012
         "tavg",
         "tmin",
         "tmax",
@@ -38,7 +37,7 @@ class DataConstants:
     ]
 
     # Processed fields with wind gusts support
-    PROCESSED_DAILY_FIELDS = [
+    PROCESSED_DAILY_FIELDS = [  # noqa: RUF012
         "temperature_2m_max",
         "temperature_2m_min",
         "temperature_2m_mean",
@@ -50,7 +49,7 @@ class DataConstants:
     ]
 
     # Export formats
-    SUPPORTED_EXPORT_FORMATS = ["csv", "excel", "json", "pdf"]
+    SUPPORTED_EXPORT_FORMATS = ["csv", "excel", "json", "pdf"]  # noqa: RUF012
 
     # Pagination
     DEFAULT_PAGE_SIZE = 100
@@ -61,7 +60,7 @@ class DataConstants:
     MAX_CACHE_SIZE_MB = 100
 
     # Dual-API data source strategy
-    USE_CASE_SOURCE_MAPPING = {
+    USE_CASE_SOURCE_MAPPING = {  # noqa: RUF012
         "single_city": "open-meteo",
         "multi_city": "meteostat",
         "historical_deep": "meteostat",
@@ -71,10 +70,10 @@ class DataConstants:
     }
 
     # Source priority
-    DATA_SOURCE_PRIORITY = ["open-meteo", "meteostat"]
+    DATA_SOURCE_PRIORITY = ["open-meteo", "meteostat"]  # noqa: RUF012
 
     # Source capabilities
-    SOURCE_CAPABILITIES = {
+    SOURCE_CAPABILITIES = {  # noqa: RUF012
         "open-meteo": {
             "historical": True,
             "real_time": True,

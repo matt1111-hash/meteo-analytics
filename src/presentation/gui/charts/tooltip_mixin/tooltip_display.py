@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 WeatherTooltipMixin Tooltip Display - Show/hide tooltip annotations.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 import matplotlib.dates as mdates
 
@@ -28,7 +27,7 @@ class TooltipDisplay:
         """
         self._mixin = mixin
 
-    def show(self, event, point_data: Dict[str, Any]) -> None:
+    def show(self, event, point_data: dict[str, Any]) -> None:  # noqa: ARG002
         """
         Show tooltip annotation.
 
@@ -71,19 +70,19 @@ class TooltipDisplay:
                 xy=(x_pos, y_pos),
                 xytext=(40, 50),
                 textcoords="offset points",
-                bbox=dict(
-                    boxstyle="round,pad=1.0",
-                    facecolor="lightyellow",
-                    edgecolor=current_colors.get("border", "#34495E"),
-                    linewidth=2,
-                    alpha=0.95,
-                ),
-                arrowprops=dict(
-                    arrowstyle="->",
-                    color=current_colors.get("border", "#34495E"),
-                    lw=2,
-                    alpha=0.8,
-                ),
+                bbox={
+                    "boxstyle": "round,pad=1.0",
+                    "facecolor": "lightyellow",
+                    "edgecolor": current_colors.get("border", "#34495E"),
+                    "linewidth": 2,
+                    "alpha": 0.95,
+                },
+                arrowprops={
+                    "arrowstyle": "->",
+                    "color": current_colors.get("border", "#34495E"),
+                    "lw": 2,
+                    "alpha": 0.8,
+                },
                 fontsize=10,
                 fontweight="bold",
                 ha="left",
@@ -116,7 +115,7 @@ class TooltipDisplay:
             if hasattr(self._mixin, "draw_idle"):
                 self._mixin.draw_idle()
 
-    def _get_y_coordinate(self, point_data: Dict[str, Any]) -> Optional[float]:
+    def _get_y_coordinate(self, point_data: dict[str, Any]) -> float | None:
         """Get Y coordinate from point data with flexible key search."""
         y_pos = None
 
@@ -131,7 +130,7 @@ class TooltipDisplay:
         # Fallback: first numeric value
         else:
             for key, value in point_data.items():
-                if isinstance(value, (int, float)) and not key.endswith("_index"):
+                if isinstance(value, int | float) and not key.endswith("_index"):
                     y_pos = value
                     print(f"🔍 DEBUG: Fallback Y pozíció ({key}): {y_pos}")
                     break
@@ -149,9 +148,7 @@ class TooltipDisplay:
                 self._mixin.draw()
                 print("🔄 DEBUG: draw() force hívva")
 
-            if hasattr(self._mixin.figure, "canvas") and hasattr(
-                self._mixin.figure.canvas, "draw"
-            ):
+            if hasattr(self._mixin.figure, "canvas") and hasattr(self._mixin.figure.canvas, "draw"):
                 self._mixin.figure.canvas.draw()
                 print("🔄 DEBUG: figure.canvas.draw() hívva")
 

@@ -62,9 +62,7 @@ class TestEnsureDirectories:
 class TestLoadProfiles:
     """Tests for load_profiles method."""
 
-    def test_load_profiles_returns_empty_dict_when_file_missing(
-        self, tmp_path: Path
-    ) -> None:
+    def test_load_profiles_returns_empty_dict_when_file_missing(self, tmp_path: Path) -> None:
         """Empty dict is returned when profiles file doesn't exist."""
         storage = AnomalyProfileStorage(config_dir=tmp_path)
         result = storage.load_profiles()
@@ -77,7 +75,7 @@ class TestLoadProfiles:
             "profile2": {"temp_hot": 40.0, "temp_cold": -15.0},
         }
         storage = AnomalyProfileStorage(config_dir=tmp_path)
-        with open(storage.profiles_file, "w", encoding="utf-8") as f:
+        with open(storage.profiles_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             json.dump(test_data, f)
 
         result = storage.load_profiles()
@@ -86,7 +84,7 @@ class TestLoadProfiles:
     def test_load_profiles_handles_json_decode_error(self, tmp_path: Path) -> None:
         """Invalid JSON returns empty dict."""
         storage = AnomalyProfileStorage(config_dir=tmp_path)
-        with open(storage.profiles_file, "w", encoding="utf-8") as f:
+        with open(storage.profiles_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             f.write("{ invalid json }")
 
         result = storage.load_profiles()
@@ -95,7 +93,7 @@ class TestLoadProfiles:
     def test_load_profiles_handles_key_error(self, tmp_path: Path) -> None:
         """Missing key in JSON returns empty dict."""
         storage = AnomalyProfileStorage(config_dir=tmp_path)
-        with open(storage.profiles_file, "w", encoding="utf-8") as f:
+        with open(storage.profiles_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             f.write('{"key": "value"}')  # Valid JSON but structure may cause KeyError
 
         # Should handle gracefully
@@ -116,7 +114,7 @@ class TestSaveProfiles:
         assert result is True
         assert storage.profiles_file.exists()
 
-        with open(storage.profiles_file, "r", encoding="utf-8") as f:
+        with open(storage.profiles_file, encoding="utf-8") as f:  # noqa: PTH123
             saved_data = json.load(f)
         assert saved_data == test_data
 
@@ -155,6 +153,6 @@ class TestSaveProfiles:
         result = storage.save_profiles(test_data)
 
         assert result is True
-        with open(storage.profiles_file, "r", encoding="utf-8") as f:
+        with open(storage.profiles_file, encoding="utf-8") as f:  # noqa: PTH123
             saved_data = json.load(f)
         assert saved_data == test_data

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -63,7 +62,7 @@ class HungarianLocationSelector(
     selection_changed = Signal()  # általános változás
     map_update_requested = Signal(object)  # map bounds/center
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None):  # noqa: D107
         super().__init__(parent)
 
         # Adatok

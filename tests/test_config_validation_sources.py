@@ -67,10 +67,7 @@ class TestGetSourceDisplayName:
     def test_get_source_display_name_unknown(self) -> None:
         from src.config.config_validation import get_source_display_name
 
-        assert (
-            get_source_display_name("unknown_source")
-            == "Unknown Source (unknown_source)"
-        )
+        assert get_source_display_name("unknown_source") == "Unknown Source (unknown_source)"
 
 
 class TestValidateApiSourceAvailable:
@@ -81,25 +78,19 @@ class TestValidateApiSourceAvailable:
 
         assert validate_api_source_available("open-meteo") is True
 
-    def test_validate_meteostat_with_valid_key(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_validate_meteostat_with_valid_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from src.config.config_validation import validate_api_source_available
 
         monkeypatch.setenv("METEOSTAT_API_KEY", "a" * 32)
         assert validate_api_source_available("meteostat") is True
 
-    def test_validate_meteostat_with_short_key(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_validate_meteostat_with_short_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from src.config.config_validation import validate_api_source_available
 
         monkeypatch.setenv("METEOSTAT_API_KEY", "short")
         assert validate_api_source_available("meteostat") is False
 
-    def test_validate_meteostat_with_whitespace_key(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_validate_meteostat_with_whitespace_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from src.config.config_validation import validate_api_source_available
 
         monkeypatch.setenv("METEOSTAT_API_KEY", "  " + "a" * 32 + "  ")
@@ -120,9 +111,7 @@ class TestValidateApiSourceAvailable:
 class TestGetFallbackSourceChain:
     """Test cases for get_fallback_source_chain() function."""
 
-    def test_fallback_chain_open_meteo_primary(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_fallback_chain_open_meteo_primary(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from src.config.config_validation import get_fallback_source_chain
 
         monkeypatch.delenv("METEOSTAT_API_KEY", raising=False)
@@ -147,9 +136,7 @@ class TestGetFallbackSourceChain:
         monkeypatch.delenv("METEOSTAT_API_KEY", raising=False)
         assert get_fallback_source_chain("any_source") == ["open-meteo"]
 
-    def test_fallback_chain_both_available(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_fallback_chain_both_available(self, monkeypatch: pytest.MonkeyPatch) -> None:
         from src.config.config_validation import get_fallback_source_chain
 
         monkeypatch.setenv("METEOSTAT_API_KEY", "a" * 32)

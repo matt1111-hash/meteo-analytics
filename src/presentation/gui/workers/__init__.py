@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -35,15 +34,15 @@ from .worker_utils import (
 __all__ = [
     "BaseWorkerThread",
     "GeocodingWorker",
-    "WeatherDataWorker",
     "SQLQueryWorker",
+    "WeatherDataWorker",
     "WorkerManager",
+    "calculate_date_range_days",
+    "create_comprehensive_worker_manager",
+    "create_weather_worker_with_provider",
+    "format_api_error",
+    "get_worker_manager_provider_summary",
     # Utility functions
     "validate_coordinates",
     "validate_date_string",
-    "calculate_date_range_days",
-    "format_api_error",
-    "create_weather_worker_with_provider",
-    "get_worker_manager_provider_summary",
-    "create_comprehensive_worker_manager",
 ]

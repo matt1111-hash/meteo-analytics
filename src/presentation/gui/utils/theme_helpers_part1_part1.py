@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,I001
+# ruff: noqa: F403, F405
 # mypy: ignore-errors
 """Mixin part 1 for StyleSheets."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .theme_helpers_part1_support import *
 
 
-class StyleSheetsPart1Mixin:
+class StyleSheetsPart1Mixin:  # noqa: D101
     @staticmethod
     def get_theme_stylesheet(theme_type: ThemeType) -> str:
         """
@@ -44,7 +44,7 @@ class StyleSheetsPart1Mixin:
             return StyleSheets._get_legacy_stylesheet(theme_type)
 
     @staticmethod
-    def _generate_full_application_css(manager, theme_type: ThemeType) -> str:
+    def _generate_full_application_css(manager, theme_type: ThemeType) -> str:  # noqa: ARG004
         """
         Teljes alkalmazás CSS generálása ThemeManager komponensekből.
 
@@ -91,9 +91,7 @@ class StyleSheetsPart1Mixin:
             return StyleSheets._LEGACY_LIGHT_THEME
 
     @staticmethod
-    def get_widget_stylesheet(
-        widget_class: str, theme_type: Optional[ThemeType] = None
-    ) -> str:
+    def get_widget_stylesheet(widget_class: str, theme_type: Optional[ThemeType] = None) -> str:
         """
         🎨 Widget-specifikus CSS lekérdezése ThemeManager-rel.
 
@@ -139,9 +137,7 @@ class StyleSheetsPart1Mixin:
             # Widget regisztrálása és styling alkalmazása
             manager.register_widget(widget, widget_class)
 
-            logger.debug(
-                f"Theme applied to widget: {widget.__class__.__name__} as {widget_class}"
-            )
+            logger.debug(f"Theme applied to widget: {widget.__class__.__name__} as {widget_class}")
 
         except Exception as e:
             logger.error(f"Widget theme application failed: {e}")

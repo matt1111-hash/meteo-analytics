@@ -5,7 +5,6 @@ from __future__ import annotations
 from enum import Enum
 
 import pytest
-
 from src.data.city_types import City, CityDatabaseError, CityQuery, CitySort, RegionType
 
 
@@ -96,9 +95,7 @@ class TestCityIntegration:
 
     def test_city_and_query_work_together(self) -> None:
         """City and CityQuery can be used together."""
-        query = CityQuery(
-            region_type=RegionType.COUNTRY, region_value="Hungary", limit=10
-        )
+        query = CityQuery(region_type=RegionType.COUNTRY, region_value="Hungary", limit=10)
         city = City(
             id=1,
             city="Budapest",

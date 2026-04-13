@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403,noqa: I001
 # mypy: ignore-errors
 """Compatibility wrapper for ui_builder.py."""
 
@@ -9,9 +9,7 @@ from .ui_builder_part2 import HungarianCityUIBuilderPart2Mixin
 from .ui_builder_support import *
 
 
-class HungarianCityUIBuilder(
-    HungarianCityUIBuilderPart1Mixin, HungarianCityUIBuilderPart2Mixin
-):
+class HungarianCityUIBuilder(HungarianCityUIBuilderPart1Mixin, HungarianCityUIBuilderPart2Mixin):
     """
     UI komponens építő osztály.
     """

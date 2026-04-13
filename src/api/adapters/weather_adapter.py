@@ -3,8 +3,6 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from src.api.dto.weather_request import WeatherAnalysisRequest
 from src.domain.analytics.models import MultiCityQuery
 
@@ -46,7 +44,7 @@ def to_multi_city_query(request: WeatherAnalysisRequest) -> MultiCityQuery:
     )
 
 
-def _extract_date_range(request: WeatherAnalysisRequest) -> dict[str, Optional[str]]:
+def _extract_date_range(request: WeatherAnalysisRequest) -> dict[str, str | None]:
     """Extract date or date range from request.
 
     Returns dict with:
@@ -57,7 +55,7 @@ def _extract_date_range(request: WeatherAnalysisRequest) -> dict[str, Optional[s
     date_range = request.date_range
 
     # Single date mode
-    if "date" in date_range and date_range["date"]:
+    if "date" in date_range and date_range["date"]:  # noqa: RUF019
         return {"date": str(date_range["date"]), "start_date": None, "end_date": None}
 
     # Date range mode

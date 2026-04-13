@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -7,7 +6,7 @@ Wind Chart Core - Main WindChart class.
 🌪️ Széllökés grafikon widget - MAGYAR METEOROLÓGIAI SZABVÁNY
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtWidgets import QWidget
 
@@ -34,7 +33,7 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
     🎯 Interactive tooltip magyar szélkategóriákkal
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         """
         Initialize WindChart.
 
@@ -62,7 +61,7 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
         print("🎯 DEBUG: WindChart tooltip-ok aktiválva!")
         print("🌪️ DEBUG: WindChart.__init__() SIKERES!")
 
-    def update_data(self, data: Dict[str, Any]) -> None:
+    def update_data(self, data: dict[str, Any]) -> None:
         """
         Update wind chart with new data.
 
@@ -127,7 +126,7 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
             self._is_updating = False
             self.clear_chart()
 
-    def _find_closest_chart_point(self, event) -> Optional[Dict[str, Any]]:
+    def _find_closest_chart_point(self, event) -> dict[str, Any] | None:
         """
         Find closest chart point to mouse event.
 
@@ -141,7 +140,7 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
             return None
         return self._tooltip_handler.find_closest_point(event, self.current_data)
 
-    def _format_tooltip_text(self, point_data: Dict[str, Any]) -> str:
+    def _format_tooltip_text(self, point_data: dict[str, Any]) -> str:
         """
         Format tooltip text for wind data.
 
@@ -155,7 +154,7 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
             return ""
         return self._tooltip_handler.format_tooltip_text(point_data)
 
-    def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
+    def _show_tooltip(self, event, point_data: dict[str, Any]) -> None:
         """
         Show tooltip for wind data point.
 

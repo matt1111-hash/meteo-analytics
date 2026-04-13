@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,14 +16,12 @@ Fájl: src/presentation/gui/universal_location_selector/core.py
 """
 
 import logging
-from typing import Optional
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QListWidgetItem,
     QWidget,
 )
-
 from src.domain.entities.location_types import LocationType
 from src.domain.entities.universal_location import UniversalLocation
 from src.domain.ports import CityManagerPort
@@ -70,9 +67,7 @@ def _append_hungarian_details(details_parts: list[str], result_data: dict) -> No
         details_parts.append(f"Lakosság: {population:,}")
 
 
-def _append_global_details(
-    details_parts: list[str], name: str, country: str, region: str
-) -> None:
+def _append_global_details(details_parts: list[str], name: str, country: str, region: str) -> None:
     """Append global result detail lines."""
     if region and region != name:
         details_parts.append(f"Régió: {region}")
@@ -101,7 +96,7 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
     city_selected = Signal(str, float, float, dict)
     location_changed = Signal(object)
 
-    def __init__(self, city_manager: Optional[CityManagerPort] = None, parent=None):
+    def __init__(self, city_manager: CityManagerPort | None = None, parent=None):
         """
         UniversalLocationSelector inicializálása (CA compliant - uses port).
 
@@ -112,7 +107,7 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
         super().__init__(parent)
 
         self.city_manager: CityManagerPort = city_manager or get_city_manager_port()
-        self.current_location: Optional[UniversalLocation] = None
+        self.current_location: UniversalLocation | None = None
 
         # UI setup
         self._setup_ui()
@@ -129,9 +124,7 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
         self._connect_signals()
         register_widget_for_theming(self, "container")
 
-        logger.info(
-            "🇭🇺 Enhanced Universal Location Selector inicializálva (DUAL DATABASE)"
-        )
+        logger.info("🇭🇺 Enhanced Universal Location Selector inicializálva (DUAL DATABASE)")
 
     def _setup_ui(self) -> None:
         """UI elemek létrehozása."""
@@ -164,9 +157,7 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
         try:
             result_data = item.data(Qt.UserRole)
             if result_data:
-                name, details, lat, lon, is_hungarian = _build_location_details(
-                    result_data
-                )
+                name, details, lat, lon, is_hungarian = _build_location_details(result_data)
                 self.location_card.set_location(name, details, is_hungarian)
                 self.confirm_button.setEnabled(True)
                 logger.info(

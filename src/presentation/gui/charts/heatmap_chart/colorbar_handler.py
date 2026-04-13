@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -53,9 +52,7 @@ def create_colorbar(self, im) -> None:
             self._colorbar.remove()
             self._colorbar = None
 
-        self._colorbar = self.figure.colorbar(
-            im, ax=self.ax, shrink=0.8, aspect=30, pad=0.02
-        )
+        self._colorbar = self.figure.colorbar(im, ax=self.ax, shrink=0.8, aspect=30, pad=0.02)
         label = _resolve_colorbar_label(self.parameter)
         self._colorbar.set_label(
             label, fontsize=12, fontweight="500", color=text_color, labelpad=15

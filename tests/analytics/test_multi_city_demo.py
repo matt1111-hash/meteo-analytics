@@ -34,9 +34,7 @@ class TestDemoMultiCityEngine:
         mock_result.statistics = {"max": 50.0}
         mock_engine.analyze_multi_city.return_value = mock_result
 
-        with patch(
-            "src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine
-        ):
+        with patch("src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine):
             # Capture output
             captured_output = io.StringIO()
             sys.stdout = captured_output
@@ -89,9 +87,7 @@ class TestDemoMultiCityEngine:
         mock_result.statistics = {}
         mock_engine.analyze_multi_city.return_value = mock_result
 
-        with patch(
-            "src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine
-        ):
+        with patch("src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine):
             captured_output = io.StringIO()
             sys.stdout = captured_output
 
@@ -115,9 +111,7 @@ class TestDemoMultiCityEngine:
         mock_engine.resolve_region_name.return_value = "Hungary"
         mock_engine.analyze_multi_city.side_effect = Exception("Analytics error")
 
-        with patch(
-            "src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine
-        ):
+        with patch("src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine):
             captured_output = io.StringIO()
             sys.stdout = captured_output
 
@@ -145,9 +139,7 @@ class TestDemoMultiCityEngine:
         mock_result.statistics = {}
         mock_engine.analyze_multi_city.return_value = mock_result
 
-        with patch(
-            "src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine
-        ):
+        with patch("src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine):
             captured_output = io.StringIO()
             sys.stdout = captured_output
 
@@ -181,9 +173,7 @@ class TestDemoMultiCityEngine:
         mock_result.statistics = {"max": 50.0}
         mock_engine.analyze_multi_city.return_value = mock_result
 
-        with patch(
-            "src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine
-        ):
+        with patch("src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine):
             captured_output = io.StringIO()
             sys.stdout = captured_output
 
@@ -216,9 +206,7 @@ class TestDemoMultiCityEngine:
         mock_result.statistics = {"max": 0.0}
         mock_engine.analyze_multi_city.return_value = mock_result
 
-        with patch(
-            "src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine
-        ):
+        with patch("src.analytics.multi_city_demo.MultiCityEngine", return_value=mock_engine):
             captured_output = io.StringIO()
             sys.stdout = captured_output
 

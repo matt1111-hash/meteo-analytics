@@ -7,7 +7,7 @@
 Magyar Klímaanalitika MVP - Publikus API metódusok
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ..models import HungarianRegionData
 
@@ -17,7 +17,7 @@ class PublicApiMixin:
     📋 Publikus API mixin a HungarianLocationSelector számára.
     """
 
-    def get_current_selection(self) -> Dict[str, Any]:
+    def get_current_selection(self) -> dict[str, Any]:
         """
         📋 Jelenlegi kiválasztott elemek lekérdezése.
         """
@@ -48,7 +48,7 @@ class PublicApiMixin:
                 return True
         return False
 
-    def get_available_counties(self) -> List[str]:
+    def get_available_counties(self) -> list[str]:
         """
         📋 Elérhető megyék listája.
         """
@@ -88,9 +88,7 @@ class PublicApiMixin:
 
     # === 🔧 JAVÍTOTT: RÉGIÓ KOMPATIBILITÁSI METÓDUSOK ===
 
-    def get_region_by_display_name(
-        self, display_name: str
-    ) -> Optional[HungarianRegionData]:
+    def get_region_by_display_name(self, display_name: str) -> HungarianRegionData | None:
         """
         🔧 ÚJ: Régió lekérdezése megjelenítési név alapján (Control Panel kompatibilitás).
 
@@ -120,7 +118,7 @@ class PublicApiMixin:
             return self.set_region(region_data.name)
         return False
 
-    def get_available_region_display_names(self) -> List[str]:
+    def get_available_region_display_names(self) -> list[str]:
         """
         🔧 ÚJ: Elérhető régió megjelenítési nevek listája (Control Panel kompatibilitás).
 
@@ -129,7 +127,7 @@ class PublicApiMixin:
         """
         return [region_data.display_name for region_data in self.region_data.values()]
 
-    def get_region_counties_mapping(self) -> Dict[str, List[str]]:
+    def get_region_counties_mapping(self) -> dict[str, list[str]]:
         """
         🔧 ÚJ: Régió → megyék mapping (Multi-City Engine kompatibilitás).
 

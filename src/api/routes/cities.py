@@ -1,6 +1,6 @@
 """Cities search API routes."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import logging
 
@@ -21,9 +21,7 @@ def _get_city_repository() -> CityRepositoryPort:
 @router.get("/search")
 async def search_cities(
     query: str = Query(..., min_length=2, description="Search query for city names"),
-    limit: int = Query(
-        default=20, ge=1, le=50, description="Maximum number of results"
-    ),
+    limit: int = Query(default=20, ge=1, le=50, description="Maximum number of results"),
 ) -> dict:
     """Search for cities by name.
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -13,7 +12,7 @@ Fájl: src/presentation/gui/results_panel/quick_overview_tab/wind_info_stats.py
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 import pandas as pd
 
@@ -47,9 +46,7 @@ def calculate_wind_stats(self, df: pd.DataFrame) -> None:
 
         wind_series, wind_data_source = _resolve_wind_series(df)
         if wind_series is None or wind_series.empty:
-            _clear_stats_range(
-                self, ["avg_wind", "max_wind", "windy_days", "wind_direction"]
-            )
+            _clear_stats_range(self, ["avg_wind", "max_wind", "windy_days", "wind_direction"])
             return
 
         if "wind_data_source" in df.columns:
@@ -57,9 +54,7 @@ def calculate_wind_stats(self, df: pd.DataFrame) -> None:
             if source_from_df and source_from_df != "unknown":
                 wind_data_source = source_from_df
         avg_wind = wind_series.mean()
-        self._stat_labels["avg_wind"].setText(
-            f"{avg_wind:.1f}" if pd.notna(avg_wind) else "N/A"
-        )
+        self._stat_labels["avg_wind"].setText(f"{avg_wind:.1f}" if pd.notna(avg_wind) else "N/A")
         max_wind = wind_series.max()
         if pd.notna(max_wind):
             self._stat_labels["max_wind"].setText(f"{max_wind:.1f}")
@@ -76,12 +71,10 @@ def calculate_wind_stats(self, df: pd.DataFrame) -> None:
 
     except Exception as e:
         logger.error(f"Szél statisztika hiba: {e}")
-        _clear_stats_range(
-            self, ["avg_wind", "max_wind", "windy_days", "wind_direction"]
-        )
+        _clear_stats_range(self, ["avg_wind", "max_wind", "windy_days", "wind_direction"])
 
 
-def update_info_labels(self, data: Dict, city_name: str, df: pd.DataFrame) -> None:
+def update_info_labels(self, data: dict, city_name: str, df: pd.DataFrame) -> None:
     """Információs labelek frissítése."""
     try:
         from ...utils import get_source_display_name
@@ -94,9 +87,7 @@ def update_info_labels(self, data: Dict, city_name: str, df: pd.DataFrame) -> No
             start_date = dates[0]
             end_date = dates[-1]
             days_count = len(dates)
-            self.date_range_label.setText(
-                f"Időszak: {start_date} - {end_date} ({days_count} nap)"
-            )
+            self.date_range_label.setText(f"Időszak: {start_date} - {end_date} ({days_count} nap)")
         else:
             self.date_range_label.setText("Időszak: -")
 

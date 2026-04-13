@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +13,7 @@ class CityRepositoryPaths:
     """Handles database path resolution and fallbacks."""
 
     @staticmethod
-    def _resolve_fallback_path(filename: str) -> Optional[Path]:
+    def _resolve_fallback_path(filename: str) -> Path | None:
         """Return the first existing fallback path for the given database file."""
         fallback_path = Path.cwd() / "data" / filename
         if fallback_path.exists():
@@ -31,8 +30,8 @@ class CityRepositoryPaths:
 
     def __init__(
         self,
-        db_path: Optional[Path] = None,
-        hungarian_db_path: Optional[Path] = None,
+        db_path: Path | None = None,
+        hungarian_db_path: Path | None = None,
     ):
         """Initialize with optional custom paths."""
         project_root = Path(__file__).parent.parent.parent.parent
@@ -60,9 +59,7 @@ class CityRepositoryPaths:
         if not self.db_path.exists():
             issues.append(f"Global cities database missing: {self.db_path}")
         if not self.hungarian_db_path.exists():
-            issues.append(
-                f"Hungarian settlements database missing: {self.hungarian_db_path}"
-            )
+            issues.append(f"Hungarian settlements database missing: {self.hungarian_db_path}")
         return issues
 
     def _has_any_database(self) -> bool:

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Anomaly Profile CRUD Actions
 Profile create, delete, rename, and reset operations.
@@ -8,8 +7,9 @@ Profile create, delete, rename, and reset operations.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable, Dict
+from typing import Any
 
 from ..anomaly_types import AnomalyProfileSettings
 
@@ -26,10 +26,10 @@ class ProfileActions:
 
     def __init__(
         self,
-        save_func: Callable[[str, Dict[str, Any]], bool],
-        load_func: Callable[[str], Dict[str, Any]],
+        save_func: Callable[[str, dict[str, Any]], bool],
+        load_func: Callable[[str], dict[str, Any]],
         get_available_func: Callable[[], list],
-        get_cache_func: Callable[[], Dict[str, Dict[str, Any]]],
+        get_cache_func: Callable[[], dict[str, dict[str, Any]]],
         active_profile_getter: Callable[[], str],
         active_profile_setter: Callable[[str], None],
     ):
@@ -175,9 +175,7 @@ class ProfileActions:
             bool: Sikeres volt-e a visszaállítás
         """
         try:
-            default_settings = AnomalyProfileSettings(
-                profile_name=profile_name
-            ).to_dict()
+            default_settings = AnomalyProfileSettings(profile_name=profile_name).to_dict()
             return self._save(profile_name, default_settings)
 
         except Exception as e:

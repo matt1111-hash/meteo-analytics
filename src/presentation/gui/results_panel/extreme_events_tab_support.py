@@ -9,7 +9,7 @@ Global Weather Analyzer - Extreme Events Tab Module (FACADE PATTERN - FINAL)
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
@@ -39,7 +39,7 @@ try:
     from src.config import GUIConfig
 except ImportError:
 
-    class GUIConfig:
+    class GUIConfig:  # noqa: D101
         pass
 
 
@@ -47,10 +47,10 @@ try:
     from ..utils import AnomalyConstants, GUIConstants
 except ImportError:
 
-    class GUIConstants:
+    class GUIConstants:  # noqa: D101
         pass
 
-    class AnomalyConstants:
+    class AnomalyConstants:  # noqa: D101
         pass
 
 
@@ -61,10 +61,10 @@ try:
     )
 except ImportError:
 
-    def get_theme_manager():
+    def get_theme_manager():  # noqa: D103
         return None
 
-    def register_widget_for_theming(*args, **kwargs):
+    def register_widget_for_theming(*args, **kwargs):  # noqa: D103
         pass
 
 

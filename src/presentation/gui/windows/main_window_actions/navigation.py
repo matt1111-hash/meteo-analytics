@@ -50,9 +50,7 @@ def map_query_type_to_parameter(query_type: str) -> str:
     return QUERY_TYPE_TO_PARAMETER.get(query_type, "Hőmérséklet")
 
 
-def handle_analytics_view_query(
-    window: "MainWindow", query_type: str, region_name: str
-) -> None:
+def handle_analytics_view_query(window: "MainWindow", query_type: str, region_name: str) -> None:
     """AnalyticsView multi-city lekérdezés kezelése."""
     params = {"query_type": query_type, "auto_switch_to_map": False}
     today_str = datetime.now().strftime("%Y-%m-%d")
@@ -71,10 +69,10 @@ def handle_analytics_view_query(
 
 def handle_multi_city_weather_request(
     window: "MainWindow",
-    analysis_type: str,
+    analysis_type: str,  # noqa: ARG001
     region_id: str,
     start_date: str,
-    end_date: str,
+    end_date: str,  # noqa: ARG001
     params: dict,
 ) -> None:
     """Multi-City weather request kezelése."""
@@ -90,9 +88,7 @@ def handle_multi_city_weather_request(
         from src.analytics.ports import get_multi_city_engine_port
 
         engine = get_multi_city_engine_port()
-        result = engine.analyze_multi_city(
-            query_type, region_id, start_date, limit=limit
-        )
+        result = engine.analyze_multi_city(query_type, region_id, start_date, limit=limit)
 
         if not hasattr(result, "city_results"):
             error_msg = f"Multi-city engine hibás eredmény típus: {type(result)}"
@@ -106,9 +102,7 @@ def handle_multi_city_weather_request(
 
         on_multi_city_result_ready(window, result, query_type)
 
-        success_message = (
-            f"✅ Multi-city eredmény: {len(result.city_results)} város ({region_id})"
-        )
+        success_message = f"✅ Multi-city eredmény: {len(result.city_results)} város ({region_id})"
         window.status_bar.showMessage(success_message)
 
         if params.get("auto_switch_to_map", True):
@@ -127,9 +121,7 @@ def on_multi_city_result_ready(
 ) -> None:
     """Multi-city eredmény szétosztása a nézeteknek."""
     try:
-        if window.hungarian_map_tab and hasattr(
-            window.hungarian_map_tab, "set_analytics_result"
-        ):
+        if window.hungarian_map_tab and hasattr(window.hungarian_map_tab, "set_analytics_result"):
             analytics_parameter = map_query_type_to_parameter(query_type)
             if hasattr(window.hungarian_map_tab, "set_analytics_parameter"):
                 window.hungarian_map_tab.set_analytics_parameter(analytics_parameter)

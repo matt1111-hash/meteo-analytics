@@ -45,9 +45,7 @@ def _build_summary_body(analysis: WindAnalysisResult) -> str:
     return "\n".join(lines)
 
 
-def _build_chart_label(
-    month_label: str, windy_days_count: int, percentage: float
-) -> str:
+def _build_chart_label(month_label: str, windy_days_count: int, percentage: float) -> str:
     """Build chart label for one month."""
     if windy_days_count <= 0:
         return f"{month_label}: 0 szeles nap"
@@ -71,10 +69,7 @@ def format_wind_analysis_summary(analysis: WindAnalysisResult) -> str:
     """
     try:
         if not analysis.monthly_stats:
-            return (
-                "Nincs elérhető szélsebességi adat a(z) "
-                f"{analysis.location_name} helyszínre."
-            )
+            return "Nincs elérhető szélsebességi adat a(z) " f"{analysis.location_name} helyszínre."
 
         return _build_summary_body(analysis).strip()
 
@@ -120,9 +115,7 @@ def get_chart_data_for_monthly_windy_days(
             counts.append(stat.windy_days_count)
             percentages.append(stat.windy_percentage)
             labels.append(
-                _build_chart_label(
-                    month_label, stat.windy_days_count, stat.windy_percentage
-                )
+                _build_chart_label(month_label, stat.windy_days_count, stat.windy_percentage)
             )
 
         logger.info(f"📊 Chart adatok előkészítve: {len(months)} hónap")

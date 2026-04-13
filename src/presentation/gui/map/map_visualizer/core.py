@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -19,7 +18,6 @@ Fájl: src/presentation/gui/map/map_visualizer/core.py
 from PySide6.QtCore import Signal
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWidgets import QWidget
-
 from src.presentation.gui.color_palette import ColorPalette
 from src.presentation.gui.theme_manager import register_widget_for_theming
 
@@ -110,7 +108,7 @@ class HungarianMapVisualizer(QWidget):
     error_occurred = Signal(str)
     bounds_changed = Signal(object)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None):  # noqa: D107
         super().__init__(parent)
 
         self.color_palette = ColorPalette()

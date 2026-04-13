@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from tooltip.py."""
 
@@ -18,15 +18,10 @@ def _build_date_positions(bar_data: list[dict[str, Any]]) -> list[tuple[int, flo
     """Build date-number pairs for tooltip matching."""
     import matplotlib.dates as mdates
 
-    return [
-        (index, mdates.date2num(bar_info["date"]))
-        for index, bar_info in enumerate(bar_data)
-    ]
+    return [(index, mdates.date2num(bar_info["date"])) for index, bar_info in enumerate(bar_data)]
 
 
-def _find_nearest_bar(
-    mouse_x: float, date_positions: list[tuple[int, float]]
-) -> tuple[int, float]:
+def _find_nearest_bar(mouse_x: float, date_positions: list[tuple[int, float]]) -> tuple[int, float]:
     """Find the nearest precipitation bar."""
     return min(
         ((index, abs(mouse_x - position)) for index, position in date_positions),

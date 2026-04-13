@@ -12,7 +12,7 @@ adatok előkészítését.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 try:
     import pandas as pd

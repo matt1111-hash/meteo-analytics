@@ -3,10 +3,9 @@
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
-
 from src.presentation.gui.controller.weather_data_handler.constants import (
     OPTIONAL_DAILY_FIELDS,
     REQUIRED_DAILY_FIELDS,
@@ -15,8 +14,8 @@ from src.presentation.gui.controller.weather_data_handler.constants import (
 
 
 def process_weather_data(
-    raw_data: Dict[str, Any], current_city_data: Optional[Dict[str, Any]] = None
-) -> Optional[Dict[str, Any]]:
+    raw_data: dict[str, Any], current_city_data: dict[str, Any] | None = None
+) -> dict[str, Any] | None:
     """
     Process weather data with complete wind data support.
 
@@ -56,8 +55,8 @@ def process_weather_data(
 
 
 def calculate_daily_max_wind_gusts(
-    hourly_gusts: List[float], hourly_times: List[str], daily_times: List[str]
-) -> List[float]:
+    hourly_gusts: list[float], hourly_times: list[str], daily_times: list[str]
+) -> list[float]:
     """
     Calculate daily maximum wind gusts from hourly data.
 
@@ -91,7 +90,7 @@ def calculate_daily_max_wind_gusts(
         return []
 
 
-def _has_valid_daily_payload(raw_data: Dict[str, Any], logger: logging.Logger) -> bool:
+def _has_valid_daily_payload(raw_data: dict[str, Any], logger: logging.Logger) -> bool:
     """Validate daily weather payload structure."""
     if not raw_data or "daily" not in raw_data:
         logger.warning("Invalid weather data structure")
@@ -106,11 +105,11 @@ def _has_valid_daily_payload(raw_data: Dict[str, Any], logger: logging.Logger) -
 
 
 def _build_processed_payload(
-    raw_data: Dict[str, Any],
-    hourly_data: Dict[str, Any],
-    current_city_data: Optional[Dict[str, Any]],
+    raw_data: dict[str, Any],
+    hourly_data: dict[str, Any],
+    current_city_data: dict[str, Any] | None,
     record_count: int,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Build processed weather payload metadata shell."""
     provider = raw_data.get("provider", "unknown")
     return {
@@ -130,8 +129,8 @@ def _build_processed_payload(
 
 
 def _copy_daily_fields(
-    processed_daily: Dict[str, Any],
-    daily_data: Dict[str, Any],
+    processed_daily: dict[str, Any],
+    daily_data: dict[str, Any],
     logger: logging.Logger,
 ) -> None:
     """Copy required and optional daily fields."""
@@ -149,8 +148,8 @@ def _copy_daily_fields(
 
 
 def _copy_wind_direction_fields(
-    processed_daily: Dict[str, Any],
-    daily_data: Dict[str, Any],
+    processed_daily: dict[str, Any],
+    daily_data: dict[str, Any],
     logger: logging.Logger,
 ) -> None:
     """Map wind direction aliases for chart compatibility."""
@@ -162,12 +161,10 @@ def _copy_wind_direction_fields(
 
 
 def _build_hourly_gust_dataframe(
-    hourly_gusts: List[float], hourly_times: List[str]
+    hourly_gusts: list[float], hourly_times: list[str]
 ) -> pd.DataFrame:
     """Build hourly gust dataframe for daily aggregation."""
-    return pd.DataFrame(
-        {"time": pd.to_datetime(hourly_times), "wind_gusts": hourly_gusts}
-    )
+    return pd.DataFrame({"time": pd.to_datetime(hourly_times), "wind_gusts": hourly_gusts})
 
 
 def _extract_daily_max_gust(hourly_df: pd.DataFrame, daily_time: str) -> Any:
@@ -186,7 +183,7 @@ def _extract_daily_max_gust(hourly_df: pd.DataFrame, daily_time: str) -> Any:
         return None
 
 
-def _log_gust_summary(daily_max_gusts: List[Any], logger: logging.Logger) -> None:
+def _log_gust_summary(daily_max_gusts: list[Any], logger: logging.Logger) -> None:
     """Log summary for extracted daily wind gusts."""
     valid_gusts = [gust for gust in daily_max_gusts if gust is not None and gust > 0]
     if not valid_gusts:

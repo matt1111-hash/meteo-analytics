@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -43,9 +42,7 @@ def connect_signals(self) -> None:
     if windy_days_tab:
         try:
             if hasattr(windy_days_tab, "analysis_completed"):
-                windy_days_tab.analysis_completed.connect(
-                    _on_windy_days_analysis_completed
-                )
+                windy_days_tab.analysis_completed.connect(_on_windy_days_analysis_completed)
             if hasattr(windy_days_tab, "error_occurred"):
                 windy_days_tab.error_occurred.connect(_on_windy_days_error)
             if hasattr(windy_days_tab, "export_requested"):
@@ -105,7 +102,7 @@ def _on_extreme_weather_clicked(self) -> None:
     switch_to_tab(self, "extreme")
 
 
-def _on_windy_days_analysis_completed(self, result: dict) -> None:
+def _on_windy_days_analysis_completed(self, result: dict) -> None:  # noqa: ARG001
     """
     WindyDaysTab analízis befejezés kezelése.
 

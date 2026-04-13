@@ -24,23 +24,23 @@ from src.presentation.gui.controller.app_controller import AppController
 class TestReceiver(QObject):
     """Signal receiver for testing."""
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         super().__init__()
         self.signals_received = []
         self.result_data = None
 
     @Slot(str)
-    def on_analysis_started(self, analysis_type: str):
+    def on_analysis_started(self, analysis_type: str):  # noqa: D102
         self.signals_received.append(f"analysis_started: {analysis_type}")
         print(f"   📡 SIGNAL: analysis_started - {analysis_type}")
 
     @Slot(str, int)
-    def on_analysis_progress(self, message: str, percentage: int):
+    def on_analysis_progress(self, message: str, percentage: int):  # noqa: D102
         self.signals_received.append(f"analysis_progress: {message} ({percentage}%)")
         print(f"   📡 SIGNAL: analysis_progress - {message} ({percentage}%)")
 
     @Slot(dict)
-    def on_analysis_completed(self, result_data: dict):
+    def on_analysis_completed(self, result_data: dict):  # noqa: D102
         self.signals_received.append("analysis_completed")
         self.result_data = result_data
         print(f"   📡 SIGNAL: analysis_completed - keys: {list(result_data.keys())}")
@@ -50,7 +50,7 @@ class TestReceiver(QObject):
             QCoreApplication.instance().quit()
 
     @Slot(str)
-    def on_analysis_failed(self, error_message: str):
+    def on_analysis_failed(self, error_message: str):  # noqa: D102
         self.signals_received.append(f"analysis_failed: {error_message}")
         print(f"   ❌ SIGNAL: analysis_failed - {error_message}")
 
@@ -59,7 +59,7 @@ class TestReceiver(QObject):
             QCoreApplication.instance().quit()
 
 
-def test_fetch_flow_with_eventloop():
+def test_fetch_flow_with_eventloop():  # noqa: PLR0915
     """Test fetch flow with QEventLoop."""
     print("=" * 80)
     print("🧪 HEADLESS FETCH FLOW TEST v2 - QEventLoop")

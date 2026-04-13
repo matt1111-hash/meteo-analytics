@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 API Helpers Provider Recommender - Get provider recommendations.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from .provider_validator import validate_provider_selection
 from .source_selector import get_fallback_source_chain, get_optimal_data_source
 
 
 def get_provider_recommendation(
-    use_case: str, usage_stats: Dict[str, Dict[str, Any]]
-) -> Dict[str, Any]:
+    use_case: str, usage_stats: dict[str, dict[str, Any]]
+) -> dict[str, Any]:
     """
     Get provider recommendation based on use case.
 

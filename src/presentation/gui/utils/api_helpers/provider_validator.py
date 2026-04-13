@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 API Helpers Provider Validator - Validate provider selections.
 """
 
-from typing import Tuple
-
 from .provider_tracker import get_provider_warning_level
 from .source_selector import validate_api_source_available
 
 
-def validate_provider_selection(provider_name: str, usage_stats) -> Tuple[bool, str]:
+def validate_provider_selection(provider_name: str, usage_stats) -> tuple[bool, str]:
     """
     Validate provider selection.
 

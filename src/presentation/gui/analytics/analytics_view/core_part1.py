@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for AnalyticsView."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .core_support import *
 
 
-class AnalyticsViewPart1Mixin:
-    def __init__(self, parent=None):
+class AnalyticsViewPart1Mixin:  # noqa: D101
+    def __init__(self, parent=None):  # noqa: D107
         super().__init__(parent)
 
         # Téma kezelő
@@ -126,9 +126,7 @@ class AnalyticsViewPart1Mixin:
         🎯 KONSTANS HEATMAP + DEDICATED WIND CHARTOK adatok frissítése - 6 TAB - BEAUFORT + MAX SZÉLLÖKÉS VERZIÓ.
         """
         try:
-            logger.info(
-                "🗂️ Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok frissítése"
-            )
+            logger.info("🗂️ Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatok frissítése")
 
             # Adatok tárolása
             self.current_data = data
@@ -142,9 +140,7 @@ class AnalyticsViewPart1Mixin:
             logger.info(f"  📊 {total_days} nap → 365 téglalap minden tab-nál")
 
             # 🚨 KRITIKUS JAVÍTÁS: Bal oldali statisztikák frissítése
-            logger.info(
-                "🚨 STATISZTIKÁK JAVÍTÁS: _process_and_display_statistics() meghívása"
-            )
+            logger.info("🚨 STATISZTIKÁK JAVÍTÁS: _process_and_display_statistics() meghívása")
             self.statistics_cards.process_and_display_statistics(data, total_days)
 
             # Rekordok frissítése (mindig napi szinten)
@@ -170,5 +166,5 @@ class AnalyticsViewPart1Mixin:
                 f"Konstans heatmap dashboard + DEDICATED WIND CHARTOK adatfrissítési hiba: {e}",
                 exc_info=True,
             )
-            self.error_occurred.emit(f"Adatfrissítési hiba: {str(e)}")
+            self.error_occurred.emit(f"Adatfrissítési hiba: {e!s}")
             self._update_status("❌ Adatfeldolgozási hiba")

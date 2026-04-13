@@ -6,8 +6,8 @@ Egyszerűsített verzió: csak a vezérlőgombokat és állapotkezelést tartalm
 A widgetek (location, date_range, parameters, provider) a ControlPanel-ben vannak.
 """
 
+import contextlib
 import logging
-from typing import Optional
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
@@ -38,7 +38,7 @@ class QueryControlWidget(QWidget):
     cancel_requested = Signal()
     state_changed = Signal(str)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         """QueryControlWidget inicializálása."""
         super().__init__(parent)
         logger.info("QueryControlWidget inicializálás START (simplified)")
@@ -48,14 +48,10 @@ class QueryControlWidget(QWidget):
         self._ui_builder.build_ui()
 
         # State manager
-        self._state_manager = QueryControlStateManager(
-            self._ui_builder, self.state_changed
-        )
+        self._state_manager = QueryControlStateManager(self._ui_builder, self.state_changed)
 
         # Event handlers (egyszerűsített - csak gombokat kezel)
-        self._event_handlers = QueryControlEventHandlers(
-            self._state_manager, self._ui_builder
-        )
+        self._event_handlers = QueryControlEventHandlers(self._state_manager, self._ui_builder)
 
         # Event handlers setup
         self._event_handlers.query_requested = self.query_requested
@@ -64,13 +60,9 @@ class QueryControlWidget(QWidget):
 
         # Connect button signals
         if self._ui_builder.query_button:
-            self._ui_builder.query_button.clicked.connect(
-                self._event_handlers.on_query_clicked
-            )
+            self._ui_builder.query_button.clicked.connect(self._event_handlers.on_query_clicked)
         if self._ui_builder.cancel_button:
-            self._ui_builder.cancel_button.clicked.connect(
-                self._event_handlers.on_cancel_clicked
-            )
+            self._ui_builder.cancel_button.clicked.connect(self._event_handlers.on_cancel_clicked)
 
         # External API
         self._external_api = QueryControlExternalAPI(
@@ -112,9 +104,7 @@ class QueryControlWidget(QWidget):
         """Dinamikus delegálás az external API-hoz."""
         if hasattr(self._external_api, name):
             return getattr(self._external_api, name)
-        raise AttributeError(
-            f"'{type(self).__name__}' object has no attribute '{name}'"
-        )
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
 
     # === CLEANUP ===
 
@@ -124,12 +114,10 @@ class QueryControlWidget(QWidget):
         self._state_manager.cleanup()
         logger.debug("QueryControlWidget cleanup completed")
 
-    def closeEvent(self, event) -> None:
+    def closeEvent(self, event) -> None:  # noqa: D102
         self.cleanup()
         super().closeEvent(event)
 
     def __del__(self):
-        try:
+        with contextlib.suppress(Exception):
             self.cleanup()
-        except Exception:
-            pass

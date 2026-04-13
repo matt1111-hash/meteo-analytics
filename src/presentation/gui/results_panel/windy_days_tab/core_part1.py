@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for WindyDaysTab."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .core_support import *
 
 
-class WindyDaysTabPart1Mixin:
+class WindyDaysTabPart1Mixin:  # noqa: D101
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         """Inicializálás."""
         super().__init__(parent)
@@ -122,9 +122,7 @@ DUPLA KONVERZIÓ ELTÁVOLÍTVA!
         """Signal kapcsolatok létrehozása."""
         try:
             if self.analyze_button:
-                self.analyze_button.clicked.connect(
-                    lambda: handle_analyze_clicked(self)
-                )
+                self.analyze_button.clicked.connect(lambda: handle_analyze_clicked(self))
 
             if self.export_button:
                 self.export_button.clicked.connect(lambda: handle_export_clicked(self))
@@ -138,9 +136,7 @@ DUPLA KONVERZIÓ ELTÁVOLÍTVA!
             auto_update = self.findChild(QCheckBox, "auto_update_checkbox")
             if auto_update:
                 self.auto_update_checkbox = auto_update
-                auto_update.toggled.connect(
-                    lambda c: handle_auto_update_toggled(self, c)
-                )
+                auto_update.toggled.connect(lambda c: handle_auto_update_toggled(self, c))
 
             # Theme manager
             self.theme_manager.theme_changed.connect(self._on_theme_changed)

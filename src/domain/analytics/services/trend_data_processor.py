@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
 
@@ -17,8 +17,8 @@ class TrendDataProcessor:
     MIN_DAYS_PER_MONTH = 5
 
     def prepare_dataframe(
-        self, weather_data: List[Dict[str, Any]], api_field: str
-    ) -> Optional[pd.DataFrame]:
+        self, weather_data: list[dict[str, Any]], api_field: str
+    ) -> pd.DataFrame | None:
         """Prepare DataFrame from raw weather data."""
         df_data = []
         for record in weather_data:
@@ -42,7 +42,7 @@ class TrendDataProcessor:
 
         return df
 
-    def aggregate_monthly(self, df: pd.DataFrame) -> Optional[pd.DataFrame]:
+    def aggregate_monthly(self, df: pd.DataFrame) -> pd.DataFrame | None:
         """Aggregate data to monthly level."""
         df = df.copy()
         df["year_month"] = df["date"].dt.to_period("M")
@@ -70,21 +70,21 @@ class TrendDataProcessor:
         # Filter months with insufficient data
         monthly_df = monthly_df[monthly_df["day_count"] >= self.MIN_DAYS_PER_MONTH]
 
-        if len(monthly_df) < 6:
+        if len(monthly_df) < 6:  # noqa: PLR2004
             return None
 
         return monthly_df
 
-    def extract_years(self, monthly_df: pd.DataFrame) -> List[int]:
+    def extract_years(self, monthly_df: pd.DataFrame) -> list[int]:
         """Extract unique years from monthly data."""
         return sorted(monthly_df["date"].dt.year.unique().tolist())
 
-    def calculate_yearly_means(self, monthly_df: pd.DataFrame) -> List[float]:
+    def calculate_yearly_means(self, monthly_df: pd.DataFrame) -> list[float]:
         """Calculate mean values per year."""
         yearly = monthly_df.groupby(monthly_df["date"].dt.year)["avg_value"].mean()
         return yearly.tolist()
 
-    def calculate_yearly_dates(self, monthly_df: pd.DataFrame) -> List[str]:
+    def calculate_yearly_dates(self, monthly_df: pd.DataFrame) -> list[str]:
         """Calculate representative dates per year."""
         yearly_dates = monthly_df.groupby(monthly_df["date"].dt.year)["date"].first()
         return [d.strftime("%Y-%m-%d") for d in yearly_dates]

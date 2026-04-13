@@ -2,10 +2,10 @@
 # mypy: ignore-errors
 """Wind Rose API route - wind direction and speed distribution analysis."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List  # noqa: UP035
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field

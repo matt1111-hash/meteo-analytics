@@ -1,5 +1,5 @@
 # mypy: ignore-errors
-from typing import Any, Dict
+from typing import Any
 
 from PySide6.QtWidgets import QWidget
 
@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QWidget
 class IMapWidget:
     """Interface for the Map Rendering Engine."""
 
-    def render_map(self, _configuration: Dict[str, Any]) -> None:
+    def render_map(self, _configuration: dict[str, Any]) -> None:
         """Render the map with the given configuration."""
         raise NotImplementedError
 
@@ -39,14 +39,14 @@ class IMapEvents:
 class IMapAnalyticsBridge:
     """Interface for the Analytics Synchronization."""
 
-    def sync_analysis_parameters(self, params: Dict[str, Any]) -> None:
+    def sync_analysis_parameters(self, params: dict[str, Any]) -> None:
         """Sync the map state with new analysis parameters."""
         raise NotImplementedError
 
-    def sync_weather_parameters(self, params: Dict[str, Any]) -> None:
+    def sync_weather_parameters(self, params: dict[str, Any]) -> None:
         """Sync the map state with new weather parameters."""
         raise NotImplementedError
 
-    def refresh_with_new_parameters(self, bundle: Dict[str, Any]) -> None:
+    def refresh_with_new_parameters(self, bundle: dict[str, Any]) -> None:
         """Refresh the map with a complete bundle of new parameters."""
         raise NotImplementedError

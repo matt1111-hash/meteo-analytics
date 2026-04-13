@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 from src.domain.entities.analytics_models import AnalyticsQuestion
 from src.domain.value_objects.enums import RegionScope
@@ -17,12 +17,12 @@ class MultiCityQuery:
     region: str
     date: str  # Single date or start date for compatibility
     max_cities: int = 50
-    limit: Optional[int] = None
-    question: Optional[AnalyticsQuestion] = None
-    region_scope: Optional[RegionScope] = None
-    cities: Optional[list[str]] = None  # Explicit city names (bypasses region lookup)
-    start_date: Optional[str] = None  # Date range start (if applicable)
-    end_date: Optional[str] = None  # Date range end (if applicable)
+    limit: int | None = None
+    question: AnalyticsQuestion | None = None
+    region_scope: RegionScope | None = None
+    cities: list[str] | None = None  # Explicit city names (bypasses region lookup)
+    start_date: str | None = None  # Date range start (if applicable)
+    end_date: str | None = None  # Date range end (if applicable)
 
 
 @dataclass
@@ -34,23 +34,23 @@ class CityWeatherData:
     country_code: str
     lat: float
     lon: float
-    population: Optional[int] = None
-    date: Optional[str] = None
-    temperature_2m_max: Optional[float] = None
-    temperature_2m_min: Optional[float] = None
-    temperature_2m_mean: Optional[float] = None
-    precipitation_sum: Optional[float] = None
-    windspeed_10m_max: Optional[float] = None
-    windgusts_10m_max: Optional[float] = None
-    meteostat_station_id: Optional[str] = None
-    data_quality_score: Optional[float] = None
+    population: int | None = None
+    date: str | None = None
+    temperature_2m_max: float | None = None
+    temperature_2m_min: float | None = None
+    temperature_2m_mean: float | None = None
+    precipitation_sum: float | None = None
+    windspeed_10m_max: float | None = None
+    windgusts_10m_max: float | None = None
+    meteostat_station_id: str | None = None
+    data_quality_score: float | None = None
     data_source: str = "dual-api"
-    fetch_timestamp: Optional[str] = None
+    fetch_timestamp: str | None = None
     fetch_success: bool = True
-    error_message: Optional[str] = None
+    error_message: str | None = None
     retry_count: int = 0
-    temperature_range: Optional[float] = None
+    temperature_range: float | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Export to dict for adapters/wrappers."""
         return self.__dict__.copy()

@@ -4,15 +4,13 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
-from typing import Dict
 
 import pytest
-
 from src import config
 
 
 def test_user_preferences_loads_defaults_when_file_missing(
-    config_fs: Dict[str, str],
+    config_fs: dict[str, str],
 ) -> None:
     """Hiányzó fájl esetén a default beállítások térnek vissza."""
     config_fs.pop("prefs", None)
@@ -22,7 +20,7 @@ def test_user_preferences_loads_defaults_when_file_missing(
     assert prefs["warning_threshold"] == config.ProviderConfig.WARNING_THRESHOLD
 
 
-def test_user_preferences_merges_saved_fields(config_fs: Dict[str, str]) -> None:
+def test_user_preferences_merges_saved_fields(config_fs: dict[str, str]) -> None:
     """Meglévő JSON esetén a hiányzó kulcsok alapértékre esnek vissza."""
     config_fs["prefs"] = json.dumps(
         {"selected_provider": "meteostat", "auto_fallback_enabled": False}
@@ -34,7 +32,7 @@ def test_user_preferences_merges_saved_fields(config_fs: Dict[str, str]) -> None
 
 
 def test_user_preferences_load_handles_corrupted_json(
-    config_fs: Dict[str, str],
+    config_fs: dict[str, str],
 ) -> None:
     """Sérült tartalom esetén is default értékek érkeznek."""
     config_fs["prefs"] = "{ not valid json"
@@ -42,7 +40,7 @@ def test_user_preferences_load_handles_corrupted_json(
     assert prefs["selected_provider"] == config.ProviderConfig.DEFAULT_PROVIDER
 
 
-def test_user_preferences_save_updates_timestamp(config_fs: Dict[str, str]) -> None:
+def test_user_preferences_save_updates_timestamp(config_fs: dict[str, str]) -> None:
     """Mentéskor bekerül a frissített időbélyeg és a JSON elérhető."""
     payload = {"selected_provider": "meteostat"}
     assert config.UserPreferences.save_provider_preferences(payload) is True
@@ -52,15 +50,13 @@ def test_user_preferences_save_updates_timestamp(config_fs: Dict[str, str]) -> N
 
 
 def test_user_preferences_save_handles_failure(
-    monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]
+    monkeypatch: pytest.MonkeyPatch, config_fs: dict[str, str]
 ) -> None:
     """Mentési hiba esetén ne jöjjön létre fájl."""
     monkeypatch.setattr(
         config, "ensure_directories", lambda: (_ for _ in ()).throw(OSError("boom"))
     )
-    result = config.UserPreferences.save_provider_preferences(
-        {"selected_provider": "meteostat"}
-    )
+    result = config.UserPreferences.save_provider_preferences({"selected_provider": "meteostat"})
     assert result is False
     assert "prefs" not in config_fs
 
@@ -69,7 +65,7 @@ def test_user_preferences_save_handles_failure(
 
 
 def test_usage_tracker_load_resets_new_month(
-    monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]
+    monkeypatch: pytest.MonkeyPatch, config_fs: dict[str, str]
 ) -> None:
     """Hónapváltáskor resetelődjön az API usage."""
     config_fs["usage"] = json.dumps(
@@ -110,11 +106,11 @@ def test_usage_tracker_load_resets_new_month(
     assert usage["open_meteo"]["daily_breakdown"] == {}
 
 
-# Lefedett ág: UsageTracker.load_usage_data hónapváltás reset (src/config.py:395–436)
+# Lefedett ág: UsageTracker.load_usage_data hónapváltás reset (src/config.py:395–436)  # noqa: RUF003
 
 
 def test_usage_tracker_load_handles_json_error(
-    monkeypatch: pytest.MonkeyPatch, config_fs: Dict[str, str]
+    monkeypatch: pytest.MonkeyPatch, config_fs: dict[str, str]
 ) -> None:
     """JSON parse hiba esetén default usage térjen vissza."""
     config_fs["usage"] = "invalid"
@@ -144,7 +140,7 @@ def test_usage_tracker_load_handles_json_error(
     assert usage["current_month"] == "2024-07"
 
 
-# Lefedett ág: UsageTracker.load_usage_data JSON hiba fallback (src/config.py:422–436)
+# Lefedett ág: UsageTracker.load_usage_data JSON hiba fallback (src/config.py:422–436)  # noqa: RUF003
 def test_validate_api_keys_checks_length(monkeypatch: pytest.MonkeyPatch) -> None:
     """A Meteostat kulcs csak megfelelő hossz esetén tekinthető érvényesnek."""
     monkeypatch.setattr(config.APIConfig, "METEOSTAT_API_KEY", "a" * 40)
@@ -188,10 +184,7 @@ def test_get_resolved_provider_prefers_override_and_auto(
         staticmethod(lambda: "auto"),
     )
     assert config.get_resolved_provider("multi_city") == "meteostat"
-    assert (
-        config.get_resolved_provider("single_city", user_override="open-meteo")
-        == "open-meteo"
-    )
+    assert config.get_resolved_provider("single_city", user_override="open-meteo") == "open-meteo"
 
     monkeypatch.setattr(
         config.UserPreferences,

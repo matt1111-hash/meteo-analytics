@@ -9,7 +9,6 @@ FÁJL: src/presentation/gui/map/map_state.py
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional
 
 from .map_constants import COUNTY_STYLE_DEFAULT
 
@@ -28,9 +27,7 @@ class FoliumMapConfig:
     max_zoom: int = 12
 
     # Térkép stílus
-    tiles: str = (
-        "OpenStreetMap"  # "OpenStreetMap", "CartoDB positron", "CartoDB dark_matter"
-    )
+    tiles: str = "OpenStreetMap"  # "OpenStreetMap", "CartoDB positron", "CartoDB dark_matter"
     attr: str = "Magyar Klímaanalitika"
 
     # County layer beállítások
@@ -46,9 +43,7 @@ class FoliumMapConfig:
     weather_opacity: float = 0.6
 
     # Active overlay parameter
-    active_overlay_parameter: Optional[str] = (
-        None  # "temperature", "wind_speed", "precipitation"
-    )
+    active_overlay_parameter: str | None = None  # "temperature", "wind_speed", "precipitation"
 
     # Interaktivitás
     disable_scroll_zoom: bool = False
@@ -57,8 +52,8 @@ class FoliumMapConfig:
     double_click_zoom: bool = True
 
     # Kiválasztott elemek
-    selected_county: Optional[str] = None
-    highlighted_counties: List[str] = field(default_factory=list)
+    selected_county: str | None = None
+    highlighted_counties: list[str] = field(default_factory=list)
 
     # Theme
     theme: str = "light"  # "light" vagy "dark"
@@ -71,9 +66,9 @@ class MapViewState:
     """
 
     server_running: bool = False
-    http_host: Optional[str] = None
-    http_port: Optional[int] = None
-    current_map_file: Optional[str] = None
+    http_host: str | None = None
+    http_port: int | None = None
+    current_map_file: str | None = None
     counties_loaded: bool = False
     weather_loaded: bool = False
 
@@ -87,12 +82,12 @@ class MapGenerationState:
     is_generating: bool = False
     progress: int = 0
     status_message: str = ""
-    last_error: Optional[str] = None
+    last_error: str | None = None
 
 
 # Export
 __all__ = [
     "FoliumMapConfig",
-    "MapViewState",
     "MapGenerationState",
+    "MapViewState",
 ]

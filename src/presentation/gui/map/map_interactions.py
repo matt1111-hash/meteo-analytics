@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -33,7 +32,7 @@ class LocalHttpServerThread(QThread):
     server_ready = Signal(str, int)
     server_error = Signal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None):  # noqa: D107
         super().__init__(parent)
         self.server = None
         self.httpd = None
@@ -53,9 +52,7 @@ class LocalHttpServerThread(QThread):
                 def log_message(self, format, *args):
                     pass
 
-            with socketserver.TCPServer(
-                (self.host, self.port), QuietHTTPRequestHandler
-            ) as httpd:
+            with socketserver.TCPServer((self.host, self.port), QuietHTTPRequestHandler) as httpd:
                 self.httpd = httpd
                 self.port = httpd.server_address[1]
                 self.running = True
@@ -90,7 +87,7 @@ class JavaScriptBridge(QWidget):
     county_hovered = Signal(str)
     county_unhovered = Signal()
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:  # noqa: D107
         super().__init__()
         self.bridge_id = str(uuid.uuid4())
         print(f"🌉 JavaScriptBridge created with ID: {self.bridge_id}")
@@ -122,6 +119,6 @@ class JavaScriptBridge(QWidget):
 
 # Export
 __all__ = [
-    "LocalHttpServerThread",
     "JavaScriptBridge",
+    "LocalHttpServerThread",
 ]

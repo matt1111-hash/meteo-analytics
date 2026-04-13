@@ -8,7 +8,7 @@ Magyar Klímaanalitika MVP - QueryControlWidget kompatibilitási réteg
 """
 
 import logging
-from typing import Any, Dict, Tuple
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -47,9 +47,7 @@ def _get_ui_selected_county(widget: Any) -> str | None:
 
 def _get_region_admin_center(widget: Any) -> str | None:
     """Return the administrative center from the active region."""
-    if widget.current_region and hasattr(
-        widget.current_region, "administrative_center"
-    ):
+    if widget.current_region and hasattr(widget.current_region, "administrative_center"):
         return widget.current_region.administrative_center
     region_data = widget.region_combo.currentData()
     if region_data and region_data in widget.region_data:
@@ -107,7 +105,7 @@ class QueryControlWidgetCompatMixin:
             self, "🆘 FINAL get_current_city() fallback", "Budapest", level="warning"
         )
 
-    def get_current_coordinates(self) -> Tuple[float, float]:
+    def get_current_coordinates(self) -> tuple[float, float]:
         """
         🔧 ÚJ: Jelenlegi koordináták lekérdezése (QueryControlWidget kompatibilitás).
 
@@ -135,7 +133,7 @@ class QueryControlWidgetCompatMixin:
             # Default Budapest koordináták
             return (47.4979, 19.0402)
 
-    def get_selected_location_data(self) -> Dict[str, Any]:
+    def get_selected_location_data(self) -> dict[str, Any]:
         """
         🔧 ÚJ: Kiválasztott lokáció adatok lekérdezése (QueryControlWidget kompatibilitás).
 
@@ -150,9 +148,7 @@ class QueryControlWidgetCompatMixin:
                 "city": self.current_location.display_name,
                 "latitude": self.current_location.latitude,
                 "longitude": self.current_location.longitude,
-                "region": self.current_region.display_name
-                if self.current_region
-                else None,
+                "region": self.current_region.display_name if self.current_region else None,
                 "county": self.current_county["name"] if self.current_county else None,
                 "source": "hungarian_location_selector",
             }
@@ -163,9 +159,7 @@ class QueryControlWidgetCompatMixin:
                 "city": self.current_county["name"],
                 "latitude": lat,
                 "longitude": lon,
-                "region": self.current_region.display_name
-                if self.current_region
-                else None,
+                "region": self.current_region.display_name if self.current_region else None,
                 "county": self.current_county["name"],
                 "source": "hungarian_location_selector",
             }

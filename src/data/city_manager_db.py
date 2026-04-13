@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 City Manager - Database Connection and Initialization
@@ -12,7 +11,6 @@ import logging
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Tuple
 
 from src.config import DATA_DIR
 
@@ -30,21 +28,17 @@ class CityManagerDB:
     - Hungarian settlements from hungarian_settlements.db (3200+ settlements)
     """
 
-    def __init__(
-        self, db_path: Optional[Path] = None, hungarian_db_path: Optional[Path] = None
-    ):
+    def __init__(self, db_path: Path | None = None, hungarian_db_path: Path | None = None):
         """Initialize database connections."""
         self.db_path = db_path or (DATA_DIR / "cities.db")
-        self.hungarian_db_path = hungarian_db_path or (
-            DATA_DIR / "hungarian_settlements.db"
-        )
+        self.hungarian_db_path = hungarian_db_path or (DATA_DIR / "hungarian_settlements.db")
 
-        self.connection: Optional[sqlite3.Connection] = None
-        self.hungarian_connection: Optional[sqlite3.Connection] = None
+        self.connection: sqlite3.Connection | None = None
+        self.hungarian_connection: sqlite3.Connection | None = None
 
         self.query_count = 0
         self.hungarian_query_count = 0
-        self.last_query_time: Optional[datetime] = None
+        self.last_query_time: datetime | None = None
 
         logger.info("Dual Database initialization:")
         logger.info(f"   Global cities: {self.db_path}")
@@ -72,9 +66,7 @@ class CityManagerDB:
                 self.connection = None
 
         if not self.hungarian_db_path.exists():
-            logger.warning(
-                f"Hungarian settlements database not found: {self.hungarian_db_path}"
-            )
+            logger.warning(f"Hungarian settlements database not found: {self.hungarian_db_path}")
             logger.warning("   Run: python scripts/hungarian_settlements_importer.py")
         else:
             try:
@@ -85,9 +77,7 @@ class CityManagerDB:
                 self._validate_hungarian_database_structure()
 
                 total_hungarian = self._get_total_hungarian_settlements_count()
-                logger.info(
-                    f"Hungarian settlements database: {total_hungarian:,} settlements"
-                )
+                logger.info(f"Hungarian settlements database: {total_hungarian:,} settlements")
 
             except sqlite3.Error as e:
                 logger.error(f"Hungarian database connection error: {e}")
@@ -121,9 +111,7 @@ class CityManagerDB:
 
         missing_columns = [col for col in required_columns if col not in columns]
         if missing_columns:
-            raise CityDatabaseError(
-                f"Missing columns in cities table: {missing_columns}"
-            )
+            raise CityDatabaseError(f"Missing columns in cities table: {missing_columns}")
 
         logger.debug("Global database structure validated")
 
@@ -173,8 +161,8 @@ class CityManagerDB:
         return cursor.fetchone()[0]
 
     def _execute_query(
-        self, sql: str, params: Tuple = (), use_hungarian: bool = False
-    ) -> List[sqlite3.Row]:
+        self, sql: str, params: tuple = (), use_hungarian: bool = False
+    ) -> list[sqlite3.Row]:
         """Execute SQL query on appropriate database."""
         connection = self.hungarian_connection if use_hungarian else self.connection
 
@@ -200,7 +188,7 @@ class CityManagerDB:
 
         except sqlite3.Error as e:
             logger.error(f"SQL query error: {sql} | Error: {e}")
-            raise CityDatabaseError(f"Query execution error: {e}")
+            raise CityDatabaseError(f"Query execution error: {e}")  # noqa: B904
 
     def close(self) -> None:
         """Close dual database connections."""

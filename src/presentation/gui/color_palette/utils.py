@@ -7,8 +7,6 @@ Color Palette Utilities Module
 Globális convenience függvények színműveletekhez.
 """
 
-from typing import Dict
-
 from src.presentation.gui.color_palette.core import ColorPalette
 from src.presentation.gui.color_palette.types import HSLColor
 from src.presentation.gui.types import ThemeType
@@ -28,7 +26,7 @@ def calculate_color_contrast(color1: str, color2: str) -> float:
 
 def generate_color_variants(
     base_hex: str, theme_type: ThemeType = ThemeType.LIGHT
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """
     Convenience function színvariánsok generálásához.
 
@@ -46,7 +44,7 @@ def generate_color_variants(
     return palette.get_all_variants("temp")
 
 
-def generate_weather_color_scheme(base_temp: str = "#C43939") -> Dict[str, str]:
+def generate_weather_color_scheme(base_temp: str = "#C43939") -> dict[str, str]:
     """
     🎨 KRITIKUS JAVÍTÁS: Weather color scheme - piros (#C43939) alapértelmezett!
 

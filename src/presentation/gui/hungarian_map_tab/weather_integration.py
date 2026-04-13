@@ -24,9 +24,7 @@ def set_analytics_parameter(self, parameter_name: str) -> None:
 
     self.loading_status.setText(f"🧠 Analytics paraméter beállítva: {parameter_name}")
 
-    print(
-        f"✅ DEBUG: Current analytics parameter stored: {self.current_analytics_parameter}"
-    )
+    print(f"✅ DEBUG: Current analytics parameter stored: {self.current_analytics_parameter}")
 
 
 def set_analytics_result(self, analytics_result) -> None:
@@ -46,15 +44,13 @@ def _refresh_weather_overlay(self) -> None:
     print("🌤️ DEBUG: Manual weather overlay refresh requested")
 
     if not self.current_analytics_result:
-        self.loading_status.setText(
-            "⚠️ Nincs analytics eredmény a weather overlay frissítéséhez"
-        )
+        self.loading_status.setText("⚠️ Nincs analytics eredmény a weather overlay frissítéséhez")
         return
 
     _generate_weather_overlay_from_analytics(self, self.current_analytics_result)
 
 
-def _generate_weather_overlay_from_analytics(self, analytics_result) -> None:
+def _generate_weather_overlay_from_analytics(self, analytics_result) -> None:  # noqa: PLR0915
     """
     🌤️ Weather overlay generálása Analytics eredményből.
     """
@@ -74,18 +70,12 @@ def _generate_weather_overlay_from_analytics(self, analytics_result) -> None:
             folium_format = self.weather_bridge.convert_analytics_result(
                 analytics_result, self.current_analytics_parameter
             )
-            print(
-                f"🧠 DEBUG: Explicit parameter conversion: {self.current_analytics_parameter}"
-            )
+            print(f"🧠 DEBUG: Explicit parameter conversion: {self.current_analytics_parameter}")
         else:
-            folium_format = self.weather_bridge.convert_analytics_result(
-                analytics_result
-            )
+            folium_format = self.weather_bridge.convert_analytics_result(analytics_result)
             print("🔄 DEBUG: Auto-detect parameter conversion")
 
-        weather_overlay = self.weather_bridge.convert_analytics_to_weather_overlay(
-            analytics_result
-        )
+        weather_overlay = self.weather_bridge.convert_analytics_to_weather_overlay(analytics_result)
 
         if not weather_overlay or not folium_format:
             error_msg = "Weather overlay konverzió sikertelen"
@@ -116,14 +106,10 @@ def _generate_weather_overlay_from_analytics(self, analytics_result) -> None:
                 self.weather_data_updated.emit(weather_overlay)
             else:
                 print("❌ DEBUG: Weather data format conversion failed")
-                self.loading_status.setText(
-                    "❌ Weather overlay formátum konverzió sikertelen"
-                )
+                self.loading_status.setText("❌ Weather overlay formátum konverzió sikertelen")
         else:
             print("⚠️ DEBUG: Folium map not ready for weather data")
-            self.loading_status.setText(
-                "⚠️ Folium térkép nem kész a weather overlay-hez"
-            )
+            self.loading_status.setText("⚠️ Folium térkép nem kész a weather overlay-hez")
 
     except Exception as e:
         error_msg = f"Weather overlay generálási hiba: {e}"
@@ -147,9 +133,7 @@ def load_weather_data_from_analytics(
             self._on_error_occurred(error_msg)
             return
 
-        print(
-            f"🌤️ DEBUG: Loading weather data: {question_type}, {region}, limit={limit}"
-        )
+        print(f"🌤️ DEBUG: Loading weather data: {question_type}, {region}, limit={limit}")
         self.loading_status.setText(f"🌤️ Weather adatok betöltése: {question_type}...")
 
         # Paraméter beállítás question_type alapján
@@ -171,9 +155,7 @@ def load_weather_data_from_analytics(
         )
 
         if analytics_result and analytics_result.city_results:
-            print(
-                f"✅ DEBUG: Weather data loaded: {len(analytics_result.city_results)} cities"
-            )
+            print(f"✅ DEBUG: Weather data loaded: {len(analytics_result.city_results)} cities")
             set_analytics_result(self, analytics_result)
         else:
             error_msg = f"Nincs weather adat: {question_type}"
@@ -187,9 +169,9 @@ def load_weather_data_from_analytics(
 
 
 __all__ = [
+    "_generate_weather_overlay_from_analytics",
+    "_refresh_weather_overlay",
+    "load_weather_data_from_analytics",
     "set_analytics_parameter",
     "set_analytics_result",
-    "_refresh_weather_overlay",
-    "_generate_weather_overlay_from_analytics",
-    "load_weather_data_from_analytics",
 ]

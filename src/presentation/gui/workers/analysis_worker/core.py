@@ -4,7 +4,7 @@ AnalysisWorker Core - Main worker class with signals and state management.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtCore import QMutex, QMutexLocker, QThread, Signal
 
@@ -62,12 +62,12 @@ class AnalysisWorker(QThread):
         super().__init__(parent)
 
         # === WORKER STATE ===
-        self._request_data: Optional[Dict[str, Any]] = None
+        self._request_data: dict[str, Any] | None = None
         self._mutex = QMutex()
 
         # === ANALYTICS COMPONENTS (using ports - CA compliant) ===
-        self._multi_city_engine: Optional[MultiCityEnginePort] = None
-        self._weather_client: Optional[WeatherClientPort] = None
+        self._multi_city_engine: MultiCityEnginePort | None = None
+        self._weather_client: WeatherClientPort | None = None
 
         # === LOGGING ===
         self._logger = logging.getLogger(__name__)
@@ -78,7 +78,7 @@ class AnalysisWorker(QThread):
         self._data_converter = DataConverter(self)
         self._interrupt_handler = InterruptHandler(self)
 
-    def setup_analysis_request(self, request_data: Dict[str, Any]):
+    def setup_analysis_request(self, request_data: dict[str, Any]):
         """
         ELEMZÉSI KÉRÉS BEÁLLÍTÁSA
 
@@ -87,9 +87,7 @@ class AnalysisWorker(QThread):
         """
         with QMutexLocker(self._mutex):
             self._request_data = request_data.copy()
-            self._logger.info(
-                f"Worker setup: {request_data.get('analysis_type', 'unknown')}"
-            )
+            self._logger.info(f"Worker setup: {request_data.get('analysis_type', 'unknown')}")
 
     def run(self):
         """FŐSZÁL FUTÁS - Itt történik a tényleges munka"""
@@ -109,11 +107,11 @@ class AnalysisWorker(QThread):
             self._analysis_runners.run_analysis(analysis_type)
 
         except Exception as e:
-            self._logger.error(f"Worker kritikus hiba: {str(e)}")
+            self._logger.error(f"Worker kritikus hiba: {e!s}")
             import traceback
 
             self._logger.error(traceback.format_exc())
-            self._emit_error(f"Váratlan hiba: {str(e)}")
+            self._emit_error(f"Váratlan hiba: {e!s}")
 
     def _validate_request(self) -> bool:
         """Kérés paraméterek validálása"""
@@ -150,7 +148,7 @@ class AnalysisWorker(QThread):
 
     # === PUBLIC CONTROL METHODS ===
 
-    def start_analysis(self, request_data: Dict[str, Any]):
+    def start_analysis(self, request_data: dict[str, Any]):
         """
         ELEMZÉS INDÍTÁSA
 
@@ -175,9 +173,7 @@ class AnalysisWorker(QThread):
             self.requestInterruption()
 
             if not self.wait(5000):
-                self._logger.warning(
-                    "Worker nem állt le 5 másodperc alatt, terminálás..."
-                )
+                self._logger.warning("Worker nem állt le 5 másodperc alatt, terminálás...")
                 self.terminate()
                 self.wait(1000)
 

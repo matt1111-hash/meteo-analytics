@@ -144,7 +144,7 @@ class TestInheritedMethods:
             # No sleep since time since last is large
 
         provider.last_request_time = current_time
-        with patch("time.time", return_value=current_time + 0.1):
+        with patch("time.time", return_value=current_time + 0.1):  # noqa: SIM117
             with patch("time.sleep") as mock_sleep:
                 provider._rate_limit_check()
                 assert mock_sleep.call_count == 1

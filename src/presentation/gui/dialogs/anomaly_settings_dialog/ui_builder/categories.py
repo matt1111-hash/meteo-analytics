@@ -58,9 +58,7 @@ def create_categories_grid(dialog: object) -> QWidget:
         dialog.category_widgets[key] = {}
 
         cat_label = QLabel(key.title())
-        cat_label.setStyleSheet(
-            "padding: 4px; background: #f3f4f6; border-radius: 4px;"
-        )
+        cat_label.setStyleSheet("padding: 4px; background: #f3f4f6; border-radius: 4px;")
         layout.addWidget(cat_label, row, 0)
 
         name_edit = QLineEdit(name)
@@ -70,17 +68,15 @@ def create_categories_grid(dialog: object) -> QWidget:
 
         color_btn = QPushButton()
         color_btn.setFixedSize(40, 30)
-        color_btn.setStyleSheet(
-            f"background: {color}; border: 1px solid #ccc; border-radius: 4px;"
-        )
-        color_btn.clicked.connect(lambda checked, k=key: dialog._choose_color(k))
+        color_btn.setStyleSheet(f"background: {color}; border: 1px solid #ccc; border-radius: 4px;")
+        color_btn.clicked.connect(lambda checked, k=key: dialog._choose_color(k))  # noqa: ARG005
         dialog.category_widgets[key]["color"] = color_btn
         dialog.category_widgets[key]["color_value"] = color
         layout.addWidget(color_btn, row, 2)
 
         icon_btn = QPushButton(icon)
         icon_btn.setFixedSize(40, 30)
-        icon_btn.clicked.connect(lambda checked, k=key: dialog._choose_icon(k))
+        icon_btn.clicked.connect(lambda checked, k=key: dialog._choose_icon(k))  # noqa: ARG005
         dialog.category_widgets[key]["icon"] = icon_btn
         layout.addWidget(icon_btn, row, 3)
 

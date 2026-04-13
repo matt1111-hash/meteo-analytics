@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -11,7 +10,7 @@ from __future__ import annotations
 # pylint: disable=import-error
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.application.use_cases.detect_anomalies import DetectAnomaliesUseCase
 from src.presentation.gui.utils import AnomalyConstants
@@ -26,20 +25,20 @@ class AnomalyResult:
     category: str
     message: str
     status: str  # 'success' | 'warning' | 'error' | 'disabled'
-    value: Optional[float] = None
-    threshold: Optional[float] = None
-    details: Optional[str] = None
+    value: float | None = None
+    threshold: float | None = None
+    details: str | None = None
 
 
 class AnomalySettingsProvider:
     """Provides dynamic anomaly thresholds with validation."""
 
-    def __init__(self, initial_settings: Optional[Dict[str, Any]] = None):
+    def __init__(self, initial_settings: dict[str, Any] | None = None):  # noqa: D107
         self._settings = initial_settings or self._default_settings()
         self._validate_settings()
         logger.debug("AnomalySettingsProvider initialized")
 
-    def _default_settings(self) -> Dict[str, Any]:
+    def _default_settings(self) -> dict[str, Any]:
         """Return baseline thresholds for anomalies."""
         return {
             "temp_hot": AnomalyConstants.TEMP_HOT_THRESHOLD,
@@ -64,13 +63,13 @@ class AnomalySettingsProvider:
                     default_value,
                 )
 
-    def update_settings(self, new_settings: Dict[str, Any]) -> None:
+    def update_settings(self, new_settings: dict[str, Any]) -> None:
         """Merge and validate new threshold settings."""
         self._settings.update(new_settings)
         self._validate_settings()
         logger.info("Settings updated (%d keys)", len(new_settings))
 
-    def to_threshold_config(self) -> Dict[str, float]:
+    def to_threshold_config(self) -> dict[str, float]:
         """Return thresholds as numeric dictionary."""
         return {
             "temp_hot": float(self._settings["temp_hot"]),
@@ -83,7 +82,7 @@ class AnomalySettingsProvider:
             "wind_hurricane": float(self._settings["wind_hurricane"]),
         }
 
-    def get_all_settings(self) -> Dict[str, Any]:
+    def get_all_settings(self) -> dict[str, Any]:
         """Return a shallow copy of current settings."""
         return self._settings.copy()
 
@@ -91,27 +90,27 @@ class AnomalySettingsProvider:
 class AnomalyDetector:
     """GUI-facing wrapper that delegates to the domain anomaly detector."""
 
-    def __init__(
+    def __init__(  # noqa: D107
         self,
-        settings_provider: Optional[AnomalySettingsProvider] = None,
+        settings_provider: AnomalySettingsProvider | None = None,
     ):
         self.settings_provider = settings_provider or AnomalySettingsProvider()
         self.use_case = DetectAnomaliesUseCase()
         logger.info("AnomalyDetector wrapper initialized (domain-backed)")
 
-    def update_settings(self, new_settings: Dict[str, Any]) -> None:
+    def update_settings(self, new_settings: dict[str, Any]) -> None:
         """Update thresholds and keep wrapper in sync."""
         self.settings_provider.update_settings(new_settings)
 
     def detect_all_anomalies(
         self,
-        daily_data: Dict[str, List],
-    ) -> List[AnomalyResult]:
+        daily_data: dict[str, list],
+    ) -> list[AnomalyResult]:
         """Run domain anomaly detection and return GUI-friendly results."""
         thresholds = self.settings_provider.to_threshold_config()
         anomalies = self.use_case.execute(daily_data, thresholds)
 
-        results: List[AnomalyResult] = []
+        results: list[AnomalyResult] = []
         results.append(
             self._convert_anomaly(
                 "temperature",
@@ -140,9 +139,9 @@ class AnomalyDetector:
     def _convert_anomaly(
         self,
         category: str,
-        anomaly: Optional[Any],
+        anomaly: Any | None,
         disabled_message: str,
-    ) -> Optional[AnomalyResult]:
+    ) -> AnomalyResult | None:
         if anomaly is None:
             return _disabled(category, disabled_message)
 
@@ -162,7 +161,7 @@ def _disabled(category: str, message: str) -> AnomalyResult:
 
 
 def create_anomaly_detector_with_settings(
-    settings: Optional[Dict[str, Any]] = None,
+    settings: dict[str, Any] | None = None,
 ) -> AnomalyDetector:
     """Factory retained for backward compatibility."""
     settings_provider = AnomalySettingsProvider(settings)

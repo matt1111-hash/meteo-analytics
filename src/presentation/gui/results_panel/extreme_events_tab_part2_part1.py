@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,I001
+# ruff: noqa: F403, F405, I001
 # mypy: ignore-errors
 """Mixin part 1 for ExtremeEventsTab."""
 
@@ -11,18 +11,14 @@ from .extreme_events_tab_support import (
 from .extreme_events_tab_part2_support import *
 
 
-class ExtremeEventsTabPart1Mixin:
-    def __init__(self, parent: Optional[QWidget] = None):
+class ExtremeEventsTabPart1Mixin:  # noqa: D101
+    def __init__(self, parent: Optional[QWidget] = None):  # noqa: D107
         super().__init__(parent)
 
         self.theme_manager = get_theme_manager()
-        self.profile_manager = (
-            get_anomaly_profile_port() if _profile_manager_available else None
-        )
+        self.profile_manager = get_anomaly_profile_port() if _profile_manager_available else None
         self.use_case = DetectAnomaliesUseCase()
-        self.extreme_calculator = (
-            ExtremeCalculator() if _extreme_calculator_available else None
-        )
+        self.extreme_calculator = ExtremeCalculator() if _extreme_calculator_available else None
 
         self.current_data: Optional[Dict[str, Any]] = None
         self.period_type: str = "daily"
@@ -121,29 +117,17 @@ class ExtremeEventsTabPart1Mixin:
 
         self.extreme_table = QTableWidget()
         self.extreme_table.setColumnCount(4)
-        self.extreme_table.setHorizontalHeaderLabels(
-            ["Kategória", "Típus", "Érték", "Dátum"]
-        )
+        self.extreme_table.setHorizontalHeaderLabels(["Kategória", "Típus", "Érték", "Dátum"])
         # Egyedi oszlopszélességek - a kategória és típus szövegei hosszabbak
-        self.extreme_table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeToContents
-        )
-        self.extreme_table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeToContents
-        )
-        self.extreme_table.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeToContents
-        )
-        self.extreme_table.horizontalHeader().setSectionResizeMode(
-            3, QHeaderView.ResizeToContents
-        )
+        self.extreme_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.extreme_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.extreme_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.extreme_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         # De az érték és dátum oszlopok ne legyenek túl szélesek
         self.extreme_table.horizontalHeader().setMinimumSectionSize(60)
         self.extreme_table.horizontalHeader().setStretchLastSection(True)
         # Dinamikus sorok - automatikusan kitölti a helyet
-        self.extreme_table.verticalHeader().setSectionResizeMode(
-            QHeaderView.ResizeToContents
-        )
+        self.extreme_table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.extreme_table.verticalHeader().setDefaultSectionSize(22)
         self.extreme_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.extreme_table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)

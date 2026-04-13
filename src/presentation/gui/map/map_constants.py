@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,7 +7,6 @@
 FÁJL: src/presentation/gui/map/map_constants.py
 """
 
-from typing import Dict
 
 # === Térkép alapértelmezett beállítások ===
 
@@ -22,7 +20,7 @@ HUNGARY_CENTER = {
 
 # === Dinamikus színskála mapping ===
 
-COLOR_SCALE_GRADIENTS: Dict[str, Dict[float, str]] = {
+COLOR_SCALE_GRADIENTS: dict[str, dict[float, str]] = {
     "RdYlBu_r": {  # Hőmérséklet - Kék (hideg) → Piros (meleg)
         0.0: "#0000FF",  # Kék
         0.2: "#00BFFF",  # Világoskék
@@ -59,7 +57,7 @@ COLOR_SCALE_GRADIENTS: Dict[str, Dict[float, str]] = {
 
 # Overlay type → color scale mapping
 
-OVERLAY_COLOR_MAPPING: Dict[str, str] = {
+OVERLAY_COLOR_MAPPING: dict[str, str] = {
     "temperature": "RdYlBu_r",
     "precipitation": "Blues",
     "wind_speed": "Greens",
@@ -99,7 +97,7 @@ COUNTY_STYLE_HOVER = {
 
 # === Beaufort skála színek ===
 
-BEAUFORT_COLORS: Dict[str, str] = {
+BEAUFORT_COLORS: dict[str, str] = {
     "calm": "#C0C0C0",  # Szélcsend - Szürke
     "light_air": "#00FF00",  # Enyhe szél - Zöld
     "light_breeze": "#FFFF00",  # Gyenge szél - Sárga
@@ -112,7 +110,7 @@ BEAUFORT_COLORS: Dict[str, str] = {
 
 # === Csapadék színek ===
 
-PRECIPITATION_COLORS: Dict[str, str] = {
+PRECIPITATION_COLORS: dict[str, str] = {
     "none": "#CCCCCC",  # Szürke - nincs csapadék
     "trace": "#E8F4FD",  # Nagyon világos kék
     "light": "#BFE6FF",  # Világos kék
@@ -176,7 +174,7 @@ def get_precipitation_color(mm: float) -> str:
     return PRECIPITATION_COLORS["extreme"]
 
 
-def get_gradient_for_overlay(overlay_type: str) -> Dict[float, str]:
+def get_gradient_for_overlay(overlay_type: str) -> dict[float, str]:
     """
     Gradient lekérdezése overlay típushoz.
 
@@ -192,16 +190,16 @@ def get_gradient_for_overlay(overlay_type: str) -> Dict[float, str]:
 
 # Export
 __all__ = [
-    "HUNGARY_CENTER",
+    "BEAUFORT_COLORS",
     "COLOR_SCALE_GRADIENTS",
-    "OVERLAY_COLOR_MAPPING",
     "COUNTY_STYLE_DEFAULT",
-    "COUNTY_STYLE_SELECTED",
     "COUNTY_STYLE_HIGHLIGHTED",
     "COUNTY_STYLE_HOVER",
-    "BEAUFORT_COLORS",
+    "COUNTY_STYLE_SELECTED",
+    "HUNGARY_CENTER",
+    "OVERLAY_COLOR_MAPPING",
     "PRECIPITATION_COLORS",
     "get_beaufort_color",
-    "get_precipitation_color",
     "get_gradient_for_overlay",
+    "get_precipitation_color",
 ]

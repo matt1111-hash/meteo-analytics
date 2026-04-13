@@ -143,9 +143,7 @@ class TestEstimateBoundingBoxArea:
         # Should be roughly 12,000 km²
         assert 11000 < area < 13000
 
-    def test_calculates_area_for_hungarian_bbox(
-        self, geo_utils: GeoUtilsRegion
-    ) -> None:
+    def test_calculates_area_for_hungarian_bbox(self, geo_utils: GeoUtilsRegion) -> None:
         """_estimate_bounding_box_area calculates area for Hungarian bbox."""
         # Hungary is roughly 93,000 km²
         bbox = BoundingBox(

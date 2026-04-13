@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Anomaly Profile Storage
 JSON file I/O and backup operations for anomaly profiles
@@ -13,7 +12,7 @@ import shutil
 import threading
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ class AnomalyProfileStorage:
     ✅ Thread-safe műveletek
     """
 
-    def __init__(self, config_dir: Optional[Path] = None):
+    def __init__(self, config_dir: Path | None = None):
         """
         Storage inicializálása.
 
@@ -53,7 +52,7 @@ class AnomalyProfileStorage:
         self.config_dir.mkdir(parents=True, exist_ok=True)
         self.backup_dir.mkdir(parents=True, exist_ok=True)
 
-    def load_profiles(self) -> Dict[str, Any]:
+    def load_profiles(self) -> dict[str, Any]:
         """
         Profilok betöltése JSON fájlból.
 
@@ -65,7 +64,7 @@ class AnomalyProfileStorage:
 
         try:
             with self._lock:
-                with open(self.profiles_file, "r", encoding="utf-8") as f:
+                with open(self.profiles_file, encoding="utf-8") as f:  # noqa: PTH123
                     data = json.load(f)
 
                 logger.debug(f"📁 Profilok betöltve: {self.profiles_file}")
@@ -75,7 +74,7 @@ class AnomalyProfileStorage:
             logger.error(f"📁 Profilok betöltési hiba: {e}")
             return {}
 
-    def save_profiles(self, data: Dict[str, Any]) -> bool:
+    def save_profiles(self, data: dict[str, Any]) -> bool:
         """
         Profilok mentése JSON fájlba.
 
@@ -91,7 +90,7 @@ class AnomalyProfileStorage:
                 self._create_backup()
 
                 # Mentés
-                with open(self.profiles_file, "w", encoding="utf-8") as f:
+                with open(self.profiles_file, "w", encoding="utf-8") as f:  # noqa: PTH123
                     json.dump(data, f, indent=2, ensure_ascii=False)
 
                 logger.debug(f"📁 Profilok mentve: {self.profiles_file}")
@@ -112,7 +111,7 @@ class AnomalyProfileStorage:
 
                 # Régi backup-ok törlése (csak utolsó 10 db maradjon)
                 backups = sorted(self.backup_dir.glob("anomaly_profiles_backup_*.json"))
-                if len(backups) > 10:
+                if len(backups) > 10:  # noqa: PLR2004
                     for backup in backups[:-10]:
                         backup.unlink()
 
@@ -121,9 +120,7 @@ class AnomalyProfileStorage:
             except Exception as e:
                 logger.warning(f"📁 Backup készítési hiba: {e}")
 
-    def save_current_settings(
-        self, profile_name: str, settings: Dict[str, Any]
-    ) -> bool:
+    def save_current_settings(self, profile_name: str, settings: dict[str, Any]) -> bool:
         """
         Jelenlegi beállítások mentése gyors eléréshez.
 
@@ -141,7 +138,7 @@ class AnomalyProfileStorage:
                 "updated_at": datetime.now().isoformat(),
             }
 
-            with open(self.settings_file, "w", encoding="utf-8") as f:
+            with open(self.settings_file, "w", encoding="utf-8") as f:  # noqa: PTH123
                 json.dump(current_data, f, indent=2, ensure_ascii=False)
 
             logger.debug(f"📁 Jelenlegi beállítások mentve: {profile_name}")
@@ -151,7 +148,7 @@ class AnomalyProfileStorage:
             logger.warning(f"📁 Jelenlegi beállítások mentési hiba: {e}")
             return False
 
-    def load_current_settings(self) -> Optional[Dict[str, Any]]:
+    def load_current_settings(self) -> dict[str, Any] | None:
         """
         Jelenlegi beállítások betöltése.
 
@@ -160,7 +157,7 @@ class AnomalyProfileStorage:
         """
         try:
             if self.settings_file.exists():
-                with open(self.settings_file, "r", encoding="utf-8") as f:
+                with open(self.settings_file, encoding="utf-8") as f:  # noqa: PTH123
                     data = json.load(f)
 
                 settings = data.get("settings", {})

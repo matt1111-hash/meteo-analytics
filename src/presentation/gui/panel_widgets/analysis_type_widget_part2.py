@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for AnalysisTypeWidget."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .analysis_type_widget_support import *
 
 
-class AnalysisTypeWidgetPart2Mixin:
+class AnalysisTypeWidgetPart2Mixin:  # noqa: D101
     def is_valid(self) -> bool:
         """
         Validáció - analysis type widget mindig valid.

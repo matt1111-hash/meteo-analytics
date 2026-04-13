@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -7,7 +6,7 @@ WorkerManager Provider Manager - Provider routing and state management.
 """
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ..core import WorkerManager
@@ -38,9 +37,7 @@ class ProviderManager:
         self._manager.last_successful_provider = new_provider
         self._manager.provider_changed.emit(new_provider)
 
-    def _on_provider_fallback(
-        self, original_provider: str, fallback_provider: str
-    ) -> None:
+    def _on_provider_fallback(self, original_provider: str, fallback_provider: str) -> None:
         """
         Handle provider fallback.
 
@@ -57,9 +54,7 @@ class ProviderManager:
             "fallback_used": fallback_provider,
         }
 
-        self._manager.provider_fallback_occurred.emit(
-            original_provider, fallback_provider
-        )
+        self._manager.provider_fallback_occurred.emit(original_provider, fallback_provider)
 
     def _on_provider_validation_failed(self, provider: str, error_message: str) -> None:
         """
@@ -108,7 +103,7 @@ class ProviderManager:
 
         self._manager.provider_usage_tracked.emit(provider, success)
 
-    def get_states(self) -> Dict[str, Dict[str, Any]]:
+    def get_states(self) -> dict[str, dict[str, Any]]:
         """
         Get provider states.
 
@@ -121,7 +116,7 @@ class ProviderManager:
         finally:
             self._manager.mutex.unlock()
 
-    def get_last_successful(self) -> Optional[str]:
+    def get_last_successful(self) -> str | None:
         """
         Get last successful provider.
 

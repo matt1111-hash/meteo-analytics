@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,7 +7,7 @@ Előnézet és teszt logika az AnomalySettingsDialoghoz.
 """
 
 import logging
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import QColorDialog, QInputDialog
@@ -93,7 +92,7 @@ class AnomalySettingsPreviewHandler:
         data = test_data.get(test_type, {})
         self.simulate_anomaly_detection(data)
 
-    def simulate_anomaly_detection(self, test_data: Dict[str, float]) -> None:
+    def simulate_anomaly_detection(self, test_data: dict[str, float]) -> None:
         """Anomália detektálás szimulálása a teszt adatokkal."""
         current_settings = self.dialog._get_current_settings()
 

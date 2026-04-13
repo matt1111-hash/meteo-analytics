@@ -6,7 +6,6 @@ import datetime
 import logging
 
 import pandas as pd
-
 from src.domain.analytics.wind_extractors import (
     extract_daily_wind_data,
     identify_windy_days,
@@ -25,9 +24,7 @@ def _log_analysis_start(
     weather_data: pd.DataFrame, location_name: str, threshold_kmh: float
 ) -> None:
     """Log wind analysis inputs."""
-    logger.info(
-        f"🌪️ Szél analízis kezdés: {location_name}, küszöb: {threshold_kmh} km/h"
-    )
+    logger.info(f"🌪️ Szél analízis kezdés: {location_name}, küszöb: {threshold_kmh} km/h")
     logger.info(
         f"📊 Bemeneti weather_data: {len(weather_data)} sor, oszlopok: {list(weather_data.columns)}"
     )
@@ -50,9 +47,7 @@ def _calculate_wind_summary(windy_days: pd.DataFrame) -> tuple[int, int, float]:
 
     total_windy_days = windy_days["is_windy"].sum()
     total_days = len(windy_days)
-    overall_windy_percentage = (
-        (total_windy_days / total_days) * 100 if total_days > 0 else 0.0
-    )
+    overall_windy_percentage = (total_windy_days / total_days) * 100 if total_days > 0 else 0.0
     return total_windy_days, total_days, overall_windy_percentage
 
 
@@ -144,9 +139,7 @@ def analyze_wind_patterns(
         _log_wind_speed_range(daily_wind)
         windy_days = identify_windy_days(daily_wind, threshold_kmh)
         monthly_stats = calculate_monthly_windy_stats(windy_days)
-        total_windy_days, total_days, overall_windy_percentage = (
-            _calculate_wind_summary(windy_days)
-        )
+        total_windy_days, total_days, overall_windy_percentage = _calculate_wind_summary(windy_days)
         windiest_month, calmest_month = _resolve_extreme_months(monthly_stats)
         analysis_period = _build_analysis_period(daily_wind)
 
@@ -180,9 +173,7 @@ def analyze_wind_patterns(
         return _create_empty_analysis_result(location_name, threshold_kmh)
 
 
-def _create_empty_analysis_result(
-    location_name: str, threshold_kmh: float
-) -> WindAnalysisResult:
+def _create_empty_analysis_result(location_name: str, threshold_kmh: float) -> WindAnalysisResult:
     """Üres analízis eredmény létrehozása hiba esetén."""
     today = datetime.date.today()
     return WindAnalysisResult(

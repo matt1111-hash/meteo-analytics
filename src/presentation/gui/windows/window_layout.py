@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -37,9 +36,7 @@ def setup_window(window: "MainWindow") -> None:
     from ..utils import GUIConstants
 
     window.setWindowTitle(f"{AppInfo.NAME} - THREAD CLEANUP FIX")
-    window.setGeometry(
-        GUIConstants.MAIN_WINDOW_X, GUIConstants.MAIN_WINDOW_Y, 1400, 900
-    )
+    window.setGeometry(GUIConstants.MAIN_WINDOW_X, GUIConstants.MAIN_WINDOW_Y, 1400, 900)
     window.setMinimumSize(1200, 700)
     register_widget_for_theming(window, "navigation")
 
@@ -164,7 +161,7 @@ def create_hungarian_map_view(window: "MainWindow") -> QWidget:
     register_widget_for_theming(window.hungarian_map_tab, "container")
 
     # Magyar megyék automatikus konfigurálása
-    if window.state.hungarian_counties.geodataframe is not None:
+    if window.state.hungarian_counties.geodataframe is not None:  # noqa: SIM102
         if hasattr(window.hungarian_map_tab, "map_visualizer"):
             map_visualizer = window.hungarian_map_tab.map_visualizer
             if hasattr(map_visualizer, "set_counties_geodataframe"):
@@ -175,7 +172,7 @@ def create_hungarian_map_view(window: "MainWindow") -> QWidget:
     return window.hungarian_map_tab
 
 
-def create_settings_placeholder(window: "MainWindow") -> QWidget:
+def create_settings_placeholder(window: "MainWindow") -> QWidget:  # noqa: ARG001
     """Settings placeholder view létrehozása."""
     from ..theme_manager import register_widget_for_theming
 
@@ -184,7 +181,7 @@ def create_settings_placeholder(window: "MainWindow") -> QWidget:
     return view
 
 
-def create_status_bar_provider_widgets(window: "MainWindow") -> tuple:
+def create_status_bar_provider_widgets(window: "MainWindow") -> tuple:  # noqa: ARG001
     """
     🌍 Status bar provider widgetek létrehozása.
 
@@ -200,12 +197,12 @@ def create_status_bar_provider_widgets(window: "MainWindow") -> tuple:
 
 # Export
 __all__ = [
-    "setup_window",
-    "create_stacked_views",
-    "create_single_city_view",
     "create_analytics_view",
-    "create_trend_analysis_view",
     "create_hungarian_map_view",
     "create_settings_placeholder",
+    "create_single_city_view",
+    "create_stacked_views",
     "create_status_bar_provider_widgets",
+    "create_trend_analysis_view",
+    "setup_window",
 ]

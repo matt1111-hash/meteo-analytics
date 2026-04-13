@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -28,7 +27,6 @@ from PySide6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
 )
-
 from src.presentation.gui.theme_manager import register_widget_for_theming
 
 if TYPE_CHECKING:
@@ -170,7 +168,7 @@ def create_details_group(self) -> QGroupBox:
     return details_group
 
 
-def create_control_buttons(self) -> QHBoxLayout:
+def create_control_buttons(self) -> QHBoxLayout:  # noqa: ARG001
     """
     Control buttons létrehozása.
 

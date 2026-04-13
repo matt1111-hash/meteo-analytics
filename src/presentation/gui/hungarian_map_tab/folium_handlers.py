@@ -60,9 +60,7 @@ def on_map_update_requested(self, bounds) -> None:
 
 def on_location_selected(self, location) -> None:
     """🔍 Lokáció kiválasztva a location selector-ben → forward signal."""
-    print(
-        f"🔍 DEBUG: Location selected: {location.display_name if location else 'None'}"
-    )
+    print(f"🔍 DEBUG: Location selected: {location.display_name if location else 'None'}")
 
     self.current_location_data = location
     self.location_selected.emit(location)
@@ -82,9 +80,7 @@ def on_selection_changed(self) -> None:
         county = selection_info.get("county")
 
         if county:
-            status = (
-                f"🗺️ {region.display_name if region else 'Régió'} → {county['name']}"
-            )
+            status = f"🗺️ {region.display_name if region else 'Régió'} → {county['name']}"
         elif region:
             status = f"🌡️ {region.display_name}"
         else:
@@ -181,14 +177,14 @@ def on_error_occurred(self, error_message: str) -> None:
 
 __all__ = [
     "on_county_selected",
-    "on_map_update_requested",
-    "on_location_selected",
-    "on_selection_changed",
-    "on_folium_map_ready",
-    "on_folium_county_clicked",
-    "on_folium_coordinates_clicked",
-    "on_folium_map_moved",
-    "on_folium_county_hovered",
-    "on_export_completed",
     "on_error_occurred",
+    "on_export_completed",
+    "on_folium_coordinates_clicked",
+    "on_folium_county_clicked",
+    "on_folium_county_hovered",
+    "on_folium_map_moved",
+    "on_folium_map_ready",
+    "on_location_selected",
+    "on_map_update_requested",
+    "on_selection_changed",
 ]

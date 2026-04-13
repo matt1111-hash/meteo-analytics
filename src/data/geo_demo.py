@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Global Weather Analyzer - Geo Utils Demo
@@ -12,7 +11,7 @@ from .distance_calculator import DistanceCalculator
 from .geo_utils_analytics import GeoUtilsAnalytics
 
 
-def demo_geo_utils():
+def demo_geo_utils():  # noqa: PLR0915
     """GeoUtils demo and testing."""
     print("🌍 Geographic Utils Demo")
     print("=" * 50)
@@ -24,12 +23,8 @@ def demo_geo_utils():
     budapest = (47.4979, 19.0402)
     berlin = (52.5200, 13.4050)
 
-    haversine_dist = calculator.haversine_distance(
-        budapest[0], budapest[1], berlin[0], berlin[1]
-    )
-    vincenty_dist = calculator.vincenty_distance(
-        budapest[0], budapest[1], berlin[0], berlin[1]
-    )
+    haversine_dist = calculator.haversine_distance(budapest[0], budapest[1], berlin[0], berlin[1])
+    vincenty_dist = calculator.vincenty_distance(budapest[0], budapest[1], berlin[0], berlin[1])
 
     print("Budapest-Berlin distance:")
     print(f"  Haversine: {haversine_dist:.2f} km")
@@ -86,9 +81,7 @@ def demo_geo_utils():
 
     coverage = geo_utils.calculate_multi_city_coverage_area(test_cities)
     print(f"  Coverage area: {coverage['area_km2']:.0f} km²")
-    print(
-        f"  Max distance from center: {coverage['distances']['max_distance_from_center']:.1f} km"
-    )
+    print(f"  Max distance from center: {coverage['distances']['max_distance_from_center']:.1f} km")
     print()
 
     # Map projection

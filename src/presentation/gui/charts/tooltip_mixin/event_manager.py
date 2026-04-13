@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -31,15 +30,9 @@ class EventManager:
             return
 
         connections = [
-            self._mixin.mpl_connect(
-                "motion_notify_event", self._mixin._on_tooltip_mouse_move
-            ),
-            self._mixin.mpl_connect(
-                "figure_leave_event", self._mixin._on_tooltip_figure_leave
-            ),
-            self._mixin.mpl_connect(
-                "button_press_event", self._mixin._on_tooltip_mouse_click
-            ),
+            self._mixin.mpl_connect("motion_notify_event", self._mixin._on_tooltip_mouse_move),
+            self._mixin.mpl_connect("figure_leave_event", self._mixin._on_tooltip_figure_leave),
+            self._mixin.mpl_connect("button_press_event", self._mixin._on_tooltip_mouse_click),
         ]
 
         self._mixin._tooltip_event_connections.extend(connections)

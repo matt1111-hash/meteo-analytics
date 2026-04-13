@@ -3,7 +3,6 @@
 
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
 
 from src.presentation.gui.trend_analytics.trend_data_processor.constants import (
     TIME_RANGES,
@@ -20,7 +19,7 @@ def fetch_trend_data_batch(
     start_date: datetime,
     end_date: datetime,
     progress_callback=None,
-) -> List[Dict]:
+) -> list[dict]:
     """
     Multi-year API fetch with batching.
 
@@ -68,7 +67,7 @@ def fetch_trend_data_batch(
 
 def get_settlement_coordinates(
     city_manager: object, settlement_name: str
-) -> Optional[Tuple[float, float]]:
+) -> tuple[float, float] | None:
     """
     Get settlement coordinates from CityManager.
 
@@ -89,7 +88,7 @@ def get_settlement_coordinates(
         return None
 
 
-def calculate_date_range(time_range: str) -> Tuple[datetime, datetime]:
+def calculate_date_range(time_range: str) -> tuple[datetime, datetime]:
     """Calculate start/end dates from time range string."""
     years = TIME_RANGES.get(time_range, 5)
     end_date = datetime.now().date()
@@ -97,6 +96,6 @@ def calculate_date_range(time_range: str) -> Tuple[datetime, datetime]:
     return start_date, end_date
 
 
-def get_api_field(parameter: str) -> Optional[str]:
+def get_api_field(parameter: str) -> str | None:
     """Get API field name from parameter display name."""
     return TREND_PARAMETERS.get(parameter)

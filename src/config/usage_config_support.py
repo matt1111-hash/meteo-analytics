@@ -10,9 +10,10 @@ from __future__ import annotations
 import json
 import logging
 import sys
+from collections.abc import Callable
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Callable, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 from .api_config import APIConfig
 from .paths_config import (

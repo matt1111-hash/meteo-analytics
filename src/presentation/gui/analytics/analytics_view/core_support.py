@@ -9,7 +9,7 @@ Fő AnalyticsView widget osztály.
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 if TYPE_CHECKING:
     from src.domain.entities.analytics_models import AnalyticsResult

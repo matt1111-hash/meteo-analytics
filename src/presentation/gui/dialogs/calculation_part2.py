@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from calculation.py."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .calculation_support import *
 
 
-def _calculate_monthly_extremes(self, df: pd.DataFrame) -> List[Dict[str, str]]:
+def _calculate_monthly_extremes(self, df: pd.DataFrame) -> List[Dict[str, str]]:  # noqa: ARG001
     """
     Havi extrém értékek számítása.
 

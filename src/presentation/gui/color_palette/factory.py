@@ -73,7 +73,5 @@ def create_weather_palette(
     for weather_type, color in weather_colors.items():
         palette.set_base_color(f"weather_{weather_type}", color)
 
-    print(
-        f"🌦️ FACTORY: Weather palette created with base temperature: {base_temperature}"
-    )
+    print(f"🌦️ FACTORY: Weather palette created with base temperature: {base_temperature}")
     return palette

@@ -103,15 +103,11 @@ def _initialize_step_2(self) -> None:
         self.counties_gdf = self.location_selector.get_counties_geodataframe()
 
         if self.counties_gdf is not None:
-            print(
-                f"✅ DEBUG: Counties GeoDataFrame received: {len(self.counties_gdf)} counties"
-            )
+            print(f"✅ DEBUG: Counties GeoDataFrame received: {len(self.counties_gdf)} counties")
 
             if self.map_visualizer:
                 self.map_visualizer.set_counties_geodataframe(self.counties_gdf)
-                print(
-                    "✅ DEBUG: Counties GeoDataFrame shared with Folium MapVisualizer"
-                )
+                print("✅ DEBUG: Counties GeoDataFrame shared with Folium MapVisualizer")
         else:
             print("⚠️ DEBUG: Counties GeoDataFrame not available yet")
 
@@ -163,6 +159,6 @@ def _hide_loading_indicators(self) -> None:
 
 
 __all__ = [
-    "initialize_weather_components",
     "initialize_components_steps",
+    "initialize_weather_components",
 ]

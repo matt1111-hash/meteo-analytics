@@ -6,7 +6,7 @@ from __future__ import annotations
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.domain.analytics.models import CityWeatherData
 
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class WeatherFetchService:
     """Fetch weather data for multiple cities using a retry-capable client."""
 
-    def __init__(
+    def __init__(  # noqa: D107
         self,
         weather_client: Any,
         max_workers: int,
@@ -46,15 +46,13 @@ class WeatherFetchService:
         self,
         batch_idx: int,
         batch_count: int,
-        batch: List[Dict[str, Any]],
-        batch_results: List[CityWeatherData],
+        batch: list[dict[str, Any]],
+        batch_results: list[CityWeatherData],
         batch_start_time: float,
     ) -> None:
         """Log batch processing summary."""
         batch_time = time.time() - batch_start_time
-        successful_in_batch = len(
-            [result for result in batch_results if result.fetch_success]
-        )
+        successful_in_batch = len([result for result in batch_results if result.fetch_success])
         logger.info(
             "Batch %d/%d: %d/%d siker, idő: %.1fs",
             batch_idx + 1,
@@ -66,12 +64,12 @@ class WeatherFetchService:
 
     def fetch_weather_data_dual_api_batch(
         self,
-        cities: List[Dict[str, Any]],
+        cities: list[dict[str, Any]],
         date: str,
-        region_config: Dict[str, Any],
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
-    ) -> List[CityWeatherData]:
+        region_config: dict[str, Any],
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list[CityWeatherData]:
         """Parallel dual-API fetching with throttling by region config.
 
         Args:
@@ -83,9 +81,7 @@ class WeatherFetchService:
             logger.error("⚠ WeatherClient nem elérhető")
             return [self.create_empty_city_data(city) for city in cities]
 
-        effective_start, effective_end = resolve_effective_dates(
-            date, start_date, end_date
-        )
+        effective_start, effective_end = resolve_effective_dates(date, start_date, end_date)
         batch_size = region_config["batch_size"]
         rate_limit_delay = region_config["rate_limit_delay"]
         batches = split_batches(cities, batch_size)
@@ -95,16 +91,12 @@ class WeatherFetchService:
             batch_size,
         )
 
-        weather_data: List[CityWeatherData] = []
+        weather_data: list[CityWeatherData] = []
         for batch_idx, batch in enumerate(batches):
             batch_start_time = time.time()
-            batch_results = self.process_dual_api_batch(
-                batch, effective_start, effective_end
-            )
+            batch_results = self.process_dual_api_batch(batch, effective_start, effective_end)
             weather_data.extend(batch_results)
-            self._log_batch_result(
-                batch_idx, len(batches), batch, batch_results, batch_start_time
-            )
+            self._log_batch_result(batch_idx, len(batches), batch, batch_results, batch_start_time)
 
             if batch_idx < len(batches) - 1:
                 time.sleep(rate_limit_delay)
@@ -113,14 +105,14 @@ class WeatherFetchService:
         return weather_data
 
     def process_dual_api_batch(
-        self, batch: List[Dict[str, Any]], start_date: str, end_date: str
-    ) -> List[CityWeatherData]:
+        self, batch: list[dict[str, Any]], start_date: str, end_date: str
+    ) -> list[CityWeatherData]:
         """Process a batch in parallel and collect results.
 
         Returns:
             Flattened list of CityWeatherData (multiple days per city).
         """
-        batch_results: List[CityWeatherData] = []
+        batch_results: list[CityWeatherData] = []
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {
                 executor.submit(
@@ -146,8 +138,8 @@ class WeatherFetchService:
         return batch_results
 
     def fetch_single_city_weather_dual_api(
-        self, city: Dict[str, Any], start_date: str, end_date: Optional[str] = None
-    ) -> List[CityWeatherData]:
+        self, city: dict[str, Any], start_date: str, end_date: str | None = None
+    ) -> list[CityWeatherData]:
         """Fetch one city's weather with retry logic and safe transforms.
 
         Returns:
@@ -155,7 +147,7 @@ class WeatherFetchService:
         """
         effective_end = end_date or start_date
 
-        last_error: Optional[str] = None
+        last_error: str | None = None
         for attempt in range(self.max_retries):
             try:
                 weather_result = self.weather_client.get_weather_data(
@@ -185,13 +177,11 @@ class WeatherFetchService:
                 if attempt < self.max_retries - 1:
                     time.sleep(self.retry_delay)
 
-        logger.error(
-            "⚠ Végső hiba a(z) %s lekérdezésénél: %s", city.get("city"), last_error
-        )
+        logger.error("⚠ Végső hiba a(z) %s lekérdezésénél: %s", city.get("city"), last_error)
         return [self.create_empty_city_data(city, last_error)]
 
     def create_empty_city_data(
-        self, city: Dict[str, Any], error_msg: str = "Ismeretlen hiba"
+        self, city: dict[str, Any], error_msg: str = "Ismeretlen hiba"
     ) -> CityWeatherData:
         """Return empty CityWeatherData for failure cases."""
         return create_empty_city_data(city, error_msg)

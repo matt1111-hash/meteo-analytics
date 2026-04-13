@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -68,9 +67,7 @@ def _build_month_ticks(
         x_ticks.append(week_idx)
         month_name = hungarian_months[week_date.month]
         x_labels.append(
-            f"{month_name}\n{week_date.year}"
-            if week_date.year != min_date.year
-            else month_name
+            f"{month_name}\n{week_date.year}" if week_date.year != min_date.year else month_name
         )
     return x_ticks, x_labels
 
@@ -105,19 +102,13 @@ def setup_axes_and_labels(self, min_date: pd.Timestamp, max_date: pd.Timestamp) 
     text_color = current_colors.get("on_surface", "#1f2937")
 
     total_days = (max_date - min_date).days + 1
-    x_ticks, x_labels = _build_month_ticks(
-        min_date, total_days, self._first_day_weekday
-    )
-    if len(x_ticks) < 3:
-        x_ticks, x_labels = _build_fallback_ticks(
-            min_date, total_days, self._first_day_weekday
-        )
+    x_ticks, x_labels = _build_month_ticks(min_date, total_days, self._first_day_weekday)
+    if len(x_ticks) < 3:  # noqa: PLR2004
+        x_ticks, x_labels = _build_fallback_ticks(min_date, total_days, self._first_day_weekday)
 
     self.ax.set_xticks(x_ticks)
     self.ax.set_xticklabels(x_labels, color=text_color, rotation=0, ha="center")
-    self.ax.set_xlabel(
-        "Valódi hónapok (helyes pozíciók)", color=text_color, fontsize=12
-    )
+    self.ax.set_xlabel("Valódi hónapok (helyes pozíciók)", color=text_color, fontsize=12)
 
     # Y TENGELY - HÉTKÖZNAPOK
     self.ax.set_yticks(range(7))
@@ -132,7 +123,10 @@ def setup_axes_and_labels(self, min_date: pd.Timestamp, max_date: pd.Timestamp) 
 
 
 def format_period_text(
-    self, min_date: pd.Timestamp, max_date: pd.Timestamp, total_days: int
+    self,  # noqa: ARG001
+    min_date: pd.Timestamp,
+    max_date: pd.Timestamp,
+    total_days: int,
 ) -> str:
     """
     Format period text for title.
@@ -146,13 +140,13 @@ def format_period_text(
     Returns:
         str: Formázott időszak szöveg
     """
-    years = sorted(set([min_date.year, max_date.year]))
+    years = sorted({min_date.year, max_date.year})
     if len(years) == 1:
         if (
             min_date.month == 1
             and min_date.day == 1
-            and max_date.month == 12
-            and max_date.day == 31
+            and max_date.month == 12  # noqa: PLR2004
+            and max_date.day == 31  # noqa: PLR2004
         ):
             return f" ({years[0]})"
         return f" ({min_date.strftime('%Y.%m.%d')} - {max_date.strftime('%m.%d')})"

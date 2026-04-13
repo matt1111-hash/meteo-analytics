@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.application.use_cases.analyze_multi_city import AnalyzeMultiCityUseCase
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
@@ -55,9 +55,9 @@ class MultiCityEngine:
 
     def __init__(
         self,
-        db_path: Optional[str] = None,
-        hungarian_db_path: Optional[str] = None,
-        city_repository: Optional[CityRepositoryProtocol] = None,
+        db_path: str | None = None,
+        hungarian_db_path: str | None = None,
+        city_repository: CityRepositoryProtocol | None = None,
     ):
         """MultiCityEngine inicializálása repository injekcióval (CA compliant - uses ports)."""
         project_root = Path(__file__).parent.parent.parent
@@ -65,14 +65,10 @@ class MultiCityEngine:
         default_hu_db = project_root / "data" / "hungarian_settlements.db"
 
         self.db_path = Path(db_path) if db_path else default_db
-        self.hungarian_db_path = (
-            Path(hungarian_db_path) if hungarian_db_path else default_hu_db
-        )
+        self.hungarian_db_path = Path(hungarian_db_path) if hungarian_db_path else default_hu_db
 
         # Use port for city repository (CA compliant)
-        self.city_repository: CityRepositoryProtocol = (
-            city_repository or get_city_repository_port()
-        )
+        self.city_repository: CityRepositoryProtocol = city_repository or get_city_repository_port()
         self.city_repository.validate_paths()
         self.region_resolver = RegionResolverService()
 
@@ -112,14 +108,14 @@ class MultiCityEngine:
     def execute_analytics_query(
         self,
         query: MultiCityQuery,
-        progress_callback: Optional[callable] = None,
+        progress_callback: callable | None = None,  # noqa: ARG002
     ) -> AnalyticsResult:
         """Execute analytics query with optional progress callback."""
         return self.use_case.execute(query)
 
     def get_cities_for_region(
-        self, region: str, limit: Optional[int] = None, max_cities: Optional[int] = None
-    ) -> List[Dict[str, Any]]:
+        self, region: str, limit: int | None = None, max_cities: int | None = None
+    ) -> list[dict[str, Any]]:
         """
         Get cities for a given region with proper regional filtering.
 
@@ -138,8 +134,8 @@ class MultiCityEngine:
         query_type: str,
         region: str,
         date: str,
-        limit: Optional[int] = None,
-        question: Optional[AnalyticsQuestion] = None,
+        limit: int | None = None,
+        question: AnalyticsQuestion | None = None,
     ) -> AnalyticsResult:
         """Analyze multi-city weather data."""
         query = MultiCityQuery(
@@ -161,8 +157,8 @@ class MultiCityEngine:
         )
 
     def _fetch_weather_data_dual_api_batch(
-        self, cities: List[Dict[str, Any]], date: str, region: str
-    ) -> List[CityWeatherData]:
+        self, cities: list[dict[str, Any]], date: str, region: str
+    ) -> list[CityWeatherData]:
         """Fetch weather data for multiple cities in parallel."""
         region_config = REGIONS[region]
         return self.weather_fetch_service.fetch_weather_data_dual_api_batch(
@@ -172,49 +168,44 @@ class MultiCityEngine:
         )
 
     def _process_dual_api_batch(
-        self, batch: List[Dict[str, Any]], date: str, rate_limit_delay: float
-    ) -> List[CityWeatherData]:
+        self,
+        batch: list[dict[str, Any]],
+        date: str,
+        rate_limit_delay: float,  # noqa: ARG002
+    ) -> list[CityWeatherData]:
         """Process a batch of cities."""
         return self.weather_fetch_service.process_dual_api_batch(batch, date)
 
     def _fetch_single_city_weather_dual_api(
-        self, city: Dict[str, Any], date: str
+        self, city: dict[str, Any], date: str
     ) -> CityWeatherData:
         """Fetch weather data for a single city."""
         return self.weather_fetch_service.fetch_single_city_weather_dual_api(city, date)
 
     def _create_empty_city_data(
-        self, city: Dict[str, Any], error_msg: str = "Ismeretlen hiba"
+        self, city: dict[str, Any], error_msg: str = "Ismeretlen hiba"
     ) -> CityWeatherData:
         """Create empty CityWeatherData for error cases."""
         return self.weather_fetch_service.create_empty_city_data(city, error_msg)
 
     def _process_weather_results(
-        self, weather_data: List[CityWeatherData], query_type: str
-    ) -> List[CityWeatherData]:
+        self, weather_data: list[CityWeatherData], query_type: str
+    ) -> list[CityWeatherData]:
         """Process and sort weather results."""
-        return self.analytics_transform_service.process_weather_results(
-            weather_data, query_type
-        )
+        return self.analytics_transform_service.process_weather_results(weather_data, query_type)
 
     def _calculate_statistics_for_results_none_safe(
-        self, results: List[CityWeatherResult]
-    ) -> Dict[str, float]:
+        self, results: list[CityWeatherResult]
+    ) -> dict[str, float]:
         """Calculate statistics for results."""
-        return (
-            self.analytics_transform_service.calculate_statistics_for_results_none_safe(
-                results
-            )
-        )
+        return self.analytics_transform_service.calculate_statistics_for_results_none_safe(results)
 
-    def _get_provider_stats(
-        self, weather_data: List[CityWeatherData]
-    ) -> Dict[str, int]:
+    def _get_provider_stats(self, weather_data: list[CityWeatherData]) -> dict[str, int]:
         """Get provider statistics."""
         return self.analytics_transform_service.get_provider_stats(weather_data)
 
     def _create_empty_analytics_result(
-        self, question: Optional[AnalyticsQuestion], error_msg: str = "Ismeretlen hiba"
+        self, question: AnalyticsQuestion | None, error_msg: str = "Ismeretlen hiba"
     ) -> AnalyticsResult:
         """Create empty AnalyticsResult for error cases."""
         return create_empty_analytics_result_with_types(

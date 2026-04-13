@@ -31,7 +31,7 @@ class SetupMixin:
     🎨 UI setup és theme mixin a HungarianLocationSelector számára.
     """
 
-    def _setup_ui(self):
+    def _setup_ui(self):  # noqa: PLR0915
         """
         🎨 UI komponensek létrehozása.
         """

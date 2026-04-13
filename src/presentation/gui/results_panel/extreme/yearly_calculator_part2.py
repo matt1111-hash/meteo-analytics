@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from yearly_calculator.py."""
 
@@ -12,18 +12,14 @@ def _resolve_temperature_trend_column(df) -> str | None:
     if "temperature_2m_mean" in df.columns:
         return "temperature_2m_mean"
     if "temperature_2m_max" in df.columns and "temperature_2m_min" in df.columns:
-        df["temp_calculated_mean"] = (
-            df["temperature_2m_max"] + df["temperature_2m_min"]
-        ) / 2
+        df["temp_calculated_mean"] = (df["temperature_2m_max"] + df["temperature_2m_min"]) / 2
         return "temp_calculated_mean"
     return None
 
 
-def _build_temperature_trend_record(
-    temp_trend: float, years: List[int]
-) -> ExtremeRecord:
+def _build_temperature_trend_record(temp_trend: float, years: List[int]) -> ExtremeRecord:
     """Build climate trend record for the given delta."""
-    if temp_trend > 0.5:
+    if temp_trend > 0.5:  # noqa: PLR2004
         return ExtremeRecord(
             category="🌡️ Trend",
             record_type="🔥 Felmelegedés trend",
@@ -31,7 +27,7 @@ def _build_temperature_trend_record(
             date=f"{years[0]}-{years[-1]}",
             raw_value=float(temp_trend),
         )
-    if temp_trend < -0.5:
+    if temp_trend < -0.5:  # noqa: PLR2004
         return ExtremeRecord(
             category="🌡️ Trend",
             record_type="🧊 Lehűlés trend",

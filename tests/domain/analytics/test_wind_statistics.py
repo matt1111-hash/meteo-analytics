@@ -5,7 +5,6 @@ Wind monthly statistics calculations
 """
 
 import pandas as pd
-
 from src.domain.analytics.wind_models import MONTHS_HU, WindyDayStats
 from src.domain.analytics.wind_statistics import calculate_monthly_windy_stats
 
@@ -178,9 +177,7 @@ class TestCalculateMonthlyWindyStats:
         """Should calculate windy percentage correctly."""
         df = pd.DataFrame(
             {
-                "date": pd.to_datetime(
-                    ["2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04"]
-                ),
+                "date": pd.to_datetime(["2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04"]),
                 "is_windy": [True, True, True, False],
                 "max_wind_speed_kmh": [60.0, 70.0, 80.0, 30.0],
             }
@@ -213,5 +210,5 @@ class TestCalculateMonthlyWindyStats:
         )
         result = calculate_monthly_windy_stats(df)
         month_names = [stat.month_name for stat in result]
-        for i, hungarian_name in enumerate(MONTHS_HU):
+        for i, hungarian_name in enumerate(MONTHS_HU):  # noqa: B007
             assert hungarian_name in month_names, f"Missing {hungarian_name}"

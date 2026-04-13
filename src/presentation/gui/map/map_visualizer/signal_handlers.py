@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -101,7 +100,7 @@ def _export_map(self) -> None:
 
     from PySide6.QtWidgets import QFileDialog, QMessageBox
 
-    if not self.current_map_file or not os.path.exists(self.current_map_file):
+    if not self.current_map_file or not os.path.exists(self.current_map_file):  # noqa: PTH110
         QMessageBox.warning(self, "Export", "Nincs Folium térkép az exportáláshoz!")
         return
 
@@ -132,13 +131,9 @@ def _on_map_loaded(self, success: bool) -> None:
     if success:
         self.map_ready.emit()
         counties_info = (
-            f" ({len(self.counties_gdf)} megye)"
-            if self.counties_gdf is not None
-            else ""
+            f" ({len(self.counties_gdf)} megye)" if self.counties_gdf is not None else ""
         )
-        self.status_label.setText(
-            f"🌐 HTTP szerver interaktív térkép kész!{counties_info}"
-        )
+        self.status_label.setText(f"🌐 HTTP szerver interaktív térkép kész!{counties_info}")
     else:
         self.error_occurred.emit("WebEngine HTTP loading failed")
         self.status_label.setText("❌ WebEngine HTTP betöltés sikertelen!")

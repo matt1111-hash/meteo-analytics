@@ -7,8 +7,6 @@ Color Palette - Advanced Features Module
 Color harmony, accessibility, és weather-specifikus metódusok.
 """
 
-from typing import Dict, List, Optional, Union
-
 from src.presentation.gui.color_palette.accessibility import (
     calculate_contrast_ratio,
     get_color_metrics,
@@ -35,7 +33,7 @@ class AdvancedFeaturesMixin:
 
     def generate_harmony_colors(
         self, base_semantic: str, harmony_type: ColorHarmony
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         """
         Színharmónia generálása base szín alapján.
 
@@ -56,9 +54,7 @@ class AdvancedFeaturesMixin:
 
     # === ACCESSIBILITY FUNCTIONS ===
 
-    def calculate_contrast_ratio(
-        self, color1: Union[str, HSLColor], color2: Union[str, HSLColor]
-    ) -> float:
+    def calculate_contrast_ratio(self, color1: str | HSLColor, color2: str | HSLColor) -> float:
         """
         WCAG kontraszt arány számítása két szín között.
 
@@ -71,9 +67,7 @@ class AdvancedFeaturesMixin:
         """
         return calculate_contrast_ratio(color1, color2, self._hex_to_hsl)
 
-    def get_color_metrics(
-        self, semantic_name: str, variant: str = "base"
-    ) -> Optional[ColorMetrics]:
+    def get_color_metrics(self, semantic_name: str, variant: str = "base") -> ColorMetrics | None:
         """
         Szín accessibility metrikáinak lekérdezése.
 
@@ -88,13 +82,11 @@ class AdvancedFeaturesMixin:
         if not color:
             return None
 
-        return get_color_metrics(
-            color, lambda c1, c2: self.calculate_contrast_ratio(c1, c2)
-        )
+        return get_color_metrics(color, lambda c1, c2: self.calculate_contrast_ratio(c1, c2))
 
     def suggest_accessible_variants(
         self, semantic_name: str, target_background: str
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         """
         Accessible variánsok javaslása adott háttérszínhez.
 
@@ -123,7 +115,7 @@ class AdvancedFeaturesMixin:
         semantic_name: str,
         blindness_type: ColorBlindnessType,
         variant: str = "base",
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Színvakság szimuláció adott színre.
 
@@ -143,7 +135,7 @@ class AdvancedFeaturesMixin:
 
     # === WEATHER-SPECIFIC COLOR METHODS ===
 
-    def generate_weather_palette(self, base_temperature: str) -> Dict[str, str]:
+    def generate_weather_palette(self, base_temperature: str) -> dict[str, str]:
         """
         Időjárás-specifikus színpaletta generálása hőmérséklet base színből.
 
@@ -157,7 +149,7 @@ class AdvancedFeaturesMixin:
         print(f"🌦️ DEBUG: Weather palette generated from {base_temperature}")
         return weather_palette
 
-    def generate_alert_gradient(self, base_alert: str, levels: int = 5) -> List[str]:
+    def generate_alert_gradient(self, base_alert: str, levels: int = 5) -> list[str]:
         """
         Alert szintek gradiens generálása.
 

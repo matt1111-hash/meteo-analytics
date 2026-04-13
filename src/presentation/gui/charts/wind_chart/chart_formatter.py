@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -10,7 +9,6 @@ from typing import TYPE_CHECKING
 
 import pandas as pd
 from matplotlib.dates import DateFormatter, MonthLocator
-
 from src.presentation.gui.theme_manager import get_current_colors
 
 from .wind_categories import calculate_y_axis_max
@@ -42,9 +40,7 @@ class WindChartFormatter:
         text_color = current_colors.get("on_surface", "#1f2937")
 
         # Set labels and title
-        self.chart.ax.set_title(
-            self.chart.chart_title, fontweight="bold", pad=20, color=text_color
-        )
+        self.chart.ax.set_title(self.chart.chart_title, fontweight="bold", pad=20, color=text_color)
         self.chart.ax.set_xlabel(self.chart.x_label, color=text_color)
         self.chart.ax.set_ylabel(self.chart.y_label, color=text_color)
 
@@ -77,9 +73,7 @@ class WindChartFormatter:
         # Grid
         if self.chart.grid_enabled:
             grid_color = current_colors.get("border", "#d1d5db")
-            grid_alpha = (
-                0.3 if self.chart.theme_manager.get_current_theme() == "light" else 0.2
-            )
+            grid_alpha = 0.3 if self.chart.theme_manager.get_current_theme() == "light" else 0.2
             self.chart.ax.grid(
                 True, alpha=grid_alpha, linestyle="-", linewidth=0.5, color=grid_color
             )

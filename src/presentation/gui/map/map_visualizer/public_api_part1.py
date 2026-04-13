@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from public_api.py."""
 
@@ -85,7 +85,7 @@ def set_weather_data(self, weather_data: Dict) -> None:
     self.current_weather_data = weather_data
 
     if weather_data:
-        for data_type in weather_data.keys():
+        for data_type in weather_data:
             if data_type in [
                 "temperature",
                 "wind_speed",
@@ -112,11 +112,11 @@ def update_map_bounds(self, bounds: Tuple[float, float, float, float]) -> None:
     lat_diff = abs(bounds[3] - bounds[1])
     lon_diff = abs(bounds[2] - bounds[0])
 
-    if lat_diff > 2 or lon_diff > 3:
+    if lat_diff > 2 or lon_diff > 3:  # noqa: PLR2004
         zoom = 6
-    elif lat_diff > 1 or lon_diff > 1.5:
+    elif lat_diff > 1 or lon_diff > 1.5:  # noqa: PLR2004
         zoom = 7
-    elif lat_diff > 0.5 or lon_diff > 0.8:
+    elif lat_diff > 0.5 or lon_diff > 0.8:  # noqa: PLR2004
         zoom = 8
     else:
         zoom = 9
@@ -128,7 +128,7 @@ def update_map_bounds(self, bounds: Tuple[float, float, float, float]) -> None:
     self._start_map_generation()
 
 
-def get_map_config(self) -> "FoliumMapConfig":
+def get_map_config(self) -> FoliumMapConfig:
     """
     Map konfiguráció lekérdezése.
 

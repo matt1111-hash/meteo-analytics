@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """API endpoints and configuration for weather data providers."""
 
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from types import MappingProxyType
-from typing import Any, ClassVar, Dict, Mapping
+from typing import Any, ClassVar
 
 
 class APIConfig:
@@ -15,9 +15,7 @@ class APIConfig:
 
     OPEN_METEO_BASE: ClassVar[str] = "https://api.open-meteo.com/v1"
     OPEN_METEO_ARCHIVE: ClassVar[str] = "https://archive-api.open-meteo.com/v1/archive"
-    OPEN_METEO_GEOCODING: ClassVar[str] = (
-        "https://geocoding-api.open-meteo.com/v1/search"
-    )
+    OPEN_METEO_GEOCODING: ClassVar[str] = "https://geocoding-api.open-meteo.com/v1/search"
 
     METEOSTAT_BASE: ClassVar[str] = "https://meteostat.p.rapidapi.com"
     METEOSTAT_API_KEY: ClassVar[str | None] = os.getenv("METEOSTAT_API_KEY")
@@ -46,9 +44,7 @@ class APIConfig:
         }
     )
 
-    USER_AGENT: ClassVar[str] = (
-        "Global Weather Analyzer/2.2.0 (Provider-Selector Edition)"
-    )
+    USER_AGENT: ClassVar[str] = "Global Weather Analyzer/2.2.0 (Provider-Selector Edition)"
 
 
 class DataConstants:
@@ -149,7 +145,7 @@ class DataConstants:
     )
 
 
-def validate_api_keys() -> Dict[str, bool]:
+def validate_api_keys() -> dict[str, bool]:
     """
     Validate required API keys and configuration.
 
@@ -166,13 +162,13 @@ def validate_api_keys() -> Dict[str, bool]:
     if APIConfig.METEOSTAT_API_KEY:
         # Basic validation - check if it's not empty and has reasonable length
         key = APIConfig.METEOSTAT_API_KEY.strip()
-        if len(key) >= 32:  # RapidAPI keys are typically 32+ characters
+        if len(key) >= 32:  # RapidAPI keys are typically 32+ characters  # noqa: PLR2004
             validation["meteostat_key_valid"] = True
 
     return validation
 
 
-def get_active_data_sources() -> Dict[str, Dict[str, Any]]:
+def get_active_data_sources() -> dict[str, dict[str, Any]]:
     """
     Get information about active data sources.
 

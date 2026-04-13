@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for DataFrameExtractor."""
 
@@ -8,7 +8,7 @@ from .dataframe_extractor_part2 import DataFrameExtractorPart2Mixin
 from .dataframe_extractor_support import *
 
 
-class DataFrameExtractorPart1Mixin:
+class DataFrameExtractorPart1Mixin:  # noqa: D101
     @staticmethod
     def _extract_daily_data(data: Dict[str, Any]) -> tuple[dict[str, Any], list[Any]]:
         """Extract the daily payload and its date axis."""
@@ -42,10 +42,8 @@ class DataFrameExtractorPart1Mixin:
             return temp_mean
         logger.debug("Temp_mean számítása temp_max és temp_min alapján...")
         return [
-            round((t_max + t_min) / 2, 1)
-            if t_max is not None and t_min is not None
-            else None
-            for t_max, t_min in zip(temp_max, temp_min)
+            round((t_max + t_min) / 2, 1) if t_max is not None and t_min is not None else None
+            for t_max, t_min in zip(temp_max, temp_min, strict=False)
         ]
 
     @staticmethod
@@ -61,9 +59,9 @@ class DataFrameExtractorPart1Mixin:
         windspeed_10m_max = daily_data.get("windspeed_10m_max", []) or daily_data.get(
             "wind_speed_max", []
         )
-        winddirection = daily_data.get(
-            "winddirection_10m_dominant", []
-        ) or daily_data.get("wind_direction_10m_dominant", [])
+        winddirection = daily_data.get("winddirection_10m_dominant", []) or daily_data.get(
+            "wind_direction_10m_dominant", []
+        )
         return wind_gusts_10m_max, windspeed_10m_max, winddirection
 
     @staticmethod
@@ -78,15 +76,9 @@ class DataFrameExtractorPart1Mixin:
         max_length = len(dates)
         df_data = {
             "date": dates,
-            "temp_max": DataFrameExtractorPart2Mixin._ensure_length(
-                temp_max, max_length
-            ),
-            "temp_min": DataFrameExtractorPart2Mixin._ensure_length(
-                temp_min, max_length
-            ),
-            "precipitation": DataFrameExtractorPart2Mixin._ensure_length(
-                precip, max_length
-            ),
+            "temp_max": DataFrameExtractorPart2Mixin._ensure_length(temp_max, max_length),
+            "temp_min": DataFrameExtractorPart2Mixin._ensure_length(temp_min, max_length),
+            "precipitation": DataFrameExtractorPart2Mixin._ensure_length(precip, max_length),
         }
         if temp_mean:
             df_data["temp_mean"] = DataFrameExtractorPart2Mixin._ensure_length(
@@ -100,8 +92,7 @@ class DataFrameExtractorPart1Mixin:
     ) -> None:
         """Populate gust-related dataframe columns."""
         has_valid_wind_gusts = bool(
-            wind_gusts_10m_max
-            and DataFrameExtractorPart2Mixin._has_valid_data(wind_gusts_10m_max)
+            wind_gusts_10m_max and DataFrameExtractorPart2Mixin._has_valid_data(wind_gusts_10m_max)
         )
         if wind_gusts_10m_max:
             df_data["wind_gusts_max"] = DataFrameExtractorPart2Mixin._ensure_length(
@@ -134,12 +125,10 @@ class DataFrameExtractorPart1Mixin:
     ) -> None:
         """Populate the windspeed column, with gust fallback when necessary."""
         has_valid_windspeed = bool(
-            windspeed_10m_max
-            and DataFrameExtractorPart2Mixin._has_valid_data(windspeed_10m_max)
+            windspeed_10m_max and DataFrameExtractorPart2Mixin._has_valid_data(windspeed_10m_max)
         )
         has_valid_gusts = bool(
-            wind_gusts_10m_max
-            and DataFrameExtractorPart2Mixin._has_valid_data(wind_gusts_10m_max)
+            wind_gusts_10m_max and DataFrameExtractorPart2Mixin._has_valid_data(wind_gusts_10m_max)
         )
         if has_valid_windspeed:
             df_data["windspeed"] = DataFrameExtractorPart2Mixin._ensure_length(
@@ -191,11 +180,7 @@ class DataFrameExtractorPart1Mixin:
         wind_data = df["wind_gusts_max"].dropna()
         if len(wind_data) == 0:
             return
-        source = (
-            df["wind_data_source"].iloc[0]
-            if "wind_data_source" in df.columns
-            else "unknown"
-        )
+        source = df["wind_data_source"].iloc[0] if "wind_data_source" in df.columns else "unknown"
         logger.info("🌪️ Wind stats - Source: %s", source)
         logger.info("🌪️ Wind range: %.1f → %.1f km/h", wind_data.min(), wind_data.max())
 
@@ -209,12 +194,10 @@ class DataFrameExtractorPart1Mixin:
                 return pd.DataFrame()
 
             logger.debug(f"Extracting {len(dates)} napok adatai...")
-            temp_max, temp_min, temp_mean = (
-                DataFrameExtractorPart1Mixin._extract_temperature_data(daily_data)
+            temp_max, temp_min, temp_mean = DataFrameExtractorPart1Mixin._extract_temperature_data(
+                daily_data
             )
-            temp_mean = DataFrameExtractorPart1Mixin._build_temp_mean(
-                temp_mean, temp_max, temp_min
-            )
+            temp_mean = DataFrameExtractorPart1Mixin._build_temp_mean(temp_mean, temp_max, temp_min)
             precip = daily_data.get("precipitation_sum", [])
             wind_gusts_10m_max, windspeed_10m_max, winddirection = (
                 DataFrameExtractorPart1Mixin._extract_wind_data(daily_data)

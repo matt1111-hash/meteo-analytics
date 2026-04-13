@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -15,7 +14,7 @@ from __future__ import annotations
 from importlib import import_module
 from typing import Any
 
-__all__ = ["ResultsPanel", "ProgressManager", "TabManager", "DataProcessor"]
+__all__ = ["DataProcessor", "ProgressManager", "ResultsPanel", "TabManager"]
 
 
 def __getattr__(name: str) -> Any:

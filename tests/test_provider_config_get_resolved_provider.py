@@ -20,9 +20,7 @@ class TestGetResolvedProvider:
 
         assert result == "open-meteo"
 
-    def test_resolved_provider_auto_routing_single_city(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_resolved_provider_auto_routing_single_city(self, config_fs: dict[str, str]) -> None:
         """Auto routing for single_city should return open-meteo."""
         from src.config.provider_config import get_resolved_provider
 
@@ -32,9 +30,7 @@ class TestGetResolvedProvider:
 
         assert result == "open-meteo"
 
-    def test_resolved_provider_auto_routing_multi_city(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_resolved_provider_auto_routing_multi_city(self, config_fs: dict[str, str]) -> None:
         """Auto routing for multi_city should return meteostat."""
         from src.config.provider_config import get_resolved_provider
 
@@ -56,9 +52,7 @@ class TestGetResolvedProvider:
 
         assert result == "meteostat"
 
-    def test_resolved_provider_auto_routing_real_time(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_resolved_provider_auto_routing_real_time(self, config_fs: dict[str, str]) -> None:
         """Auto routing for real_time should return open-meteo."""
         from src.config.provider_config import get_resolved_provider
 

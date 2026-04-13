@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from src.domain.entities.analysis_type import AnalysisType
 from src.domain.entities.location_types import LocationType
@@ -18,9 +18,9 @@ class UniversalQuery:
     """
 
     # Basic query components
-    locations: List[UniversalLocation]
+    locations: list[UniversalLocation]
     time_range: UniversalTimeRange
-    parameters: List[str]
+    parameters: list[str]
     analysis_type: AnalysisType
 
     # Query metadata
@@ -30,7 +30,7 @@ class UniversalQuery:
     user_description: str = ""
 
     # Execution settings
-    data_sources: List[DataSource] = field(default_factory=list)
+    data_sources: list[DataSource] = field(default_factory=list)
     quality_threshold: float = 0.8
     max_results_per_location: int = 1000
 
@@ -41,17 +41,17 @@ class UniversalQuery:
     comparative_mode: bool = False
 
     # Anomaly specific settings
-    anomaly_severity_filter: List[AnomalySeverity] = field(default_factory=list)
-    anomaly_threshold_override: Optional[float] = None
+    anomaly_severity_filter: list[AnomalySeverity] = field(default_factory=list)
+    anomaly_threshold_override: float | None = None
 
     # Metadata
     created_at: datetime = field(default_factory=datetime.now)
-    created_by: Optional[str] = None
-    tags: List[str] = field(default_factory=list)
+    created_by: str | None = None
+    tags: list[str] = field(default_factory=list)
 
     # Execution status
     is_executed: bool = False
-    execution_time: Optional[float] = None
+    execution_time: float | None = None
     total_data_points: int = 0
 
     def __post_init__(self):
@@ -69,14 +69,14 @@ class UniversalQuery:
         """Generate automatic user-friendly description."""
         if len(self.locations) == 1:
             location_desc = self.locations[0].display_name
-        elif len(self.locations) <= 3:
+        elif len(self.locations) <= 3:  # noqa: PLR2004
             location_desc = " vs ".join([loc.display_name for loc in self.locations])
         else:
             location_desc = f"{len(self.locations)} lokáció"
 
         if len(self.parameters) == 1:
             param_desc = self.parameters[0].replace("_", " ")
-        elif len(self.parameters) <= 3:
+        elif len(self.parameters) <= 3:  # noqa: PLR2004
             param_desc = ", ".join([p.replace("_", " ") for p in self.parameters])
         else:
             param_desc = f"{len(self.parameters)} paraméter"
@@ -100,7 +100,7 @@ class UniversalQuery:
                 total += 1
         return total
 
-    def get_all_coordinates(self) -> List[Tuple[float, float]]:
+    def get_all_coordinates(self) -> list[tuple[float, float]]:
         """Get all coordinates from query."""
         all_coords = []
         for location in self.locations:
@@ -115,7 +115,7 @@ class UniversalQuery:
 
     def is_long_term_analysis(self) -> bool:
         """Check if long-term analysis (>1 year)."""
-        return self.time_range.total_days > 365
+        return self.time_range.total_days > 365  # noqa: PLR2004
 
     def is_historical_query(self) -> bool:
         """Check if historical query."""
@@ -142,16 +142,16 @@ class UniversalQuery:
         if self.comparative_mode:
             score += 15
 
-        if score < 20:
+        if score < 20:  # noqa: PLR2004
             return "simple"
-        elif score < 50:
+        elif score < 50:  # noqa: PLR2004
             return "medium"
-        elif score < 100:
+        elif score < 100:  # noqa: PLR2004
             return "complex"
         else:
             return "very_complex"
 
-    def validate(self) -> Tuple[bool, List[str]]:
+    def validate(self) -> tuple[bool, list[str]]:
         """
         Validate query.
 
@@ -171,20 +171,17 @@ class UniversalQuery:
 
         estimated_complexity = self.get_estimated_complexity()
         if (
-            estimated_complexity == "very_complex"
-            and self.max_results_per_location < 100
+            estimated_complexity == "very_complex" and self.max_results_per_location < 100  # noqa: PLR2004
         ):
-            errors.append(
-                "Nagyon komplex query esetén növelje a max_results_per_location értékét!"
-            )
+            errors.append("Nagyon komplex query esetén növelje a max_results_per_location értékét!")
 
-        if self.anomaly_detection:
+        if self.anomaly_detection:  # noqa: SIM102
             if self.anomaly_threshold_override and self.anomaly_threshold_override <= 0:
                 errors.append("Anomália küszöb pozitív szám kell legyen!")
 
         return len(errors) == 0, errors
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "query_id": self.query_id,

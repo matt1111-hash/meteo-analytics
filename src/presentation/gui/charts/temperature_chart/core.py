@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Képességek:
 Fájl: src/presentation/gui/charts/temperature_chart/core.py
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtWidgets import QWidget
 
@@ -43,7 +42,7 @@ class EnhancedTemperatureChart(
     🎯 TOOLTIP ENHANCEMENT: WeatherTooltipMixin integráció - INTERAKTÍV HOVER/CLICK FUNKCIÓK
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):  # noqa: D107
         super().__init__(figsize=(14, 8), parent=parent)  # NAGY MÉRET
         self.chart_title = "🌡️ Részletes Hőmérséklet Elemzés"
         self.y_label = "Hőmérséklet (°C)"
@@ -52,7 +51,7 @@ class EnhancedTemperatureChart(
         self.enable_tooltips(hover_tolerance=15)
         print("🎯 DEBUG: EnhancedTemperatureChart tooltip-ok aktiválva!")
 
-    def update_data(self, data: Dict[str, Any]) -> None:
+    def update_data(self, data: dict[str, Any]) -> None:
         """
         🔧 KRITIKUS JAVÍTÁS: Duplikáció-mentes hőmérséklet chart frissítés + SIMPLIFIED THEMEMANAGER SZÍNEK.
         """

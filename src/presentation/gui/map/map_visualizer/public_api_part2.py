@@ -72,7 +72,7 @@ def highlight_counties(self, county_names: List[str]) -> None:
     self.map_config.highlighted_counties = county_names
 
 
-def is_folium_available(self) -> bool:
+def is_folium_available(self) -> bool:  # noqa: ARG001
     """
     Folium elérhetőségének ellenőrzése.
 
@@ -83,7 +83,7 @@ def is_folium_available(self) -> bool:
         bool: True ha folium elérhető
     """
     try:
-        import folium  # noqa: F401
+        import folium
 
         return True
     except ImportError:

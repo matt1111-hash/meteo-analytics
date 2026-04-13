@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -14,8 +13,6 @@ Képességek:
 
 Fájl: src/presentation/gui/results_panel/utils/wind_constants.py
 """
-
-from typing import Dict
 
 
 class WindGustsConstants:
@@ -36,7 +33,7 @@ class WindGustsConstants:
     WINDY_THRESHOLD_WINDSPEED = 43.0  # windspeed_10m_max esetén (szélsebesség)
 
     # Kategória címkék - MAGYAR LOKALIZÁCIÓ
-    CATEGORIES: Dict[str, str] = {
+    CATEGORIES: dict[str, str] = {  # noqa: RUF012
         "moderate": "MÉRSÉKELT",
         "strong": "ERŐS",
         "extreme": "EXTRÉM",
@@ -44,7 +41,7 @@ class WindGustsConstants:
     }
 
     # Kategória színek (ThemeManager kompatibilis)
-    CATEGORY_COLORS: Dict[str, str] = {
+    CATEGORY_COLORS: dict[str, str] = {  # noqa: RUF012
         "moderate": "success",  # Zöld - biztonságos
         "strong": "warning",  # Sárga - figyelem
         "extreme": "error",  # Piros - veszélyes
@@ -52,7 +49,7 @@ class WindGustsConstants:
     }
 
     # Emoji ikonok kategóriánként
-    CATEGORY_EMOJIS: Dict[str, str] = {
+    CATEGORY_EMOJIS: dict[str, str] = {  # noqa: RUF012
         "moderate": "💨",
         "strong": "🌪️",
         "extreme": "⚠️",

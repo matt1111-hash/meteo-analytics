@@ -26,7 +26,7 @@ class TestPresentationAndStructure(TestCleanArchitectureCompliance):
             imports = get_imports_from_file(py_file)
             for imp in imports:
                 if imp.startswith("src.data"):
-                    violations.append((str(py_file.relative_to(src_path)), imp))
+                    violations.append((str(py_file.relative_to(src_path)), imp))  # noqa: PERF401
 
         assert not violations, (
             "Presentation layer should not import from data layer:\n"
@@ -46,7 +46,7 @@ class TestPresentationAndStructure(TestCleanArchitectureCompliance):
                 if imp.startswith("src.infrastructure") and not imp.startswith(
                     "src.infrastructure.container"
                 ):
-                    violations.append((str(py_file.relative_to(src_path)), imp))
+                    violations.append((str(py_file.relative_to(src_path)), imp))  # noqa: PERF401
 
         assert not violations, (
             "Presentation layer should not import from infrastructure layer (except container):\n"
@@ -67,7 +67,7 @@ class TestPresentationAndStructure(TestCleanArchitectureCompliance):
             "get_anomaly_profile_port",
         ]
 
-        with open(domain_ports_file) as f:
+        with open(domain_ports_file) as f:  # noqa: PTH123
             content = f.read()
 
         for factory in factory_names:

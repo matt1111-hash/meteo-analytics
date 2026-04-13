@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-  # noqa: UP009
 
 """Provider Usage Tracking Service.
 
@@ -9,7 +9,7 @@ Handles tracking and retrieval of provider usage statistics.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Dict
+from typing import Any, Dict  # noqa: UP035
 
 from src.api.dto.provider_dto import ProviderStatusDTO, ProviderUsageDTO
 from src.config.provider_config import ProviderConfig, UserPreferences
@@ -19,14 +19,14 @@ class ProviderUsageService:
     """Service for tracking and managing provider usage statistics."""
 
     # Provider limits (requests per month, None = unlimited)
-    PROVIDER_LIMITS: Dict[str, int | None] = {
+    PROVIDER_LIMITS: Dict[str, int | None] = {  # noqa: RUF012, UP006
         "auto": None,
         "open-meteo": None,
         "meteostat": 10000,
     }
 
     # Cost per request in USD
-    PROVIDER_COSTS: Dict[str, float] = {
+    PROVIDER_COSTS: Dict[str, float] = {  # noqa: RUF012, UP006
         "auto": 0.0,
         "open-meteo": 0.0,
         "meteostat": 0.001,
@@ -36,7 +36,7 @@ class ProviderUsageService:
         """Initialize usage tracker with default data."""
         self._usage_data = self._create_default_usage_data()
 
-    def _create_default_usage_data(self) -> Dict[str, Dict[str, Any]]:
+    def _create_default_usage_data(self) -> Dict[str, Dict[str, Any]]:  # noqa: UP006
         """Create default usage data structure for all providers."""
         default = {
             "requests_total": 0,
@@ -50,7 +50,7 @@ class ProviderUsageService:
         }
         return {provider_id: default.copy() for provider_id in self.PROVIDER_LIMITS}
 
-    def get_usage_data(self, provider_id: str) -> Dict[str, Any]:
+    def get_usage_data(self, provider_id: str) -> Dict[str, Any]:  # noqa: UP006
         """Get usage data for a provider.
 
         Args:
@@ -114,9 +114,7 @@ class ProviderUsageService:
         cost_per_request = self.get_cost_per_request(provider_id)
         return requests_this_month * cost_per_request
 
-    def calculate_status(
-        self, provider_id: str, is_selected: bool
-    ) -> ProviderStatusDTO:
+    def calculate_status(self, provider_id: str, is_selected: bool) -> ProviderStatusDTO:
         """Calculate provider status based on usage data.
 
         Args:
@@ -147,8 +145,8 @@ class ProviderUsageService:
         Returns:
             ISO format date string for the reset date
         """
-        now = datetime.now(timezone.utc)
-        if now.month == 12:
+        now = datetime.now(timezone.utc)  # noqa: UP017
+        if now.month == 12:  # noqa: PLR2004
             reset_date = now.replace(
                 year=now.year + 1,
                 month=1,
@@ -177,15 +175,11 @@ class ProviderUsageService:
         response_times = usage_data.get("response_times_ms", [])
 
         # Calculate average response time
-        avg_response_time = (
-            sum(response_times) / len(response_times) if response_times else 0.0
-        )
+        avg_response_time = sum(response_times) / len(response_times) if response_times else 0.0
 
         # Get budget from preferences
         prefs = UserPreferences.load_provider_preferences()
-        monthly_budget = prefs.get(
-            "monthly_budget_usd", ProviderConfig.MONTHLY_BUDGET_USD
-        )
+        monthly_budget = prefs.get("monthly_budget_usd", ProviderConfig.MONTHLY_BUDGET_USD)
         estimated_cost = self.calculate_estimated_cost(provider_id)
         budget_remaining = max(0, monthly_budget - estimated_cost)
 

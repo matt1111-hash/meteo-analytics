@@ -4,14 +4,20 @@ from __future__ import annotations
 
 import sqlite3
 from pathlib import Path
-from typing import Dict, List
 
 import pytest
-
 from src.infrastructure.repositories.city_repository import CityRepository
 
+__all__ = [
+    "CityRepository",
+    "build_repository",
+    "create_cities_db",
+    "create_hungarian_settlements_db",
+    "pytest",
+]
 
-def create_cities_db(path: Path, rows: List[Dict[str, object]]) -> None:
+
+def create_cities_db(path: Path, rows: list[dict[str, object]]) -> None:
     """Create a minimal cities database with the required schema."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(path) as conn:
@@ -55,7 +61,7 @@ def create_cities_db(path: Path, rows: List[Dict[str, object]]) -> None:
         conn.commit()
 
 
-def create_hungarian_settlements_db(path: Path, rows: List[Dict[str, object]]) -> None:
+def create_hungarian_settlements_db(path: Path, rows: list[dict[str, object]]) -> None:
     """Create a minimal hungarian_settlements database with the required schema."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(path) as conn:

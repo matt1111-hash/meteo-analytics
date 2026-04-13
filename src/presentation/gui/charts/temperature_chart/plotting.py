@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -39,10 +38,8 @@ class TemperaturePlottingMixin:
             "comfort": self.color_palette.get_color("success", "light") or "#22c55e",
             "trend_up": self.color_palette.get_color("error", "light") or "#ef4444",
             "trend_down": self.color_palette.get_color("info", "light") or "#8b5cf6",
-            "annotation_hot": self.color_palette.get_color("error", "light")
-            or "#fef2f2",
-            "annotation_cold": self.color_palette.get_color("info", "light")
-            or "#eff6ff",
+            "annotation_hot": self.color_palette.get_color("error", "light") or "#fef2f2",
+            "annotation_cold": self.color_palette.get_color("info", "light") or "#eff6ff",
         }
         temp_colors["moderate"] = self.weather_colors.get("temperature", "#C43939")
         return temp_colors
@@ -51,9 +48,7 @@ class TemperaturePlottingMixin:
         """Plot background comfort and threshold zones."""
         self.ax.axhspan(-50, 0, alpha=0.1, color=temp_colors["cold"], label="Fagyzóna")
         self.ax.axhspan(25, 50, alpha=0.1, color=temp_colors["hot"], label="Forró zóna")
-        self.ax.axhspan(
-            15, 25, alpha=0.05, color=temp_colors["comfort"], label="Komfort zóna"
-        )
+        self.ax.axhspan(15, 25, alpha=0.05, color=temp_colors["comfort"], label="Komfort zóna")
         for value, color_key, label in [
             (0, "cold", "Fagypont"),
             (25, "warm", "Nyári meleg"),
@@ -68,9 +63,7 @@ class TemperaturePlottingMixin:
                 label=label,
             )
 
-    def _plot_temperature_series(
-        self, df: "pd.DataFrame", temp_colors: dict[str, str]
-    ) -> None:
+    def _plot_temperature_series(self, df: "pd.DataFrame", temp_colors: dict[str, str]) -> None:
         """Plot min, max and mean temperature lines."""
         series_config = [
             ("temp_min", "cold", "Minimum", "o-", 3, 6, 2),
@@ -107,11 +100,9 @@ class TemperaturePlottingMixin:
             label="Napi hőingás",
         )
 
-    def _plot_temperature_trends(
-        self, df: "pd.DataFrame", temp_colors: dict[str, str]
-    ) -> None:
+    def _plot_temperature_trends(self, df: "pd.DataFrame", temp_colors: dict[str, str]) -> None:
         """Plot temperature trend lines."""
-        if len(df) <= 3:
+        if len(df) <= 3:  # noqa: PLR2004
             return
         x_numeric = np.arange(len(df))
         for column, color_key, label in [
@@ -129,9 +120,7 @@ class TemperaturePlottingMixin:
                 label=label,
             )
 
-    def _annotate_extremes(
-        self, df: "pd.DataFrame", temp_colors: dict[str, str]
-    ) -> None:
+    def _annotate_extremes(self, df: "pd.DataFrame", temp_colors: dict[str, str]) -> None:
         """Annotate hottest and coldest visible points."""
         annotations = [
             (
@@ -169,14 +158,12 @@ class TemperaturePlottingMixin:
                 xy=(date, value),
                 xytext=offset,
                 textcoords="offset points",
-                bbox=dict(
-                    boxstyle="round,pad=0.5", fc=facecolor, ec=edgecolor, alpha=0.8
-                ),
-                arrowprops=dict(
-                    arrowstyle="->",
-                    connectionstyle=connection,
-                    color=edgecolor,
-                ),
+                bbox={"boxstyle": "round,pad=0.5", "fc": facecolor, "ec": edgecolor, "alpha": 0.8},
+                arrowprops={
+                    "arrowstyle": "->",
+                    "connectionstyle": connection,
+                    "color": edgecolor,
+                },
             )
 
     def _plot_enhanced_temperature(self, df: "pd.DataFrame") -> None:

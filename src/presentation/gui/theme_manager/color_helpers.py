@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 ThemeManager Color Helpers - Color-related helper methods.
 """
 
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .core import ProfessionalThemeManager
@@ -24,7 +23,7 @@ class ColorHelper:
         """
         self._manager = manager
 
-    def get_current_colors(self) -> Dict[str, str]:
+    def get_current_colors(self) -> dict[str, str]:
         """
         🎯 PROFESSIONAL CHART API - Dynamic colors from ColorPalette.
 
@@ -35,13 +34,12 @@ class ColorHelper:
         return {
             **base_colors,
             **self._get_weather_colors_dict(base_colors),
-            "border": self._manager.color_palette.get_color("info", "light")
-            or "#d1d5db",
+            "border": self._manager.color_palette.get_color("info", "light") or "#d1d5db",
             "hover_overlay": self._manager.color_palette.get_color("primary", "hover")
             or base_colors["primary"],
         }
 
-    def _get_base_colors(self) -> Dict[str, str]:
+    def _get_base_colors(self) -> dict[str, str]:
         """Build base semantic colors from palette with fallbacks."""
         semantic_defaults = {
             "surface": ("surface", "base", "#ffffff"),
@@ -59,7 +57,7 @@ class ColorHelper:
             for key, (color_name, variant, fallback) in semantic_defaults.items()
         }
 
-    def _get_weather_colors_dict(self, base_colors: Dict[str, str]) -> Dict[str, str]:
+    def _get_weather_colors_dict(self, base_colors: dict[str, str]) -> dict[str, str]:  # noqa: ARG002
         """Get weather-specific colors dictionary."""
         if not hasattr(self._manager, "weather_palette"):
             return {}
@@ -69,29 +67,21 @@ class ColorHelper:
                 "weather_temperature", "base"
             )
             or "#C43939",
-            "weather_humidity": self._manager.weather_palette.get_color(
-                "weather_humidity", "base"
-            )
+            "weather_humidity": self._manager.weather_palette.get_color("weather_humidity", "base")
             or "#42a5f5",
-            "weather_wind": self._manager.weather_palette.get_color(
-                "weather_wind", "base"
-            )
+            "weather_wind": self._manager.weather_palette.get_color("weather_wind", "base")
             or "#66bb6a",
-            "weather_pressure": self._manager.weather_palette.get_color(
-                "weather_pressure", "base"
-            )
+            "weather_pressure": self._manager.weather_palette.get_color("weather_pressure", "base")
             or "#ab47bc",
             "weather_precipitation": self._manager.weather_palette.get_color(
                 "weather_precipitation", "base"
             )
             or "#29b6f6",
-            "weather_clouds": self._manager.weather_palette.get_color(
-                "weather_clouds", "base"
-            )
+            "weather_clouds": self._manager.weather_palette.get_color("weather_clouds", "base")
             or "#bdbdbd",
         }
 
-    def get_weather_colors(self) -> Dict[str, str]:
+    def get_weather_colors(self) -> dict[str, str]:
         """
         🌦️ PROFESSIONAL WEATHER API - Weather-specific colors.
 
@@ -114,21 +104,19 @@ class ColorHelper:
         for weather_type in weather_types:
             weather_key = f"weather_{weather_type}"
             weather_colors[weather_key] = (
-                self._manager.weather_palette.get_color(weather_key, "base")
-                or "#6b7280"
+                self._manager.weather_palette.get_color(weather_key, "base") or "#6b7280"
             )
 
             # Add variants
             for variant in ["light", "dark", "hover", "pressed"]:
                 variant_key = f"{weather_key}_{variant}"
                 weather_colors[variant_key] = (
-                    self._manager.weather_palette.get_color(weather_key, variant)
-                    or "#6b7280"
+                    self._manager.weather_palette.get_color(weather_key, variant) or "#6b7280"
                 )
 
         return weather_colors
 
-    def get_semantic_colors(self) -> Dict[str, Dict[str, str]]:
+    def get_semantic_colors(self) -> dict[str, dict[str, str]]:
         """
         🎯 PROFESSIONAL SEMANTIC API - All semantic colors with variants.
 
@@ -139,8 +127,8 @@ class ColorHelper:
         semantic_types = ["primary", "success", "warning", "error", "info", "surface"]
 
         for semantic_type in semantic_types:
-            semantic_colors[semantic_type] = (
-                self._manager.color_palette.get_all_variants(semantic_type)
+            semantic_colors[semantic_type] = self._manager.color_palette.get_all_variants(
+                semantic_type
             )
 
         return semantic_colors

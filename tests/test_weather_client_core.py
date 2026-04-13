@@ -4,10 +4,8 @@ from __future__ import annotations
 
 import time
 from datetime import datetime
-from typing import Dict, List, Tuple
 
 import pytest
-
 from src.data import weather_client as weather_client_module
 
 WeatherData = weather_client_module.WeatherData
@@ -48,7 +46,7 @@ def test_rate_limit_check_triggers_sleep(monkeypatch: pytest.MonkeyPatch) -> Non
     provider.min_request_interval = 1.0
 
     monkeypatch.setattr(time, "time", lambda: 5.5)
-    slept: Dict[str, float] = {}
+    slept: dict[str, float] = {}
 
     def fake_sleep(delay: float) -> None:
         slept["value"] = delay
@@ -77,8 +75,8 @@ def test_handle_successful_request_updates_callbacks() -> None:
     client = WeatherClient()
     client.preferred_provider = "open-meteo"
 
-    fallback_events: List[Tuple[str, str]] = []
-    change_events: List[Tuple[str, str]] = []
+    fallback_events: list[tuple[str, str]] = []
+    change_events: list[tuple[str, str]] = []
 
     def on_fallback(requested: str, used: str) -> None:
         fallback_events.append((requested, used))

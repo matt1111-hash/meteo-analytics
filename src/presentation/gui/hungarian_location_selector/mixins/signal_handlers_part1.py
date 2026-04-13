@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for SignalHandlersMixin."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .signal_handlers_support import *
 
 
-class SignalHandlersMixinPart1Mixin:
+class SignalHandlersMixinPart1Mixin:  # noqa: D101
     def _on_counties_loaded(self, counties_gdf):
         """
         🗺️ Megyeadatok betöltése befejezve.

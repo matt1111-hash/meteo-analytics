@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,7 +7,6 @@ Extreme Weather Calculator - Monthly Calculator
 """
 
 import logging
-from typing import Dict, List
 
 from .extreme_records import ExtremeRecord
 
@@ -21,7 +19,7 @@ class MonthlyCalculator:
     """
 
     @staticmethod
-    def _build_dataframe(daily_data: Dict[str, List], dates: List[str]):
+    def _build_dataframe(daily_data: dict[str, list], dates: list[str]):
         """Build monthly aggregation dataframe."""
         import pandas as pd
 
@@ -35,7 +33,7 @@ class MonthlyCalculator:
         return df
 
     @staticmethod
-    def _append_temperature_records(df, records: List[ExtremeRecord]) -> None:
+    def _append_temperature_records(df, records: list[ExtremeRecord]) -> None:
         """Append temperature-based monthly records."""
         if "temperature_2m_max" in df.columns:
             monthly_temp_max = df.groupby("year_month")["temperature_2m_max"].max()
@@ -63,7 +61,7 @@ class MonthlyCalculator:
                 )
 
     @staticmethod
-    def _append_precipitation_records(df, records: List[ExtremeRecord]) -> None:
+    def _append_precipitation_records(df, records: list[ExtremeRecord]) -> None:
         """Append precipitation-based monthly records."""
         if "precipitation_sum" not in df.columns:
             return
@@ -90,7 +88,7 @@ class MonthlyCalculator:
         )
 
     @staticmethod
-    def _append_wind_records(df, records: List[ExtremeRecord]) -> None:
+    def _append_wind_records(df, records: list[ExtremeRecord]) -> None:
         """Append wind-based monthly records."""
         wind_col = _get_wind_column(df.columns)
         if not wind_col:
@@ -130,8 +128,8 @@ class MonthlyCalculator:
 
     @staticmethod
     def calculate_records(
-        daily_data: Dict[str, List], dates: List[str], daily_calculator
-    ) -> List[ExtremeRecord]:
+        daily_data: dict[str, list], dates: list[str], daily_calculator
+    ) -> list[ExtremeRecord]:
         """
         📅 Havi rekordok számítása pandas aggregációval.
 
@@ -145,7 +143,7 @@ class MonthlyCalculator:
         """
         try:
             df = MonthlyCalculator._build_dataframe(daily_data, dates)
-            records: List[ExtremeRecord] = []
+            records: list[ExtremeRecord] = []
             MonthlyCalculator._append_temperature_records(df, records)
             MonthlyCalculator._append_precipitation_records(df, records)
             MonthlyCalculator._append_wind_records(df, records)

@@ -8,7 +8,7 @@ to work with location data without depending on domain entities.
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, Tuple
+from typing import Any
 
 from src.domain.entities.location import Location
 from src.domain.entities.universal_location import UniversalLocation
@@ -28,7 +28,7 @@ class LocationDTO:
     longitude: float
     country_code: str = "HU"
     timezone: str = "Europe/Budapest"
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_domain(cls, location: Location) -> "LocationDTO":
@@ -43,7 +43,7 @@ class LocationDTO:
             metadata=location.metadata,
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "identifier": self.identifier,
@@ -55,7 +55,7 @@ class LocationDTO:
             "metadata": self.metadata,
         }
 
-    def get_coordinates(self) -> Tuple[float, float]:
+    def get_coordinates(self) -> tuple[float, float]:
         """Get coordinates as tuple."""
         return (self.latitude, self.longitude)
 
@@ -79,7 +79,7 @@ class UniversalLocationDTO:
     location_type: str  # Location type as string
     country_code: str = "HU"
     timezone: str = "Europe/Budapest"
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_domain(cls, location: UniversalLocation) -> "UniversalLocationDTO":
@@ -88,7 +88,7 @@ class UniversalLocationDTO:
         longitude = 0.0
         if location.coordinates:
             latitude, longitude = location.coordinates
-        elif isinstance(location.identifier, tuple) and len(location.identifier) == 2:
+        elif isinstance(location.identifier, tuple) and len(location.identifier) == 2:  # noqa: PLR2004
             latitude, longitude = location.identifier
 
         return cls(
@@ -108,7 +108,7 @@ class UniversalLocationDTO:
             },
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "identifier": self.identifier,
@@ -121,7 +121,7 @@ class UniversalLocationDTO:
             "metadata": self.metadata,
         }
 
-    def get_coordinates(self) -> Tuple[float, float]:
+    def get_coordinates(self) -> tuple[float, float]:
         """Get coordinates as tuple."""
         return (self.latitude, self.longitude)
 

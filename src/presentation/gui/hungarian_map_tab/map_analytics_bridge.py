@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 from PySide6.QtCore import QObject, Signal
 
@@ -25,7 +25,7 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
     sync_error_occurred = Signal(str)  # error message
     status_update_requested = Signal(str, str)  # label, color
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None):  # noqa: D107
         super().__init__(parent)
         self.map_visualizer = None
         self.location_selector = None
@@ -33,9 +33,9 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
         self.sync_in_progress = False
 
         # State memory
-        self.last_analysis_parameters: Dict[str, Any] = {}
-        self.last_weather_parameters: Dict[str, Any] = {}
-        self.last_date_parameters: Dict[str, Any] = {}
+        self.last_analysis_parameters: dict[str, Any] = {}
+        self.last_weather_parameters: dict[str, Any] = {}
+        self.last_date_parameters: dict[str, Any] = {}
 
         self.current_analytics_result = None
         self.current_weather_overlay = None
@@ -47,7 +47,7 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
         self.location_selector = location_selector
         self.multi_city_engine = multi_city_engine
 
-    def sync_analysis_parameters(self, params: Dict[str, Any]) -> None:
+    def sync_analysis_parameters(self, params: dict[str, Any]) -> None:
         """Sync analysis parameters from Control Panel to map."""
 
         def operation() -> None:
@@ -58,7 +58,7 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
 
         run_sync_operation(self, "analysis", "analysis_parameters", operation)
 
-    def sync_weather_parameters(self, params: Dict[str, Any]) -> None:
+    def sync_weather_parameters(self, params: dict[str, Any]) -> None:
         """Sync weather parameters from Control Panel to map."""
         if self.sync_in_progress:
             return
@@ -108,7 +108,7 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
         finally:
             self.sync_in_progress = False
 
-    def refresh_with_new_parameters(self, bundle: Dict[str, Any]) -> None:
+    def refresh_with_new_parameters(self, bundle: dict[str, Any]) -> None:
         """Comprehensive map refresh with full parameter bundle."""
         if self.sync_in_progress:
             return
@@ -138,7 +138,7 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
 
     # --- Internal Helpers ---
 
-    def _update_map_for_single_location(self, location: Dict[str, Any]) -> None:
+    def _update_map_for_single_location(self, location: dict[str, Any]) -> None:
         if self.map_visualizer:
             lat = location.get("latitude")
             lon = location.get("longitude")
@@ -180,7 +180,7 @@ class MapAnalyticsBridge(QObject, IMapAnalyticsBridge):
         if self.multi_city_engine and hasattr(self.multi_city_engine, "set_date_range"):
             self.multi_city_engine.set_date_range(start_date, end_date)
 
-    def _full_map_refresh(self, analysis: Dict, weather: Dict, date: Dict) -> None:
+    def _full_map_refresh(self, analysis: dict, weather: dict, date: dict) -> None:
         apply_full_refresh(self, analysis, weather, date)
 
     def _emit_status(self, sync_type: str, status: str) -> None:

@@ -26,11 +26,10 @@ class TestDomainLayerBoundaries(TestCleanArchitectureCompliance):
             imports = get_imports_from_file(py_file)
             for imp in imports:
                 if imp.startswith("src.data"):
-                    violations.append((str(py_file.relative_to(src_path)), imp))
+                    violations.append((str(py_file.relative_to(src_path)), imp))  # noqa: PERF401
 
-        assert not violations, (
-            "Domain layer should not import from data layer:\n"
-            + "\n".join(f"  {f}: {i}" for f, i in violations)
+        assert not violations, "Domain layer should not import from data layer:\n" + "\n".join(
+            f"  {f}: {i}" for f, i in violations
         )
 
     def test_domain_does_not_import_infrastructure_layer(self, src_path: Path):
@@ -44,7 +43,7 @@ class TestDomainLayerBoundaries(TestCleanArchitectureCompliance):
             imports = get_imports_from_file(py_file)
             for imp in imports:
                 if imp.startswith("src.infrastructure"):
-                    violations.append((str(py_file.relative_to(src_path)), imp))
+                    violations.append((str(py_file.relative_to(src_path)), imp))  # noqa: PERF401
 
         assert not violations, (
             "Domain layer should not import from infrastructure layer:\n"
@@ -62,7 +61,7 @@ class TestDomainLayerBoundaries(TestCleanArchitectureCompliance):
             imports = get_imports_from_file(py_file)
             for imp in imports:
                 if imp.startswith("src.presentation"):
-                    violations.append((str(py_file.relative_to(src_path)), imp))
+                    violations.append((str(py_file.relative_to(src_path)), imp))  # noqa: PERF401
 
         assert not violations, (
             "Domain layer should not import from presentation layer:\n"
@@ -80,7 +79,7 @@ class TestDomainLayerBoundaries(TestCleanArchitectureCompliance):
             imports = get_imports_from_file(py_file)
             for imp in imports:
                 if imp.startswith("src.application"):
-                    violations.append((str(py_file.relative_to(src_path)), imp))
+                    violations.append((str(py_file.relative_to(src_path)), imp))  # noqa: PERF401
 
         assert not violations, (
             "Domain layer should not import from application layer:\n"
@@ -98,11 +97,10 @@ class TestDomainLayerBoundaries(TestCleanArchitectureCompliance):
             imports = get_imports_from_file(py_file)
             for imp in imports:
                 if imp.startswith("src.api"):
-                    violations.append((str(py_file.relative_to(src_path)), imp))
+                    violations.append((str(py_file.relative_to(src_path)), imp))  # noqa: PERF401
 
-        assert not violations, (
-            "Domain layer should not import from api layer:\n"
-            + "\n".join(f"  {f}: {i}" for f, i in violations)
+        assert not violations, "Domain layer should not import from api layer:\n" + "\n".join(
+            f"  {f}: {i}" for f, i in violations
         )
 
     def test_domain_does_not_import_analytics_layer(self, src_path: Path):
@@ -116,9 +114,8 @@ class TestDomainLayerBoundaries(TestCleanArchitectureCompliance):
             imports = get_imports_from_file(py_file)
             for imp in imports:
                 if imp.startswith("src.analytics"):
-                    violations.append((str(py_file.relative_to(src_path)), imp))
+                    violations.append((str(py_file.relative_to(src_path)), imp))  # noqa: PERF401
 
-        assert not violations, (
-            "Domain layer should not import from analytics layer:\n"
-            + "\n".join(f"  {f}: {i}" for f, i in violations)
+        assert not violations, "Domain layer should not import from analytics layer:\n" + "\n".join(
+            f"  {f}: {i}" for f, i in violations
         )

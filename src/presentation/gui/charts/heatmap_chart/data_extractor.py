@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Fájl: src/presentation/gui/charts/heatmap_chart/data_extractor.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd
@@ -27,7 +26,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _resolve_parameter_values(self, daily_data: Dict[str, Any]) -> list[Any]:
+def _resolve_parameter_values(self, daily_data: dict[str, Any]) -> list[Any]:
     """Resolve requested parameter values, adding temperature mean fallback."""
     parameter_values = daily_data.get(self.parameter, [])
     if parameter_values or self.parameter != "temperature_2m_mean":
@@ -40,16 +39,14 @@ def _resolve_parameter_values(self, daily_data: Dict[str, Any]) -> list[Any]:
 
     logger.info("⚠️ temperature_2m_mean hiányzik, fallback számításra...")
     return [
-        round((t_max + t_min) / 2, 1)
-        if t_max is not None and t_min is not None
-        else None
-        for t_max, t_min in zip(temp_max, temp_min)
+        round((t_max + t_min) / 2, 1) if t_max is not None and t_min is not None else None
+        for t_max, t_min in zip(temp_max, temp_min, strict=False)
     ]
 
 
 def _empty_or_short_period(values: list, total_days: int) -> np.ndarray | None:
     """Return original values when aggregation is unnecessary."""
-    if total_days > 365:
+    if total_days > 365:  # noqa: PLR2004
         return None
     logger.debug(f"📊 Rövid időszak: {len(values)} nap, nincs aggregáció.")
     return np.array(values)
@@ -72,7 +69,7 @@ def _aggregate_bin_values(parameter: str, clean_values: list[Any]) -> float:
     return float(np.mean(clean_values))
 
 
-def extract_daily_data(self, data: Dict[str, Any]) -> pd.DataFrame:
+def extract_daily_data(self, data: dict[str, Any]) -> pd.DataFrame:
     """
     Extract daily data for parameter.
 

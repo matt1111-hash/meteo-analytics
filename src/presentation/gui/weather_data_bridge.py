@@ -6,4 +6,4 @@ from src.presentation.gui.weather_data_bridge import (
     WeatherOverlayData,
 )
 
-__all__ = ["WeatherOverlayData", "WeatherDataBridge"]
+__all__ = ["WeatherDataBridge", "WeatherOverlayData"]

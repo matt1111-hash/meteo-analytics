@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -9,7 +8,7 @@ Település keresést végző worker OpenMeteo Geocoding API használatával.
 """
 
 import json
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 import httpx
 from PySide6.QtCore import QObject, Signal
@@ -25,7 +24,7 @@ def _is_cancelled(worker: "GeocodingWorker") -> bool:
     return worker.isInterruptionRequested() or worker.is_cancelled
 
 
-def _build_geocoding_params(search_query: str) -> Dict[str, Any]:
+def _build_geocoding_params(search_query: str) -> dict[str, Any]:
     """Build Open-Meteo geocoding query parameters."""
     return {
         "name": search_query,
@@ -37,7 +36,7 @@ def _build_geocoding_params(search_query: str) -> Dict[str, Any]:
 
 def _validate_search_query(worker: "GeocodingWorker") -> bool:
     """Validate the geocoding search query."""
-    if worker.search_query and len(worker.search_query) >= 2:
+    if worker.search_query and len(worker.search_query) >= 2:  # noqa: PLR2004
         return True
     worker.emit_error("Legalább 2 karakter szükséges a kereséshez")
     return False
@@ -45,7 +44,7 @@ def _validate_search_query(worker: "GeocodingWorker") -> bool:
 
 def _prepare_geocoding_request(
     worker: "GeocodingWorker",
-) -> tuple[str, Dict[str, Any]] | None:
+) -> tuple[str, dict[str, Any]] | None:
     """Prepare request metadata unless cancelled."""
     worker.emit_status("🔍 Geocoding keresés indítása...")
     worker.progress_updated.emit(10)
@@ -62,9 +61,7 @@ def _prepare_geocoding_request(
     )
 
 
-def _fetch_geocoding_results(
-    worker: "GeocodingWorker", url: str, params: Dict[str, Any]
-) -> bool:
+def _fetch_geocoding_results(worker: "GeocodingWorker", url: str, params: dict[str, Any]) -> bool:
     """Fetch geocoding results from the API."""
     with httpx.Client(timeout=30.0) as client:
         worker.emit_status("📡 API kérés küldése...")
@@ -73,7 +70,7 @@ def _fetch_geocoding_results(
         if _is_cancelled(worker):
             print("🛑 DEBUG: Geocoding cancelled after HTTP request")
             return False
-        if response.status_code != 200:
+        if response.status_code != 200:  # noqa: PLR2004
             worker.emit_error(f"Geocoding API hiba: HTTP {response.status_code}")
             return False
         worker.emit_status("📄 Válasz feldolgozása...")
@@ -111,10 +108,10 @@ class GeocodingWorker(BaseWorkerThread):
     # Specifikus signalok
     geocoding_completed = Signal(list)  # List[Dict] - találatok
 
-    def __init__(self, search_query: str, parent: Optional["QObject"] = None):
+    def __init__(self, search_query: str, parent: Optional["QObject"] = None):  # noqa: D107
         super().__init__(parent)
         self.search_query = search_query.strip()
-        self.results: List[Dict[str, Any]] = []
+        self.results: list[dict[str, Any]] = []
 
     def execute(self) -> None:
         """
@@ -133,10 +130,10 @@ class GeocodingWorker(BaseWorkerThread):
                 self.emit_error("Geocoding API timeout - próbálja újra később")
         except httpx.RequestError as e:
             if not self.is_cancelled:
-                self.emit_error(f"Hálózati hiba a geocoding során: {str(e)}")
+                self.emit_error(f"Hálózati hiba a geocoding során: {e!s}")
         except json.JSONDecodeError:
             if not self.is_cancelled:
                 self.emit_error("Érvénytelen válasz a geocoding API-tól")
         except Exception as e:
             if not self.is_cancelled:
-                self.emit_error(f"Váratlan hiba a geocoding során: {str(e)}")
+                self.emit_error(f"Váratlan hiba a geocoding során: {e!s}")

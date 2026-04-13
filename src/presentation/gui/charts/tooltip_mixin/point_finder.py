@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 WeatherTooltipMixin Point Finder - Find closest chart point.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 import matplotlib.dates as mdates
 import numpy as np
@@ -27,7 +26,7 @@ class PointFinder:
         """
         self._mixin = mixin
 
-    def find_closest(self, event) -> Optional[Dict[str, Any]]:
+    def find_closest(self, event) -> dict[str, Any] | None:
         """
         Find closest chart point algorithm.
 
@@ -45,24 +44,19 @@ class PointFinder:
 
     def _get_temperature_columns(self, df: Any) -> list[str]:
         """Return available temperature columns."""
-        return [
-            col for col in ["temp_mean", "temp_max", "temp_min"] if col in df.columns
-        ]
+        return [col for col in ["temp_mean", "temp_max", "temp_min"] if col in df.columns]
 
     def _find_closest_index(
         self, plot_dates: Any, temperatures: Any, mouse_coords: tuple[float, float]
-    ) -> tuple[Optional[int], float]:
+    ) -> tuple[int | None, float]:
         """Find closest index for a single temperature series."""
         mouse_x_display, mouse_y_display = mouse_coords
-        closest_idx: Optional[int] = None
+        closest_idx: int | None = None
         min_distance = float("inf")
-        for index, (x_val, y_val) in enumerate(zip(plot_dates, temperatures)):
-            point_x_display, point_y_display = self._mixin.ax.transData.transform(
-                (x_val, y_val)
-            )
+        for index, (x_val, y_val) in enumerate(zip(plot_dates, temperatures, strict=False)):
+            point_x_display, point_y_display = self._mixin.ax.transData.transform((x_val, y_val))
             distance = np.sqrt(
-                (mouse_x_display - point_x_display) ** 2
-                + (mouse_y_display - point_y_display) ** 2
+                (mouse_x_display - point_x_display) ** 2 + (mouse_y_display - point_y_display) ** 2
             )
             if distance < min_distance:
                 min_distance = distance
@@ -77,7 +71,7 @@ class PointFinder:
         temperatures: Any,
         min_distance: float,
         temp_columns: list[str],
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Build point payload for tooltip rendering."""
         point_data = {
             "index": closest_idx,
@@ -91,7 +85,7 @@ class PointFinder:
                 point_data[col] = df.iloc[closest_idx][col]
         return point_data
 
-    def find_closest_temperature(self, event) -> Optional[Dict[str, Any]]:
+    def find_closest_temperature(self, event) -> dict[str, Any] | None:
         """
         Find closest temperature chart point.
 

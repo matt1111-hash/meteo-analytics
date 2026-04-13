@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
-from typing import Optional
 
 _VALID_PARAMETERS = {"temperature", "precipitation", "wind"}
 _VALID_SEVERITIES = {"success", "warning", "error", "disabled"}
@@ -21,8 +20,8 @@ class ClimateAnomaly:  # pylint: disable=too-many-instance-attributes
     category: str
     severity: str  # "success" | "warning" | "error" | "disabled"
     message: str
-    threshold: Optional[float] = None
-    details: Optional[str] = None
+    threshold: float | None = None
+    details: str | None = None
 
     def __post_init__(self) -> None:
         """Validate required business rules for anomalies."""

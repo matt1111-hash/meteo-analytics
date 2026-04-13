@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -23,7 +22,7 @@ from .wind_analyzer import WindGustsAnalyzer
 # Re-export for backward compatibility
 from .wind_constants import WindGustsConstants
 
-__all__ = ["WindGustsConstants", "DataFrameExtractor", "WindGustsAnalyzer"]
+__all__ = ["DataFrameExtractor", "WindGustsAnalyzer", "WindGustsConstants"]
 
 logger = logging.getLogger(__name__)
 logger.info(

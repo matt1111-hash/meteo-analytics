@@ -16,7 +16,7 @@ Képességek:
 Fájl: src/presentation/gui/map_view/debug.py
 """
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
@@ -30,7 +30,7 @@ class MapViewDebugMixin:
     metódusokat.
     """
 
-    def get_debug_info(self) -> Dict[str, Any]:
+    def get_debug_info(self) -> dict[str, Any]:
         """
         🐛 Debug információk összegyűjtése.
 

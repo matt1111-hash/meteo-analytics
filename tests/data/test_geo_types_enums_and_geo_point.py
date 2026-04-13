@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-
 from src.data.geo_types import CoordinateSystem, DistanceUnit, GeoPoint
 
 
@@ -62,9 +61,7 @@ class TestGeoPoint:
 
     def test_create_geopoint_with_optional_fields(self) -> None:
         """GeoPoint with altitude and name."""
-        point = GeoPoint(
-            latitude=47.4979, longitude=19.0402, altitude=150.5, name="Budapest"
-        )
+        point = GeoPoint(latitude=47.4979, longitude=19.0402, altitude=150.5, name="Budapest")
         assert point.altitude == 150.5
         assert point.name == "Budapest"
 
@@ -145,18 +142,14 @@ class TestGeoPoint:
 
     def test_normalize_preserves_optional_fields(self) -> None:
         """normalize preserves altitude and name."""
-        point = GeoPoint(
-            latitude=47.4979, longitude=19.0402, altitude=150.5, name="Budapest"
-        )
+        point = GeoPoint(latitude=47.4979, longitude=19.0402, altitude=150.5, name="Budapest")
         normalized = point.normalize()
         assert normalized.altitude == 150.5
         assert normalized.name == "Budapest"
 
     def test_to_dict(self) -> None:
         """to_dict converts GeoPoint to dictionary."""
-        point = GeoPoint(
-            latitude=47.4979, longitude=19.0402, altitude=150.5, name="Budapest"
-        )
+        point = GeoPoint(latitude=47.4979, longitude=19.0402, altitude=150.5, name="Budapest")
         result = point.to_dict()
         assert result == {
             "latitude": 47.4979,

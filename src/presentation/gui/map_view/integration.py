@@ -16,7 +16,7 @@ Képességek:
 Fájl: src/presentation/gui/map_view/integration.py
 """
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
@@ -54,7 +54,7 @@ class MapViewIntegrationMixin:
 
     # === KÜLSŐ INTEGRÁCIÓ TÁMOGATÁS ===
 
-    def update_from_location_selection(self, location_data: Dict[str, Any]) -> None:
+    def update_from_location_selection(self, location_data: dict[str, Any]) -> None:
         """
         📍 Külső lokáció kiválasztás alapján frissítés.
 
@@ -64,9 +64,7 @@ class MapViewIntegrationMixin:
         county_name = location_data.get("county") or location_data.get("name")
 
         if county_name and self.focus_on_county(county_name):
-            print(
-                f"🎯 DEBUG: Folium map focused on county from external selection: {county_name}"
-            )
+            print(f"🎯 DEBUG: Folium map focused on county from external selection: {county_name}")
         else:
             print(
                 f"⚠️ DEBUG: Could not focus Folium map on county from external selection: {county_name}"
@@ -80,9 +78,7 @@ class MapViewIntegrationMixin:
             county_name: Kattintott megye neve
         """
         if self.focus_on_county(county_name):
-            print(
-                f"🎯 DEBUG: Folium map focused on external county click: {county_name}"
-            )
+            print(f"🎯 DEBUG: Folium map focused on external county click: {county_name}")
 
             # Location selector szinkronizáció
             location_selector = self.get_location_selector()
@@ -91,7 +87,7 @@ class MapViewIntegrationMixin:
         else:
             print(f"⚠️ DEBUG: Could not handle external county click: {county_name}")
 
-    def get_integration_status(self) -> Dict[str, Any]:
+    def get_integration_status(self) -> dict[str, Any]:
         """
         📊 Folium integráció státusz információk lekérdezése.
 
@@ -105,10 +101,8 @@ class MapViewIntegrationMixin:
             status.update(
                 {
                     "map_view_ready": True,
-                    "javascript_bridge_available": self.get_javascript_bridge()
-                    is not None,
-                    "folium_map_visualizer_available": self.get_map_visualizer()
-                    is not None,
+                    "javascript_bridge_available": self.get_javascript_bridge() is not None,
+                    "folium_map_visualizer_available": self.get_map_visualizer() is not None,
                     "external_integration_ready": self.is_folium_ready(),
                 }
             )
@@ -157,9 +151,7 @@ class MapViewIntegrationMixin:
         map_visualizer = self.get_map_visualizer()
         if map_visualizer:
             map_visualizer.toggle_weather_overlay(enabled)
-            print(
-                f"🌤️ DEBUG: Folium weather overlay {'enabled' if enabled else 'disabled'}"
-            )
+            print(f"🌤️ DEBUG: Folium weather overlay {'enabled' if enabled else 'disabled'}")
 
     def get_folium_map_config(self):
         """

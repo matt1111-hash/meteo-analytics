@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for AnalysisTypeWidget."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .analysis_type_widget_support import *
 
 
-class AnalysisTypeWidgetPart1Mixin:
+class AnalysisTypeWidgetPart1Mixin:  # noqa: D101
     def __init__(self, parent: Optional[QWidget] = None):
         """
         AnalysisTypeWidget inicializálása.
@@ -50,18 +50,14 @@ class AnalysisTypeWidgetPart1Mixin:
         # Single location radio
         self.single_location_radio = QRadioButton("📍 Egyedi lokáció elemzés")
         self.single_location_radio.setChecked(True)
-        self.single_location_radio.setToolTip(
-            "Egy konkrét település részletes időjárási elemzése"
-        )
+        self.single_location_radio.setToolTip("Egy konkrét település részletes időjárási elemzése")
         self.single_location_radio.setMinimumHeight(24)
         self.button_group.addButton(self.single_location_radio, 0)
         group_layout.addWidget(self.single_location_radio)
 
         # Region radio
         self.region_radio = QRadioButton("🏞️ Régió elemzés (Multi-City)")
-        self.region_radio.setToolTip(
-            "Magyar statisztikai régiók összehasonlító elemzése"
-        )
+        self.region_radio.setToolTip("Magyar statisztikai régiók összehasonlító elemzése")
         self.region_radio.setMinimumHeight(24)
         self.button_group.addButton(self.region_radio, 1)
         group_layout.addWidget(self.region_radio)
@@ -162,9 +158,7 @@ class AnalysisTypeWidgetPart1Mixin:
             old_type = self._current_type
             self._current_type = analysis_type
 
-            print(
-                f"🎯 DEBUG: Analysis type set programmatically: {old_type} → {analysis_type}"
-            )
+            print(f"🎯 DEBUG: Analysis type set programmatically: {old_type} → {analysis_type}")
 
             return True
 

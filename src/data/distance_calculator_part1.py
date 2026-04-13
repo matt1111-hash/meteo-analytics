@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for DistanceCalculator."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .distance_calculator_support import *
 
 
-class DistanceCalculatorPart1Mixin:
+class DistanceCalculatorPart1Mixin:  # noqa: D101
     def __init__(self, default_unit: DistanceUnit = DistanceUnit.KILOMETERS):
         """Initialize DistanceCalculator."""
         self.default_unit = default_unit

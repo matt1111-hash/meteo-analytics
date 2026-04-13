@@ -127,7 +127,7 @@ class TestIntegration:
         assert len(backups) <= 10
 
         # Latest profile should be in the main file
-        with open(storage.profiles_file, "r", encoding="utf-8") as f:
+        with open(storage.profiles_file, encoding="utf-8") as f:  # noqa: PTH123
             current_data = json.load(f)
         assert "profile14" in current_data
 

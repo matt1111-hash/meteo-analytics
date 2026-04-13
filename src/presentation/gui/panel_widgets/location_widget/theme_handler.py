@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -9,7 +8,6 @@ Location Widget - Theme styling.
 from typing import TYPE_CHECKING
 
 from PySide6.QtWidgets import QLabel
-
 from src.presentation.gui.theme_manager import register_widget_for_theming
 
 if TYPE_CHECKING:

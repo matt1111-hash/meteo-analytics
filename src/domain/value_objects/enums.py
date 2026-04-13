@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Global Weather Analyzer - Domain Value Objects - Enums
@@ -223,25 +222,25 @@ from src.domain.value_objects.enum_utils import (  # noqa: E402
 # EXPORT API
 __all__ = [
     "AnalysisType",
-    "DataProvider",
-    "RegionScope",
     "AnalyticsMetric",
-    "QuestionType",
+    "AnalyticsMode",
     "AnomalySeverity",
     "AnomalyType",
+    "DataProvider",
     "DataSource",
+    "QuestionType",
+    "RegionScope",
     "RegionType",
-    "AnalyticsMode",
     "get_analysis_type_display_name",
+    "get_available_metrics_for_question_type",
     "get_data_provider_display_name",
     "get_metric_display_name",
     "get_metric_unit",
-    "get_region_scope_display_name",
     "get_question_type_display_name",
+    "get_region_scope_display_name",
     "get_severity_color",
     "validate_analysis_type",
-    "validate_data_provider",
     "validate_analytics_metric",
+    "validate_data_provider",
     "validate_region_scope",
-    "get_available_metrics_for_question_type",
 ]

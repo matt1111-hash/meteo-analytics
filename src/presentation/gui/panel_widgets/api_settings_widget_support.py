@@ -14,7 +14,7 @@ Felelősség: CSAK az API beállítások kezelése
 - Multi-Year optimalizált beállítások
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
@@ -25,7 +25,6 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
 from src.presentation.gui.theme_manager import (
     get_theme_manager,
     register_widget_for_theming,

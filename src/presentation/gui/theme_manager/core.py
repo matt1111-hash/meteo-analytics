@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Compatibility wrapper for core.py."""
 
@@ -30,4 +30,4 @@ class ProfessionalThemeManager(
     theme_changed = Signal(str)  # theme_name: "light" | "dark"
     color_scheme_updated = Signal(object)  # ColorPalette instance
 
-    _instance: Optional["ProfessionalThemeManager"] = None
+    _instance: Optional[ProfessionalThemeManager] = None

@@ -8,9 +8,7 @@ import json
 class TestIntegration:
     """Integration tests for provider_config module."""
 
-    def test_set_and_get_selected_provider_roundtrip(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_set_and_get_selected_provider_roundtrip(self, config_fs: dict[str, str]) -> None:
         """Setting and getting provider should work correctly."""
         from src.config.provider_config import UserPreferences
 
@@ -53,11 +51,12 @@ class TestIntegration:
             assert validate_provider_selection(provider_id) is True
             assert provider_id in ProviderConfig.PROVIDERS
 
-    def test_auto_routing_matches_provider_config(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_auto_routing_matches_provider_config(self, config_fs: dict[str, str]) -> None:
         """Auto routing should match ProviderConfig routing logic."""
-        from src.config.provider_config import ProviderConfig, get_resolved_provider
+        from src.config.provider_config import (
+            ProviderConfig,
+            get_resolved_provider,
+        )
 
         config_fs["prefs"] = json.dumps({"selected_provider": "auto"})
 

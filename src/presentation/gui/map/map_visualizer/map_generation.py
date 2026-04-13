@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -86,12 +85,12 @@ def _on_map_generated(self, file_path: str) -> None:
     """
     import os
 
-    if not os.path.exists(file_path):
+    if not os.path.exists(file_path):  # noqa: PTH110
         self.error_occurred.emit(f"Generated HTML file not found: {file_path}")
         return
 
-    file_size = os.path.getsize(file_path)
-    if file_size < 1000:
+    file_size = os.path.getsize(file_path)  # noqa: PTH202
+    if file_size < 1000:  # noqa: PLR2004
         self.error_occurred.emit(f"Generated HTML file too small: {file_size} bytes")
         return
 
@@ -114,7 +113,7 @@ def _load_map_from_http_url(self, file_path: str) -> None:
     from PySide6.QtCore import QUrl
 
     try:
-        filename = os.path.basename(file_path)
+        filename = os.path.basename(file_path)  # noqa: PTH119
         http_url = f"http://{self.http_host}:{self.http_port}/{filename}"
         self.web_view.stop()
         self.web_view.load(QUrl(http_url))

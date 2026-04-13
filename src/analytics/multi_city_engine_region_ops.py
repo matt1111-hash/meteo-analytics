@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def _resolve_region_metadata(
-    engine: "MultiCityEngine",
+    engine: MultiCityEngine,
     region: str,
     limit: int | None,
     max_cities: int | None,
@@ -27,9 +27,7 @@ def _resolve_region_metadata(
     return mapped_region, region_config, final_limit
 
 
-def _log_region_fetch(
-    original_region: str, mapped_region: str, final_limit: int
-) -> None:
+def _log_region_fetch(original_region: str, mapped_region: str, final_limit: int) -> None:
     """Log normalized region lookup parameters."""
     logger.info(
         "🔧 get_cities_for_region: original='%s' → mapped='%s', limit=%s",
@@ -59,7 +57,7 @@ def _log_region_fetch_result(
 
 
 def get_cities_for_region(
-    engine: "MultiCityEngine",
+    engine: MultiCityEngine,
     region: str,
     limit: int | None = None,
     max_cities: int | None = None,

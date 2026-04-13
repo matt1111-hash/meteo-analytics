@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,7 +7,7 @@ Időjárási adatok tábla modellje - ThemeManager kompatibilis.
 """
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 import pandas as pd
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
@@ -25,7 +24,7 @@ class WeatherTableModel(QAbstractTableModel):
     Nagy adathalmazok hatékony kezelésére optimalizálva.
     """
 
-    def __init__(self, data: Optional[pd.DataFrame] = None):
+    def __init__(self, data: pd.DataFrame | None = None):  # noqa: D107
         super().__init__()
         self._data = data if data is not None else pd.DataFrame()
         self._headers = []
@@ -57,10 +56,10 @@ class WeatherTableModel(QAbstractTableModel):
         self._theme_manager.set_theme(theme_name)
         self.dataChanged.emit(QModelIndex(), QModelIndex())
 
-    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:  # noqa: ARG002, D102
         return len(self._data)
 
-    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
+    def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:  # noqa: ARG002, D102
         return len(self._headers)
 
     def _get_cell_value(self, row: int, col: int) -> Any:
@@ -116,7 +115,7 @@ class WeatherTableModel(QAbstractTableModel):
             return QColor(scheme.get_color("primary", "base") or "#1f2937")
         return QColor(31, 41, 55)
 
-    def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:
+    def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:  # noqa: D102
         if not index.isValid() or self._data.empty:
             return None
 
@@ -136,7 +135,7 @@ class WeatherTableModel(QAbstractTableModel):
 
         return None
 
-    def headerData(
+    def headerData(  # noqa: D102
         self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole
     ) -> Any:
         if role == Qt.DisplayRole and orientation == Qt.Horizontal:

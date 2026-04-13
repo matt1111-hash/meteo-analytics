@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for WeatherDataBridge."""
 
@@ -9,16 +9,16 @@ from .core_support import *
 
 def _get_gradient_color(normalized: float) -> str:
     """Return the default cold-to-hot gradient color."""
-    if normalized < 0.33:
+    if normalized < 0.33:  # noqa: PLR2004
         return "#0000FF"
-    if normalized < 0.66:
+    if normalized < 0.66:  # noqa: PLR2004
         return "#FFFF00"
     return "#FF0000"
 
 
 def _get_precipitation_color(normalized: float) -> str:
     """Return a precipitation palette color."""
-    if normalized < 0.5:
+    if normalized < 0.5:  # noqa: PLR2004
         return "#87CEEB"
     return "#0000CD"
 
@@ -32,10 +32,8 @@ def _resolve_marker_color(overlay_type: str, normalized: float) -> str:
     return _get_gradient_color(normalized)
 
 
-class WeatherDataBridgePart2Mixin:
-    def get_overlay_legend_data(
-        self, overlay_data: WeatherOverlayData
-    ) -> Dict[str, Any]:
+class WeatherDataBridgePart2Mixin:  # noqa: D101
+    def get_overlay_legend_data(self, overlay_data: WeatherOverlayData) -> Dict[str, Any]:
         """Legend adatok generálása a Folium térképhez"""
         metadata = overlay_data.metadata
 
@@ -64,22 +62,18 @@ class WeatherDataBridgePart2Mixin:
 
         return overlays
 
-    def get_folium_heatmap_data(
-        self, overlay_data: WeatherOverlayData
-    ) -> List[List[float]]:
+    def get_folium_heatmap_data(self, overlay_data: WeatherOverlayData) -> List[List[float]]:
         """Folium HeatMap plugin formátumra konvertálás"""
         heatmap_data = []
 
-        for city_name, city_data in overlay_data.data.items():
+        for city_data in overlay_data.data.values():
             lat, lon = city_data["coordinates"]
             value = city_data["value"]
             heatmap_data.append([lat, lon, value])
 
         return heatmap_data
 
-    def get_folium_marker_data(
-        self, overlay_data: WeatherOverlayData
-    ) -> List[Dict[str, Any]]:
+    def get_folium_marker_data(self, overlay_data: WeatherOverlayData) -> List[Dict[str, Any]]:
         """Folium CircleMarker formátumra konvertálás"""
         marker_data = []
         metadata = overlay_data.metadata
@@ -93,12 +87,8 @@ class WeatherDataBridgePart2Mixin:
                 "country": city_data["country"],
                 "popup_text": f"{city_name}, {city_data['country']}<br>{city_data['value']:.1f} {metadata['unit']}",
                 "tooltip_text": f"{city_name}: {city_data['value']:.1f} {metadata['unit']}",
-                "marker_size": self._calculate_marker_size(
-                    city_data["value"], metadata
-                ),
-                "marker_color": self._calculate_marker_color(
-                    city_data["value"], metadata
-                ),
+                "marker_size": self._calculate_marker_size(city_data["value"], metadata),
+                "marker_color": self._calculate_marker_color(city_data["value"], metadata),
                 "rank": city_data.get("rank", 0),
             }
 
@@ -129,7 +119,7 @@ class WeatherDataBridgePart2Mixin:
         normalized = (value - metadata["scale_min"]) / value_range
         overlay_type = metadata["overlay_type"]
         if overlay_type in ["wind_speed", "wind_gusts"]:
-            return "#00FF00" if normalized < 0.33 else _get_gradient_color(normalized)
+            return "#00FF00" if normalized < 0.33 else _get_gradient_color(normalized)  # noqa: PLR2004
         return _resolve_marker_color(overlay_type, normalized)
 
     def debug_metric_mapping(self) -> Dict[str, Any]:

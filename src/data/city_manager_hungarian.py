@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -10,7 +9,6 @@ Part of the city_manager refactoring - split into focused modules.
 """
 
 import logging
-from typing import List, Optional
 
 from .city_manager_db import CityManagerDB
 from .city_types import City
@@ -30,9 +28,9 @@ class CityManagerHungarian(CityManagerDB):
         self,
         search_term: str,
         limit: int = 20,
-        county_filter: Optional[str] = None,
-        settlement_type_filter: Optional[str] = None,
-    ) -> List[City]:
+        county_filter: str | None = None,
+        settlement_type_filter: str | None = None,
+    ) -> list[City]:
         """
         Search Hungarian settlements by name - ALL villages, municipalities, cities.
 
@@ -62,9 +60,7 @@ class CityManagerHungarian(CityManagerDB):
             params.append(settlement_type_filter)
 
         sql_parts.append("WHERE " + " AND ".join(where_conditions))
-        sql_parts.append(
-            "ORDER BY region_priority DESC, population DESC NULLS LAST, name ASC"
-        )
+        sql_parts.append("ORDER BY region_priority DESC, population DESC NULLS LAST, name ASC")
         sql_parts.append(f"LIMIT {limit}")
 
         sql = " ".join(sql_parts)
@@ -72,12 +68,10 @@ class CityManagerHungarian(CityManagerDB):
 
         cities = [City.from_hungarian_settlement(row) for row in rows]
 
-        logger.info(
-            f"Hungarian settlements search '{search_term}': {len(cities)} results"
-        )
+        logger.info(f"Hungarian settlements search '{search_term}': {len(cities)} results")
         return cities
 
-    def get_hungarian_counties(self) -> List[str]:
+    def get_hungarian_counties(self) -> list[str]:
         """Get list of Hungarian counties (cached)."""
         if (
             hasattr(self, "_hungarian_counties_cache")
@@ -94,7 +88,7 @@ class CityManagerHungarian(CityManagerDB):
         self._hungarian_counties_cache = [row[0] for row in rows]
         return self._hungarian_counties_cache
 
-    def get_hungarian_settlement_types(self) -> List[str]:
+    def get_hungarian_settlement_types(self) -> list[str]:
         """Get list of Hungarian settlement types."""
         if not self.hungarian_connection:
             return []
@@ -104,9 +98,7 @@ class CityManagerHungarian(CityManagerDB):
 
         return [row[0] for row in rows]
 
-    def get_hungarian_settlements_by_county(
-        self, county: str, limit: int = 50
-    ) -> List[City]:
+    def get_hungarian_settlements_by_county(self, county: str, limit: int = 50) -> list[City]:
         """Get Hungarian settlements by county."""
         if not self.hungarian_connection:
             return []

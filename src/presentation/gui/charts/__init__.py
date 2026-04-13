@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -28,8 +27,13 @@ Ez a package tartalmazza:
 HASZNÁLAT:
 ```python
 from .charts import (
-    WeatherChart, EnhancedTemperatureChart, PrecipitationChart,
-    WindChart, WindRoseChart, HeatmapCalendarChart, MultiYearComparisonChart
+    WeatherChart,
+    EnhancedTemperatureChart,
+    PrecipitationChart,
+    WindChart,
+    WindRoseChart,
+    HeatmapCalendarChart,
+    MultiYearComparisonChart,
 )
 ```
 
@@ -63,15 +67,15 @@ __description__ = "Professional weather chart widgets with ColorPalette integrat
 # === PUBLIKUS API ===
 
 __all__ = [
-    # Base chart
-    "WeatherChart",
     # Specific chart types
     "EnhancedTemperatureChart",
-    "PrecipitationChart",
-    "WindChart",
-    "WindRoseChart",
     "HeatmapCalendarChart",
     "MultiYearComparisonChart",
+    "PrecipitationChart",
+    # Base chart
+    "WeatherChart",
+    "WindChart",
+    "WindRoseChart",
 ]
 
 # === CHART TÍPUSOK REGISTRY ===

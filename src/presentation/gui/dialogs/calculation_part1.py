@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from calculation.py."""
 
@@ -80,7 +80,7 @@ def _extract_weather_dataframe(self) -> pd.DataFrame:
         return pd.DataFrame()
 
 
-def _calculate_daily_extremes(self, df: pd.DataFrame) -> List[Dict[str, str]]:
+def _calculate_daily_extremes(self, df: pd.DataFrame) -> List[Dict[str, str]]:  # noqa: ARG001
     """
     Napi extrém értékek számítása.
 

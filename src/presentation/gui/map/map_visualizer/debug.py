@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,13 +15,13 @@ Képességek:
 Fájl: src/presentation/gui/map/map_visualizer/debug.py
 """
 
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     pass
 
 
-def generate_demo_weather_data(self) -> Dict:
+def generate_demo_weather_data(self) -> dict:  # noqa: ARG001
     """
     🧪 Demo időjárási adatok generálása teszteléshez.
 
@@ -37,7 +36,7 @@ def generate_demo_weather_data(self) -> Dict:
     return generate_demo_weather_data()
 
 
-def get_http_server_info(self) -> Dict:
+def get_http_server_info(self) -> dict:
     """
     🌐 HTTP szerver információk lekérdezése.
 
@@ -54,7 +53,7 @@ def get_http_server_info(self) -> Dict:
     )
 
 
-def get_dynamic_gradient_info(self) -> Dict:
+def get_dynamic_gradient_info(self) -> dict:
     """
     🎨 Dinamikus gradient információk lekérdezése.
 
@@ -69,7 +68,7 @@ def get_dynamic_gradient_info(self) -> Dict:
     return get_dynamic_gradient_info(self.get_active_overlay_parameter())
 
 
-def get_http_debug_info(self) -> Dict:
+def get_http_debug_info(self) -> dict:
     """
     🔍 HTTP szerver verzió debug információk.
 
@@ -105,9 +104,9 @@ def cleanup(self) -> None:
         self.local_server.stop()
         self.local_server.wait()
 
-    if self.current_map_file and os.path.exists(self.current_map_file):
+    if self.current_map_file and os.path.exists(self.current_map_file):  # noqa: PTH110
         try:
-            os.remove(self.current_map_file)
+            os.remove(self.current_map_file)  # noqa: PTH107
             print(f"🗑️ Temp map file removed: {self.current_map_file}")
         except Exception as e:
             print(f"⚠️ Failed to remove temp file: {e}")

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from provider_config.py."""
 
@@ -38,7 +38,7 @@ def _freeze_value(value: Any) -> Any:
 class ProviderConfig:
     """Provider Selector configuration and settings."""
 
-    _PROVIDER_DATA: Dict[str, Dict[str, Any]] = {
+    _PROVIDER_DATA: Dict[str, Dict[str, Any]] = {  # noqa: RUF012
         "auto": {
             "name": "Automatikus (Smart Routing)",
             "description": "Use-case alapú automatikus provider választás",

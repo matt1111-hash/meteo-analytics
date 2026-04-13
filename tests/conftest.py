@@ -4,10 +4,8 @@ from __future__ import annotations
 
 import builtins
 import io
-from typing import Dict
 
 import pytest
-
 from src import config
 
 
@@ -18,9 +16,9 @@ def anyio_backend() -> str:
 
 
 @pytest.fixture(name="config_fs")
-def fixture_config_fs(monkeypatch: pytest.MonkeyPatch) -> Dict[str, str]:
+def fixture_config_fs(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
     """Egyszerű in-memory fájlrendszer a konfig tesztekhez."""
-    store: Dict[str, str] = {}
+    store: dict[str, str] = {}
 
     class FakePath:
         def __init__(self, key: str):

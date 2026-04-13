@@ -1,8 +1,8 @@
 """DTOs for trend analytics requests."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
-from typing import List, Optional
+from typing import List  # noqa: UP035
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -20,29 +20,29 @@ class TrendAnalysisRequest(BaseModel):
         default=AnalyticsMetric.TEMPERATURE_2M_MAX,
         description="Weather metric to analyze.",
     )
-    time_periods: List[int] = Field(
+    time_periods: List[int] = Field(  # noqa: UP006
         default=[5, 10, 25, 55],
         description="Time periods in years (e.g., 5, 10, 25, 55).",
     )
-    start_date: Optional[str] = Field(
+    start_date: str | None = Field(
         default=None,
         description="Optional start date (YYYY-MM-DD). If not provided, uses available data.",
     )
-    end_date: Optional[str] = Field(
+    end_date: str | None = Field(
         default=None,
         description="Optional end date (YYYY-MM-DD). If not provided, uses current date.",
     )
 
     @field_validator("location")
     @classmethod
-    def validate_location(cls, value: str) -> str:
+    def validate_location(cls, value: str) -> str:  # noqa: D102
         if not value or not value.strip():
             raise ValueError("A helység neve kötelező.")
         return value.strip()
 
     @field_validator("time_periods")
     @classmethod
-    def validate_time_periods(cls, value: List[int]) -> List[int]:
+    def validate_time_periods(cls, value: List[int]) -> List[int]:  # noqa: D102, UP006
         if not value:
             raise ValueError("Legalább egy időszak megadása kötelező.")
         valid_periods = {5, 10, 25, 55}
@@ -53,7 +53,7 @@ class TrendAnalysisRequest(BaseModel):
 
     @field_validator("start_date", "end_date")
     @classmethod
-    def validate_date_format(cls, value: Optional[str]) -> Optional[str]:
+    def validate_date_format(cls, value: str | None) -> str | None:  # noqa: D102
         if value is None:
             return None
         try:

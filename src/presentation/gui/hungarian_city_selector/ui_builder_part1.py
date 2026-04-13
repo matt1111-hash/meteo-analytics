@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for HungarianCityUIBuilder."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .ui_builder_support import *
 
 
-class HungarianCityUIBuilderPart1Mixin:
+class HungarianCityUIBuilderPart1Mixin:  # noqa: D101
     def __init__(self, parent: QWidget):
         """
         Inicializálás.
@@ -29,9 +29,7 @@ class HungarianCityUIBuilderPart1Mixin:
 
         # Magyar zászló és cím
         flag_label = QLabel("🇭🇺")
-        flag_label.setStyleSheet(
-            "font-size: 24px; border: none; background: transparent;"
-        )
+        flag_label.setStyleSheet("font-size: 24px; border: none; background: transparent;")
         layout.addWidget(flag_label)
 
         title_label = QLabel("Magyar Városok")
@@ -64,9 +62,7 @@ class HungarianCityUIBuilderPart1Mixin:
         search_container = QHBoxLayout()
 
         search_icon = QLabel("🔍")
-        search_icon.setStyleSheet(
-            "font-size: 16px; border: none; background: transparent;"
-        )
+        search_icon.setStyleSheet("font-size: 16px; border: none; background: transparent;")
         search_container.addWidget(search_icon)
 
         self.search_box = QLineEdit()

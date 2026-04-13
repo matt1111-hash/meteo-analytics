@@ -107,4 +107,4 @@ REGIONS = {
 }
 
 
-__all__ = ["Number", "NumberOrNone", "HUNGARIAN_REGIONAL_MAPPING", "REGIONS"]
+__all__ = ["HUNGARIAN_REGIONAL_MAPPING", "REGIONS", "Number", "NumberOrNone"]

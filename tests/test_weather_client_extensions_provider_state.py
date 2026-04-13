@@ -5,7 +5,6 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
-
 from src.data.weather_client_extensions import WeatherClientExtensions
 
 
@@ -42,7 +41,7 @@ class TestGetCurrentProvider:
 
     def test_get_current_provider_after_request(self) -> None:
         client = WeatherClientExtensions()
-        with patch.object(client, "_select_provider", return_value="open-meteo"):
+        with patch.object(client, "_select_provider", return_value="open-meteo"):  # noqa: SIM117
             with patch.object(
                 client,
                 "_retry_weather_request",

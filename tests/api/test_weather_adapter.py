@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.api.adapters.weather_adapter import (
     DEFAULT_QUERY_TYPE,
     _extract_date_range,

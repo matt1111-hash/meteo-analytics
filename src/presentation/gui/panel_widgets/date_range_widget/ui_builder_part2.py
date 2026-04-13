@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from ui_builder.py."""
 
@@ -8,7 +8,7 @@ from .ui_builder_support import *
 
 
 def register_for_theming(
-    theme_manager: "ThemeManager",
+    theme_manager: ThemeManager,
     parent_widget: QWidget,
     time_range_group: QGroupBox,
     manual_dates_group: QGroupBox,
@@ -59,9 +59,7 @@ def register_for_theming(
     apply_label_styling(theme_manager, computed_dates_info, "secondary")
 
 
-def apply_label_styling(
-    theme_manager: "ThemeManager", label: QLabel, style_type: str
-) -> None:
+def apply_label_styling(theme_manager: ThemeManager, label: QLabel, style_type: str) -> None:
     """
     Label styling alkalmazása.
 

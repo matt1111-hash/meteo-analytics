@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 City Manager - Demo and Test Functions
@@ -45,9 +44,7 @@ def _print_hungarian_stats(manager: CityManagerStats, stats: dict) -> None:
     print("HUNGARIAN SETTLEMENTS DETAILS:")
     print(f"   Types: {hu_stats['by_settlement_type']}")
     print(f"   Top counties: {dict(list(hu_stats['top_counties'].items())[:3])}")
-    print(
-        f"   100k+ population: {hu_stats['population_stats']['large_cities_100k_plus']}"
-    )
+    print(f"   100k+ population: {hu_stats['population_stats']['large_cities_100k_plus']}")
     print()
 
 
@@ -60,9 +57,7 @@ def _print_unified_search_demo(manager: CityManagerStats) -> None:
         flag = "HU" if city.is_hungarian else "Global"
         pop = f"{city.population:,}" if city.population else "N/A"
         settlement_info = f" ({city.settlement_type})" if city.settlement_type else ""
-        print(
-            f"   {index}. {flag} {city.display_name}: {pop} population{settlement_info}"
-        )
+        print(f"   {index}. {flag} {city.display_name}: {pop} population{settlement_info}")
     print()
 
 

@@ -7,8 +7,6 @@ Hungarian City Selector - Public API Module
 Publikus API metódusok a HungarianCitySelector osztályhoz.
 """
 
-from typing import List, Optional
-
 from src.presentation.gui.hungarian_city_selector.types import (
     HungarianCity,
     HungarianRegions,
@@ -48,7 +46,7 @@ class HungarianCityPublicAPIMixin:
         self.set_region("Összes")
         self.set_search_term("")
 
-    def get_city_by_name(self, city_name: str) -> Optional[HungarianCity]:
+    def get_city_by_name(self, city_name: str) -> HungarianCity | None:
         """
         Város keresése név alapján.
 
@@ -79,11 +77,11 @@ class HungarianCityPublicAPIMixin:
             return True
         return False
 
-    def get_available_regions(self) -> List[str]:
+    def get_available_regions(self) -> list[str]:
         """Elérhető régiók listájának lekérdezése."""
         return HungarianRegions.get_all_regions()
 
-    def get_cities_by_region_name(self, region: str) -> List[HungarianCity]:
+    def get_cities_by_region_name(self, region: str) -> list[HungarianCity]:
         """
         Városok lekérdezése régió alapján.
 

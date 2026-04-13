@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,9 +15,9 @@ from .gui_constants import GUIConstants
 
 __all__ = [
     "APIConstants",
-    "GUIConstants",
     "AnomalyConstants",
-    "DataConstants",
-    "ThemeType",
     "ColorVariant",
+    "DataConstants",
+    "GUIConstants",
+    "ThemeType",
 ]

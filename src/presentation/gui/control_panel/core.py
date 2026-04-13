@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -30,11 +29,8 @@ SIGNAL AGGREGATOR PATTERN - FETCH_BUTTON FIX BEFEJEZVE!
 ✅ 🔥 PROGRESS TEXT FIX: set_progress_text → update_progress
 """
 
-from typing import Optional
-
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
-
 from src.domain.ports import CityManagerPort
 from src.infrastructure.container import get_city_manager_port
 
@@ -103,7 +99,7 @@ class ControlPanel(
     city_selected = Signal(str, float, float, dict)  # LocationWidget selection
     local_error_occurred = Signal(str)  # Error handling
 
-    def __init__(self, worker_manager: WorkerManager, parent: Optional[QWidget] = None):
+    def __init__(self, worker_manager: WorkerManager, parent: QWidget | None = None):
         """
         Clean ControlPanel inicializálása.
 

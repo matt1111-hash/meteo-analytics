@@ -16,9 +16,7 @@ class TestAnomalyProfileManagerInit:
         assert manager.storage is not None
         assert manager.storage.config_dir == temp_dir
 
-    def test_init_creates_default_profiles_when_none_exist(
-        self, temp_dir: Path
-    ) -> None:
+    def test_init_creates_default_profiles_when_none_exist(self, temp_dir: Path) -> None:
         """Initialization creates default profiles when storage is empty."""
         manager = AnomalyProfileManager(config_dir=temp_dir)
 
@@ -31,9 +29,7 @@ class TestAnomalyProfileManagerInit:
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {
-            "profiles": {
-                "custom": AnomalyProfileSettings(profile_name="custom").to_dict()
-            },
+            "profiles": {"custom": AnomalyProfileSettings(profile_name="custom").to_dict()},
             "active_profile": "custom",
             "version": "1.0",
         }
@@ -86,9 +82,7 @@ class TestGetActiveProfile:
 
         assert result == "custom"
 
-    def test_get_active_profile_returns_default_when_none_set(
-        self, temp_dir: Path
-    ) -> None:
+    def test_get_active_profile_returns_default_when_none_set(self, temp_dir: Path) -> None:
         """get_active_profile returns 'default' when no active profile is set."""
         from src.data.anomaly_storage import AnomalyProfileStorage
 

@@ -20,7 +20,6 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
 from src.presentation.gui.theme_manager import register_widget_for_theming
 
 
@@ -68,9 +67,7 @@ class MapTabUIComponents:
 
     def _create_header_group(self) -> QGroupBox:
         """Create header group with status labels and action buttons."""
-        header_group = QGroupBox(
-            "Hungarian Interactive Map + Weather Overlay + Analytics Sync"
-        )
+        header_group = QGroupBox("Hungarian Interactive Map + Weather Overlay + Analytics Sync")
         register_widget_for_theming(header_group, "container")
         header_layout = QHBoxLayout(header_group)
 
@@ -119,7 +116,7 @@ class MapTabUIComponents:
         layout.addWidget(self.folium_status_label)
 
     def _style_status_label(
-        self, label: QLabel, color: str = None, bold: bool = False
+        self, label: QLabel, color: str | None = None, bold: bool = False
     ) -> None:
         """Apply consistent styling to status labels."""
         font = label.font()
@@ -142,9 +139,7 @@ class MapTabUIComponents:
 
         self.auto_weather_refresh_check = QCheckBox("Auto Weather")
         self.auto_weather_refresh_check.setChecked(True)
-        self.auto_weather_refresh_check.setToolTip(
-            "Auto refresh weather on parameter change"
-        )
+        self.auto_weather_refresh_check.setToolTip("Auto refresh weather on parameter change")
         register_widget_for_theming(self.auto_weather_refresh_check, "input")
         layout.addWidget(self.auto_weather_refresh_check)
 

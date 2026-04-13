@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 WeatherDataWorker Provider Selector - Select optimal data provider.
 """
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .core import WeatherDataWorker
@@ -24,7 +23,7 @@ class ProviderSelector:
         """
         self._worker = worker
 
-    def select_optimal(self) -> Optional[str]:
+    def select_optimal(self) -> str | None:
         """
         Select optimal provider based on preference and availability.
 
@@ -50,18 +49,13 @@ class ProviderSelector:
                     if validate_api_source_available(provider):
                         return provider
                 return None
+        # Explicit provider selection
+        elif validate_api_source_available(self._worker.preferred_provider):
+            return self._worker.preferred_provider
         else:
-            # Explicit provider selection
-            if validate_api_source_available(self._worker.preferred_provider):
-                return self._worker.preferred_provider
-            else:
-                self._worker.provider_validation_failed.emit(
-                    self._worker.preferred_provider,
-                    "Provider nem elérhető vagy API kulcs hiányzik",
-                )
-                # Auto fallback
-                return (
-                    self.select_optimal()
-                    if self._worker.preferred_provider != "auto"
-                    else None
-                )
+            self._worker.provider_validation_failed.emit(
+                self._worker.preferred_provider,
+                "Provider nem elérhető vagy API kulcs hiányzik",
+            )
+            # Auto fallback
+            return self.select_optimal() if self._worker.preferred_provider != "auto" else None

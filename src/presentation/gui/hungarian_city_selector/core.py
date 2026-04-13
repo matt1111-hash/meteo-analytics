@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -9,11 +8,9 @@ Fő HungarianCitySelector widget osztály.
 
 import logging
 from pathlib import Path
-from typing import List
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout
-
 from src.presentation.gui.hungarian_city_selector.database_loader import (
     HungarianCityDatabaseLoader,
 )
@@ -37,9 +34,7 @@ from src.presentation.gui.hungarian_city_selector.ui_builder import (
 logger = logging.getLogger(__name__)
 
 
-class HungarianCitySelector(
-    HungarianCityEventHandlersMixin, HungarianCityPublicAPIMixin
-):
+class HungarianCitySelector(HungarianCityEventHandlersMixin, HungarianCityPublicAPIMixin):
     """
     🇭🇺 Hungarian City Selector Widget - Magyar Klímaanalitika MVP
 
@@ -58,14 +53,14 @@ class HungarianCitySelector(
     data_loaded = Signal(int)  # cities_count
     error_occurred = Signal(str)  # error_message
 
-    def __init__(self, db_path: str = "src/data/cities.db", parent=None):
+    def __init__(self, db_path: str = "src/data/cities.db", parent=None):  # noqa: D107
         super().__init__(parent)
 
         # Konfiguráció
         self.db_path = Path(db_path)
 
         # Adatok
-        self.hungarian_cities: List[HungarianCity] = []
+        self.hungarian_cities: list[HungarianCity] = []
 
         # UI builder
         self.ui_builder = HungarianCityUIBuilder(self)
@@ -111,9 +106,7 @@ class HungarianCitySelector(
         main_layout.addWidget(cities_group)
 
         # === GYORS HOZZÁFÉRÉS ===
-        quick_group = self.ui_builder.create_quick_access_section(
-            self._select_quick_city
-        )
+        quick_group = self.ui_builder.create_quick_access_section(self._select_quick_city)
         main_layout.addWidget(quick_group)
 
         # === STATISZTIKÁK ===
@@ -147,18 +140,14 @@ class HungarianCitySelector(
             self.search_completed,
             self.region_selected,
             self.ui_builder.update_stats,
-            lambda: self.ui_builder.populate_city_list(
-                self.search_filter.get_filtered_cities()
-            ),
+            lambda: self.ui_builder.populate_city_list(self.search_filter.get_filtered_cities()),
         )
 
         # Lista feltöltése
         self.ui_builder.populate_city_list(self.hungarian_cities)
 
         # Statisztikák frissítése
-        stats_text = HungarianCityDatabaseLoader.calculate_city_stats(
-            self.hungarian_cities
-        )
+        stats_text = HungarianCityDatabaseLoader.calculate_city_stats(self.hungarian_cities)
         self.ui_builder.update_stats(stats_text)
 
         # Signal

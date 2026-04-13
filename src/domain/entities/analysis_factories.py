@@ -1,7 +1,7 @@
 """Factory functions for analysis entities."""
 
 from datetime import date, datetime
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.domain.entities.universal_query import UniversalQuery
@@ -15,9 +15,9 @@ from src.domain.value_objects.enums import AnalyticsMetric, QuestionType, Region
 
 
 def create_universal_time_range(
-    start_date: Union[str, date],
-    end_date: Union[str, date],
-    granularity: Union[TimeGranularity, str] = TimeGranularity.DAILY,
+    start_date: str | date,
+    end_date: str | date,
+    granularity: TimeGranularity | str = TimeGranularity.DAILY,
     **kwargs,
 ) -> UniversalTimeRange:
     """
@@ -37,10 +37,10 @@ def create_universal_time_range(
 
 
 def create_universal_query(
-    locations: List[UniversalLocation],
+    locations: list[UniversalLocation],
     time_range: UniversalTimeRange,
-    parameters: List[str],
-    analysis_type: Union[AnalysisType, str] = AnalysisType.CURRENT_CONDITIONS,
+    parameters: list[str],
+    analysis_type: AnalysisType | str = AnalysisType.CURRENT_CONDITIONS,
     **kwargs,
 ) -> "UniversalQuery":
     """
@@ -80,7 +80,7 @@ def create_analytics_question(
 
 
 __all__ = [
-    "create_universal_time_range",
-    "create_universal_query",
     "create_analytics_question",
+    "create_universal_query",
+    "create_universal_time_range",
 ]

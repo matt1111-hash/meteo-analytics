@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Anomália Profil Manager
 📁 PROFIL KEZELÉS: JSON alapú mentés/betöltés, predefined profilok
@@ -39,9 +38,9 @@ from .anomaly_storage import AnomalyProfileStorage
 from .anomaly_types import AnomalyProfileSettings
 
 __all__ = [
+    "AnomalyProfileManager",
     "AnomalyProfileSettings",
     "AnomalyProfileStorage",
-    "AnomalyProfileManager",
     "demo_anomaly_profile_manager",
 ]
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -36,9 +35,9 @@ def _build_precipitation_colors(chart) -> dict[str, str]:
 
 def _resolve_bar_color(precipitation: float, precip_colors: dict[str, str]) -> str:
     """Resolve bar color based on precipitation amount."""
-    if precipitation > 20:
+    if precipitation > 20:  # noqa: PLR2004
         return precip_colors["heavy"]
-    if precipitation > 10:
+    if precipitation > 10:  # noqa: PLR2004
         return precip_colors["moderate"]
     if precipitation > 1:
         return precip_colors["light"]
@@ -68,17 +67,13 @@ def _plot_precipitation(self, df) -> None:
     """
     from .formatting import _format_precipitation_chart
 
-    print(
-        "🎨 DEBUG: _plot_precipitation() - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER"
-    )
+    print("🎨 DEBUG: _plot_precipitation() - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER")
 
     # 🔧 KRITIKUS JAVÍTÁS: HELYES API HASZNÁLAT - csapadék színek
     precip_colors = _build_precipitation_colors(self)
     current_colors = get_current_colors()
 
-    print(
-        f"🎨 DEBUG: Using SimplifiedThemeManager precipitation colors: {precip_colors}"
-    )
+    print(f"🎨 DEBUG: Using SimplifiedThemeManager precipitation colors: {precip_colors}")
 
     # Oszlopdiagram alapszín
     self.bars = self.ax.bar(
@@ -94,7 +89,7 @@ def _plot_precipitation(self, df) -> None:
     self.bar_data = []  # Bar-hoz tartozó adatok tooltip-hoz
 
     # Színkódolás csapadék mennyiség alapján + SIMPLIFIED THEMEMANAGER
-    for i, (date, precip) in enumerate(zip(df["date"], df["precipitation"])):
+    for i, (date, precip) in enumerate(zip(df["date"], df["precipitation"], strict=False)):
         _store_bar_data(self, i, date, precip)
         self.bars[i].set_color(_resolve_bar_color(precip, precip_colors))
 

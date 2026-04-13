@@ -12,6 +12,6 @@ Kezeli a geocoding kéréseket, eredmények feldolgozását
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from PySide6.QtCore import QObject, Signal, Slot

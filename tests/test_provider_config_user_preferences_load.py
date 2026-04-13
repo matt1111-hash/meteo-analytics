@@ -27,9 +27,7 @@ class TestUserPreferencesLoad:
         assert prefs["warning_threshold"] == ProviderConfig.WARNING_THRESHOLD
         assert "last_updated" in prefs
 
-    def test_load_preferences_merges_with_saved_values(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_load_preferences_merges_with_saved_values(self, config_fs: dict[str, str]) -> None:
         """Saved preferences should be merged with defaults."""
         from src.config.provider_config import ProviderConfig, UserPreferences
 
@@ -44,9 +42,7 @@ class TestUserPreferencesLoad:
         assert prefs["show_usage_warnings"] is True
         assert prefs["monthly_budget_usd"] == ProviderConfig.MONTHLY_BUDGET_USD
 
-    def test_load_preferences_handles_corrupted_json(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_load_preferences_handles_corrupted_json(self, config_fs: dict[str, str]) -> None:
         """Corrupted JSON should return default preferences."""
         from src.config.provider_config import ProviderConfig, UserPreferences
 
@@ -56,9 +52,7 @@ class TestUserPreferencesLoad:
 
         assert prefs["selected_provider"] == ProviderConfig.DEFAULT_PROVIDER
 
-    def test_load_preferences_includes_timestamp(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_load_preferences_includes_timestamp(self, config_fs: dict[str, str]) -> None:
         """Preferences should include last_updated timestamp."""
         from src.config.provider_config import UserPreferences
 

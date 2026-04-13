@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for DataProcessor."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .data_processor_support import *
 
 
-class DataProcessorPart2Mixin:
+class DataProcessorPart2Mixin:  # noqa: D101
     @staticmethod
     def _empty_dataframe_fallback() -> Any:
         """Üres DataFrame fallback."""
@@ -18,9 +18,7 @@ class DataProcessorPart2Mixin:
         except Exception:
             return {}
 
-    def process_windy_days_data(
-        self, weather_df: Any, city_name: str, deliver_callback
-    ) -> None:
+    def process_windy_days_data(self, weather_df: Any, city_name: str, deliver_callback) -> None:
         """
         WindyDaysTab adatok feldolgozása és kézbesítése.
 
@@ -30,9 +28,7 @@ class DataProcessorPart2Mixin:
             deliver_callback: Callback az adatok kézbesítéséhez
         """
         if not hasattr(weather_df, "__len__"):
-            self._logger.error(
-                "❌ INVALID RETURN TYPE from _convert_data_to_dataframe!"
-            )
+            self._logger.error("❌ INVALID RETURN TYPE from _convert_data_to_dataframe!")
             deliver_callback(self._empty_dataframe_fallback(), city_name)
             return
 
@@ -68,17 +64,13 @@ class DataProcessorPart2Mixin:
 
         self._logger.error("❌ NINCS WIND_SPEED OSZLOP!")
         if "wind_gusts_max" in weather_df.columns:
-            self._logger.warning(
-                "⚠️ EMERGENCY FIX: wind_gusts_max → wind_speed konverzió!"
-            )
+            self._logger.warning("⚠️ EMERGENCY FIX: wind_gusts_max → wind_speed konverzió!")
             weather_df["wind_speed"] = weather_df["wind_gusts_max"]
             deliver_callback(weather_df, city_name)
         else:
             deliver_callback(self._empty_dataframe_fallback(), city_name)
 
-    def _process_wind_speed_column(
-        self, weather_df: Any, city_name: str, deliver_callback
-    ) -> None:
+    def _process_wind_speed_column(self, weather_df: Any, city_name: str, deliver_callback) -> None:
         """
         Wind speed oszlop feldolgozása.
 

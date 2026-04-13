@@ -1,7 +1,7 @@
 # mypy: ignore-errors
 """Base Weather Chart class."""
 
-from typing import Any, Optional
+from typing import Any
 
 import matplotlib
 
@@ -11,7 +11,6 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
-
 from src.presentation.gui.charts.base_chart.constants import (
     CHART_DEFAULTS,
     DEFAULT_DPI,
@@ -33,8 +32,8 @@ class WeatherChart(FigureCanvas):
     chart_clicked = Signal(float, float)
     export_requested = Signal(str)
 
-    def __init__(
-        self, figsize: tuple = DEFAULT_FIGSIZE, parent: Optional[QWidget] = None
+    def __init__(  # noqa: D107
+        self, figsize: tuple = DEFAULT_FIGSIZE, parent: QWidget | None = None
     ) -> None:
         current_colors = get_current_colors()
         figure_bg = current_colors.get("surface", "#ffffff")
@@ -69,7 +68,7 @@ class WeatherChart(FigureCanvas):
         register_widget_for_theming(self, "chart")
         self.theme_manager.theme_changed.connect(self._on_theme_changed)
 
-    def _on_theme_changed(self, theme_name: str) -> None:
+    def _on_theme_changed(self, theme_name: str) -> None:  # noqa: ARG002
         """Handle theme change."""
         self.weather_colors = self.color_palette.generate_weather_palette("#C43939")
         self._redraw_with_new_theme()

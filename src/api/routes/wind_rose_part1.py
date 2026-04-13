@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001  # noqa: RUF100
 # mypy: ignore-errors
 """Split definitions from wind_rose.py."""
 
@@ -36,12 +36,8 @@ class WindRoseResponse(BaseModel):
     directions: List[DirectionData] = Field(
         ..., description="16 compass directions with speed data"
     )
-    calms_percentage: float = Field(
-        ..., description="Percentage of calm winds (< 5 km/h)"
-    )
-    total_observations: int = Field(
-        ..., description="Total number of wind observations"
-    )
+    calms_percentage: float = Field(..., description="Percentage of calm winds (< 5 km/h)")
+    total_observations: int = Field(..., description="Total number of wind observations")
     statistics: Dict[str, Any] = Field(
         ..., description="Additional statistics (avg_speed, max_speed, data_source)"
     )

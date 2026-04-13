@@ -16,7 +16,7 @@ Statisztika számító és megjelenítő függvények.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .analytics_helpers import safe_avg, safe_count, safe_max, safe_min, safe_sum
 

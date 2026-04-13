@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import date
-from typing import Iterable, Optional
 
 from ..entities.climate_anomaly import ClimateAnomaly
 from ..value_objects.anomaly_threshold import AnomalyThresholdSet
@@ -12,16 +12,16 @@ from ..value_objects.anomaly_threshold import AnomalyThresholdSet
 class AnomalyDetectorService:
     """Pure business-logic detector using stdlib only."""
 
-    def __init__(self, thresholds: AnomalyThresholdSet) -> None:
+    def __init__(self, thresholds: AnomalyThresholdSet) -> None:  # noqa: D107
         self.thresholds = thresholds
 
     def detect_temperature_anomaly(
         self,
         location_name: str,
         analysis_date: date,
-        max_temps: list[Optional[float]],
-        min_temps: list[Optional[float]],
-    ) -> Optional[ClimateAnomaly]:
+        max_temps: list[float | None],
+        min_temps: list[float | None],
+    ) -> ClimateAnomaly | None:
         """Detect temperature anomalies based on extrema and average."""
         valid_max = _filter_numbers(max_temps)
         valid_min = _filter_numbers(min_temps)
@@ -73,8 +73,8 @@ class AnomalyDetectorService:
         self,
         location_name: str,
         analysis_date: date,
-        precipitation_values: list[Optional[float]],
-    ) -> Optional[ClimateAnomaly]:
+        precipitation_values: list[float | None],
+    ) -> ClimateAnomaly | None:
         """Detect precipitation anomalies using max and average values."""
         valid_precip = _filter_non_negative(precipitation_values)
         if not valid_precip:
@@ -124,8 +124,8 @@ class AnomalyDetectorService:
         self,
         location_name: str,
         analysis_date: date,
-        wind_speeds: list[Optional[float]],
-    ) -> Optional[ClimateAnomaly]:
+        wind_speeds: list[float | None],
+    ) -> ClimateAnomaly | None:
         """Detect wind anomalies by maximum speed thresholds."""
         valid_winds = _filter_non_negative(wind_speeds)
         if not valid_winds:
@@ -198,12 +198,12 @@ class AnomalyDetectorService:
         )
 
 
-def _filter_numbers(values: Iterable[Optional[float]]) -> list[float]:
+def _filter_numbers(values: Iterable[float | None]) -> list[float]:
     """Filter iterable to finite numeric values."""
     return [float(v) for v in values if v is not None]
 
 
-def _filter_non_negative(values: Iterable[Optional[float]]) -> list[float]:
+def _filter_non_negative(values: Iterable[float | None]) -> list[float]:
     """Filter iterable to non-negative numeric values."""
     return [float(v) for v in values if v is not None and v >= 0]
 

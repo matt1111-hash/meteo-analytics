@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for HeatmapCalendarChart."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .core_support import *
 
 
-class HeatmapCalendarChartPart1Mixin:
-    def __init__(self, parent: Optional[QWidget] = None):
+class HeatmapCalendarChartPart1Mixin:  # noqa: D101
+    def __init__(self, parent: Optional[QWidget] = None):  # noqa: D107
         super().__init__(figsize=(20, 12), parent=parent)
         self.chart_title = "📅 Konstans Heatmap"
         self.parameter = "temperature_2m_mean"
@@ -67,9 +67,7 @@ class HeatmapCalendarChartPart1Mixin:
             logger.info(f"✅ HeatmapCalendarChart frissítés kész - {self.parameter}")
 
         except Exception as e:
-            logger.error(
-                f"❌ Heatmap calendar chart hiba ({self.parameter}): {e}", exc_info=True
-            )
+            logger.error(f"❌ Heatmap calendar chart hiba ({self.parameter}): {e}", exc_info=True)
             self._is_updating = False
             self.clear_chart()
 
@@ -87,14 +85,10 @@ class HeatmapCalendarChartPart1Mixin:
         self._total_days = (self._max_date - self._min_date).days + 1
         self._first_day_weekday = self._min_date.weekday()
 
-        logger.info(
-            f"🗓️ Időszak: {self._min_date} - {self._max_date} ({self._total_days} nap)"
-        )
+        logger.info(f"🗓️ Időszak: {self._min_date} - {self._max_date} ({self._total_days} nap)")
 
         # Aggregate to 365 values
-        values_365 = aggregate_to_365(
-            self, df[self.parameter].tolist(), self._total_days
-        )
+        values_365 = aggregate_to_365(self, df[self.parameter].tolist(), self._total_days)
 
         # Build calendar matrix
         self._calendar_matrix = build_calendar_matrix(self, values_365, self._min_date)
@@ -105,7 +99,7 @@ class HeatmapCalendarChartPart1Mixin:
         # Validate data
         valid_data_count = np.sum(~np.isnan(self._calendar_matrix))
 
-        if valid_data_count < 10:
+        if valid_data_count < 10:  # noqa: PLR2004
             logger.warning(f"⚠️ Túl kevés valódi adat ({valid_data_count})")
             self._plot_heatmap_placeholder()
             return
@@ -138,14 +132,10 @@ class HeatmapCalendarChartPart1Mixin:
         current_colors = get_current_colors()
         text_color = current_colors.get("on_surface", "#1f2937")
 
-        period_text = format_period_text(
-            self, self._min_date, self._max_date, self._total_days
-        )
+        period_text = format_period_text(self, self._min_date, self._max_date, self._total_days)
         full_title = f"{self.chart_title}{period_text}"
 
-        self.ax.set_title(
-            full_title, fontsize=18, fontweight="bold", pad=20, color=text_color
-        )
+        self.ax.set_title(full_title, fontsize=18, fontweight="bold", pad=20, color=text_color)
         self.ax.grid(False)
         self.figure.tight_layout()
 

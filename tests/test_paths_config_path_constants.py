@@ -40,10 +40,7 @@ class TestPathConstants:
         from src.config.paths_config import CLIMATE_CACHE_DIR, DATA_DIR
 
         assert isinstance(CLIMATE_CACHE_DIR, Path)
-        assert (
-            DATA_DIR in CLIMATE_CACHE_DIR.parents
-            or CLIMATE_CACHE_DIR.parent == DATA_DIR
-        )
+        assert DATA_DIR in CLIMATE_CACHE_DIR.parents or CLIMATE_CACHE_DIR.parent == DATA_DIR
 
     def test_exports_dir_is_path(self) -> None:
         """EXPORTS_DIR should be a Path object."""

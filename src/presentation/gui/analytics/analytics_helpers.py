@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,6 @@ Segédfüggvények és színskálák az analytics view számára.
 """
 
 import logging
-from typing import List, Optional, Union
 
 import matplotlib.colors as mcolors
 
@@ -114,7 +112,7 @@ class MeteorologicalColorMaps:
 
 
 # 🔧 NONE-SAFE HELPER FÜGGVÉNYEK
-def safe_max(data_list: List[Union[float, int, None]]) -> Optional[float]:
+def safe_max(data_list: list[float | int | None]) -> float | None:
     """None-safe maximum érték számítás"""
     if not data_list:
         return None
@@ -122,7 +120,7 @@ def safe_max(data_list: List[Union[float, int, None]]) -> Optional[float]:
     return max(clean_data) if clean_data else None
 
 
-def safe_min(data_list: List[Union[float, int, None]]) -> Optional[float]:
+def safe_min(data_list: list[float | int | None]) -> float | None:
     """None-safe minimum érték számítás"""
     if not data_list:
         return None
@@ -130,7 +128,7 @@ def safe_min(data_list: List[Union[float, int, None]]) -> Optional[float]:
     return min(clean_data) if clean_data else None
 
 
-def safe_avg(data_list: List[Union[float, int, None]]) -> Optional[float]:
+def safe_avg(data_list: list[float | int | None]) -> float | None:
     """None-safe átlag számítás"""
     if not data_list:
         return None
@@ -138,7 +136,7 @@ def safe_avg(data_list: List[Union[float, int, None]]) -> Optional[float]:
     return sum(clean_data) / len(clean_data) if clean_data else None
 
 
-def safe_sum(data_list: List[Union[float, int, None]]) -> float:
+def safe_sum(data_list: list[float | int | None]) -> float:
     """None-safe összeg számítás"""
     if not data_list:
         return 0.0
@@ -146,7 +144,7 @@ def safe_sum(data_list: List[Union[float, int, None]]) -> float:
     return sum(clean_data) if clean_data else 0.0
 
 
-def safe_count(data_list: List[Union[float, int, None]], condition_func) -> int:
+def safe_count(data_list: list[float | int | None], condition_func) -> int:
     """None-safe feltételes számolás"""
     if not data_list:
         return 0
@@ -156,9 +154,9 @@ def safe_count(data_list: List[Union[float, int, None]], condition_func) -> int:
 
 __all__ = [
     "MeteorologicalColorMaps",
+    "safe_avg",
+    "safe_count",
     "safe_max",
     "safe_min",
-    "safe_avg",
     "safe_sum",
-    "safe_count",
 ]

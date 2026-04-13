@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Fájl: src/presentation/gui/charts/heatmap_chart/colormap_handler.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 import matplotlib.colors as mcolors
 import numpy as np
@@ -40,20 +39,20 @@ def _select_parameter_colormap(parameter: str, vmin: float, vmax: float) -> str:
 
 def _select_temperature_colormap(vmin: float, vmax: float) -> str:
     """Select temperature-specific colormap."""
-    if vmin < 0 and vmax > 20:
+    if vmin < 0 and vmax > 20:  # noqa: PLR2004
         logger.debug("🌡️ Hőmérséklet: RdYlBu_r (piros=meleg, kék=hideg)")
         return "RdYlBu_r"
-    if vmax <= 15:
+    if vmax <= 15:  # noqa: PLR2004
         logger.debug("🌡️ Hőmérséklet: Blues_r (hideg)")
         return "Blues_r"
-    if vmin >= 15:
+    if vmin >= 15:  # noqa: PLR2004
         logger.debug("🌡️ Hőmérséklet: Reds (meleg)")
         return "Reds"
     logger.debug("🌡️ Hőmérséklet: viridis (alapértelmezett)")
     return "viridis"
 
 
-def get_colormap_and_norm(self, calendar_matrix: np.ndarray) -> Tuple[str, object]:
+def get_colormap_and_norm(self, calendar_matrix: np.ndarray) -> tuple[str, object]:
     """
     Get colormap and normalization.
 

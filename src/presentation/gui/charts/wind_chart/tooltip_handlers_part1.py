@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for WindTooltipHandler."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .tooltip_handlers_support import *
 
 
-class WindTooltipHandlerPart1Mixin:
+class WindTooltipHandlerPart1Mixin:  # noqa: D101
     def __init__(self, ax, hover_tolerance: int = 15):
         """
         Initialize tooltip handler.
@@ -73,15 +73,12 @@ class WindTooltipHandlerPart1Mixin:
         mouse_x_display, mouse_y_display = mouse_coords
         closest_idx: Optional[int] = None
         min_distance = float("inf")
-        for index, (x_val, y_val) in enumerate(zip(plot_dates, windspeeds)):
+        for index, (x_val, y_val) in enumerate(zip(plot_dates, windspeeds, strict=False)):
             if pd.isna(y_val):
                 continue
-            point_x_display, point_y_display = self.ax.transData.transform(
-                (x_val, y_val)
-            )
+            point_x_display, point_y_display = self.ax.transData.transform((x_val, y_val))
             distance = np.sqrt(
-                (mouse_x_display - point_x_display) ** 2
-                + (mouse_y_display - point_y_display) ** 2
+                (mouse_x_display - point_x_display) ** 2 + (mouse_y_display - point_y_display) ** 2
             )
             if distance < min_distance:
                 min_distance = distance
@@ -114,9 +111,7 @@ class WindTooltipHandlerPart1Mixin:
 
         # Measurement type
         measurement_type = (
-            "Széllökések"
-            if data_source == "wind_gusts_10m_max"
-            else "Szélsebesség (átlag)"
+            "Széllökések" if data_source == "wind_gusts_10m_max" else "Szélsebesség (átlag)"
         )
 
         # Build tooltip lines
@@ -139,6 +134,6 @@ class WindTooltipHandlerPart1Mixin:
 
         # Fallback indicator
         if data_source == "windspeed_10m_max":
-            tooltip_lines.extend(["", "ℹ️ Fallback adatforrás (átlag szélsebesség)"])
+            tooltip_lines.extend(["", "ℹ️ Fallback adatforrás (átlag szélsebesség)"])  # noqa: RUF001
 
         return "\n".join(tooltip_lines)

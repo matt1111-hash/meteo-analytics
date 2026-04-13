@@ -1,7 +1,5 @@
 """Utility functions for domain enums."""
 
-from typing import List
-
 from src.domain.value_objects.enums import (
     AnalysisType,
     AnalyticsMetric,
@@ -134,7 +132,7 @@ def validate_region_scope(scope_str: str) -> bool:
 
 def get_available_metrics_for_question_type(
     question_type: QuestionType,
-) -> List[AnalyticsMetric]:
+) -> list[AnalyticsMetric]:
     """Get available metrics for a question type."""
     metric_mapping = {
         QuestionType.TEMPERATURE_MAX: [
@@ -160,15 +158,15 @@ def get_available_metrics_for_question_type(
 
 __all__ = [
     "get_analysis_type_display_name",
+    "get_available_metrics_for_question_type",
     "get_data_provider_display_name",
     "get_metric_display_name",
     "get_metric_unit",
-    "get_region_scope_display_name",
     "get_question_type_display_name",
+    "get_region_scope_display_name",
     "get_severity_color",
     "validate_analysis_type",
-    "validate_data_provider",
     "validate_analytics_metric",
+    "validate_data_provider",
     "validate_region_scope",
-    "get_available_metrics_for_question_type",
 ]

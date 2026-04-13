@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -11,7 +10,6 @@ import logging
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QListWidgetItem
-
 from src.presentation.gui.hungarian_city_selector.database_loader import (
     HungarianCityDatabaseLoader,
 )
@@ -86,9 +84,7 @@ class HungarianCityEventHandlersMixin:
         # Signal kibocsátása
         self.city_selected.emit(city.city, city.lat, city.lon, metadata)
 
-        logger.info(
-            f"✅ Város kiválasztva: {city.city} ({city.lat:.4f}, {city.lon:.4f})"
-        )
+        logger.info(f"✅ Város kiválasztva: {city.city} ({city.lat:.4f}, {city.lon:.4f})")
 
     def _reload_cities(self) -> None:
         """Városok listájának újratöltése."""
@@ -103,9 +99,7 @@ class HungarianCityEventHandlersMixin:
         """Keresés törlése."""
         self.search_filter.clear_search()
         self.ui_builder.clear_search_box()
-        stats_text = HungarianCityDatabaseLoader.calculate_city_stats(
-            self.hungarian_cities
-        )
+        stats_text = HungarianCityDatabaseLoader.calculate_city_stats(self.hungarian_cities)
         self.ui_builder.update_stats(stats_text)
 
     def _on_theme_changed(self, theme_name: str) -> None:

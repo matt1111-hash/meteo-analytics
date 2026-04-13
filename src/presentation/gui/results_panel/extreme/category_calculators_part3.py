@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 3 for CategoryCalculators."""
 
@@ -9,18 +9,18 @@ from .category_calculators_support import *
 
 def _get_uv_category(uv_value: float) -> str:
     """Return the UV category label for a value."""
-    if uv_value >= 11:
+    if uv_value >= 11:  # noqa: PLR2004
         return "Extrém"
-    if uv_value >= 8:
+    if uv_value >= 8:  # noqa: PLR2004
         return "Nagyon erős"
-    if uv_value >= 6:
+    if uv_value >= 6:  # noqa: PLR2004
         return "Erős"
-    if uv_value >= 3:
+    if uv_value >= 3:  # noqa: PLR2004
         return "Mérsékelt"
     return "Gyenge"
 
 
-class CategoryCalculatorsPart3Mixin:
+class CategoryCalculatorsPart3Mixin:  # noqa: D101
     def calculate_uv_records(
         self, daily_data: Dict[str, List], dates: List[str]
     ) -> List[ExtremeRecord]:
@@ -52,6 +52,4 @@ class CategoryCalculatorsPart3Mixin:
         """Return cleaned UV values when lengths are compatible."""
         if not uv_max or len(uv_max) != len(dates):
             return []
-        return [
-            (index, value) for index, value in enumerate(uv_max) if value is not None
-        ]
+        return [(index, value) for index, value in enumerate(uv_max) if value is not None]

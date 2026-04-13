@@ -1,4 +1,3 @@
-# ruff: noqa: F401,noqa: F401
 # mypy: ignore-errors
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-

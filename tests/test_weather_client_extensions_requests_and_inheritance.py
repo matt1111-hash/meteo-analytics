@@ -12,9 +12,7 @@ class TestGetCurrentWeather:
 
     def test_get_current_weather_returns_tuple(self) -> None:
         client = WeatherClientExtensions()
-        with patch.object(
-            client, "get_weather_data", return_value=[{"data_source": "open-meteo"}]
-        ):
+        with patch.object(client, "get_weather_data", return_value=[{"data_source": "open-meteo"}]):
             result = client.get_current_weather(47.4979, 19.0402)
             assert isinstance(result, tuple)
             assert len(result) == 2
@@ -43,9 +41,7 @@ class TestGetCurrentWeather:
 
     def test_get_current_weather_error_returns_error_status(self) -> None:
         client = WeatherClientExtensions()
-        with patch.object(
-            client, "get_weather_data", side_effect=Exception("API error")
-        ):
+        with patch.object(client, "get_weather_data", side_effect=Exception("API error")):
             weather, source = client.get_current_weather(47.4979, 19.0402)
             assert weather is None
             assert source == "error"
@@ -73,9 +69,7 @@ class TestGetCurrentWeather:
         client = WeatherClientExtensions()
         with patch.object(client, "get_weather_data") as mock_get:
             mock_get.return_value = [{"data_source": "open-meteo"}]
-            client.get_current_weather(
-                47.4979, 19.0402, user_override_provider="open-meteo"
-            )
+            client.get_current_weather(47.4979, 19.0402, user_override_provider="open-meteo")
             assert mock_get.call_args.args[4] == "open-meteo"
 
 
@@ -84,9 +78,7 @@ class TestGetWeatherForDateRange:
 
     def test_get_weather_for_date_range_returns_tuple(self) -> None:
         client = WeatherClientExtensions()
-        with patch.object(
-            client, "get_weather_data", return_value=[{"data_source": "open-meteo"}]
-        ):
+        with patch.object(client, "get_weather_data", return_value=[{"data_source": "open-meteo"}]):
             result = client.get_weather_for_date_range(47.4979, 19.0402)
             assert isinstance(result, tuple)
             assert len(result) == 2
@@ -150,9 +142,7 @@ class TestGetWeatherForDateRange:
         client = WeatherClientExtensions()
         with patch.object(client, "get_weather_data") as mock_get:
             mock_get.return_value = [{"data_source": "open-meteo"}]
-            client.get_weather_for_date_range(
-                47.4979, 19.0402, user_override_provider="open-meteo"
-            )
+            client.get_weather_for_date_range(47.4979, 19.0402, user_override_provider="open-meteo")
             assert mock_get.call_args.args[4] == "open-meteo"
 
 

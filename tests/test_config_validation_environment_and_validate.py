@@ -15,9 +15,7 @@ class TestCheckEnvironment:
         from src.config.config_validation import check_environment
 
         with (
-            patch(
-                "src.config.config_validation.ensure_directories"
-            ) as mock_ensure_dirs,
+            patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
             patch("src.config.config_validation.validate_api_keys") as mock_validate,
             patch("src.config.config_validation.DATA_DIR", tmp_path),
             patch("src.config.config_validation.CACHE_DIR", tmp_path / "cache"),
@@ -43,9 +41,7 @@ class TestCheckEnvironment:
         from src.config.config_validation import check_environment
 
         with (
-            patch(
-                "src.config.config_validation.ensure_directories"
-            ) as mock_ensure_dirs,
+            patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
             patch("src.config.config_validation.validate_api_keys") as mock_validate,
             patch("src.config.config_validation.DATA_DIR", tmp_path),
             patch("src.config.config_validation.CACHE_DIR", tmp_path / "cache"),
@@ -66,9 +62,7 @@ class TestCheckEnvironment:
         from src.config.config_validation import check_environment
 
         with (
-            patch(
-                "src.config.config_validation.ensure_directories"
-            ) as mock_ensure_dirs,
+            patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
             patch("src.config.config_validation.validate_api_keys") as mock_validate,
             patch("src.config.config_validation.DATA_DIR", tmp_path),
             patch("src.config.config_validation.CACHE_DIR", tmp_path / "cache"),
@@ -101,9 +95,7 @@ class TestCheckEnvironment:
         from src.config.config_validation import check_environment
 
         with (
-            patch(
-                "src.config.config_validation.ensure_directories"
-            ) as mock_ensure_dirs,
+            patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
             patch("src.config.config_validation.validate_api_keys") as mock_validate,
             patch("src.config.config_validation.DATA_DIR", tmp_path),
             patch("src.config.config_validation.CACHE_DIR", tmp_path / "cache"),
@@ -115,13 +107,13 @@ class TestCheckEnvironment:
             (tmp_path / "cache").mkdir(exist_ok=True)
             (tmp_path / "prefs").mkdir(exist_ok=True)
 
-            os.chmod(tmp_path, 0o444)
+            os.chmod(tmp_path, 0o444)  # noqa: PTH101
 
             try:
                 result = check_environment()
                 assert "write_permissions" in result
             finally:
-                os.chmod(tmp_path, 0o755)
+                os.chmod(tmp_path, 0o755)  # noqa: PTH101
 
 
 class TestValidateConfig:
@@ -132,13 +124,9 @@ class TestValidateConfig:
         from src.config.config_validation import validate_config
 
         with (
-            patch(
-                "src.config.config_validation.ensure_directories"
-            ) as mock_ensure_dirs,
+            patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
             patch("src.config.config_validation.validate_api_keys") as mock_validate,
-            patch(
-                "src.config.config_validation.LEGACY_DB_PATH", tmp_path / "legacy.db"
-            ),
+            patch("src.config.config_validation.LEGACY_DB_PATH", tmp_path / "legacy.db"),
             patch("src.config.config_validation.USER_PREFS_DIR", tmp_path / "prefs"),
         ):
             mock_ensure_dirs.return_value = None
@@ -165,9 +153,7 @@ class TestValidateConfig:
         from src.config.config_validation import validate_config
 
         with (
-            patch(
-                "src.config.config_validation.ensure_directories"
-            ) as mock_ensure_dirs,
+            patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
             patch("src.config.config_validation.validate_api_keys") as mock_validate,
             patch(
                 "src.config.config_validation.LEGACY_DB_PATH",
@@ -192,13 +178,9 @@ class TestValidateConfig:
         from src.config.config_validation import validate_config
 
         with (
-            patch(
-                "src.config.config_validation.ensure_directories"
-            ) as mock_ensure_dirs,
+            patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
             patch("src.config.config_validation.validate_api_keys") as mock_validate,
-            patch(
-                "src.config.config_validation.LEGACY_DB_PATH", tmp_path / "legacy.db"
-            ),
+            patch("src.config.config_validation.LEGACY_DB_PATH", tmp_path / "legacy.db"),
             patch("src.config.config_validation.USER_PREFS_DIR", tmp_path / "prefs"),
         ):
             mock_ensure_dirs.return_value = None

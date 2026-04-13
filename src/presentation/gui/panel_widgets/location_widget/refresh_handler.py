@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -46,9 +45,7 @@ class RefreshHandler:
                 self.widget.ui.clear_btn.setEnabled(True)
             else:
                 self.widget.ui.info_label.setText("Válasszon lokációt...")
-                self.widget.theme._apply_label_styling(
-                    self.widget.ui.info_label, "secondary"
-                )
+                self.widget.theme._apply_label_styling(self.widget.ui.info_label, "secondary")
                 self.widget.ui.clear_btn.setEnabled(False)
 
             print("✅ DEBUG: LocationWidget refresh_ui() completed")

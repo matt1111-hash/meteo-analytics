@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -10,7 +9,7 @@ Part of the city_manager refactoring - split into focused modules.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .city_manager_search import CityManagerSearch
 from .city_types import City
@@ -29,14 +28,12 @@ class CityManagerStats(CityManagerSearch):
     # STATISTICS
     # ========================================================================
 
-    def get_database_statistics(self) -> Dict[str, Any]:
+    def get_database_statistics(self) -> dict[str, Any]:
         """Extended database statistics with dual database support."""
         stats = {
             "query_count": self.query_count,
             "hungarian_query_count": self.hungarian_query_count,
-            "last_query": self.last_query_time.isoformat()
-            if self.last_query_time
-            else None,
+            "last_query": self.last_query_time.isoformat() if self.last_query_time else None,
         }
 
         if self.connection:
@@ -49,9 +46,7 @@ class CityManagerStats(CityManagerSearch):
             stats["countries"] = []
 
         if self.hungarian_connection:
-            stats["hungarian_settlements"] = (
-                self._get_total_hungarian_settlements_count()
-            )
+            stats["hungarian_settlements"] = self._get_total_hungarian_settlements_count()
             stats["hungarian_counties"] = self.get_hungarian_counties()
             stats["settlement_types"] = self.get_hungarian_settlement_types()
         else:
@@ -65,7 +60,7 @@ class CityManagerStats(CityManagerSearch):
 
         return stats
 
-    def get_hungarian_statistics(self) -> Dict[str, Any]:
+    def get_hungarian_statistics(self) -> dict[str, Any]:
         """Hungarian settlements detailed statistics."""
         if not self.hungarian_connection:
             return {"error": "Hungarian database not available"}
@@ -123,8 +118,8 @@ class CityManagerStats(CityManagerSearch):
     # ========================================================================
 
     def get_cities_by_continent(
-        self, continent: str, limit: int = 50, min_population: Optional[int] = None
-    ) -> List[City]:
+        self, continent: str, limit: int = 50, min_population: int | None = None
+    ) -> list[City]:
         """Continent-based city query (original)."""
         if not self.connection:
             return []
@@ -144,7 +139,7 @@ class CityManagerStats(CityManagerSearch):
 
         return [City.from_db_row(tuple(row)) for row in rows]
 
-    def _get_available_continents(self) -> List[str]:
+    def _get_available_continents(self) -> list[str]:
         """Get available continents list."""
         if not self.connection:
             return []
@@ -154,7 +149,7 @@ class CityManagerStats(CityManagerSearch):
         )
         return [row[0] for row in cursor.fetchall()]
 
-    def _get_available_countries(self) -> List[Dict[str, Any]]:
+    def _get_available_countries(self) -> list[dict[str, Any]]:
         """Get available countries list."""
         if not self.connection:
             return []
@@ -188,7 +183,7 @@ class CityManagerStats(CityManagerSearch):
     # PORT IMPLEMENTATION (CityManagerPort)
     # ========================================================================
 
-    def get_cities_for_hungarian_county(self, county: str) -> List[Dict[str, Any]]:
+    def get_cities_for_hungarian_county(self, county: str) -> list[dict[str, Any]]:
         """Get Hungarian settlements by county (Port implementation).
 
         Args:

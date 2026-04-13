@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for AnomalyProfileManager."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .manager_support import *
 
 
-class AnomalyProfileManagerPart2Mixin:
+class AnomalyProfileManagerPart2Mixin:  # noqa: D101
     def save_profile(self, profile_name: str, settings: Dict[str, Any]) -> bool:
         """
         Profil beállítások mentése.

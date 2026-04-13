@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -24,7 +23,7 @@ from .table_model import WeatherTableModel
 
 # Re-export for backward compatibility
 __all__ = [
+    "NumericTableWidgetItem",
     "WeatherDataTable",
     "WeatherTableModel",
-    "NumericTableWidgetItem",
 ]

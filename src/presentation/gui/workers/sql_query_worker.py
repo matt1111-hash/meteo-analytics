@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -11,7 +10,7 @@ védelemmel és cancellation support-tal.
 
 import sqlite3
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from PySide6.QtCore import QObject, Signal
 
@@ -116,13 +115,13 @@ class SQLQueryWorker(BaseWorkerThread):
     # Specifikus signalok
     query_completed = Signal(object)  # pandas DataFrame vagy list
 
-    def __init__(
-        self, query: str, db_path: Union[str, Path], parent: Optional["QObject"] = None
+    def __init__(  # noqa: D107
+        self, query: str, db_path: str | Path, parent: Optional["QObject"] = None
     ):
         super().__init__(parent)
         self.query = query.strip()
         self.db_path = Path(db_path)
-        self.result: Optional[Any] = None
+        self.result: Any | None = None
 
     def execute(self) -> None:
         """
@@ -141,7 +140,7 @@ class SQLQueryWorker(BaseWorkerThread):
 
         except sqlite3.Error as e:
             if not self.is_cancelled:
-                self.emit_error(f"SQL hiba: {str(e)}")
+                self.emit_error(f"SQL hiba: {e!s}")
         except Exception as e:
             if not self.is_cancelled:
-                self.emit_error(f"Váratlan hiba az SQL lekérdezés során: {str(e)}")
+                self.emit_error(f"Váratlan hiba az SQL lekérdezés során: {e!s}")

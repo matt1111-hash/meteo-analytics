@@ -5,8 +5,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from datetime import datetime
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Optional
 
 from src.domain.analytics.models import CityWeatherData
 from src.domain.analytics.statistics import (

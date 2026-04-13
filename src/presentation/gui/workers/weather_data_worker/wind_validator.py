@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -49,10 +48,8 @@ class WindValidator:
                 max_gust = max(valid_gusts)
                 print(f"🌪️ DEBUG: Maximum széllökés: {max_gust:.1f} km/h")
 
-                if max_gust < 60:
-                    print(
-                        f"⚠️  DEBUG: Széllökés még mindig alacsony: {max_gust:.1f} km/h"
-                    )
+                if max_gust < 60:  # noqa: PLR2004
+                    print(f"⚠️  DEBUG: Széllökés még mindig alacsony: {max_gust:.1f} km/h")
                 else:
                     print(f"✅ DEBUG: Realistic széllökés értékek: {max_gust:.1f} km/h")
             else:

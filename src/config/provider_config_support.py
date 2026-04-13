@@ -10,10 +10,11 @@ from __future__ import annotations
 import json
 import logging
 import sys
+from collections.abc import Mapping
 from datetime import datetime
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any, Dict, Mapping, Optional, TypeVar, cast
+from typing import Any, Optional, TypeVar, cast
 
 from .paths_config import (
     PROVIDER_PREFS_FILE as DEFAULT_PROVIDER_PREFS_FILE,

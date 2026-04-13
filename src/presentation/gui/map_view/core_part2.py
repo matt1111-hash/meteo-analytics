@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for MapView."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .core_support import *
 
 
-class MapViewPart2Mixin:
+class MapViewPart2Mixin:  # noqa: D101
     def get_map_status(self) -> str:
         """
         📊 Térkép státusz lekérdezése (delegált).

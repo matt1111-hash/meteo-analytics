@@ -43,25 +43,25 @@ from .multi_city_legacy import (
 from .multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS, Number, NumberOrNone
 
 __all__ = [
+    "HUNGARIAN_REGIONAL_MAPPING",
+    "REGIONS",
+    # Core
+    "MultiCityEngine",
     # Types
     "Number",
     "NumberOrNone",
-    "HUNGARIAN_REGIONAL_MAPPING",
-    "REGIONS",
-    # Legacy
-    "safe_mean",
-    "safe_statistics_mean",
-    "safe_median",
-    "safe_statistics_median",
-    "safe_stdev",
-    "safe_statistics_stdev",
-    "safe_min_max",
-    # Core
-    "MultiCityEngine",
     # Demo
     "demo_multi_city_engine",
+    # Legacy
+    "safe_mean",
+    "safe_median",
+    "safe_min_max",
+    "safe_statistics_mean",
+    "safe_statistics_median",
+    "safe_statistics_stdev",
+    "safe_stdev",
 ]
 
 
 # 🔧 BACKWARD-COMPATIBILITY: Export QUERY_TYPES from engine class
-MultiCityEngine.QUERY_TYPES
+MultiCityEngine.QUERY_TYPES  # noqa: B018

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -34,14 +33,14 @@ if TYPE_CHECKING:
     pass
 
 
-def setup_map_visualizer_ui(self) -> None:
+def setup_map_visualizer_ui(self) -> None:  # noqa: PLR0915
     """
     🗺️ Map Visualizer UI setup.
 
     Args:
         self: HungarianMapVisualizer instance
     """
-    layout = layout = (
+    layout = layout = (  # noqa: PLW0127, PLW0128
         self.layout()
         if self.layout()
         else __import__("PySide6.QtWidgets").QtWidgets.QVBoxLayout(self)
@@ -51,9 +50,7 @@ def setup_map_visualizer_ui(self) -> None:
 
     controls_group = QGroupBox("🌐 HTTP Szerver Folium Térkép v3.0")
     register_widget_for_theming(controls_group, "container")
-    controls_layout = __import__("PySide6.QtWidgets").QtWidgets.QHBoxLayout(
-        controls_group
-    )
+    controls_layout = __import__("PySide6.QtWidgets").QtWidgets.QHBoxLayout(controls_group)
 
     style_label = QLabel("Stílus:")
     register_widget_for_theming(style_label, "text")

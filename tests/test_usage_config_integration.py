@@ -21,9 +21,7 @@ class TestIntegration:
         assert summary["openmeteo_requests"] == 50
         assert summary["total_requests"] == 150
 
-    def test_daily_breakdown_persists_across_loads(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_daily_breakdown_persists_across_loads(self, config_fs: dict[str, str]) -> None:
         """Daily breakdown should persist across loads."""
         from src.config.usage_config import UsageTracker
 
@@ -62,9 +60,7 @@ class TestIntegration:
 
         assert usage["meteostat"]["estimated_cost_usd"] == expected_cost
 
-    def test_multiple_providers_tracked_separately(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_multiple_providers_tracked_separately(self, config_fs: dict[str, str]) -> None:
         """Multiple providers should be tracked separately."""
         from src.config.usage_config import UsageTracker
 

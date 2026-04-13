@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Fájl: src/presentation/gui/controller/analysis_handler/core.py
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from PySide6.QtCore import QObject, Signal, Slot
 
@@ -78,37 +77,35 @@ class AnalysisHandler(QObject):
         logger.info("✅ AnalysisHandler inicializálva")
 
     # Public API methods
-    def handle_analysis_request(
-        self, request_data: Dict[str, Any], provider_routing, start_analysis_callback
+    def handle_analysis_request(  # noqa: D102
+        self, request_data: dict[str, Any], provider_routing, start_analysis_callback
     ) -> None:
-        handle_analysis_request(
-            self, request_data, provider_routing, start_analysis_callback
-        )
+        handle_analysis_request(self, request_data, provider_routing, start_analysis_callback)
 
     @Slot(str, int)
-    def on_analysis_progress(self, message: str, percentage: int) -> None:
+    def on_analysis_progress(self, message: str, percentage: int) -> None:  # noqa: D102
         on_analysis_progress(self, message, percentage)
 
     @Slot(dict)
-    def on_analysis_completed(self, result_data: dict) -> None:
+    def on_analysis_completed(self, result_data: dict) -> None:  # noqa: D102
         on_analysis_completed(self, result_data)
 
     @Slot(str)
-    def on_analysis_failed(self, error_message: str) -> None:
+    def on_analysis_failed(self, error_message: str) -> None:  # noqa: D102
         on_analysis_failed(self, error_message)
 
     @Slot()
-    def on_analysis_cancelled(self) -> None:
+    def on_analysis_cancelled(self) -> None:  # noqa: D102
         on_analysis_cancelled(self)
 
-    def stop_current_analysis(self) -> None:
+    def stop_current_analysis(self) -> None:  # noqa: D102
         stop_current_analysis(self)
 
-    def is_analysis_running(self) -> bool:
+    def is_analysis_running(self) -> bool:  # noqa: D102
         return is_analysis_running(self)
 
-    def get_current_analysis_info(self) -> Dict:
+    def get_current_analysis_info(self) -> dict:  # noqa: D102
         return get_current_analysis_info(self)
 
-    def set_active_worker(self, worker) -> None:
+    def set_active_worker(self, worker) -> None:  # noqa: D102
         set_active_worker(self, worker)

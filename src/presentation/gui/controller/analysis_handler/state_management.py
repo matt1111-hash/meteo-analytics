@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Fájl: src/presentation/gui/controller/analysis_handler/state_management.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     pass
@@ -106,7 +105,7 @@ def is_analysis_running(self) -> bool:
     return self.analysis_state.get("is_running", False)
 
 
-def get_current_analysis_info(self) -> Dict:
+def get_current_analysis_info(self) -> dict:
     """
     Jelenlegi analysis információk lekérdezése.
 

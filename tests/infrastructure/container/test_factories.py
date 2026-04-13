@@ -49,9 +49,7 @@ class TestContainerFactories:
         db_path.touch()
         hungarian_db_path.touch()
 
-        port = get_city_repo_port_direct(
-            db_path=db_path, hungarian_db_path=hungarian_db_path
-        )
+        port = get_city_repo_port_direct(db_path=db_path, hungarian_db_path=hungarian_db_path)
 
         assert str(port.db_path) == str(db_path)
         assert str(port.hungarian_db_path) == str(hungarian_db_path)

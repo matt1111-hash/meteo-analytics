@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for MultiCityWidget."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .core_support import *
 
 
-class MultiCityWidgetPart1Mixin:
+class MultiCityWidgetPart1Mixin:  # noqa: D101
     def __init__(self, city_manager: CityManagerPort, parent: Optional[QWidget] = None):
         """
         MultiCityWidget inicializálása (CA compliant - uses CityManagerPort).
@@ -47,13 +47,9 @@ class MultiCityWidgetPart1Mixin:
             self._selected_county,
         )
         self._combo_handler.update_group_title(self._current_mode)
-        self._combo_handler.update_info_label(
-            self._current_mode, self._get_current_selection()
-        )
+        self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
 
-        print(
-            "🏙️ DEBUG: MultiCityWidget (DROPDOWN) inicializálva - Clean Architecture + COMBO FIX"
-        )
+        print("🏙️ DEBUG: MultiCityWidget (DROPDOWN) inicializálva - Clean Architecture + COMBO FIX")
 
     def _init_ui(self) -> None:
         """UI elemek létrehozása."""
@@ -69,9 +65,7 @@ class MultiCityWidgetPart1Mixin:
             self.combo_box,
             self.group,
             self.info_label,
-            lambda label, style_type: apply_label_styling(
-                label, self.theme_manager, style_type
-            ),
+            lambda label, style_type: apply_label_styling(label, self.theme_manager, style_type),
         )
 
     def _load_data(self) -> None:
@@ -80,9 +74,7 @@ class MultiCityWidgetPart1Mixin:
             # Megyék betöltése city_manager-ből
             self._available_counties = self.city_manager.get_hungarian_counties()
             print(f"🏛️ DEBUG: Betöltött megyék: {len(self._available_counties)} db")
-            print(
-                f"📋 DEBUG: Megyék listája: {self._available_counties[:5]}..."
-            )  # Első 5
+            print(f"📋 DEBUG: Megyék listája: {self._available_counties[:5]}...")  # Első 5
 
         except Exception as e:
             print(f"❌ ERROR: Adatok betöltési hiba: {e}")
@@ -133,9 +125,7 @@ class MultiCityWidgetPart1Mixin:
             self._selected_county,
         )
         self._combo_handler.update_group_title(self._current_mode)
-        self._combo_handler.update_info_label(
-            self._current_mode, self._get_current_selection()
-        )
+        self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
 
         print(f"✅ DEBUG: Analysis mode váltás befejezve: {mode}")
 
@@ -148,9 +138,7 @@ class MultiCityWidgetPart1Mixin:
             return
 
         current_index = self.combo_box.currentIndex()
-        print(
-            f"🔄 DEBUG: Combo selection changed - index: {current_index}, text: '{text}'"
-        )
+        print(f"🔄 DEBUG: Combo selection changed - index: {current_index}, text: '{text}'")
 
         # Placeholder választás (index 0) - törlés
         if current_index == 0:
@@ -172,8 +160,6 @@ class MultiCityWidgetPart1Mixin:
             self._selected_region = None  # Clear other mode
             print(f"🏛️ DEBUG: Megye kiválasztva: {self._selected_county}")
 
-        self._combo_handler.update_info_label(
-            self._current_mode, self._get_current_selection()
-        )
+        self._combo_handler.update_info_label(self._current_mode, self._get_current_selection())
         self._update_clear_button()
         self._emit_selection_changed()

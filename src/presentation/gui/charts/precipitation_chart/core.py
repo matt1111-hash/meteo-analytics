@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -15,8 +14,6 @@ Képességek:
 Fájl: src/presentation/gui/charts/precipitation_chart/core.py
 """
 
-from typing import Optional
-
 from PySide6.QtWidgets import QWidget
 
 from ..base_chart import WeatherChart
@@ -30,7 +27,7 @@ class PrecipitationChart(WeatherChart, WeatherTooltipMixin):
     🎯 TOOLTIP ENHANCEMENT: WeatherTooltipMixin integráció - BAR CHART HOVER FUNKCIÓK
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):  # noqa: D107
         super().__init__(figsize=(12, 6), parent=parent)
         self.chart_title = "🌧️ Napi csapadék mennyisége"
         self.y_label = "Csapadék (mm)"
@@ -40,7 +37,7 @@ class PrecipitationChart(WeatherChart, WeatherTooltipMixin):
         print("🎯 DEBUG: PrecipitationChart tooltip-ok aktiválva!")
 
     # Public API methods
-    def update_data(self, data) -> None:
+    def update_data(self, data) -> None:  # noqa: D102
         from .data_handler import update_data
 
         update_data(self, data)

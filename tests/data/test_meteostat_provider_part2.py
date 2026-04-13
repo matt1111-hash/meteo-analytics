@@ -41,7 +41,7 @@ class TestGetWeatherDataBatched:
         self, provider: MeteostatProvider
     ) -> None:
         """get_weather_data_batched sleeps between batches except last."""
-        with patch.object(provider, "get_weather_data_single", return_value=[]):
+        with patch.object(provider, "get_weather_data_single", return_value=[]):  # noqa: SIM117
             with patch("time.sleep") as mock_sleep:
                 provider.get_weather_data_batched(47.5, 19.0, "2020-01-01", "2034-12-31")
 
@@ -119,7 +119,7 @@ class TestMakeApiRequest:
         mock_response.status_code = 200
         mock_response.json.return_value = {"error": "Something went wrong"}
 
-        with patch.object(provider.session, "get", return_value=mock_response):
+        with patch.object(provider.session, "get", return_value=mock_response):  # noqa: SIM117
             with pytest.raises(WeatherAPIError, match="Invalid response"):
                 provider._make_api_request({})
 
@@ -128,7 +128,7 @@ class TestMakeApiRequest:
         mock_response = Mock()
         mock_response.status_code = 401
 
-        with patch.object(provider.session, "get", return_value=mock_response):
+        with patch.object(provider.session, "get", return_value=mock_response):  # noqa: SIM117
             with pytest.raises(ProviderValidationError, match="Authentication error"):
                 provider._make_api_request({})
 
@@ -137,7 +137,7 @@ class TestMakeApiRequest:
         mock_response = Mock()
         mock_response.status_code = 429
 
-        with patch.object(provider.session, "get", return_value=mock_response):
+        with patch.object(provider.session, "get", return_value=mock_response):  # noqa: SIM117
             with pytest.raises(WeatherAPIError, match="Rate limit exceeded"):
                 provider._make_api_request({})
 
@@ -148,19 +148,19 @@ class TestMakeApiRequest:
         mock_response = Mock()
         mock_response.status_code = 500
 
-        with patch.object(provider.session, "get", return_value=mock_response):
+        with patch.object(provider.session, "get", return_value=mock_response):  # noqa: SIM117
             with pytest.raises(WeatherAPIError, match="API error: 500"):
                 provider._make_api_request({})
 
     def test_make_api_request_raises_on_timeout(self, provider: MeteostatProvider) -> None:
         """_make_api_request raises WeatherAPIError on timeout."""
-        with patch.object(provider.session, "get", side_effect=requests.exceptions.Timeout()):
+        with patch.object(provider.session, "get", side_effect=requests.exceptions.Timeout()):  # noqa: SIM117
             with pytest.raises(WeatherAPIError, match="API timeout"):
                 provider._make_api_request({})
 
     def test_make_api_request_raises_on_connection_error(self, provider: MeteostatProvider) -> None:
         """_make_api_request raises WeatherAPIError on connection error."""
-        with patch.object(
+        with patch.object(  # noqa: SIM117
             provider.session, "get", side_effect=requests.exceptions.ConnectionError()
         ):
             with pytest.raises(WeatherAPIError, match="Connection error"):

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for MultiYearComparisonChart."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .comparison_chart_support import *
 
 
-class MultiYearComparisonChartPart1Mixin:
-    def __init__(self, parent: Optional[QWidget] = None):
+class MultiYearComparisonChartPart1Mixin:  # noqa: D101
+    def __init__(self, parent: Optional[QWidget] = None):  # noqa: D107
         super().__init__(figsize=(14, 8), parent=parent)
         self.chart_title = "📊 Évek Közötti Összehasonlítás"
         self.comparison_years = []  # Összehasonlítandó évek listája
@@ -48,9 +48,7 @@ class MultiYearComparisonChartPart1Mixin:
             self.draw()
             self._is_updating = False
 
-            print(
-                "✅ DEBUG: MultiYearComparisonChart frissítés kész - DUPLIKÁCIÓ MENTES + THEMED"
-            )
+            print("✅ DEBUG: MultiYearComparisonChart frissítés kész - DUPLIKÁCIÓ MENTES + THEMED")
 
         except Exception as e:
             print(f"❌ DEBUG: Multi-year comparison chart hiba: {e}")
@@ -72,9 +70,7 @@ class MultiYearComparisonChartPart1Mixin:
             return pd.DataFrame()
 
         if not has_matching_temperature_lengths(dates, temp_max, temp_min, temp_mean):
-            print(
-                "❌ DEBUG: Eltérő hosszúságú többévi adatok - chart nem jeleníthető meg"
-            )
+            print("❌ DEBUG: Eltérő hosszúságú többévi adatok - chart nem jeleníthető meg")
             return pd.DataFrame()
 
         df = pd.DataFrame(

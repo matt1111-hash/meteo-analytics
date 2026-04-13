@@ -37,7 +37,7 @@ class TrendAnalyticsWorker(QThread):
     error_occurred = Signal(str)
     finished = Signal()
 
-    def __init__(self, settlement_name: str, parameter: str, time_range: str):
+    def __init__(self, settlement_name: str, parameter: str, time_range: str):  # noqa: D107
         super().__init__()
         self.settlement_name = settlement_name
         self.parameter = parameter
@@ -56,12 +56,10 @@ class TrendAnalyticsWorker(QThread):
                 f"🔥 WORKER THREAD START: {self.settlement_name} - {self.parameter} - {self.time_range}"
             )
 
-            self.processor.fetch_trend_data(
-                self.settlement_name, self.parameter, self.time_range
-            )
+            self.processor.fetch_trend_data(self.settlement_name, self.parameter, self.time_range)
 
         except Exception as e:
             logger.error(f"❌ Worker thread hiba: {e}")
-            self.error_occurred.emit(f"Háttérszál hiba: {str(e)}")
+            self.error_occurred.emit(f"Háttérszál hiba: {e!s}")
         finally:
             self.finished.emit()

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Global Weather Analyzer - Geo Utils Region
@@ -10,7 +9,7 @@ Part of the geo_utils refactoring - split into focused modules.
 
 import logging
 import math
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .geo_types import BoundingBox, GeographicRegion, GeoPoint
 from .geo_utils_core import GeoUtils
@@ -31,10 +30,10 @@ class GeoUtilsRegion(GeoUtils):
     def __init__(self, distance_calculator=None):
         """Initialize GeoUtilsRegion."""
         super().__init__(distance_calculator)
-        self.region_cache: Dict[str, GeographicRegion] = {}
+        self.region_cache: dict[str, GeographicRegion] = {}
 
     def calculate_region_from_cities(
-        self, cities_data: List[Dict[str, Any]], region_name: str
+        self, cities_data: list[dict[str, Any]], region_name: str
     ) -> GeographicRegion:
         """Calculate geographic region from cities."""
         if not cities_data:
@@ -77,8 +76,8 @@ class GeoUtilsRegion(GeoUtils):
         return abs(lat_km * lon_km)
 
     def group_cities_by_proximity(
-        self, cities_data: List[Dict[str, Any]], max_distance_km: float = 100
-    ) -> List[List[Dict[str, Any]]]:
+        self, cities_data: list[dict[str, Any]], max_distance_km: float = 100
+    ) -> list[list[dict[str, Any]]]:
         """Group cities by geographic proximity."""
         if not cities_data:
             return []
@@ -117,14 +116,14 @@ class GeoUtilsRegion(GeoUtils):
 
     def _filter_cities_in_region(
         self,
-        all_cities: List[Dict[str, Any]],
-        region_bbox: Optional[BoundingBox],
-    ) -> List[Dict[str, Any]]:
+        all_cities: list[dict[str, Any]],
+        region_bbox: BoundingBox | None,
+    ) -> list[dict[str, Any]]:
         """Filter cities by bounding box when provided."""
         if region_bbox is None:
             return all_cities
 
-        filtered_cities: List[Dict[str, Any]] = []
+        filtered_cities: list[dict[str, Any]] = []
         for city in all_cities:
             point = GeoPoint(city["lat"], city["lon"])
             if region_bbox.contains_point(point):
@@ -132,8 +131,8 @@ class GeoUtilsRegion(GeoUtils):
         return filtered_cities
 
     def _split_cities_by_population(
-        self, cities: List[Dict[str, Any]]
-    ) -> tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+        self, cities: list[dict[str, Any]]
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         """Split cities into with/without population buckets."""
         cities_with_pop = [city for city in cities if city.get("population", 0) > 0]
         cities_without_pop = [city for city in cities if city.get("population", 0) <= 0]
@@ -142,8 +141,8 @@ class GeoUtilsRegion(GeoUtils):
 
     def _calculate_city_selection_score(
         self,
-        city: Dict[str, Any],
-        selected_cities: List[Dict[str, Any]],
+        city: dict[str, Any],
+        selected_cities: list[dict[str, Any]],
     ) -> float:
         """Calculate spacing and population score for one city."""
         min_distance = float("inf")
@@ -159,11 +158,11 @@ class GeoUtilsRegion(GeoUtils):
 
     def _select_best_remaining_city(
         self,
-        remaining_cities: List[Dict[str, Any]],
-        selected_cities: List[Dict[str, Any]],
-    ) -> Optional[Dict[str, Any]]:
+        remaining_cities: list[dict[str, Any]],
+        selected_cities: list[dict[str, Any]],
+    ) -> dict[str, Any] | None:
         """Select the best remaining city based on distance and population."""
-        best_city: Optional[Dict[str, Any]] = None
+        best_city: dict[str, Any] | None = None
         best_score = -1.0
 
         for city in remaining_cities:
@@ -176,19 +175,17 @@ class GeoUtilsRegion(GeoUtils):
 
     def find_optimal_cities_for_region(
         self,
-        all_cities: List[Dict[str, Any]],
+        all_cities: list[dict[str, Any]],
         target_count: int,
-        region_bbox: Optional[BoundingBox] = None,
-    ) -> List[Dict[str, Any]]:
+        region_bbox: BoundingBox | None = None,
+    ) -> list[dict[str, Any]]:
         """Find optimal cities for region analytics."""
         filtered_cities = self._filter_cities_in_region(all_cities, region_bbox)
 
         if len(filtered_cities) <= target_count:
             return filtered_cities
 
-        cities_with_pop, cities_without_pop = self._split_cities_by_population(
-            filtered_cities
-        )
+        cities_with_pop, cities_without_pop = self._split_cities_by_population(filtered_cities)
         selected_cities = []
         remaining_cities = cities_with_pop + cities_without_pop
 
@@ -196,9 +193,7 @@ class GeoUtilsRegion(GeoUtils):
             selected_cities.append(remaining_cities.pop(0))
 
         while len(selected_cities) < target_count and remaining_cities:
-            best_city = self._select_best_remaining_city(
-                remaining_cities, selected_cities
-            )
+            best_city = self._select_best_remaining_city(remaining_cities, selected_cities)
             if best_city:
                 selected_cities.append(best_city)
                 remaining_cities.remove(best_city)

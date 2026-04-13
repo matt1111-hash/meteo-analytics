@@ -22,34 +22,24 @@ def _build_all_columns_mask(filtered_df: pd.DataFrame, search_text: str) -> pd.S
 
 def _build_temperature_mask(filtered_df: pd.DataFrame, search_text: str) -> pd.Series:
     """Build a mask for temperature-related columns."""
-    temperature_mask = (
-        filtered_df.iloc[:, 1].astype(str).str.contains(search_text, na=False)
-    )
-    temperature_mask |= (
-        filtered_df.iloc[:, 2].astype(str).str.contains(search_text, na=False)
-    )
-    if len(filtered_df.columns) > 3:
-        temperature_mask |= (
-            filtered_df.iloc[:, 3].astype(str).str.contains(search_text, na=False)
-        )
+    temperature_mask = filtered_df.iloc[:, 1].astype(str).str.contains(search_text, na=False)
+    temperature_mask |= filtered_df.iloc[:, 2].astype(str).str.contains(search_text, na=False)
+    if len(filtered_df.columns) > 3:  # noqa: PLR2004
+        temperature_mask |= filtered_df.iloc[:, 3].astype(str).str.contains(search_text, na=False)
     return temperature_mask
 
 
 def _build_precipitation_mask(filtered_df: pd.DataFrame, search_text: str) -> pd.Series:
     """Build a mask for precipitation column."""
-    precip_col = 4 if len(filtered_df.columns) > 4 else 3
+    precip_col = 4 if len(filtered_df.columns) > 4 else 3  # noqa: PLR2004
     if precip_col < len(filtered_df.columns):
-        return (
-            filtered_df.iloc[:, precip_col]
-            .astype(str)
-            .str.contains(search_text, na=False)
-        )
+        return filtered_df.iloc[:, precip_col].astype(str).str.contains(search_text, na=False)
     return pd.Series([False] * len(filtered_df))
 
 
 def _build_wind_mask(filtered_df: pd.DataFrame, search_text: str) -> pd.Series:
     """Build a mask for wind column."""
-    if len(filtered_df.columns) > 5:
+    if len(filtered_df.columns) > 5:  # noqa: PLR2004
         return filtered_df.iloc[:, -1].astype(str).str.contains(search_text, na=False)
     return pd.Series([False] * len(filtered_df))
 
@@ -61,12 +51,7 @@ def _build_filter_mask(
     if column_filter == "Összes":
         return _build_all_columns_mask(filtered_df, search_text)
     if column_filter == "Dátum":
-        return (
-            filtered_df.iloc[:, 0]
-            .astype(str)
-            .str.lower()
-            .str.contains(search_text, na=False)
-        )
+        return filtered_df.iloc[:, 0].astype(str).str.lower().str.contains(search_text, na=False)
     if column_filter == "Hőmérséklet":
         return _build_temperature_mask(filtered_df, search_text)
     if column_filter == "Csapadék":
@@ -117,9 +102,7 @@ class FilteringMixin:
     def _change_page_size(self, size_text: str) -> None:
         """Oldalméret váltás."""
         if size_text == "Összes":
-            self.rows_per_page = (
-                len(self.filtered_data) if self.filtered_data is not None else 1000
-            )
+            self.rows_per_page = len(self.filtered_data) if self.filtered_data is not None else 1000
         else:
             self.rows_per_page = int(size_text)
 
@@ -129,9 +112,7 @@ class FilteringMixin:
         self._display_current_page()
 
         if size_text == "Összes":
-            total_rows = (
-                len(self.filtered_data) if self.filtered_data is not None else 0
-            )
+            total_rows = len(self.filtered_data) if self.filtered_data is not None else 0
             print(f"✅ Táblázat beállítva: ÖSSZES {total_rows} sor egy oldalon")
 
     def _update_pagination(self) -> None:

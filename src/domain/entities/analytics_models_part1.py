@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from analytics_models.py."""
 
@@ -62,16 +62,11 @@ class AnalyticsQuestion:
         if self.max_cities <= 0:
             errors.append("Maximum városok száma pozitív kell legyen")
 
-        if self.max_cities > 1000:
+        if self.max_cities > 1000:  # noqa: PLR2004
             errors.append("Maximum városok száma nem lehet 1000-nél több")
 
-        if (
-            self.region_scope in [RegionScope.COUNTRY, RegionScope.REGION]
-            and not self.region_value
-        ):
-            errors.append(
-                f"{self.region_scope.value} scope esetén region_value kötelező"
-            )
+        if self.region_scope in [RegionScope.COUNTRY, RegionScope.REGION] and not self.region_value:
+            errors.append(f"{self.region_scope.value} scope esetén region_value kötelező")
 
         return len(errors) == 0, errors
 

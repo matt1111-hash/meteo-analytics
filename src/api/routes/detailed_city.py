@@ -1,7 +1,7 @@
 # mypy: ignore-errors
 """Detailed single city analysis with multiple metrics API route."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import logging
 
@@ -47,9 +47,7 @@ def _build_use_case() -> AnalyzeMultiCityUseCase:
             max_retries=engine.max_retries,
             retry_delay=engine.retry_delay,
         ),
-        analytics_transform_service=AnalyticsTransformService(
-            MultiCityEngine.QUERY_TYPES
-        ),
+        analytics_transform_service=AnalyticsTransformService(MultiCityEngine.QUERY_TYPES),
         query_types=MultiCityEngine.QUERY_TYPES,
         regions=REGIONS,
         hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
@@ -130,7 +128,5 @@ async def analyze_single_city_detailed(request: DetailedCityRequest) -> dict:
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
-        logger.error(
-            "Unexpected error in detailed-city analysis: %s", exc, exc_info=True
-        )
+        logger.error("Unexpected error in detailed-city analysis: %s", exc, exc_info=True)
         raise HTTPException(status_code=500, detail="Internal server error") from exc

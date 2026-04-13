@@ -17,8 +17,8 @@ from .enums import (
 )
 
 __all__ = [
-    "CityInfo",
     "AnalyticsMetric",
+    "CityInfo",
     "DataProvider",
     "DataSource",
     "QuestionType",

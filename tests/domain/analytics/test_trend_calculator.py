@@ -7,7 +7,6 @@ Trend calculator service for climate trend analysis
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from src.domain.analytics.services.trend_calculator import TrendCalculator
 from src.domain.value_objects.enums import AnalyticsMetric
 
@@ -46,9 +45,7 @@ class TestCalculateTrend(TestTrendCalculator):
 
     def test_returns_none_for_empty_data(self, calculator: TrendCalculator) -> None:
         """Should return None for empty data."""
-        result = calculator.calculate_trend(
-            [], AnalyticsMetric.TEMPERATURE_2M_MAX, "Test", 1
-        )
+        result = calculator.calculate_trend([], AnalyticsMetric.TEMPERATURE_2M_MAX, "Test", 1)
         assert result is None
 
     def test_returns_none_for_unknown_metric(self, calculator: TrendCalculator) -> None:
@@ -67,23 +64,17 @@ class TestCalculateTrend(TestTrendCalculator):
             )
             assert result is None
 
-    def test_returns_none_for_insufficient_data(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_none_for_insufficient_data(self, calculator: TrendCalculator) -> None:
         """Should return None for insufficient data."""
         data = [{"date": "2024-01-01", "temperature_2m_max": 10.0}]
-        result = calculator.calculate_trend(
-            data, AnalyticsMetric.TEMPERATURE_2M_MAX, "Test", 1
-        )
+        result = calculator.calculate_trend(data, AnalyticsMetric.TEMPERATURE_2M_MAX, "Test", 1)
         assert result is None
 
 
 class TestGetApiField(TestTrendCalculator):
     """Test _get_api_field method."""
 
-    def test_returns_field_for_temperature_max(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_field_for_temperature_max(self, calculator: TrendCalculator) -> None:
         """Should return field for TEMPERATURE_2M_MAX."""
         result = calculator._get_api_field(AnalyticsMetric.TEMPERATURE_2M_MAX)
         assert result == "temperature_2m_max"
@@ -116,9 +107,7 @@ class TestClassifyTrendDirection(TestTrendCalculator):
         result = calculator._classify_trend_direction(-0.5, 0.01)
         assert result == "decreasing"
 
-    def test_returns_stable_for_not_significant(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_stable_for_not_significant(self, calculator: TrendCalculator) -> None:
         """Should return 'stable' for not significant p-value."""
         result = calculator._classify_trend_direction(0.5, 0.1)  # > 0.05
         assert result == "stable"
@@ -132,9 +121,7 @@ class TestClassifyTrendDirection(TestTrendCalculator):
 class TestAssessSignificance(TestTrendCalculator):
     """Test _assess_significance method."""
 
-    def test_returns_highly_significant_for_very_low_p(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_highly_significant_for_very_low_p(self, calculator: TrendCalculator) -> None:
         """Should return 'highly_significant' for p < 0.001."""
         result = calculator._assess_significance(0.0001)
         assert result == "highly_significant"
@@ -144,16 +131,12 @@ class TestAssessSignificance(TestTrendCalculator):
         result = calculator._assess_significance(0.005)
         assert result == "significant"
 
-    def test_returns_moderately_significant_for_medium_p(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_moderately_significant_for_medium_p(self, calculator: TrendCalculator) -> None:
         """Should return 'moderately_significant' for p < 0.05."""
         result = calculator._assess_significance(0.03)
         assert result == "moderately_significant"
 
-    def test_returns_not_significant_for_high_p(
-        self, calculator: TrendCalculator
-    ) -> None:
+    def test_returns_not_significant_for_high_p(self, calculator: TrendCalculator) -> None:
         """Should return 'not_significant' for p >= 0.05."""
         result = calculator._assess_significance(0.1)
         assert result == "not_significant"

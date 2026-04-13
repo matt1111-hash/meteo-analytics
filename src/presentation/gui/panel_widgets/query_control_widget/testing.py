@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class QueryControlTestWindow(QMainWindow):
     """Test window a QueryControlWidgethez."""
 
-    def __init__(self, query_widget):
+    def __init__(self, query_widget):  # noqa: D107
         super().__init__()
         self.setWindowTitle("QueryControlWidget Test - Validation Fix")
         self.setGeometry(100, 100, 400, 700)

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from provider_config.py."""
 
@@ -37,7 +37,7 @@ class UserPreferences:
 
         try:
             if prefs_file.exists():
-                with open(prefs_file, "r", encoding="utf-8") as file_obj:
+                with open(prefs_file, encoding="utf-8") as file_obj:  # noqa: PTH123
                     prefs = json.load(file_obj)
                     return {**default_prefs, **prefs}
             return default_prefs
@@ -62,7 +62,7 @@ class UserPreferences:
             _ensure_directories()
             preferences["last_updated"] = datetime.now().isoformat()
 
-            with open(prefs_file, "w", encoding="utf-8") as file_obj:
+            with open(prefs_file, "w", encoding="utf-8") as file_obj:  # noqa: PTH123
                 json.dump(preferences, file_obj, indent=2, ensure_ascii=False)
             return True
         except Exception as exc:  # pragma: no cover - defensive

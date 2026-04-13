@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 City Manager - Multi-Source Database Integration (Legacy Export)
@@ -38,11 +37,7 @@ from .city_manager_stats import CityManagerStats as CityManager
 from .city_types import City, CityDatabaseError, CityQuery, CitySort, RegionType
 
 __all__ = [
-    # Types
-    "RegionType",
-    "CitySort",
     "City",
-    "CityQuery",
     "CityDatabaseError",
     # Main client (with all functionality)
     "CityManager",
@@ -51,6 +46,10 @@ __all__ = [
     "CityManagerHungarian",
     "CityManagerSearch",
     "CityManagerStats",
+    "CityQuery",
+    "CitySort",
+    # Types
+    "RegionType",
     # Demo function
     "demo_dual_database_city_manager",
 ]

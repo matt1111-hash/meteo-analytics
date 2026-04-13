@@ -17,8 +17,8 @@ from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds.
 
 __all__ = [
     "create_main_tabs",
-    "create_thresholds_tab",
-    "create_temperature_section",
     "create_precipitation_section",
+    "create_temperature_section",
+    "create_thresholds_tab",
     "create_wind_section",
 ]

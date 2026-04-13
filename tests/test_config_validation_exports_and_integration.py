@@ -55,9 +55,7 @@ class TestIntegration:
             patch("src.config.config_validation.DATA_DIR", tmp_path),
             patch("src.config.config_validation.CACHE_DIR", tmp_path / "cache"),
             patch("src.config.config_validation.USER_PREFS_DIR", tmp_path / "prefs"),
-            patch(
-                "src.config.config_validation.LEGACY_DB_PATH", tmp_path / "legacy.db"
-            ),
+            patch("src.config.config_validation.LEGACY_DB_PATH", tmp_path / "legacy.db"),
         ):
             mock_ensure.return_value = None
             mock_validate.return_value = {

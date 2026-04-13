@@ -18,7 +18,7 @@ Képességek:
 Fájl: src/presentation/gui/map/map_visualizer/public_api.py
 """
 
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from ..map_state import FoliumMapConfig

@@ -24,9 +24,7 @@ class TestGroupCitiesByProximity:
         group_sizes = sorted([len(g) for g in groups])
         assert group_sizes == [1, 2]
 
-    def test_returns_single_group_for_close_cities(
-        self, geo_utils: GeoUtilsRegion
-    ) -> None:
+    def test_returns_single_group_for_close_cities(self, geo_utils: GeoUtilsRegion) -> None:
         """group_cities_by_proximity returns single group for very close cities."""
         cities = [
             {"city": "A", "lat": 47.0, "lon": 19.0},
@@ -38,9 +36,7 @@ class TestGroupCitiesByProximity:
         assert len(groups) == 1
         assert len(groups[0]) == 2
 
-    def test_returns_multiple_groups_for_distant_cities(
-        self, geo_utils: GeoUtilsRegion
-    ) -> None:
+    def test_returns_multiple_groups_for_distant_cities(self, geo_utils: GeoUtilsRegion) -> None:
         """group_cities_by_proximity returns multiple groups for distant cities."""
         cities = [
             {"city": "A", "lat": 47.0, "lon": 19.0},
@@ -59,9 +55,7 @@ class TestGroupCitiesByProximity:
 
         assert groups == []
 
-    def test_returns_single_group_for_single_city(
-        self, geo_utils: GeoUtilsRegion
-    ) -> None:
+    def test_returns_single_group_for_single_city(self, geo_utils: GeoUtilsRegion) -> None:
         """group_cities_by_proximity returns single group for single city."""
         cities = [{"city": "A", "lat": 47.0, "lon": 19.0}]
 
@@ -89,9 +83,7 @@ class TestGroupCitiesByProximity:
 class TestFindOptimalCitiesForRegion:
     """Test find_optimal_cities_for_region method."""
 
-    def test_returns_all_cities_when_fewer_than_target(
-        self, geo_utils: GeoUtilsRegion
-    ) -> None:
+    def test_returns_all_cities_when_fewer_than_target(self, geo_utils: GeoUtilsRegion) -> None:
         """find_optimal_cities_for_region returns all when fewer than target."""
         cities = [
             {"city": "A", "lat": 47.0, "lon": 19.0, "population": 1000},
@@ -102,9 +94,7 @@ class TestFindOptimalCitiesForRegion:
 
         assert len(result) == 2
 
-    def test_returns_target_count_when_more_available(
-        self, geo_utils: GeoUtilsRegion
-    ) -> None:
+    def test_returns_target_count_when_more_available(self, geo_utils: GeoUtilsRegion) -> None:
         """find_optimal_cities_for_region returns target count when more available."""
         cities = [
             {
@@ -135,9 +125,7 @@ class TestFindOptimalCitiesForRegion:
             max_longitude=20.0,
         )
 
-        result = geo_utils.find_optimal_cities_for_region(
-            cities, target_count=10, region_bbox=bbox
-        )
+        result = geo_utils.find_optimal_cities_for_region(cities, target_count=10, region_bbox=bbox)
 
         # Should only include cities inside bbox
         assert len(result) == 2

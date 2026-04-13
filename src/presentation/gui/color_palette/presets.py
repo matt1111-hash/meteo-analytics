@@ -7,8 +7,6 @@ Color Palette Presets Module
 Előre definiált semantic színkészletek.
 """
 
-from typing import Dict
-
 from src.presentation.gui.types import ThemeType
 
 
@@ -18,7 +16,7 @@ def _theme_surface_background(
     dark_surface: str,
     light_background: str,
     dark_background: str,
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """Build surface/background pair for a preset."""
     is_light = theme_type == ThemeType.LIGHT
     return {
@@ -27,7 +25,7 @@ def _theme_surface_background(
     }
 
 
-def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
+def get_semantic_presets(theme_type: ThemeType) -> dict[str, dict[str, str]]:
     """
     Összes elérhető semantic preset lekérdezése.
 
@@ -95,7 +93,7 @@ def get_semantic_presets(theme_type: ThemeType) -> Dict[str, Dict[str, str]]:
     }
 
 
-def get_preset(preset_name: str, theme_type: ThemeType) -> Dict[str, str]:
+def get_preset(preset_name: str, theme_type: ThemeType) -> dict[str, str]:
     """
     Egy preset lekérdezése név alapján.
 

@@ -6,14 +6,12 @@
 Formatting Module - Wind Helpers - Wind-specific formatting.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from src.presentation.gui.utils.constants import AnomalyConstants
 
 
-def format_wind_gusts(
-    value: float, unit: str = "km/h", include_category: bool = False
-) -> str:
+def format_wind_gusts(value: float, unit: str = "km/h", include_category: bool = False) -> str:
     """Format wind gusts values with category."""
     if value is None:
         return "N/A"
@@ -28,12 +26,12 @@ def format_wind_gusts(
     return formatted
 
 
-def get_wind_gusts_category(value: float) -> Optional[Dict[str, Any]]:
+def get_wind_gusts_category(value: float) -> dict[str, Any] | None:
     """Get wind gusts category for value."""
     if value is None:
         return None
 
-    for category_name, category_data in AnomalyConstants.WIND_GUSTS_CATEGORIES.items():
+    for category_data in AnomalyConstants.WIND_GUSTS_CATEGORIES.values():
         if category_data["threshold"] <= value < category_data["max"]:
             return category_data
 

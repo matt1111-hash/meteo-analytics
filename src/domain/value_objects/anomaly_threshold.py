@@ -29,14 +29,11 @@ class AnomalyThresholdSet:  # pylint: disable=too-many-instance-attributes
         """Validate temperature threshold ordering and ranges."""
         if self.temp_hot <= self.temp_cold:
             raise ValueError(
-                (
-                    f"temp_hot ({self.temp_hot}) must be greater than "
-                    f"temp_cold ({self.temp_cold})"
-                )
+                f"temp_hot ({self.temp_hot}) must be greater than " f"temp_cold ({self.temp_cold})"
             )
-        if -50.0 > self.temp_cold or self.temp_cold > 40.0:
+        if self.temp_cold < -50.0 or self.temp_cold > 40.0:  # noqa: PLR2004
             raise ValueError("temp_cold must be between -50 and 40")
-        if -50.0 > self.temp_hot or self.temp_hot > 60.0:
+        if self.temp_hot < -50.0 or self.temp_hot > 60.0:  # noqa: PLR2004
             raise ValueError("temp_hot must be between -50 and 60")
 
     def _validate_precipitation_thresholds(self) -> None:
@@ -46,9 +43,9 @@ class AnomalyThresholdSet:  # pylint: disable=too-many-instance-attributes
                 f"precip_high ({self.precip_high}) must be greater than "
                 f"precip_low ({self.precip_low})"
             )
-        if 0.0 > self.precip_low or self.precip_low > 100.0:
+        if self.precip_low < 0.0 or self.precip_low > 100.0:  # noqa: PLR2004
             raise ValueError("precip_low must be between 0 and 100 mm/day")
-        if 10.0 > self.precip_high or self.precip_high > 500.0:
+        if self.precip_high < 10.0 or self.precip_high > 500.0:  # noqa: PLR2004
             raise ValueError("precip_high must be between 10 and 500 mm/day")
 
     def _validate_wind_thresholds(self) -> None:
@@ -57,7 +54,7 @@ class AnomalyThresholdSet:  # pylint: disable=too-many-instance-attributes
         if wind_values != sorted(wind_values):
             raise ValueError("Wind thresholds must be in ascending order")
         for wind_value in wind_values:
-            if 5.0 > wind_value or wind_value > 300.0:
+            if wind_value < 5.0 or wind_value > 300.0:  # noqa: PLR2004
                 raise ValueError("Wind thresholds must be between 5 and 300 km/h")
 
     def _wind_values(self) -> list[float]:

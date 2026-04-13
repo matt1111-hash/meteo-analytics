@@ -7,7 +7,6 @@ Part of the weather_client refactoring - split into focused modules.
 """
 
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -19,28 +18,28 @@ class WeatherData:
     """
 
     date: str
-    temperature_2m_max: Optional[float] = None
-    temperature_2m_min: Optional[float] = None
-    temperature_2m_mean: Optional[float] = None
-    apparent_temperature_max: Optional[float] = None
-    apparent_temperature_min: Optional[float] = None
-    precipitation_sum: Optional[float] = None
-    rain_sum: Optional[float] = None
-    snowfall_sum: Optional[float] = None
-    precipitation_hours: Optional[int] = None
-    windspeed_10m_max: Optional[float] = None
-    wind_gusts_10m_max: Optional[float] = None
-    winddirection_10m_dominant: Optional[float] = None
-    shortwave_radiation_sum: Optional[float] = None
-    sunshine_duration: Optional[float] = None
-    uv_index_max: Optional[float] = None
-    uv_index_clear_sky_max: Optional[float] = None
+    temperature_2m_max: float | None = None
+    temperature_2m_min: float | None = None
+    temperature_2m_mean: float | None = None
+    apparent_temperature_max: float | None = None
+    apparent_temperature_min: float | None = None
+    precipitation_sum: float | None = None
+    rain_sum: float | None = None
+    snowfall_sum: float | None = None
+    precipitation_hours: int | None = None
+    windspeed_10m_max: float | None = None
+    wind_gusts_10m_max: float | None = None
+    winddirection_10m_dominant: float | None = None
+    shortwave_radiation_sum: float | None = None
+    sunshine_duration: float | None = None
+    uv_index_max: float | None = None
+    uv_index_clear_sky_max: float | None = None
 
     # Provider tracking
-    data_source: Optional[str] = None
+    data_source: str | None = None
 
     # Calculated values
-    temperature_range: Optional[float] = None
+    temperature_range: float | None = None
 
     def __post_init__(self):
         """Calculate computed values automatically."""
@@ -52,9 +51,7 @@ class WeatherData:
             and self.temperature_2m_min is not None
             and self.temperature_2m_mean is None
         ):
-            self.temperature_2m_mean = (
-                self.temperature_2m_max + self.temperature_2m_min
-            ) / 2
+            self.temperature_2m_mean = (self.temperature_2m_max + self.temperature_2m_min) / 2
 
 
 class WeatherAPIError(Exception):
@@ -76,8 +73,8 @@ class ProviderValidationError(WeatherAPIError):
 
 
 __all__ = [
-    "WeatherData",
-    "WeatherAPIError",
     "ProviderNotAvailableError",
     "ProviderValidationError",
+    "WeatherAPIError",
+    "WeatherData",
 ]

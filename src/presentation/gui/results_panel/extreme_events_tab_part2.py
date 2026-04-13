@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,I001
+# ruff: noqa: F403, F405, I001
 # mypy: ignore-errors
 """Compatibility wrapper for extreme_events_tab_part2.py."""
 

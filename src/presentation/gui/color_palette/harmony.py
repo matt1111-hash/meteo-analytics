@@ -7,22 +7,15 @@ Color Palette Harmony Module
 Színharmónia generálás - complementary, triadic, analogous, stb.
 """
 
-from typing import Dict
-
 from src.presentation.gui.color_palette.types import ColorHarmony, HSLColor
 
 
-def _build_rotated_harmony(
-    base_color: HSLColor, rotations: dict[str, int]
-) -> Dict[str, str]:
+def _build_rotated_harmony(base_color: HSLColor, rotations: dict[str, int]) -> dict[str, str]:
     """Build harmony colors from hue rotations."""
-    return {
-        name: base_color.rotate_hue(rotation).to_hex()
-        for name, rotation in rotations.items()
-    }
+    return {name: base_color.rotate_hue(rotation).to_hex() for name, rotation in rotations.items()}
 
 
-def _build_monochromatic_harmony(base_color: HSLColor) -> Dict[str, str]:
+def _build_monochromatic_harmony(base_color: HSLColor) -> dict[str, str]:
     """Build monochromatic harmony variants."""
     return {
         "monochromatic_light": base_color.lighten(30).to_hex(),
@@ -31,9 +24,7 @@ def _build_monochromatic_harmony(base_color: HSLColor) -> Dict[str, str]:
     }
 
 
-def generate_harmony(
-    base_color: HSLColor, harmony_type: ColorHarmony
-) -> Dict[str, str]:
+def generate_harmony(base_color: HSLColor, harmony_type: ColorHarmony) -> dict[str, str]:
     """
     Színharmónia generálása base szín alapján.
 

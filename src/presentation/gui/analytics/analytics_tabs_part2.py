@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from analytics_tabs.py."""
 
@@ -10,21 +10,17 @@ from .analytics_tabs_support import *
 class WindGustTabWidget(QWidget):
     """🌪️ Max Széllökés tab - KONSTANS HEATMAP (BEAUFORT-alapú 13 fokozat progresszív színskála) - SZÉLLÖKÉSEK"""
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         super().__init__()
 
         # HEATMAP CHART - SZÉLLÖKÉS VERZIÓ (MAX GUSTS)
         self.windgust_heatmap = HeatmapCalendarChart()
         self.windgust_heatmap.figure.set_size_inches(20, 10)  # EXTRA NAGY MÉRET
         self.windgust_heatmap.parameter = "wind_gusts_max"  # ✅ VALÓS API NÉV
-        self.windgust_heatmap.chart_title = (
-            "🌪️ Konstans Max Széllökés Heatmap (wind_gusts_max)"
-        )
+        self.windgust_heatmap.chart_title = "🌪️ Konstans Max Széllökés Heatmap (wind_gusts_max)"
 
         # 🎨 BEAUFORT-ALAPÚ 13 FOKOZAT SZÉL SZÍNSKÁLA (UGYANAZ, MINT A SZÉL TAB)
-        self.windgust_cmap, self.windgust_norm = (
-            MeteorologicalColorMaps.get_wind_colormap()
-        )
+        self.windgust_cmap, self.windgust_norm = MeteorologicalColorMaps.get_wind_colormap()
 
         self._setup_ui()
         logger.info(
@@ -65,9 +61,7 @@ class WindGustTabWidget(QWidget):
             # ✅ DIREKT ADATÁTADÁS - aggregáció a heatmap chart-ban történik
             self.windgust_heatmap.update_data(data)
 
-            logger.info(
-                "🌪️ Max Széllökés KONSTANS HEATMAP tab frissítve (BEAUFORT 13 fokozat)"
-            )
+            logger.info("🌪️ Max Széllökés KONSTANS HEATMAP tab frissítve (BEAUFORT 13 fokozat)")
 
         except Exception as e:
             logger.error(f"WindGustTabWidget KONSTANS HEATMAP frissítési hiba: {e}")

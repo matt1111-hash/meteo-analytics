@@ -12,15 +12,15 @@ if TYPE_CHECKING:
 class AppControllerLifecycleMixin:
     """Lifecycle, state access, and shutdown helpers."""
 
-    def get_current_city(self: "AppController") -> dict[str, Any] | None:
+    def get_current_city(self: AppController) -> dict[str, Any] | None:
         """Return the currently selected city."""
         return self.current_city_data.copy() if self.current_city_data else None
 
-    def get_current_weather_data(self: "AppController") -> dict[str, Any] | None:
+    def get_current_weather_data(self: AppController) -> dict[str, Any] | None:
         """Return the current weather data payload."""
         return self.weather_data_handler.get_current_weather_data()
 
-    def cancel_all_operations(self: "AppController") -> None:
+    def cancel_all_operations(self: AppController) -> None:
         """Cancel active operations and broadcast status updates."""
         try:
             self._logger.info("🛑 Cancelling all operations...")
@@ -32,7 +32,7 @@ class AppControllerLifecycleMixin:
         except Exception as exc:
             self._logger.error(f"Műveletek megszakítási hiba: {exc}")
 
-    def shutdown(self: "AppController") -> None:
+    def shutdown(self: AppController) -> None:
         """Shutdown the controller and clean up resources."""
         try:
             self._logger.info("🛑 AppController leállítása...")
@@ -46,16 +46,14 @@ class AppControllerLifecycleMixin:
             self.current_city_data = None
             self.current_weather_data = None
             self.active_search_query = None
-            self._logger.info(
-                "✅ AppController leállítva (CLEAN ARCHITECTURE REFACTORED)"
-            )
+            self._logger.info("✅ AppController leállítva (CLEAN ARCHITECTURE REFACTORED)")
         except Exception as exc:
             self._logger.warning(f"⚠️ Controller leállítási hiba: {exc}")
             import traceback
 
             traceback.print_exc()
 
-    def _load_user_preferences(self: "AppController") -> None:
+    def _load_user_preferences(self: AppController) -> None:
         """Load saved user preferences and emit state signals."""
         try:
             prefs_data = self.provider_routing.load_user_preferences()

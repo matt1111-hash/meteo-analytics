@@ -7,7 +7,6 @@ Ez a modul felelős a QueryControlWidget állapotkezelésért.
 
 import logging
 from datetime import datetime
-from typing import Optional
 
 from PySide6.QtCore import QTimer, Signal
 
@@ -41,16 +40,16 @@ class QueryControlStateManager:
         # State variables
         self._current_state: str = self.STATE_IDLE
         self._is_fetching: bool = False
-        self._fetch_start_time: Optional[datetime] = None
+        self._fetch_start_time: datetime | None = None
         self._progress_dots: int = 0
         self._cancel_requested: bool = False
 
         # Timers
-        self._auto_reset_timer: Optional[QTimer] = QTimer()
+        self._auto_reset_timer: QTimer | None = QTimer()
         self._auto_reset_timer.setSingleShot(True)
         self._auto_reset_timer.timeout.connect(self._on_auto_reset)
 
-        self._progress_update_timer: Optional[QTimer] = QTimer()
+        self._progress_update_timer: QTimer | None = QTimer()
         self._progress_update_timer.timeout.connect(self._update_progress_animation)
 
     @property
@@ -74,7 +73,7 @@ class QueryControlStateManager:
         self._cancel_requested = value
 
     @property
-    def fetch_start_time(self) -> Optional[datetime]:
+    def fetch_start_time(self) -> datetime | None:
         """Lekérdezés kezdési időpontja."""
         return self._fetch_start_time
 
@@ -213,9 +212,7 @@ class QueryControlStateManager:
             elapsed_time = f" ({elapsed_seconds}s)"
 
         if self._ui.progress_text_label:
-            self._ui.progress_text_label.setText(
-                f"📄 Adatok letöltése{dots}{elapsed_time}"
-            )
+            self._ui.progress_text_label.setText(f"📄 Adatok letöltése{dots}{elapsed_time}")
 
     def cleanup(self) -> None:
         """Timer-ek takarítása."""

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -22,7 +21,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from .core import MapView
 
 
-def demo_map_view_folium() -> None:
+def demo_map_view_folium() -> None:  # noqa: PLR0915
     """
     🧪 MapView demo alkalmazás - Folium HungarianMapTab integrációval.
     """

@@ -2,7 +2,7 @@
 """Location domain entity."""
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from src.domain.value_objects.city_info import CityInfo
@@ -32,33 +32,33 @@ class Location:
     longitude: float
     country_code: str = "HU"
     timezone: str = "Europe/Budapest"
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __str__(self) -> str:
         """String representation."""
         return f"{self.display_name} ({self.latitude:.4f}, {self.longitude:.4f})"
 
-    def get_coordinates(self) -> Tuple[float, float]:
+    def get_coordinates(self) -> tuple[float, float]:
         """Get coordinates as tuple."""
         return (self.latitude, self.longitude)
 
-    def get_region(self) -> Optional[str]:
+    def get_region(self) -> str | None:
         """Get region name from metadata."""
         return self.metadata.get("region")
 
-    def get_county(self) -> Optional[str]:
+    def get_county(self) -> str | None:
         """Get county name from metadata."""
         return self.metadata.get("county")
 
-    def get_climate_zone(self) -> Optional[str]:
+    def get_climate_zone(self) -> str | None:
         """Get climate zone from metadata."""
         return self.metadata.get("climate_zone")
 
-    def get_source(self) -> Optional[str]:
+    def get_source(self) -> str | None:
         """Get data source from metadata."""
         return self.metadata.get("source")
 
-    def get_bounds(self) -> Optional[Tuple[float, float, float, float]]:
+    def get_bounds(self) -> tuple[float, float, float, float] | None:
         """Get area bounds from metadata (minx, miny, maxx, maxy)."""
         return self.metadata.get("bounds")
 
@@ -66,7 +66,7 @@ class Location:
         """Check if Hungarian location."""
         return self.country_code.upper() == "HU"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "identifier": self.identifier,
@@ -86,7 +86,7 @@ class Location:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Location":
+    def from_dict(cls, data: dict[str, Any]) -> "Location":
         """
         Create Location from dictionary.
 
@@ -127,7 +127,7 @@ class Location:
         cls,
         latitude: float,
         longitude: float,
-        display_name: Optional[str] = None,
+        display_name: str | None = None,
         **kwargs,
     ) -> "Location":
         """

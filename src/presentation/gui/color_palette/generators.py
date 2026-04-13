@@ -8,7 +8,6 @@ Színgeneráló stratégiák - StandardColorGenerator és MaterialColorGenerator
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict
 
 from src.presentation.gui.color_palette.types import HSLColor
 from src.presentation.gui.types import ThemeType
@@ -18,9 +17,7 @@ class ColorGenerator(ABC):
     """Absztrakt base class különböző színgeneráló stratégiákhoz."""
 
     @abstractmethod
-    def generate_variants(
-        self, base_color: HSLColor, theme_type: ThemeType
-    ) -> Dict[str, HSLColor]:
+    def generate_variants(self, base_color: HSLColor, theme_type: ThemeType) -> dict[str, HSLColor]:
         """
         Színvariánsok generálása base színből.
 
@@ -36,9 +33,7 @@ class ColorGenerator(ABC):
 class StandardColorGenerator(ColorGenerator):
     """Standard színvariáns generátor - light/dark adaptive."""
 
-    def generate_variants(
-        self, base_color: HSLColor, theme_type: ThemeType
-    ) -> Dict[str, HSLColor]:
+    def generate_variants(self, base_color: HSLColor, theme_type: ThemeType) -> dict[str, HSLColor]:
         """Standard variánsok: light, dark, hover, pressed, disabled."""
         variants = {}
 
@@ -63,9 +58,7 @@ class StandardColorGenerator(ColorGenerator):
 class MaterialColorGenerator(ColorGenerator):
     """Material Design inspirált színgenerátor."""
 
-    def generate_variants(
-        self, base_color: HSLColor, theme_type: ThemeType
-    ) -> Dict[str, HSLColor]:
+    def generate_variants(self, base_color: HSLColor, theme_type: ThemeType) -> dict[str, HSLColor]:
         """Material Design 50-900 színskála generálása."""
         variants = {}
 
@@ -86,9 +79,9 @@ class MaterialColorGenerator(ColorGenerator):
         for stop, target_lightness in lightness_stops.items():
             # Telítettség adaptálása világosság alapján
             saturation_factor = 1.0
-            if target_lightness > 80:  # Very light colors
+            if target_lightness > 80:  # Very light colors  # noqa: PLR2004
                 saturation_factor = 0.6
-            elif target_lightness < 20:  # Very dark colors
+            elif target_lightness < 20:  # Very dark colors  # noqa: PLR2004
                 saturation_factor = 0.8
 
             adjusted_saturation = base_color.saturation * saturation_factor
@@ -100,19 +93,13 @@ class MaterialColorGenerator(ColorGenerator):
         variants["light"] = variants["material_200"]
         variants["dark"] = variants["material_700"]
         variants["hover"] = (
-            variants["material_400"]
-            if theme_type == ThemeType.LIGHT
-            else variants["material_300"]
+            variants["material_400"] if theme_type == ThemeType.LIGHT else variants["material_300"]
         )
         variants["pressed"] = (
-            variants["material_800"]
-            if theme_type == ThemeType.LIGHT
-            else variants["material_200"]
+            variants["material_800"] if theme_type == ThemeType.LIGHT else variants["material_200"]
         )
         variants["disabled"] = (
-            variants["material_100"]
-            if theme_type == ThemeType.LIGHT
-            else variants["material_800"]
+            variants["material_100"] if theme_type == ThemeType.LIGHT else variants["material_800"]
         )
 
         return variants

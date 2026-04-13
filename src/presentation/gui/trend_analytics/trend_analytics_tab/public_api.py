@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -24,9 +23,7 @@ class TrendAnalyticsPublicAPIMixin:
     Publikus API mixin a TrendAnalyticsTab számára.
     """
 
-    def set_location(
-        self, location_name: str, latitude: float, longitude: float
-    ) -> None:
+    def set_location(self, location_name: str, latitude: float, longitude: float) -> None:
         """
         External location setting (VÁLTOZATLAN).
 
@@ -38,6 +35,4 @@ class TrendAnalyticsPublicAPIMixin:
         self.location_combo.setCurrentText(location_name)
         self.on_location_changed(location_name)
 
-        logger.info(
-            f"📍 External location set: {location_name} ({latitude:.4f}, {longitude:.4f})"
-        )
+        logger.info(f"📍 External location set: {location_name} ({latitude:.4f}, {longitude:.4f})")

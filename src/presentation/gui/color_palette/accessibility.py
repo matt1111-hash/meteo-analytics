@@ -7,8 +7,6 @@ Color Palette Accessibility Module
 WCAG accessibility compliance checking és color blindness simulation.
 """
 
-from typing import Dict, Optional, Union
-
 from src.presentation.gui.color_palette.types import (
     ColorBlindnessType,
     ColorMetrics,
@@ -17,7 +15,7 @@ from src.presentation.gui.color_palette.types import (
 
 
 def calculate_contrast_ratio(
-    color1: Union[str, HSLColor], color2: Union[str, HSLColor], hex_to_hsl_func
+    color1: str | HSLColor, color2: str | HSLColor, hex_to_hsl_func
 ) -> float:
     """
     WCAG kontraszt arány számítása két szín között.
@@ -31,7 +29,7 @@ def calculate_contrast_ratio(
         Kontraszt arány (1.0-21.0)
     """
 
-    def get_luminance(color: Union[str, HSLColor]) -> float:
+    def get_luminance(color: str | HSLColor) -> float:
         if isinstance(color, str):
             hsl = hex_to_hsl_func(color)
         else:
@@ -42,7 +40,7 @@ def calculate_contrast_ratio(
 
         # Gamma correction
         def gamma_correct(c):
-            return c / 12.92 if c <= 0.03928 else pow((c + 0.055) / 1.055, 2.4)
+            return c / 12.92 if c <= 0.03928 else pow((c + 0.055) / 1.055, 2.4)  # noqa: PLR2004
 
         r, g, b = map(gamma_correct, [r, g, b])
         return 0.2126 * r + 0.7152 * g + 0.0722 * b
@@ -76,16 +74,16 @@ def get_color_metrics(color: HSLColor, calculate_contrast_func) -> ColorMetrics:
     black_contrast = calculate_contrast_func(color, "#000000")
 
     # WCAG compliance
-    wcag_aa = white_contrast >= 4.5 or black_contrast >= 4.5
-    wcag_aaa = white_contrast >= 7.0 or black_contrast >= 7.0
+    wcag_aa = white_contrast >= 4.5 or black_contrast >= 4.5  # noqa: PLR2004
+    wcag_aaa = white_contrast >= 7.0 or black_contrast >= 7.0  # noqa: PLR2004
 
     return ColorMetrics(
         luminance=luminance,
         contrast_ratio=max(white_contrast, black_contrast),
         wcag_aa_compliant=wcag_aa,
         wcag_aaa_compliant=wcag_aaa,
-        readable_on_white=white_contrast >= 4.5,
-        readable_on_black=black_contrast >= 4.5,
+        readable_on_white=white_contrast >= 4.5,  # noqa: PLR2004
+        readable_on_black=black_contrast >= 4.5,  # noqa: PLR2004
     )
 
 
@@ -94,7 +92,7 @@ def suggest_accessible_variants(
     target_background: str,
     calculate_contrast_func,
     hex_to_hsl_func,
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """
     Accessible variánsok javaslása adott háttérszínhez.
 
@@ -111,12 +109,12 @@ def suggest_accessible_variants(
     target_hsl = hex_to_hsl_func(target_background)
 
     # Lightness adjustment for accessibility
-    if target_hsl.lightness > 50:  # Light background
+    if target_hsl.lightness > 50:  # Light background  # noqa: PLR2004
         # Darker text colors needed
         for lightness in [40, 30, 20, 10]:
             variant_color = HSLColor(base_color.hue, base_color.saturation, lightness)
             contrast = calculate_contrast_func(variant_color, target_hsl)
-            if contrast >= 4.5:
+            if contrast >= 4.5:  # noqa: PLR2004
                 suggestions[f"accessible_dark_{lightness}"] = variant_color.to_hex()
                 break
     else:  # Dark background
@@ -124,16 +122,14 @@ def suggest_accessible_variants(
         for lightness in [60, 70, 80, 90]:
             variant_color = HSLColor(base_color.hue, base_color.saturation, lightness)
             contrast = calculate_contrast_func(variant_color, target_hsl)
-            if contrast >= 4.5:
+            if contrast >= 4.5:  # noqa: PLR2004
                 suggestions[f"accessible_light_{lightness}"] = variant_color.to_hex()
                 break
 
     return suggestions
 
 
-def simulate_color_blindness(
-    color: HSLColor, blindness_type: ColorBlindnessType
-) -> Optional[str]:
+def simulate_color_blindness(color: HSLColor, blindness_type: ColorBlindnessType) -> str | None:
     """
     Színvakság szimuláció adott színre.
 

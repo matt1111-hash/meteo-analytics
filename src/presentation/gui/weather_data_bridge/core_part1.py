@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for WeatherDataBridge."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .core_support import *
 
 
-class WeatherDataBridgePart1Mixin:
-    def __init__(self) -> None:
+class WeatherDataBridgePart1Mixin:  # noqa: D101
+    def __init__(self) -> None:  # noqa: D107
         logger.info("Weather Data Bridge initialized with METRIC_MAP")
 
     def convert_analytics_result(
@@ -23,9 +23,7 @@ class WeatherDataBridgePart1Mixin:
             metric = analytics_result.question.metric
 
             if display_parameter:
-                detected_parameter = self._normalize_display_parameter(
-                    display_parameter
-                )
+                detected_parameter = self._normalize_display_parameter(display_parameter)
             else:
                 detected_parameter = self.METRIC_MAP.get(metric)
                 if not detected_parameter:
@@ -56,9 +54,7 @@ class WeatherDataBridgePart1Mixin:
 
     def _normalize_display_parameter(self, display_parameter: str) -> str:
         """Display parameter normalizálása belső formátumra"""
-        normalized = DISPLAY_PARAMETER_MAP.get(
-            display_parameter, display_parameter.lower()
-        )
+        normalized = DISPLAY_PARAMETER_MAP.get(display_parameter, display_parameter.lower())
         return normalized
 
     def convert_analytics_to_weather_overlay(
@@ -99,9 +95,7 @@ class WeatherDataBridgePart1Mixin:
             if not weather_data:
                 return None
 
-            metadata = self._create_overlay_metadata(
-                overlay_type, values, analytics_result
-            )
+            metadata = self._create_overlay_metadata(overlay_type, values, analytics_result)
 
             return WeatherOverlayData(
                 overlay_type=overlay_type, data=weather_data, metadata=metadata
@@ -111,9 +105,7 @@ class WeatherDataBridgePart1Mixin:
             logger.error(f"Error in overlay conversion: {e}", exc_info=True)
             return None
 
-    def get_display_parameter_for_metric(
-        self, metric: AnalyticsMetric
-    ) -> Optional[str]:
+    def get_display_parameter_for_metric(self, metric: AnalyticsMetric) -> Optional[str]:
         """Metrika alapján display parameter lekérdezése"""
         return self.METRIC_MAP.get(metric)
 
@@ -131,7 +123,7 @@ class WeatherDataBridgePart1Mixin:
             city_result.latitude is not None
             and city_result.longitude is not None
             and city_result.value is not None
-            and isinstance(city_result.value, (int, float))
+            and isinstance(city_result.value, int | float)
             and not (city_result.value == 0 and city_result.city_name == "")
         )
         return is_valid
@@ -166,9 +158,7 @@ class WeatherDataBridgePart1Mixin:
             "total_cities": len(values),
             "analytics_question": analytics_result.question.question_text,
             "execution_time": analytics_result.execution_time,
-            "data_sources": [
-                source.value for source in analytics_result.data_sources_used
-            ],
+            "data_sources": [source.value for source in analytics_result.data_sources_used],
             "statistics": analytics_result.statistics,
             "generated_at": datetime.now().isoformat(),
             "metric": analytics_result.question.metric.value,

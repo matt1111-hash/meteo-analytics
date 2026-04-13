@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -43,19 +42,19 @@ from .analytics_view.core import AnalyticsView
 from .analytics_widgets import RecordCard, RecordSummaryCard
 
 __all__ = [
+    # Statistics
+    "AnalyticsStatistics",
     # Main class
     "AnalyticsView",
+    "ClimateTabWidget",
     # Color maps
     "MeteorologicalColorMaps",
+    "PrecipitationTabWidget",
     # Widgets
     "RecordCard",
     "RecordSummaryCard",
     # Tabs
     "TemperatureTabWidget",
-    "PrecipitationTabWidget",
-    "WindTabWidget",
     "WindGustTabWidget",
-    "ClimateTabWidget",
-    # Statistics
-    "AnalyticsStatistics",
+    "WindTabWidget",
 ]

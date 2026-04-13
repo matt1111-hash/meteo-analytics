@@ -36,13 +36,13 @@ class TestAnalyticsInit:
 
     def test_can_import_engine(self) -> None:
         """Should be able to import MultiCityEngine."""
-        import src.analytics as analytics
+        from src import analytics
 
         assert hasattr(analytics, "MultiCityEngine")
 
     def test_can_import_query(self) -> None:
         """Should be able to import MultiCityQuery."""
-        import src.analytics as analytics
+        from src import analytics
 
         assert hasattr(analytics, "MultiCityQuery")
 

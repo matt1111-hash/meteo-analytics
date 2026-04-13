@@ -7,7 +7,6 @@ Wind analysis orchestration logic
 import datetime
 
 import pandas as pd
-
 from src.domain.analytics.wind_analysis_service import (
     _create_empty_analysis_result,
     analyze_wind_patterns,
@@ -86,9 +85,7 @@ class TestAnalyzeWindPatterns:
         """Should calculate overall percentage correctly."""
         df = pd.DataFrame(
             {
-                "date": pd.to_datetime(
-                    ["2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04"]
-                ),
+                "date": pd.to_datetime(["2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04"]),
                 "wind_gusts_max": [30.0, 60.0, 70.0, 40.0],  # 2/4 = 50%
             }
         )

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for DisplayMixin."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .display_mixin_support import *
 
 
-class DisplayMixinPart1Mixin:
+class DisplayMixinPart1Mixin:  # noqa: D101
     def _init_ui(self) -> None:
         """UI elemek inicializálása."""
         layout = QVBoxLayout(self)
@@ -23,7 +23,7 @@ class DisplayMixinPart1Mixin:
         self.info_bar = self._create_info_bar()
         layout.addWidget(self.info_bar)
 
-    def _create_controls(self) -> QWidget:
+    def _create_controls(self) -> QWidget:  # noqa: PLR0915
         """Vezérlő panel létrehozása."""
         controls = QGroupBox("🔍 Táblázat vezérlők")
         layout = QHBoxLayout(controls)
@@ -43,9 +43,7 @@ class DisplayMixinPart1Mixin:
         filter_layout = QHBoxLayout()
         filter_label = QLabel("Oszlop:")
         self.column_filter = QComboBox()
-        self.column_filter.addItems(
-            ["Összes", "Dátum", "Hőmérséklet", "Csapadék", "Szél"]
-        )
+        self.column_filter.addItems(["Összes", "Dátum", "Hőmérséklet", "Csapadék", "Szél"])
         self.column_filter.currentTextChanged.connect(self._apply_filter)
 
         filter_layout.addWidget(filter_label)

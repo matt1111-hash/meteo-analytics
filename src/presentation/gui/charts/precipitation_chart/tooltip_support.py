@@ -17,7 +17,7 @@ Fájl: src/presentation/gui/charts/precipitation_chart/tooltip.py
 """
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 if TYPE_CHECKING:
     pass

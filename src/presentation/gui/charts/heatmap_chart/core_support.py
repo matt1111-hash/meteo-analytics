@@ -17,12 +17,11 @@ Fájl: src/presentation/gui/charts/heatmap_chart/core.py
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
 from PySide6.QtWidgets import QWidget
-
 from src.presentation.gui.theme_manager import get_current_colors
 
 from ..base_chart import WeatherChart

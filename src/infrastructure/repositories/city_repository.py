@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from src.domain.analytics.repositories import CityRepositoryProtocol
 
@@ -17,12 +16,12 @@ class CityRepository(CityRepositoryProtocol):
 
     def __init__(
         self,
-        db_path: Optional[Path] = None,
-        hungarian_db_path: Optional[Path] = None,
+        db_path: Path | None = None,
+        hungarian_db_path: Path | None = None,
     ):
         """Initialize city repository with optional custom paths."""
         self._paths = CityRepositoryPaths(db_path, hungarian_db_path)
-        self._queries: Optional[CityRepositoryQueries] = None
+        self._queries: CityRepositoryQueries | None = None
 
     @property
     def db_path(self) -> Path:
@@ -48,15 +47,13 @@ class CityRepository(CityRepositoryProtocol):
 
     def _update_queries(self) -> None:
         """Update queries object with current paths."""
-        self._queries = CityRepositoryQueries(
-            self._paths.db_path, self._paths.hungarian_db_path
-        )
+        self._queries = CityRepositoryQueries(self._paths.db_path, self._paths.hungarian_db_path)
 
     def validate_paths(self) -> None:
         """Validate that at least one database is available."""
         self._paths.validate_paths()
 
-    def get_cities_by_names(self, city_names: List[str]) -> List[Dict[str, object]]:
+    def get_cities_by_names(self, city_names: list[str]) -> list[dict[str, object]]:
         """Fetch cities by explicit city names (case-insensitive)."""
         if self._queries is None:
             self._update_queries()
@@ -66,10 +63,10 @@ class CityRepository(CityRepositoryProtocol):
         self,
         mapped_region: str,
         original_region: str,
-        country_codes: List[str],
+        country_codes: list[str],
         limit: int,
-        hungarian_mapping: Dict[str, List[str]],
-    ) -> List[Dict[str, object]]:
+        hungarian_mapping: dict[str, list[str]],
+    ) -> list[dict[str, object]]:
         """Fetch cities for a region with optional Hungarian filtering."""
         if self._queries is None:
             self._update_queries()
@@ -77,9 +74,7 @@ class CityRepository(CityRepositoryProtocol):
             mapped_region, original_region, country_codes, limit, hungarian_mapping
         )
 
-    def autocomplete_city_name(
-        self, query: str, limit: int = 20
-    ) -> List[Dict[str, object]]:
+    def autocomplete_city_name(self, query: str, limit: int = 20) -> list[dict[str, object]]:
         """Autocomplete city names by partial match."""
         if self._queries is None:
             self._update_queries()

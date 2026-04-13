@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 ThemeManager CSS Generator - Dynamic CSS generation for widgets.
 """
 
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .core import ProfessionalThemeManager
@@ -23,7 +22,7 @@ class CSSGenerator:
             manager: ThemeManager instance
         """
         self._manager = manager
-        self._css_class_cache: Dict[str, str] = {}
+        self._css_class_cache: dict[str, str] = {}
 
     def clear_cache(self) -> None:
         """Clear CSS cache for regeneration."""
@@ -67,7 +66,7 @@ class CSSGenerator:
 
         return css
 
-    def _generate_pushbutton_css(self, colors: Dict[str, str]) -> str:
+    def _generate_pushbutton_css(self, colors: dict[str, str]) -> str:
         """Generate QPushButton CSS."""
         return f"""
                 QPushButton {{
@@ -92,7 +91,7 @@ class CSSGenerator:
                 }}
             """
 
-    def _generate_tabwidget_css(self, colors: Dict[str, str]) -> str:
+    def _generate_tabwidget_css(self, colors: dict[str, str]) -> str:
         """Generate QTabWidget CSS."""
         return f"""
                 QTabWidget::pane {{
@@ -122,7 +121,7 @@ class CSSGenerator:
                 }}
             """
 
-    def _generate_splitter_css(self, colors: Dict[str, str]) -> str:
+    def _generate_splitter_css(self, colors: dict[str, str]) -> str:
         """Generate QSplitter CSS."""
         return f"""
                 QSplitter::handle {{
@@ -142,7 +141,7 @@ class CSSGenerator:
                 }}
             """
 
-    def _generate_scrollbar_css(self, colors: Dict[str, str]) -> str:
+    def _generate_scrollbar_css(self, colors: dict[str, str]) -> str:
         """Generate QScrollBar CSS."""
         return f"""
                 QScrollBar:vertical {{
@@ -163,7 +162,7 @@ class CSSGenerator:
                 }}
             """
 
-    def _generate_analytics_panel_css(self, colors: Dict[str, str]) -> str:
+    def _generate_analytics_panel_css(self, colors: dict[str, str]) -> str:
         """Generate analytics panel CSS."""
         return f"""
                 QWidget#analytics_panel {{

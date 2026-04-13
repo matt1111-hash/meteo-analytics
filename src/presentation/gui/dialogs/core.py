@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -14,7 +13,7 @@ Képességek:
 Fájl: src/presentation/gui/dialogs/core.py
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtWidgets import QDialog, QWidget
 
@@ -58,7 +57,7 @@ class ExtremeWeatherDialog(QDialog):
     - Táblázatos megjelenítés
     """
 
-    def __init__(self, parent: Optional[QWidget], data: Dict[str, Any], city_name: str):
+    def __init__(self, parent: QWidget | None, data: dict[str, Any], city_name: str):
         """
         Dialógus inicializálása - THEMEMANAGER VERZIÓ + KONSTRUKTOR JAVÍTÁS.
 
@@ -85,7 +84,7 @@ class ExtremeWeatherDialog(QDialog):
         _calculate_extremes(self)
 
     # Public API methods
-    def apply_theme(self, dark_theme: bool) -> None:
+    def apply_theme(self, dark_theme: bool) -> None:  # noqa: D102
         from .theme_handler import apply_theme
 
         apply_theme(self, dark_theme)

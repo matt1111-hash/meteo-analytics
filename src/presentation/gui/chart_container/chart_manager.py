@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 ChartContainer Chart Manager - Manage chart updates and clearing.
 """
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .core import ChartsContainer
@@ -24,7 +23,7 @@ class ChartManager:
         """
         self._container = container
 
-    def update_all(self, data: Dict[str, Any]) -> None:
+    def update_all(self, data: dict[str, Any]) -> None:
         """
         Update all charts with new data.
 
@@ -98,7 +97,7 @@ class ChartManager:
 
         print("🧹 DEBUG: All professional charts cleared")
 
-    def _debug_wind_data(self, data: Dict[str, Any]) -> None:
+    def _debug_wind_data(self, data: dict[str, Any]) -> None:
         """Debug wind data in input."""
         daily_data = data.get("daily", {})
         wind_gusts_max = daily_data.get("wind_gusts_max", [])
@@ -117,9 +116,7 @@ class ChartManager:
         """Debug final chart status."""
         if hasattr(self._container.wind_chart, "current_data"):
             status = (
-                "VAN"
-                if self._has_chart_data(self._container.wind_chart.current_data)
-                else "NINCS"
+                "VAN" if self._has_chart_data(self._container.wind_chart.current_data) else "NINCS"
             )
             print(f"🌪️ FINAL DEBUG: wind_chart.current_data: {status}")
 

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for LayerBuilder."""
 
@@ -7,8 +7,8 @@ from __future__ import annotations
 from .layer_builder_support import *
 
 
-class LayerBuilderPart2Mixin:
-    def add_javascript_bridge(self, map_obj: "folium.Map", bridge_id: str) -> None:
+class LayerBuilderPart2Mixin:  # noqa: D101
+    def add_javascript_bridge(self, map_obj: folium.Map, bridge_id: str) -> None:
         """
         🌉 JavaScript bridge kód hozzáadása a térképhez.
 

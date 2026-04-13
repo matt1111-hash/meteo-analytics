@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for DataFrameExtractor."""
 
@@ -16,11 +16,9 @@ def _can_convert_string_to_float(value: str) -> bool:
     return True
 
 
-def _collect_invalid_sample(
-    invalid_samples: list[str], index: int, sample: str
-) -> None:
+def _collect_invalid_sample(invalid_samples: list[str], index: int, sample: str) -> None:
     """Collect only the first debug invalid samples."""
-    if index < 10:
+    if index < 10:  # noqa: PLR2004
         invalid_samples.append(sample)
 
 
@@ -38,7 +36,7 @@ def _build_dataframe_stats(df: pd.DataFrame) -> Dict[str, Any]:
 
 def _is_valid_scalar_data(value: Any, invalid_samples: list[str], index: int) -> bool:
     """Return whether one value is acceptable scalar data."""
-    if isinstance(value, (int, float)):
+    if isinstance(value, int | float):
         return True
     if isinstance(value, str):
         is_valid = _can_convert_string_to_float(value)
@@ -75,7 +73,7 @@ def _resolve_wind_source(df: pd.DataFrame) -> str:
     return "unknown"
 
 
-class DataFrameExtractorPart2Mixin:
+class DataFrameExtractorPart2Mixin:  # noqa: D101
     @staticmethod
     def _has_valid_data(data_list: list) -> bool:
         """

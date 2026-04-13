@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Global Weather Analyzer - Geographic Utilities Module (Legacy Export)
@@ -46,18 +45,18 @@ from .geo_utils_core import GeoUtils
 from .geo_utils_region import GeoUtilsRegion
 
 __all__ = [
-    # Types
-    "DistanceUnit",
-    "CoordinateSystem",
-    "GeoPoint",
     "BoundingBox",
-    "GeographicRegion",
+    "CoordinateSystem",
     # Calculator
     "DistanceCalculator",
+    # Types
+    "DistanceUnit",
+    "GeoPoint",
     # GeoUtils classes
     "GeoUtils",
-    "GeoUtilsRegion",
     "GeoUtilsAnalytics",
+    "GeoUtilsRegion",
+    "GeographicRegion",
     # Demo
     "demo_geo_utils",
 ]

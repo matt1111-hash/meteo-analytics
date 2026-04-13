@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 WeatherDataWorker Core - Main WeatherDataWorker class.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from PySide6.QtCore import QObject, Signal
 
@@ -67,8 +66,8 @@ class WeatherDataWorker(BaseWorkerThread):
         self.start_date = start_date
         self.end_date = end_date
         self.preferred_provider = preferred_provider
-        self.actual_provider: Optional[str] = None
-        self.weather_data: Optional[Dict[str, Any]] = None
+        self.actual_provider: str | None = None
+        self.weather_data: dict[str, Any] | None = None
 
         # Helper components
         self._executor = WorkerExecutor(self)
@@ -82,7 +81,7 @@ class WeatherDataWorker(BaseWorkerThread):
         """Execute weather data fetch."""
         self._executor.execute()
 
-    def _select_optimal_provider(self) -> Optional[str]:
+    def _select_optimal_provider(self) -> str | None:
         """Select optimal provider."""
         return self._executor._select_optimal_provider()
 
@@ -98,13 +97,11 @@ class WeatherDataWorker(BaseWorkerThread):
         """Build Meteostat API request."""
         return self._api_builder.build_meteostat_request()
 
-    def _execute_api_request(
-        self, provider: str, api_url: str, params: Dict[str, Any]
-    ) -> bool:
+    def _execute_api_request(self, provider: str, api_url: str, params: dict[str, Any]) -> bool:
         """Execute API request."""
         return self._api_executor.execute_request(provider, api_url, params)
 
-    def _get_provider_headers(self, provider: str) -> Dict[str, str]:
+    def _get_provider_headers(self, provider: str) -> dict[str, str]:
         """Get provider headers."""
         return self._api_executor.get_provider_headers(provider)
 

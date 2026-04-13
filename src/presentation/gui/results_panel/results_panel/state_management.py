@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/results_panel/results_panel/state_management.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
@@ -25,7 +24,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def get_state(self) -> Dict[str, Any]:
+def get_state(self) -> dict[str, Any]:
     """
     ResultsPanel állapot lekérdezése.
 
@@ -50,7 +49,7 @@ def get_state(self) -> Dict[str, Any]:
     }
 
 
-def set_state(self, state: Dict[str, Any]) -> bool:
+def set_state(self, state: dict[str, Any]) -> bool:
     """
     ResultsPanel állapot beállítása.
 
@@ -83,7 +82,7 @@ def set_state(self, state: Dict[str, Any]) -> bool:
         return False
 
 
-def is_valid(self) -> bool:
+def is_valid(self) -> bool:  # noqa: ARG001
     """
     ResultsPanel validálása.
 

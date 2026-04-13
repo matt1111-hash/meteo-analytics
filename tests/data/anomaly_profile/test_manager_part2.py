@@ -108,7 +108,7 @@ class TestCRUDDelegation:
 
         # Currently returns False due to the bug
         # assert result is True
-        # assert "renamed" in manager_with_profiles.get_available_profiles()
+        # assert "renamed" in manager_with_profiles.get_available_profiles()  # noqa: ERA001
         # TODO: Fix bug in profile_actions.py line 157
 
     def test_rename_profile_works_with_manager_workaround(self, temp_dir: Path) -> None:

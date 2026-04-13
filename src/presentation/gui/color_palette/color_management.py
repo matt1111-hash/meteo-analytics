@@ -7,15 +7,13 @@ Color Palette - Color Management Module
 Base color és color variant kezelő metódusok.
 """
 
-from typing import Dict, Optional, Union
-
 from src.presentation.gui.color_palette.types import HSLColor
 
 
 class ColorManagementMixin:
     """Color management metódusok ColorPalette osztályhoz."""
 
-    def set_base_color(self, semantic_name: str, color: Union[str, HSLColor]) -> None:
+    def set_base_color(self, semantic_name: str, color: str | HSLColor) -> None:
         """
         Base szín beállítása semantic név alatt.
 
@@ -35,16 +33,16 @@ class ColorManagementMixin:
 
         print(f"🎨 DEBUG: Base color set: {semantic_name} = {hsl_color.to_hex()}")
 
-    def get_base_color(self, semantic_name: str) -> Optional[HSLColor]:
+    def get_base_color(self, semantic_name: str) -> HSLColor | None:
         """Base szín lekérdezése semantic név alapján."""
         return self._base_colors.get(semantic_name)
 
-    def set_multiple_base_colors(self, colors: Dict[str, Union[str, HSLColor]]) -> None:
+    def set_multiple_base_colors(self, colors: dict[str, str | HSLColor]) -> None:
         """Több base szín egyszerre beállítása."""
         for semantic_name, color in colors.items():
             self.set_base_color(semantic_name, color)
 
-    def get_color(self, semantic_name: str, variant: str = "base") -> Optional[str]:
+    def get_color(self, semantic_name: str, variant: str = "base") -> str | None:
         """
         Szín lekérdezése semantic név és variáns alapján.
 
@@ -63,9 +61,7 @@ class ColorManagementMixin:
         variant_color = variants.get(variant)
         return variant_color.to_hex() if variant_color else None
 
-    def get_color_hsl(
-        self, semantic_name: str, variant: str = "base"
-    ) -> Optional[HSLColor]:
+    def get_color_hsl(self, semantic_name: str, variant: str = "base") -> HSLColor | None:
         """Szín lekérdezése HSLColor formátumban."""
         if variant == "base":
             return self._base_colors.get(semantic_name)
@@ -73,7 +69,7 @@ class ColorManagementMixin:
         variants = self._generated_variants.get(semantic_name, {})
         return variants.get(variant)
 
-    def get_all_variants(self, semantic_name: str) -> Dict[str, str]:
+    def get_all_variants(self, semantic_name: str) -> dict[str, str]:
         """
         Összes variáns lekérdezése egy semantic névhez.
 

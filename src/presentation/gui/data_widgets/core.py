@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 Data Widgets - Weather Data Table Core
 Fő WeatherDataTable widget - ThemeManager integrált verzió.
 """
-
-from typing import Optional
 
 import pandas as pd
 from PySide6.QtWidgets import QWidget
@@ -49,14 +46,14 @@ class WeatherDataTable(
     - KÖZÉPHŐMÉRSÉKLET OSZLOP
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         """Javított táblázat widget inicializálása."""
         super().__init__(parent)
 
         self._theme_manager = get_theme_manager()
 
-        self.current_data: Optional[pd.DataFrame] = None
-        self.filtered_data: Optional[pd.DataFrame] = None
+        self.current_data: pd.DataFrame | None = None
+        self.filtered_data: pd.DataFrame | None = None
 
         # Mixin inicializálás
         self._setup_sorting()

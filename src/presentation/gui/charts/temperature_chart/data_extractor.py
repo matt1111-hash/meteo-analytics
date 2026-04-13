@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -15,13 +14,13 @@ Képességek:
 Fájl: src/presentation/gui/charts/temperature_chart/data_extractor.py
 """
 
-from typing import Any, Dict
+from typing import Any
 
 import pandas as pd
 
 
 def _extract_daily_temperature_lists(
-    data: Dict[str, Any],
+    data: dict[str, Any],
 ) -> tuple[list[Any], list[Any], list[Any], list[Any]]:
     """Extract raw daily temperature arrays from API response."""
     daily_data = data.get("daily", {})
@@ -33,19 +32,15 @@ def _extract_daily_temperature_lists(
     )
 
 
-def _build_temp_mean(
-    temp_max: list[Any], temp_min: list[Any], temp_mean: list[Any]
-) -> list[Any]:
+def _build_temp_mean(temp_max: list[Any], temp_min: list[Any], temp_mean: list[Any]) -> list[Any]:
     """Return API mean temperatures or compute a safe fallback from min/max."""
     if temp_mean:
         return temp_mean
     if not temp_max or not temp_min or len(temp_max) != len(temp_min):
         return []
     return [
-        round((t_max + t_min) / 2, 1)
-        if t_max is not None and t_min is not None
-        else None
-        for t_max, t_min in zip(temp_max, temp_min)
+        round((t_max + t_min) / 2, 1) if t_max is not None and t_min is not None else None
+        for t_max, t_min in zip(temp_max, temp_min, strict=False)
     ]
 
 
@@ -61,9 +56,7 @@ def _has_matching_temperature_lengths(
 ) -> bool:
     """Return whether all temperature arrays share the same length."""
     return (
-        len(dates) == len(temp_max)
-        and len(dates) == len(temp_min)
-        and len(dates) == len(temp_mean)
+        len(dates) == len(temp_max) and len(dates) == len(temp_min) and len(dates) == len(temp_mean)
     )
 
 
@@ -73,7 +66,7 @@ class TemperatureDataExtractor:
     """
 
     @staticmethod
-    def extract_temperature_data(data: Dict[str, Any]) -> pd.DataFrame:
+    def extract_temperature_data(data: dict[str, Any]) -> pd.DataFrame:
         """
         Hőmérséklet adatok kinyerése - CSAK VALÓDI API ADATOKKAL.
 
@@ -92,9 +85,7 @@ class TemperatureDataExtractor:
 
         # Adatstruktúra hosszak ellenőrzése
         if not _has_matching_temperature_lengths(dates, temp_max, temp_min, temp_mean):
-            print(
-                "❌ DEBUG: Eltérő hosszúságú hőmérséklet adatok - chart nem jeleníthető meg"
-            )
+            print("❌ DEBUG: Eltérő hosszúságú hőmérséklet adatok - chart nem jeleníthető meg")
             return pd.DataFrame()
 
         df = pd.DataFrame(
@@ -110,8 +101,6 @@ class TemperatureDataExtractor:
         df = df.dropna()
 
         if df.empty:
-            print(
-                "⚠️ DEBUG: Nincs érvényes hőmérséklet adat - chart nem jeleníthető meg"
-            )
+            print("⚠️ DEBUG: Nincs érvényes hőmérséklet adat - chart nem jeleníthető meg")
 
         return df

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/controller/analysis_handler/result_processor.py
 
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     pass
@@ -25,7 +24,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _process_analysis_result(self, result_data: Dict) -> Dict:
+def _process_analysis_result(self, result_data: dict) -> dict:
     """
     Analysis eredmény feldolgozása és strukturálása.
 

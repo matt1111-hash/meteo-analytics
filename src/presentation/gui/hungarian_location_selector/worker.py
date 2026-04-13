@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -35,7 +34,7 @@ class HungarianLocationWorker(QThread):
     error_occurred = Signal(str)  # error message
     completed = Signal()  # összes adat betöltve
 
-    def __init__(self, data_dir: Path):
+    def __init__(self, data_dir: Path):  # noqa: D107
         super().__init__()
         self.data_dir = data_dir
         self.counties_gdf = None
@@ -59,9 +58,7 @@ class HungarianLocationWorker(QThread):
                 self.counties_loaded.emit(self.counties_gdf)
                 self.progress_updated.emit(50)
             else:
-                self.error_occurred.emit(
-                    f"Counties fájl nem található: {counties_file}"
-                )
+                self.error_occurred.emit(f"Counties fájl nem található: {counties_file}")
                 return
 
             # Postal codes betöltése (opcionális, nagy fájl)

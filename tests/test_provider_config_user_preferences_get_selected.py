@@ -8,9 +8,7 @@ import json
 class TestUserPreferencesGetSelected:
     """Test cases for UserPreferences.get_selected_provider() method."""
 
-    def test_get_selected_provider_returns_saved_value(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_get_selected_provider_returns_saved_value(self, config_fs: dict[str, str]) -> None:
         """Should return the saved selected provider."""
         from src.config.provider_config import UserPreferences
 

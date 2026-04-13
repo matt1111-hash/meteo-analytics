@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001  # noqa: RUF100
 # mypy: ignore-errors
 """Split definitions from wind_rose.py."""
 
@@ -11,7 +11,8 @@ from .wind_rose_support import *
 def _has_numeric_values(values: list[Any], expected_length: int) -> bool:
     """Return whether the values match the expected size and include numerics."""
     return len(values) == expected_length and any(
-        isinstance(value, (int, float)) and value is not None for value in values
+        isinstance(value, (int, float)) and value is not None  # noqa: UP038
+        for value in values  # noqa: RUF100, UP038
     )
 
 
@@ -68,14 +69,14 @@ def _is_supported_observation_pair(direction: Any, speed: Any) -> bool:
     return (
         direction is not None
         and speed is not None
-        and isinstance(direction, (int, float))
-        and isinstance(speed, (int, float))
+        and isinstance(direction, (int, float))  # noqa: UP038
+        and isinstance(speed, (int, float))  # noqa: UP038
     )
 
 
 def _is_valid_direction(direction: float) -> bool:
     """Return whether direction is within expected meteorological range."""
-    return 0 <= direction <= 360
+    return 0 <= direction <= 360  # noqa: PLR2004
 
 
 def _count_speed_buckets(direction_observations: list[float]) -> list[int]:
@@ -106,9 +107,7 @@ def _build_direction_counts(
     for index, dir_start in enumerate(DIRECTION_BINS[:-1]):
         dir_end = DIRECTION_BINS[index + 1]
         direction_observations = [
-            item["speed"]
-            for item in paired_data
-            if dir_start <= item["direction"] < dir_end
+            item["speed"] for item in paired_data if dir_start <= item["direction"] < dir_end
         ]
         direction_counts.append(
             {
@@ -120,12 +119,10 @@ def _build_direction_counts(
     return direction_counts
 
 
-def _build_statistics(
-    paired_data: list[dict[str, float]], data_source: str
-) -> dict[str, Any]:
+def _build_statistics(paired_data: list[dict[str, float]], data_source: str) -> dict[str, Any]:
     """Build summary statistics for wind rose output."""
     total_observations = len(paired_data)
-    calms_count = sum(1 for item in paired_data if item["speed"] < 5)
+    calms_count = sum(1 for item in paired_data if item["speed"] < 5)  # noqa: PLR2004
     speeds = [item["speed"] for item in paired_data]
     calms_percentage = _calculate_percentage(calms_count, total_observations)
     avg_speed, max_speed = _summarize_speeds(speeds)
@@ -172,19 +169,13 @@ def _process_wind_rose_data(daily_data: dict) -> dict:
 
     # Validate we have data
     if not dates or not winddirection:
-        raise HTTPException(
-            status_code=400, detail="Missing required data: dates or winddirection"
-        )
+        raise HTTPException(status_code=400, detail="Missing required data: dates or winddirection")
 
-    windspeed_data, data_source = _select_wind_speed_data(
-        dates, wind_gusts_max, windspeed_10m_max
-    )
+    windspeed_data, data_source = _select_wind_speed_data(dates, wind_gusts_max, windspeed_10m_max)
     paired_data = _build_paired_data(dates, winddirection, windspeed_data)
 
     if not paired_data:
-        raise HTTPException(
-            status_code=400, detail="No valid wind data after filtering"
-        )
+        raise HTTPException(status_code=400, detail="No valid wind data after filtering")
 
     result = _build_statistics(paired_data, data_source)
     result["directions"] = _build_direction_counts(paired_data)

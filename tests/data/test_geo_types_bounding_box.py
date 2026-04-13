@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.data.geo_types import BoundingBox, GeoPoint
 
 
@@ -70,9 +69,7 @@ class TestBoundingBox:
         bbox = BoundingBox(45.0, 50.0, 170.0, -170.0)
         center = bbox.get_center()
         assert center.latitude == 47.5
-        assert center.longitude == pytest.approx(
-            180.0
-        ) or center.longitude == pytest.approx(-180.0)
+        assert center.longitude == pytest.approx(180.0) or center.longitude == pytest.approx(-180.0)
 
     def test_expand_by_padding(self) -> None:
         bbox = BoundingBox(45.0, 50.0, 15.0, 25.0)

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from usage_config.py."""
 
@@ -43,7 +43,7 @@ class UsageTracker:
 
         try:
             if usage_file.exists():
-                with open(usage_file, "r", encoding="utf-8") as file_obj:
+                with open(usage_file, encoding="utf-8") as file_obj:  # noqa: PTH123
                     usage = json.load(file_obj)
 
                     # Reset if new month
@@ -74,7 +74,7 @@ class UsageTracker:
             _ensure_directories()
             usage_data["last_updated"] = _now().isoformat()
 
-            with open(usage_file, "w", encoding="utf-8") as file_obj:
+            with open(usage_file, "w", encoding="utf-8") as file_obj:  # noqa: PTH123
                 json.dump(usage_data, file_obj, indent=2, ensure_ascii=False)
             return True
         except Exception as exc:  # pragma: no cover - defensive
@@ -154,18 +154,14 @@ class UsageTracker:
             "meteostat_limit": meteostat_limit,
             "meteostat_percentage": meteostat_percentage,
             "meteostat_cost": usage.get("meteostat", {}).get("estimated_cost_usd", 0.0),
-            "openmeteo_requests": usage.get("open_meteo", {}).get(
-                "requests_this_month", 0
-            ),
+            "openmeteo_requests": usage.get("open_meteo", {}).get("requests_this_month", 0),
             "total_requests": usage.get("total_requests", 0),
             "warning_level": UsageTracker._get_warning_level(meteostat_percentage),
             "days_remaining": UsageTracker._get_days_remaining_in_month(),
         }
 
     @staticmethod
-    def _reset_monthly_usage(
-        old_usage: dict[str, Any], new_month: str
-    ) -> dict[str, Any]:
+    def _reset_monthly_usage(old_usage: dict[str, Any], new_month: str) -> dict[str, Any]:
         """Reset usage data for new month."""
         old_usage["current_month"] = new_month
         old_usage["month_start_date"] = f"{new_month}-01"
@@ -195,7 +191,7 @@ class UsageTracker:
     def _get_days_remaining_in_month() -> int:
         """Get number of days remaining in current month."""
         now = _now()
-        if now.month == 12:
+        if now.month == 12:  # noqa: PLR2004
             next_month = now.replace(year=now.year + 1, month=1, day=1)
         else:
             next_month = now.replace(month=now.month + 1, day=1)

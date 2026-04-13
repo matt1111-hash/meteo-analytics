@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Protocol
+from typing import Protocol
 
 
 class CityRepositoryProtocol(Protocol):
@@ -11,15 +11,15 @@ class CityRepositoryProtocol(Protocol):
     def validate_paths(self) -> None:
         """Validate configured database paths or raise RuntimeError."""
 
-    def get_cities_by_names(self, city_names: List[str]) -> List[Dict[str, object]]:
+    def get_cities_by_names(self, city_names: list[str]) -> list[dict[str, object]]:
         """Return city dictionaries by explicit city names."""
 
     def get_cities_for_region(
         self,
         mapped_region: str,
         original_region: str,
-        country_codes: List[str],
+        country_codes: list[str],
         limit: int,
-        hungarian_mapping: Dict[str, List[str]],
-    ) -> List[Dict[str, object]]:
+        hungarian_mapping: dict[str, list[str]],
+    ) -> list[dict[str, object]]:
         """Return city dictionaries with optional Hungarian filtering."""

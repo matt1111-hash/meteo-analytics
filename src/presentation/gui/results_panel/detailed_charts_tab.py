@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -10,10 +9,9 @@ Global Weather Analyzer - Detailed Charts Tab Module
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-
 from src.presentation.gui.theme_manager import (
     get_theme_manager,
     register_widget_for_theming,
@@ -44,7 +42,7 @@ class DetailedChartsTab(QWidget):
     🌪️ WIND CHART INTEGRÁCIÓ: WindChart és WindRoseChart explicit frissítése
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):  # noqa: D107
         super().__init__(parent)
 
         logger.debug("DetailedChartsTab inicializálás START")
@@ -52,7 +50,7 @@ class DetailedChartsTab(QWidget):
         # === THEMEMANAGER INICIALIZÁLÁSA ===
         self.theme_manager = get_theme_manager()
 
-        self.charts_container: Optional[ChartsContainer] = None
+        self.charts_container: ChartsContainer | None = None
 
         # UI inicializálása
         self._init_ui()
@@ -86,25 +84,21 @@ class DetailedChartsTab(QWidget):
         register_widget_for_theming(self, "container")
         logger.debug("DetailedChartsTab - Widget regisztrálva ColorPalette API-hez")
 
-    def update_data(self, data: Dict[str, Any]) -> None:
+    def update_data(self, data: dict[str, Any]) -> None:
         """
         🔧 KRITIKUS JAVÍTÁS: Részletes chartok frissítése - WIND CHART INTEGRÁCIÓ.
 
         Args:
             data: OpenMeteo API válasz
         """
-        logger.info(
-            "🌪️ KRITIKUS JAVÍTÁS: DetailedChartsTab.update_data() - WIND CHART INTEGRÁCIÓ!"
-        )
+        logger.info("🌪️ KRITIKUS JAVÍTÁS: DetailedChartsTab.update_data() - WIND CHART INTEGRÁCIÓ!")
         if self.charts_container is None:
             logger.error("❌ charts_container is None! - Ez a probléma oka!")
             return
 
         logger.debug("charts_container EXISTS - calling update_charts...")
         try:
-            logger.info(
-                "🌪️ WIND CHART DEBUG: Calling charts_container.update_charts() with data..."
-            )
+            logger.info("🌪️ WIND CHART DEBUG: Calling charts_container.update_charts() with data...")
             self.charts_container.update_charts(data)
             self._log_chart_state("wind_chart", "🌪️ WIND CHART")
             self._log_chart_state("windrose_chart", "🌹 WIND ROSE")
@@ -142,17 +136,13 @@ class DetailedChartsTab(QWidget):
 
     def _log_chart_state(self, attribute_name: str, label: str) -> None:
         """Log state for a chart embedded in the container."""
-        if self.charts_container is None or not hasattr(
-            self.charts_container, attribute_name
-        ):
+        if self.charts_container is None or not hasattr(self.charts_container, attribute_name):
             logger.error(f"{label} ERROR: {attribute_name} NOT FOUND in container!")
             return
         chart = getattr(self.charts_container, attribute_name)
         logger.info(f"{label} DEBUG: {attribute_name} EXISTS in container!")
         status = _describe_chart_data(chart)
-        if status == "current_data is None":
-            logger.warning(f"{label} WARNING: {status}!")
-        elif status == "no current_data attribute":
+        if status in {"current_data is None", "no current_data attribute"}:
             logger.warning(f"{label} WARNING: {status}!")
         else:
             logger.info(f"{label} SUCCESS: {status}")

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for AnalysisRunners."""
 
@@ -7,16 +7,14 @@ from __future__ import annotations
 from .analysis_runners_support import *
 
 
-class AnalysisRunnersPart2Mixin:
-    def _run_single_location_analysis(self):
+class AnalysisRunnersPart2Mixin:  # noqa: D101
+    def _run_single_location_analysis(self):  # noqa: PLR0915
         """
         🎯 EGYEDI LOKÁCIÓ ELEMZÉSE - ADATKONVERZIÓS FIX!
         """
         print("=" * 80)
         print("🚨 DEBUG: _run_single_location_analysis() ELEJE")
-        print(
-            f"🚨 DEBUG: _worker._request_data keys: {list(self._worker._request_data.keys())}"
-        )
+        print(f"🚨 DEBUG: _worker._request_data keys: {list(self._worker._request_data.keys())}")
         location_data = self._worker._request_data.get("location_data", {})
         print(
             f"🚨 DEBUG: _worker._request_data['location_data'] keys: {list(location_data.keys())}"
@@ -38,16 +36,12 @@ class AnalysisRunnersPart2Mixin:
             latitude, longitude = self._extract_coordinates(location_data)
 
             if latitude is None or longitude is None:
-                error_msg = (
-                    f"Hiányzó koordináták: latitude={latitude}, longitude={longitude}"
-                )
+                error_msg = f"Hiányzó koordináták: latitude={latitude}, longitude={longitude}"
                 self._logger.error(f"🔧 {error_msg}")
                 self._worker._emit_error(error_msg)
                 return
 
-            self._logger.info(
-                f"🔧 WeatherClient hívás: latitude={latitude}, longitude={longitude}"
-            )
+            self._logger.info(f"🔧 WeatherClient hívás: latitude={latitude}, longitude={longitude}")
 
             # Interrupt check before API call
             if self._worker._interrupt_handler.check("Weather API hívás előtt"):
@@ -55,9 +49,7 @@ class AnalysisRunnersPart2Mixin:
                 return
 
             # Call WeatherClient with correct parameter names
-            print(
-                f"🚨 DEBUG: get_weather_data() HÍVÁS ELŐTT - lat={latitude}, lon={longitude}"
-            )
+            print(f"🚨 DEBUG: get_weather_data() HÍVÁS ELŐTT - lat={latitude}, lon={longitude}")
             print(
                 f"🚨 DEBUG: start_date={date_range.get('start_date')}, end_date={date_range.get('end_date')}"
             )
@@ -79,9 +71,7 @@ class AnalysisRunnersPart2Mixin:
 
             # Convert data format
             self._worker._emit_progress("Adatok konvertálása...", 80)
-            converted_data = self._worker._data_converter.convert_to_legacy_format(
-                weather_data
-            )
+            converted_data = self._worker._data_converter.convert_to_legacy_format(weather_data)
 
             if not converted_data:
                 self._worker._emit_error("Adatkonverzió sikertelen")
@@ -96,9 +86,7 @@ class AnalysisRunnersPart2Mixin:
                 "success": True,
             }
 
-            print(
-                f"🚨 DEBUG: analysis_completed.emit() ELŐTT - result keys: {list(result.keys())}"
-            )
+            print(f"🚨 DEBUG: analysis_completed.emit() ELŐTT - result keys: {list(result.keys())}")
             self._worker._emit_progress("Egyedi elemzés befejezve", 100)
             self._worker.analysis_completed.emit(result)
             print("🚨 DEBUG: analysis_completed.emit() UTÁN - signal elküldve")
@@ -108,9 +96,9 @@ class AnalysisRunnersPart2Mixin:
             print("=" * 80)
 
         except Exception as e:
-            self._logger.error(f"Single location elemzés hiba: {str(e)}")
+            self._logger.error(f"Single location elemzés hiba: {e!s}")
             self._logger.error(traceback.format_exc())
-            self._worker._emit_error(f"Egyedi elemzés sikertelen: {str(e)}")
+            self._worker._emit_error(f"Egyedi elemzés sikertelen: {e!s}")
 
     def _extract_coordinates(self, location_data: Dict) -> tuple:
         """
@@ -129,9 +117,7 @@ class AnalysisRunnersPart2Mixin:
         if location_data:
             latitude = location_data.get("latitude") or location_data.get("lat")
             longitude = location_data.get("longitude") or location_data.get("lon")
-            self._logger.info(
-                f"🔧 Koordináták location_data-ból: lat={latitude}, lon={longitude}"
-            )
+            self._logger.info(f"🔧 Koordináták location_data-ból: lat={latitude}, lon={longitude}")
 
         # Fallback to direct parameters
         if latitude is None or longitude is None:

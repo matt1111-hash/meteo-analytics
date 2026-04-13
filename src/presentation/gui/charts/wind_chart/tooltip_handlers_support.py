@@ -9,11 +9,10 @@ Wind Chart Tooltip Handlers - Tooltip formatting and positioning.
 """
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
-
 from src.presentation.gui.theme_manager import get_current_colors
 
 from .wind_categories import get_wind_category, get_wind_recommendations

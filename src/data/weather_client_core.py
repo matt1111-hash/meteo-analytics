@@ -3,8 +3,9 @@
 
 import logging
 import time
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 from src.config import APIConfig, get_optimal_data_source
 
@@ -34,10 +35,10 @@ class WeatherClient:
     def __init__(self, preferred_provider: str = "auto"):
         """Initialize weather client."""
         self.preferred_provider = preferred_provider
-        self.current_provider: Optional[str] = None
-        self.provider_usage_stats: Dict[str, int] = {}
+        self.current_provider: str | None = None
+        self.provider_usage_stats: dict[str, int] = {}
 
-        self.providers: Dict[str, WeatherProvider] = {
+        self.providers: dict[str, WeatherProvider] = {
             "open-meteo": OpenMeteoProvider(),
             "meteostat": MeteostatProvider(),
         }
@@ -45,20 +46,16 @@ class WeatherClient:
         self.max_retries = APIConfig.MAX_RETRIES
         self.retry_delay = 1.0
 
-        self.provider_change_callback: Optional[Callable[[str, str], None]] = None
-        self.provider_fallback_callback: Optional[Callable[[str, str], None]] = None
+        self.provider_change_callback: Callable[[str, str], None] | None = None
+        self.provider_fallback_callback: Callable[[str, str], None] | None = None
 
         logger.info(f"WeatherClient initialized (preferred: {preferred_provider})")
 
-    def set_provider_change_callback(
-        self, callback: Callable[[str, str], None]
-    ) -> None:
+    def set_provider_change_callback(self, callback: Callable[[str, str], None]) -> None:
         """Set callback for provider changes."""
         self.provider_change_callback = callback
 
-    def set_provider_fallback_callback(
-        self, callback: Callable[[str, str], None]
-    ) -> None:
+    def set_provider_fallback_callback(self, callback: Callable[[str, str], None]) -> None:
         """Set callback for provider fallback."""
         self.provider_fallback_callback = callback
 
@@ -68,8 +65,8 @@ class WeatherClient:
         longitude: float,
         start_date: str,
         end_date: str,
-        user_override_provider: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+        user_override_provider: str | None = None,
+    ) -> list[dict[str, Any]]:
         """
         Get weather data with automatic batching.
 
@@ -81,9 +78,7 @@ class WeatherClient:
         Returns:
             List of daily weather records with data_source in each record
         """
-        logger.info(
-            f"Weather request: {latitude:.4f}, {longitude:.4f} ({start_date} → {end_date})"
-        )
+        logger.info(f"Weather request: {latitude:.4f}, {longitude:.4f} ({start_date} → {end_date})")
 
         self._validate_inputs(latitude, longitude, start_date, end_date)
 
@@ -117,43 +112,36 @@ class WeatherClient:
             except (WeatherAPIError, Exception) as e:
                 last_error = e
                 logger.error(f"Provider {attempt_provider} failed: {e}")
-                _log_provider_usage_mock(
-                    attempt_provider, "weather_data", success=False
-                )
+                _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
                 continue
 
-        raise ProviderNotAvailableError(
-            f"All providers failed. Last error: {last_error}"
-        )
+        raise ProviderNotAvailableError(f"All providers failed. Last error: {last_error}")
 
     def _is_valid_provider(self, provider_name: str) -> bool:
         """Return True when provider exists and validates."""
-        return (
-            provider_name in self.providers
-            and self.providers[provider_name].validate_provider()
-        )
+        return provider_name in self.providers and self.providers[provider_name].validate_provider()
 
-    def _select_override_provider(self, user_override: Optional[str]) -> Optional[str]:
+    def _select_override_provider(self, user_override: str | None) -> str | None:
         """Return valid override provider when available."""
         if user_override and self._is_valid_provider(user_override):
             return user_override
         return None
 
-    def _select_auto_provider(self) -> Optional[str]:
+    def _select_auto_provider(self) -> str | None:
         """Select best available provider in auto mode."""
         optimal = get_optimal_data_source("single_city", prefer_free=True)
         if self._is_valid_provider(optimal):
             return optimal
         return self._select_first_valid_provider()
 
-    def _select_first_valid_provider(self) -> Optional[str]:
+    def _select_first_valid_provider(self) -> str | None:
         """Select the first valid provider from configured providers."""
         for provider_id, provider in self.providers.items():
             if provider.validate_provider():
                 return provider_id
         return None
 
-    def _select_preferred_provider(self) -> Optional[str]:
+    def _select_preferred_provider(self) -> str | None:
         """Select explicitly preferred provider or recurse to auto fallback."""
         if self.preferred_provider in self.providers:
             if self.providers[self.preferred_provider].validate_provider():
@@ -161,7 +149,7 @@ class WeatherClient:
             return self._select_provider(None)
         return None
 
-    def _select_provider(self, user_override: Optional[str] = None) -> Optional[str]:
+    def _select_provider(self, user_override: str | None = None) -> str | None:
         """Select the best provider for the request."""
         override_provider = self._select_override_provider(user_override)
         if override_provider is not None:
@@ -171,7 +159,7 @@ class WeatherClient:
             return self._select_auto_provider()
         return self._select_preferred_provider()
 
-    def _get_provider_fallback_chain(self, primary_provider: str) -> List[str]:
+    def _get_provider_fallback_chain(self, primary_provider: str) -> list[str]:
         """Get provider fallback chain."""
         available_providers = [
             provider_id
@@ -192,13 +180,11 @@ class WeatherClient:
         longitude: float,
         start_date: str,
         end_date: str,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Retry weather request with exponential backoff."""
         for attempt in range(self.max_retries):
             try:
-                result = provider.get_weather_data(
-                    latitude, longitude, start_date, end_date
-                )
+                result = provider.get_weather_data(latitude, longitude, start_date, end_date)
                 return result
 
             except WeatherAPIError:
@@ -210,9 +196,7 @@ class WeatherClient:
 
         return []
 
-    def _handle_successful_request(
-        self, used_provider: str, requested_provider: str
-    ) -> None:
+    def _handle_successful_request(self, used_provider: str, requested_provider: str) -> None:
         """Handle successful request callbacks."""
         self.current_provider = used_provider
 
@@ -220,26 +204,24 @@ class WeatherClient:
             self.provider_fallback_callback(requested_provider, used_provider)
 
         if (
-            used_provider != self.preferred_provider
-            and self.preferred_provider != "auto"
-        ):
-            if self.provider_change_callback:
-                self.provider_change_callback(self.preferred_provider, used_provider)
+            self.preferred_provider not in (used_provider, "auto")
+        ) and self.provider_change_callback:
+            self.provider_change_callback(self.preferred_provider, used_provider)
 
     def _validate_inputs(
         self, latitude: float, longitude: float, start_date: str, end_date: str
     ) -> None:
         """Validate input parameters."""
-        if not (-90 <= latitude <= 90):
+        if not (-90 <= latitude <= 90):  # noqa: PLR2004
             raise ValueError("Invalid latitude: must be between -90 and 90")
-        if not (-180 <= longitude <= 180):
+        if not (-180 <= longitude <= 180):  # noqa: PLR2004
             raise ValueError("Invalid longitude: must be between -180 and 180")
 
         try:
             start_dt = datetime.strptime(start_date, "%Y-%m-%d")
             end_dt = datetime.strptime(end_date, "%Y-%m-%d")
         except ValueError:
-            raise ValueError("Invalid date format - use YYYY-MM-DD")
+            raise ValueError("Invalid date format - use YYYY-MM-DD")  # noqa: B904
 
         if start_dt > end_dt:
             raise ValueError("Start date cannot be after end date")

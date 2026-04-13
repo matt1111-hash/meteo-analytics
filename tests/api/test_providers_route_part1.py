@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from starlette import status
 
-# ruff: noqa: F403, F405
+# ruff: noqa: F403  # noqa: RUF100
 from tests.api.test_providers_route_support import *
 
 

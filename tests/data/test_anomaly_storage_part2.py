@@ -20,7 +20,7 @@ class TestCreateBackup:
         backups = list(storage.backup_dir.glob("anomaly_profiles_backup_*.json"))
         assert len(backups) == 1
 
-        with open(backups[0], "r", encoding="utf-8") as f:
+        with open(backups[0], encoding="utf-8") as f:  # noqa: PTH123
             backup_data = json.load(f)
         assert backup_data == test_data
 
@@ -82,7 +82,7 @@ class TestSaveCurrentSettings:
         assert result is True
         assert storage.settings_file.exists()
 
-        with open(storage.settings_file, "r", encoding="utf-8") as f:
+        with open(storage.settings_file, encoding="utf-8") as f:  # noqa: PTH123
             data = json.load(f)
         assert data["active_profile"] == "test_profile"
         assert data["settings"] == settings
@@ -95,7 +95,7 @@ class TestSaveCurrentSettings:
         storage.save_current_settings("test_profile", {"temp_hot": 35.0})
         after = datetime.now()
 
-        with open(storage.settings_file, "r", encoding="utf-8") as f:
+        with open(storage.settings_file, encoding="utf-8") as f:  # noqa: PTH123
             data = json.load(f)
 
         updated_at = datetime.fromisoformat(data["updated_at"])
@@ -107,7 +107,7 @@ class TestSaveCurrentSettings:
         result = storage.save_current_settings("prófil_ékezetes", {"temp_hot": 35.0})
 
         assert result is True
-        with open(storage.settings_file, "r", encoding="utf-8") as f:
+        with open(storage.settings_file, encoding="utf-8") as f:  # noqa: PTH123
             data = json.load(f)
         assert data["active_profile"] == "prófil_ékezetes"
 
@@ -115,9 +115,7 @@ class TestSaveCurrentSettings:
 class TestLoadCurrentSettings:
     """Tests for load_current_settings method."""
 
-    def test_load_current_settings_returns_none_when_missing(
-        self, tmp_path: Path
-    ) -> None:
+    def test_load_current_settings_returns_none_when_missing(self, tmp_path: Path) -> None:
         """None is returned when settings file doesn't exist."""
         storage = AnomalyProfileStorage(config_dir=tmp_path)
         result = storage.load_current_settings()
@@ -135,15 +133,13 @@ class TestLoadCurrentSettings:
     def test_load_current_settings_handles_invalid_json(self, tmp_path: Path) -> None:
         """Invalid JSON returns None."""
         storage = AnomalyProfileStorage(config_dir=tmp_path)
-        with open(storage.settings_file, "w", encoding="utf-8") as f:
+        with open(storage.settings_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             f.write("{ invalid }")
 
         result = storage.load_current_settings()
         assert result is None
 
-    def test_load_current_settings_handles_non_dict_settings(
-        self, tmp_path: Path
-    ) -> None:
+    def test_load_current_settings_handles_non_dict_settings(self, tmp_path: Path) -> None:
         """Non-dict settings return None."""
         storage = AnomalyProfileStorage(config_dir=tmp_path)
         data = {
@@ -151,7 +147,7 @@ class TestLoadCurrentSettings:
             "settings": "not_a_dict",  # Invalid: should be dict
             "updated_at": datetime.now().isoformat(),
         }
-        with open(storage.settings_file, "w", encoding="utf-8") as f:
+        with open(storage.settings_file, "w", encoding="utf-8") as f:  # noqa: PTH123
             json.dump(data, f)
 
         result = storage.load_current_settings()

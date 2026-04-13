@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Képességek:
 Fájl: src/presentation/gui/panel_widgets/provider_widget/public_api.py
 """
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
@@ -56,7 +55,7 @@ def get_current_provider(self) -> str:
     return self.current_provider
 
 
-def update_usage_stats(self, stats: Dict[str, Any]) -> None:
+def update_usage_stats(self, stats: dict[str, Any]) -> None:
     """
     Usage statisztikák frissítése külső forrásból.
 
@@ -76,7 +75,7 @@ def update_usage_stats(self, stats: Dict[str, Any]) -> None:
         print(f"❌ DEBUG: Update usage stats error: {e}")
 
 
-def get_usage_summary(self) -> Dict[str, Any]:
+def get_usage_summary(self) -> dict[str, Any]:
     """
     Usage összefoglaló lekérdezése.
 
@@ -86,12 +85,8 @@ def get_usage_summary(self) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: Usage summary
     """
-    total_requests = sum(
-        stats.get("requests", 0) for stats in self.usage_stats.values()
-    )
-    total_cost = sum(
-        stats.get("estimated_cost", 0) for stats in self.usage_stats.values()
-    )
+    total_requests = sum(stats.get("requests", 0) for stats in self.usage_stats.values())
+    total_cost = sum(stats.get("estimated_cost", 0) for stats in self.usage_stats.values())
 
     return {
         "current_provider": self.current_provider,
@@ -125,7 +120,7 @@ def start_monitoring(self) -> None:
         print("🔄 DEBUG: Usage monitoring started")
 
 
-def get_state(self) -> Dict[str, Any]:
+def get_state(self) -> dict[str, Any]:
     """
     Widget állapot lekérdezése.
 
@@ -145,7 +140,7 @@ def get_state(self) -> Dict[str, Any]:
     }
 
 
-def set_state(self, state: Dict[str, Any]) -> bool:
+def set_state(self, state: dict[str, Any]) -> bool:
     """
     Widget állapot beállítása.
 
@@ -168,7 +163,7 @@ def set_state(self, state: Dict[str, Any]) -> bool:
         return False
 
 
-def is_valid(self) -> bool:
+def is_valid(self) -> bool:  # noqa: ARG001
     """
     Widget validálása - mindig valid (van alapértelmezett provider).
 

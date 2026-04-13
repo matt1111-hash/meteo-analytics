@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for TemperatureTooltipHandlerMixin."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .tooltip_handler_support import *
 
 
-class TemperatureTooltipHandlerMixinPart2Mixin:
+class TemperatureTooltipHandlerMixinPart2Mixin:  # noqa: D101
     @staticmethod
     def _format_date_label(date: Any) -> str:
         """Format tooltip date label."""
@@ -16,26 +16,24 @@ class TemperatureTooltipHandlerMixinPart2Mixin:
         return str(date)
 
     @staticmethod
-    def _categorize_temperature(primary_temp: float) -> str:
+    def _categorize_temperature(primary_temp: float) -> str:  # noqa: PLR0911
         """Categorize temperature value for tooltip."""
-        if primary_temp > 35:
+        if primary_temp > 35:  # noqa: PLR2004
             return "Extrém forró"
-        if primary_temp > 30:
+        if primary_temp > 30:  # noqa: PLR2004
             return "Forró nap"
-        if primary_temp > 25:
+        if primary_temp > 25:  # noqa: PLR2004
             return "Meleg nap"
-        if primary_temp > 15:
+        if primary_temp > 15:  # noqa: PLR2004
             return "Mérsékelt nap"
         if primary_temp > 0:
             return "Hideg nap"
-        if primary_temp > -10:
+        if primary_temp > -10:  # noqa: PLR2004
             return "Fagyos nap"
         return "Extrém hideg"
 
     @staticmethod
-    def _build_temperature_lines(
-        point_data: Dict[str, Any], closest_line: str
-    ) -> list[str]:
+    def _build_temperature_lines(point_data: Dict[str, Any], closest_line: str) -> list[str]:
         """Build tooltip lines for temperature values."""
         line_names = {
             "temp_max": "Maximum",
@@ -51,7 +49,7 @@ class TemperatureTooltipHandlerMixinPart2Mixin:
             )
         for column in ["temp_max", "temp_min", "temp_mean"]:
             if column in point_data and column != closest_line:
-                lines.append(
+                lines.append(  # noqa: PERF401
                     f"  {line_icons.get(column, '🌡️')} {line_names.get(column, column)}: "
                     f"{point_data[column]:.1f}°C"
                 )

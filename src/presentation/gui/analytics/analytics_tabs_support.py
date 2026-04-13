@@ -16,7 +16,7 @@ Heatmap tab widgetek az analytics view számára.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from PySide6.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 

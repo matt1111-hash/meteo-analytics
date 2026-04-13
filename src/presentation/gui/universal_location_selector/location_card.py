@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -22,7 +21,7 @@ from PySide6.QtWidgets import QFrame, QLabel, QSizePolicy, QVBoxLayout
 class LocationCard(QFrame):
     """🎨 Kiválasztott lokáció megjelenítő kártya - MAGYAR KOMPATIBILIS"""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None):  # noqa: D107
         super().__init__(parent)
         self.setFrameStyle(QFrame.StyledPanel)
         self.setMinimumHeight(80)

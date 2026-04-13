@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List
 
 import pytest
-
 from src.analytics.multi_city_engine import (
     MultiCityEngine,
     safe_min_max,
@@ -27,7 +25,7 @@ def fixture_engine(tmp_path: Path) -> MultiCityEngine:
 
 def test_safe_statistics_helpers_ignore_invalid_entries() -> None:
     """None és hibás elemek kihagyásával számoljon értelmes statisztikát."""
-    values: List[float | None | object] = [10.0, None, 20.0, object()]
+    values: list[float | None | object] = [10.0, None, 20.0, object()]
     assert safe_statistics_mean(values) == pytest.approx(15.0)
     assert safe_statistics_stdev([10.0, 20.0]) == pytest.approx(7.0710678118654755)
     assert safe_min_max(values) == (10.0, 20.0)

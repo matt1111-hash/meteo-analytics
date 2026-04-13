@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 Wind Chart Categories - Hungarian meteorological wind categories.
 🌪️ MAGYAR METEOROLÓGIAI SZABVÁNY: 43-61-90-119 km/h küszöbök
 """
-
-from typing import Dict
 
 # 🌪️ MAGYAR METEOROLÓGIAI SZABVÁNY - Szélkategóriák
 HUNGARIAN_WIND_THRESHOLDS = {
@@ -115,7 +112,7 @@ CALM_WIND_CATEGORY = {
 }
 
 
-def get_wind_category(windspeed: float) -> Dict[str, str]:
+def get_wind_category(windspeed: float) -> dict[str, str]:
     """
     Get Hungarian wind category for a given wind speed.
 
@@ -141,16 +138,16 @@ def get_wind_recommendations(windspeed: float) -> list:
     Returns:
         List of recommendation strings
     """
-    if windspeed > 50:
+    if windspeed > 50:  # noqa: PLR2004
         return [
             "🏠 Épületek beltéri tartózkodás ajánlott",
             "🚫 Kültéri tevékenység kerülendő",
         ]
-    elif windspeed > 30:
+    elif windspeed > 30:  # noqa: PLR2004
         return ["🚗 Óvatos közlekedés szükséges", "🌳 Fákra figyeljen"]
-    elif windspeed > 15:
+    elif windspeed > 15:  # noqa: PLR2004
         return ["🥾 Kültéri sportokhoz alkalmas", "⛵ Vitorlázáshoz jó körülmények"]
-    elif windspeed > 5:
+    elif windspeed > 5:  # noqa: PLR2004
         return ["🚴 Kerékpározáshoz ideális", "🏃 Futáshoz kellemes"]
     return []
 
@@ -165,13 +162,13 @@ def calculate_y_axis_max(max_wind: float) -> int:
     Returns:
         Optimal Y-axis maximum value
     """
-    if max_wind >= 119:
+    if max_wind >= 119:  # noqa: PLR2004
         return int(max_wind * 1.1)  # Orkán feletti értékekhez
-    elif max_wind >= 90:
+    elif max_wind >= 90:  # noqa: PLR2004
         return 130  # Orkán küszöbig
-    elif max_wind >= 61:
+    elif max_wind >= 61:  # noqa: PLR2004
         return 100  # Erős vihar küszöbig
-    elif max_wind >= 43:
+    elif max_wind >= 43:  # noqa: PLR2004
         return 75  # Viharos szél küszöbig
     else:
         return 55  # Erős szél küszöbig

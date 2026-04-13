@@ -9,10 +9,9 @@ Part of the weather_client refactoring - split into focused modules.
 import logging
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import requests
-
 from src.config import APIConfig
 
 from .weather_provider_base import WeatherProvider
@@ -41,9 +40,7 @@ class OpenMeteoProvider(WeatherProvider):
         self.max_days_per_request = 90
         self.batch_delay = 0.6
 
-        logger.info(
-            f"OpenMeteoProvider - max days/request: {self.max_days_per_request}"
-        )
+        logger.info(f"OpenMeteoProvider - max days/request: {self.max_days_per_request}")
 
     def validate_provider(self) -> bool:
         """Open-Meteo is always available (no API key needed)."""
@@ -51,7 +48,7 @@ class OpenMeteoProvider(WeatherProvider):
 
     def get_weather_data(
         self, latitude: float, longitude: float, start_date: str, end_date: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Get weather data with smart batching.
 
@@ -67,17 +64,13 @@ class OpenMeteoProvider(WeatherProvider):
             logger.info(
                 f"Multi-year batching: {days_diff} days > {self.max_days_per_request} limit"
             )
-            return self.get_weather_data_batched(
-                latitude, longitude, start_date, end_date
-            )
+            return self.get_weather_data_batched(latitude, longitude, start_date, end_date)
         else:
-            return self.get_weather_data_single(
-                latitude, longitude, start_date, end_date
-            )
+            return self.get_weather_data_single(latitude, longitude, start_date, end_date)
 
     def get_weather_data_single(
         self, latitude: float, longitude: float, start_date: str, end_date: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Single Open-Meteo API request (max 90 days)."""
         params = {
             "latitude": latitude,
@@ -110,7 +103,7 @@ class OpenMeteoProvider(WeatherProvider):
 
     def get_weather_data_batched(
         self, latitude: float, longitude: float, start_date: str, end_date: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Multi-year query with batching logic."""
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")
@@ -148,30 +141,26 @@ class OpenMeteoProvider(WeatherProvider):
 
         all_weather_data.sort(key=lambda x: x.get("date", ""))
 
-        logger.info(
-            f"Batching complete: {successful_batches}/{len(batches)} successful"
-        )
+        logger.info(f"Batching complete: {successful_batches}/{len(batches)} successful")
         logger.info(f"Total records: {len(all_weather_data)}/{total_days}")
 
         return all_weather_data
 
     def _generate_batches(
         self, start_dt: datetime, end_dt: datetime
-    ) -> List[Tuple[datetime, datetime]]:
+    ) -> list[tuple[datetime, datetime]]:
         """Generate time period batches."""
         batches = []
         current_start = start_dt
 
         while current_start <= end_dt:
-            current_end = min(
-                current_start + timedelta(days=self.max_days_per_request - 1), end_dt
-            )
+            current_end = min(current_start + timedelta(days=self.max_days_per_request - 1), end_dt)
             batches.append((current_start, current_end))
             current_start = current_end + timedelta(days=1)
 
         return batches
 
-    def _make_api_request(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _make_api_request(self, params: dict[str, Any]) -> list[dict[str, Any]]:
         """Execute Open-Meteo API request."""
         self._rate_limit_check()
 
@@ -181,24 +170,24 @@ class OpenMeteoProvider(WeatherProvider):
             )
             self._update_request_tracking()
 
-            if response.status_code == 200:
+            if response.status_code == 200:  # noqa: PLR2004
                 data = response.json()
                 if "daily" not in data:
                     raise WeatherAPIError(f"Invalid response: {data}")
                 return self._process_response(data)
-            elif response.status_code == 400:
+            elif response.status_code == 400:  # noqa: PLR2004
                 raise WeatherAPIError(f"Bad request: {response.text}")
-            elif response.status_code == 429:
+            elif response.status_code == 429:  # noqa: PLR2004
                 raise WeatherAPIError("Rate limit exceeded")
             else:
                 raise WeatherAPIError(f"API error: {response.status_code}")
 
         except requests.exceptions.Timeout:
-            raise WeatherAPIError("API timeout")
+            raise WeatherAPIError("API timeout")  # noqa: B904
         except requests.exceptions.ConnectionError:
-            raise WeatherAPIError("Connection error")
+            raise WeatherAPIError("Connection error")  # noqa: B904
 
-    def _process_response(self, response_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _process_response(self, response_data: dict[str, Any]) -> list[dict[str, Any]]:
         """Process Open-Meteo API response."""
         daily_data = response_data.get("daily", {})
         dates = daily_data.get("time", [])
@@ -209,7 +198,7 @@ class OpenMeteoProvider(WeatherProvider):
         metrics = {}
         for key, values in daily_data.items():
             if key != "time" and isinstance(values, list):
-                metrics[key] = values
+                metrics[key] = values  # noqa: PERF403
 
         weather_data = []
         for i, date in enumerate(dates):

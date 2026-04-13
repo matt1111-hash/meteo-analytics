@@ -39,9 +39,7 @@ class TestUserPreferencesSave:
         parsed = datetime.fromisoformat(saved["last_updated"])
         assert isinstance(parsed, datetime)
 
-    def test_save_preferences_overwrites_existing(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_save_preferences_overwrites_existing(self, config_fs: dict[str, str]) -> None:
         """Saving should overwrite existing preferences file."""
         from src.config.provider_config import UserPreferences
 

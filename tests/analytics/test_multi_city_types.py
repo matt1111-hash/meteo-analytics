@@ -18,10 +18,10 @@ class TestTypeAliases:
     def test_number_union_type_exists(self) -> None:
         """Number should be a union of float and int."""
         # Runtime check - isinstance works with concrete types
-        assert isinstance(1, (int, float))
-        assert isinstance(1.5, (int, float))
-        assert isinstance(-1, (int, float))
-        assert isinstance(0.0, (int, float))
+        assert isinstance(1, (int, float))  # noqa: UP038
+        assert isinstance(1.5, (int, float))  # noqa: UP038
+        assert isinstance(-1, (int, float))  # noqa: UP038
+        assert isinstance(0.0, (int, float))  # noqa: UP038
 
     def test_number_or_none_union_type_exists(self) -> None:
         """NumberOrNone should allow None in addition to numbers."""
@@ -61,14 +61,14 @@ class TestHungarianRegionalMapping:
         """Budapest should map to a single-element list."""
         assert HUNGARIAN_REGIONAL_MAPPING["Budapest"] == ["Budapest"]
 
-    def test_kozep_magyarország_contains_budapest_and_pest(self) -> None:
+    def test_kozep_magyarország_contains_budapest_and_pest(self) -> None:  # noqa: PLC2401
         """Közép-Magyarország should contain Budapest and Pest."""
         counties = HUNGARIAN_REGIONAL_MAPPING["Közép-Magyarország"]
         assert "Budapest" in counties
         assert "Pest" in counties
         assert len(counties) == 2
 
-    def test_észak_magyarország_contains_three_counties(self) -> None:
+    def test_észak_magyarország_contains_three_counties(self) -> None:  # noqa: PLC2401
         """Észak-Magyarország should contain 3 counties."""
         counties = HUNGARIAN_REGIONAL_MAPPING["Észak-Magyarország"]
         assert len(counties) == 3
@@ -176,7 +176,7 @@ class TestRegions:
         """rate_limit_delay should be positive numbers."""
         for region_name, config in REGIONS.items():
             delay = config["rate_limit_delay"]
-            assert isinstance(
+            assert isinstance(  # noqa: UP038
                 delay, (int, float)
             ), f"rate_limit_delay in {region_name} is not number"
             assert delay > 0, f"rate_limit_delay in {region_name} is not positive"

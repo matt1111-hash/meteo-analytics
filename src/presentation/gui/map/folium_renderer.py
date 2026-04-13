@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -12,7 +11,7 @@ import os
 import tempfile
 import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
 from PySide6.QtCore import QThread, Signal
 
@@ -47,13 +46,13 @@ class FoliumMapGenerator(QThread):
     error_occurred = Signal(str)
     status_updated = Signal(str)
 
-    def __init__(
+    def __init__(  # noqa: D107
         self,
         config: FoliumMapConfig,
         counties_gdf: Optional["gpd.GeoDataFrame"] = None,
-        weather_data: Optional[Dict] = None,
-        bridge_id: Optional[str] = None,
-        output_path: Optional[str] = None,
+        weather_data: dict | None = None,
+        bridge_id: str | None = None,
+        output_path: str | None = None,
     ):
         super().__init__()
         self.config = config
@@ -63,7 +62,7 @@ class FoliumMapGenerator(QThread):
 
         if output_path is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.output_path = os.path.join(
+            self.output_path = os.path.join(  # noqa: PTH118
                 tempfile.gettempdir(), f"hungarian_folium_map_{timestamp}.html"
             )
         else:
@@ -114,13 +113,11 @@ class FoliumMapGenerator(QThread):
 
         self.status_updated.emit("✅ Folium térkép elkészült!")
         print(
-            f"✅ Folium map generated: {self.output_path} ({os.path.getsize(self.output_path):,} bytes)"
+            f"✅ Folium map generated: {self.output_path} ({os.path.getsize(self.output_path):,} bytes)"  # noqa: PTH202
         )
         self.map_generated.emit(self.output_path)
 
-    def _maybe_add_counties(
-        self, map_obj: "folium.Map", layer_builder: LayerBuilder
-    ) -> None:
+    def _maybe_add_counties(self, map_obj: "folium.Map", layer_builder: LayerBuilder) -> None:
         if self.config.show_counties and self.counties_gdf is not None:
             self.status_updated.emit("🗺️ Megyehatárok hozzáadása...")
             layer_builder.add_counties_layer(map_obj, self.counties_gdf)
@@ -157,13 +154,11 @@ class FoliumMapGenerator(QThread):
         self.status_updated.emit("💾 HTML fájl mentése...")
         map_obj.save(self.output_path)
 
-        if not os.path.exists(self.output_path):
-            raise FileNotFoundError(
-                f"Generated HTML file not found: {self.output_path}"
-            )
+        if not os.path.exists(self.output_path):  # noqa: PTH110
+            raise FileNotFoundError(f"Generated HTML file not found: {self.output_path}")
 
-        file_size = os.path.getsize(self.output_path)
-        if file_size < 1000:
+        file_size = os.path.getsize(self.output_path)  # noqa: PTH202
+        if file_size < 1000:  # noqa: PLR2004
             raise ValueError(f"Generated HTML file too small: {file_size} bytes")
 
 

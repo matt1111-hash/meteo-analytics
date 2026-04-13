@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 3 for MultiYearComparisonChart."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .comparison_chart_support import *
 
 
-class MultiYearComparisonChartPart3Mixin:
+class MultiYearComparisonChartPart3Mixin:  # noqa: D101
     def _plot_comparison_placeholder(self) -> None:
         """Placeholder ha nincs elég valódi adat az összehasonlításhoz - MOCK ADATOK NÉLKÜL + SIMPLIFIED THEMEMANAGER."""
         # Biztosítjuk, hogy az ax standard subplot legyen
@@ -35,12 +35,12 @@ class MultiYearComparisonChartPart3Mixin:
             transform=self.ax.transAxes,
             fontsize=14,
             color=text_color,
-            bbox=dict(
-                boxstyle="round,pad=0.5",
-                facecolor=surface_color,
-                edgecolor=current_colors.get("border", "#d1d5db"),
-                alpha=0.8,
-            ),
+            bbox={
+                "boxstyle": "round,pad=0.5",
+                "facecolor": surface_color,
+                "edgecolor": current_colors.get("border", "#d1d5db"),
+                "alpha": 0.8,
+            },
         )
 
         self.ax.set_title(

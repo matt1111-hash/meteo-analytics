@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -13,10 +12,9 @@ Fájl: src/presentation/gui/results_panel/quick_overview_tab/core.py
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-
 from src.presentation.gui.theme_manager import (
     get_theme_manager,
     register_widget_for_theming,
@@ -43,15 +41,15 @@ logger = logging.getLogger(__name__)
 class QuickOverviewTab(QWidget):
     """Gyors Áttekintés TAB - Kompakt statisztikák és mini preview-k."""
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: QWidget | None = None) -> None:
         """Inicializálás."""
         super().__init__(parent)
 
         # Theme manager
         self.theme_manager = get_theme_manager()
 
-        self.current_data: Optional[Dict[str, Any]] = None
-        self._stat_labels: Dict[str, QWidget] = {}
+        self.current_data: dict[str, Any] | None = None
+        self._stat_labels: dict[str, QWidget] = {}
 
         # UI inicializálása
         self._init_ui()
@@ -131,16 +129,12 @@ class QuickOverviewTab(QWidget):
 
     def _create_mini_charts_section(self, layout: QVBoxLayout) -> None:
         """Mini chartok szekció létrehozása."""
-        self.mini_charts_container, self.mini_chart_placeholder = (
-            create_mini_charts_container()
-        )
+        self.mini_charts_container, self.mini_chart_placeholder = create_mini_charts_container()
         layout.addWidget(self.mini_charts_container)
 
     def _create_actions_section(self, layout: QVBoxLayout) -> None:
         """Gyors akciók szekció létrehozása."""
-        container, self.charts_btn, self.table_btn, self.extreme_btn = (
-            create_quick_actions()
-        )
+        container, self.charts_btn, self.table_btn, self.extreme_btn = create_quick_actions()
         layout.addWidget(container)
 
     def _register_widgets_for_theming(self) -> None:
@@ -162,7 +156,7 @@ class QuickOverviewTab(QWidget):
         register_widget_for_theming(self.table_btn, "button")
         register_widget_for_theming(self.extreme_btn, "button")
 
-    def update_data(self, data: Dict[str, Any], city_name: str) -> None:
+    def update_data(self, data: dict[str, Any], city_name: str) -> None:
         """Adatok frissítése."""
         try:
             logger.info(f"QuickOverviewTab.update_data() - City: {city_name}")

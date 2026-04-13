@@ -1,4 +1,4 @@
-# ruff: noqa: F401, F403, F405, I001
+# ruff: noqa: F403, F405, I001
 # mypy: ignore-errors
 """Split definitions from tooltip.py."""
 
@@ -44,9 +44,7 @@ def _format_tooltip_text(self, point_data: Dict[str, Any]) -> str:
     date = point_data["date"]
     precipitation = point_data["precipitation"]
 
-    date_str = (
-        date.strftime("%Y-%m-%d (%A)") if isinstance(date, datetime) else str(date)
-    )
+    date_str = date.strftime("%Y-%m-%d (%A)") if isinstance(date, datetime) else str(date)
     precip_icon, category, intensity = _categorize_precipitation(precipitation)
     meteorological_info = _build_meteorological_info(precipitation)
     contextual_info = _build_precipitation_context(self, precipitation)

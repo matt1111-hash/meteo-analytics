@@ -17,21 +17,15 @@ class AppControllerAnalysisMixin:
     """Methods related to analysis and request forwarding."""
 
     @Slot(dict)
-    def handle_analysis_request(
-        self: "AppController", request_data: dict[str, Any]
-    ) -> None:
+    def handle_analysis_request(self: AppController, request_data: dict[str, Any]) -> None:
         """Handle a full analysis request payload."""
         print("=" * 80)
         print("🚨 DEBUG: AppController.handle_analysis_request() MEGHÍVVA!")
         print(f"🚨 DEBUG: Request data: {request_data}")
-        print(
-            f"🚨 DEBUG: Analysis type: {request_data.get('analysis_type', 'unknown')}"
-        )
+        print(f"🚨 DEBUG: Analysis type: {request_data.get('analysis_type', 'unknown')}")
         print("=" * 80)
 
-        def start_analysis_callback(
-            enhanced_request: dict[str, Any], handler: Any
-        ) -> Any:
+        def start_analysis_callback(enhanced_request: dict[str, Any], handler: Any) -> Any:
             """Start the analysis worker through the handler."""
             print("=" * 80)
             print("🚨 DEBUG: start_analysis_callback() MEGHÍVVA!")
@@ -60,9 +54,7 @@ class AppControllerAnalysisMixin:
         print("🚨 DEBUG: analysis_handler.handle_analysis_request() VISSZATÉRT")
 
     @Slot(dict)
-    def _on_analysis_completed_forward(
-        self: "AppController", result_data: dict[str, Any]
-    ) -> None:
+    def _on_analysis_completed_forward(self: AppController, result_data: dict[str, Any]) -> None:
         """Forward the completed analysis to downstream signals."""
         print("=" * 80)
         print("🚨 DEBUG: AppController._on_analysis_completed_forward() ELEJE")
@@ -78,21 +70,21 @@ class AppControllerAnalysisMixin:
         if analysis_type == "single_location":
             self.weather_data_ready.emit(result_data)
 
-    def stop_current_analysis(self: "AppController") -> None:
+    def stop_current_analysis(self: AppController) -> None:
         """Stop the currently running analysis."""
         self.analysis_handler.stop_current_analysis()
 
-    def is_analysis_running(self: "AppController") -> bool:
+    def is_analysis_running(self: AppController) -> bool:
         """Return whether an analysis is currently running."""
         return self.analysis_handler.is_analysis_running()
 
-    def get_current_analysis_info(self: "AppController") -> dict[str, Any]:
+    def get_current_analysis_info(self: AppController) -> dict[str, Any]:
         """Return details about the current analysis."""
         return self.analysis_handler.get_current_analysis_info()
 
     @Slot(float, float, str, str, dict)
     def handle_weather_data_request(
-        self: "AppController",
+        self: AppController,
         latitude: float,
         longitude: float,
         start_date: str,

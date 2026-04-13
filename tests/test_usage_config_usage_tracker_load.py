@@ -10,9 +10,7 @@ import pytest
 class TestUsageTrackerLoad:
     """Test cases for UsageTracker.load_usage_data() method."""
 
-    def test_load_usage_returns_default_when_file_missing(
-        self, config_fs: dict[str, str]
-    ) -> None:
+    def test_load_usage_returns_default_when_file_missing(self, config_fs: dict[str, str]) -> None:
         """Missing usage file should return default usage data."""
         from src.config.usage_config import UsageTracker
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -7,12 +6,10 @@
 Magyar Klímaanalitika MVP - Statisztikai régió adatok
 """
 
-from typing import Dict
-
 from ..models import HungarianRegionData, HungarianStatisticalRegion
 
 
-def init_statistical_regions() -> Dict[str, HungarianRegionData]:
+def init_statistical_regions() -> dict[str, HungarianRegionData]:
     """
     🔧 KRITIKUS JAVÍTÁS: Magyar 7 statisztikai régió inicializálása (Control Panel + Multi-City Engine konzisztens!)
 

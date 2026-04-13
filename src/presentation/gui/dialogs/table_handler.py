@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -14,7 +13,7 @@ Képességek:
 Fájl: src/presentation/gui/dialogs/table_handler.py
 """
 
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING
 
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import QTableWidgetItem
@@ -23,7 +22,7 @@ if TYPE_CHECKING:
     pass
 
 
-def _populate_extreme_table(self, extremes: List[Dict[str, str]]) -> None:
+def _populate_extreme_table(self, extremes: list[dict[str, str]]) -> None:
     """
     Extrém értékek táblázatának feltöltése - THEMEMANAGER SZÍNEKKEL.
 

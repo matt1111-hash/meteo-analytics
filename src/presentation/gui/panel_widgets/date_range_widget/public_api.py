@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/panel_widgets/date_range_widget/public_api.py
 """
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, Tuple
+from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import QDate, Qt
 
@@ -25,9 +24,7 @@ if TYPE_CHECKING:
     pass
 
 
-def _set_manual_date_if_valid(
-    widget: Any, attr_name: str, date_value: str | None
-) -> None:
+def _set_manual_date_if_valid(widget: Any, attr_name: str, date_value: str | None) -> None:
     """Set a manual QDateEdit value when the ISO date is valid."""
     if not date_value:
         return
@@ -36,9 +33,7 @@ def _set_manual_date_if_valid(
         getattr(widget, attr_name).setDate(qdate)
 
 
-def _apply_time_range_state(
-    widget: Any, time_range: str | None, date_mode: str
-) -> None:
+def _apply_time_range_state(widget: Any, time_range: str | None, date_mode: str) -> None:
     """Apply time-range selection state."""
     if not time_range or date_mode != "time_range":
         return
@@ -47,9 +42,7 @@ def _apply_time_range_state(
         widget.time_range_combo.setCurrentIndex(index)
 
 
-def _apply_manual_date_state(
-    widget: Any, state: Dict[str, Any], date_mode: str
-) -> None:
+def _apply_manual_date_state(widget: Any, state: dict[str, Any], date_mode: str) -> None:
     """Apply manual date state when active."""
     if date_mode != "manual_dates":
         return
@@ -76,14 +69,14 @@ class DateRangeWidgetPublicAPI:
     time_range_group: any
     manual_dates_group: any
 
-    # Signal (delegált)
+    # Signal (delegált)  # noqa: ERA001
     date_range_changed: any
     date_mode_changed: any
 
     # Method from DateHandlerMixin
     _get_effective_date_range: any
 
-    def get_state(self) -> Dict[str, Any]:
+    def get_state(self) -> dict[str, Any]:
         """
         Aktuális állapot lekérdezése.
 
@@ -102,7 +95,7 @@ class DateRangeWidgetPublicAPI:
             "is_valid": self.is_valid(),
         }
 
-    def set_state(self, state: Dict[str, Any]) -> bool:
+    def set_state(self, state: dict[str, Any]) -> bool:
         """
         Állapot beállítása.
 
@@ -148,7 +141,7 @@ class DateRangeWidgetPublicAPI:
             start = datetime.strptime(start_date, "%Y-%m-%d")
             end = datetime.strptime(end_date, "%Y-%m-%d")
 
-            # Start <= End
+            # Start <= End  # noqa: ERA001
             if start > end:
                 return False
 
@@ -157,15 +150,12 @@ class DateRangeWidgetPublicAPI:
                 return False
 
             # Maximum 60 év (praktikus limit)
-            if (end - start).days > 60 * 365:
-                return False
-
-            return True
+            return not (end - start).days > 60 * 365
 
         except ValueError:
             return False
 
-    def get_date_range(self) -> Tuple[str, str]:
+    def get_date_range(self) -> tuple[str, str]:
         """
         Dátum tartomány lekérdezése (compatibility).
 

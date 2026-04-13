@@ -14,7 +14,6 @@ Fájl: src/presentation/gui/trend_analytics/trend_widgets/stats_panel.py
 """
 
 import logging
-from typing import Dict
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
@@ -51,20 +50,20 @@ def _resolve_value_unit(parameter: str) -> str:
 
 def _build_reliability_metadata(r_squared: float) -> tuple[str, str]:
     """Build subtitle and color for reliability KPI."""
-    if r_squared > 0.7:
+    if r_squared > 0.7:  # noqa: PLR2004
         return "Magas megbízhatóság", "#10b981"
-    if r_squared > 0.4:
+    if r_squared > 0.4:  # noqa: PLR2004
         return "Közepes megbízhatóság", "#f59e0b"
     return "Alacsony megbízhatóság", "#ef4444"
 
 
 def _build_significance_metadata(p_value: float) -> tuple[str, str, str]:
     """Build significance card content."""
-    if p_value < 0.001:
+    if p_value < 0.001:  # noqa: PLR2004
         return "***", f"p = {p_value:.3f}", "#059669"
-    if p_value < 0.01:
+    if p_value < 0.01:  # noqa: PLR2004
         return "**", f"p = {p_value:.3f}", "#10b981"
-    if p_value < 0.05:
+    if p_value < 0.05:  # noqa: PLR2004
         return "*", f"p = {p_value:.3f}", "#f59e0b"
     return "n.s.", f"p = {p_value:.3f}", "#6b7280"
 
@@ -80,9 +79,9 @@ class EnhancedStatisticsPanel(QWidget):
     - Értéktartomány
     """
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         super().__init__()
-        self.stats_cards: Dict[str, DashboardStatsCard] = {}  # ELŐBB inicializálni!
+        self.stats_cards: dict[str, DashboardStatsCard] = {}  # ELŐBB inicializálni!
         self.setup_stats_panel()
 
     def setup_stats_panel(self) -> None:
@@ -127,7 +126,7 @@ class EnhancedStatisticsPanel(QWidget):
             self.cards_grid.addWidget(card, row, col)
             self.stats_cards[title] = card
 
-    def update_statistics(self, trend_data: Dict) -> None:
+    def update_statistics(self, trend_data: dict) -> None:
         """
         🎯 KPI KÁRTYÁK FRISSÍTÉSE - DASHBOARD ADATOKKAL
 
@@ -157,7 +156,7 @@ class EnhancedStatisticsPanel(QWidget):
         trend_value: float,
         r_squared: float,
         p_value: float,
-        stats: Dict,
+        stats: dict,
     ) -> list[tuple[str, str, str, str]]:
         """Build KPI card content for a trend update."""
         trend_unit = _resolve_trend_unit(parameter)
@@ -204,7 +203,7 @@ class EnhancedStatisticsPanel(QWidget):
         else:
             logger.warning(f"⚠️ Nem található kártya a frissítéshez: '{card_key}'")
 
-    def show_error_cards(self, error_msg: str) -> None:
+    def show_error_cards(self, error_msg: str) -> None:  # noqa: ARG002
         """
         ✅ EGYSZERŰSÍTETT HIBA KÁRTYÁK - Tartalom frissítése widget csere helyett
 

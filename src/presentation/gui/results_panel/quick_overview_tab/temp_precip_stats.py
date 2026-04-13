@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -43,7 +42,7 @@ def _set_precipitation_labels(self, precip_series: pd.Series) -> None:
     _set_label_text(self, "total_precip", precip_series.sum())
     _set_label_text(self, "avg_precip", precip_series.mean())
     _set_label_text(self, "max_precip", precip_series.max())
-    rainy_days = len(precip_series[precip_series > 0.1])
+    rainy_days = len(precip_series[precip_series > 0.1])  # noqa: PLR2004
     self._stat_labels["rainy_days"].setText(f"{rainy_days}")
 
 
@@ -97,12 +96,8 @@ def _resolve_temperature_range(df: pd.DataFrame) -> float | None:
 def calculate_temperature_stats(self, df: pd.DataFrame) -> None:
     """Hőmérséklet statisztikák számítása."""
     try:
-        _set_stat_if_exists(
-            self, df, "temp_max", "max_temp", lambda s: f"{s.max():.1f}"
-        )
-        _set_stat_if_exists(
-            self, df, "temp_min", "min_temp", lambda s: f"{s.min():.1f}"
-        )
+        _set_stat_if_exists(self, df, "temp_max", "max_temp", lambda s: f"{s.max():.1f}")
+        _set_stat_if_exists(self, df, "temp_min", "min_temp", lambda s: f"{s.min():.1f}")
         avg_temp = _resolve_average_temperature(df)
         _set_label_text(self, "avg_temp", avg_temp)
         temp_range = _resolve_temperature_range(df)
@@ -117,9 +112,7 @@ def calculate_precipitation_stats(self, df: pd.DataFrame) -> None:
     """Csapadék statisztikák számítása."""
     try:
         if "precipitation" not in df.columns:
-            _clear_stats_range(
-                self, ["total_precip", "avg_precip", "max_precip", "rainy_days"]
-            )
+            _clear_stats_range(self, ["total_precip", "avg_precip", "max_precip", "rainy_days"])
             return
 
         precip_series = df["precipitation"].dropna()
@@ -133,14 +126,10 @@ def calculate_precipitation_stats(self, df: pd.DataFrame) -> None:
 
     except Exception as e:
         logger.error(f"Csapadék statisztika hiba: {e}")
-        _clear_stats_range(
-            self, ["total_precip", "avg_precip", "max_precip", "rainy_days"]
-        )
+        _clear_stats_range(self, ["total_precip", "avg_precip", "max_precip", "rainy_days"])
 
 
-def _set_stat_if_exists(
-    self, df: pd.DataFrame, col: str, label_key: str, formatter
-) -> None:
+def _set_stat_if_exists(self, df: pd.DataFrame, col: str, label_key: str, formatter) -> None:
     """Statisztika beállítása ha az oszlop létezik."""
     series = _get_non_empty_series(df, col)
     if series is None:

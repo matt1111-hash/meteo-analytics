@@ -7,7 +7,8 @@ Control Panel - External Handlers Mixin
 External signal handlers, geocoding, progress updates.
 """
 
-from typing import Any, Dict, List
+import contextlib
+from typing import Any
 
 
 class ExternalHandlersMixin:
@@ -49,12 +50,12 @@ class ExternalHandlersMixin:
 
     def update_progress(self, worker_type: str, progress: int) -> None:
         """Progress frissítése külső jelzés alapján."""
-        if 0 <= progress <= 100:
+        if 0 <= progress <= 100:  # noqa: PLR2004
             self.query_control_widget.set_progress_value(progress)
             # 🔥 KRITIKUS FIX: set_progress_text → update_progress
             self.query_control_widget.update_progress(f"⏳ {worker_type}: {progress}%")
 
-        if progress >= 100:
+        if progress >= 100:  # noqa: PLR2004
             # 🔥 KRITIKUS FIX: set_progress_text → update_progress
             self.query_control_widget.update_progress("✅ Befejezve")
 
@@ -66,7 +67,7 @@ class ExternalHandlersMixin:
 
     # === GEOCODING COMPATIBILITY HANDLERS (UNCHANGED) ===
 
-    def _on_geocoding_completed(self, results: List[Dict[str, Any]]) -> None:
+    def _on_geocoding_completed(self, results: list[dict[str, Any]]) -> None:
         """Geocoding eredmények fogadása - LocationWidget-re továbbítás."""
         if hasattr(self.location_widget, "update_search_results"):
             self.location_widget.update_search_results(results)
@@ -94,7 +95,5 @@ class ExternalHandlersMixin:
 
     def __del__(self):
         """Destruktor."""
-        try:
+        with contextlib.suppress(Exception):
             self.cleanup()
-        except Exception:
-            pass

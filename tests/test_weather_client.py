@@ -37,10 +37,7 @@ class TestWeatherClientReexports:
     def test_reexports_main_client(self) -> None:
         """A fő WeatherClient (WeatherClientExtensions) elérhető."""
         assert hasattr(weather_client, "WeatherClient")
-        assert (
-            weather_client.WeatherClient
-            is weather_client_extensions.WeatherClientExtensions
-        )
+        assert weather_client.WeatherClient is weather_client_extensions.WeatherClientExtensions
 
     def test_reexports_core_client(self) -> None:
         """A WeatherClientCore elérhető külön is."""
@@ -83,12 +80,8 @@ class TestWeatherClientReexports:
 
     def test_provider_classes_inherit_from_base(self) -> None:
         """A provider osztályok a WeatherProvider-ból származnak."""
-        assert issubclass(
-            weather_client.OpenMeteoProvider, weather_provider_base.WeatherProvider
-        )
-        assert issubclass(
-            weather_client.MeteostatProvider, weather_provider_base.WeatherProvider
-        )
+        assert issubclass(weather_client.OpenMeteoProvider, weather_provider_base.WeatherProvider)
+        assert issubclass(weather_client.MeteostatProvider, weather_provider_base.WeatherProvider)
 
     def test_weather_client_is_instantiable(self) -> None:
         """A WeatherClient példányosítható."""

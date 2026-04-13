@@ -16,7 +16,6 @@ Fájl: src/presentation/gui/trend_analytics/trend_widgets/trend_chart.py
 """
 
 import logging
-from typing import Dict, Optional
 
 import numpy as np
 import pandas as pd
@@ -39,9 +38,9 @@ class InteractiveTrendChart(QWidget):
     - Responsive design
     """
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         super().__init__()
-        self.trend_data: Optional[Dict] = None
+        self.trend_data: dict | None = None
         self.setup_chart()
 
     def setup_chart(self) -> None:
@@ -72,13 +71,13 @@ class InteractiveTrendChart(QWidget):
             xref="paper",
             yref="paper",
             showarrow=False,
-            font=dict(size=16, color="#6b7280"),
+            font={"size": 16, "color": "#6b7280"},
         )
 
         fig.update_layout(
             title="Trend Elemzés",
-            xaxis=dict(visible=False),
-            yaxis=dict(visible=False),
+            xaxis={"visible": False},
+            yaxis={"visible": False},
             plot_bgcolor="white",
             paper_bgcolor="white",
             height=500,
@@ -87,7 +86,7 @@ class InteractiveTrendChart(QWidget):
         html_content = fig.to_html(include_plotlyjs="cdn")
         self.web_view.setHtml(html_content)
 
-    def update_chart(self, trend_data: Dict) -> None:
+    def update_chart(self, trend_data: dict) -> None:
         """
         🎨 TREND CHART FRISSÍTÉSE PLOTLY-VAL
 
@@ -118,7 +117,7 @@ class InteractiveTrendChart(QWidget):
                     y=np.concatenate([ci_upper, ci_lower[::-1]]),
                     fill="toself",
                     fillcolor="rgba(128, 128, 128, 0.2)",
-                    line=dict(color="rgba(255,255,255,0)"),
+                    line={"color": "rgba(255,255,255,0)"},
                     name="95% konfidencia",
                     hoverinfo="skip",
                 )
@@ -131,10 +130,8 @@ class InteractiveTrendChart(QWidget):
                     y=values,
                     mode="markers+lines",
                     name="Havi átlag",
-                    line=dict(color="#ff6b35", width=3),
-                    marker=dict(
-                        size=6, color="#ff6b35", line=dict(width=2, color="white")
-                    ),
+                    line={"color": "#ff6b35", "width": 3},
+                    marker={"size": 6, "color": "#ff6b35", "line": {"width": 2, "color": "white"}},
                     hovertemplate="<b>%{x|%Y-%m}</b><br>"
                     + f"{trend_data['parameter']}: %{{y:.1f}}<br>"  # 🔧 JAVÍTÁS: dupla {{ }} a Plotly formázáshoz
                     + "<extra></extra>",
@@ -148,7 +145,7 @@ class InteractiveTrendChart(QWidget):
                     y=trend_line,
                     mode="lines",
                     name=f"Trend ({trend_data['trend_per_decade']:+.2f}/évtized)",
-                    line=dict(color="#ff1493", width=3, dash="dash"),
+                    line={"color": "#ff1493", "width": 3, "dash": "dash"},
                     hovertemplate="<b>Trend vonal</b><br>"
                     + "%{{x|%Y-%m}}: %{{y:.1f}}<br>"  # 🔧 JAVÍTÁS: dupla {{ }} a Plotly formázáshoz
                     + "<extra></extra>",
@@ -173,20 +170,24 @@ class InteractiveTrendChart(QWidget):
                 y_title = "Érték"
 
             fig.update_layout(
-                title=dict(
-                    text=f"📈 {settlement} - {parameter} trend elemzés ({time_range})<br>"
+                title={
+                    "text": f"📈 {settlement} - {parameter} trend elemzés ({time_range})<br>"
                     + f"<sub>R² = {r2:.3f} | {significance} | {trend_data['total_days']:,} nap</sub>",
-                    font=dict(size=16),
-                    x=0.5,
-                ),
-                xaxis=dict(title="Dátum", gridcolor="#e5e7eb", showgrid=True),
-                yaxis=dict(title=y_title, gridcolor="#e5e7eb", showgrid=True),
+                    "font": {"size": 16},
+                    "x": 0.5,
+                },
+                xaxis={"title": "Dátum", "gridcolor": "#e5e7eb", "showgrid": True},
+                yaxis={"title": y_title, "gridcolor": "#e5e7eb", "showgrid": True},
                 plot_bgcolor="white",
                 paper_bgcolor="white",
-                font=dict(family="Arial, sans-serif", size=12),
-                legend=dict(
-                    orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
-                ),
+                font={"family": "Arial, sans-serif", "size": 12},
+                legend={
+                    "orientation": "h",
+                    "yanchor": "bottom",
+                    "y": 1.02,
+                    "xanchor": "right",
+                    "x": 1,
+                },
                 hovermode="x unified",
                 height=500,
             )
@@ -233,13 +234,13 @@ class InteractiveTrendChart(QWidget):
             xref="paper",
             yref="paper",
             showarrow=False,
-            font=dict(size=14, color="#dc2626"),
+            font={"size": 14, "color": "#dc2626"},
         )
 
         fig.update_layout(
             title="Trend Elemzés - Hiba",
-            xaxis=dict(visible=False),
-            yaxis=dict(visible=False),
+            xaxis={"visible": False},
+            yaxis={"visible": False},
             plot_bgcolor="white",
             paper_bgcolor="white",
             height=500,

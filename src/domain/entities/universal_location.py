@@ -1,7 +1,7 @@
 """Universal location domain entity."""
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional
 
 from src.domain.entities.location import Location
 from src.domain.entities.location_types import LocationType
@@ -22,23 +22,23 @@ class UniversalLocation:
     """
 
     type: LocationType
-    identifier: Union[str, Tuple[float, float], List[str]]
+    identifier: str | tuple[float, float] | list[str]
     display_name: str
 
     # Geo information (if available)
-    coordinates: Optional[Tuple[float, float]] = None
-    country_code: Optional[str] = None
-    region_code: Optional[str] = None
+    coordinates: tuple[float, float] | None = None
+    country_code: str | None = None
+    region_code: str | None = None
 
     # Hierarchical information
     parent_location: Optional["UniversalLocation"] = None
-    child_locations: List["UniversalLocation"] = field(default_factory=list)
+    child_locations: list["UniversalLocation"] = field(default_factory=list)
 
     # Metadata
-    population: Optional[int] = None
-    area_km2: Optional[float] = None
-    timezone: Optional[str] = None
-    climate_zone: Optional[str] = None
+    population: int | None = None
+    area_km2: float | None = None
+    timezone: str | None = None
+    climate_zone: str | None = None
 
     def __str__(self) -> str:
         """String representation."""
@@ -56,7 +56,7 @@ class UniversalLocation:
             LocationType.MICRO_REGION,
         ]
 
-    def get_coordinates_list(self) -> List[Tuple[float, float]]:
+    def get_coordinates_list(self) -> list[tuple[float, float]]:
         """
         Get list of coordinates for the location.
 
@@ -64,7 +64,7 @@ class UniversalLocation:
             List of coordinates - 1 element for point, multiple for area
         """
         if self.type == LocationType.COORDINATES:
-            if isinstance(self.identifier, tuple) and len(self.identifier) == 2:
+            if isinstance(self.identifier, tuple) and len(self.identifier) == 2:  # noqa: PLR2004
                 return [self.identifier]
         elif self.coordinates:
             return [self.coordinates]
@@ -98,7 +98,7 @@ class UniversalLocation:
             Location object
         """
         coords = self.coordinates or (0.0, 0.0)
-        if isinstance(self.identifier, tuple) and len(self.identifier) == 2:
+        if isinstance(self.identifier, tuple) and len(self.identifier) == 2:  # noqa: PLR2004
             coords = self.identifier
 
         return Location(
@@ -118,7 +118,7 @@ class UniversalLocation:
             },
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "type": self.type.value,

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -12,7 +11,7 @@ Fájl: src/presentation/gui/results_panel/quick_overview_tab/ui_builder.py
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Tuple
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
@@ -45,7 +44,7 @@ def create_stats_container(
     theme_manager,
     apply_text_styling,
     apply_accent_styling,
-    stat_labels: Dict[str, QLabel],
+    stat_labels: dict[str, QLabel],
 ) -> tuple[QWidget, QGroupBox, QGroupBox, QGroupBox, tuple, QGroupBox]:
     """
     Statisztikai kártyák konténer létrehozása.
@@ -118,12 +117,12 @@ def create_stats_container(
 
 def create_stat_card(
     title: str,
-    stats: List[Tuple[str, str, str]],
+    stats: list[tuple[str, str, str]],
     accent_color: str,
-    theme_manager,
+    theme_manager,  # noqa: ARG001
     apply_text_styling,
     apply_accent_styling,
-    stat_labels: Dict[str, QLabel],
+    stat_labels: dict[str, QLabel],
 ) -> QGroupBox:
     """Egyetlen statisztikai kártya létrehozása."""
     card = QGroupBox(title)
@@ -159,7 +158,7 @@ def create_stat_card(
     return card
 
 
-def create_info_card(theme_manager) -> tuple[QGroupBox, QLabel, QLabel, QLabel, QLabel]:
+def create_info_card(theme_manager) -> tuple[QGroupBox, QLabel, QLabel, QLabel, QLabel]:  # noqa: ARG001
     """Általános információs kártya létrehozása."""
     card = QGroupBox("Információ")
 

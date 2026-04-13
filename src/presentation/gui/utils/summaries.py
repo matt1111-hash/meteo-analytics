@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Fájl: src/presentation/gui/utils/summaries.py
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from .api_helpers import (
     get_optimal_data_source,
@@ -33,7 +32,7 @@ from .validation import (
 logger = logging.getLogger(__name__)
 
 
-def get_dual_api_implementation_summary() -> Dict[str, Any]:
+def get_dual_api_implementation_summary() -> dict[str, Any]:
     """
     🌍 DUAL-API implementáció összefoglalója.
 
@@ -68,7 +67,7 @@ def get_dual_api_implementation_summary() -> Dict[str, Any]:
     }
 
 
-def get_project_completion_summary() -> Dict[str, Any]:
+def get_project_completion_summary() -> dict[str, Any]:
     """
     🏁 PROJEKT BEFEJEZÉS: Teljes implementáció összefoglalója.
 
@@ -188,9 +187,7 @@ def demonstrate_meteorological_fix() -> None:
     # Aktuális kategória lekérdezése
     current_category = get_wind_gusts_category(test_speed)
     if current_category:
-        print(
-            f"🎯 AKTUÁLIS KATEGÓRIA: {current_category['emoji']} {current_category['label']}"
-        )
+        print(f"🎯 AKTUÁLIS KATEGÓRIA: {current_category['emoji']} {current_category['label']}")
         print(f"🎨 SZÍN: {current_category['color']}")
 
     print("=" * 50)

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F401, F403,noqa: I001  # noqa: RUF100
 # mypy: ignore-errors
 """Compatibility wrapper for provider_dto.py."""
 

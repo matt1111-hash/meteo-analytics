@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for WindGustsAnalyzer."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .wind_analyzer_support import *
 
 
-class WindGustsAnalyzerPart1Mixin:
+class WindGustsAnalyzerPart1Mixin:  # noqa: D101
     def __init__(self, constants_provider: Optional[Any] = None):
         """
         Initialize with dependency injection constants provider.
@@ -18,7 +18,7 @@ class WindGustsAnalyzerPart1Mixin:
         # For dependency injection - can be extended later
         self.constants_provider = constants_provider
 
-    def categorize_wind_gust(
+    def categorize_wind_gust(  # noqa: PLR0911
         self, wind_speed: float, data_source: str = "wind_gusts_max"
     ) -> str:
         """
@@ -86,9 +86,7 @@ class WindGustsAnalyzerPart1Mixin:
             return WindGustsConstants.WINDY_THRESHOLD_WINDSPEED  # 20.0 km/h
 
     @staticmethod
-    def generate_wind_description(
-        wind_speed: float, category: str, data_source: str
-    ) -> str:
+    def generate_wind_description(wind_speed: float, category: str, data_source: str) -> str:
         """
         Széllökés leírásának generálása.
 

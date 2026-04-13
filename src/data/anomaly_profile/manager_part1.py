@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for AnomalyProfileManager."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .manager_support import *
 
 
-class AnomalyProfileManagerPart1Mixin:
+class AnomalyProfileManagerPart1Mixin:  # noqa: D101
     def __init__(self, config_dir: Optional[Path] = None):
         """
         Anomália profil manager inicializálása.
@@ -142,9 +142,7 @@ class AnomalyProfileManagerPart1Mixin:
         profiles = self._get_profiles_cache()
 
         if profile_name not in profiles:
-            logger.warning(
-                f"📁 Profil nem található: {profile_name}, default használata"
-            )
+            logger.warning(f"📁 Profil nem található: {profile_name}, default használata")
             profile_name = "default"
 
         raw_settings = profiles.get(profile_name, {})

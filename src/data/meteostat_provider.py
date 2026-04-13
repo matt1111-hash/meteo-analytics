@@ -10,10 +10,9 @@ import logging
 import os
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
-
 from src.config import APIConfig
 
 from .weather_provider_base import WeatherProvider
@@ -48,17 +47,15 @@ class MeteostatProvider(WeatherProvider):
         self.min_request_interval = APIConfig.METEOSTAT_RATE_LIMIT
         self.max_years_per_request = 10
 
-        logger.info(
-            f"MeteostatProvider - max {self.max_years_per_request} years/request"
-        )
+        logger.info(f"MeteostatProvider - max {self.max_years_per_request} years/request")
 
     def validate_provider(self) -> bool:
         """Validate Meteostat API key."""
-        return bool(self.api_key and len(self.api_key.strip()) >= 32)
+        return bool(self.api_key and len(self.api_key.strip()) >= 32)  # noqa: PLR2004
 
     def get_weather_data(
         self, latitude: float, longitude: float, start_date: str, end_date: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Get weather data with smart dispatch.
 
@@ -74,17 +71,13 @@ class MeteostatProvider(WeatherProvider):
         logger.info(f"Meteostat query: {years_diff:.1f} years")
 
         if years_diff > self.max_years_per_request:
-            return self.get_weather_data_batched(
-                latitude, longitude, start_date, end_date
-            )
+            return self.get_weather_data_batched(latitude, longitude, start_date, end_date)
         else:
-            return self.get_weather_data_single(
-                latitude, longitude, start_date, end_date
-            )
+            return self.get_weather_data_single(latitude, longitude, start_date, end_date)
 
     def get_weather_data_single(
         self, latitude: float, longitude: float, start_date: str, end_date: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Single Meteostat API request."""
         params = {
             "lat": latitude,
@@ -97,7 +90,7 @@ class MeteostatProvider(WeatherProvider):
 
     def get_weather_data_batched(
         self, latitude: float, longitude: float, start_date: str, end_date: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Multi-year query with batching logic."""
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")
@@ -107,9 +100,7 @@ class MeteostatProvider(WeatherProvider):
 
         while current_start <= end_dt:
             current_end = min(
-                current_start.replace(
-                    year=current_start.year + self.max_years_per_request
-                ),
+                current_start.replace(year=current_start.year + self.max_years_per_request),
                 end_dt,
             )
             batches.append((current_start, current_end))
@@ -139,36 +130,34 @@ class MeteostatProvider(WeatherProvider):
 
         return sorted(all_data, key=lambda x: x.get("date", ""))
 
-    def _make_api_request(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _make_api_request(self, params: dict[str, Any]) -> list[dict[str, Any]]:
         """Execute Meteostat API request."""
         self._rate_limit_check()
 
         endpoint = f"{self.base_url}/point/daily"
 
         try:
-            response = self.session.get(
-                endpoint, params=params, timeout=APIConfig.REQUEST_TIMEOUT
-            )
+            response = self.session.get(endpoint, params=params, timeout=APIConfig.REQUEST_TIMEOUT)
             self._update_request_tracking()
 
-            if response.status_code == 200:
+            if response.status_code == 200:  # noqa: PLR2004
                 data = response.json()
                 if "data" not in data:
                     raise WeatherAPIError(f"Invalid response: {data}")
                 return self._process_response(data)
-            elif response.status_code == 401:
+            elif response.status_code == 401:  # noqa: PLR2004
                 raise ProviderValidationError("Authentication error")
-            elif response.status_code == 429:
+            elif response.status_code == 429:  # noqa: PLR2004
                 raise WeatherAPIError("Rate limit exceeded")
             else:
                 raise WeatherAPIError(f"API error: {response.status_code}")
 
         except requests.exceptions.Timeout:
-            raise WeatherAPIError("API timeout")
+            raise WeatherAPIError("API timeout")  # noqa: B904
         except requests.exceptions.ConnectionError:
-            raise WeatherAPIError("Connection error")
+            raise WeatherAPIError("Connection error")  # noqa: B904
 
-    def _process_response(self, response_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _process_response(self, response_data: dict[str, Any]) -> list[dict[str, Any]]:
         """Process Meteostat API response."""
         raw_data = response_data.get("data", [])
 
@@ -197,13 +186,9 @@ class MeteostatProvider(WeatherProvider):
                     daily_record[openmeteo_field] = value
 
             if "temperature_2m_max" in daily_record:
-                daily_record["apparent_temperature_max"] = daily_record[
-                    "temperature_2m_max"
-                ]
+                daily_record["apparent_temperature_max"] = daily_record["temperature_2m_max"]
             if "temperature_2m_min" in daily_record:
-                daily_record["apparent_temperature_min"] = daily_record[
-                    "temperature_2m_min"
-                ]
+                daily_record["apparent_temperature_min"] = daily_record["temperature_2m_min"]
 
             weather_data.append(daily_record)
 

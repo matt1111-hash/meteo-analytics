@@ -8,10 +8,10 @@ Analysis request building and validation logic.
 """
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 
-def _validate_analysis_type(request: Dict[str, Any]) -> str | None:
+def _validate_analysis_type(request: dict[str, Any]) -> str | None:
     """Validate and return the requested analysis type."""
     analysis_type = request.get("analysis_type")
     if analysis_type is None:
@@ -24,22 +24,20 @@ def _validate_analysis_type(request: Dict[str, Any]) -> str | None:
     return analysis_type
 
 
-def _validate_single_location_request(request: Dict[str, Any]) -> bool:
+def _validate_single_location_request(request: dict[str, Any]) -> bool:
     """Validate the single-location request payload."""
     if "location_data" not in request:
         print("❌ DEBUG: Missing location_data in request")
         return False
     location_data = request["location_data"]
     if not all(key in location_data for key in ["latitude", "longitude"]):
-        print(
-            f"❌ DEBUG: Missing lat/lon in location_data: {list(location_data.keys())}"
-        )
+        print(f"❌ DEBUG: Missing lat/lon in location_data: {list(location_data.keys())}")
         return False
     print("✅ DEBUG: Single location validation passed - location_data structure valid")
     return True
 
 
-def _validate_multi_city_request(request: Dict[str, Any]) -> bool:
+def _validate_multi_city_request(request: dict[str, Any]) -> bool:
     """Validate the multi-city request payload."""
     if "multi_city_mode" not in request or not request["multi_city_mode"]:
         print("❌ DEBUG: Missing multi_city_mode in request")
@@ -47,27 +45,23 @@ def _validate_multi_city_request(request: Dict[str, Any]) -> bool:
     if "selected_cities" not in request or len(request["selected_cities"]) == 0:
         print("❌ DEBUG: No selected_cities in multi-city request")
         return False
-    print(
-        f"✅ DEBUG: Multi-city validation passed - {len(request['selected_cities'])} cities"
-    )
+    print(f"✅ DEBUG: Multi-city validation passed - {len(request['selected_cities'])} cities")
     return True
 
 
-def _validate_date_range(request: Dict[str, Any]) -> bool:
+def _validate_date_range(request: dict[str, Any]) -> bool:
     """Validate the date range wrapper."""
     if "date_range" not in request:
         print("❌ DEBUG: Missing date_range in request")
         return False
     date_range = request["date_range"]
     if not all(key in date_range for key in ["start_date", "end_date"]):
-        print(
-            f"❌ DEBUG: Missing start_date/end_date in date_range: {list(date_range.keys())}"
-        )
+        print(f"❌ DEBUG: Missing start_date/end_date in date_range: {list(date_range.keys())}")
         return False
     return True
 
 
-def _validate_provider_settings(request: Dict[str, Any]) -> bool:
+def _validate_provider_settings(request: dict[str, Any]) -> bool:
     """Validate provider-specific settings presence."""
     if "provider" not in request or "api_settings" not in request:
         print("❌ DEBUG: Missing provider or api_settings in request")
@@ -81,7 +75,7 @@ class RequestBuilderMixin:
     Összeállítja és validálja az analysis requestet.
     """
 
-    def _build_analysis_request(self) -> Dict[str, Any]:
+    def _build_analysis_request(self) -> dict[str, Any]:
         """
         🎯 COMPREHENSIVE ANALYSIS REQUEST - Widget State Aggregation + MULTI-CITY
 
@@ -104,7 +98,7 @@ class RequestBuilderMixin:
             "widget_states": self._get_all_widget_states(),
         }
 
-    def _get_analysis_params(self) -> Dict[str, Any]:
+    def _get_analysis_params(self) -> dict[str, Any]:
         """Analysis és location/multi-city paraméterek + MULTI-CITY TÁMOGATÁS."""
         analysis_type = self.analysis_type_widget.get_current_type()
 
@@ -115,9 +109,7 @@ class RequestBuilderMixin:
             location_state = self.location_widget.get_state()
             if location_state["has_location"]:
                 city_data = location_state["current_city_data"]
-                print(
-                    f"🚨 DEBUG: _get_analysis_params - city_data keys: {list(city_data.keys())}"
-                )
+                print(f"🚨 DEBUG: _get_analysis_params - city_data keys: {list(city_data.keys())}")
                 print(f"🚨 DEBUG: _get_analysis_params - city_data: {city_data}")
                 params.update(
                     {
@@ -169,16 +161,12 @@ class RequestBuilderMixin:
                 }
             )
 
-            print(
-                f"🏙️ DEBUG: Multi-city analysis request - {len(selected_cities)} cities selected"
-            )
-            print(
-                f"🚨 DEBUG: Analysis type converted: {analysis_type} → {converted_analysis_type}"
-            )
+            print(f"🏙️ DEBUG: Multi-city analysis request - {len(selected_cities)} cities selected")
+            print(f"🚨 DEBUG: Analysis type converted: {analysis_type} → {converted_analysis_type}")
 
         return params
 
-    def _get_date_params(self) -> Dict[str, Any]:
+    def _get_date_params(self) -> dict[str, Any]:
         """
         🚨 KRITIKUS FIX: Date range paraméterek AppController kompatibilis formátumban.
 
@@ -200,7 +188,7 @@ class RequestBuilderMixin:
             "time_range": date_state.get("time_range"),
         }
 
-    def _get_api_params(self) -> Dict[str, Any]:
+    def _get_api_params(self) -> dict[str, Any]:
         """Provider és API paraméterek."""
         provider_state = self.provider_widget.get_state()
         api_state = self.api_settings_widget.get_state()
@@ -211,7 +199,7 @@ class RequestBuilderMixin:
             "provider_preferences": provider_state.get("provider_preferences", {}),
         }
 
-    def _validate_analysis_request(self, request: Dict[str, Any]) -> bool:
+    def _validate_analysis_request(self, request: dict[str, Any]) -> bool:
         """
         🚨 KRITIKUS FIX: Analysis request validálása + MULTI-CITY - JAVÍTOTT VALIDATION LOGIC.
 
@@ -221,9 +209,7 @@ class RequestBuilderMixin:
         if analysis_type is None:
             return False
 
-        if analysis_type == "single_location" and not _validate_single_location_request(
-            request
-        ):
+        if analysis_type == "single_location" and not _validate_single_location_request(request):
             return False
         if analysis_type in [
             "multi_city",

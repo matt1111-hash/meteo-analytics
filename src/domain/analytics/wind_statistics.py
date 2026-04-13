@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 
 import pandas as pd
-
 from src.domain.analytics.wind_models import MONTHS_HU, WindyDayStats
 
 logger = logging.getLogger(__name__)
@@ -13,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def _resolve_month_name(month: int) -> str:
     """Resolve month name safely."""
-    return MONTHS_HU[month - 1] if 1 <= month <= 12 else f"Hónap {month}"
+    return MONTHS_HU[month - 1] if 1 <= month <= 12 else f"Hónap {month}"  # noqa: PLR2004
 
 
 def _prepare_monthly_stats_frame(windy_days_data: pd.DataFrame) -> pd.DataFrame:
@@ -30,9 +29,7 @@ def _build_actual_monthly_data(
     df: pd.DataFrame,
 ) -> dict[tuple[int, int], pd.DataFrame]:
     """Build grouped monthly data lookup."""
-    return {
-        (year, month): group for (year, month), group in df.groupby(["year", "month"])
-    }
+    return {(year, month): group for (year, month), group in df.groupby(["year", "month"])}
 
 
 def _collect_monthly_stats(
@@ -47,9 +44,7 @@ def _collect_monthly_stats(
                 _build_monthly_stat(year, month, actual_monthly_data.get((year, month)))
             )
         except Exception as error:
-            logger.error(
-                "❌ Hiba a %s/%s hónap feldolgozásában: %s", year, month, error
-            )
+            logger.error("❌ Hiba a %s/%s hónap feldolgozásában: %s", year, month, error)
     return monthly_stats
 
 
@@ -61,7 +56,7 @@ def _generate_month_sequence(
     current = start_date.replace(day=1)
     while current <= end_date:
         all_months.append((current.year, current.month))
-        if current.month == 12:
+        if current.month == 12:  # noqa: PLR2004
             current = current.replace(year=current.year + 1, month=1)
         else:
             current = current.replace(month=current.month + 1)
@@ -141,9 +136,7 @@ def calculate_monthly_windy_stats(windy_days_data: pd.DataFrame) -> list[WindyDa
         actual_monthly_data = _build_actual_monthly_data(df)
         monthly_stats = _collect_monthly_stats(all_months, actual_monthly_data)
 
-        logger.info(
-            f"✅ Számított havi statisztikák: {len(monthly_stats)} hónap (TELJES LISTA)"
-        )
+        logger.info(f"✅ Számított havi statisztikák: {len(monthly_stats)} hónap (TELJES LISTA)")
 
         monthly_stats.sort(key=lambda x: (x.year, x.month))
 

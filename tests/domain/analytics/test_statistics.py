@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 from math import isclose
-from typing import List
 
 import pytest
-
 from src.domain.analytics.statistics import (
     safe_mean,
     safe_median,
@@ -17,25 +15,25 @@ from src.domain.analytics.statistics import (
 
 def test_safe_mean_returns_average_for_numeric_input() -> None:
     """safe_mean returns the arithmetic mean for numeric inputs."""
-    values: List[float] = [1.0, 3.0, 5.0]
+    values: list[float] = [1.0, 3.0, 5.0]
     assert safe_mean(values) == pytest.approx(3.0)
 
 
 def test_safe_mean_ignores_none_and_non_numeric() -> None:
     """safe_mean skips None and non-numeric entries."""
-    values: List[object] = [None, "x", 2, 4.0]
+    values: list[object] = [None, "x", 2, 4.0]
     assert safe_mean(values) == pytest.approx(3.0)
 
 
 def test_safe_mean_returns_none_when_no_numeric_input() -> None:
     """safe_mean returns None when no numeric data is present."""
-    values: List[object] = ["a", None]
+    values: list[object] = ["a", None]
     assert safe_mean(values) is None
 
 
 def test_safe_median_computes_middle_value() -> None:
     """safe_median returns the median for unsorted numeric input."""
-    values: List[int] = [5, 1, 3]
+    values: list[int] = [5, 1, 3]
     assert safe_median(values) == 3
 
 
@@ -46,7 +44,7 @@ def test_safe_median_returns_none_when_empty_after_filtering() -> None:
 
 def test_safe_stdev_returns_sample_standard_deviation() -> None:
     """safe_stdev returns sample standard deviation for numeric values."""
-    values: List[int] = [1, 2, 3]
+    values: list[int] = [1, 2, 3]
     assert isclose(safe_stdev(values), 1.0)
 
 

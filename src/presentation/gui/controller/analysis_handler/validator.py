@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/controller/analysis_handler/validator.py
 
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
@@ -31,9 +30,7 @@ def _emit_analysis_error(self, message: str) -> bool:
     return False
 
 
-def _parse_date_range(
-    self, date_range: Dict[str, Any]
-) -> tuple[datetime, datetime] | None:
+def _parse_date_range(self, date_range: dict[str, Any]) -> tuple[datetime, datetime] | None:
     """Parse and validate analysis date range."""
     if not date_range.get("start_date") or not date_range.get("end_date"):
         _emit_analysis_error(self, "Hiányzó dátum tartomány")
@@ -57,7 +54,7 @@ def _validate_analysis_type(self, analysis_type: Any) -> bool:
     return _emit_analysis_error(self, f"Érvénytelen elemzés típus: {analysis_type}")
 
 
-def _validate_required_fields(self, request_data: Dict[str, Any]) -> bool:
+def _validate_required_fields(self, request_data: dict[str, Any]) -> bool:
     """Validate required request keys."""
     for field in ("analysis_type", "date_range"):
         if field not in request_data:
@@ -65,7 +62,7 @@ def _validate_required_fields(self, request_data: Dict[str, Any]) -> bool:
     return True
 
 
-def _validate_region_inputs(self, request_data: Dict[str, Any]) -> bool:
+def _validate_region_inputs(self, request_data: dict[str, Any]) -> bool:
     """Validate region-based analysis request fields."""
     has_region = request_data.get("region_name") or request_data.get("county_name")
     if has_region:
@@ -73,7 +70,7 @@ def _validate_region_inputs(self, request_data: Dict[str, Any]) -> bool:
     return _emit_analysis_error(self, "Hiányzó régió vagy megye név")
 
 
-def _validate_analysis_request(self, request_data: Dict[str, Any]) -> bool:
+def _validate_analysis_request(self, request_data: dict[str, Any]) -> bool:  # noqa: PLR0911
     """
     Analysis request validálás - koordináta kulcsok kompatibilitással.
 
@@ -115,16 +112,15 @@ def _validate_analysis_request(self, request_data: Dict[str, Any]) -> bool:
         return _emit_analysis_error(self, f"Kérés validálási hiba: {e}")
 
 
-def _has_direct_coords(request_data: Dict[str, Any]) -> bool:
+def _has_direct_coords(request_data: dict[str, Any]) -> bool:
     """Check whether request provides direct coordinates."""
     direct_pairs = (("latitude", "longitude"), ("lat", "lon"))
     return any(
-        lat_key in request_data and lon_key in request_data
-        for lat_key, lon_key in direct_pairs
+        lat_key in request_data and lon_key in request_data for lat_key, lon_key in direct_pairs
     )
 
 
-def _has_location_data_coords(location_data: Dict[str, Any]) -> bool:
+def _has_location_data_coords(location_data: dict[str, Any]) -> bool:
     """Check whether location_data provides coordinates."""
     lat_keys = {"lat", "latitude"}
     lon_keys = {"lon", "longitude"}
@@ -133,7 +129,7 @@ def _has_location_data_coords(location_data: Dict[str, Any]) -> bool:
     )
 
 
-def _validate_single_location_coords(self, request_data: Dict[str, Any]) -> bool:
+def _validate_single_location_coords(self, request_data: dict[str, Any]) -> bool:
     """
     Single location koordináták validálása (koordináta kulcsok kompatibilitással).
 
@@ -146,9 +142,7 @@ def _validate_single_location_coords(self, request_data: Dict[str, Any]) -> bool
     """
     location_data = request_data.get("location_data", {})
     has_direct_coords = _has_direct_coords(request_data)
-    has_location_coords = bool(location_data) and _has_location_data_coords(
-        location_data
-    )
+    has_location_coords = bool(location_data) and _has_location_data_coords(location_data)
 
     if has_direct_coords:
         logger.info("🔧 Found direct coordinates in request")

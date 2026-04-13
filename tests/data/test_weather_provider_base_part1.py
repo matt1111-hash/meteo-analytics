@@ -37,51 +37,37 @@ class TestWeatherProviderInitialization:
 
     def test_initialization_sets_attributes(self) -> None:
         """Provider is initialized with correct attributes."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert provider.provider_id == "test_provider"
         assert provider.display_name == "Test Provider"
 
     def test_initialization_creates_session(self) -> None:
         """A requests Session is created on initialization."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert isinstance(provider.session, requests.Session)
 
     def test_initialization_sets_request_count_to_zero(self) -> None:
         """Request count is initialized to zero."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert provider.request_count == 0
 
     def test_initialization_sets_last_request_time_to_zero(self) -> None:
         """Last request time is initialized to zero."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert provider.last_request_time == 0
 
     def test_initialization_sets_default_min_request_interval(self) -> None:
         """Default minimum request interval is set."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert provider.min_request_interval == 0.1
 
 
 class TestRateLimitCheck:
     """Tests for _rate_limit_check method."""
 
-    def test_no_delay_when_sufficient_time_passed(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_no_delay_when_sufficient_time_passed(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """No sleep when time since last request is sufficient."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         provider.last_request_time = 0.0
         provider.min_request_interval = 0.1
 
@@ -96,13 +82,9 @@ class TestRateLimitCheck:
         provider._rate_limit_check()
         assert "value" not in slept
 
-    def test_sleep_when_insufficient_time_passed(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_sleep_when_insufficient_time_passed(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Sleep is called when time since last request is insufficient."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         provider.last_request_time = 0.0
         provider.min_request_interval = 0.5
 
@@ -119,9 +101,7 @@ class TestRateLimitCheck:
 
     def test_exact_boundary_no_sleep(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """No sleep when time since last request equals min interval."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         provider.last_request_time = 0.0
         provider.min_request_interval = 0.5
 
@@ -142,20 +122,14 @@ class TestUpdateRequestTracking:
 
     def test_request_count_increments(self) -> None:
         """Request count is incremented."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         initial_count = provider.request_count
         provider._update_request_tracking()
         assert provider.request_count == initial_count + 1
 
-    def test_last_request_time_is_updated(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_last_request_time_is_updated(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Last request time is set to current time."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         current_time = 12345.67
 
         monkeypatch.setattr("time.time", lambda: current_time)
@@ -168,17 +142,13 @@ class TestGetRequestCount:
 
     def test_get_request_count_returns_current_count(self) -> None:
         """get_request_count returns the current request count."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         provider.request_count = 42
         assert provider.get_request_count() == 42
 
     def test_get_request_count_after_updates(self) -> None:
         """get_request_count reflects updates to request_count."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert provider.get_request_count() == 0
         provider._update_request_tracking()
         assert provider.get_request_count() == 1
@@ -191,18 +161,14 @@ class TestResetRequestCount:
 
     def test_reset_request_count_sets_to_zero(self) -> None:
         """reset_request_count resets count to zero."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         provider.request_count = 100
         provider.reset_request_count()
         assert provider.request_count == 0
 
     def test_reset_request_count_when_already_zero(self) -> None:
         """reset_request_count works when count is already zero."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert provider.request_count == 0
         provider.reset_request_count()
         assert provider.request_count == 0

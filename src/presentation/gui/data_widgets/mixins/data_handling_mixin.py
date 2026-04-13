@@ -8,7 +8,7 @@ Adatkonverzió és update_data kezelése.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
 from PySide6.QtCore import Qt
@@ -28,14 +28,12 @@ class DataHandlingMixin:
     Adatkonverzió és update_data kezelése.
     """
 
-    def update_data(self, data: Dict[str, Any]) -> None:
+    def update_data(self, data: dict[str, Any]) -> None:
         """
         Táblázat adatainak frissítése - ROBUST HIBAKEZELÉSSEL.
         """
         try:
-            logger.info(
-                "🔄 WeatherDataTable.update_data() ELINDULT - ROBUST HIBAKEZELÉSSEL"
-            )
+            logger.info("🔄 WeatherDataTable.update_data() ELINDULT - ROBUST HIBAKEZELÉSSEL")
 
             if not data:
                 logger.error("❌ Üres adatok érkeztek a táblázatba!")
@@ -57,9 +55,7 @@ class DataHandlingMixin:
                 self.clear_data()
                 return
 
-            logger.info(
-                f"✅ DataFrame létrehozva: {len(df)} sor, {len(df.columns)} oszlop"
-            )
+            logger.info(f"✅ DataFrame létrehozva: {len(df)} sor, {len(df.columns)} oszlop")
             logger.info(f"✅ Oszlopnevek: {list(df.columns)}")
 
             self.current_data = df
@@ -82,16 +78,14 @@ class DataHandlingMixin:
             self.csv_btn.setEnabled(True)
             self.excel_btn.setEnabled(True)
 
-            logger.info(
-                f"✅ WeatherDataTable.update_data() SIKERES! {len(df)} sor megjelenítve"
-            )
+            logger.info(f"✅ WeatherDataTable.update_data() SIKERES! {len(df)} sor megjelenítve")
 
         except Exception as e:
             logger.error(f"❌ WeatherDataTable.update_data() HIBA: {e}")
             logger.exception("Részletes hiba:")
             self.clear_data()
 
-    def _convert_to_dataframe(self, data: Dict[str, Any]) -> pd.DataFrame:
+    def _convert_to_dataframe(self, data: dict[str, Any]) -> pd.DataFrame:
         """
         API adatok DataFrame-mé konvertálása - ROBUST HIBAKEZELÉSSEL.
         """
@@ -162,7 +156,7 @@ class DataHandlingMixin:
 
         self._update_info_display(0, 0)
 
-    def get_selected_row_data(self) -> Optional[Dict[str, Any]]:
+    def get_selected_row_data(self) -> dict[str, Any] | None:
         """Kiválasztott sor adatainak lekérdezése."""
         current_row = self.table.currentRow()
         if current_row >= 0 and self.filtered_data is not None:

@@ -73,7 +73,7 @@ class ExportMixin:
                 "Csapadék (mm)",
             ]
 
-            if len(export_data.columns) > 5:
+            if len(export_data.columns) > 5:  # noqa: PLR2004
                 column_names.append("Szélsebesség (km/h)")
 
             export_data.columns = column_names[: len(export_data.columns)]
@@ -94,9 +94,7 @@ class ExportMixin:
             self.export_completed.emit(filepath, True)
 
         except Exception as e:
-            QMessageBox.critical(
-                self, "Export hiba", f"Hiba az export során:\n{str(e)}"
-            )
+            QMessageBox.critical(self, "Export hiba", f"Hiba az export során:\n{e!s}")
             self.export_completed.emit(filepath, False)
 
         finally:

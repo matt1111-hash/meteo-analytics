@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -8,8 +7,6 @@ Base Worker Thread - Base class for all worker threads
 Teljes cancellation support-tal rendelkező base osztály
 minden worker thread számára.
 """
-
-from typing import Optional
 
 from PySide6.QtCore import QObject, QThread, QTimer, Signal
 
@@ -34,7 +31,7 @@ class BaseWorkerThread(QThread):
     cancellation_requested = Signal()  # ← ÚJ: Cancel signal internal tracking
     status_updated = Signal(str)  # ← ÚJ: Status message updates
 
-    def __init__(self, parent: Optional[QObject] = None):
+    def __init__(self, parent: QObject | None = None):  # noqa: D107
         super().__init__(parent)
         self.is_cancelled = False
         self._error_message = ""
@@ -45,9 +42,7 @@ class BaseWorkerThread(QThread):
         self._check_timer.timeout.connect(self._check_interruption)
         self._check_timer.moveToThread(self)
 
-        print(
-            "🔧 DEBUG: BaseWorkerThread initialized with comprehensive cancellation support"
-        )
+        print("🔧 DEBUG: BaseWorkerThread initialized with comprehensive cancellation support")
 
     def cancel(self) -> None:
         """
@@ -59,9 +54,7 @@ class BaseWorkerThread(QThread):
         3. Cancellation signal emission
         4. Timer leállítása
         """
-        print(
-            f"🛑 DEBUG: Worker cancel requested - thread: {int(QThread.currentThreadId())}"
-        )
+        print(f"🛑 DEBUG: Worker cancel requested - thread: {int(QThread.currentThreadId())}")
 
         self.is_cancelled = True
         self.requestInterruption()  # QThread built-in interrupt
@@ -71,9 +64,7 @@ class BaseWorkerThread(QThread):
         if self._check_timer.isActive():
             self._check_timer.stop()
 
-        print(
-            f"🛑 DEBUG: Worker cancel signals sent - thread: {int(QThread.currentThreadId())}"
-        )
+        print(f"🛑 DEBUG: Worker cancel signals sent - thread: {int(QThread.currentThreadId())}")
 
     def _check_interruption(self) -> None:
         """
@@ -141,7 +132,7 @@ class BaseWorkerThread(QThread):
 
             if not self.is_cancelled:
                 print(f"❌ DEBUG: Worker execution failed: {e}")
-                self.emit_error(f"Worker hiba: {str(e)}")
+                self.emit_error(f"Worker hiba: {e!s}")
                 self.emit_status(f"❌ Hiba: {str(e)[:50]}...")
         finally:
             # 🚨 CRITICAL FIX: Completion signalok MINDEN esetben

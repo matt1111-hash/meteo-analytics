@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -12,7 +11,6 @@ Rekord kártya widgetek az analytics view számára.
 """
 
 import logging
-from typing import Dict
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
@@ -23,7 +21,7 @@ logger = logging.getLogger(__name__)
 class RecordCard(QWidget):
     """🏆 Kompakt rekord kártya widget - TAB LAYOUT-hoz optimalizált"""
 
-    def __init__(self, icon: str, title: str, value: str = "-", date: str = "-"):
+    def __init__(self, icon: str, title: str, value: str = "-", date: str = "-"):  # noqa: D107
         super().__init__()
         self.icon = icon
         self.title = title
@@ -52,9 +50,7 @@ class RecordCard(QWidget):
 
         # Value
         self.value_label = QLabel("-")
-        self.value_label.setStyleSheet(
-            "font-size: 12px; font-weight: bold; color: #C43939;"
-        )
+        self.value_label.setStyleSheet("font-size: 12px; font-weight: bold; color: #C43939;")
         self.value_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.value_label)
 
@@ -84,7 +80,7 @@ class RecordCard(QWidget):
 class RecordSummaryCard(QWidget):
     """🏆 5 rekord kategória - EXTRA KOMPAKT TAB LAYOUT-hoz"""
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         super().__init__()
         self._setup_ui()
 
@@ -131,7 +127,7 @@ class RecordSummaryCard(QWidget):
             }
         """)
 
-    def update_records(self, records: Dict[str, Dict[str, str]]):
+    def update_records(self, records: dict[str, dict[str, str]]):
         """Rekordok frissítése"""
         if "hottest" in records:
             rec = records["hottest"]
@@ -151,9 +147,7 @@ class RecordSummaryCard(QWidget):
 
         if "windiest" in records:
             rec = records["windiest"]
-            self.windiest_card.update_record(
-                rec.get("value", "-"), rec.get("date", "-")
-            )
+            self.windiest_card.update_record(rec.get("value", "-"), rec.get("date", "-"))
 
 
 __all__ = [

@@ -13,14 +13,8 @@ class TestAPIConfig:
         from src.config.api_config import APIConfig
 
         assert APIConfig.OPEN_METEO_BASE == "https://api.open-meteo.com/v1"
-        assert (
-            APIConfig.OPEN_METEO_ARCHIVE
-            == "https://archive-api.open-meteo.com/v1/archive"
-        )
-        assert (
-            APIConfig.OPEN_METEO_GEOCODING
-            == "https://geocoding-api.open-meteo.com/v1/search"
-        )
+        assert APIConfig.OPEN_METEO_ARCHIVE == "https://archive-api.open-meteo.com/v1/archive"
+        assert APIConfig.OPEN_METEO_GEOCODING == "https://geocoding-api.open-meteo.com/v1/search"
 
     def test_meteostat_endpoints_defined(self) -> None:
         """Meteostat API endpoints should be properly defined."""
@@ -92,14 +86,14 @@ class TestDataConstants:
             "winddirection_10m_dominant",
             "weathercode",
         )
-        assert DataConstants.OPEN_METEO_DAILY_FIELDS == expected_fields
+        assert expected_fields == DataConstants.OPEN_METEO_DAILY_FIELDS
 
     def test_open_meteo_hourly_fields(self) -> None:
         """Open-Meteo hourly field names should be defined."""
         from src.config.api_config import DataConstants
 
         expected_fields = ("wind_gusts_10m", "windspeed_10m")
-        assert DataConstants.OPEN_METEO_HOURLY_FIELDS == expected_fields
+        assert expected_fields == DataConstants.OPEN_METEO_HOURLY_FIELDS
 
     def test_meteostat_daily_fields(self) -> None:
         """Meteostat daily field names should be defined."""
@@ -117,7 +111,7 @@ class TestDataConstants:
             "pres",
             "tsun",
         )
-        assert DataConstants.METEOSTAT_DAILY_FIELDS == expected_fields
+        assert expected_fields == DataConstants.METEOSTAT_DAILY_FIELDS
 
     def test_processed_daily_fields(self) -> None:
         """Processed daily field names should be defined."""
@@ -133,7 +127,7 @@ class TestDataConstants:
             "winddirection_10m_dominant",
             "weathercode",
         )
-        assert DataConstants.PROCESSED_DAILY_FIELDS == expected_fields
+        assert expected_fields == DataConstants.PROCESSED_DAILY_FIELDS
 
     def test_export_formats(self) -> None:
         """Supported export formats should be defined."""

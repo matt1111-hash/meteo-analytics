@@ -12,7 +12,7 @@ Part of the geo_utils refactoring - split into focused modules.
 
 import logging
 import math
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from .geo_types import DistanceUnit
 

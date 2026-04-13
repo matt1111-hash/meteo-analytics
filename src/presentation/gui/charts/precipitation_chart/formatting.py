@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -74,12 +73,12 @@ def _format_precipitation_chart(self, df) -> None:
         transform=self.ax.transAxes,
         verticalalignment="top",
         color=text_color,
-        bbox=dict(
-            boxstyle="round",
-            facecolor=current_colors.get("surface_variant", "#f9fafb"),
-            edgecolor=current_colors.get("border", "#d1d5db"),
-            alpha=0.8,
-        ),
+        bbox={
+            "boxstyle": "round",
+            "facecolor": current_colors.get("surface_variant", "#f9fafb"),
+            "edgecolor": current_colors.get("border", "#d1d5db"),
+            "alpha": 0.8,
+        },
     )
 
     # Layout optimalizálás

@@ -5,7 +5,6 @@ from __future__ import annotations
 from datetime import date
 
 import pytest
-
 from src.application.use_cases.detect_anomalies import DetectAnomaliesUseCase
 
 
@@ -32,9 +31,7 @@ def test_execute_returns_anomalies_for_all_categories() -> None:
     }
     use_case = DetectAnomaliesUseCase(today_provider=lambda: date(2024, 1, 1))
 
-    anomalies = use_case.execute(
-        weather_data, _default_thresholds(), location_name="Budapest"
-    )
+    anomalies = use_case.execute(weather_data, _default_thresholds(), location_name="Budapest")
 
     assert anomalies["temperature"] is not None
     assert anomalies["precipitation"] is not None

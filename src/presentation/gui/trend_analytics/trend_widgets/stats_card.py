@@ -78,7 +78,7 @@ class DashboardStatsCard(QFrame):
         layout.setSpacing(8)
         layout.setContentsMargins(16, 16, 16, 16)
 
-        # Header (ikon + cím)
+        # Header (ikon + cím)  # noqa: ERA001
         header_layout = QHBoxLayout()
 
         self.icon_label = QLabel(icon)
@@ -154,9 +154,7 @@ class DashboardStatsCard(QFrame):
         # Subtitle label színe (szürke marad)
         if self.subtitle_label:
             subtitle_palette = self.subtitle_label.palette()
-            subtitle_palette.setColor(
-                QPalette.WindowText, QColor("#6b7280")
-            )  # Mindig szürke
+            subtitle_palette.setColor(QPalette.WindowText, QColor("#6b7280"))  # Mindig szürke
             self.subtitle_label.setPalette(subtitle_palette)
 
         # Icon label nem változik (emoji)

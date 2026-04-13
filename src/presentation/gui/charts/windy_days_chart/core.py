@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,6 @@ Fájl: src/presentation/gui/charts/windy_days_chart/core.py
 """
 
 import logging
-from typing import Dict, List, Optional
 
 from PySide6.QtWidgets import QWidget
 
@@ -34,7 +32,7 @@ class WindyDaysChart(WeatherChart):
     színkódolással és interaktív elemekkel.
     """
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         """Inicializálás."""
         super().__init__(parent)
 
@@ -42,7 +40,7 @@ class WindyDaysChart(WeatherChart):
         self.chart_type = "windy_days"
 
         # Chart-specifikus adatok
-        self.chart_data: Dict[str, List] = {
+        self.chart_data: dict[str, list] = {
             "months": [],
             "counts": [],
             "percentages": [],
@@ -55,22 +53,22 @@ class WindyDaysChart(WeatherChart):
         logger.info("WindyDaysChart inicializálva")
 
     # Public API methods
-    def update_data(self, chart_data: Dict) -> None:
+    def update_data(self, chart_data: dict) -> None:  # noqa: D102
         from .data_handler import update_data
 
         update_data(self, chart_data)
 
-    def clear_chart(self) -> None:
+    def clear_chart(self) -> None:  # noqa: D102
         from .helpers import clear_chart
 
         clear_chart(self)
 
-    def export_chart(self, file_path: str, dpi: int = 300) -> bool:
+    def export_chart(self, file_path: str, dpi: int = 300) -> bool:  # noqa: D102
         from .helpers import export_chart
 
         return export_chart(self, file_path, dpi)
 
-    def get_chart_info(self) -> Dict:
+    def get_chart_info(self) -> dict:  # noqa: D102
         from .helpers import get_chart_info
 
         return get_chart_info(self)
@@ -86,19 +84,17 @@ class WindyDaysChart(WeatherChart):
 
         _plot_windy_days_chart(self)
 
-    def _get_bar_colors(self, counts: List[int]) -> List[str]:
+    def _get_bar_colors(self, counts: list[int]) -> list[str]:
         from .styling import _get_bar_colors
 
         return _get_bar_colors(self, counts)
 
-    def _add_value_labels(
-        self, ax, bars, counts: List[int], percentages: List[float]
-    ) -> None:
+    def _add_value_labels(self, ax, bars, counts: list[int], percentages: list[float]) -> None:
         from .styling import _add_value_labels
 
         _add_value_labels(self, ax, bars, counts, percentages)
 
-    def _setup_chart_axes(self, ax, months: List[str], counts: List[int]) -> None:
+    def _setup_chart_axes(self, ax, months: list[str], counts: list[int]) -> None:
         from .styling import _setup_chart_axes
 
         _setup_chart_axes(self, ax, months, counts)
@@ -134,7 +130,7 @@ class WindyDaysChart(WeatherChart):
             logger.error(f"WindyDaysChart theme apply error: {e}")
 
     def _setup_chart_interactivity(
-        self, bars, months: List[str], counts: List[int], percentages: List[float]
+        self, bars, months: list[str], counts: list[int], percentages: list[float]
     ) -> None:
         from .interactivity import _setup_chart_interactivity
 

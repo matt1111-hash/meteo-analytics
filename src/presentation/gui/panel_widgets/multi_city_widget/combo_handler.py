@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -14,8 +13,6 @@ Képességek:
 
 Fájl: src/presentation/gui/panel_widgets/multi_city_widget/combo_handler.py
 """
-
-from typing import List, Optional
 
 from PySide6.QtWidgets import QComboBox, QGroupBox, QLabel
 
@@ -56,10 +53,10 @@ class ComboHandler:
     def populate_combo_box(
         self,
         mode: str,
-        available_regions: List[str],
-        available_counties: List[str],
-        selected_region: Optional[str],
-        selected_county: Optional[str],
+        available_regions: list[str],
+        available_counties: list[str],
+        selected_region: str | None,
+        selected_county: str | None,
     ) -> None:
         """
         ComboBox feltöltése aktuális mode alapján.
@@ -109,7 +106,7 @@ class ComboHandler:
             print(f"❌ ERROR: ComboBox populate hiba: {e}")
 
     def restore_selection(
-        self, mode: str, selected_region: Optional[str], selected_county: Optional[str]
+        self, mode: str, selected_region: str | None, selected_county: str | None
     ) -> None:
         """
         Selection visszaállítása combo box populate után.
@@ -147,7 +144,7 @@ class ComboHandler:
         else:
             self.group.setTitle("🏛️ Megye Választó (Multi-City)")
 
-    def update_info_label(self, mode: str, current_selection: Optional[str]) -> None:
+    def update_info_label(self, mode: str, current_selection: str | None) -> None:
         """
         Info label frissítése.
 

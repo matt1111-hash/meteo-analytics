@@ -42,7 +42,7 @@ class TestGetWeatherDataBatched:
         self, provider: OpenMeteoProvider
     ) -> None:
         """get_weather_data_batched sleeps between batches except last."""
-        with patch.object(provider, "get_weather_data_single", return_value=[]):
+        with patch.object(provider, "get_weather_data_single", return_value=[]):  # noqa: SIM117
             with patch("time.sleep") as mock_sleep:
                 provider.get_weather_data_batched(47.5, 19.0, "2020-01-01", "2020-12-31")
 

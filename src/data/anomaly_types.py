@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Anomaly Profile Types
 Dataclass definitions for anomaly profile settings
@@ -9,7 +8,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 
 @dataclass
@@ -51,7 +50,7 @@ class AnomalyProfileSettings:
             self.created_at = datetime.now().isoformat()
         self.modified_at = datetime.now().isoformat()
 
-    def validate(self) -> List[str]:
+    def validate(self) -> list[str]:
         """
         Beállítások validálása.
 
@@ -62,14 +61,12 @@ class AnomalyProfileSettings:
 
         # Hőmérséklet validáció
         if self.temp_hot <= self.temp_cold:
-            errors.append(
-                "Meleg küszöb nem lehet kisebb vagy egyenlő a hideg küszöbnél"
-            )
+            errors.append("Meleg küszöb nem lehet kisebb vagy egyenlő a hideg küszöbnél")
 
-        if not (-50.0 <= self.temp_hot <= 60.0):
+        if not (-50.0 <= self.temp_hot <= 60.0):  # noqa: PLR2004
             errors.append("Meleg küszöb tartománya: -50°C és 60°C között")
 
-        if not (-50.0 <= self.temp_cold <= 40.0):
+        if not (-50.0 <= self.temp_cold <= 40.0):  # noqa: PLR2004
             errors.append("Hideg küszöb tartománya: -50°C és 40°C között")
 
         # Csapadék validáció
@@ -78,10 +75,10 @@ class AnomalyProfileSettings:
                 "Magas csapadék küszöb nem lehet kisebb vagy egyenlő az alacsony küszöbnél"
             )
 
-        if not (0.0 <= self.precip_low <= 50.0):
+        if not (0.0 <= self.precip_low <= 50.0):  # noqa: PLR2004
             errors.append("Alacsony csapadék küszöb tartománya: 0-50mm")
 
-        if not (10.0 <= self.precip_high <= 500.0):
+        if not (10.0 <= self.precip_high <= 500.0):  # noqa: PLR2004
             errors.append("Magas csapadék küszöb tartománya: 10-500mm")
 
         # Szél validáció
@@ -95,19 +92,19 @@ class AnomalyProfileSettings:
             errors.append("Szél küszöbök nem növekvő sorrendben vannak")
 
         for wind_val in wind_values:
-            if not (10.0 <= wind_val <= 300.0):
-                errors.append(
+            if not (10.0 <= wind_val <= 300.0):  # noqa: PLR2004
+                errors.append(  # noqa: PERF401
                     f"Szél küszöb tartománya: 10-300km/h (hibás érték: {wind_val})"
                 )
 
         return errors
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertálás dictionary-vé."""
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AnomalyProfileSettings":
+    def from_dict(cls, data: dict[str, Any]) -> AnomalyProfileSettings:
         """Létrehozás dictionary-ből."""
         return cls(**data)
 

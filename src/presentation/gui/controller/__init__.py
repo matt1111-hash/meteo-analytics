@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -25,10 +24,10 @@ from .provider_routing import ProviderRouting
 from .weather_data_handler import WeatherDataHandler
 
 __all__ = [
-    "AppController",
     "AnalysisHandler",
-    "ProviderRouting",
-    "GeocodingHandler",
-    "WeatherDataHandler",
+    "AppController",
     "DatabaseManager",
+    "GeocodingHandler",
+    "ProviderRouting",
+    "WeatherDataHandler",
 ]

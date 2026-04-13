@@ -27,11 +27,11 @@ from .trend_widgets import (
 from .trend_worker import TrendAnalyticsWorker
 
 __all__ = [
-    "TrendDataProcessor",
     "DashboardStatsCard",
-    "InteractiveTrendChart",
     "EnhancedStatisticsPanel",
-    "TrendAnalyticsWorker",
+    "InteractiveTrendChart",
     "TrendAnalyticsTab",
+    "TrendAnalyticsWorker",
+    "TrendDataProcessor",
     "register_trend_analytics_theme",
 ]

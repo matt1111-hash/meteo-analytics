@@ -84,6 +84,6 @@ class TestGetCurrentSettingsEdgeCases:
         manager = AnomalyProfileManager(config_dir=temp_dir)
 
         # Mock load_profile to raise exception (this is the final fallback)
-        with patch.object(manager, "load_profile", side_effect=Exception("Complete failure")):
+        with patch.object(manager, "load_profile", side_effect=Exception("Complete failure")):  # noqa: SIM117
             with pytest.raises(Exception, match="Complete failure"):
                 manager.get_current_settings()

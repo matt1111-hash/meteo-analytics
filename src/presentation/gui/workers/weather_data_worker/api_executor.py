@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -7,7 +6,7 @@ WeatherDataWorker API Executor - Execute HTTP API requests.
 """
 
 import json
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 import httpx
 
@@ -25,9 +24,8 @@ def _is_cancelled(worker: "WeatherDataWorker", provider: str, phase: str) -> boo
 
 def _notify_provider_change(worker: "WeatherDataWorker", provider: str) -> None:
     """Emit provider change notification when needed."""
-    if provider != worker.preferred_provider and worker.preferred_provider != "auto":
-        if not worker.is_cancelled:
-            worker.provider_changed.emit(provider)
+    if worker.preferred_provider not in (provider, "auto") and not worker.is_cancelled:
+        worker.provider_changed.emit(provider)
 
 
 class APIExecutor:
@@ -42,8 +40,8 @@ class APIExecutor:
         """
         self._worker = worker
 
-    def execute_request(
-        self, provider: str, api_url: str, params: Dict[str, Any]
+    def execute_request(  # noqa: PLR0911
+        self, provider: str, api_url: str, params: dict[str, Any]
     ) -> bool:
         """
         Execute API request with cancellation support.
@@ -66,15 +64,13 @@ class APIExecutor:
                 if _is_cancelled(self._worker, provider, "before send"):
                     return False
 
-                self._worker.emit_status(
-                    f"📡 {get_source_display_name(provider)} HTTP kérés..."
-                )
+                self._worker.emit_status(f"📡 {get_source_display_name(provider)} HTTP kérés...")
                 response = client.get(api_url, params=params)
 
                 if _is_cancelled(self._worker, provider, "after receive"):
                     return False
 
-                if response.status_code != 200:
+                if response.status_code != 200:  # noqa: PLR2004
                     print(f"❌ DEBUG: {provider} API hiba: HTTP {response.status_code}")
                     return False
 
@@ -98,7 +94,7 @@ class APIExecutor:
             print(f"❌ DEBUG: {provider} unexpected error: {e}")
             return False
 
-    def get_provider_headers(self, provider: str) -> Dict[str, str]:
+    def get_provider_headers(self, provider: str) -> dict[str, str]:
         """
         Get provider-specific HTTP headers.
 

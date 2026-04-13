@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 
 import pandas as pd
-
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 
 logger = logging.getLogger(__name__)
@@ -22,9 +21,7 @@ def _select_wind_column(weather_data: pd.DataFrame) -> str | None:
         logger.info("🌪️ HELYES OSZLOP: wind_gusts_max (széllökések) használva")
         return "wind_gusts_max"
     if "wind_speed" in weather_data.columns:
-        logger.warning(
-            "⚠️ FALLBACK OSZLOP: wind_speed (átlagos) használva - lehet alulbecslés!"
-        )
+        logger.warning("⚠️ FALLBACK OSZLOP: wind_speed (átlagos) használva - lehet alulbecslés!")
         return "wind_speed"
     if "windspeed_10m_max" in weather_data.columns:
         logger.warning("⚠️ LEGACY OSZLOP: windspeed_10m_max használva")
@@ -34,9 +31,7 @@ def _select_wind_column(weather_data: pd.DataFrame) -> str | None:
     return None
 
 
-def _prepare_wind_source_frame(
-    weather_data: pd.DataFrame, wind_column: str
-) -> pd.DataFrame:
+def _prepare_wind_source_frame(weather_data: pd.DataFrame, wind_column: str) -> pd.DataFrame:
     """Prepare normalized wind source frame."""
     df = weather_data.copy()
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
@@ -62,9 +57,7 @@ def _clean_wind_data(wind_data: pd.DataFrame) -> pd.DataFrame:
 def _aggregate_daily_wind(wind_data: pd.DataFrame) -> pd.DataFrame:
     """Aggregate max daily wind speed values."""
     daily_wind = (
-        wind_data.groupby(wind_data["date"].dt.date)
-        .agg({"wind_speed": "max"})
-        .reset_index()
+        wind_data.groupby(wind_data["date"].dt.date).agg({"wind_speed": "max"}).reset_index()
     )
     daily_wind.columns = ["date", "max_wind_speed_kmh"]
     daily_wind["max_wind_speed_kmh"] = daily_wind["max_wind_speed_kmh"].fillna(0.0)

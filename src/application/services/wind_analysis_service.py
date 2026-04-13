@@ -8,10 +8,8 @@ wrapping domain services for use by the presentation layer.
 """
 
 from dataclasses import dataclass
-from typing import List, Optional
 
 import pandas as pd
-
 from src.domain.analytics.wind_analysis_service import analyze_wind_patterns
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH, WindAnalysisResult
 
@@ -22,8 +20,8 @@ class WindyDayDTO:
 
     date: str
     max_wind_speed_kmh: float
-    avg_wind_speed_kmh: Optional[float]
-    direction: Optional[str]
+    avg_wind_speed_kmh: float | None
+    direction: str | None
     is_windy: bool
 
 
@@ -49,10 +47,10 @@ class WindAnalysisResultDTO:
     overall_windy_percentage: float
     avg_max_wind_speed: float
     max_wind_speed: float
-    windiest_month: Optional[str]
-    calmest_month: Optional[str]
-    monthly_stats: List[MonthlyWindStatsDTO]
-    windy_days: List[WindyDayDTO]
+    windiest_month: str | None
+    calmest_month: str | None
+    monthly_stats: list[MonthlyWindStatsDTO]
+    windy_days: list[WindyDayDTO]
 
     @classmethod
     def from_domain(cls, result: WindAnalysisResult) -> "WindAnalysisResultDTO":
@@ -79,9 +77,7 @@ class WindAnalysisResultDTO:
             ],
             windy_days=[
                 WindyDayDTO(
-                    date=day.date.isoformat()
-                    if hasattr(day.date, "isoformat")
-                    else str(day.date),
+                    date=day.date.isoformat() if hasattr(day.date, "isoformat") else str(day.date),
                     max_wind_speed_kmh=day.max_wind_speed_kmh,
                     avg_wind_speed_kmh=getattr(day, "avg_wind_speed_kmh", None),
                     direction=getattr(day, "direction", None),
@@ -131,8 +127,8 @@ class WindAnalysisService:
 
 
 __all__ = [
-    "WindAnalysisService",
-    "WindAnalysisResultDTO",
-    "WindyDayDTO",
     "MonthlyWindStatsDTO",
+    "WindAnalysisResultDTO",
+    "WindAnalysisService",
+    "WindyDayDTO",
 ]

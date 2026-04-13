@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for SignalManager."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .signal_manager_support import *
 
 
-class SignalManagerPart2Mixin:
+class SignalManagerPart2Mixin:  # noqa: D101
     def _connect_provider_status(self) -> None:
         """Provider status signalok bekötése."""
         print("🌍 SignalManager: Connecting Provider Status signals...")
@@ -43,16 +43,12 @@ class SignalManagerPart2Mixin:
         if self.mw.results_panel:
             # Export kérések
             if hasattr(self.mw.results_panel, "export_requested"):
-                self.mw.results_panel.export_requested.connect(
-                    self.mw._handle_export_request
-                )
+                self.mw.results_panel.export_requested.connect(self.mw._handle_export_request)
                 print(
                     "✅ SignalManager: ResultsPanel.export_requested → MainWindow._handle_export_request CONNECTED"
                 )
             else:
-                print(
-                    "⚠️ SignalManager: ResultsPanel.export_requested signal NOT FOUND!"
-                )
+                print("⚠️ SignalManager: ResultsPanel.export_requested signal NOT FOUND!")
 
             # Extrém időjárás kérések
             if hasattr(self.mw.results_panel, "extreme_weather_requested"):

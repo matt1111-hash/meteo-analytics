@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 from statistics import StatisticsError, mean, median, stdev
-from typing import List, Optional, Tuple, Union
+from typing import Union
 
-Number = Union[float, int]
-NumberOrNone = Union[Number, None]
+Number = Union[float, int]  # noqa: UP007
+NumberOrNone = Union[Number, None]  # noqa: UP007
 
 
-def safe_mean(values: List[NumberOrNone]) -> Optional[float]:
+def safe_mean(values: list[NumberOrNone]) -> float | None:
     """Return mean ignoring None and non-numeric entries."""
     clean_values = _filtered(values)
     if not clean_values:
@@ -20,7 +20,7 @@ def safe_mean(values: List[NumberOrNone]) -> Optional[float]:
         return None
 
 
-def safe_median(values: List[NumberOrNone]) -> Optional[float]:
+def safe_median(values: list[NumberOrNone]) -> float | None:
     """Return median ignoring None and non-numeric entries."""
     clean_values = _filtered(values)
     if not clean_values:
@@ -31,10 +31,10 @@ def safe_median(values: List[NumberOrNone]) -> Optional[float]:
         return None
 
 
-def safe_stdev(values: List[NumberOrNone]) -> Optional[float]:
+def safe_stdev(values: list[NumberOrNone]) -> float | None:
     """Return stdev ignoring None; returns 0.0 if insufficient data."""
     clean_values = _filtered(values)
-    if len(clean_values) < 2:
+    if len(clean_values) < 2:  # noqa: PLR2004
         return 0.0
     try:
         return stdev(clean_values)
@@ -43,8 +43,8 @@ def safe_stdev(values: List[NumberOrNone]) -> Optional[float]:
 
 
 def safe_min_max(
-    values: List[NumberOrNone],
-) -> Tuple[Optional[float], Optional[float]]:
+    values: list[NumberOrNone],
+) -> tuple[float | None, float | None]:
     """Return (min, max) ignoring None and non-numeric entries."""
     clean_values = _filtered(values)
     if not clean_values:
@@ -55,5 +55,5 @@ def safe_min_max(
         return None, None
 
 
-def _filtered(values: List[NumberOrNone]) -> List[float]:
-    return [float(v) for v in values if isinstance(v, (int, float))]
+def _filtered(values: list[NumberOrNone]) -> list[float]:
+    return [float(v) for v in values if isinstance(v, int | float)]

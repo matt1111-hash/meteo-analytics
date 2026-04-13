@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.domain.entities.trend_result import TrendAnalysisResult, TrendPeriodResult
 from src.domain.value_objects.enums import AnalyticsMetric
@@ -57,11 +57,11 @@ class TrendCalculator:
 
     def calculate_trend(
         self,
-        weather_data: List[Dict[str, Any]],
+        weather_data: list[dict[str, Any]],
         metric: AnalyticsMetric,
         _location_name: str,
         time_period_years: int,
-    ) -> Optional[TrendPeriodResult]:
+    ) -> TrendPeriodResult | None:
         """Calculate trend statistics for a single time period."""
         if not weather_data:
             logger.warning("No weather data provided for trend calculation")
@@ -75,9 +75,7 @@ class TrendCalculator:
         # Prepare data
         df = self.data_processor.prepare_dataframe(weather_data, api_field)
         if df is None or len(df) < self.MIN_DAILY_RECORDS:
-            logger.warning(
-                "Insufficient data: %d records", len(df) if df is not None else 0
-            )
+            logger.warning("Insufficient data: %d records", len(df) if df is not None else 0)
             return None
 
         # Monthly aggregation
@@ -123,11 +121,11 @@ class TrendCalculator:
 
     def calculate_multiple_periods(
         self,
-        weather_data: List[Dict[str, Any]],
+        weather_data: list[dict[str, Any]],
         metric: AnalyticsMetric,
         location_name: str,
-        time_periods: List[int],
-        end_date: Optional[str] = None,
+        time_periods: list[int],
+        end_date: str | None = None,
     ) -> TrendAnalysisResult:
         """Calculate trends for multiple time periods."""
         start_time = time.time()
@@ -149,25 +147,19 @@ class TrendCalculator:
         end_date_str = sorted_data[-1].get("date", "") if sorted_data else ""
 
         # Calculate for each period
-        periods: List[TrendPeriodResult] = []
+        periods: list[TrendPeriodResult] = []
         for period_years in sorted(time_periods):
-            period_start = calculated_end.replace(
-                year=calculated_end.year - period_years
-            )
+            period_start = calculated_end.replace(year=calculated_end.year - period_years)
             period_start_str = period_start.strftime("%Y-%m-%d")
 
             period_data = [
                 d
                 for d in sorted_data
-                if period_start_str
-                <= d.get("date", "")
-                <= calculated_end.strftime("%Y-%m-%d")
+                if period_start_str <= d.get("date", "") <= calculated_end.strftime("%Y-%m-%d")
             ]
 
             if period_data:
-                result = self.calculate_trend(
-                    period_data, metric, location_name, period_years
-                )
+                result = self.calculate_trend(period_data, metric, location_name, period_years)
                 if result:
                     periods.append(result)
 
@@ -182,7 +174,7 @@ class TrendCalculator:
             date_range=(start_date_str, end_date_str),
         )
 
-    def _get_api_field(self, metric: AnalyticsMetric) -> Optional[str]:
+    def _get_api_field(self, metric: AnalyticsMetric) -> str | None:
         """Get API field name from AnalyticsMetric enum."""
         return self.metric_field_map.get(metric)
 

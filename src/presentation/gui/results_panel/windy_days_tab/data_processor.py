@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,6 @@ import logging
 from typing import TYPE_CHECKING
 
 import pandas as pd
-
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 
 if TYPE_CHECKING:
@@ -26,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def update_data(
-    self: "WindyDaysTab",
+    self: WindyDaysTab,
     weather_data: pd.DataFrame,
     location: str = "Ismeretlen helyszín",
 ) -> None:
@@ -68,7 +66,7 @@ def update_data(
         self.error_occurred.emit(f"Adatok frissítési hiba: {e}")
 
 
-def clear_data(self: "WindyDaysTab") -> None:
+def clear_data(self: WindyDaysTab) -> None:
     """Adatok és UI tartalom törlése."""
     try:
         logger.info("WindyDaysTab adatok törlése")
@@ -96,20 +94,20 @@ def clear_data(self: "WindyDaysTab") -> None:
         logger.error(f"Hiba az adatok törlésében: {e}")
 
 
-def get_current_threshold(self: "WindyDaysTab") -> float:
+def get_current_threshold(self: WindyDaysTab) -> float:
     """Aktuális küszöbérték lekérdezése."""
     if self.threshold_spinbox:
         return float(self.threshold_spinbox.value())
     return WINDY_DAY_THRESHOLD_KMH
 
 
-def set_threshold(self: "WindyDaysTab", threshold: float) -> None:
+def set_threshold(self: WindyDaysTab, threshold: float) -> None:
     """Küszöbérték beállítása."""
     if self.threshold_spinbox:
         self.threshold_spinbox.setValue(int(threshold))
 
 
-def _start_auto_analysis(self: "WindyDaysTab") -> None:
+def _start_auto_analysis(self: WindyDaysTab) -> None:
     """Automatikus analízis indítása (késleltetve)."""
     try:
         from src.presentation.gui.results_panel.windy_days_tab.handlers import (
@@ -121,7 +119,7 @@ def _start_auto_analysis(self: "WindyDaysTab") -> None:
         logger.error(f"Hiba az automatikus analízis indításában: {e}")
 
 
-def _set_initial_summary_message(self: "WindyDaysTab") -> None:
+def _set_initial_summary_message(self: WindyDaysTab) -> None:
     """Kezdeti üzenet beállítása az összefoglalóban."""
     try:
         initial_message = """

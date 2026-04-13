@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 ThemeManager Convenience API - Module-level convenience functions.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from PySide6.QtWidgets import QWidget
 
@@ -30,9 +29,7 @@ def register_widget_for_theming(widget: QWidget, style_class: str) -> None:
     css = manager.generate_css_for_class(style_class)
     if css:
         widget.setStyleSheet(css)
-        print(
-            f"🎨 Professional styling applied to {widget.__class__.__name__}: {style_class}"
-        )
+        print(f"🎨 Professional styling applied to {widget.__class__.__name__}: {style_class}")
 
 
 def apply_theme_to_app(theme_name: str) -> bool:
@@ -40,12 +37,12 @@ def apply_theme_to_app(theme_name: str) -> bool:
     return get_theme_manager().set_theme(theme_name)
 
 
-def get_current_colors() -> Dict[str, str]:
+def get_current_colors() -> dict[str, str]:
     """🎯 PROFESSIONAL CHART API - Get current color scheme."""
     return get_theme_manager().get_current_colors()
 
 
-def get_weather_colors() -> Dict[str, str]:
+def get_weather_colors() -> dict[str, str]:
     """🌦️ PROFESSIONAL WEATHER API - Get weather-specific colors."""
     return get_theme_manager().get_weather_colors()
 
@@ -78,17 +75,15 @@ def initialize_theme_system(
     else:
         manager.set_theme(default_theme)
 
-    print(
-        f"🎨 Professional RED (#C43939) theme system initialized: {manager.get_current_theme()}"
-    )
+    print(f"🎨 Professional RED (#C43939) theme system initialized: {manager.get_current_theme()}")
     print(f"🌦️ Weather palette: {'enabled' if create_weather_palette else 'disabled'}")
 
 
-def get_accessibility_info() -> Dict[str, Any]:
+def get_accessibility_info() -> dict[str, Any]:
     """♿ PROFESSIONAL ACCESSIBILITY API - Get accessibility information."""
     return get_theme_manager().get_accessibility_info()
 
 
-def get_theme_debug_info() -> Dict[str, Any]:
+def get_theme_debug_info() -> dict[str, Any]:
     """🔧 PROFESSIONAL DEBUG API - Get debug information."""
     return get_theme_manager().get_debug_info()

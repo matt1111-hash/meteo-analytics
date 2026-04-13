@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Configuration Settings
 GUI, Hardware, Multi-City and Application metadata configuration
@@ -72,7 +71,9 @@ class AppInfo:
 
     NAME: str = "Global Weather Analyzer"
     VERSION: str = "2.2.0"  # Updated for Provider Selector feature
-    DESCRIPTION: str = "Advanced meteorological data analysis tool with user-controlled dual-API support"
+    DESCRIPTION: str = (
+        "Advanced meteorological data analysis tool with user-controlled dual-API support"
+    )
     AUTHOR: str = "Weather Analytics Team"
 
     API_ARCHITECTURE: str = "User-Controlled Dual-API System"
@@ -92,4 +93,4 @@ class AppInfo:
     LEGACY_VERSION: str = "1.0.0"
 
 
-__all__ = ["GUIConfig", "HardwareConfig", "MultiCityConfig", "AppInfo"]
+__all__ = ["AppInfo", "GUIConfig", "HardwareConfig", "MultiCityConfig"]

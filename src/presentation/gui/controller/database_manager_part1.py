@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for DatabaseManager."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .database_manager_support import *
 
 
-class DatabaseManagerPart1Mixin:
+class DatabaseManagerPart1Mixin:  # noqa: D101
     def __init__(self, db_path: Path):
         """
         DatabaseManager inicializálása.
@@ -33,9 +33,7 @@ class DatabaseManagerPart1Mixin:
 
             conn.close()
 
-            self._logger.info(
-                f"✅ Adatbázis kapcsolat OK (WIND GUSTS support): {self.db_path}"
-            )
+            self._logger.info(f"✅ Adatbázis kapcsolat OK (WIND GUSTS support): {self.db_path}")
 
         except Exception as e:
             self._logger.error(f"Adatbázis kapcsolat hiba: {e}")

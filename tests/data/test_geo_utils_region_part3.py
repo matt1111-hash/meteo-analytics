@@ -21,14 +21,10 @@ class TestGeoUtilsRegionEdgeCases:
         assert "Region1" in geo_utils.region_cache
         assert "Region2" in geo_utils.region_cache
 
-    def test_proximity_grouping_with_many_cities(
-        self, geo_utils: GeoUtilsRegion
-    ) -> None:
+    def test_proximity_grouping_with_many_cities(self, geo_utils: GeoUtilsRegion) -> None:
         """Proximity grouping handles many cities."""
         # Create a chain of nearby cities
-        cities = [
-            {"city": f"City{i}", "lat": 47.0 + i * 0.05, "lon": 19.0} for i in range(20)
-        ]
+        cities = [{"city": f"City{i}", "lat": 47.0 + i * 0.05, "lon": 19.0} for i in range(20)]
 
         groups = geo_utils.group_cities_by_proximity(cities, max_distance_km=50)
 
@@ -36,9 +32,7 @@ class TestGeoUtilsRegionEdgeCases:
         total_cities = sum(len(g) for g in groups)
         assert total_cities == 20
 
-    def test_optimal_selection_with_all_same_population(
-        self, geo_utils: GeoUtilsRegion
-    ) -> None:
+    def test_optimal_selection_with_all_same_population(self, geo_utils: GeoUtilsRegion) -> None:
         """Optimal selection handles cities with same population."""
         cities = [
             {"city": f"City{i}", "lat": 47.0 + i * 0.1, "lon": 19.0, "population": 1000}

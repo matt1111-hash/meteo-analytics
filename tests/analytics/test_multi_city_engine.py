@@ -23,7 +23,10 @@ class TestMultiCityEngineModule:
 
     def test_exports_constants(self) -> None:
         """Should export constants."""
-        from src.analytics.multi_city_engine import HUNGARIAN_REGIONAL_MAPPING, REGIONS
+        from src.analytics.multi_city_engine import (
+            HUNGARIAN_REGIONAL_MAPPING,
+            REGIONS,
+        )
 
         assert isinstance(HUNGARIAN_REGIONAL_MAPPING, dict)
         assert isinstance(REGIONS, dict)

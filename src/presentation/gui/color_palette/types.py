@@ -10,7 +10,7 @@ Enumok, NamedTuple és dataclass típusdefiníciók.
 import colorsys
 from dataclasses import dataclass
 from enum import Enum
-from typing import NamedTuple, Tuple
+from typing import NamedTuple
 
 
 class ColorFormat(Enum):
@@ -68,7 +68,7 @@ class HSLColor:
         r, g, b = colorsys.hls_to_rgb(h, light, s)
         return f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}"
 
-    def to_rgb(self) -> Tuple[int, int, int]:
+    def to_rgb(self) -> tuple[int, int, int]:
         """HSL konvertálás RGB-re."""
         h, s, light = self.hue / 360, self.saturation / 100, self.lightness / 100
         r, g, b = colorsys.hls_to_rgb(h, light, s)

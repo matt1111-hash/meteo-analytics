@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Protocol
+from typing import Any, Protocol
 
 from src.domain.analytics.models import MultiCityQuery
 
@@ -17,9 +17,9 @@ class WindAnalysisResult:
     total_days: int
     windy_percentage: float
     max_wind_speed: float
-    max_wind_date: Optional[str]
+    max_wind_date: str | None
     avg_wind_speed: float
-    data: List[Dict[str, Any]]
+    data: list[dict[str, Any]]
     threshold: float
 
 
@@ -28,23 +28,23 @@ class WindAnalysisPort(Protocol):
 
     WINDY_DAY_THRESHOLD_KMH: float = 50.0
 
-    def analyze_wind_data(
+    def analyze_wind_data(  # noqa: D102
         self,
-        weather_data: Dict[str, Any],
+        weather_data: dict[str, Any],
         threshold_kmh: float = 50.0,
     ) -> WindAnalysisResult: ...
 
-    def detect_windy_days(
+    def detect_windy_days(  # noqa: D102
         self,
-        wind_speeds: List[float],
-        dates: List[str],
+        wind_speeds: list[float],
+        dates: list[str],
         threshold_kmh: float = 50.0,
-    ) -> List[Dict[str, Any]]: ...
+    ) -> list[dict[str, Any]]: ...
 
-    def calculate_wind_statistics(
+    def calculate_wind_statistics(  # noqa: D102
         self,
-        wind_speeds: List[float],
-    ) -> Dict[str, float]: ...
+        wind_speeds: list[float],
+    ) -> dict[str, float]: ...
 
 
 def get_wind_analysis_port() -> WindAnalysisPort:
@@ -58,29 +58,29 @@ def get_wind_analysis_port() -> WindAnalysisPort:
 class AnomalyDetectionResult:
     """Result of anomaly detection."""
 
-    anomalies: List[Dict[str, Any]]
+    anomalies: list[dict[str, Any]]
     total_records: int
     anomaly_count: int
     anomaly_percentage: float
-    severity_distribution: Dict[str, int]
+    severity_distribution: dict[str, int]
 
 
 class AnomalyDetectionPort(Protocol):
     """Port for anomaly detection operations."""
 
-    def detect_anomalies(
+    def detect_anomalies(  # noqa: D102
         self,
-        weather_data: Dict[str, Any],
-        thresholds: Dict[str, Any],
+        weather_data: dict[str, Any],
+        thresholds: dict[str, Any],
     ) -> AnomalyDetectionResult: ...
 
-    def classify_severity(
+    def classify_severity(  # noqa: D102
         self,
         value: float,
         _expected_range: tuple,
     ) -> str: ...
 
-    def calculate_z_score(
+    def calculate_z_score(  # noqa: D102
         self,
         value: float,
         mean: float,
@@ -91,22 +91,22 @@ class AnomalyDetectionPort(Protocol):
 class AnalyticsQueryPort(Protocol):
     """Port for analytics query building."""
 
-    def create_query(
+    def create_query(  # noqa: D102
         self,
         query_type: str,
         region: str,
         date: str,
-        limit: Optional[int] = None,
-        _extra_params: Optional[Dict[str, Any]] = None,
+        limit: int | None = None,
+        _extra_params: dict[str, Any] | None = None,
     ) -> MultiCityQuery: ...
 
-    def validate_query(self, query: MultiCityQuery) -> bool: ...
+    def validate_query(self, query: MultiCityQuery) -> bool: ...  # noqa: D102
 
 
 class QueryTypeConfigPort(Protocol):
     """Port for query type configuration."""
 
-    def get_query_types(self) -> Dict[str, Dict[str, Any]]: ...
-    def get_query_type(self, query_type: str) -> Optional[Dict[str, Any]]: ...
-    def get_metric_for_query_type(self, query_type: str) -> str: ...
-    def get_unit_for_query_type(self, query_type: str) -> str: ...
+    def get_query_types(self) -> dict[str, dict[str, Any]]: ...  # noqa: D102
+    def get_query_type(self, query_type: str) -> dict[str, Any] | None: ...  # noqa: D102
+    def get_metric_for_query_type(self, query_type: str) -> str: ...  # noqa: D102
+    def get_unit_for_query_type(self, query_type: str) -> str: ...  # noqa: D102

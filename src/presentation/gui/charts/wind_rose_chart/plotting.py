@@ -107,11 +107,11 @@ def _build_stats_text(df: pd.DataFrame) -> str:
         f"{icon} Átlag {speed_label}: {avg_speed:.1f} km/h\n"
         f"🚨 Maximum {speed_label}: {max_speed:.1f} km/h\n"
     )
-    if max_speed >= 120:
+    if max_speed >= 120:  # noqa: PLR2004
         return stats_text + "⚠️ HURRIKÁN erősségű széllökések!"
-    if max_speed >= 100:
+    if max_speed >= 100:  # noqa: PLR2004
         return stats_text + "⚠️ EXTRÉM széllökések detected!"
-    if max_speed >= 70:
+    if max_speed >= 70:  # noqa: PLR2004
         return stats_text + "🌪️ Viharos széllökések detected!"
     return stats_text
 
@@ -167,12 +167,12 @@ def plot_wind_rose(
         fontweight="bold",
         verticalalignment="top",
         color=text_color,
-        bbox=dict(
-            boxstyle="round,pad=0.3",
-            facecolor=surface_variant,
-            edgecolor=border_color,
-            alpha=0.9,
-        ),
+        bbox={
+            "boxstyle": "round,pad=0.3",
+            "facecolor": surface_variant,
+            "edgecolor": border_color,
+            "alpha": 0.9,
+        },
     )
 
     figure.tight_layout()
@@ -206,12 +206,12 @@ def plot_wind_rose_placeholder(ax: Any, figure: Any, chart_title: str) -> None:
         fontsize=14,
         fontweight="bold",
         color=text_color,
-        bbox=dict(
-            boxstyle="round,pad=0.5",
-            facecolor=surface_color,
-            edgecolor=border_color,
-            alpha=0.8,
-        ),
+        bbox={
+            "boxstyle": "round,pad=0.5",
+            "facecolor": surface_color,
+            "edgecolor": border_color,
+            "alpha": 0.8,
+        },
     )
 
     ax.set_title(chart_title, fontsize=18, fontweight="bold", pad=20, color=text_color)

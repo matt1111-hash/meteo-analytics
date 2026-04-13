@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -14,9 +13,7 @@ if TYPE_CHECKING:
     from .core import ProfessionalThemeManager
 
 
-def apply_qdarktheme_theme(
-    theme_name: str, manager: "ProfessionalThemeManager"
-) -> None:
+def apply_qdarktheme_theme(theme_name: str, manager: "ProfessionalThemeManager") -> None:
     """
     Apply qdarktheme (professional) theme.
 
@@ -30,9 +27,7 @@ def apply_qdarktheme_theme(
     _enhance_with_color_palette(manager)
 
 
-def apply_qt6_native_theme(
-    theme_name: str, manager: "ProfessionalThemeManager"
-) -> None:
+def apply_qt6_native_theme(theme_name: str, manager: "ProfessionalThemeManager") -> None:
     """
     Apply Qt6.5+ native ColorScheme theme.
 
@@ -51,7 +46,8 @@ def apply_qt6_native_theme(
 
 
 def apply_color_palette_theme(
-    theme_name: str, manager: "ProfessionalThemeManager"
+    theme_name: str,  # noqa: ARG001
+    manager: "ProfessionalThemeManager",
 ) -> None:
     """
     Apply ColorPalette-based theme (fallback).
@@ -70,9 +66,7 @@ def apply_color_palette_theme(
     palette.setColor(QPalette.ColorRole.Window, QColor(colors["surface"]))
     palette.setColor(QPalette.ColorRole.WindowText, QColor(colors["on_surface"]))
     palette.setColor(QPalette.ColorRole.Base, QColor(colors["surface_variant"]))
-    palette.setColor(
-        QPalette.ColorRole.AlternateBase, QColor(colors["surface_variant"])
-    )
+    palette.setColor(QPalette.ColorRole.AlternateBase, QColor(colors["surface_variant"]))
     palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(colors["surface"]))
     palette.setColor(QPalette.ColorRole.ToolTipText, QColor(colors["on_surface"]))
     palette.setColor(QPalette.ColorRole.Text, QColor(colors["on_surface"]))

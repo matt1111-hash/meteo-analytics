@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -23,7 +22,7 @@ from PySide6.QtWidgets import (
 )
 
 
-def demo_hungarian_map_tab() -> None:
+def demo_hungarian_map_tab() -> None:  # noqa: C901, PLR0915
     """Run Hungarian Map Tab demo application."""
     # Import here to avoid circular imports
     from src.presentation.gui.hungarian_map_tab import HungarianMapTab
@@ -31,9 +30,7 @@ def demo_hungarian_map_tab() -> None:
     app = QApplication(sys.argv)
 
     window = QMainWindow()
-    window.setWindowTitle(
-        "Hungarian Map Tab Demo - Analytics Sync + Weather Integration"
-    )
+    window.setWindowTitle("Hungarian Map Tab Demo - Analytics Sync + Weather Integration")
     window.setGeometry(100, 100, 1600, 1200)
 
     central_widget = QWidget()
@@ -177,9 +174,7 @@ def demo_hungarian_map_tab() -> None:
     def test_date_sync():
         today = datetime.now()
         week_ago = today - timedelta(days=7)
-        map_tab.update_date_range(
-            week_ago.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d")
-        )
+        map_tab.update_date_range(week_ago.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d"))
 
     def test_bundle_sync():
         bundle = {

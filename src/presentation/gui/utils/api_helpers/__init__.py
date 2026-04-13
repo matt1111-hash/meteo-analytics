@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -40,22 +39,22 @@ from .source_selector import (
 )
 
 __all__ = [
-    # Source selection
-    "get_optimal_data_source",
-    "get_source_display_name",
-    "validate_api_source_available",
-    "get_fallback_source_chain",
-    "log_api_source_selection",
+    "calculate_provider_costs",
+    "format_cost_summary",
+    "format_provider_status",
     # Provider tracking
     "format_provider_usage",
-    "calculate_provider_costs",
-    "get_provider_warning_level",
-    "format_provider_status",
+    "get_fallback_source_chain",
+    # Source selection
+    "get_optimal_data_source",
     "get_provider_icon",
-    "format_cost_summary",
-    "log_provider_usage_event",
-    # Provider validation
-    "validate_provider_selection",
     # Provider recommendation
     "get_provider_recommendation",
+    "get_provider_warning_level",
+    "get_source_display_name",
+    "log_api_source_selection",
+    "log_provider_usage_event",
+    "validate_api_source_available",
+    # Provider validation
+    "validate_provider_selection",
 ]

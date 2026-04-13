@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.api.dto.trend_request import TrendAnalysisRequest
 from src.domain.analytics.services.trend_calculator import TrendCalculator
@@ -25,7 +25,7 @@ class CalculateTrendUseCase:
         self,
         weather_client: WeatherClientPort,
         city_manager: CityManagerPort,
-        trend_calculator: Optional[TrendCalculator] = None,
+        trend_calculator: TrendCalculator | None = None,
     ) -> None:
         """Initialize the use case with dependencies.
 
@@ -87,7 +87,7 @@ class CalculateTrendUseCase:
 
         return result
 
-    def _get_coordinates(self, location: str) -> Optional[tuple[float, float]]:
+    def _get_coordinates(self, location: str) -> tuple[float, float] | None:
         """Get coordinates for a location.
 
         Uses the city manager to find coordinates by name.
@@ -99,7 +99,7 @@ class CalculateTrendUseCase:
             logger.error("Error finding coordinates for %s: %s", location, e)
             return None
 
-    def _parse_date(self, date_str: Optional[str]) -> Optional[datetime]:
+    def _parse_date(self, date_str: str | None) -> datetime | None:
         """Parse date string to datetime."""
         if not date_str:
             return None
@@ -115,7 +115,7 @@ class CalculateTrendUseCase:
         lon: float,
         start_date: datetime,
         end_date: datetime,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Fetch weather data for the given location and date range.
 
         Uses batch fetching for long date ranges.

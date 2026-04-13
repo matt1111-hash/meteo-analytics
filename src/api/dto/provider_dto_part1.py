@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001  # noqa: RUF100
 # mypy: ignore-errors
 """Split definitions from provider_dto.py."""
 
@@ -36,9 +36,7 @@ class ProviderInfoDTO:
     """Smart routing rules (for "auto" provider)"""
 
     @classmethod
-    def from_config(
-        cls, provider_id: str, config: Mapping[str, Any]
-    ) -> "ProviderInfoDTO":
+    def from_config(cls, provider_id: str, config: Mapping[str, Any]) -> "ProviderInfoDTO":  # noqa: UP037
         """Create DTO from provider configuration.
 
         Args:
@@ -102,7 +100,7 @@ class ProviderStatusDTO:
         monthly_limit: int | None = None,
         estimated_cost_usd: float = 0.0,
         last_used: str | None = None,
-    ) -> "ProviderStatusDTO":
+    ) -> "ProviderStatusDTO":  # noqa: UP037
         """Create ProviderStatusDTO with automatic status calculation.
 
         Args:
@@ -121,9 +119,9 @@ class ProviderStatusDTO:
         # Calculate status based on usage
         if monthly_limit is None:
             status = "healthy"
-        elif usage_percentage >= 0.95:
+        elif usage_percentage >= 0.95:  # noqa: PLR2004
             status = "critical"
-        elif usage_percentage >= 0.8:
+        elif usage_percentage >= 0.8:  # noqa: PLR2004
             status = "warning"
         else:
             status = "healthy"

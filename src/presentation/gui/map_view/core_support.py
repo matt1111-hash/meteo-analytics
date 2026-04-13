@@ -16,7 +16,7 @@ Képességek:
 Fájl: src/presentation/gui/map_view/core.py
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget

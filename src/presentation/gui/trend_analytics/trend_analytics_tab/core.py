@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -19,7 +18,6 @@ import logging
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-
 from src.presentation.gui.theme_manager import ThemeManager
 
 from ..trend_data_processor import TrendDataProcessor
@@ -36,9 +34,7 @@ from .ui_builder import (
 logger = logging.getLogger(__name__)
 
 
-class TrendAnalyticsTab(
-    TrendAnalyticsPublicAPIMixin, TrendAnalysisHandlerMixin, QWidget
-):
+class TrendAnalyticsTab(TrendAnalyticsPublicAPIMixin, TrendAnalysisHandlerMixin, QWidget):
     """
     🚀 ENHANCED TREND ANALYTICS TAB v4.2 - PROFESSIONAL DASHBOARD IMPLEMENTATION
 
@@ -79,15 +75,13 @@ class TrendAnalyticsTab(
     error_occurred = Signal(str)
     location_selected = Signal(str, float, float)  # name, lat, lon
 
-    def __init__(self):
+    def __init__(self):  # noqa: D107
         super().__init__()
         self.current_worker: any = None
         self.setup_ui()
         self.connect_signals()
 
-        logger.info(
-            "🚀 TrendAnalyticsTab v4.2 inicializálva (KPI DASHBOARD DINAMIKUS FRISSÍTÉS)"
-        )
+        logger.info("🚀 TrendAnalyticsTab v4.2 inicializálva (KPI DASHBOARD DINAMIKUS FRISSÍTÉS)")
 
     def setup_ui(self) -> None:
         """🎨 UI SETUP - Enhanced Dashboard Layout v4.2"""
@@ -116,9 +110,7 @@ class TrendAnalyticsTab(
         # 🔧 QSplitter implementáció
         setup_content_splitter(self, chart_container, stats_area)
 
-        logger.info(
-            "✅ Enhanced Dashboard layout beállítva: KPI kártyák dinamikus frissítéssel"
-        )
+        logger.info("✅ Enhanced Dashboard layout beállítva: KPI kártyák dinamikus frissítéssel")
 
     def connect_signals(self) -> None:
         """Signal connections beállítása (VÁLTOZATLAN)"""
@@ -130,16 +122,14 @@ class TrendAnalyticsTab(
 
     def on_location_changed(self, location_name: str) -> None:
         """Location selection kezelése (VÁLTOZATLAN)"""
-        if location_name and len(location_name.strip()) > 2:
+        if location_name and len(location_name.strip()) > 2:  # noqa: PLR2004
             # Get coordinates for location
             processor = TrendDataProcessor()
             coordinates = processor.get_settlement_coordinates(location_name.strip())
 
             if coordinates:
                 lat, lon = coordinates
-                logger.info(
-                    f"📍 Location selected: {location_name} ({lat:.4f}, {lon:.4f})"
-                )
+                logger.info(f"📍 Location selected: {location_name} ({lat:.4f}, {lon:.4f})")
                 self.location_selected.emit(location_name, lat, lon)
 
 

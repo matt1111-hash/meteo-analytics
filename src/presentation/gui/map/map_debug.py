@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -9,10 +8,10 @@ FÁJL: src/presentation/gui/map/map_debug.py
 """
 
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 
 
-def generate_demo_weather_data() -> Dict[str, Any]:
+def generate_demo_weather_data() -> dict[str, Any]:
     """
     🧪 Demo időjárási adatok generálása teszteléshez.
 
@@ -57,10 +56,10 @@ def generate_demo_weather_data() -> Dict[str, Any]:
 
 def get_http_server_info(
     local_server,
-    http_host: Optional[str],
-    http_port: Optional[int],
-    current_map_file: Optional[str],
-) -> Dict[str, Any]:
+    http_host: str | None,
+    http_port: int | None,
+    current_map_file: str | None,
+) -> dict[str, Any]:
     """
     🌐 HTTP szerver információk lekérdezése.
 
@@ -77,20 +76,18 @@ def get_http_server_info(
         "server_running": local_server is not None and local_server.running,
         "http_host": http_host,
         "http_port": http_port,
-        "server_url": f"http://{http_host}:{http_port}"
-        if http_host and http_port
-        else None,
+        "server_url": f"http://{http_host}:{http_port}" if http_host and http_port else None,
         "current_map_file": current_map_file,
-        "current_map_size": os.path.getsize(current_map_file)
-        if current_map_file and os.path.exists(current_map_file)
+        "current_map_size": os.path.getsize(current_map_file)  # noqa: PTH202
+        if current_map_file and os.path.exists(current_map_file)  # noqa: PTH110
         else 0,
         "version": "v3.0",
     }
 
 
 def get_dynamic_gradient_info(
-    active_overlay_parameter: Optional[str],
-) -> Dict[str, Any]:
+    active_overlay_parameter: str | None,
+) -> dict[str, Any]:
     """
     🔧 Dinamikus gradient információk lekérdezése.
 
@@ -118,12 +115,12 @@ def get_dynamic_gradient_info(
 
 def get_http_debug_info(
     local_server,
-    http_host: Optional[str],
-    http_port: Optional[int],
-    current_map_file: Optional[str],
+    http_host: str | None,
+    http_port: int | None,
+    current_map_file: str | None,
     counties_gdf,
     current_weather_data,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     🌐 HTTP szerver verzió debug információk.
 
@@ -138,9 +135,7 @@ def get_http_debug_info(
     Returns:
         HTTP szerver debug információk
     """
-    server_info = get_http_server_info(
-        local_server, http_host, http_port, current_map_file
-    )
+    server_info = get_http_server_info(local_server, http_host, http_port, current_map_file)
 
     return {
         "http_server_running": server_info["server_running"],
@@ -163,7 +158,7 @@ def get_http_debug_info(
 # Export
 __all__ = [
     "generate_demo_weather_data",
-    "get_http_server_info",
     "get_dynamic_gradient_info",
     "get_http_debug_info",
+    "get_http_server_info",
 ]

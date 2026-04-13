@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for LayerBuilder."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .layer_builder_support import *
 
 
-class LayerBuilderPart1Mixin:
+class LayerBuilderPart1Mixin:  # noqa: D101
     def __init__(self, config: FoliumMapConfig):
         """
         Args:
@@ -15,7 +15,7 @@ class LayerBuilderPart1Mixin:
         """
         self.config = config
 
-    def create_base_map(self) -> "folium.Map":
+    def create_base_map(self) -> folium.Map:
         """
         🗺️ Alap Folium térkép létrehozása.
 
@@ -48,9 +48,7 @@ class LayerBuilderPart1Mixin:
         print(f"✅ Base Folium map created: {tiles}")
         return map_obj
 
-    def add_counties_layer(
-        self, map_obj: "folium.Map", counties_gdf: "gpd.GeoDataFrame"
-    ) -> None:
+    def add_counties_layer(self, map_obj: folium.Map, counties_gdf: gpd.GeoDataFrame) -> None:
         """
         🗺️ Magyar megyék GeoJSON layer hozzáadása interaktív funkcionalitással.
 
@@ -82,7 +80,7 @@ class LayerBuilderPart1Mixin:
                 "fillOpacity": self.config.county_fill_opacity,
             }
 
-        def highlight_function(feature):
+        def highlight_function(feature):  # noqa: ARG001
             return COUNTY_STYLE_HOVER
 
         counties_layer = folium.GeoJson(
@@ -101,7 +99,7 @@ class LayerBuilderPart1Mixin:
         counties_layer.add_to(map_obj)
         print("✅ Counties layer added with interactivity")
 
-    def add_map_controls(self, map_obj: "folium.Map") -> None:
+    def add_map_controls(self, map_obj: folium.Map) -> None:
         """
         🎮 További térkép vezérlők hozzáadása.
 

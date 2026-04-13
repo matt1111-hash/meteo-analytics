@@ -7,13 +7,13 @@ Color Palette - Data I/O Module
 Import/export metódusok ColorPalette osztályhoz.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from src.presentation.gui.color_palette.types import HSLColor
 from src.presentation.gui.types import ThemeType
 
 
-def _serialize_hsl_color(hsl_color: HSLColor) -> Dict[str, Any]:
+def _serialize_hsl_color(hsl_color: HSLColor) -> dict[str, Any]:
     """Serialize one HSL color to export payload."""
     return {
         "hex": hsl_color.to_hex(),
@@ -26,7 +26,7 @@ def _serialize_hsl_color(hsl_color: HSLColor) -> Dict[str, Any]:
     }
 
 
-def _build_hsl_color(hsl_data: Dict[str, Any]) -> HSLColor:
+def _build_hsl_color(hsl_data: dict[str, Any]) -> HSLColor:
     """Build HSLColor from serialized payload."""
     return HSLColor(
         hsl_data["hue"],
@@ -37,36 +37,31 @@ def _build_hsl_color(hsl_data: Dict[str, Any]) -> HSLColor:
 
 
 def _export_palette_variants(
-    generated_variants: Dict[str, Dict[str, HSLColor]],
-) -> Dict[str, Dict[str, str]]:
+    generated_variants: dict[str, dict[str, HSLColor]],
+) -> dict[str, dict[str, str]]:
     """Export generated color variants to hex payload."""
-    exported_variants: Dict[str, Dict[str, str]] = {}
+    exported_variants: dict[str, dict[str, str]] = {}
     for semantic_name, variants in generated_variants.items():
         exported_variants[semantic_name] = {
-            variant_name: variant_color.to_hex()
-            for variant_name, variant_color in variants.items()
+            variant_name: variant_color.to_hex() for variant_name, variant_color in variants.items()
         }
     return exported_variants
 
 
-def _import_base_colors(
-    data_io_mixin: Any, base_colors: Dict[str, Dict[str, Any]]
-) -> None:
+def _import_base_colors(data_io_mixin: Any, base_colors: dict[str, dict[str, Any]]) -> None:
     """Import base colors from serialized payload."""
     for semantic_name, color_data in base_colors.items():
         if "hex" in color_data:
             data_io_mixin.set_base_color(semantic_name, color_data["hex"])
             continue
         if "hsl" in color_data:
-            data_io_mixin.set_base_color(
-                semantic_name, _build_hsl_color(color_data["hsl"])
-            )
+            data_io_mixin.set_base_color(semantic_name, _build_hsl_color(color_data["hsl"]))
 
 
 class DataIOMixin:
     """Import/export metódusok ColorPalette osztályhoz."""
 
-    def export_palette(self, include_variants: bool = True) -> Dict[str, Any]:
+    def export_palette(self, include_variants: bool = True) -> dict[str, Any]:
         """
         Színpaletta exportálása JSON-kompatibilis formátumban.
 
@@ -93,7 +88,7 @@ class DataIOMixin:
 
         return export_data
 
-    def import_palette(self, import_data: Dict[str, Any]) -> bool:
+    def import_palette(self, import_data: dict[str, Any]) -> bool:
         """
         Színpaletta importálása JSON adatokból.
 

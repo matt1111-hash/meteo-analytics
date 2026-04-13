@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for WindyDaysTab."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .core_support import *
 
 
-class WindyDaysTabPart2Mixin:
+class WindyDaysTabPart2Mixin:  # noqa: D101
     def update_data(
         self, weather_data: pd.DataFrame, location: str = "Ismeretlen helyszín"
     ) -> None:

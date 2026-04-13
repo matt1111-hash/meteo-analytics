@@ -9,16 +9,15 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from src.data.anomaly_storage import AnomalyProfileStorage
 
 __all__ = [
     "AnomalyProfileStorage",
     "Any",
+    "MagicMock",
+    "Path",
     "datetime",
     "json",
-    "MagicMock",
     "patch",
-    "Path",
     "pytest",
 ]

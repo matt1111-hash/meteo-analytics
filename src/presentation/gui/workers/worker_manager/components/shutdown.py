@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -75,7 +74,7 @@ class ShutdownManager:
         self._manager.mutex.lock()
         try:
             total_wait = 0
-            while self._manager.active_workers and total_wait < 10000:
+            while self._manager.active_workers and total_wait < 10000:  # noqa: PLR2004
                 self._manager.mutex.unlock()
                 QThread.msleep(100)
                 total_wait += 100
@@ -83,9 +82,7 @@ class ShutdownManager:
 
             # 3. Emergency terminate if still active
             if self._manager.active_workers:
-                print(
-                    "⚠️ DEBUG: Some workers didn't stop gracefully, emergency terminating..."
-                )
+                print("⚠️ DEBUG: Some workers didn't stop gracefully, emergency terminating...")
                 self._manager.mutex.unlock()
                 self.emergency_terminate_all()
                 self._manager.mutex.lock()

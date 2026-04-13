@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -36,21 +35,21 @@ from .wind_helpers import (
 )
 
 __all__ = [
-    # Formatters
-    "format_temperature",
-    "format_precipitation",
-    "format_wind_speed",
-    # Wind helpers
-    "format_wind_gusts",
-    "get_wind_gusts_category",
-    "is_wind_gusts_extreme",
-    "is_wind_gusts_hurricane",
-    "is_wind_gusts_catastrophic",
-    "get_wind_gusts_icon",
-    "get_wind_gusts_color",
     # Statistics
     "calculate_statistics",
     "calculate_wind_gusts_statistics",
+    "format_precipitation",
+    # Formatters
+    "format_temperature",
+    # Wind helpers
+    "format_wind_gusts",
+    "format_wind_speed",
     # Icons
     "get_weather_icon",
+    "get_wind_gusts_category",
+    "get_wind_gusts_color",
+    "get_wind_gusts_icon",
+    "is_wind_gusts_catastrophic",
+    "is_wind_gusts_extreme",
+    "is_wind_gusts_hurricane",
 ]

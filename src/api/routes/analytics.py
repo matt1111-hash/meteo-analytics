@@ -1,6 +1,6 @@
 """Analytics API routes for trend analysis."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import logging
 
@@ -58,7 +58,8 @@ async def calculate_trend(request: TrendAnalysisRequest) -> dict:
     except Exception as e:
         logger.error("Error calculating trend: %s", e, exc_info=True)
         raise HTTPException(
-            status_code=500, detail=f"Trend calculation failed: {str(e)}"
+            status_code=500,
+            detail=f"Trend calculation failed: {str(e)}",  # noqa: RUF010
         ) from e
 
 

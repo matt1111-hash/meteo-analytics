@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -9,7 +8,7 @@ FÁJL: src/presentation/gui/windows/main_window_state.py
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from typing import Any
 
 try:
     from ..utils import ThemeType, get_provider_warning_level
@@ -19,7 +18,7 @@ except ImportError:
         LIGHT = "light"
         DARK = "dark"
 
-    def get_provider_warning_level(x):
+    def get_provider_warning_level(x):  # noqa: ARG001
         return "normal"
 
 
@@ -30,9 +29,9 @@ class ProviderState:
     """
 
     current_provider: str = "auto"
-    provider_usage_stats: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    provider_usage_stats: dict[str, dict[str, Any]] = field(default_factory=dict)
     provider_cost_summary: str = ""
-    provider_warning_level: Optional[str] = None
+    provider_warning_level: str | None = None
 
 
 @dataclass
@@ -42,7 +41,7 @@ class HungarianCountiesState:
     """
 
     loaded: bool = False
-    geodataframe: Optional[Any] = None
+    geodataframe: Any | None = None
 
 
 @dataclass
@@ -59,9 +58,7 @@ class MainWindowState:
     provider: ProviderState = field(default_factory=ProviderState)
 
     # Magyar megyék állapot
-    hungarian_counties: HungarianCountiesState = field(
-        default_factory=HungarianCountiesState
-    )
+    hungarian_counties: HungarianCountiesState = field(default_factory=HungarianCountiesState)
 
     # Cleanup tracking
     active_threads: list = field(default_factory=list)
@@ -74,13 +71,9 @@ class MainWindowState:
         🌍 Provider warning szint frissítése.
         """
         if self.provider.provider_usage_stats:
-            usage = self.provider.provider_usage_stats.get(
-                self.provider.current_provider, {}
-            )
+            usage = self.provider.provider_usage_stats.get(self.provider.current_provider, {})
             daily_requests = usage.get("daily_requests", 0)
-            self.provider.provider_warning_level = get_provider_warning_level(
-                daily_requests
-            )
+            self.provider.provider_warning_level = get_provider_warning_level(daily_requests)
         else:
             self.provider.provider_warning_level = "normal"
 
@@ -103,7 +96,7 @@ class MainWindowState:
 
 # Export
 __all__ = [
-    "ProviderState",
     "HungarianCountiesState",
     "MainWindowState",
+    "ProviderState",
 ]

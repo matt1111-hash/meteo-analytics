@@ -19,9 +19,7 @@ class TestExtractYears(TestTrendDataProcessor):
         """Should extract unique years."""
         df = pd.DataFrame(
             {
-                "date": pd.to_datetime(
-                    ["2024-01-01", "2025-01-01", "2025-06-01", "2026-01-01"]
-                ),
+                "date": pd.to_datetime(["2024-01-01", "2025-01-01", "2025-06-01", "2026-01-01"]),
                 "avg_value": [10.0, 11.0, 12.0, 13.0],
             }
         )

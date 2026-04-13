@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -18,7 +17,6 @@ from PySide6.QtCore import QSettings, Qt, Signal
 from PySide6.QtWidgets import (
     QMainWindow,
 )
-
 from src.config import AppInfo
 
 from ..color_palette import ColorPalette
@@ -60,7 +58,7 @@ class MainWindow(
     theme_changed = Signal(str)
 
     # 📧 QUERY TYPE → TÉRKÉP PARAMÉTER MAPPING
-    QUERY_TYPE_TO_PARAMETER = {
+    QUERY_TYPE_TO_PARAMETER = {  # noqa: RUF012
         "hottest_today": "Hőmérséklet",
         "coldest_today": "Hőmérséklet",
         "windiest_today": "Szél",
@@ -136,9 +134,7 @@ class MainWindow(
 
     def _initialize_provider_status(self) -> None:
         """Provider státusz inicializálása."""
-        self.state.provider.current_provider = self.settings.value(
-            "current_provider", "auto"
-        )
+        self.state.provider.current_provider = self.settings.value("current_provider", "auto")
         self._update_provider_status_display()
 
     # === CLOSE EVENT ===

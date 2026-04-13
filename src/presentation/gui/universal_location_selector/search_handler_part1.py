@@ -1,4 +1,4 @@
-# ruff: noqa: F401, F403, F405, I001
+# ruff: noqa: F403, F405, I001
 # mypy: ignore-errors
 """Mixin part 1 for SearchHandler."""
 
@@ -44,8 +44,7 @@ def _build_count_message(hungarian_count: int, total_results: int) -> str:
     global_count = total_results - hungarian_count
     if hungarian_count > 0 and global_count > 0:
         return (
-            f"✅ {hungarian_count} magyar + {global_count} globális = "
-            f"{total_results} találat"
+            f"✅ {hungarian_count} magyar + {global_count} globális = " f"{total_results} találat"
         )
     if hungarian_count > 0:
         return f"✅ {hungarian_count} magyar találat"
@@ -95,7 +94,7 @@ def _normalize_city_object(city: Any) -> Optional[Dict[str, Any]]:
     return _apply_city_defaults(city_dict)
 
 
-class SearchHandlerPart1Mixin:
+class SearchHandlerPart1Mixin:  # noqa: D101
     def __init__(
         self,
         city_manager: CityManagerPort,
@@ -132,7 +131,7 @@ class SearchHandlerPart1Mixin:
         Args:
             text: Új kereső szöveg
         """
-        if len(text) < 2:
+        if len(text) < 2:  # noqa: PLR2004
             self.results_list.clear()
             self.status_label.setText("💡 Legalább 2 karakter szükséges...")
             return
@@ -144,14 +143,12 @@ class SearchHandlerPart1Mixin:
     def _perform_search(self) -> None:
         """KOMBINÁLT KERESÉS - Magyar + Globális"""
         query = self.search_input.text().strip()
-        if len(query) < 2:
+        if len(query) < 2:  # noqa: PLR2004
             return
 
         try:
             self.search_requested_callback(query)
-            raw_results = self.city_manager.search_unified(
-                query, limit=20, hungarian_priority=True
-            )
+            raw_results = self.city_manager.search_unified(query, limit=20, hungarian_priority=True)
             results = self._normalize_results(raw_results)
 
             self._display_results(results)

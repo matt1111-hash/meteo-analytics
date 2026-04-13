@@ -10,7 +10,7 @@ Part of the weather_client refactoring - split into focused modules.
 import logging
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
 
@@ -38,7 +38,7 @@ class WeatherProvider(ABC):
     @abstractmethod
     def get_weather_data(
         self, latitude: float, longitude: float, start_date: str, end_date: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Get weather data for the specified location and date range.
 

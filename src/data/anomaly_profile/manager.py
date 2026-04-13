@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403,noqa: I001
 # mypy: ignore-errors
 """Compatibility wrapper for manager.py."""
 
@@ -9,9 +9,7 @@ from .manager_part2 import AnomalyProfileManagerPart2Mixin
 from .manager_support import *
 
 
-class AnomalyProfileManager(
-    AnomalyProfileManagerPart1Mixin, AnomalyProfileManagerPart2Mixin
-):
+class AnomalyProfileManager(AnomalyProfileManagerPart1Mixin, AnomalyProfileManagerPart2Mixin):
     """
     Anomália profilok menedzsmentje.
 

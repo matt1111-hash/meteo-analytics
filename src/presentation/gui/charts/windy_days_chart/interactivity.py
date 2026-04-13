@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -15,7 +14,7 @@ Fájl: src/presentation/gui/charts/windy_days_chart/interactivity.py
 """
 
 import logging
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     pass
@@ -24,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 def _setup_chart_interactivity(
-    self, bars, months: List[str], counts: List[int], percentages: List[float]
+    self, bars, months: list[str], counts: list[int], percentages: list[float]
 ) -> None:
     """
     Chart interaktivitás beállítása.

@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 1 for ApiSettingsWidget."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .api_settings_widget_support import *
 
 
-class ApiSettingsWidgetPart1Mixin:
+class ApiSettingsWidgetPart1Mixin:  # noqa: D101
     def __init__(self, parent: Optional[QWidget] = None):
         """
         ApiSettingsWidget inicializálása.
@@ -55,9 +55,7 @@ class ApiSettingsWidgetPart1Mixin:
         self.cache_data = QCheckBox()
         self.cache_data.setChecked(True)
         self.cache_data.setMinimumHeight(20)
-        self.cache_data.setToolTip(
-            "API válaszok gyorsítótárazása a teljesítmény javításához"
-        )
+        self.cache_data.setToolTip("API válaszok gyorsítótárazása a teljesítmény javításához")
         form_layout.addRow("Adatok cache-elése:", self.cache_data)
 
         # API timeout - Multi-year batch optimalizált
@@ -142,7 +140,7 @@ class ApiSettingsWidgetPart1Mixin:
                 auto_timezone = True
             if not isinstance(cache_data, bool):
                 cache_data = True
-            if not isinstance(api_timeout, int) or not (30 <= api_timeout <= 300):
+            if not isinstance(api_timeout, int) or not (30 <= api_timeout <= 300):  # noqa: PLR2004
                 api_timeout = 60
 
             # Set values
@@ -165,10 +163,7 @@ class ApiSettingsWidgetPart1Mixin:
         """Beállítások validálása."""
         # Timeout range check
         timeout = self.api_timeout.value()
-        if not (30 <= timeout <= 300):
-            return False
-
-        return True
+        return 30 <= timeout <= 300  # noqa: PLR2004
 
     def get_api_settings(self) -> Dict[str, Any]:
         """API beállítások lekérdezése (compatibility)."""

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,7 +15,7 @@ Fájl: src/presentation/gui/controller/analysis_handler/provider_integration.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Tuple
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
@@ -24,7 +23,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _extract_direct_coordinates(request_data: Dict[str, Any]) -> Tuple[Any, Any]:
+def _extract_direct_coordinates(request_data: dict[str, Any]) -> tuple[Any, Any]:
     """Extract direct top-level coordinates when present."""
     if "latitude" in request_data and "longitude" in request_data:
         return request_data.get("latitude"), request_data.get("longitude")
@@ -33,7 +32,7 @@ def _extract_direct_coordinates(request_data: Dict[str, Any]) -> Tuple[Any, Any]
     return None, None
 
 
-def _extract_location_data_coordinates(request_data: Dict[str, Any]) -> Tuple[Any, Any]:
+def _extract_location_data_coordinates(request_data: dict[str, Any]) -> tuple[Any, Any]:
     """Extract coordinates from nested location_data."""
     location_data = request_data.get("location_data", {})
     if not location_data:
@@ -44,8 +43,8 @@ def _extract_location_data_coordinates(request_data: Dict[str, Any]) -> Tuple[An
 
 
 def _enhance_request_with_provider_routing(
-    self, request_data: Dict[str, Any], provider_routing
-) -> Dict[str, Any]:
+    self, request_data: dict[str, Any], provider_routing
+) -> dict[str, Any]:
     """
     Provider routing integráció - Kérés gazdagítása provider információkkal.
 
@@ -86,8 +85,8 @@ def _enhance_request_with_provider_routing(
 
             # Provider információk hozzáadása
             enhanced_request["selected_provider"] = selected_provider
-            enhanced_request["provider_config"] = (
-                provider_routing.provider_config.PROVIDERS.get(selected_provider, {})
+            enhanced_request["provider_config"] = provider_routing.provider_config.PROVIDERS.get(
+                selected_provider, {}
             )
 
             # Usage tracking
@@ -106,7 +105,7 @@ def _enhance_request_with_provider_routing(
         return request_data
 
 
-def _extract_coordinates_from_request(self, request_data: Dict[str, Any]) -> Tuple:
+def _extract_coordinates_from_request(self, request_data: dict[str, Any]) -> tuple:  # noqa: ARG001
     """
     Koordináták kinyerése a kérésből az elemzés típusa alapján.
 

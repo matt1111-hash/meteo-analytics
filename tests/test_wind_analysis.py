@@ -76,9 +76,7 @@ def test_analyze_wind_patterns_computes_summary_across_months():
         }
     )
 
-    analysis = wa.analyze_wind_patterns(
-        weather, location_name="Budapest", threshold_kmh=45.0
-    )
+    analysis = wa.analyze_wind_patterns(weather, location_name="Budapest", threshold_kmh=45.0)
 
     assert analysis.location_name == "Budapest"
     assert analysis.total_days == 3

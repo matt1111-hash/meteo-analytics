@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Split definitions from tooltip.py."""
 
@@ -15,14 +15,14 @@ def _resolve_bar_tooltip_position(
     ylim = self.ax.get_ylim()
     x_relative = (x_pos - xlim[0]) / (xlim[1] - xlim[0])
     y_relative = (y_pos - ylim[0]) / (ylim[1] - ylim[0])
-    if y_relative > 0.7:
+    if y_relative > 0.7:  # noqa: PLR2004
         return _resolve_high_bar_position(x_relative)
     return _resolve_standard_bar_position(x_relative)
 
 
 def _resolve_high_bar_position(x_relative: float) -> tuple[int, int, str, str, str]:
     """Resolve tooltip placement for tall bars."""
-    if x_relative > 0.8:
+    if x_relative > 0.8:  # noqa: PLR2004
         return (
             -120,
             -30,
@@ -35,7 +35,7 @@ def _resolve_high_bar_position(x_relative: float) -> tuple[int, int, str, str, s
 
 def _resolve_standard_bar_position(x_relative: float) -> tuple[int, int, str, str, str]:
     """Resolve tooltip placement for regular-height bars."""
-    if x_relative > 0.8:
+    if x_relative > 0.8:  # noqa: PLR2004
         return (
             -120,
             30,
@@ -46,7 +46,7 @@ def _resolve_standard_bar_position(x_relative: float) -> tuple[int, int, str, st
     return 40, 30, "left", "bottom", "🔼 DEBUG: Tooltip felfelé - oszlop felett"
 
 
-def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
+def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:  # noqa: ARG001
     """
     💬 PRECIPITATION BAR CHART TOOLTIP POSITIONING
 
@@ -76,8 +76,8 @@ def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
     y_pos = point_data["precipitation"]
 
     # 🎯 BAR CHART SMART POSITIONING
-    offset_x, offset_y, ha_align, va_align, debug_message = (
-        _resolve_bar_tooltip_position(self, x_pos, y_pos)
+    offset_x, offset_y, ha_align, va_align, debug_message = _resolve_bar_tooltip_position(
+        self, x_pos, y_pos
     )
     print(debug_message)
 
@@ -90,19 +90,19 @@ def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:
         xy=(x_pos, y_pos),
         xytext=(offset_x, offset_y),  # 🎯 DYNAMIC OFFSET
         textcoords="offset points",
-        bbox=dict(
-            boxstyle="round,pad=1.0",
-            facecolor="lightcyan",  # 🌧️ Precipitation theme
-            edgecolor=current_colors.get("border", "#34495E"),
-            linewidth=2,
-            alpha=0.95,
-        ),
-        arrowprops=dict(
-            arrowstyle="->",
-            color=current_colors.get("border", "#34495E"),
-            lw=2,
-            alpha=0.8,
-        ),
+        bbox={
+            "boxstyle": "round,pad=1.0",
+            "facecolor": "lightcyan",  # 🌧️ Precipitation theme
+            "edgecolor": current_colors.get("border", "#34495E"),
+            "linewidth": 2,
+            "alpha": 0.95,
+        },
+        arrowprops={
+            "arrowstyle": "->",
+            "color": current_colors.get("border", "#34495E"),
+            "lw": 2,
+            "alpha": 0.8,
+        },
         fontsize=10,
         fontweight="bold",
         ha=ha_align,  # 🎯 DYNAMIC HORIZONTAL ALIGNMENT

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -89,9 +88,7 @@ def initialize_utils_module() -> bool:
 
         # Validációs eredmények ellenőrzése
         all_valid = (
-            all(gui_valid.values())
-            and all(wind_valid.values())
-            and all(dual_api_valid.values())
+            all(gui_valid.values()) and all(wind_valid.values()) and all(dual_api_valid.values())
         )
 
         if all_valid:

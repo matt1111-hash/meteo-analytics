@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -9,7 +8,6 @@ Magyar Klímaanalitika MVP - Statisztikai régió modellek
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
 
 
 class HungarianStatisticalRegion(Enum):
@@ -36,9 +34,9 @@ class HungarianRegionData:
     name: str
     display_name: str
     description: str
-    counties: List[str]
+    counties: list[str]
     administrative_center: str
     avg_temp_annual: float
     avg_precipitation_annual: int
-    characteristics: List[str]
+    characteristics: list[str]
     nuts_code: str  # NUTS 2 kód (HU10, HU21, stb.)

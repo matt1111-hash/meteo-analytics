@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for HungarianCityUIBuilder."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .ui_builder_support import *
 
 
-class HungarianCityUIBuilderPart2Mixin:
+class HungarianCityUIBuilderPart2Mixin:  # noqa: D101
     def create_quick_access_section(self, city_callback: Callable) -> QGroupBox:
         """Gyors hozzáférés szakasz létrehozása."""
         group = QGroupBox("⚡ Gyors hozzáférés - Nagy magyar városok")
@@ -36,7 +36,7 @@ class HungarianCityUIBuilderPart2Mixin:
             btn = QPushButton(display)
             btn.setToolTip(tooltip)
             btn.setMinimumHeight(35)
-            btn.clicked.connect(lambda checked, c=city: city_callback(c))
+            btn.clicked.connect(lambda checked, c=city: city_callback(c))  # noqa: ARG005
 
             # Rács elrendezés: 3 város per sor
             row = i // 3

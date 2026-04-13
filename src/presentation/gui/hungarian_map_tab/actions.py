@@ -71,9 +71,9 @@ def _refresh_folium_map(self) -> None:
 
 
 __all__ = [
+    "_export_map",
     "_on_auto_sync_toggled",
     "_on_auto_weather_refresh_toggled",
-    "_reset_map_view",
-    "_export_map",
     "_refresh_folium_map",
+    "_reset_map_view",
 ]

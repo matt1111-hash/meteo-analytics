@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -85,6 +84,4 @@ def _show_folium_error(self) -> None:
     self.progress_bar.setVisible(False)
     self.refresh_btn.setEnabled(False)
     self.export_btn.setEnabled(False)
-    self.error_occurred.emit(
-        "Folium library not installed. Please run: pip install folium branca"
-    )
+    self.error_occurred.emit("Folium library not installed. Please run: pip install folium branca")

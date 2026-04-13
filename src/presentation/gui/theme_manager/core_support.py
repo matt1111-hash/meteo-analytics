@@ -8,11 +8,10 @@ ThemeManager Core - ProfessionalThemeManager main class.
 🎨 PIROS (#C43939) PRIMARY TÉMA - Core initialization and theme switching.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from PySide6.QtCore import QObject, QSettings, Signal
 from PySide6.QtWidgets import QApplication
-
 from src.presentation.gui.color_palette import (
     ColorPalette,
     create_color_palette,
@@ -22,7 +21,7 @@ from src.presentation.gui.types import ThemeType
 
 # Professional theme library - optional
 try:
-    import qdarktheme  # noqa: F401
+    import qdarktheme
 
     PROFESSIONAL_THEMES = True
 except ImportError:

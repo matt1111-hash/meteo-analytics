@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -21,9 +20,7 @@ if TYPE_CHECKING:
     pass
 
 
-def _resolve_category(
-    value: float, categories: list[tuple[float, str]], fallback: str
-) -> str:
+def _resolve_category(value: float, categories: list[tuple[float, str]], fallback: str) -> str:
     """Resolve the first matching category for a numeric value."""
     for threshold, label in categories:
         if value >= threshold:
@@ -31,7 +28,7 @@ def _resolve_category(
     return fallback
 
 
-def get_temperature_category(self, temp: float) -> str:
+def get_temperature_category(self, temp: float) -> str:  # noqa: ARG001
     """
     Temperature categorization.
 
@@ -57,7 +54,7 @@ def get_temperature_category(self, temp: float) -> str:
     )
 
 
-def get_precipitation_category(self, precip: float) -> str:
+def get_precipitation_category(self, precip: float) -> str:  # noqa: ARG001
     """
     Precipitation categorization.
 
@@ -81,7 +78,7 @@ def get_precipitation_category(self, precip: float) -> str:
     )
 
 
-def get_wind_category(self, wind: float) -> str:
+def get_wind_category(self, wind: float) -> str:  # noqa: ARG001
     """
     Wind speed categorization.
 

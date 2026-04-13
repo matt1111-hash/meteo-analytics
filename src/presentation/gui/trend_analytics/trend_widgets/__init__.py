@@ -20,6 +20,6 @@ from .trend_chart import InteractiveTrendChart
 
 __all__ = [
     "DashboardStatsCard",
-    "InteractiveTrendChart",
     "EnhancedStatisticsPanel",
+    "InteractiveTrendChart",
 ]

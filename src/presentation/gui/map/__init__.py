@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -35,20 +34,20 @@ from .map_state import FoliumMapConfig
 from .map_visualizer import HungarianMapVisualizer
 
 __all__ = [
-    # Main widget
-    "HungarianMapVisualizer",
+    "COLOR_SCALE_GRADIENTS",
+    # Constants
+    "HUNGARY_CENTER",
+    "OVERLAY_COLOR_MAPPING",
     # Configuration
     "FoliumMapConfig",
+    # Renderer
+    "FoliumMapGenerator",
+    # Main widget
+    "HungarianMapVisualizer",
     # Interactions
     "JavaScriptBridge",
     "LocalHttpServerThread",
-    # Renderer
-    "FoliumMapGenerator",
-    # Constants
-    "HUNGARY_CENTER",
-    "COLOR_SCALE_GRADIENTS",
-    "OVERLAY_COLOR_MAPPING",
     "get_beaufort_color",
-    "get_precipitation_color",
     "get_gradient_for_overlay",
+    "get_precipitation_color",
 ]

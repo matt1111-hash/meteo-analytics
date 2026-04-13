@@ -15,7 +15,7 @@ Képességek:
 Fájl: src/presentation/gui/dialogs/calculation.py
 """
 
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING
 
 import pandas as pd
 

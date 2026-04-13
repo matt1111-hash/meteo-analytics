@@ -2,7 +2,6 @@
 """Tests for domain CityInfo value object."""
 
 import pytest
-
 from src.domain.value_objects.city_info import CityInfo
 
 

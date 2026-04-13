@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for DatabaseManager."""
 
@@ -13,9 +13,7 @@ def _extract_weather_row(daily_data: Dict[str, Any], index: int) -> tuple[Any, A
     if "wind_gusts_max" in daily_data and index < len(daily_data["wind_gusts_max"]):
         wind_gusts_max = daily_data["wind_gusts_max"][index]
     windspeed_max = None
-    if "windspeed_10m_max" in daily_data and index < len(
-        daily_data["windspeed_10m_max"]
-    ):
+    if "windspeed_10m_max" in daily_data and index < len(daily_data["windspeed_10m_max"]):
         windspeed_max = daily_data["windspeed_10m_max"][index]
     return windspeed_max, wind_gusts_max
 
@@ -51,17 +49,17 @@ def _log_saved_wind_metrics(
     wind_gusts_max: Any,
 ) -> None:
     """Log noteworthy saved wind metrics."""
-    if windspeed_max is not None and windspeed_max > 40:
+    if windspeed_max is not None and windspeed_max > 40:  # noqa: PLR2004
         database_manager._logger.info(
             f"🌪️ Saved high wind speed ({data_provider}): {date} - {windspeed_max:.1f} km/h"
         )
-    if wind_gusts_max is not None and wind_gusts_max > 80:
+    if wind_gusts_max is not None and wind_gusts_max > 80:  # noqa: PLR2004
         database_manager._logger.info(
             f"🌪️ Saved extreme wind gust ({data_provider}): {date} - {wind_gusts_max:.1f} km/h"
         )
 
 
-class DatabaseManagerPart2Mixin:
+class DatabaseManagerPart2Mixin:  # noqa: D101
     def save_weather_to_database(
         self, weather_data: Dict[str, Any], current_city_data: Optional[Dict[str, Any]]
     ) -> bool:
@@ -77,9 +75,7 @@ class DatabaseManagerPart2Mixin:
         """
         try:
             if not current_city_data:
-                self._logger.warning(
-                    "⚠️ Nincs város adat az időjárási adatok mentéséhez"
-                )
+                self._logger.warning("⚠️ Nincs város adat az időjárási adatok mentéséhez")
                 return False
 
             conn = sqlite3.connect(str(self.db_path))
@@ -114,9 +110,7 @@ class DatabaseManagerPart2Mixin:
             saved_count = 0
             for i, date in enumerate(daily_data["time"]):
                 try:
-                    row = _build_weather_insert_row(
-                        city_id, date, daily_data, i, data_provider
-                    )
+                    row = _build_weather_insert_row(city_id, date, daily_data, i, data_provider)
                     cursor.execute(
                         """
                         INSERT OR REPLACE INTO weather_data

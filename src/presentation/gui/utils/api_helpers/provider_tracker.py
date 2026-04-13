@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
 API Helpers Provider Tracker - Track provider usage and costs.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from .source_selector import get_source_display_name
 
 
-def format_provider_usage(usage_stats: Dict[str, Dict[str, Any]]) -> Dict[str, str]:
+def format_provider_usage(usage_stats: dict[str, dict[str, Any]]) -> dict[str, str]:
     """
     Format provider usage statistics for GUI display.
 
@@ -30,16 +29,14 @@ def format_provider_usage(usage_stats: Dict[str, Dict[str, Any]]) -> Dict[str, s
             requests = stats.get("requests", 0)
             limit = stats.get("limit", 10000)
             usage_percent = (requests / limit) * 100 if limit > 0 else 0
-            formatted[provider_name] = (
-                f"💎 {requests:,}/{limit:,} ({usage_percent:.1f}%)"
-            )
+            formatted[provider_name] = f"💎 {requests:,}/{limit:,} ({usage_percent:.1f}%)"
 
     return formatted
 
 
 def calculate_provider_costs(
-    usage_stats: Dict[str, Dict[str, Any]],
-) -> Dict[str, float]:
+    usage_stats: dict[str, dict[str, Any]],
+) -> dict[str, float]:
     """
     Calculate provider costs based on usage.
 
@@ -64,9 +61,7 @@ def calculate_provider_costs(
     return costs
 
 
-def get_provider_warning_level(
-    provider_name: str, usage_stats: Dict[str, Dict[str, Any]]
-) -> str:
+def get_provider_warning_level(provider_name: str, usage_stats: dict[str, dict[str, Any]]) -> str:
     """
     Determine provider usage warning level.
 
@@ -89,18 +84,18 @@ def get_provider_warning_level(
 
     usage_percent = (requests / limit) * 100
 
-    if usage_percent >= 95:
+    if usage_percent >= 95:  # noqa: PLR2004
         return "critical"
-    elif usage_percent >= 80:
+    elif usage_percent >= 80:  # noqa: PLR2004
         return "warning"
-    elif usage_percent >= 60:
+    elif usage_percent >= 60:  # noqa: PLR2004
         return "info"
     else:
         return None
 
 
 def format_provider_status(
-    provider_name: str, is_current: bool, usage_stats: Dict[str, Dict[str, Any]]
+    provider_name: str, is_current: bool, usage_stats: dict[str, dict[str, Any]]
 ) -> str:
     """
     Generate provider status string for GUI.
@@ -150,7 +145,7 @@ def get_provider_icon(provider_name: str) -> str:
     return icons.get(provider_name, "🔧")
 
 
-def format_cost_summary(usage_stats: Dict[str, Dict[str, Any]]) -> str:
+def format_cost_summary(usage_stats: dict[str, dict[str, Any]]) -> str:
     """
     Format cost summary.
 

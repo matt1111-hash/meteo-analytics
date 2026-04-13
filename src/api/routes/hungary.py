@@ -1,9 +1,8 @@
 """Hungary-specific API routes."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import logging
-from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
@@ -23,14 +22,13 @@ def _sort_counties(counties: list[str]) -> list[str]:
     """Sort counties alphabetically with Budapest normalized."""
     return sorted(
         counties,
-        key=lambda county_name: (
-            "Budapest" if county_name == "Budapest" else county_name
-        ).lower(),
+        key=lambda county_name: ("Budapest" if county_name == "Budapest" else county_name).lower(),
     )
 
 
 def _build_coordinate_payload(
-    city_data: dict, fallback_county: Optional[str] = None
+    city_data: dict,
+    fallback_county: str | None = None,  # noqa: ARG001
 ) -> dict | None:
     """Build optional coordinate payload."""
     if not city_data.get("lat") or not city_data.get("lon"):
@@ -41,7 +39,7 @@ def _build_coordinate_payload(
     }
 
 
-def _serialize_settlement(city_data: dict, fallback_county: Optional[str]) -> dict:
+def _serialize_settlement(city_data: dict, fallback_county: str | None) -> dict:
     """Serialize one settlement payload."""
     return {
         "name": city_data.get("city"),
@@ -66,18 +64,14 @@ def _serialize_station(city_data: dict) -> dict:
     }
 
 
-def _fetch_settlements(
-    city_manager: CityManagerPort, county: Optional[str], limit: int
-) -> list[dict]:
+def _fetch_settlements(city_manager: CityManagerPort, county: str | None, limit: int) -> list[dict]:
     """Fetch settlement data with optional county filter."""
     if county:
         return city_manager.get_cities_for_hungarian_county(county)
     return city_manager.get_cities_for_region("Hungary", limit=limit)
 
 
-def _filter_settlements_by_type(
-    cities: list[dict], settlement_type: Optional[str]
-) -> list[dict]:
+def _filter_settlements_by_type(cities: list[dict], settlement_type: str | None) -> list[dict]:
     """Filter settlement results by settlement type when requested."""
     if not settlement_type:
         return cities
@@ -86,21 +80,19 @@ def _filter_settlements_by_type(
 
 def _build_settlements_response(
     cities: list[dict],
-    county: Optional[str],
-    settlement_type: Optional[str],
+    county: str | None,
+    settlement_type: str | None,
 ) -> dict:
     """Build serialized settlement response payload."""
     return {
         "count": len(cities),
         "filter": {"county": county, "settlement_type": settlement_type},
-        "settlements": [
-            _serialize_settlement(city_data, county) for city_data in cities
-        ],
+        "settlements": [_serialize_settlement(city_data, county) for city_data in cities],
     }
 
 
 def _fetch_station_candidates(
-    city_manager: CityManagerPort, county: Optional[str], limit: int
+    city_manager: CityManagerPort, county: str | None, limit: int
 ) -> list[dict]:
     """Fetch candidate station settlements."""
     if county:
@@ -146,9 +138,7 @@ async def get_hungarian_counties() -> dict:
 
     except Exception as exc:
         logger.error("Error getting Hungarian counties: %s", exc, exc_info=True)
-        raise HTTPException(
-            status_code=500, detail="Failed to get Hungarian counties"
-        ) from exc
+        raise HTTPException(status_code=500, detail="Failed to get Hungarian counties") from exc
 
 
 @router.get("/regions")
@@ -182,8 +172,8 @@ async def get_hungarian_regions() -> dict:
 
 @router.get("/settlements")
 async def get_hungarian_settlements(
-    county: Optional[str] = Query(None, description="Filter by county (megye)"),
-    settlement_type: Optional[str] = Query(
+    county: str | None = Query(None, description="Filter by county (megye)"),
+    settlement_type: str | None = Query(
         None, description="Filter by settlement type (város, község, nagyközség)"
     ),
     limit: int = Query(default=50, ge=1, le=500, description="Maximum results"),
@@ -207,14 +197,12 @@ async def get_hungarian_settlements(
 
     except Exception as exc:
         logger.error("Error getting Hungarian settlements: %s", exc, exc_info=True)
-        raise HTTPException(
-            status_code=500, detail="Failed to get Hungarian settlements"
-        ) from exc
+        raise HTTPException(status_code=500, detail="Failed to get Hungarian settlements") from exc
 
 
 @router.get("/stations")
 async def get_hungarian_weather_stations(
-    county: Optional[str] = Query(None, description="Filter by county"),
+    county: str | None = Query(None, description="Filter by county"),
     limit: int = Query(default=100, ge=1, le=500, description="Maximum results"),
 ) -> dict:
     """Get Hungarian weather stations (settlements with weather data capability).

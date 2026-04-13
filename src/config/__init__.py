@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Configuration Module
 Refactored from god class to modular architecture.
@@ -85,47 +84,47 @@ datetime = _datetime
 
 # Export all public interfaces
 __all__ = [
-    # API and data
-    "APIConfig",
-    "DataConstants",
-    "APIConstants",  # Backward compatibility
-    "validate_api_keys",
-    "get_active_data_sources",
-    # Paths
-    "PROJECT_ROOT",
-    "DATA_DIR",
+    "CACHE_DB_PATH",
     "CACHE_DIR",
     "CLIMATE_CACHE_DIR",
+    "DATA_DIR",
     "EXPORTS_DIR",
+    "LEGACY_DB_PATH",
     "LOGS_DIR",
-    "USER_PREFS_DIR",
+    # Paths
+    "PROJECT_ROOT",
     "PROVIDER_PREFS_FILE",
     "USAGE_TRACKING_FILE",
+    "USER_PREFS_DIR",
     "WEATHER_DB_PATH",
-    "CACHE_DB_PATH",
-    "LEGACY_DB_PATH",
-    "ensure_directories",
-    "validate_paths",
-    "get_project_info",
-    # Provider selector
-    "ProviderConfig",
-    "UserPreferences",
-    "get_resolved_provider",
-    "validate_provider_selection",
-    # Usage tracking
-    "UsageTracker",
+    # API and data
+    "APIConfig",
+    "APIConstants",  # Backward compatibility
+    "AppInfo",
+    "DataConstants",
     # GUI and hardware
     "GUIConfig",
     "HardwareConfig",
     "MultiCityConfig",
-    "AppInfo",
+    # Provider selector
+    "ProviderConfig",
+    # Usage tracking
+    "UsageTracker",
+    "UserPreferences",
     # Validation and utilities
     "check_environment",
-    "validate_config",
-    "get_optimal_data_source",
-    "get_source_display_name",
-    "validate_api_source_available",
-    "get_fallback_source_chain",
     # Backward compatibility
     "datetime",
+    "ensure_directories",
+    "get_active_data_sources",
+    "get_fallback_source_chain",
+    "get_optimal_data_source",
+    "get_project_info",
+    "get_resolved_provider",
+    "get_source_display_name",
+    "validate_api_keys",
+    "validate_api_source_available",
+    "validate_config",
+    "validate_paths",
+    "validate_provider_selection",
 ]

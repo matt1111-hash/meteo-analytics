@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -18,7 +17,7 @@ if TYPE_CHECKING:
     from .main_window import MainWindow
 
 
-def create_navigation_toolbar(window: "MainWindow") -> QToolBar:
+def create_navigation_toolbar(window: "MainWindow") -> QToolBar:  # noqa: PLR0915
     """
     🧭 Navigációs eszköztár létrehozása.
 

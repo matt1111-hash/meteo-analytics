@@ -9,12 +9,10 @@ Provides the primary analytics-to-map synchronization methods.
 """
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 
-def _apply_analysis_parameter_update(
-    core: "AnalyticsSyncCore", params: Dict[str, Any]
-) -> None:
+def _apply_analysis_parameter_update(core: "AnalyticsSyncCore", params: dict[str, Any]) -> None:
     """Apply analysis parameters to the map."""
     analysis_type = params.get("analysis_type", "single_location")
     if analysis_type == "single_location":
@@ -40,7 +38,7 @@ class AnalyticsSyncCore:
     Main sync methods for coordinating analytics parameters with map display.
     """
 
-    def update_analysis_parameters(self, params: Dict[str, Any]) -> None:
+    def update_analysis_parameters(self, params: dict[str, Any]) -> None:
         """
         Sync analysis parameters from Control Panel to map.
 
@@ -73,7 +71,7 @@ class AnalyticsSyncCore:
         finally:
             self.sync_in_progress = False
 
-    def update_weather_parameters(self, params: Dict[str, Any]) -> None:
+    def update_weather_parameters(self, params: dict[str, Any]) -> None:
         """
         Sync weather parameters from Control Panel to map.
 
@@ -141,7 +139,7 @@ class AnalyticsSyncCore:
         finally:
             self.sync_in_progress = False
 
-    def refresh_with_new_parameters(self, bundle: Dict[str, Any]) -> None:
+    def refresh_with_new_parameters(self, bundle: dict[str, Any]) -> None:
         """
         Comprehensive map refresh with full parameter bundle.
 

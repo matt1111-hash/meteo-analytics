@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -17,7 +16,7 @@ Fájl: src/presentation/gui/controller/analysis_handler/slot_handlers.py
 """
 
 import logging
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     pass
@@ -39,7 +38,7 @@ def on_analysis_progress(self, message: str, percentage: int) -> None:
     logger.debug(f"📊 Analysis progress: {message} - {percentage}%")
 
 
-def on_analysis_completed(self, result_data: Dict) -> None:
+def on_analysis_completed(self, result_data: dict) -> None:
     """
     Analysis befejezése sikeresen.
 
@@ -107,7 +106,7 @@ def on_analysis_cancelled(self) -> None:
     """
     from .state_management import _cleanup_analysis_state
 
-    logger.info("ℹ️ Analysis cancelled")
+    logger.info("ℹ️ Analysis cancelled")  # noqa: RUF001
     self.analysis_cancelled.emit()
-    self.status_updated.emit("ℹ️ Elemzés megszakítva")
+    self.status_updated.emit("ℹ️ Elemzés megszakítva")  # noqa: RUF001
     _cleanup_analysis_state(self)

@@ -1,7 +1,7 @@
 # mypy: ignore-errors
 """Metadata API routes - available metrics, regions, etc."""
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 from fastapi import APIRouter
 

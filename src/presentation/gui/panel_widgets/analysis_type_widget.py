@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Compatibility wrapper for analysis_type_widget.py."""
 
@@ -9,9 +9,7 @@ from .analysis_type_widget_part2 import AnalysisTypeWidgetPart2Mixin
 from .analysis_type_widget_support import *
 
 
-class AnalysisTypeWidget(
-    AnalysisTypeWidgetPart1Mixin, AnalysisTypeWidgetPart2Mixin, QWidget
-):
+class AnalysisTypeWidget(AnalysisTypeWidgetPart1Mixin, AnalysisTypeWidgetPart2Mixin, QWidget):
     """
     🎯 ELEMZÉSI TÍPUS VÁLASZTÓ WIDGET - CLEAN ARCHITECTURE
 

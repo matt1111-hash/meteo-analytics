@@ -13,4 +13,4 @@ Kezeli az SQLite adatbázis kapcsolatot, séma frissítéseket
 import logging
 import sqlite3
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional

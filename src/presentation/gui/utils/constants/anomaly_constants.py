@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -55,7 +54,7 @@ class AnomalyConstants:
     MIN_DATA_POINTS = 30
 
     # Anomaly categories
-    ANOMALY_CATEGORIES = {
+    ANOMALY_CATEGORIES = {  # noqa: RUF012
         "NORMAL": {"threshold": 1.0, "color": "#10b981", "label": "Normális"},
         "MILD": {"threshold": 1.5, "color": "#f59e0b", "label": "Enyhe anomália"},
         "MODERATE": {"threshold": 2.0, "color": "#ef4444", "label": "Közepes anomália"},
@@ -64,7 +63,7 @@ class AnomalyConstants:
     }
 
     # Wind gusts categories - METEOROLOGICAL STANDARDS
-    WIND_GUSTS_CATEGORIES = {
+    WIND_GUSTS_CATEGORIES = {  # noqa: RUF012
         "CALM": {
             "threshold": 0.0,
             "max": 10.0,
@@ -130,7 +129,7 @@ class AnomalyConstants:
     EXTREME_COLOR = "#7c2d12"
 
     # Wind gusts specific colors
-    WIND_GUSTS_COLORS = {
+    WIND_GUSTS_COLORS = {  # noqa: RUF012
         "normal": "#10b981",
         "moderate": "#f59e0b",
         "strong": "#f87171",

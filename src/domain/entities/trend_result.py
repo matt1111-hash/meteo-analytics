@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from src.domain.value_objects.enums import AnalyticsMetric
 
@@ -12,25 +12,25 @@ class TrendPeriodResult:
     """Single time period trend result."""
 
     time_period: int  # years
-    years: List[int]  # actual years in the period
+    years: list[int]  # actual years in the period
     slope: float  # change per year
     slope_per_decade: float  # slope * 10
     r_squared: float  # coefficient of determination
     p_value: float  # statistical significance
     trend_direction: str  # "increasing", "decreasing", "stable"
-    confidence_interval: Tuple[float, float]  # 95% CI for slope
+    confidence_interval: tuple[float, float]  # 95% CI for slope
     significance: str  # "significant", "not_significant", "highly_significant"
 
     # Raw data
-    yearly_means: List[float]  # mean value per year
-    yearly_dates: List[str]  # ISO dates for each year
+    yearly_means: list[float]  # mean value per year
+    yearly_dates: list[str]  # ISO dates for each year
 
     # Additional statistics
     intercept: float = 0.0
     std_error: float = 0.0
     sample_size: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "time_period": self.time_period,
@@ -60,12 +60,12 @@ class TrendAnalysisResult:
 
     location_name: str
     metric: AnalyticsMetric
-    periods: List[TrendPeriodResult]
+    periods: list[TrendPeriodResult]
 
     # Execution metadata
     execution_time: float = 0.0
     total_data_points: int = 0
-    date_range: Tuple[str, str] = ("", "")  # (start_date, end_date)
+    date_range: tuple[str, str] = ("", "")  # (start_date, end_date)
 
     # Quality metrics
     data_quality_score: float = 1.0
@@ -78,14 +78,14 @@ class TrendAnalysisResult:
         """Number of period results."""
         return len(self.periods)
 
-    def get_period(self, years: int) -> Optional[TrendPeriodResult]:
+    def get_period(self, years: int) -> TrendPeriodResult | None:
         """Get result for specific time period."""
         for period in self.periods:
             if period.time_period == years:
                 return period
         return None
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get summary statistics."""
         if not self.periods:
             return {}
@@ -102,15 +102,13 @@ class TrendAnalysisResult:
             "trend_directions": direction_counts,
             "avg_r_squared": sum(p.r_squared for p in self.periods) / len(self.periods),
             "significant_periods": sum(
-                1
-                for p in self.periods
-                if p.significance in ("significant", "highly_significant")
+                1 for p in self.periods if p.significance in ("significant", "highly_significant")
             ),
             "location_name": self.location_name,
             "metric": self.metric.value,
         }
 
-    def get_chart_data(self, period_years: int) -> Dict[str, Any]:
+    def get_chart_data(self, period_years: int) -> dict[str, Any]:
         """Get data formatted for charting."""
         period = self.get_period(period_years)
         if not period:
@@ -130,7 +128,7 @@ class TrendAnalysisResult:
             "trend_direction": period.trend_direction,
         }
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "location_name": self.location_name,
@@ -146,4 +144,4 @@ class TrendAnalysisResult:
         }
 
 
-__all__ = ["TrendPeriodResult", "TrendAnalysisResult"]
+__all__ = ["TrendAnalysisResult", "TrendPeriodResult"]

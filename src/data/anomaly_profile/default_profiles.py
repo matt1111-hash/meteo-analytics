@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Global Weather Analyzer - Anomaly Profile Default Definitions
 Predefined anomaly profiles for different climate zones.
@@ -8,12 +7,12 @@ Predefined anomaly profiles for different climate zones.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 from ..anomaly_types import AnomalyProfileSettings
 
 
-def create_default_profiles() -> Dict[str, Dict[str, Any]]:
+def create_default_profiles() -> dict[str, dict[str, Any]]:
     """
     Alapértelmezett anomália profilok létrehozása.
 
@@ -67,7 +66,7 @@ def create_default_profiles() -> Dict[str, Dict[str, Any]]:
     }
 
 
-def create_profiles_data(active_profile: str = "default") -> Dict[str, Any]:
+def create_profiles_data(active_profile: str = "default") -> dict[str, Any]:
     """
     Teljes profil adat struktúra létrehozása.
 

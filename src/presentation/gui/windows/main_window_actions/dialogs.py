@@ -1,6 +1,7 @@
 # mypy: ignore-errors
 """Dialogs and cleanup functions."""
 
+import contextlib
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QThread, QTimer
@@ -109,10 +110,8 @@ def cleanup_all_workers(window: "MainWindow") -> None:
 def cleanup_all_web_engines(window: "MainWindow") -> None:
     """Minden WebEngine cleanup."""
     for web_view in window.state.web_engine_views:
-        try:
+        with contextlib.suppress(Exception):
             web_view.close()
-        except Exception:
-            pass
 
 
 def cleanup_all_timers(window: "MainWindow") -> None:

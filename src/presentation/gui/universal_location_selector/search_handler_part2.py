@@ -1,4 +1,4 @@
-# ruff: noqa: F401,F403,F405,noqa: I001
+# ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
 """Mixin part 2 for SearchHandler."""
 
@@ -7,7 +7,7 @@ from __future__ import annotations
 from .search_handler_support import *
 
 
-class SearchHandlerPart2Mixin:
+class SearchHandlerPart2Mixin:  # noqa: D101
     def _display_results(self, results: List[Dict[str, Any]]) -> None:
         """
         Keresési eredmények megjelenítése MAGYAR PRIORITÁSSAL
@@ -78,9 +78,7 @@ class SearchHandlerPart2Mixin:
 
         return f"{flag} {display_name}{settlement_info}{pop_info}\n🗺️ [{lat:.3f}, {lon:.3f}]"
 
-    def _format_global_city(
-        self, city: Dict[str, Any], name: str, lat: float, lon: float
-    ) -> str:
+    def _format_global_city(self, city: Dict[str, Any], name: str, lat: float, lon: float) -> str:
         """
         Globális város formázása.
 

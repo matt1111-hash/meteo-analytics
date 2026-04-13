@@ -9,7 +9,8 @@ UI komponensek létrehozása a HungarianCitySelector widgethez.
 """
 
 import logging
-from typing import Callable, List, Optional
+from collections.abc import Callable
+from typing import Optional
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
@@ -26,7 +27,6 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
 from src.presentation.gui.hungarian_city_selector.types import (
     HungarianCity,
     HungarianRegions,

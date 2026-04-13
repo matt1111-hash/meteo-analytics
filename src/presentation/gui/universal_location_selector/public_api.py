@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # mypy: ignore-errors
 
 """
@@ -16,11 +15,8 @@ Képességek:
 Fájl: src/presentation/gui/universal_location_selector/public_api.py
 """
 
-from typing import Optional
-
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QLabel, QLineEdit, QListWidget, QPushButton
-
 from src.domain.entities.universal_location import UniversalLocation
 
 from .location_card import LocationCard
@@ -34,13 +30,13 @@ class UniversalLocationSelectorPublicAPI:
     amiket a UniversalLocationSelector 提供.
     """
 
-    # Signalok (delegált)
+    # Signalok (delegált)  # noqa: ERA001
     search_requested: Signal
     city_selected: Signal
     location_changed: Signal
 
     # State
-    current_location: Optional[UniversalLocation]
+    current_location: UniversalLocation | None
 
     # Widgets
     search_input: QLineEdit
@@ -49,7 +45,7 @@ class UniversalLocationSelectorPublicAPI:
     confirm_button: QPushButton
     status_label: QLabel
 
-    def get_current_location(self) -> Optional[UniversalLocation]:
+    def get_current_location(self) -> UniversalLocation | None:
         """Jelenlegi lokáció lekérdezése"""
         return self.current_location
 
