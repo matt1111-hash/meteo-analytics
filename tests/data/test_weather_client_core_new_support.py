@@ -6,6 +6,19 @@ from unittest.mock import Mock, patch
 
 import pytest
 from src.data.weather_client_core import WeatherClient
+from src.data.weather_types import ProviderNotAvailableError, WeatherAPIError
+
+__all__ = [
+    "Mock",
+    "ProviderNotAvailableError",
+    "WeatherAPIError",
+    "WeatherClient",
+    "client",
+    "mock_api_config",
+    "mock_providers",
+    "patch",
+    "pytest",
+]
 
 
 @pytest.fixture

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from src.data.city_manager_db import CityDatabaseError, CityManagerDB
 
 # ruff: noqa: F403, F405
@@ -11,22 +13,16 @@ from tests.data.test_city_manager_db_new_support import *
 class TestExecuteQuery:
     """Test _execute_query method."""
 
-    def test_execute_query_on_global_database(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_execute_query_on_global_database(self, cities_db: Path, hungarian_db: Path) -> None:
         """_execute_query executes query on global database by default."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
 
-        results = manager._execute_query(
-            "SELECT * FROM cities WHERE city = ?", ("Budapest",)
-        )
+        results = manager._execute_query("SELECT * FROM cities WHERE city = ?", ("Budapest",))
 
         assert len(results) == 1
         assert results[0]["city"] == "Budapest"
 
-    def test_execute_query_on_hungarian_database(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_execute_query_on_hungarian_database(self, cities_db: Path, hungarian_db: Path) -> None:
         """_execute_query executes query on Hungarian database when use_hungarian=True."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -56,9 +52,7 @@ class TestExecuteQuery:
         """_execute_query increments Hungarian query count when use_hungarian=True."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
 
-        manager._execute_query(
-            "SELECT * FROM hungarian_settlements", use_hungarian=True
-        )
+        manager._execute_query("SELECT * FROM hungarian_settlements", use_hungarian=True)
 
         assert manager.query_count == 0
         assert manager.hungarian_query_count == 1
@@ -84,9 +78,7 @@ class TestExecuteQuery:
         )
         manager.connection = None
 
-        with pytest.raises(
-            CityDatabaseError, match="Global database connection not available"
-        ):
+        with pytest.raises(CityDatabaseError, match="Global database connection not available"):
             manager._execute_query("SELECT * FROM cities")
 
     def test_execute_query_raises_for_hungarian_when_no_connection(
@@ -98,16 +90,10 @@ class TestExecuteQuery:
         )
         manager.hungarian_connection = None
 
-        with pytest.raises(
-            CityDatabaseError, match="Hungarian database connection not available"
-        ):
-            manager._execute_query(
-                "SELECT * FROM hungarian_settlements", use_hungarian=True
-            )
+        with pytest.raises(CityDatabaseError, match="Hungarian database connection not available"):
+            manager._execute_query("SELECT * FROM hungarian_settlements", use_hungarian=True)
 
-    def test_execute_query_raises_on_sql_error(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_execute_query_raises_on_sql_error(self, cities_db: Path, hungarian_db: Path) -> None:
         """_execute_query raises CityDatabaseError on SQL error."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -118,9 +104,7 @@ class TestExecuteQuery:
 class TestClose:
     """Test close method."""
 
-    def test_close_closes_global_connection(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_close_closes_global_connection(self, cities_db: Path, hungarian_db: Path) -> None:
         """close closes global database connection."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
         assert manager.connection is not None
@@ -129,9 +113,7 @@ class TestClose:
 
         assert manager.connection is None
 
-    def test_close_closes_hungarian_connection(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_close_closes_hungarian_connection(self, cities_db: Path, hungarian_db: Path) -> None:
         """close closes Hungarian database connection."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
         assert manager.hungarian_connection is not None
@@ -140,9 +122,7 @@ class TestClose:
 
         assert manager.hungarian_connection is None
 
-    def test_close_closes_both_connections(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_close_closes_both_connections(self, cities_db: Path, hungarian_db: Path) -> None:
         """close closes both database connections."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
         assert manager.connection is not None

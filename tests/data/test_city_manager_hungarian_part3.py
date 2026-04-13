@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.data.city_manager_hungarian import CityManagerHungarian
+
 # ruff: noqa: F403, F405
 from tests.data.test_city_manager_hungarian_support import *
 
@@ -9,13 +11,9 @@ from tests.data.test_city_manager_hungarian_support import *
 class TestCityManagerHungarianEdgeCases:
     """Edge case tests for CityManagerHungarian."""
 
-    def test_search_with_special_characters(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_search_with_special_characters(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_hungarian_settlements handles special Hungarian characters."""
-        manager = CityManagerHungarian(
-            db_path=cities_db, hungarian_db_path=hungarian_db
-        )
+        manager = CityManagerHungarian(db_path=cities_db, hungarian_db_path=hungarian_db)
 
         # Search with Hungarian special characters (á, é, í, ó, ö, ő, ú, ü, ű)
         results = manager.search_hungarian_settlements("Békéscsaba")
@@ -26,9 +24,7 @@ class TestCityManagerHungarianEdgeCases:
 
     def test_search_case_insensitive(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_hungarian_settlements is case insensitive."""
-        manager = CityManagerHungarian(
-            db_path=cities_db, hungarian_db_path=hungarian_db
-        )
+        manager = CityManagerHungarian(db_path=cities_db, hungarian_db_path=hungarian_db)
 
         results_lower = manager.search_hungarian_settlements("budapest")
         results_upper = manager.search_hungarian_settlements("BUDAPEST")
@@ -37,9 +33,7 @@ class TestCityManagerHungarianEdgeCases:
 
     def test_search_empty_string(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_hungarian_settlements with empty string returns all settlements."""
-        manager = CityManagerHungarian(
-            db_path=cities_db, hungarian_db_path=hungarian_db
-        )
+        manager = CityManagerHungarian(db_path=cities_db, hungarian_db_path=hungarian_db)
 
         results = manager.search_hungarian_settlements("", limit=5)
 
@@ -47,9 +41,7 @@ class TestCityManagerHungarianEdgeCases:
 
     def test_search_combined_filters(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_hungarian_settlements works with combined filters."""
-        manager = CityManagerHungarian(
-            db_path=cities_db, hungarian_db_path=hungarian_db
-        )
+        manager = CityManagerHungarian(db_path=cities_db, hungarian_db_path=hungarian_db)
 
         results = manager.search_hungarian_settlements(
             "Kiskun",
@@ -64,13 +56,9 @@ class TestCityManagerHungarianEdgeCases:
             assert city.megye == "Bács-Kiskun"
             assert city.settlement_type == "város"
 
-    def test_get_counties_cache_persists(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_get_counties_cache_persists(self, cities_db: Path, hungarian_db: Path) -> None:
         """Counties cache persists across multiple calls."""
-        manager = CityManagerHungarian(
-            db_path=cities_db, hungarian_db_path=hungarian_db
-        )
+        manager = CityManagerHungarian(db_path=cities_db, hungarian_db_path=hungarian_db)
 
         counties1 = manager.get_hungarian_counties()
         # Manually modify cache to test it's being used

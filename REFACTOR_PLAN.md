@@ -107,6 +107,54 @@ KATEGÓRIA 2 -- mock path-ok, API változások -- 0 hiba maradt.
 
 ---
 
+## Session handoff -- 2026-04-13 (3. alkalom)
+
+### Elvégzett javítások
+
+**PROBLÉMA 1: Pre-commit blocker**
+- `tests/data/test_city_manager_db_new_part1.py` -- hozzáadva: `CityManagerDB`, `CityDatabaseError` import
+- További javított teszt fájlok:
+  - `test_city_manager_stats_part1.py` -- hozzáadva: `CityManagerStats`
+  - `test_city_manager_stats_part2.py` -- hozzáadva: `CityManagerStats`
+  - `test_city_manager_stats_part3.py` -- hozzáadva: `CityManagerStats`
+  - `test_city_manager_db_new_part2.py` -- hozzáadva: `CityManagerDB`, `CityDatabaseError`
+  - `test_city_manager_db_new_part3.py` -- hozzáadva: `CityManagerDB`, `CityDatabaseError`
+
+**PROBLÉMA 2: Import-linter javítás (4 -> 3 violations)**
+
+Új fájl létrehozva:
+- `src/domain/entities/city.py` -- Tiszta domain entity, sqlite3-mentes, az enums-okat is tartalmazza
+
+Módosított fájlok:
+- `src/infrastructure/adapters/city_adapter.py` -- `City` import átmozgatva `data` -> `domain` rétegre (JAVÍTVA)
+- `src/data/city_types.py` -- `City` örököl a domain `City`-ból, re-exportálja az enum-okat
+
+**Eredmény:**
+- `import-linter lint` -- 4-ról 3-ra csökkent a violations
+- Maradék 3 violation (`factories.py:36,48,84`) -- Phase 3 DI refactor szükséges
+
+### Legutóbbi validáció
+
+```
+Futtatott: git push && pytest tests/ -q --tb=no && ./quality_gate.sh
+
+Eredmény:
+- git push: SIKER (rebase + push)
+- pytest: 141 failed, 1443 passed (pre-existing failures, nem az én változtatásaim okozták)
+- Frontend quality gate: PASS
+```
+
+### Nyitott, következo sessionre marado pontok
+
+- [x] Pre-commit test blocker javítva
+- [x] Import-linter: 1 violation javítva (city_adapter)
+- [x] Git commit: `1c79deb`
+- [ ] Maradék 3 import-linter violation (`factories.py`) -- Phase 3
+- [ ] Prettier 113 fájl formázandó. Opcionális.
+- [ ] 141 pytest failure (pre-existing, nem ebböl a sessionböl)
+
+---
+
 ## Fázisok
 
 ### FÁZIS 0: Git és env cleanup (0. nap)

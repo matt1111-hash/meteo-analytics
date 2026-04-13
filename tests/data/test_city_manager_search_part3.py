@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.data.city_manager_search import CityManagerSearch
+
 # ruff: noqa: F403, F405
 from tests.data.test_city_manager_search_support import *
 
@@ -9,9 +11,7 @@ from tests.data.test_city_manager_search_support import *
 class TestGetHungarianCitiesCombined:
     """Test _get_hungarian_cities_combined method."""
 
-    def test_returns_combined_results(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_returns_combined_results(self, cities_db: Path, hungarian_db: Path) -> None:
         """_get_hungarian_cities_combined returns Hungarian + global HU cities."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -29,15 +29,11 @@ class TestGetHungarianCitiesCombined:
 
         assert len(results) <= 3
 
-    def test_with_min_population_filter(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_with_min_population_filter(self, cities_db: Path, hungarian_db: Path) -> None:
         """_get_hungarian_cities_combined filters by min_population."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
-        results = manager._get_hungarian_cities_combined(
-            limit=10, min_population=100000
-        )
+        results = manager._get_hungarian_cities_combined(limit=10, min_population=100000)
 
         for city in results:
             if city.population:
@@ -53,9 +49,7 @@ class TestGetHungarianCitiesCombined:
         budapest_count = sum(1 for c in results if c.city.lower() == "budapest")
         assert budapest_count <= 1
 
-    def test_works_without_hungarian_db(
-        self, cities_db: Path, mock_data_dir: Path
-    ) -> None:
+    def test_works_without_hungarian_db(self, cities_db: Path, mock_data_dir: Path) -> None:
         """_get_hungarian_cities_combined works with only global DB."""
         manager = CityManagerSearch(
             db_path=cities_db, hungarian_db_path=mock_data_dir / "nonexistent.db"
@@ -101,9 +95,7 @@ class TestCityManagerSearchEdgeCases:
         assert len(results) >= 1
         assert results[0].city == "Kiskunhalas"
 
-    def test_find_city_with_empty_string(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_find_city_with_empty_string(self, cities_db: Path, hungarian_db: Path) -> None:
         """find_city_by_name handles empty string."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -124,9 +116,7 @@ class TestCityManagerSearchEdgeCases:
         # Should return empty or handle gracefully
         assert isinstance(results, list)
 
-    def test_multiple_queries_increment_counters(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_multiple_queries_increment_counters(self, cities_db: Path, hungarian_db: Path) -> None:
         """Multiple queries increment counters correctly."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -140,9 +130,7 @@ class TestCityManagerSearchEdgeCases:
         assert manager.query_count > initial_global
         assert manager.hungarian_query_count > initial_hungarian
 
-    def test_search_unified_returns_city_objects(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_search_unified_returns_city_objects(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_unified returns City objects with proper attributes."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 

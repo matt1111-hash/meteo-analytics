@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.data.city_manager_search import CityManagerSearch
+
 # ruff: noqa: F403, F405
 from tests.data.test_city_manager_search_support import *
 
@@ -9,9 +11,7 @@ from tests.data.test_city_manager_search_support import *
 class TestSearchCities:
     """Test search_cities method."""
 
-    def test_search_returns_matching_cities(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_search_returns_matching_cities(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_cities returns global cities matching search term."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -28,9 +28,7 @@ class TestSearchCities:
 
         assert len(results) == 3
 
-    def test_search_with_country_filter(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_search_with_country_filter(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_cities filters by country_code."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -62,9 +60,7 @@ class TestSearchCities:
 
         assert results == []
 
-    def test_search_sorted_by_population(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_search_sorted_by_population(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_cities sorts results by population descending."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -73,9 +69,7 @@ class TestSearchCities:
         populations = [c.population for c in results if c.population]
         assert populations == sorted(populations, reverse=True)
 
-    def test_search_increments_query_count(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_search_increments_query_count(self, cities_db: Path, hungarian_db: Path) -> None:
         """search_cities increments query_count."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
         initial_count = manager.query_count
@@ -88,9 +82,7 @@ class TestSearchCities:
 class TestGetCitiesByCountry:
     """Test get_cities_by_country method."""
 
-    def test_returns_cities_for_country(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_returns_cities_for_country(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_by_country returns cities in specified country."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -108,9 +100,7 @@ class TestGetCitiesByCountry:
 
         assert len(results) <= 2
 
-    def test_with_min_population_filter(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_with_min_population_filter(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_by_country filters by minimum population."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -120,9 +110,7 @@ class TestGetCitiesByCountry:
             if city.population:
                 assert city.population >= 100000
 
-    def test_returns_hungarian_combined_for_hu(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_returns_hungarian_combined_for_hu(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_by_country for HU returns combined Hungarian + global results."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -144,9 +132,7 @@ class TestGetCitiesByCountry:
 
         assert results == []
 
-    def test_country_code_case_insensitive(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_country_code_case_insensitive(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_by_country handles lowercase country codes."""
         manager = CityManagerSearch(db_path=cities_db, hungarian_db_path=hungarian_db)
 

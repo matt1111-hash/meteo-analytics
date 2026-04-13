@@ -6,6 +6,16 @@ import sqlite3
 from pathlib import Path
 
 import pytest
+from src.domain.entities.city import City
+
+__all__ = [
+    "City",
+    "cities_db",
+    "empty_cities_db",
+    "hungarian_db",
+    "mock_data_dir",
+    "pytest",
+]
 
 
 @pytest.fixture
