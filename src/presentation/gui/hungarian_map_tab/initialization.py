@@ -18,8 +18,8 @@ def initialize_weather_components(self) -> None:
     🌤️ Weather integráció komponensek inicializálása.
     """
     try:
-        from src.analytics.ports import get_multi_city_engine_port
-        from src.presentation.gui.weather_data_bridge import WeatherDataBridge
+        from src.analytics.ports import get_multi_city_engine_port  # noqa: PLC0415
+        from src.presentation.gui.weather_data_bridge import WeatherDataBridge  # noqa: PLC0415
 
         self.weather_bridge = WeatherDataBridge()
         print("✅ DEBUG: WeatherDataBridge initialized")

@@ -8,7 +8,7 @@ class TestModuleExports:
 
     def test_module_exports_all_configs(self) -> None:
         """__all__ should export all config classes."""
-        from src.config import config_settings
+        from src.config import config_settings  # noqa: PLC0415
 
         expected_exports = {"GUIConfig", "HardwareConfig", "MultiCityConfig", "AppInfo"}
         actual_exports = set(config_settings.__all__)
@@ -17,7 +17,7 @@ class TestModuleExports:
 
     def test_all_exports_are_importable(self) -> None:
         """All classes in __all__ should be importable from module."""
-        from src.config.config_settings import (
+        from src.config.config_settings import (  # noqa: PLC0415
             AppInfo,
             GUIConfig,
             HardwareConfig,
@@ -35,9 +35,9 @@ class TestIntegration:
 
     def test_all_configs_are_dataclass_instances(self) -> None:
         """All config classes should be dataclass instances."""
-        from dataclasses import is_dataclass
+        from dataclasses import is_dataclass  # noqa: PLC0415
 
-        from src.config.config_settings import (
+        from src.config.config_settings import (  # noqa: PLC0415
             AppInfo,
             GUIConfig,
             HardwareConfig,
@@ -51,9 +51,9 @@ class TestIntegration:
 
     def test_all_configs_are_frozen(self) -> None:
         """All config classes should be frozen dataclasses."""
-        from dataclasses import fields
+        from dataclasses import fields  # noqa: PLC0415
 
-        from src.config.config_settings import (
+        from src.config.config_settings import (  # noqa: PLC0415
             AppInfo,
             GUIConfig,
             HardwareConfig,
@@ -66,7 +66,7 @@ class TestIntegration:
 
     def test_config_values_are_sensible(self) -> None:
         """Configuration values should be within sensible ranges."""
-        from src.config.config_settings import (
+        from src.config.config_settings import (  # noqa: PLC0415
             AppInfo,
             GUIConfig,
             HardwareConfig,
@@ -96,7 +96,7 @@ class TestIntegration:
 
     def test_provider_selector_features_are_complete(self) -> None:
         """Provider selector features should cover key functionality."""
-        from src.config.config_settings import AppInfo
+        from src.config.config_settings import AppInfo  # noqa: PLC0415
 
         features = AppInfo.PROVIDER_SELECTOR_FEATURES
         feature_text = " ".join(features).lower()

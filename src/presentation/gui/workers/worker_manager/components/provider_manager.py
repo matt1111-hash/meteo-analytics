@@ -31,7 +31,7 @@ class ProviderManager:
         Args:
             new_provider: New provider name
         """
-        from ..worker_utils import get_source_display_name
+        from ..worker_utils import get_source_display_name  # noqa: PLC0415
 
         print(f"🔄 DEBUG: Provider changed to: {get_source_display_name(new_provider)}")
         self._manager.last_successful_provider = new_provider

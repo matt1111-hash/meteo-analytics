@@ -110,7 +110,7 @@ def register_widget_for_theming(
         clear_btn: Clear button
         info_label: Info label
     """
-    from src.presentation.gui.theme_manager import register_widget_for_theming
+    from src.presentation.gui.theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     register_widget_for_theming(widget, "container")
     register_widget_for_theming(group, "container")
@@ -144,6 +144,6 @@ def apply_label_styling(label: QLabel, theme_manager: "ThemeManager", style_type
     css = f"QLabel {{ color: {color}; font-size: {font_size}; }}"
     label.setStyleSheet(css)
 
-    from src.presentation.gui.theme_manager import register_widget_for_theming
+    from src.presentation.gui.theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     register_widget_for_theming(label, "text")

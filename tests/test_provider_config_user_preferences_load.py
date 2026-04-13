@@ -13,7 +13,7 @@ class TestUserPreferencesLoad:
         self, config_fs: dict[str, str]
     ) -> None:
         """Missing preferences file should return default preferences."""
-        from src.config.provider_config import ProviderConfig, UserPreferences
+        from src.config.provider_config import ProviderConfig, UserPreferences  # noqa: PLC0415
 
         config_fs.pop("prefs", None)
 
@@ -29,7 +29,7 @@ class TestUserPreferencesLoad:
 
     def test_load_preferences_merges_with_saved_values(self, config_fs: dict[str, str]) -> None:
         """Saved preferences should be merged with defaults."""
-        from src.config.provider_config import ProviderConfig, UserPreferences
+        from src.config.provider_config import ProviderConfig, UserPreferences  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps(
             {"selected_provider": "meteostat", "auto_fallback_enabled": False}
@@ -44,7 +44,7 @@ class TestUserPreferencesLoad:
 
     def test_load_preferences_handles_corrupted_json(self, config_fs: dict[str, str]) -> None:
         """Corrupted JSON should return default preferences."""
-        from src.config.provider_config import ProviderConfig, UserPreferences
+        from src.config.provider_config import ProviderConfig, UserPreferences  # noqa: PLC0415
 
         config_fs["prefs"] = "{ not valid json"
 
@@ -54,7 +54,7 @@ class TestUserPreferencesLoad:
 
     def test_load_preferences_includes_timestamp(self, config_fs: dict[str, str]) -> None:
         """Preferences should include last_updated timestamp."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         prefs = UserPreferences.load_provider_preferences()
 

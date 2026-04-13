@@ -56,7 +56,7 @@ def generate_mock_usage_data() -> dict[str, Any]:
     Returns:
         Dict[str, Any]: Provider usage stats
     """
-    import random
+    import random  # noqa: PLC0415
 
     return {
         "open-meteo": {

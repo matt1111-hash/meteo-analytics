@@ -144,7 +144,7 @@ class AnalyticsViewPart1Mixin:  # noqa: D101
             self.statistics_cards.process_and_display_statistics(data, total_days)
 
             # Rekordok frissítése (mindig napi szinten)
-            from .analytics_statistics import AnalyticsStatistics
+            from .analytics_statistics import AnalyticsStatistics  # noqa: PLC0415
 
             records = AnalyticsStatistics.calculate_records(data)
             self.record_summary.update_records(records)

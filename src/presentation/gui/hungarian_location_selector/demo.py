@@ -52,7 +52,7 @@ def demo_hungarian_location_selector_with_state_management_fix():  # noqa: PLR09
     main_layout = QHBoxLayout()
 
     # Location selector
-    from .core import HungarianLocationSelector
+    from .core import HungarianLocationSelector  # noqa: PLC0415
 
     location_selector = HungarianLocationSelector()
     main_layout.addWidget(location_selector)

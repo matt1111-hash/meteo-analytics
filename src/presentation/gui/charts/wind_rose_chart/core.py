@@ -40,7 +40,7 @@ class WindRoseChart(WeatherChart):
             self.figure.clear()
 
             # Téma alkalmazása
-            from src.presentation.gui.theme_manager import get_current_colors
+            from src.presentation.gui.theme_manager import get_current_colors  # noqa: PLC0415
 
             current_colors = get_current_colors()
             self.figure.patch.set_facecolor(current_colors.get("surface", "#ffffff"))

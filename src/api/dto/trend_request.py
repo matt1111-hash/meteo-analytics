@@ -57,7 +57,7 @@ class TrendAnalysisRequest(BaseModel):
         if value is None:
             return None
         try:
-            from datetime import datetime
+            from datetime import datetime  # noqa: PLC0415
 
             datetime.strptime(value, "%Y-%m-%d")
             return value

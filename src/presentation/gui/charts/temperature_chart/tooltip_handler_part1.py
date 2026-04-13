@@ -92,7 +92,7 @@ class TemperatureTooltipHandlerMixinPart1Mixin:  # noqa: D101
             if "date" not in df.columns:
                 return None
 
-            import matplotlib.dates as mdates
+            import matplotlib.dates as mdates  # noqa: PLC0415
 
             plot_dates = mdates.date2num(df["date"])
             temp_columns = self._get_temperature_columns(df)

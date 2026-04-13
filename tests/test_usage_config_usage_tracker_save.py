@@ -10,7 +10,7 @@ class TestUsageTrackerSave:
 
     def test_save_usage_writes_to_file(self, config_fs: dict[str, str]) -> None:
         """Saving usage data should write to file."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         usage_data = {
             "current_month": "2024-01",
@@ -29,7 +29,7 @@ class TestUsageTrackerSave:
 
     def test_save_usage_adds_timestamp(self, config_fs: dict[str, str]) -> None:
         """Saving should add last_updated timestamp."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         usage_data = {"total_requests": 5}
 

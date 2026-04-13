@@ -18,7 +18,7 @@ def generate_demo_weather_data() -> dict[str, Any]:
     Returns:
         Demo időjárási adatok dictionary
     """
-    import random
+    import random  # noqa: PLC0415
 
     cities = [
         {"name": "Budapest", "coordinates": [47.4979, 19.0402]},
@@ -97,7 +97,7 @@ def get_dynamic_gradient_info(
     Returns:
         Gradient információk dictionary
     """
-    from .map_constants import OVERLAY_COLOR_MAPPING
+    from .map_constants import OVERLAY_COLOR_MAPPING  # noqa: PLC0415
 
     return {
         "active_overlay_parameter": active_overlay_parameter,

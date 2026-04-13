@@ -83,7 +83,7 @@ class TrendAnalysisHandlerMixin:
             self.analysis_started.emit()
 
             # Import here to avoid circular dependency
-            from ..trend_worker import TrendAnalyticsWorker
+            from ..trend_worker import TrendAnalyticsWorker  # noqa: PLC0415
 
             # Worker thread létrehozása
             self.current_worker = TrendAnalyticsWorker(location, parameter, time_range)

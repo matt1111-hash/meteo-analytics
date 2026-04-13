@@ -116,7 +116,7 @@ def update_data(self, data: Dict[str, Any], city_name: str) -> None:
 
     except Exception as e:
         logger.error(f"ResultsPanel adatfrissítési hiba: {e}")
-        import traceback
+        import traceback  # noqa: PLC0415
 
         traceback.print_exc()
 
@@ -152,7 +152,7 @@ def _update_windy_days_tab(self, data: Dict[str, Any], city_name: str) -> None:
 
     except Exception as convert_error:
         logger.error(f"🚨 DEBUG: _convert_data_to_dataframe() HIBA: {convert_error}")
-        import traceback
+        import traceback  # noqa: PLC0415
 
         traceback.print_exc()
         empty_df = self.data_processor._empty_dataframe_fallback()

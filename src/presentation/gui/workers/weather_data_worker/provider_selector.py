@@ -30,7 +30,7 @@ class ProviderSelector:
         Returns:
             Selected provider name or None
         """
-        from ...utils import (
+        from ...utils import (  # noqa: PLC0415
             get_fallback_source_chain,
             get_optimal_data_source,
             validate_api_source_available,

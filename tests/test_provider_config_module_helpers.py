@@ -10,21 +10,21 @@ class TestModuleHelpers:
 
     def test_resolve_config_attr_with_fallback(self) -> None:
         """Should return fallback when attribute not in config module."""
-        from src.config.provider_config import _resolve_config_attr
+        from src.config.provider_config import _resolve_config_attr  # noqa: PLC0415
 
         result = _resolve_config_attr("nonexistent_attr", "fallback_value")
         assert result == "fallback_value"
 
     def test_get_provider_prefs_file_returns_path(self) -> None:
         """Should return a Path object."""
-        from src.config.provider_config import _get_provider_prefs_file
+        from src.config.provider_config import _get_provider_prefs_file  # noqa: PLC0415
 
         result = _get_provider_prefs_file()
         assert isinstance(result, Path)
 
     def test_freeze_value_preserves_data(self) -> None:
         """Freezing should preserve the original data structure."""
-        from src.config.provider_config import _freeze_value
+        from src.config.provider_config import _freeze_value  # noqa: PLC0415
 
         original = {
             "string": "value",

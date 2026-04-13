@@ -20,7 +20,7 @@ class TestThreadSafety:
 
     def test_load_profiles_is_thread_safe(self, tmp_path: Path) -> None:
         """load_profiles can be called concurrently without error."""
-        import threading
+        import threading  # noqa: PLC0415
 
         storage = AnomalyProfileStorage(config_dir=tmp_path)
         test_data: dict[str, Any] = {"profile": {"temp_hot": 35.0}}
@@ -50,7 +50,7 @@ class TestThreadSafety:
 
     def test_save_profiles_is_thread_safe(self, tmp_path: Path) -> None:
         """save_profiles can be called concurrently without error."""
-        import threading
+        import threading  # noqa: PLC0415
 
         storage = AnomalyProfileStorage(config_dir=tmp_path)
 

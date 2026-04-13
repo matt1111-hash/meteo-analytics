@@ -76,7 +76,7 @@ def create_weather_worker_with_provider(
     Returns:
         Konfigurált WeatherDataWorker instance
     """
-    from .weather_data_worker import WeatherDataWorker
+    from .weather_data_worker import WeatherDataWorker  # noqa: PLC0415
 
     worker = WeatherDataWorker(
         latitude=latitude,
@@ -121,7 +121,7 @@ def create_comprehensive_worker_manager():
     Returns:
         Fully configured WorkerManager instance
     """
-    from .worker_manager import WorkerManager
+    from .worker_manager import WorkerManager  # noqa: PLC0415
 
     manager = WorkerManager()
 

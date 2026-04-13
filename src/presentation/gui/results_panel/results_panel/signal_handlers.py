@@ -97,7 +97,7 @@ def _on_extreme_weather_clicked(self) -> None:
     self.extreme_weather_requested.emit()
 
     # Tab váltás
-    from .public_api import switch_to_tab
+    from .public_api import switch_to_tab  # noqa: PLC0415
 
     switch_to_tab(self, "extreme")
 

@@ -12,7 +12,7 @@ class TestFreezeValue:
 
     def test_freeze_value_with_dict(self) -> None:
         """Freezing a dict should return MappingProxyType."""
-        from src.config.provider_config import _freeze_value
+        from src.config.provider_config import _freeze_value  # noqa: PLC0415
 
         result = _freeze_value({"key": "value", "nested": {"inner": "data"}})
 
@@ -22,7 +22,7 @@ class TestFreezeValue:
 
     def test_freeze_value_with_list(self) -> None:
         """Freezing a list should return a tuple."""
-        from src.config.provider_config import _freeze_value
+        from src.config.provider_config import _freeze_value  # noqa: PLC0415
 
         result = _freeze_value([1, 2, 3, "four"])
 
@@ -31,7 +31,7 @@ class TestFreezeValue:
 
     def test_freeze_value_with_nested_structures(self) -> None:
         """Freezing nested structures should recursively freeze all elements."""
-        from src.config.provider_config import _freeze_value
+        from src.config.provider_config import _freeze_value  # noqa: PLC0415
 
         result = _freeze_value(
             {
@@ -49,7 +49,7 @@ class TestFreezeValue:
 
     def test_freeze_value_with_primitives(self) -> None:
         """Freezing primitive values should return them unchanged."""
-        from src.config.provider_config import _freeze_value
+        from src.config.provider_config import _freeze_value  # noqa: PLC0415
 
         assert _freeze_value("string") == "string"
         assert _freeze_value(42) == 42

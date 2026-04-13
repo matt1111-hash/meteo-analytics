@@ -36,7 +36,7 @@ def register_for_theming(
         buttons: Quick buttons list
         computed_dates_info: Computed dates info label
     """
-    from src.presentation.gui.theme_manager import register_widget_for_theming
+    from src.presentation.gui.theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     register_widget_for_theming(parent_widget, "container")
     register_widget_for_theming(time_range_group, "container")
@@ -68,7 +68,7 @@ def apply_label_styling(theme_manager: ThemeManager, label: QLabel, style_type: 
         label: QLabel widget
         style_type: "secondary" vagy "primary"
     """
-    from src.presentation.gui.theme_manager import register_widget_for_theming
+    from src.presentation.gui.theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     color_palette = theme_manager.get_color_scheme()
     if not color_palette:

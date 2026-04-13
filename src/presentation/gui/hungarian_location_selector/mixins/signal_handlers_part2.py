@@ -105,7 +105,7 @@ class SignalHandlersMixinPart2Mixin:  # noqa: D101
         """
         📍 Lokáció információk frissítése.
         """
-        from src.domain.entities.location import Location
+        from src.domain.entities.location import Location  # noqa: PLC0415
 
         if self.current_county is None:
             self.lat_label.setText("Szélesség: -")

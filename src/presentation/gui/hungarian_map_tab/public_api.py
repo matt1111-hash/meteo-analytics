@@ -110,7 +110,7 @@ def create_public_api_methods(self) -> None:  # noqa: C901, PLR0915
         if self.map_visualizer:
             self.map_visualizer._refresh_map()
         if self.current_analytics_result:
-            from .weather_integration import (
+            from .weather_integration import (  # noqa: PLC0415
                 _generate_weather_overlay_from_analytics,
             )
 

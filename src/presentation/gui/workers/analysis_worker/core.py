@@ -108,7 +108,7 @@ class AnalysisWorker(QThread):
 
         except Exception as e:
             self._logger.error(f"Worker kritikus hiba: {e!s}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             self._logger.error(traceback.format_exc())
             self._emit_error(f"Váratlan hiba: {e!s}")
@@ -137,7 +137,7 @@ class AnalysisWorker(QThread):
         self.progress_updated.emit(message, percentage)
 
         # Qt esemény feldolgozás (responsive UI)
-        from PySide6.QtWidgets import QApplication
+        from PySide6.QtWidgets import QApplication  # noqa: PLC0415
 
         QApplication.processEvents()
 

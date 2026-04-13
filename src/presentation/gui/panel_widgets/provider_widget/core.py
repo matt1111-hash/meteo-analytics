@@ -90,7 +90,7 @@ class ProviderWidget(QWidget):
 
         # === TIMER SETUP ===
 
-        from PySide6.QtCore import QTimer
+        from PySide6.QtCore import QTimer  # noqa: PLC0415
 
         self.usage_timer = QTimer()
         self.usage_timer.setInterval(5000)  # 5 seconds

@@ -56,7 +56,7 @@ def apply_theme(self, dark_theme: bool) -> None:
         self: ExtremeWeatherDialog instance
         dark_theme: True, ha sötét téma
     """
-    from .calculation import _calculate_extremes
+    from .calculation import _calculate_extremes  # noqa: PLC0415
 
     print(
         f"🎨 DEBUG: ExtremeWeatherDialog applying theme via ThemeManager: {'dark' if dark_theme else 'light'}"

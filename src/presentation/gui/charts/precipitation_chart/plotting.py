@@ -65,7 +65,7 @@ def _plot_precipitation(self, df) -> None:
         self: PrecipitationChart instance
         df: DataFrame with precipitation data
     """
-    from .formatting import _format_precipitation_chart
+    from .formatting import _format_precipitation_chart  # noqa: PLC0415
 
     print("🎨 DEBUG: _plot_precipitation() - DUPLIKÁCIÓ MENTES + SIMPLIFIED THEMEMANAGER")
 

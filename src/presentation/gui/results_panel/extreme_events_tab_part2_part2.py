@@ -89,7 +89,7 @@ class ExtremeEventsTabPart2Mixin:  # noqa: D101
 
     def _on_anomaly_settings_clicked(self) -> None:
         try:
-            from src.presentation.gui.dialogs.anomaly_settings_dialog import (
+            from src.presentation.gui.dialogs.anomaly_settings_dialog import (  # noqa: PLC0415
                 AnomalySettingsDialog,
             )
 

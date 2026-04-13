@@ -156,7 +156,7 @@ class SignalHandlersMixin:
             print(f"🎯 CLEAN: analysis_requested emitted → {analysis_request['analysis_type']}")
 
             # 🔧 AUTO-RESET FETCH STATE - Error esetére timeout
-            from PySide6.QtCore import QTimer
+            from PySide6.QtCore import QTimer  # noqa: PLC0415
 
             QTimer.singleShot(2000, self._auto_reset_fetch_state)  # 2 sec után reset
 

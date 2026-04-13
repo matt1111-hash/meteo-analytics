@@ -55,9 +55,9 @@ def get_multi_city_engine_port(
     config: MultiCityEngineConfig | None = None,  # noqa: ARG001
 ) -> MultiCityEnginePort:
     """Factory function to get a MultiCityEnginePort implementation."""
-    from pathlib import Path
+    from pathlib import Path  # noqa: PLC0415
 
-    from src.analytics.multi_city_engine_core import MultiCityEngine
+    from src.analytics.multi_city_engine_core import MultiCityEngine  # noqa: PLC0415
 
     project_root = Path(__file__).parent.parent.parent
     db_path = project_root / "data" / "cities.db"

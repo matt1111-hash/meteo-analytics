@@ -10,7 +10,7 @@ class TestUsageTrackerDailyBreakdown:
 
     def test_get_daily_breakdown_returns_dict(self) -> None:
         """Should return dictionary with daily breakdown."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         result = UsageTracker.get_daily_breakdown("meteostat")
 
@@ -18,7 +18,7 @@ class TestUsageTrackerDailyBreakdown:
 
     def test_get_daily_breakdown_with_tracked_requests(self, config_fs: dict[str, str]) -> None:
         """Should return tracked daily breakdown."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 10)
 
@@ -30,7 +30,7 @@ class TestUsageTrackerDailyBreakdown:
 
     def test_get_daily_breakdown_multiple_days(self, config_fs: dict[str, str]) -> None:
         """Should return breakdown for multiple days."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         result = UsageTracker.get_daily_breakdown("meteostat", days=7)
 
@@ -38,7 +38,7 @@ class TestUsageTrackerDailyBreakdown:
 
     def test_get_daily_breakdown_chronological_order(self, config_fs: dict[str, str]) -> None:
         """Should return data in chronological order."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         result = UsageTracker.get_daily_breakdown("meteostat", days=3)
 

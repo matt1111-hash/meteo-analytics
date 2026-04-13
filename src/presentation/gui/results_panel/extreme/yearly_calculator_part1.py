@@ -15,7 +15,7 @@ class YearlyCalculator:
     @staticmethod
     def _build_dataframe(daily_data: Dict[str, List], dates: List[str]):
         """Build yearly aggregation dataframe."""
-        import pandas as pd
+        import pandas as pd  # noqa: PLC0415
 
         df_data = {"date": dates}
         for key, values in daily_data.items():
@@ -106,7 +106,7 @@ class YearlyCalculator:
         windiest_year = yearly_wind_max.idxmax()
         windiest_speed = yearly_wind_max.max()
         if wind_col == "wind_gusts_max":
-            from ..utils import WindGustsAnalyzer, WindGustsConstants
+            from ..utils import WindGustsAnalyzer, WindGustsConstants  # noqa: PLC0415
 
             analyzer = WindGustsAnalyzer()
             category = analyzer.categorize_wind_gust(windiest_speed, wind_col)

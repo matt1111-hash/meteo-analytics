@@ -10,13 +10,13 @@ class TestBackwardCompatibility:
 
     def test_api_constants_alias(self) -> None:
         """APIConstants should be an alias for APIConfig."""
-        from src.config.api_config import APIConfig, APIConstants
+        from src.config.api_config import APIConfig, APIConstants  # noqa: PLC0415
 
         assert APIConstants is APIConfig
 
     def test_api_constants_has_same_attributes(self) -> None:
         """APIConstants should expose the same attributes as APIConfig."""
-        from src.config.api_config import APIConfig, APIConstants
+        from src.config.api_config import APIConfig, APIConstants  # noqa: PLC0415
 
         assert APIConfig.OPEN_METEO_BASE == APIConstants.OPEN_METEO_BASE
         assert APIConfig.METEOSTAT_BASE == APIConstants.METEOSTAT_BASE
@@ -31,7 +31,7 @@ class TestIntegration:
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """validate_api_keys and get_active_data_sources should be consistent."""
-        from src.config.api_config import (
+        from src.config.api_config import (  # noqa: PLC0415
             APIConfig,
             get_active_data_sources,
             validate_api_keys,
@@ -46,7 +46,7 @@ class TestIntegration:
 
     def test_constants_are_not_modified_at_runtime(self) -> None:
         """Module constants should not be modifiable at runtime."""
-        from src.config.api_config import APIConfig, DataConstants
+        from src.config.api_config import APIConfig, DataConstants  # noqa: PLC0415
 
         with pytest.raises(TypeError):
             APIConfig.SOURCE_DISPLAY_NAMES["new_key"] = "value"
@@ -59,7 +59,7 @@ class TestIntegration:
 
     def test_all_required_constants_exist(self) -> None:
         """All required constants should be defined."""
-        from src.config.api_config import APIConfig, DataConstants
+        from src.config.api_config import APIConfig, DataConstants  # noqa: PLC0415
 
         assert hasattr(APIConfig, "OPEN_METEO_BASE")
         assert hasattr(APIConfig, "OPEN_METEO_ARCHIVE")

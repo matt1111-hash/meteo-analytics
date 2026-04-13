@@ -42,7 +42,7 @@ class SignalHandlersMixinPart1Mixin:  # noqa: D101
         self.center_map_btn.setEnabled(True)
 
         # Timer a progress eltüntetéséhez
-        from PySide6.QtCore import QTimer
+        from PySide6.QtCore import QTimer  # noqa: PLC0415
 
         QTimer.singleShot(3000, lambda: self.progress_label.setText("Kész használatra"))
 

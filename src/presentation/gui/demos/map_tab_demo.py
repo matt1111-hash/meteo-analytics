@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
 def demo_hungarian_map_tab() -> None:  # noqa: C901, PLR0915
     """Run Hungarian Map Tab demo application."""
     # Import here to avoid circular imports
-    from src.presentation.gui.hungarian_map_tab import HungarianMapTab
+    from src.presentation.gui.hungarian_map_tab import HungarianMapTab  # noqa: PLC0415
 
     app = QApplication(sys.argv)
 

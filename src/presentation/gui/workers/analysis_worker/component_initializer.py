@@ -37,8 +37,8 @@ class ComponentInitializer:
 
         # Port import ellenőrzés (Clean Architecture)
         try:
-            from src.analytics.ports import get_multi_city_engine_port  # noqa: F401
-            from src.infrastructure.container import (
+            from src.analytics.ports import get_multi_city_engine_port  # noqa: F401, PLC0415
+            from src.infrastructure.container import (  # noqa: PLC0415
                 get_weather_client_port,  # noqa: F401
             )
 
@@ -89,7 +89,7 @@ class ComponentInitializer:
         Returns:
             True if successful
         """
-        from src.infrastructure.container import get_weather_client_port
+        from src.infrastructure.container import get_weather_client_port  # noqa: PLC0415
 
         try:
             self._worker._weather_client = get_weather_client_port()
@@ -115,7 +115,7 @@ class ComponentInitializer:
         Returns:
             True if successful or not needed
         """
-        from src.analytics.ports import get_multi_city_engine_port
+        from src.analytics.ports import get_multi_city_engine_port  # noqa: PLC0415
 
         analysis_type = self._worker._request_data.get("analysis_type")
 

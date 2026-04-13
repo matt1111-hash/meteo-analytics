@@ -38,42 +38,42 @@ class PrecipitationChart(WeatherChart, WeatherTooltipMixin):
 
     # Public API methods
     def update_data(self, data) -> None:  # noqa: D102
-        from .data_handler import update_data
+        from .data_handler import update_data  # noqa: PLC0415
 
         update_data(self, data)
 
     # Private methods (imported from modules)
     def _extract_precipitation_data(self, data):
-        from .data_handler import _extract_precipitation_data
+        from .data_handler import _extract_precipitation_data  # noqa: PLC0415
 
         return _extract_precipitation_data(self, data)
 
     def _plot_precipitation(self, df) -> None:
-        from .plotting import _plot_precipitation
+        from .plotting import _plot_precipitation  # noqa: PLC0415
 
         _plot_precipitation(self, df)
 
     def _format_precipitation_chart(self, df) -> None:
-        from .formatting import _format_precipitation_chart
+        from .formatting import _format_precipitation_chart  # noqa: PLC0415
 
         _format_precipitation_chart(self, df)
 
     def _find_closest_chart_point(self, event):
-        from .tooltip import _find_closest_chart_point
+        from .tooltip import _find_closest_chart_point  # noqa: PLC0415
 
         return _find_closest_chart_point(self, event)
 
     def _format_tooltip_text(self, point_data) -> str:
-        from .tooltip import _format_tooltip_text
+        from .tooltip import _format_tooltip_text  # noqa: PLC0415
 
         return _format_tooltip_text(self, point_data)
 
     def _show_tooltip(self, event, point_data) -> None:
-        from .tooltip import _show_tooltip
+        from .tooltip import _show_tooltip  # noqa: PLC0415
 
         _show_tooltip(self, event, point_data)
 
     def _hide_tooltip(self) -> None:
-        from .tooltip import _hide_tooltip
+        from .tooltip import _hide_tooltip  # noqa: PLC0415
 
         _hide_tooltip(self)

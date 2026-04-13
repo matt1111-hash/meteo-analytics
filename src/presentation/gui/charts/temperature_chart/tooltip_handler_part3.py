@@ -27,7 +27,7 @@ class TemperatureTooltipHandlerMixinPart3Mixin:  # noqa: D101
         tooltip_text = self._format_tooltip_text(point_data)
 
         # Koordináták meghatározása
-        import matplotlib.dates as mdates
+        import matplotlib.dates as mdates  # noqa: PLC0415
 
         x_pos = mdates.date2num(point_data["date"])
         y_pos = point_data["primary_temp"]

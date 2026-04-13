@@ -27,7 +27,7 @@ def create_navigation_toolbar(window: "MainWindow") -> QToolBar:  # noqa: PLR091
     Returns:
         Létrehozott eszköztár
     """
-    from ..theme_manager import register_widget_for_theming
+    from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     toolbar = QToolBar("Navigáció")
     toolbar.setMovable(False)

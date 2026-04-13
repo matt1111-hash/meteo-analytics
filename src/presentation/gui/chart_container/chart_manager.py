@@ -75,7 +75,7 @@ class ChartManager:
 
         except Exception as e:
             print(f"❌ DEBUG: ChartsContainer frissítési hiba: {e}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             print(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
 

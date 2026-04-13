@@ -30,10 +30,10 @@ def setup_window(window: "MainWindow") -> None:
     Args:
         window: MainWindow példány
     """
-    from src.config import AppInfo
+    from src.config import AppInfo  # noqa: PLC0415
 
-    from ..theme_manager import register_widget_for_theming
-    from ..utils import GUIConstants
+    from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
+    from ..utils import GUIConstants  # noqa: PLC0415
 
     window.setWindowTitle(f"{AppInfo.NAME} - THREAD CLEANUP FIX")
     window.setGeometry(GUIConstants.MAIN_WINDOW_X, GUIConstants.MAIN_WINDOW_Y, 1400, 900)
@@ -51,7 +51,7 @@ def create_stacked_views(window: "MainWindow") -> QStackedWidget:
     Returns:
         Létrehozott stacked widget
     """
-    from ..theme_manager import register_widget_for_theming
+    from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     central_widget = QWidget()
     window.setCentralWidget(central_widget)
@@ -88,9 +88,9 @@ def create_stacked_views(window: "MainWindow") -> QStackedWidget:
 
 def create_single_city_view(window: "MainWindow") -> QWidget:
     """Single City View létrehozása."""
-    from ..control_panel import ControlPanel
-    from ..results_panel import ResultsPanel
-    from ..theme_manager import register_widget_for_theming
+    from ..control_panel import ControlPanel  # noqa: PLC0415
+    from ..results_panel import ResultsPanel  # noqa: PLC0415
+    from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     view = QWidget()
     register_widget_for_theming(view, "container")
@@ -134,8 +134,8 @@ def create_single_city_view(window: "MainWindow") -> QWidget:
 
 def create_analytics_view(window: "MainWindow") -> QWidget:
     """Analytics View létrehozása."""
-    from ..analytics import AnalyticsView
-    from ..theme_manager import register_widget_for_theming
+    from ..analytics import AnalyticsView  # noqa: PLC0415
+    from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     window.analytics_panel = AnalyticsView()
     register_widget_for_theming(window.analytics_panel, "container")
@@ -144,8 +144,8 @@ def create_analytics_view(window: "MainWindow") -> QWidget:
 
 def create_trend_analysis_view(window: "MainWindow") -> QWidget:
     """Trend Analysis view létrehozása."""
-    from ..theme_manager import register_widget_for_theming
-    from ..trend_analytics import TrendAnalyticsTab
+    from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
+    from ..trend_analytics import TrendAnalyticsTab  # noqa: PLC0415
 
     window.trend_analytics_tab = TrendAnalyticsTab()
     register_widget_for_theming(window.trend_analytics_tab, "container")
@@ -154,8 +154,8 @@ def create_trend_analysis_view(window: "MainWindow") -> QWidget:
 
 def create_hungarian_map_view(window: "MainWindow") -> QWidget:
     """Hungarian Map view létrehozása."""
-    from ..hungarian_map_tab import HungarianMapTab
-    from ..theme_manager import register_widget_for_theming
+    from ..hungarian_map_tab import HungarianMapTab  # noqa: PLC0415
+    from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     window.hungarian_map_tab = HungarianMapTab()
     register_widget_for_theming(window.hungarian_map_tab, "container")
@@ -174,7 +174,7 @@ def create_hungarian_map_view(window: "MainWindow") -> QWidget:
 
 def create_settings_placeholder(window: "MainWindow") -> QWidget:  # noqa: ARG001
     """Settings placeholder view létrehozása."""
-    from ..theme_manager import register_widget_for_theming
+    from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
 
     view = QWidget()
     register_widget_for_theming(view, "container")

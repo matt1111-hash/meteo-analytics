@@ -21,7 +21,7 @@ def _is_cancelled(worker: "WeatherDataWorker", phase: str) -> bool:
 
 def _log_request_debug(worker: "WeatherDataWorker", selected_provider: str, api_url: str) -> None:
     """Log request debug information."""
-    from ...utils import get_source_display_name
+    from ...utils import get_source_display_name  # noqa: PLC0415
 
     print(f"🌍 DEBUG: Provider routing - {get_source_display_name(selected_provider)}")
     print(f"🌪️ DEBUG: Wind gusts kérés: {worker.latitude:.4f}, {worker.longitude:.4f}")
@@ -119,7 +119,7 @@ class WorkerExecutor:
         params,  # noqa: ARG002
     ) -> bool:
         """Execute HTTP requests with provider fallback."""
-        from ...utils import (
+        from ...utils import (  # noqa: PLC0415
             get_fallback_source_chain,
             get_source_display_name,
             log_provider_usage_event,

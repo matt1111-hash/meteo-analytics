@@ -75,7 +75,7 @@ class WeatherClientExtensions(WeatherClient):
         user_override_provider: str | None = None,
     ) -> tuple[dict[str, Any] | None, str]:
         """Get current weather (backward compatibility)."""
-        from datetime import datetime
+        from datetime import datetime  # noqa: PLC0415
 
         today = datetime.now().strftime("%Y-%m-%d")
 
@@ -101,7 +101,7 @@ class WeatherClientExtensions(WeatherClient):
         user_override_provider: str | None = None,
     ) -> tuple[list[dict[str, Any]], str]:
         """Get weather for date range (backward compatibility)."""
-        from datetime import datetime, timedelta
+        from datetime import datetime, timedelta  # noqa: PLC0415
 
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=days_back)

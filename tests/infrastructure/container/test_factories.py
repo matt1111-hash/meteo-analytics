@@ -64,7 +64,7 @@ class TestContainerFactories:
 
     def test_factories_are_importable_from_container(self):
         """Test that all factories are importable from the container package."""
-        from src.infrastructure.container import (
+        from src.infrastructure.container import (  # noqa: PLC0415
             get_anomaly_profile_port,
             get_city_manager_port,
             get_city_repository_port,
@@ -79,7 +79,7 @@ class TestContainerFactories:
 
     def test_factories_not_in_domain_ports(self):
         """Test that factory functions are NOT exported from domain.ports."""
-        import src.domain.ports as ports_module
+        import src.domain.ports as ports_module  # noqa: PLC0415
 
         # These should NOT be in domain.ports anymore
         assert not hasattr(ports_module, "get_city_manager_port")

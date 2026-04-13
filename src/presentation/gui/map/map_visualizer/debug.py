@@ -31,7 +31,7 @@ def generate_demo_weather_data(self) -> dict:  # noqa: ARG001
     Returns:
         Dict: Demo weather data
     """
-    from .map_debug import generate_demo_weather_data
+    from .map_debug import generate_demo_weather_data  # noqa: PLC0415
 
     return generate_demo_weather_data()
 
@@ -46,7 +46,7 @@ def get_http_server_info(self) -> dict:
     Returns:
         Dict: HTTP szerver információk
     """
-    from .map_debug import get_http_server_info
+    from .map_debug import get_http_server_info  # noqa: PLC0415
 
     return get_http_server_info(
         self.local_server, self.http_host, self.http_port, self.current_map_file
@@ -63,7 +63,7 @@ def get_dynamic_gradient_info(self) -> dict:
     Returns:
         Dict: Gradient információk
     """
-    from .map_debug import get_dynamic_gradient_info
+    from .map_debug import get_dynamic_gradient_info  # noqa: PLC0415
 
     return get_dynamic_gradient_info(self.get_active_overlay_parameter())
 
@@ -78,7 +78,7 @@ def get_http_debug_info(self) -> dict:
     Returns:
         Dict: Debug információk
     """
-    from .map_debug import get_http_debug_info
+    from .map_debug import get_http_debug_info  # noqa: PLC0415
 
     return get_http_debug_info(
         self.local_server,
@@ -97,7 +97,7 @@ def cleanup(self) -> None:
     Args:
         self: HungarianMapVisualizer instance
     """
-    import os
+    import os  # noqa: PLC0415
 
     if self.local_server and self.local_server.running:
         print("🛑 Stopping local HTTP server...")

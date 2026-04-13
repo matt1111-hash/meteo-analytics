@@ -164,7 +164,7 @@ class QuickOverviewTab(QWidget):
             self.current_data = data
 
             # DataFrame kinyerése
-            from ..utils import DataFrameExtractor
+            from ..utils import DataFrameExtractor  # noqa: PLC0415
 
             df = DataFrameExtractor.extract_safely(data)
 

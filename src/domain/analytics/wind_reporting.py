@@ -69,7 +69,7 @@ def format_wind_analysis_summary(analysis: WindAnalysisResult) -> str:
     """
     try:
         if not analysis.monthly_stats:
-            return "Nincs elérhető szélsebességi adat a(z) " f"{analysis.location_name} helyszínre."
+            return f"Nincs elérhető szélsebességi adat a(z) {analysis.location_name} helyszínre."
 
         return _build_summary_body(analysis).strip()
 
@@ -131,7 +131,7 @@ def get_chart_data_for_monthly_windy_days(
 
     except Exception as e:
         logger.error(f"❌ Hiba a chart adatok előkészítésében: {e}")
-        import traceback
+        import traceback  # noqa: PLC0415
 
         traceback.print_exc()
         return {

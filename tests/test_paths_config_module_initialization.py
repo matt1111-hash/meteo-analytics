@@ -8,6 +8,6 @@ class TestModuleInitialization:
 
     def test_ensure_directories_called_on_import(self) -> None:
         """ensure_directories should be called when module is imported."""
-        from src.config.paths_config import DATA_DIR
+        from src.config.paths_config import DATA_DIR  # noqa: PLC0415
 
         assert DATA_DIR.exists()

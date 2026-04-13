@@ -236,8 +236,8 @@ def check_requirements() -> bool:
     # === GUI MODULE VALIDÁCIÓ ===
 
     try:
-        from src.presentation.gui.controller import AppController  # noqa: F401
-        from src.presentation.gui.windows import MainWindow  # noqa: F401
+        from src.presentation.gui.controller import AppController  # noqa: F401, PLC0415
+        from src.presentation.gui.windows import MainWindow  # noqa: F401, PLC0415
 
         print("✅ GUI modul struktúra: OK")
     except ImportError as e:
@@ -248,22 +248,22 @@ def check_requirements() -> bool:
 
     try:
         # PySide6 ellenőrzése
-        import PySide6
+        import PySide6  # noqa: PLC0415
 
         print(f"✅ PySide6 verzió: {PySide6.__version__}")
 
         # httpx ellenőrzése
-        import httpx
+        import httpx  # noqa: PLC0415
 
         print(f"✅ httpx verzió: {httpx.__version__}")
 
         # pandas ellenőrzése
-        import pandas
+        import pandas  # noqa: PLC0415
 
         print(f"✅ pandas verzió: {pandas.__version__}")
 
         # matplotlib ellenőrzése
-        import matplotlib
+        import matplotlib  # noqa: PLC0415
 
         print(f"✅ matplotlib verzió: {matplotlib.__version__}")
 

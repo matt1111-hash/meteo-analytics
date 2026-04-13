@@ -38,7 +38,7 @@ class AppControllerLifecycleMixin:
             self._logger.info("🛑 AppController leállítása...")
             self.cancel_all_operations()
 
-            from .analysis_handler.state_management import _cleanup_analysis_state
+            from .analysis_handler.state_management import _cleanup_analysis_state  # noqa: PLC0415
 
             _cleanup_analysis_state(self.analysis_handler)
             self.worker_manager.shutdown()
@@ -49,7 +49,7 @@ class AppControllerLifecycleMixin:
             self._logger.info("✅ AppController leállítva (CLEAN ARCHITECTURE REFACTORED)")
         except Exception as exc:
             self._logger.warning(f"⚠️ Controller leállítási hiba: {exc}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             traceback.print_exc()
 

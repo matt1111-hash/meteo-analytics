@@ -55,7 +55,7 @@ def handle_analytics_view_query(window: "MainWindow", query_type: str, region_na
     params = {"query_type": query_type, "auto_switch_to_map": False}
     today_str = datetime.now().strftime("%Y-%m-%d")
 
-    from .multi_city import handle_multi_city_weather_request
+    from .multi_city import handle_multi_city_weather_request  # noqa: PLC0415
 
     handle_multi_city_weather_request(
         window,
@@ -85,7 +85,7 @@ def handle_multi_city_weather_request(
             if hasattr(window.hungarian_map_tab, "set_analytics_parameter"):
                 window.hungarian_map_tab.set_analytics_parameter(display_parameter)
 
-        from src.analytics.ports import get_multi_city_engine_port
+        from src.analytics.ports import get_multi_city_engine_port  # noqa: PLC0415
 
         engine = get_multi_city_engine_port()
         result = engine.analyze_multi_city(query_type, region_id, start_date, limit=limit)
@@ -93,12 +93,12 @@ def handle_multi_city_weather_request(
         if not hasattr(result, "city_results"):
             error_msg = f"Multi-city engine hibás eredmény típus: {type(result)}"
             window.status_bar.showMessage(f"❌ {error_msg}")
-            from .dialogs import show_error
+            from .dialogs import show_error  # noqa: PLC0415
 
             show_error(window, error_msg)
             return
 
-        from .multi_city import on_multi_city_result_ready
+        from .multi_city import on_multi_city_result_ready  # noqa: PLC0415
 
         on_multi_city_result_ready(window, result, query_type)
 
@@ -109,7 +109,7 @@ def handle_multi_city_weather_request(
             switch_view(window, "map_view")
 
     except Exception as e:
-        from .dialogs import show_error
+        from .dialogs import show_error  # noqa: PLC0415
 
         error_msg = f"Multi-city lekérdezés hiba: {e}"
         window.status_bar.showMessage(f"❌ {error_msg}")
@@ -133,6 +133,6 @@ def on_multi_city_result_ready(
             window.analytics_panel.update_with_multi_city_result(result)
 
     except Exception as e:
-        from .dialogs import show_error
+        from .dialogs import show_error  # noqa: PLC0415
 
         show_error(window, f"Multi-city eredmény szétosztási hiba: {e}")

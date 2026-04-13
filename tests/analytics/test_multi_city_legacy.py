@@ -213,7 +213,7 @@ class TestExports:
 
     def test_all_exports_exist(self) -> None:
         """All items in __all__ should be accessible."""
-        from src.analytics import multi_city_legacy
+        from src.analytics import multi_city_legacy  # noqa: PLC0415
 
         expected_exports = [
             "safe_mean",
@@ -229,7 +229,7 @@ class TestExports:
 
     def test_all_exports_callable(self) -> None:
         """All exported functions should be callable."""
-        from src.analytics import multi_city_legacy
+        from src.analytics import multi_city_legacy  # noqa: PLC0415
 
         for name in multi_city_legacy.__all__:
             func = getattr(multi_city_legacy, name)

@@ -76,7 +76,7 @@ class TestWindyDayStats:
 
     def test_is_dataclass(self) -> None:
         """Should be a dataclass."""
-        import dataclasses
+        import dataclasses  # noqa: PLC0415
 
         assert dataclasses.is_dataclass(WindyDayStats)
 
@@ -137,7 +137,7 @@ class TestWindAnalysisResult:
 
     def test_is_dataclass(self) -> None:
         """Should be a dataclass."""
-        import dataclasses
+        import dataclasses  # noqa: PLC0415
 
         assert dataclasses.is_dataclass(WindAnalysisResult)
 

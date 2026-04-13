@@ -59,7 +59,7 @@ class AnalyticsResult:
 
         values = [r.value for r in self.city_results]
 
-        import statistics
+        import statistics  # noqa: PLC0415
 
         return {
             "count": len(values),

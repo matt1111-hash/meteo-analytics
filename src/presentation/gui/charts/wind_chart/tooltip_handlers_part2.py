@@ -29,7 +29,7 @@ class WindTooltipHandlerPart2Mixin:  # noqa: D101
         tooltip_text = self.format_tooltip_text(point_data)
 
         # Get coordinates
-        import matplotlib.dates as mdates
+        import matplotlib.dates as mdates  # noqa: PLC0415
 
         x_pos = mdates.date2num(point_data["date"])
         y_pos = point_data["windspeed"]

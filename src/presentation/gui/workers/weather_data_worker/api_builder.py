@@ -47,7 +47,7 @@ class APIBuilder:
         Returns:
             (url, params) tuple
         """
-        from ...utils import APIConstants
+        from ...utils import APIConstants  # noqa: PLC0415
 
         url = APIConstants.OPEN_METEO_ARCHIVE
 

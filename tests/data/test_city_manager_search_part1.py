@@ -41,7 +41,7 @@ class TestFindCityByName:
         coords = manager.find_city_by_name("London")
 
         assert coords is not None
-        lat, lon = coords
+        lat, lon = coords  # noqa: RUF059
         assert abs(lat - 51.5074) < 0.01
 
     def test_returns_none_when_not_found(self, cities_db: Path, hungarian_db: Path) -> None:

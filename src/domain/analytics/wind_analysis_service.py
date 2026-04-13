@@ -167,7 +167,7 @@ def analyze_wind_patterns(
 
     except Exception as e:
         logger.error(f"❌ Hiba a szél analízisben: {e}")
-        import traceback
+        import traceback  # noqa: PLC0415
 
         traceback.print_exc()
         return _create_empty_analysis_result(location_name, threshold_kmh)

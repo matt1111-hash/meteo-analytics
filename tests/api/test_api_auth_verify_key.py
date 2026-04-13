@@ -19,7 +19,7 @@ class TestVerifyAPIKey:
 
     def test_returns_disabled_when_auth_not_enabled(self):
         """Should return 'disabled' when auth is not configured."""
-        from src.api.main import verify_api_key
+        from src.api.main import verify_api_key  # noqa: PLC0415
 
         with patch("src.api.main.APIConfig") as mock_config:
             mock_config.API_KEY_ENABLED = False
@@ -30,8 +30,8 @@ class TestVerifyAPIKey:
 
     def test_raises_401_when_no_key_provided(self):
         """Should raise 401 when no API key is provided."""
-        from fastapi import HTTPException
-        from src.api.main import verify_api_key
+        from fastapi import HTTPException  # noqa: PLC0415
+        from src.api.main import verify_api_key  # noqa: PLC0415
 
         with patch("src.api.main.APIConfig") as mock_config:
             mock_config.API_KEY_ENABLED = True
@@ -44,8 +44,8 @@ class TestVerifyAPIKey:
 
     def test_raises_403_when_invalid_key(self):
         """Should raise 403 when invalid API key is provided."""
-        from fastapi import HTTPException
-        from src.api.main import verify_api_key
+        from fastapi import HTTPException  # noqa: PLC0415
+        from src.api.main import verify_api_key  # noqa: PLC0415
 
         with patch("src.api.main.APIConfig") as mock_config:
             mock_config.API_KEY_ENABLED = True
@@ -58,7 +58,7 @@ class TestVerifyAPIKey:
 
     def test_returns_key_when_valid(self):
         """Should return the API key when valid."""
-        from src.api.main import verify_api_key
+        from src.api.main import verify_api_key  # noqa: PLC0415
 
         with patch("src.api.main.APIConfig") as mock_config:
             mock_config.API_KEY_ENABLED = True

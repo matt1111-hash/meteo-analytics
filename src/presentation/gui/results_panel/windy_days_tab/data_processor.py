@@ -110,7 +110,7 @@ def set_threshold(self: WindyDaysTab, threshold: float) -> None:
 def _start_auto_analysis(self: WindyDaysTab) -> None:
     """Automatikus analízis indítása (késleltetve)."""
     try:
-        from src.presentation.gui.results_panel.windy_days_tab.handlers import (
+        from src.presentation.gui.results_panel.windy_days_tab.handlers import (  # noqa: PLC0415
             _start_analysis,
         )
 

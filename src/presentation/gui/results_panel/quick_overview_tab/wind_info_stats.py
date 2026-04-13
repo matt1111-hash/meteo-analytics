@@ -42,7 +42,7 @@ def _resolve_wind_series(df: pd.DataFrame) -> tuple[pd.Series | None, str]:
 def calculate_wind_stats(self, df: pd.DataFrame) -> None:
     """Szél statisztikák számítása."""
     try:
-        from ..utils import WindGustsAnalyzer
+        from ..utils import WindGustsAnalyzer  # noqa: PLC0415
 
         wind_series, wind_data_source = _resolve_wind_series(df)
         if wind_series is None or wind_series.empty:
@@ -77,7 +77,7 @@ def calculate_wind_stats(self, df: pd.DataFrame) -> None:
 def update_info_labels(self, data: dict, city_name: str, df: pd.DataFrame) -> None:
     """Információs labelek frissítése."""
     try:
-        from ...utils import get_source_display_name
+        from ...utils import get_source_display_name  # noqa: PLC0415
 
         self.city_info_label.setText(f"Város: {city_name}")
 
@@ -126,7 +126,7 @@ def clear_stats(self) -> None:
 
 def _log_wind_category(max_wind: float, data_source: str) -> None:
     """Szél kategória logolása."""
-    from ..utils import WindGustsAnalyzer
+    from ..utils import WindGustsAnalyzer  # noqa: PLC0415
 
     analyzer = WindGustsAnalyzer()
     category = analyzer.categorize_wind_gust(max_wind, data_source)

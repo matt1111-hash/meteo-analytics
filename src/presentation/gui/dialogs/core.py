@@ -85,7 +85,7 @@ class ExtremeWeatherDialog(QDialog):
 
     # Public API methods
     def apply_theme(self, dark_theme: bool) -> None:  # noqa: D102
-        from .theme_handler import apply_theme
+        from .theme_handler import apply_theme  # noqa: PLC0415
 
         apply_theme(self, dark_theme)
 

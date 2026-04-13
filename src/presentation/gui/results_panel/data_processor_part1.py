@@ -17,7 +17,7 @@ def _find_fallback_wind_source(daily_data: Dict[str, Any]) -> tuple[Any, Any]:
 
 def _build_fallback_dataframe(times: list[Any], wind_data: Any, wind_source: str) -> Any:
     """Build fallback dataframe for wind data."""
-    import pandas as pd
+    import pandas as pd  # noqa: PLC0415
 
     return pd.DataFrame(
         {
@@ -48,7 +48,7 @@ class DataProcessorPart1Mixin:  # noqa: D101
 
         # DataFrameExtractor import
         try:
-            from .utils import DataFrameExtractor
+            from .utils import DataFrameExtractor  # noqa: PLC0415
 
             self.DataFrameExtractor = DataFrameExtractor
             self._dataframe_extractor_available = True
@@ -90,7 +90,7 @@ class DataProcessorPart1Mixin:  # noqa: D101
 
         except Exception as e:
             self._logger.error(f"❌ _convert_data_to_dataframe KRITIKUS hiba: {e}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             traceback.print_exc()
             return self._empty_dataframe_fallback()

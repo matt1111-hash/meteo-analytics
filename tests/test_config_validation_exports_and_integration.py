@@ -12,7 +12,7 @@ class TestModuleExports:
     """Test cases for module __all__ exports."""
 
     def test_module_exports_all_functions(self) -> None:
-        from src.config import config_validation
+        from src.config import config_validation  # noqa: PLC0415
 
         expected_exports = {
             "check_environment",
@@ -26,7 +26,7 @@ class TestModuleExports:
         assert actual_exports == expected_exports
 
     def test_all_exports_are_callable(self) -> None:
-        from src.config.config_validation import (
+        from src.config.config_validation import (  # noqa: PLC0415
             check_environment,
             get_fallback_source_chain,
             get_optimal_data_source,
@@ -47,7 +47,7 @@ class TestIntegration:
     """Integration tests for config_validation module."""
 
     def test_validate_config_and_environment_consistency(self, tmp_path: Path) -> None:
-        from src.config.config_validation import check_environment, validate_config
+        from src.config.config_validation import check_environment, validate_config  # noqa: PLC0415
 
         with (
             patch("src.config.config_validation.ensure_directories") as mock_ensure,
@@ -74,7 +74,7 @@ class TestIntegration:
     def test_get_optimal_source_and_fallback_chain_consistency(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        from src.config.config_validation import (
+        from src.config.config_validation import (  # noqa: PLC0415
             get_fallback_source_chain,
             get_optimal_data_source,
         )

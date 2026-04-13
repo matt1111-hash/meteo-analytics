@@ -18,10 +18,10 @@ class TestTypeAliases:
     def test_number_union_type_exists(self) -> None:
         """Number should be a union of float and int."""
         # Runtime check - isinstance works with concrete types
-        assert isinstance(1, (int, float))  # noqa: UP038
-        assert isinstance(1.5, (int, float))  # noqa: UP038
-        assert isinstance(-1, (int, float))  # noqa: UP038
-        assert isinstance(0.0, (int, float))  # noqa: UP038
+        assert isinstance(1, (int, float))
+        assert isinstance(1.5, (int, float))
+        assert isinstance(-1, (int, float))
+        assert isinstance(0.0, (int, float))
 
     def test_number_or_none_union_type_exists(self) -> None:
         """NumberOrNone should allow None in addition to numbers."""
@@ -176,9 +176,9 @@ class TestRegions:
         """rate_limit_delay should be positive numbers."""
         for region_name, config in REGIONS.items():
             delay = config["rate_limit_delay"]
-            assert isinstance(  # noqa: UP038
-                delay, (int, float)
-            ), f"rate_limit_delay in {region_name} is not number"
+            assert isinstance(delay, (int, float)), (
+                f"rate_limit_delay in {region_name} is not number"
+            )
             assert delay > 0, f"rate_limit_delay in {region_name} is not positive"
 
     def test_europe_contains_hungary(self) -> None:
@@ -211,7 +211,7 @@ class TestExports:
 
     def test_all_exports_exist(self) -> None:
         """All items in __all__ should be accessible."""
-        from src.analytics import multi_city_types
+        from src.analytics import multi_city_types  # noqa: PLC0415
 
         expected_exports = [
             "Number",

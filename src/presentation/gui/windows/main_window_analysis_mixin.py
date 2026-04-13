@@ -71,7 +71,7 @@ class MainWindowAnalysisMixin:
             print("🚨 DEBUG: controller.handle_analysis_request() returned")
         except Exception as exc:
             print(f"❌ DEBUG: Exception in controller.handle_analysis_request(): {exc}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             traceback.print_exc()
             self.status_bar.showMessage(f"❌ Hiba: {exc}")

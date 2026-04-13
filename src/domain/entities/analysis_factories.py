@@ -46,7 +46,7 @@ def create_universal_query(
     """
     UniversalQuery factory - user-friendly.
     """
-    from src.domain.entities.universal_query import UniversalQuery
+    from src.domain.entities.universal_query import UniversalQuery  # noqa: PLC0415
 
     if isinstance(analysis_type, str):
         analysis_type = AnalysisType(analysis_type.lower())

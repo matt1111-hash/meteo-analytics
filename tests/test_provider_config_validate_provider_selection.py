@@ -8,7 +8,7 @@ class TestValidateProviderSelection:
 
     def test_validate_provider_valid_providers(self) -> None:
         """All valid providers should pass validation."""
-        from src.config.provider_config import (
+        from src.config.provider_config import (  # noqa: PLC0415
             ProviderConfig,
             validate_provider_selection,
         )
@@ -18,7 +18,7 @@ class TestValidateProviderSelection:
 
     def test_validate_provider_invalid_provider(self) -> None:
         """Invalid provider should fail validation."""
-        from src.config.provider_config import validate_provider_selection
+        from src.config.provider_config import validate_provider_selection  # noqa: PLC0415
 
         assert validate_provider_selection("invalid_provider") is False
         assert validate_provider_selection("") is False

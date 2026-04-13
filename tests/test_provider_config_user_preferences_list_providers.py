@@ -8,7 +8,7 @@ class TestUserPreferencesListProviders:
 
     def test_list_available_providers_returns_all(self) -> None:
         """Should return all available providers."""
-        from src.config.provider_config import ProviderConfig, UserPreferences
+        from src.config.provider_config import ProviderConfig, UserPreferences  # noqa: PLC0415
 
         providers = UserPreferences.list_available_providers()
 
@@ -16,7 +16,7 @@ class TestUserPreferencesListProviders:
 
     def test_list_available_providers_returns_mutable_copies(self) -> None:
         """Returned providers should be mutable dict copies."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         providers = UserPreferences.list_available_providers()
 
@@ -26,7 +26,7 @@ class TestUserPreferencesListProviders:
 
     def test_list_available_providers_contains_all_info(self) -> None:
         """Returned providers should contain all expected info."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         providers = UserPreferences.list_available_providers()
 

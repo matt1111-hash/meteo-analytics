@@ -72,7 +72,7 @@ class WeatherDataHandler(QObject):
                     max_gust = max([g for g in wind_gusts_max if g is not None])
                     wind_gusts_info = f", max gust: {max_gust:.1f} km/h"
 
-            from src.config import ProviderConfig
+            from src.config import ProviderConfig  # noqa: PLC0415
 
             provider_config = ProviderConfig()
             provider_display = provider_config.PROVIDERS.get(used_provider, {}).get(

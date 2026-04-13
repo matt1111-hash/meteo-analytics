@@ -75,7 +75,7 @@ class FoliumMapGenerator(QThread):
         try:
             self._generate_map_content()
         except Exception as e:
-            import traceback
+            import traceback  # noqa: PLC0415
 
             error_msg = f"Folium térkép generálási hiba: {e}\n{traceback.format_exc()}"
             self.error_occurred.emit(error_msg)

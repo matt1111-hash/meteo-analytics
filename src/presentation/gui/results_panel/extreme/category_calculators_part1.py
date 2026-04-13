@@ -145,7 +145,7 @@ class CategoryCalculatorsPart1Mixin:  # noqa: D101
                 if clean_wind:
                     max_wind_idx, max_wind = max(clean_wind, key=lambda x: x[1])
 
-                    from ..utils import WindGustsAnalyzer, WindGustsConstants
+                    from ..utils import WindGustsAnalyzer, WindGustsConstants  # noqa: PLC0415
 
                     if wind_source == "wind_gusts_max":
                         analyzer = WindGustsAnalyzer()

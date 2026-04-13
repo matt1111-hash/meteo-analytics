@@ -23,13 +23,13 @@ class TestModuleStructure:
 
     def test_has_all_export(self) -> None:
         """A modul rendelkezik __all__-lal."""
-        from src.data.city_manager_db import __all__
+        from src.data.city_manager_db import __all__  # noqa: PLC0415
 
         assert __all__ == ["CityManagerDB"]
 
     def test_module_docstring_exists(self) -> None:
         """A modul rendelkezik dokumentációval."""
-        from src.data.city_manager_db import __doc__
+        from src.data.city_manager_db import __doc__  # noqa: PLC0415
 
         assert __doc__ is not None
         assert len(__doc__) > 0

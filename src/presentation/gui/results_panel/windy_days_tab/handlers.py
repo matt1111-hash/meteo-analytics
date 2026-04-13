@@ -161,7 +161,7 @@ def _start_analysis(self: WindyDaysTab) -> None:
 
     except Exception as e:
         logger.error(f"Hiba az analízisben: {e}")
-        import traceback
+        import traceback  # noqa: PLC0415
 
         traceback.print_exc()
         _set_analysis_state(self, False)

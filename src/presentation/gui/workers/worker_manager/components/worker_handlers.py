@@ -37,7 +37,7 @@ class WorkerHandlers:
         self._manager.mutex.lock()
         try:
             if worker_id in self._manager.active_workers:
-                worker_type = worker_id.split("_")[0]
+                worker_type = worker_id.split("_", maxsplit=1)[0]
                 worker = self._manager.active_workers[worker_id]
 
                 # Emit completion signal based on cancellation status
@@ -68,7 +68,7 @@ class WorkerHandlers:
         self._manager.mutex.lock()
         try:
             if worker_id in self._manager.active_workers:
-                worker_type = worker_id.split("_")[0]
+                worker_type = worker_id.split("_", maxsplit=1)[0]
 
                 # Remove worker
                 worker = self._manager.active_workers.pop(worker_id)

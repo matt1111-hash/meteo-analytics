@@ -38,7 +38,7 @@ def _get_bar_colors(self, counts: list[int]) -> list[str]:  # noqa: ARG001
     Returns:
         Lista hex színkódokkal
     """
-    from src.presentation.gui.theme_manager import ProfessionalThemeManager
+    from src.presentation.gui.theme_manager import ProfessionalThemeManager  # noqa: PLC0415
 
     try:
         if not counts:

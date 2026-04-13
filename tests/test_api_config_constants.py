@@ -10,7 +10,7 @@ class TestAPIConfig:
 
     def test_open_meteo_endpoints_defined(self) -> None:
         """Open-Meteo API endpoints should be properly defined."""
-        from src.config.api_config import APIConfig
+        from src.config.api_config import APIConfig  # noqa: PLC0415
 
         assert APIConfig.OPEN_METEO_BASE == "https://api.open-meteo.com/v1"
         assert APIConfig.OPEN_METEO_ARCHIVE == "https://archive-api.open-meteo.com/v1/archive"
@@ -18,20 +18,20 @@ class TestAPIConfig:
 
     def test_meteostat_endpoints_defined(self) -> None:
         """Meteostat API endpoints should be properly defined."""
-        from src.config.api_config import APIConfig
+        from src.config.api_config import APIConfig  # noqa: PLC0415
 
         assert APIConfig.METEOSTAT_BASE == "https://meteostat.p.rapidapi.com"
 
     def test_meteostat_monthly_limit(self) -> None:
         """Meteostat monthly request limit should be defined."""
-        from src.config.api_config import APIConfig
+        from src.config.api_config import APIConfig  # noqa: PLC0415
 
         assert APIConfig.METEOSTAT_MONTHLY_LIMIT == 10000
         assert APIConfig.METEOSTAT_RATE_LIMIT == 0.1
 
     def test_request_configuration(self) -> None:
         """Request timeout and retry configuration should be defined."""
-        from src.config.api_config import APIConfig
+        from src.config.api_config import APIConfig  # noqa: PLC0415
 
         assert APIConfig.REQUEST_TIMEOUT == 30
         assert APIConfig.MAX_RETRIES == 3
@@ -39,7 +39,7 @@ class TestAPIConfig:
 
     def test_data_source_defaults(self) -> None:
         """Default data sources for different use cases should be defined."""
-        from src.config.api_config import APIConfig
+        from src.config.api_config import APIConfig  # noqa: PLC0415
 
         assert APIConfig.SINGLE_CITY_SOURCE == "open-meteo"
         assert APIConfig.MULTI_CITY_SOURCE == "meteostat"
@@ -47,14 +47,14 @@ class TestAPIConfig:
 
     def test_rate_limits(self) -> None:
         """Rate limits for both providers should be defined."""
-        from src.config.api_config import APIConfig
+        from src.config.api_config import APIConfig  # noqa: PLC0415
 
         assert APIConfig.OPENMETEO_RATE_LIMIT == 0.1
         assert APIConfig.METEOSTAT_MONTHLY_LIMIT_RATE == 10000
 
     def test_source_display_names(self) -> None:
         """Source display names should be immutable mapping."""
-        from src.config.api_config import APIConfig
+        from src.config.api_config import APIConfig  # noqa: PLC0415
 
         assert APIConfig.SOURCE_DISPLAY_NAMES["open-meteo"] == "🌍 Open-Meteo API"
         assert APIConfig.SOURCE_DISPLAY_NAMES["meteostat"] == "💎 Meteostat API"
@@ -63,7 +63,7 @@ class TestAPIConfig:
 
     def test_user_agent(self) -> None:
         """User agent string should be defined."""
-        from src.config.api_config import APIConfig
+        from src.config.api_config import APIConfig  # noqa: PLC0415
 
         assert "Global Weather Analyzer" in APIConfig.USER_AGENT
         assert "2.2.0" in APIConfig.USER_AGENT
@@ -75,7 +75,7 @@ class TestDataConstants:
 
     def test_open_meteo_daily_fields(self) -> None:
         """Open-Meteo daily field names should be defined."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         expected_fields = (
             "temperature_2m_max",
@@ -90,14 +90,14 @@ class TestDataConstants:
 
     def test_open_meteo_hourly_fields(self) -> None:
         """Open-Meteo hourly field names should be defined."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         expected_fields = ("wind_gusts_10m", "windspeed_10m")
         assert expected_fields == DataConstants.OPEN_METEO_HOURLY_FIELDS
 
     def test_meteostat_daily_fields(self) -> None:
         """Meteostat daily field names should be defined."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         expected_fields = (
             "tavg",
@@ -115,7 +115,7 @@ class TestDataConstants:
 
     def test_processed_daily_fields(self) -> None:
         """Processed daily field names should be defined."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         expected_fields = (
             "temperature_2m_max",
@@ -131,7 +131,7 @@ class TestDataConstants:
 
     def test_export_formats(self) -> None:
         """Supported export formats should be defined."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         assert "csv" in DataConstants.SUPPORTED_EXPORT_FORMATS
         assert "excel" in DataConstants.SUPPORTED_EXPORT_FORMATS
@@ -140,21 +140,21 @@ class TestDataConstants:
 
     def test_page_size_limits(self) -> None:
         """Page size limits should be defined."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         assert DataConstants.DEFAULT_PAGE_SIZE == 100
         assert DataConstants.MAX_PAGE_SIZE == 1000
 
     def test_cache_configuration(self) -> None:
         """Cache expiry and size limits should be defined."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         assert DataConstants.CACHE_EXPIRY_HOURS == 24
         assert DataConstants.MAX_CACHE_SIZE_MB == 100
 
     def test_use_case_source_mapping(self) -> None:
         """Use case to source mapping should be immutable."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         assert DataConstants.USE_CASE_SOURCE_MAPPING["single_city"] == "open-meteo"
         assert DataConstants.USE_CASE_SOURCE_MAPPING["multi_city"] == "meteostat"
@@ -167,13 +167,13 @@ class TestDataConstants:
 
     def test_data_source_priority(self) -> None:
         """Data source priority order should be defined."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         assert DataConstants.DATA_SOURCE_PRIORITY == ("open-meteo", "meteostat")
 
     def test_source_capabilities(self) -> None:
         """Source capabilities mapping should be defined and immutable."""
-        from src.config.api_config import DataConstants
+        from src.config.api_config import DataConstants  # noqa: PLC0415
 
         open_meteo_caps = DataConstants.SOURCE_CAPABILITIES["open-meteo"]
         assert open_meteo_caps["historical"] is True

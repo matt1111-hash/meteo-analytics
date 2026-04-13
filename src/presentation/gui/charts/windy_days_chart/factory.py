@@ -30,7 +30,7 @@ def create_windy_days_chart(parent: QWidget | None = None):
     Returns:
         WindyDaysChart példány
     """
-    from .core import WindyDaysChart
+    from .core import WindyDaysChart  # noqa: PLC0415
 
     return WindyDaysChart(parent)
 
@@ -38,7 +38,7 @@ def create_windy_days_chart(parent: QWidget | None = None):
 # Demo és tesztelési funkciók
 def demo_windy_days_chart():
     """Demo a WindyDaysChart tesztelésére."""
-    import sys
+    import sys  # noqa: PLC0415
 
     app = QApplication(sys.argv)
 

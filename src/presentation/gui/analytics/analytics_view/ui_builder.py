@@ -220,8 +220,8 @@ class AnalyticsViewUIBuilder:
         layout.setSpacing(4)
 
         # Import a widgetekhez
-        from ..analytics_tabs import ClimateTabWidget
-        from ..analytics_widgets import RecordSummaryCard
+        from ..analytics_tabs import ClimateTabWidget  # noqa: PLC0415
+        from ..analytics_widgets import RecordSummaryCard  # noqa: PLC0415
 
         # Rekord summary kártya (kompakt)
         self.view.record_summary = RecordSummaryCard()

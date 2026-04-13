@@ -17,7 +17,7 @@ def create_query_control_widget():
     Returns:
         Fully configured QueryControlWidget instance
     """
-    from .core import QueryControlWidget
+    from .core import QueryControlWidget  # noqa: PLC0415
 
     widget = QueryControlWidget()
 

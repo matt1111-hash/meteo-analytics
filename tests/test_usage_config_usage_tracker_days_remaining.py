@@ -8,7 +8,7 @@ class TestUsageTrackerDaysRemaining:
 
     def test_days_remaining_positive(self) -> None:
         """Should return positive number of days."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         result = UsageTracker._get_days_remaining_in_month()
 

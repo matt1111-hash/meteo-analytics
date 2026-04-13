@@ -125,7 +125,7 @@ def test_fetch_flow_with_eventloop():  # noqa: PLR0915
             print("✅ Analysis request elküldve")
         except Exception as e:
             print(f"❌ Hiba: {e}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             traceback.print_exc()
             app.quit()

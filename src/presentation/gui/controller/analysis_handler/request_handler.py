@@ -43,7 +43,7 @@ def handle_analysis_request(
     print(f"🚨 DEBUG: analysis_type={request_data.get('analysis_type')}")
     print("=" * 80)
 
-    from .state_management import stop_current_analysis
+    from .state_management import stop_current_analysis  # noqa: PLC0415
 
     logger.info(f"🎯 ANALYSIS REQUEST received: {request_data.get('analysis_type', 'unknown')}")
 
@@ -87,13 +87,13 @@ def _start_new_analysis(
     print(f"🚨 DEBUG: start_analysis_callback={start_analysis_callback}")
     print("=" * 80)
 
-    from .provider_integration import _enhance_request_with_provider_routing
-    from .state_management import _cleanup_analysis_state
-    from .validator import _validate_analysis_request
+    from .provider_integration import _enhance_request_with_provider_routing  # noqa: PLC0415
+    from .state_management import _cleanup_analysis_state  # noqa: PLC0415
+    from .validator import _validate_analysis_request  # noqa: PLC0415
 
     try:
         # Request validálás
-        from .validator import _validate_analysis_request
+        from .validator import _validate_analysis_request  # noqa: PLC0415
 
         if not _validate_analysis_request(self, request_data):
             return

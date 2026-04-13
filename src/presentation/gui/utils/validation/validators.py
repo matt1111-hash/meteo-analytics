@@ -22,7 +22,7 @@ def validate_date_range(start_date: str, end_date: str) -> tuple[bool, str]:
     Returns:
         (valid, error_message) tuple
     """
-    from datetime import datetime
+    from datetime import datetime  # noqa: PLC0415
 
     try:
         start = datetime.strptime(start_date, "%Y-%m-%d")

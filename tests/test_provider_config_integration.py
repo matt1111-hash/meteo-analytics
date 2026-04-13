@@ -10,7 +10,7 @@ class TestIntegration:
 
     def test_set_and_get_selected_provider_roundtrip(self, config_fs: dict[str, str]) -> None:
         """Setting and getting provider should work correctly."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         UserPreferences.set_selected_provider("meteostat")
 
@@ -20,7 +20,7 @@ class TestIntegration:
 
     def test_load_save_preferences_roundtrip(self, config_fs: dict[str, str]) -> None:
         """Saving and loading preferences should preserve data."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         original_prefs = {
             "selected_provider": "open-meteo",
@@ -39,7 +39,7 @@ class TestIntegration:
 
     def test_provider_list_matches_validation(self) -> None:
         """All providers in list should be valid."""
-        from src.config.provider_config import (
+        from src.config.provider_config import (  # noqa: PLC0415
             ProviderConfig,
             UserPreferences,
             validate_provider_selection,
@@ -53,7 +53,7 @@ class TestIntegration:
 
     def test_auto_routing_matches_provider_config(self, config_fs: dict[str, str]) -> None:
         """Auto routing should match ProviderConfig routing logic."""
-        from src.config.provider_config import (
+        from src.config.provider_config import (  # noqa: PLC0415
             ProviderConfig,
             get_resolved_provider,
         )

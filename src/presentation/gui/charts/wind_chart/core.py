@@ -120,7 +120,7 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
 
         except Exception as e:
             print(f"❌ DEBUG: Szél chart hiba: {e}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             print(f"❌ DEBUG: WindChart traceback: {traceback.format_exc()}")
             self._is_updating = False

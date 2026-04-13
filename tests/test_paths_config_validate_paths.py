@@ -11,7 +11,7 @@ class TestValidatePaths:
 
     def test_validate_paths_success(self, tmp_path: Path) -> None:
         """validate_paths should return success status when all paths are valid."""
-        from src.config.paths_config import validate_paths
+        from src.config.paths_config import validate_paths  # noqa: PLC0415
 
         with (
             patch("src.config.paths_config.DATA_DIR", tmp_path / "data"),
@@ -31,7 +31,7 @@ class TestValidatePaths:
 
     def test_validate_paths_with_legacy_db(self, tmp_path: Path) -> None:
         """validate_paths should detect existing legacy database."""
-        from src.config.paths_config import validate_paths
+        from src.config.paths_config import validate_paths  # noqa: PLC0415
 
         with (
             patch("src.config.paths_config.DATA_DIR", tmp_path / "data"),
@@ -50,7 +50,7 @@ class TestValidatePaths:
 
     def test_validate_paths_without_legacy_db(self, tmp_path: Path) -> None:
         """validate_paths should report missing legacy database."""
-        from src.config.paths_config import validate_paths
+        from src.config.paths_config import validate_paths  # noqa: PLC0415
 
         with (
             patch("src.config.paths_config.DATA_DIR", tmp_path / "data"),
@@ -67,7 +67,7 @@ class TestValidatePaths:
 
     def test_validate_paths_detects_missing_directory(self, tmp_path: Path) -> None:
         """validate_paths should detect missing critical directories."""
-        from src.config.paths_config import validate_paths
+        from src.config.paths_config import validate_paths  # noqa: PLC0415
 
         non_existent_dir = tmp_path / "does_not_exist"
 
@@ -91,7 +91,7 @@ class TestValidatePaths:
 
     def test_validate_paths_write_permission_error(self, tmp_path: Path) -> None:
         """validate_paths should detect write permission errors."""
-        from src.config.paths_config import validate_paths
+        from src.config.paths_config import validate_paths  # noqa: PLC0415
 
         data_dir = tmp_path / "data"
         data_dir.mkdir(parents=True, exist_ok=True)
@@ -114,7 +114,7 @@ class TestValidatePaths:
 
     def test_validate_paths_missing_directory_after_ensure(self, tmp_path: Path) -> None:
         """validate_paths should detect directories that don't exist after ensure_directories."""
-        from src.config.paths_config import validate_paths
+        from src.config.paths_config import validate_paths  # noqa: PLC0415
 
         data_dir = tmp_path / "data"
         cache_dir = data_dir / "cache"
@@ -139,7 +139,7 @@ class TestValidatePaths:
 
     def test_validate_paths_exception_handling(self, tmp_path: Path) -> None:
         """validate_paths should handle exceptions gracefully."""
-        from src.config.paths_config import validate_paths
+        from src.config.paths_config import validate_paths  # noqa: PLC0415
 
         with patch(
             "src.config.paths_config.ensure_directories",

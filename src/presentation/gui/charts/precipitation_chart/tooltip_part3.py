@@ -70,7 +70,7 @@ def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:  # noqa: ARG
     tooltip_text = _format_tooltip_text(self, point_data)
 
     # Koordináták meghatározása - BAR CHART SPECIFIC
-    import matplotlib.dates as mdates
+    import matplotlib.dates as mdates  # noqa: PLC0415
 
     x_pos = mdates.date2num(point_data["date"])
     y_pos = point_data["precipitation"]

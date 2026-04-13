@@ -108,7 +108,7 @@ class DetailedChartsTab(QWidget):
         except Exception as e:
             logger.error(f"❌ HIBA a charts_container.update_charts() hívásban: {e}")
             logger.error(f"❌ Exception type: {type(e).__name__}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             logger.error(f"❌ Traceback: {traceback.format_exc()}")
 

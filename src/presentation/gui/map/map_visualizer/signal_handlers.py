@@ -94,11 +94,11 @@ def _refresh_map(self) -> None:
 
 def _export_map(self) -> None:
     """Export button handler."""
-    import os
-    import shutil
-    from datetime import datetime
+    import os  # noqa: PLC0415
+    import shutil  # noqa: PLC0415
+    from datetime import datetime  # noqa: PLC0415
 
-    from PySide6.QtWidgets import QFileDialog, QMessageBox
+    from PySide6.QtWidgets import QFileDialog, QMessageBox  # noqa: PLC0415
 
     if not self.current_map_file or not os.path.exists(self.current_map_file):  # noqa: PTH110
         QMessageBox.warning(self, "Export", "Nincs Folium térkép az exportáláshoz!")

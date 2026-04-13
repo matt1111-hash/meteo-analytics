@@ -198,7 +198,7 @@ class TestMultiCityEngineExports:
 
     def test_all_exports_exist(self) -> None:
         """All items in __all__ should be accessible."""
-        from src.analytics import multi_city_engine_core
+        from src.analytics import multi_city_engine_core  # noqa: PLC0415
 
         assert hasattr(multi_city_engine_core, "MultiCityEngine")
         assert "MultiCityEngine" in multi_city_engine_core.__all__

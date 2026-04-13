@@ -12,7 +12,7 @@ class DataProcessorPart2Mixin:  # noqa: D101
     def _empty_dataframe_fallback() -> Any:
         """Üres DataFrame fallback."""
         try:
-            import pandas as pd
+            import pandas as pd  # noqa: PLC0415
 
             return pd.DataFrame()
         except Exception:

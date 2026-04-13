@@ -47,7 +47,7 @@ class AnomalySettingsUIBuilder:
 
     def create_temperature_section(self) -> object:
         """Hőmérséklet szekció."""
-        from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (
+        from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (  # noqa: PLC0415
             create_temperature_section,
         )
 
@@ -55,7 +55,7 @@ class AnomalySettingsUIBuilder:
 
     def create_precipitation_section(self) -> object:
         """Csapadék szekció."""
-        from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (
+        from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (  # noqa: PLC0415
             create_precipitation_section,
         )
 
@@ -63,7 +63,7 @@ class AnomalySettingsUIBuilder:
 
     def create_wind_section(self) -> object:
         """Szél szekció."""
-        from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (
+        from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds import (  # noqa: PLC0415
             create_wind_section,
         )
 

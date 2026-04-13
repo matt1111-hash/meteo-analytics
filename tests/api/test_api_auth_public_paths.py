@@ -14,18 +14,18 @@ class TestPublicPaths:
 
     def test_public_paths_includes_health(self):
         """PUBLIC_PATHS should include /health."""
-        from src.api.main import PUBLIC_PATHS
+        from src.api.main import PUBLIC_PATHS  # noqa: PLC0415
 
         assert "/health" in PUBLIC_PATHS
 
     def test_public_paths_includes_docs(self):
         """PUBLIC_PATHS should include /docs."""
-        from src.api.main import PUBLIC_PATHS
+        from src.api.main import PUBLIC_PATHS  # noqa: PLC0415
 
         assert "/docs" in PUBLIC_PATHS
 
     def test_public_paths_includes_openapi(self):
         """PUBLIC_PATHS should include /openapi.json."""
-        from src.api.main import PUBLIC_PATHS
+        from src.api.main import PUBLIC_PATHS  # noqa: PLC0415
 
         assert "/openapi.json" in PUBLIC_PATHS

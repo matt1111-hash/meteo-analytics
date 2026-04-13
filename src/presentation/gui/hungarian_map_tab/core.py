@@ -108,14 +108,14 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
         self.auto_sync_enabled = True
 
         # Import the other modules
-        from .actions import (
+        from .actions import (  # noqa: PLC0415
             _export_map,
             _on_auto_sync_toggled,
             _on_auto_weather_refresh_toggled,
             _refresh_folium_map,
             _reset_map_view,
         )
-        from .folium_handlers import (
+        from .folium_handlers import (  # noqa: PLC0415
             on_county_selected,
             on_error_occurred,
             on_export_completed,
@@ -128,12 +128,12 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
             on_map_update_requested,
             on_selection_changed,
         )
-        from .initialization import (
+        from .initialization import (  # noqa: PLC0415
             initialize_components_steps,
             initialize_weather_components,
         )
-        from .public_api import create_public_api_methods
-        from .weather_integration import (
+        from .public_api import create_public_api_methods  # noqa: PLC0415
+        from .weather_integration import (  # noqa: PLC0415
             _generate_weather_overlay_from_analytics,
             _refresh_weather_overlay,
             load_weather_data_from_analytics,
@@ -156,11 +156,11 @@ class HungarianMapTab(MapTabUIMixin, MapAnalyticsSyncMixin, QWidget):
         self.set_analytics_parameter = lambda param: set_analytics_parameter(self, param)
         self.set_analytics_result = lambda result: set_analytics_result(self, result)
         self._refresh_weather_overlay = lambda: _refresh_weather_overlay(self)
-        self._generate_weather_overlay_from_analytics = (
-            lambda result: _generate_weather_overlay_from_analytics(self, result)
+        self._generate_weather_overlay_from_analytics = lambda result: (
+            _generate_weather_overlay_from_analytics(self, result)
         )
-        self.load_weather_data_from_analytics = (
-            lambda *args, **kwargs: load_weather_data_from_analytics(self, *args, **kwargs)
+        self.load_weather_data_from_analytics = lambda *args, **kwargs: (
+            load_weather_data_from_analytics(self, *args, **kwargs)
         )
 
         # Folium handlers

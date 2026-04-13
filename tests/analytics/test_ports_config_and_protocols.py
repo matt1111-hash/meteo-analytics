@@ -43,7 +43,7 @@ class TestMultiCityEngineConfig:
 
     def test_is_dataclass(self) -> None:
         """Should be a dataclass."""
-        from dataclasses import is_dataclass
+        from dataclasses import is_dataclass  # noqa: PLC0415
 
         assert is_dataclass(MultiCityEngineConfig)
 

@@ -77,7 +77,7 @@ def _append_metric_day(
     fake_daily_data: dict[str, list], metric_type, avg_val: float, day_index: int
 ) -> None:
     """Append one synthetic day based on the selected metric."""
-    from src.domain.value_objects.enums import AnalyticsMetric
+    from src.domain.value_objects.enums import AnalyticsMetric  # noqa: PLC0415
 
     if metric_type == AnalyticsMetric.TEMPERATURE_2M_MAX:
         _append_temperature_day(fake_daily_data, avg_val, day_index)
@@ -127,7 +127,7 @@ class AnalyticsViewMultiCityHandler:
             fake_daily_data = _build_fake_daily_template()
 
             # Metric alapú fake data generálás
-            from src.domain.value_objects.enums import AnalyticsMetric
+            from src.domain.value_objects.enums import AnalyticsMetric  # noqa: PLC0415
 
             metric_type = question.metric if question else AnalyticsMetric.TEMPERATURE_2M_MAX
             avg_val = sum(city.value for city in cities) / len(cities)

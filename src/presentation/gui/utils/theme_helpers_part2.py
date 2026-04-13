@@ -26,7 +26,7 @@ def log_wind_gusts_event(value: float, location: str = "Unknown") -> None:
         value: Széllökés érték
         location: Helyszín
     """
-    from .formatting import get_wind_gusts_category
+    from .formatting import get_wind_gusts_category  # noqa: PLC0415
 
     category = get_wind_gusts_category(value)
     if category:

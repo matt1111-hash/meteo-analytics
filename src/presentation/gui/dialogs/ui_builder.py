@@ -51,7 +51,7 @@ def _init_ui(self) -> None:
     Args:
         self: ExtremeWeatherDialog instance
     """
-    from PySide6.QtWidgets import QVBoxLayout
+    from PySide6.QtWidgets import QVBoxLayout  # noqa: PLC0415
 
     layout = QVBoxLayout(self)
     layout.setSpacing(GUIConstants.LAYOUT_SPACING)
@@ -79,7 +79,7 @@ def _create_period_selection_group(self):
     Returns:
         QGroupBox: Periódus kiválasztó csoport
     """
-    from .event_handlers import _on_period_type_changed
+    from .event_handlers import _on_period_type_changed  # noqa: PLC0415
 
     period_group = QGroupBox("Időszak típusa")
     period_layout = QHBoxLayout(period_group)

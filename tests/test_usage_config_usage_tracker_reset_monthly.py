@@ -8,7 +8,7 @@ class TestUsageTrackerResetMonthly:
 
     def test_reset_monthly_usage_clears_counters(self) -> None:
         """Reset should clear monthly counters."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         old_usage = {
             "current_month": "2024-01",

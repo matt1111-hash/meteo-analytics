@@ -8,14 +8,14 @@ class TestUsageTrackerWarningLevel:
 
     def test_warning_level_normal(self) -> None:
         """Low percentage should return 'normal'."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         result = UsageTracker._get_warning_level(50.0)
         assert result == "normal"
 
     def test_warning_level_warning(self) -> None:
         """Percentage at warning threshold should return 'warning'."""
-        from src.config.usage_config import ProviderConfig, UsageTracker
+        from src.config.usage_config import ProviderConfig, UsageTracker  # noqa: PLC0415
 
         warning_threshold = ProviderConfig.WARNING_THRESHOLD * 100
         result = UsageTracker._get_warning_level(warning_threshold)
@@ -23,7 +23,7 @@ class TestUsageTrackerWarningLevel:
 
     def test_warning_level_critical(self) -> None:
         """Percentage at critical threshold should return 'critical'."""
-        from src.config.usage_config import ProviderConfig, UsageTracker
+        from src.config.usage_config import ProviderConfig, UsageTracker  # noqa: PLC0415
 
         critical_threshold = ProviderConfig.CRITICAL_THRESHOLD * 100
         result = UsageTracker._get_warning_level(critical_threshold)

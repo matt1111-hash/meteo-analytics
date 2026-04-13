@@ -52,7 +52,7 @@ def update_data(self, data: dict[str, Any]) -> None:
         self: PrecipitationChart instance
         data: Bemeneti adatok
     """
-    from .plotting import _plot_precipitation
+    from .plotting import _plot_precipitation  # noqa: PLC0415
 
     print(
         "🌧️ DEBUG: PrecipitationChart.update_data() - DUPLIKÁCIÓ BUGFIX + SIMPLIFIED THEMEMANAGER VERZIÓ"

@@ -49,7 +49,7 @@ class WindAnalysisPort(Protocol):
 
 def get_wind_analysis_port() -> WindAnalysisPort:
     """Factory function to get the wind analysis implementation."""
-    from src.analytics import wind_analysis
+    from src.analytics import wind_analysis  # noqa: PLC0415
 
     return wind_analysis
 

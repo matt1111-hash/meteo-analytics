@@ -18,9 +18,9 @@ __all__ = ["AnomalySettingsDialog"]
 # 🧪 DEMO FUNKCIÓ
 def demo_anomaly_settings_dialog():
     """Demo: Anomália beállítások dialog tesztelése."""
-    import sys
+    import sys  # noqa: PLC0415
 
-    from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
+    from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget  # noqa: PLC0415
 
     app = QApplication(sys.argv)
 
@@ -33,7 +33,7 @@ def demo_anomaly_settings_dialog():
     open_btn = QPushButton("⚙️ Anomália Beállítások Megnyitása")
 
     def open_dialog():
-        from src.presentation.gui.dialogs.anomaly_settings_dialog import (
+        from src.presentation.gui.dialogs.anomaly_settings_dialog import (  # noqa: PLC0415
             AnomalySettingsDialog,
         )
 

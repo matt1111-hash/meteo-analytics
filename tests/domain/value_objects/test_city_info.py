@@ -130,6 +130,6 @@ class TestCityInfo:
 
     def test_city_info_importable_from_domain_value_objects(self):
         """Test that CityInfo is importable from domain.value_objects."""
-        from src.domain.value_objects import CityInfo as ImportedCityInfo
+        from src.domain.value_objects import CityInfo as ImportedCityInfo  # noqa: PLC0415
 
         assert ImportedCityInfo is CityInfo

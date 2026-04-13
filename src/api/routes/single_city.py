@@ -95,7 +95,7 @@ async def analyze_single_city_timeseries(request: SingleCityRequest) -> dict:
         query = to_multi_city_query(multi_city_request)
 
         # Override query_type with metric-specific one
-        from dataclasses import replace
+        from dataclasses import replace  # noqa: PLC0415
 
         query = replace(query, query_type=query_type)
 

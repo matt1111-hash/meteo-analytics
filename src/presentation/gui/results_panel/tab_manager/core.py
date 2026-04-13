@@ -41,7 +41,7 @@ class TabManager(QObject):
 
         # QuickOverviewTab
         try:
-            from ..quick_overview_tab import QuickOverviewTab
+            from ..quick_overview_tab import QuickOverviewTab  # noqa: PLC0415
 
             self.overview_tab = QuickOverviewTab()
             self.tab_widget.addTab(self.overview_tab, "📊 Gyors Áttekintés")
@@ -53,7 +53,7 @@ class TabManager(QObject):
 
         # DetailedChartsTab
         try:
-            from ..detailed_charts_tab import DetailedChartsTab
+            from ..detailed_charts_tab import DetailedChartsTab  # noqa: PLC0415
 
             self.charts_tab = DetailedChartsTab()
             self.tab_widget.addTab(self.charts_tab, "📈 Részletes Diagramok")
@@ -65,7 +65,7 @@ class TabManager(QObject):
 
         # DataTableTab
         try:
-            from ..data_table_tab import DataTableTab
+            from ..data_table_tab import DataTableTab  # noqa: PLC0415
 
             self.table_tab = DataTableTab()
             self.tab_widget.addTab(self.table_tab, "📋 Adattáblázat")
@@ -77,7 +77,7 @@ class TabManager(QObject):
 
         # ExtremeEventsTab
         try:
-            from ..extreme_events_tab import ExtremeEventsTab
+            from ..extreme_events_tab import ExtremeEventsTab  # noqa: PLC0415
 
             self.extreme_tab = ExtremeEventsTab()
             self.tab_widget.addTab(self.extreme_tab, "⚡ Extrém Események")
@@ -89,7 +89,7 @@ class TabManager(QObject):
 
         # WindyDaysTab
         try:
-            from ..windy_days_tab import WindyDaysTab
+            from ..windy_days_tab import WindyDaysTab  # noqa: PLC0415
 
             self.windy_days_tab = WindyDaysTab()
             self.tab_widget.addTab(self.windy_days_tab, "🌪️ Szeles Napok")

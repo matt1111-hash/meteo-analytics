@@ -12,7 +12,7 @@ class TestCheckEnvironment:
 
     def test_check_environment_success(self, tmp_path: Path) -> None:
         """Successful environment check should return all True values."""
-        from src.config.config_validation import check_environment
+        from src.config.config_validation import check_environment  # noqa: PLC0415
 
         with (
             patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
@@ -38,7 +38,7 @@ class TestCheckEnvironment:
 
     def test_check_environment_no_api_key(self, tmp_path: Path) -> None:
         """Environment check without valid API key should reflect that."""
-        from src.config.config_validation import check_environment
+        from src.config.config_validation import check_environment  # noqa: PLC0415
 
         with (
             patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
@@ -59,7 +59,7 @@ class TestCheckEnvironment:
 
     def test_check_environment_write_permission_denied(self, tmp_path: Path) -> None:
         """Environment check should handle write permission errors."""
-        from src.config.config_validation import check_environment
+        from src.config.config_validation import check_environment  # noqa: PLC0415
 
         with (
             patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
@@ -79,7 +79,7 @@ class TestCheckEnvironment:
 
     def test_check_environment_exception_handling(self) -> None:
         """Environment check should handle exceptions gracefully."""
-        from src.config.config_validation import check_environment
+        from src.config.config_validation import check_environment  # noqa: PLC0415
 
         with patch(
             "src.config.config_validation.ensure_directories",
@@ -92,7 +92,7 @@ class TestCheckEnvironment:
 
     def test_check_environment_write_error(self, tmp_path: Path) -> None:
         """Environment check should handle write errors when creating test file."""
-        from src.config.config_validation import check_environment
+        from src.config.config_validation import check_environment  # noqa: PLC0415
 
         with (
             patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
@@ -121,7 +121,7 @@ class TestValidateConfig:
 
     def test_validate_config_success(self, tmp_path: Path) -> None:
         """Successful config validation should return all True values."""
-        from src.config.config_validation import validate_config
+        from src.config.config_validation import validate_config  # noqa: PLC0415
 
         with (
             patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
@@ -150,7 +150,7 @@ class TestValidateConfig:
 
     def test_validate_config_no_legacy_db(self, tmp_path: Path) -> None:
         """Config validation without legacy DB should reflect that."""
-        from src.config.config_validation import validate_config
+        from src.config.config_validation import validate_config  # noqa: PLC0415
 
         with (
             patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
@@ -175,7 +175,7 @@ class TestValidateConfig:
 
     def test_validate_config_no_meteostat_key(self, tmp_path: Path) -> None:
         """Config validation without Meteostat key should affect multi_city_ready."""
-        from src.config.config_validation import validate_config
+        from src.config.config_validation import validate_config  # noqa: PLC0415
 
         with (
             patch("src.config.config_validation.ensure_directories") as mock_ensure_dirs,
@@ -198,7 +198,7 @@ class TestValidateConfig:
 
     def test_validate_config_permission_error(self, tmp_path: Path) -> None:
         """Config validation should handle permission errors."""
-        from src.config.config_validation import validate_config
+        from src.config.config_validation import validate_config  # noqa: PLC0415
 
         with patch(
             "src.config.config_validation.ensure_directories",
@@ -213,7 +213,7 @@ class TestValidateConfig:
 
     def test_validate_config_generic_exception(self) -> None:
         """Config validation should handle generic exceptions."""
-        from src.config.config_validation import validate_config
+        from src.config.config_validation import validate_config  # noqa: PLC0415
 
         with patch(
             "src.config.config_validation.ensure_directories",

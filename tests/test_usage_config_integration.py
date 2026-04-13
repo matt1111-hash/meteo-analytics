@@ -10,7 +10,7 @@ class TestIntegration:
 
     def test_track_and_get_summary_roundtrip(self, config_fs: dict[str, str]) -> None:
         """Tracking and getting summary should work correctly."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
         UsageTracker.track_request("open_meteo", 50)
@@ -23,7 +23,7 @@ class TestIntegration:
 
     def test_daily_breakdown_persists_across_loads(self, config_fs: dict[str, str]) -> None:
         """Daily breakdown should persist across loads."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 10)
         UsageTracker.load_usage_data()
@@ -35,7 +35,7 @@ class TestIntegration:
 
     def test_warning_level_updates_with_usage(self, config_fs: dict[str, str]) -> None:
         """Warning level should update as usage increases."""
-        from src.config.usage_config import APIConfig, UsageTracker
+        from src.config.usage_config import APIConfig, UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
         summary = UsageTracker.get_usage_summary()
@@ -50,7 +50,7 @@ class TestIntegration:
 
     def test_cost_estimation_accurate(self, config_fs: dict[str, str]) -> None:
         """Cost estimation should be accurate."""
-        from src.config.usage_config import ProviderConfig, UsageTracker
+        from src.config.usage_config import ProviderConfig, UsageTracker  # noqa: PLC0415
 
         requests = 500
         UsageTracker.track_request("meteostat", requests)
@@ -62,7 +62,7 @@ class TestIntegration:
 
     def test_multiple_providers_tracked_separately(self, config_fs: dict[str, str]) -> None:
         """Multiple providers should be tracked separately."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
         UsageTracker.track_request("open_meteo", 200)
@@ -74,7 +74,7 @@ class TestIntegration:
 
     def test_reset_clears_all_data(self, config_fs: dict[str, str]) -> None:
         """Reset should clear all tracked data."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
         UsageTracker.reset_usage_data()

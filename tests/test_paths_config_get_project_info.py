@@ -10,7 +10,7 @@ class TestGetProjectInfo:
 
     def test_get_project_info_returns_dict(self) -> None:
         """get_project_info should return a dictionary."""
-        from src.config.paths_config import get_project_info
+        from src.config.paths_config import get_project_info  # noqa: PLC0415
 
         result = get_project_info()
 
@@ -18,7 +18,7 @@ class TestGetProjectInfo:
 
     def test_get_project_info_contains_all_keys(self) -> None:
         """get_project_info should contain all expected keys."""
-        from src.config.paths_config import get_project_info
+        from src.config.paths_config import get_project_info  # noqa: PLC0415
 
         result = get_project_info()
 
@@ -36,7 +36,7 @@ class TestGetProjectInfo:
 
     def test_get_project_info_values_are_strings(self) -> None:
         """get_project_info should return string values for all paths."""
-        from src.config.paths_config import get_project_info
+        from src.config.paths_config import get_project_info  # noqa: PLC0415
 
         result = get_project_info()
 
@@ -45,7 +45,7 @@ class TestGetProjectInfo:
 
     def test_get_project_info_values_are_absolute_paths(self) -> None:
         """get_project_info should return absolute paths."""
-        from src.config.paths_config import get_project_info
+        from src.config.paths_config import get_project_info  # noqa: PLC0415
 
         result = get_project_info()
 
@@ -55,7 +55,7 @@ class TestGetProjectInfo:
 
     def test_get_project_info_consistent_with_constants(self) -> None:
         """get_project_info values should be consistent with path constants."""
-        from src.config.paths_config import (
+        from src.config.paths_config import (  # noqa: PLC0415
             CACHE_DB_PATH,
             CACHE_DIR,
             DATA_DIR,

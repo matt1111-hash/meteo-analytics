@@ -35,7 +35,7 @@ def _contains_dangerous_sql(query: str) -> str | None:
 def _execute_query(query: str, conn: sqlite3.Connection) -> Any:
     """Execute a SQL query using pandas when available."""
     try:
-        import pandas as pd
+        import pandas as pd  # noqa: PLC0415
 
         return pd.read_sql_query(query, conn)
     except ImportError:

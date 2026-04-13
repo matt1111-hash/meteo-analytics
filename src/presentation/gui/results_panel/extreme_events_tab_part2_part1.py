@@ -132,7 +132,7 @@ class ExtremeEventsTabPart1Mixin:  # noqa: D101
         self.extreme_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.extreme_table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         # SizePolicy: expanding, kitölti a rendelkezésre álló helyet
-        from PySide6.QtWidgets import QSizePolicy
+        from PySide6.QtWidgets import QSizePolicy  # noqa: PLC0415
 
         self.extreme_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.extreme_table)

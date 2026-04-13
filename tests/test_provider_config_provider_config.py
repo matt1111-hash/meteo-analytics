@@ -12,7 +12,7 @@ class TestProviderConfig:
 
     def test_provider_data_contains_all_providers(self) -> None:
         """ProviderConfig should contain all expected providers."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         assert "auto" in ProviderConfig.PROVIDERS
         assert "open-meteo" in ProviderConfig.PROVIDERS
@@ -20,7 +20,7 @@ class TestProviderConfig:
 
     def test_provider_data_is_immutable(self) -> None:
         """PROVIDERS should be immutable (MappingProxyType)."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         assert isinstance(ProviderConfig.PROVIDERS, MappingProxyType)
         with pytest.raises(TypeError):
@@ -28,7 +28,7 @@ class TestProviderConfig:
 
     def test_provider_auto_routing_logic(self) -> None:
         """Auto provider should have routing logic defined."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         auto_provider = ProviderConfig.PROVIDERS["auto"]
         assert "routing_logic" in auto_provider
@@ -39,7 +39,7 @@ class TestProviderConfig:
 
     def test_provider_open_meteo_attributes(self) -> None:
         """Open-Meteo provider should have correct attributes."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         open_meteo = ProviderConfig.PROVIDERS["open-meteo"]
         assert "Open-Meteo" in open_meteo["name"]
@@ -49,7 +49,7 @@ class TestProviderConfig:
 
     def test_provider_meteostat_attributes(self) -> None:
         """Meteostat provider should have correct attributes."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         meteostat = ProviderConfig.PROVIDERS["meteostat"]
         assert "Meteostat" in meteostat["name"]
@@ -59,43 +59,43 @@ class TestProviderConfig:
 
     def test_default_provider(self) -> None:
         """Default provider should be 'auto'."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         assert ProviderConfig.DEFAULT_PROVIDER == "auto"
 
     def test_usage_reset_day(self) -> None:
         """Usage reset day should be 1 (first of month)."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         assert ProviderConfig.USAGE_RESET_DAY == 1
 
     def test_warning_threshold(self) -> None:
         """Warning threshold should be 0.8 (80%)."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         assert ProviderConfig.WARNING_THRESHOLD == 0.8
 
     def test_critical_threshold(self) -> None:
         """Critical threshold should be 0.95 (95%)."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         assert ProviderConfig.CRITICAL_THRESHOLD == 0.95
 
     def test_meteostat_cost_per_request(self) -> None:
         """Meteostat cost per request should be defined."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         assert ProviderConfig.METEOSTAT_COST_PER_REQUEST == 0.001
 
     def test_monthly_budget_usd(self) -> None:
         """Monthly budget should be $10 USD."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         assert ProviderConfig.MONTHLY_BUDGET_USD == 10.0
 
     def test_provider_data_frozen(self) -> None:
         """Nested provider data should be frozen (immutable)."""
-        from src.config.provider_config import ProviderConfig
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         # Provider dict itself should be immutable
         with pytest.raises(TypeError):

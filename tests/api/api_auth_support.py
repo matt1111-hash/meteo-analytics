@@ -14,6 +14,6 @@ import pytest
 @pytest.fixture
 def app():
     """Create FastAPI app."""
-    from src.api.main import app
+    from src.api.main import app  # noqa: PLC0415
 
     return app

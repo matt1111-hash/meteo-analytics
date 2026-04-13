@@ -12,7 +12,7 @@ class TestGetResolvedProvider:
         self, config_fs: dict[str, str]
     ) -> None:
         """User override should take precedence over saved preference."""
-        from src.config.provider_config import get_resolved_provider
+        from src.config.provider_config import get_resolved_provider  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "meteostat"})
 
@@ -22,7 +22,7 @@ class TestGetResolvedProvider:
 
     def test_resolved_provider_auto_routing_single_city(self, config_fs: dict[str, str]) -> None:
         """Auto routing for single_city should return open-meteo."""
-        from src.config.provider_config import get_resolved_provider
+        from src.config.provider_config import get_resolved_provider  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "auto"})
 
@@ -32,7 +32,7 @@ class TestGetResolvedProvider:
 
     def test_resolved_provider_auto_routing_multi_city(self, config_fs: dict[str, str]) -> None:
         """Auto routing for multi_city should return meteostat."""
-        from src.config.provider_config import get_resolved_provider
+        from src.config.provider_config import get_resolved_provider  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "auto"})
 
@@ -44,7 +44,7 @@ class TestGetResolvedProvider:
         self, config_fs: dict[str, str]
     ) -> None:
         """Auto routing for historical_deep should return meteostat."""
-        from src.config.provider_config import get_resolved_provider
+        from src.config.provider_config import get_resolved_provider  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "auto"})
 
@@ -54,7 +54,7 @@ class TestGetResolvedProvider:
 
     def test_resolved_provider_auto_routing_real_time(self, config_fs: dict[str, str]) -> None:
         """Auto routing for real_time should return open-meteo."""
-        from src.config.provider_config import get_resolved_provider
+        from src.config.provider_config import get_resolved_provider  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "auto"})
 
@@ -64,7 +64,7 @@ class TestGetResolvedProvider:
 
     def test_resolved_provider_fixed_selection(self, config_fs: dict[str, str]) -> None:
         """Fixed provider selection should bypass routing."""
-        from src.config.provider_config import get_resolved_provider
+        from src.config.provider_config import get_resolved_provider  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "meteostat"})
 
@@ -76,7 +76,7 @@ class TestGetResolvedProvider:
         self, config_fs: dict[str, str]
     ) -> None:
         """Unknown use case should default to open-meteo."""
-        from src.config.provider_config import get_resolved_provider
+        from src.config.provider_config import get_resolved_provider  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "auto"})
 

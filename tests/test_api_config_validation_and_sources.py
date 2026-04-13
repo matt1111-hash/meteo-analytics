@@ -10,7 +10,7 @@ class TestValidateApiKeys:
 
     def test_no_meteostat_key_returns_not_present(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """When Meteostat API key is not set, validation should reflect that."""
-        from src.config.api_config import APIConfig, validate_api_keys
+        from src.config.api_config import APIConfig, validate_api_keys  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", None)
         result = validate_api_keys()
@@ -21,7 +21,7 @@ class TestValidateApiKeys:
 
     def test_short_meteostat_key_returns_invalid(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Short Meteostat API key should be marked as invalid."""
-        from src.config.api_config import APIConfig, validate_api_keys
+        from src.config.api_config import APIConfig, validate_api_keys  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", "short_key")
         result = validate_api_keys()
@@ -31,7 +31,7 @@ class TestValidateApiKeys:
 
     def test_valid_meteostat_key_returns_valid(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Valid length Meteostat API key should pass validation."""
-        from src.config.api_config import APIConfig, validate_api_keys
+        from src.config.api_config import APIConfig, validate_api_keys  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", "a" * 32)
         result = validate_api_keys()
@@ -43,7 +43,7 @@ class TestValidateApiKeys:
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Meteostat API key with surrounding whitespace should be stripped."""
-        from src.config.api_config import APIConfig, validate_api_keys
+        from src.config.api_config import APIConfig, validate_api_keys  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", "  " + "a" * 32 + "  ")
         result = validate_api_keys()
@@ -53,7 +53,7 @@ class TestValidateApiKeys:
 
     def test_openmeteo_always_available(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Open-Meteo should always be available regardless of API key status."""
-        from src.config.api_config import APIConfig, validate_api_keys
+        from src.config.api_config import APIConfig, validate_api_keys  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", None)
         result_no_key = validate_api_keys()
@@ -69,7 +69,7 @@ class TestGetActiveDataSources:
 
     def test_always_returns_open_meteo(self) -> None:
         """Open-Meteo should always be in active sources."""
-        from src.config.api_config import get_active_data_sources
+        from src.config.api_config import get_active_data_sources  # noqa: PLC0415
 
         sources = get_active_data_sources()
 
@@ -80,7 +80,7 @@ class TestGetActiveDataSources:
 
     def test_open_meteo_properties(self) -> None:
         """Open-Meteo source properties should be correctly defined."""
-        from src.config.api_config import get_active_data_sources
+        from src.config.api_config import get_active_data_sources  # noqa: PLC0415
 
         sources = get_active_data_sources()
         open_meteo = sources["open-meteo"]
@@ -95,7 +95,7 @@ class TestGetActiveDataSources:
 
     def test_meteostat_inactive_without_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Meteostat should be marked inactive without valid API key."""
-        from src.config.api_config import APIConfig, get_active_data_sources
+        from src.config.api_config import APIConfig, get_active_data_sources  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", None)
         sources = get_active_data_sources()
@@ -108,7 +108,7 @@ class TestGetActiveDataSources:
 
     def test_meteostat_active_with_valid_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Meteostat should be marked active with valid API key."""
-        from src.config.api_config import APIConfig, get_active_data_sources
+        from src.config.api_config import APIConfig, get_active_data_sources  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", "a" * 32)
         sources = get_active_data_sources()
@@ -119,7 +119,7 @@ class TestGetActiveDataSources:
 
     def test_meteostat_inactive_use_cases(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Meteostat use cases should be defined even when inactive."""
-        from src.config.api_config import APIConfig, get_active_data_sources
+        from src.config.api_config import APIConfig, get_active_data_sources  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", None)
         sources = get_active_data_sources()
@@ -133,7 +133,7 @@ class TestGetActiveDataSources:
 
     def test_meteostat_active_use_cases(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Meteostat use cases should be defined when active."""
-        from src.config.api_config import APIConfig, get_active_data_sources
+        from src.config.api_config import APIConfig, get_active_data_sources  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", "a" * 32)
         sources = get_active_data_sources()
@@ -147,7 +147,7 @@ class TestGetActiveDataSources:
 
     def test_returns_dict_with_both_sources(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Should return a dict with both sources regardless of key status."""
-        from src.config.api_config import APIConfig, get_active_data_sources
+        from src.config.api_config import APIConfig, get_active_data_sources  # noqa: PLC0415
 
         monkeypatch.setattr(APIConfig, "METEOSTAT_API_KEY", None)
         sources_no_key = get_active_data_sources()

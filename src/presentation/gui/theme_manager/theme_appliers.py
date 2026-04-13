@@ -21,7 +21,7 @@ def apply_qdarktheme_theme(theme_name: str, manager: "ProfessionalThemeManager")
         theme_name: Theme name ("light" or "dark")
         manager: ThemeManager instance
     """
-    import qdarktheme
+    import qdarktheme  # noqa: PLC0415
 
     qdarktheme.setup_theme(theme_name)
     _enhance_with_color_palette(manager)
@@ -35,7 +35,7 @@ def apply_qt6_native_theme(theme_name: str, manager: "ProfessionalThemeManager")
         theme_name: Theme name ("light" or "dark")
         manager: ThemeManager instance
     """
-    from PySide6.QtGui import QGuiApplication, Qt
+    from PySide6.QtGui import QGuiApplication, Qt  # noqa: PLC0415
 
     if theme_name == "dark":
         QGuiApplication.styleHints().setColorScheme(Qt.ColorScheme.Dark)

@@ -11,7 +11,7 @@ class TestUserPreferencesSave:
 
     def test_save_preferences_writes_to_file(self, config_fs: dict[str, str]) -> None:
         """Saving preferences should write to file with timestamp."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         payload = {"selected_provider": "meteostat", "auto_fallback_enabled": False}
 
@@ -27,7 +27,7 @@ class TestUserPreferencesSave:
 
     def test_save_preferences_adds_timestamp(self, config_fs: dict[str, str]) -> None:
         """Saving preferences should add/update last_updated timestamp."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         payload = {"selected_provider": "open-meteo"}
 
@@ -41,7 +41,7 @@ class TestUserPreferencesSave:
 
     def test_save_preferences_overwrites_existing(self, config_fs: dict[str, str]) -> None:
         """Saving should overwrite existing preferences file."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "meteostat"})
 

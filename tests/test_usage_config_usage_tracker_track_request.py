@@ -10,7 +10,7 @@ class TestUsageTrackerTrackRequest:
 
     def test_track_request_meteostat(self, config_fs: dict[str, str]) -> None:
         """Tracking Meteostat request should update counters and cost."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         result = UsageTracker.track_request("meteostat", 5)
 
@@ -21,7 +21,7 @@ class TestUsageTrackerTrackRequest:
 
     def test_track_request_open_meteo(self, config_fs: dict[str, str]) -> None:
         """Tracking Open-Meteo request should update counters."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         result = UsageTracker.track_request("open_meteo", 3)
 
@@ -31,7 +31,7 @@ class TestUsageTrackerTrackRequest:
 
     def test_track_request_accumulates(self, config_fs: dict[str, str]) -> None:
         """Multiple track_request calls should accumulate."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 5)
         UsageTracker.track_request("meteostat", 3)
@@ -41,7 +41,7 @@ class TestUsageTrackerTrackRequest:
 
     def test_track_request_updates_daily_breakdown(self, config_fs: dict[str, str]) -> None:
         """Tracking should update daily breakdown."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 5)
 
@@ -53,7 +53,7 @@ class TestUsageTrackerTrackRequest:
 
     def test_track_request_unknown_provider(self, config_fs: dict[str, str]) -> None:
         """Unknown provider should log warning but not crash."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         result = UsageTracker.track_request("unknown_provider", 5)
 

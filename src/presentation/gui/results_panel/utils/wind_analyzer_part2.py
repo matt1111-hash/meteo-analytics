@@ -11,7 +11,7 @@ def _calculate_basic_stats(
     wind_data: List[float], clean_data: List[float], data_source: str
 ) -> Dict[str, Any]:
     """Build base analysis statistics for a wind series."""
-    import statistics
+    import statistics  # noqa: PLC0415
 
     return {
         "data_source": data_source,

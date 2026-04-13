@@ -157,7 +157,7 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
         try:
             result_data = item.data(Qt.UserRole)
             if result_data:
-                name, details, lat, lon, is_hungarian = _build_location_details(result_data)
+                name, details, _lat, _lon, is_hungarian = _build_location_details(result_data)
                 self.location_card.set_location(name, details, is_hungarian)
                 self.confirm_button.setEnabled(True)
                 logger.info(

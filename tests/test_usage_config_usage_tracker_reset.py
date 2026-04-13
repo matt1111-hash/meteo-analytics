@@ -10,7 +10,7 @@ class TestUsageTrackerReset:
 
     def test_reset_usage_data_removes_file(self, config_fs: dict[str, str]) -> None:
         """Reset should remove usage file."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         config_fs["usage"] = json.dumps({"total_requests": 100})
 
@@ -21,7 +21,7 @@ class TestUsageTrackerReset:
 
     def test_reset_usage_data_when_no_file(self, config_fs: dict[str, str]) -> None:
         """Reset should succeed even when no file exists."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         config_fs.pop("usage", None)
 

@@ -35,8 +35,8 @@ class SetupMixin:
         """
         🎨 UI komponensek létrehozása.
         """
-        from ...color_palette import ColorPalette
-        from ...theme_manager import register_widget_for_theming
+        from ...color_palette import ColorPalette  # noqa: PLC0415
+        from ...theme_manager import register_widget_for_theming  # noqa: PLC0415
 
         self.color_palette = ColorPalette()
 
@@ -160,7 +160,7 @@ class SetupMixin:
         """
         🎨 Téma beállítások alkalmazása.
         """
-        from ...theme_manager import register_widget_for_theming
+        from ...theme_manager import register_widget_for_theming  # noqa: PLC0415
 
         register_widget_for_theming(self, "container")
 
@@ -177,7 +177,7 @@ class SetupMixin:
         """
         📄 GeoJSON adatok betöltésének indítása.
         """
-        from ..worker import GEOPANDAS_AVAILABLE
+        from ..worker import GEOPANDAS_AVAILABLE  # noqa: PLC0415
 
         if not GEOPANDAS_AVAILABLE:
             self.progress_label.setText("❌ GeoPandas nem elérhető!")

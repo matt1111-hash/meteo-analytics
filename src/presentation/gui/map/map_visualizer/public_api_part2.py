@@ -83,7 +83,7 @@ def is_folium_available(self) -> bool:  # noqa: ARG001
         bool: True ha folium elérhető
     """
     try:
-        import folium
+        import folium  # noqa: PLC0415
 
         return True
     except ImportError:

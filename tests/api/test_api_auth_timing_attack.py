@@ -14,18 +14,18 @@ class TestTimingAttackProtection:
 
     def test_compare_digest_used_in_verify(self):
         """Verify that secrets.compare_digest is used for key comparison."""
-        import inspect
+        import inspect  # noqa: PLC0415
 
-        from src.api.main import verify_api_key
+        from src.api.main import verify_api_key  # noqa: PLC0415
 
         source = inspect.getsource(verify_api_key)
         assert "compare_digest" in source
 
     def test_compare_digest_in_middleware(self):
         """Verify that secrets.compare_digest is used in middleware."""
-        import inspect
+        import inspect  # noqa: PLC0415
 
-        from src.api.main import auth_middleware
+        from src.api.main import auth_middleware  # noqa: PLC0415
 
         source = inspect.getsource(auth_middleware)
         assert "compare_digest" in source

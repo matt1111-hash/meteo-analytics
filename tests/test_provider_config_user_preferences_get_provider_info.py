@@ -8,7 +8,7 @@ class TestUserPreferencesGetProviderInfo:
 
     def test_get_provider_info_valid_provider(self) -> None:
         """Should return provider info for valid provider."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         info = UserPreferences.get_provider_info("auto")
 
@@ -18,7 +18,7 @@ class TestUserPreferencesGetProviderInfo:
 
     def test_get_provider_info_invalid_provider(self) -> None:
         """Should return None for invalid provider."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         info = UserPreferences.get_provider_info("invalid")
 
@@ -26,7 +26,7 @@ class TestUserPreferencesGetProviderInfo:
 
     def test_get_provider_info_returns_mutable_copy(self) -> None:
         """Returned provider info should be a mutable dict copy."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         info = UserPreferences.get_provider_info("auto")
 
@@ -36,7 +36,7 @@ class TestUserPreferencesGetProviderInfo:
 
     def test_get_provider_info_all_providers(self) -> None:
         """Should return info for all valid providers."""
-        from src.config.provider_config import ProviderConfig, UserPreferences
+        from src.config.provider_config import ProviderConfig, UserPreferences  # noqa: PLC0415
 
         for provider in ProviderConfig.PROVIDERS:
             info = UserPreferences.get_provider_info(provider)

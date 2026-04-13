@@ -29,7 +29,7 @@ def _generate_default_map(self) -> None:
         self: HungarianMapVisualizer instance
     """
     try:
-        import folium  # noqa: F401
+        import folium  # noqa: F401, PLC0415
     except ImportError:
         return
 
@@ -46,7 +46,7 @@ def _start_map_generation(self) -> None:
         self: HungarianMapVisualizer instance
     """
     try:
-        import folium  # noqa: F401
+        import folium  # noqa: F401, PLC0415
     except ImportError:
         self._show_folium_error()
         return
@@ -60,7 +60,7 @@ def _start_map_generation(self) -> None:
     self.progress_bar.setValue(0)
     self.status_label.setText("🌐 HTTP szerver Folium térkép generálása...")
 
-    from .folium_renderer import FoliumMapGenerator
+    from .folium_renderer import FoliumMapGenerator  # noqa: PLC0415
 
     self.map_generator = FoliumMapGenerator(
         config=self.map_config,
@@ -83,7 +83,7 @@ def _on_map_generated(self, file_path: str) -> None:
         self: HungarianMapVisualizer instance
         file_path: Generált HTML fájl útvonal
     """
-    import os
+    import os  # noqa: PLC0415
 
     if not os.path.exists(file_path):  # noqa: PTH110
         self.error_occurred.emit(f"Generated HTML file not found: {file_path}")
@@ -108,9 +108,9 @@ def _load_map_from_http_url(self, file_path: str) -> None:
         self: HungarianMapVisualizer instance
         file_path: Map HTML fájl útvonal
     """
-    import os
+    import os  # noqa: PLC0415
 
-    from PySide6.QtCore import QUrl
+    from PySide6.QtCore import QUrl  # noqa: PLC0415
 
     try:
         filename = os.path.basename(file_path)  # noqa: PTH119

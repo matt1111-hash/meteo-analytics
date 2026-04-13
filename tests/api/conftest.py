@@ -8,6 +8,6 @@ import pytest
 @pytest.fixture
 def app():
     """Create FastAPI app for API tests."""
-    from src.api.main import app as fastapi_app
+    from src.api.main import app as fastapi_app  # noqa: PLC0415
 
     return fastapi_app

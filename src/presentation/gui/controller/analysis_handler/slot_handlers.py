@@ -51,11 +51,11 @@ def on_analysis_completed(self, result_data: dict) -> None:
     print(f"🚨 DEBUG: result_data keys: {list(result_data.keys())}")
     print("=" * 80)
 
-    from .result_processor import (
+    from .result_processor import (  # noqa: PLC0415
         _calculate_analysis_duration,
         _process_analysis_result,
     )
-    from .state_management import _cleanup_analysis_state
+    from .state_management import _cleanup_analysis_state  # noqa: PLC0415
 
     try:
         logger.info("✅ Analysis completed successfully")
@@ -89,7 +89,7 @@ def on_analysis_failed(self, error_message: str) -> None:
         self: AnalysisHandler instance
         error_message: Error üzenet
     """
-    from .state_management import _cleanup_analysis_state
+    from .state_management import _cleanup_analysis_state  # noqa: PLC0415
 
     logger.error(f"❌ Analysis failed: {error_message}")
     self.analysis_failed.emit(error_message)
@@ -104,7 +104,7 @@ def on_analysis_cancelled(self) -> None:
     Args:
         self: AnalysisHandler instance
     """
-    from .state_management import _cleanup_analysis_state
+    from .state_management import _cleanup_analysis_state  # noqa: PLC0415
 
     logger.info("ℹ️ Analysis cancelled")  # noqa: RUF001
     self.analysis_cancelled.emit()

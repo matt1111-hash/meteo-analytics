@@ -21,7 +21,7 @@ class StyleSheetsPart1Mixin:  # noqa: D101
         """
         try:
             # 🎨 THEMEMANAGER IMPORTÁLÁS (lazy import circular dependency elkerülésére)
-            from ..theme_manager import get_theme_manager
+            from ..theme_manager import get_theme_manager  # noqa: PLC0415
 
             # ThemeManager singleton lekérdezése
             manager = get_theme_manager()
@@ -103,7 +103,7 @@ class StyleSheetsPart1Mixin:  # noqa: D101
             Widget CSS stylesheet
         """
         try:
-            from ..theme_manager import get_theme_manager
+            from ..theme_manager import get_theme_manager  # noqa: PLC0415
 
             manager = get_theme_manager()
 
@@ -130,7 +130,7 @@ class StyleSheetsPart1Mixin:  # noqa: D101
             theme_type: Téma típusa, None esetén jelenlegi
         """
         try:
-            from ..theme_manager import get_theme_manager
+            from ..theme_manager import get_theme_manager  # noqa: PLC0415
 
             manager = get_theme_manager()
 

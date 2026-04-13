@@ -16,7 +16,7 @@ def _get_mouse_chart_coordinates(event) -> tuple[float, float] | None:
 
 def _build_date_positions(bar_data: list[dict[str, Any]]) -> list[tuple[int, float]]:
     """Build date-number pairs for tooltip matching."""
-    import matplotlib.dates as mdates
+    import matplotlib.dates as mdates  # noqa: PLC0415
 
     return [(index, mdates.date2num(bar_info["date"])) for index, bar_info in enumerate(bar_data)]
 

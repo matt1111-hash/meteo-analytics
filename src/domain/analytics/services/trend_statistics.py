@@ -31,7 +31,7 @@ class TrendStatisticsCalculator:
 
         # Scipy stats for additional statistics
         try:
-            slope, intercept, r_value, p_value, std_err = stats.linregress(X.flatten(), y)
+            slope, intercept, _r_value, p_value, std_err = stats.linregress(X.flatten(), y)
         except ValueError:
             slope = model.coef_[0]
             intercept = model.intercept_

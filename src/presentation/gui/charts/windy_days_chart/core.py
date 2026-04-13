@@ -54,58 +54,58 @@ class WindyDaysChart(WeatherChart):
 
     # Public API methods
     def update_data(self, chart_data: dict) -> None:  # noqa: D102
-        from .data_handler import update_data
+        from .data_handler import update_data  # noqa: PLC0415
 
         update_data(self, chart_data)
 
     def clear_chart(self) -> None:  # noqa: D102
-        from .helpers import clear_chart
+        from .helpers import clear_chart  # noqa: PLC0415
 
         clear_chart(self)
 
     def export_chart(self, file_path: str, dpi: int = 300) -> bool:  # noqa: D102
-        from .helpers import export_chart
+        from .helpers import export_chart  # noqa: PLC0415
 
         return export_chart(self, file_path, dpi)
 
     def get_chart_info(self) -> dict:  # noqa: D102
-        from .helpers import get_chart_info
+        from .helpers import get_chart_info  # noqa: PLC0415
 
         return get_chart_info(self)
 
     # Private methods (imported from modules)
     def _has_valid_data(self) -> bool:
-        from .data_handler import _has_valid_data
+        from .data_handler import _has_valid_data  # noqa: PLC0415
 
         return _has_valid_data(self)
 
     def _plot_windy_days_chart(self) -> None:
-        from .plotting import _plot_windy_days_chart
+        from .plotting import _plot_windy_days_chart  # noqa: PLC0415
 
         _plot_windy_days_chart(self)
 
     def _get_bar_colors(self, counts: list[int]) -> list[str]:
-        from .styling import _get_bar_colors
+        from .styling import _get_bar_colors  # noqa: PLC0415
 
         return _get_bar_colors(self, counts)
 
     def _add_value_labels(self, ax, bars, counts: list[int], percentages: list[float]) -> None:
-        from .styling import _add_value_labels
+        from .styling import _add_value_labels  # noqa: PLC0415
 
         _add_value_labels(self, ax, bars, counts, percentages)
 
     def _setup_chart_axes(self, ax, months: list[str], counts: list[int]) -> None:
-        from .styling import _setup_chart_axes
+        from .styling import _setup_chart_axes  # noqa: PLC0415
 
         _setup_chart_axes(self, ax, months, counts)
 
     def _setup_chart_labels(self, ax) -> None:
-        from .styling import _setup_chart_labels
+        from .styling import _setup_chart_labels  # noqa: PLC0415
 
         _setup_chart_labels(self, ax)
 
     def _apply_chart_styling(self, ax) -> None:
-        from .styling import _apply_chart_styling
+        from .styling import _apply_chart_styling  # noqa: PLC0415
 
         _apply_chart_styling(self, ax)
 
@@ -132,16 +132,16 @@ class WindyDaysChart(WeatherChart):
     def _setup_chart_interactivity(
         self, bars, months: list[str], counts: list[int], percentages: list[float]
     ) -> None:
-        from .interactivity import _setup_chart_interactivity
+        from .interactivity import _setup_chart_interactivity  # noqa: PLC0415
 
         _setup_chart_interactivity(self, bars, months, counts, percentages)
 
     def _plot_no_data_message(self) -> None:
-        from .helpers import _plot_no_data_message
+        from .helpers import _plot_no_data_message  # noqa: PLC0415
 
         _plot_no_data_message(self)
 
     def _plot_error_message(self, error_msg: str) -> None:
-        from .helpers import _plot_error_message
+        from .helpers import _plot_error_message  # noqa: PLC0415
 
         _plot_error_message(self, error_msg)

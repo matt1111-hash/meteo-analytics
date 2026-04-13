@@ -31,7 +31,7 @@ class TestGeoUtilsRegionInit:
 
     def test_inherits_from_geo_utils(self) -> None:
         """GeoUtilsRegion inherits from GeoUtils."""
-        from src.data.geo_utils_core import GeoUtils
+        from src.data.geo_utils_core import GeoUtils  # noqa: PLC0415
 
         geo = GeoUtilsRegion()
 

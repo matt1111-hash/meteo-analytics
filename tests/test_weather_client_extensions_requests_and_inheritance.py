@@ -91,7 +91,7 @@ class TestGetWeatherForDateRange:
             call_args = mock_get.call_args
             start_date_str = call_args[0][2]
             end_date_str = call_args[0][3]
-            from datetime import datetime
+            from datetime import datetime  # noqa: PLC0415
 
             start_dt = datetime.strptime(start_date_str, "%Y-%m-%d").date()
             end_dt = datetime.strptime(end_date_str, "%Y-%m-%d").date()
@@ -105,7 +105,7 @@ class TestGetWeatherForDateRange:
             call_args = mock_get.call_args
             start_date_str = call_args[0][2]
             end_date_str = call_args[0][3]
-            from datetime import datetime
+            from datetime import datetime  # noqa: PLC0415
 
             start_dt = datetime.strptime(start_date_str, "%Y-%m-%d").date()
             end_dt = datetime.strptime(end_date_str, "%Y-%m-%d").date()
@@ -150,7 +150,7 @@ class TestInheritance:
     """Öröklődés tesztek."""
 
     def test_inherits_from_weather_client(self) -> None:
-        from src.data.weather_client_core import WeatherClient
+        from src.data.weather_client_core import WeatherClient  # noqa: PLC0415
 
         assert issubclass(WeatherClientExtensions, WeatherClient)
 

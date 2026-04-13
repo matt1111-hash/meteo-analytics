@@ -25,7 +25,7 @@ def test_location_to_universal_location_preserves_metadata() -> None:
         metadata={"county": "Budapest", "climate_zone": "continental"},
     )
     # Convert Location to UniversalLocation using factory function
-    from src.domain.entities.location_factories import create_universal_location
+    from src.domain.entities.location_factories import create_universal_location  # noqa: PLC0415
 
     converted = create_universal_location(
         location_type=LocationType.MICRO_REGION,

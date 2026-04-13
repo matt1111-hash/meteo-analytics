@@ -135,7 +135,7 @@ class TestBackwardCompatibility:
 
     def test_legacy_import_pattern_works(self) -> None:
         """A dokumentációban leírt legacy import működik."""
-        from src.data.geo_utils import (
+        from src.data.geo_utils import (  # noqa: PLC0415
             DistanceCalculator,
             GeoPoint,
             GeoUtils,
@@ -147,9 +147,9 @@ class TestBackwardCompatibility:
 
     def test_recommended_import_pattern_works(self) -> None:
         """A dokumentációban javasolt új import minta működik."""
-        from src.data.distance_calculator import DistanceCalculator
-        from src.data.geo_types import GeoPoint
-        from src.data.geo_utils_core import GeoUtils
+        from src.data.distance_calculator import DistanceCalculator  # noqa: PLC0415
+        from src.data.geo_types import GeoPoint  # noqa: PLC0415
+        from src.data.geo_utils_core import GeoUtils  # noqa: PLC0415
 
         assert GeoUtils is not None
         assert DistanceCalculator is not None
@@ -157,8 +157,8 @@ class TestBackwardCompatibility:
 
     def test_both_imports_reference_same_class(self) -> None:
         """A GeoUtils mindkét import módszerrel ugyanazt az osztályt adja."""
-        from src.data.geo_utils import GeoUtils as LegacyGeoUtils
-        from src.data.geo_utils_core import GeoUtils as CoreGeoUtils
+        from src.data.geo_utils import GeoUtils as LegacyGeoUtils  # noqa: PLC0415
+        from src.data.geo_utils_core import GeoUtils as CoreGeoUtils  # noqa: PLC0415
 
         assert LegacyGeoUtils is CoreGeoUtils
 

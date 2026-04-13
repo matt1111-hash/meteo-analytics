@@ -82,7 +82,7 @@ class TestClosestPoint:
             (50.0, 25.0, "Far"),
         ]
         result = calc.closest_point(47.5, 19.0, points)
-        lat, lon, data, distance = result
+        lat, lon, data, distance = result  # noqa: RUF059
         assert data == "Close"
         assert distance < 20
 

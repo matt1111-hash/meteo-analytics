@@ -20,7 +20,7 @@ from httpx import ASGITransport, AsyncClient
 @pytest.fixture
 def app():
     """Create FastAPI app for testing."""
-    from src.api.main import app
+    from src.api.main import app  # noqa: PLC0415
 
     return app
 

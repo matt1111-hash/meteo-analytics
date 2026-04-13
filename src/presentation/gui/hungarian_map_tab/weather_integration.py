@@ -114,7 +114,7 @@ def _generate_weather_overlay_from_analytics(self, analytics_result) -> None:  #
     except Exception as e:
         error_msg = f"Weather overlay generálási hiba: {e}"
         print(f"❌ DEBUG: {error_msg}")
-        import traceback
+        import traceback  # noqa: PLC0415
 
         traceback.print_exc()
         self._on_error_occurred(error_msg)

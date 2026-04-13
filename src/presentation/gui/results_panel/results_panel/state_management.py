@@ -34,8 +34,8 @@ def get_state(self) -> dict[str, Any]:
     Returns:
         Dict[str, Any]: Állapot dictionary
     """
-    from .public_api import is_loading
-    from .signal_handlers import get_current_tab
+    from .public_api import is_loading  # noqa: PLC0415
+    from .signal_handlers import get_current_tab  # noqa: PLC0415
 
     return {
         "is_loading": is_loading(self),
@@ -61,7 +61,7 @@ def set_state(self, state: dict[str, Any]) -> bool:
         bool: True ha sikeres
     """
     try:
-        from .public_api import (
+        from .public_api import (  # noqa: PLC0415
             hide_loading_indicator,
             show_loading_indicator,
             switch_to_tab,
@@ -120,12 +120,12 @@ def emergency_reset(self) -> None:
     logger.warning("ResultsPanel emergency reset triggered")
 
     # Loading reset
-    from .public_api import force_hide_loading
+    from .public_api import force_hide_loading  # noqa: PLC0415
 
     force_hide_loading(self)
 
     # Data clear
-    from .public_api import clear_data
+    from .public_api import clear_data  # noqa: PLC0415
 
     clear_data(self)
 
@@ -161,7 +161,7 @@ def closeEvent(self, event) -> None:
         event: Close event
     """
     cleanup(self)
-    from PySide6.QtWidgets import QWidget
+    from PySide6.QtWidgets import QWidget  # noqa: PLC0415
 
     QWidget.closeEvent(self, event)
 

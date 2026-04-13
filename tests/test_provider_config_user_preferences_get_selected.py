@@ -10,7 +10,7 @@ class TestUserPreferencesGetSelected:
 
     def test_get_selected_provider_returns_saved_value(self, config_fs: dict[str, str]) -> None:
         """Should return the saved selected provider."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         config_fs["prefs"] = json.dumps({"selected_provider": "meteostat"})
 
@@ -22,7 +22,7 @@ class TestUserPreferencesGetSelected:
         self, config_fs: dict[str, str]
     ) -> None:
         """Should return default provider when not set."""
-        from src.config.provider_config import ProviderConfig, UserPreferences
+        from src.config.provider_config import ProviderConfig, UserPreferences  # noqa: PLC0415
 
         config_fs.pop("prefs", None)
 

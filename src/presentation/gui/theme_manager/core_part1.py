@@ -45,7 +45,7 @@ class ProfessionalThemeManagerPart1Mixin:  # noqa: D101
     def _setup_qt6_professional_theming(self) -> bool:
         """Professional Qt6.5+ native dark mode setup."""
         try:
-            from PySide6.QtGui import QGuiApplication, Qt
+            from PySide6.QtGui import QGuiApplication, Qt  # noqa: PLC0415
 
             if self.app:
                 self.app.setStyle("Fusion")

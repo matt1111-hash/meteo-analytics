@@ -30,7 +30,7 @@ def update_data(self, chart_data: dict[str, Any]) -> None:
         self: WindyDaysChart instance
         chart_data: Dictionary a chart adatokkal
     """
-    from .plotting import _plot_windy_days_chart
+    from .plotting import _plot_windy_days_chart  # noqa: PLC0415
 
     try:
         logger.info("WindyDaysChart adatok frissítése")
@@ -43,7 +43,7 @@ def update_data(self, chart_data: dict[str, Any]) -> None:
         # Ellenőrzés
         if not _has_valid_data(self):
             logger.warning("Nincs érvényes adat a WindyDaysChart-hoz")
-            from .helpers import _plot_no_data_message
+            from .helpers import _plot_no_data_message  # noqa: PLC0415
 
             _plot_no_data_message(self)
             return
@@ -55,7 +55,7 @@ def update_data(self, chart_data: dict[str, Any]) -> None:
 
     except Exception as e:
         logger.error(f"Hiba a WindyDaysChart adatok frissítésében: {e}")
-        from .helpers import _plot_error_message
+        from .helpers import _plot_error_message  # noqa: PLC0415
 
         _plot_error_message(self, str(e))
 

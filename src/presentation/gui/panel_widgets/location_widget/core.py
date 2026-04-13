@@ -58,10 +58,10 @@ class LocationWidget(QWidget):
         self._updating_state = False
 
         # UI init
-        from .refresh_handler import RefreshHandler
-        from .signal_handlers import SignalHandlers
-        from .theme_handler import ThemeHandler
-        from .ui_builder import UIInitializer
+        from .refresh_handler import RefreshHandler  # noqa: PLC0415
+        from .signal_handlers import SignalHandlers  # noqa: PLC0415
+        from .theme_handler import ThemeHandler  # noqa: PLC0415
+        from .ui_builder import UIInitializer  # noqa: PLC0415
 
         self.ui = UIInitializer(self)
         self.signals = SignalHandlers(self)

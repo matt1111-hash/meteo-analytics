@@ -73,7 +73,7 @@ class MainWindowActionsMixin:
         query_type: str = "hottest_today",
     ) -> None:
         """Forward multi-city result routing."""
-        from .main_window_actions import on_multi_city_result_ready
+        from .main_window_actions import on_multi_city_result_ready  # noqa: PLC0415
 
         on_multi_city_result_ready(self, result, query_type)
 

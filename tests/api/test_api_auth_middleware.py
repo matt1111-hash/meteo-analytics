@@ -20,7 +20,7 @@ class TestAuthMiddlewareUnit:
     @pytest.mark.asyncio
     async def test_allows_public_path_without_auth(self):
         """Middleware should allow public paths without authentication."""
-        from src.api.main import auth_middleware
+        from src.api.main import auth_middleware  # noqa: PLC0415
 
         mock_request = MagicMock()
         mock_request.url.path = "/health"
@@ -36,7 +36,7 @@ class TestAuthMiddlewareUnit:
     @pytest.mark.asyncio
     async def test_allows_options_request_without_auth(self):
         """Middleware should allow OPTIONS requests without authentication."""
-        from src.api.main import auth_middleware
+        from src.api.main import auth_middleware  # noqa: PLC0415
 
         mock_request = MagicMock()
         mock_request.url.path = "/api/providers/list"
@@ -52,7 +52,7 @@ class TestAuthMiddlewareUnit:
     @pytest.mark.asyncio
     async def test_allows_all_when_auth_disabled(self):
         """Middleware should allow all requests when auth is disabled."""
-        from src.api.main import auth_middleware
+        from src.api.main import auth_middleware  # noqa: PLC0415
 
         mock_request = MagicMock()
         mock_request.url.path = "/api/providers/list"
@@ -71,8 +71,8 @@ class TestAuthMiddlewareUnit:
     @pytest.mark.asyncio
     async def test_rejects_missing_api_key_when_enabled(self):
         """Middleware should reject requests without API key when auth enabled."""
-        from fastapi import HTTPException
-        from src.api.main import auth_middleware
+        from fastapi import HTTPException  # noqa: PLC0415
+        from src.api.main import auth_middleware  # noqa: PLC0415
 
         mock_request = MagicMock()
         mock_request.url.path = "/api/providers/list"
@@ -93,8 +93,8 @@ class TestAuthMiddlewareUnit:
     @pytest.mark.asyncio
     async def test_rejects_invalid_api_key_when_enabled(self):
         """Middleware should reject requests with invalid API key."""
-        from fastapi import HTTPException
-        from src.api.main import auth_middleware
+        from fastapi import HTTPException  # noqa: PLC0415
+        from src.api.main import auth_middleware  # noqa: PLC0415
 
         mock_request = MagicMock()
         mock_request.url.path = "/api/providers/list"
@@ -117,7 +117,7 @@ class TestAuthMiddlewareUnit:
     @pytest.mark.asyncio
     async def test_allows_valid_api_key_when_enabled(self):
         """Middleware should allow requests with valid API key."""
-        from src.api.main import auth_middleware
+        from src.api.main import auth_middleware  # noqa: PLC0415
 
         mock_request = MagicMock()
         mock_request.url.path = "/api/providers/list"

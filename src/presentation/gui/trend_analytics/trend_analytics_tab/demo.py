@@ -16,9 +16,9 @@ def run_demo():
     """
     Standalone testing - futtatható demo.
     """
-    from PySide6.QtWidgets import QApplication
+    from PySide6.QtWidgets import QApplication  # noqa: PLC0415
 
-    from .core import TrendAnalyticsTab
+    from .core import TrendAnalyticsTab  # noqa: PLC0415
 
     app = QApplication(sys.argv)
 

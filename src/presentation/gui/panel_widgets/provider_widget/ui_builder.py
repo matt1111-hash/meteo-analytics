@@ -178,7 +178,7 @@ def create_control_buttons(self) -> QHBoxLayout:  # noqa: ARG001
     Returns:
         QHBoxLayout: Button layout
     """
-    from .monitoring import _refresh_usage_stats, _reset_usage_stats
+    from .monitoring import _refresh_usage_stats, _reset_usage_stats  # noqa: PLC0415
 
     button_layout = QHBoxLayout()
 

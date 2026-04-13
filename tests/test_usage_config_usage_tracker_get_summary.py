@@ -8,7 +8,7 @@ class TestUsageTrackerGetSummary:
 
     def test_get_usage_summary_returns_all_fields(self, config_fs: dict[str, str]) -> None:
         """Should return all summary fields."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         summary = UsageTracker.get_usage_summary()
 
@@ -27,7 +27,7 @@ class TestUsageTrackerGetSummary:
 
     def test_get_usage_summary_with_tracked_requests(self, config_fs: dict[str, str]) -> None:
         """Summary should reflect tracked requests."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
         UsageTracker.track_request("open_meteo", 50)

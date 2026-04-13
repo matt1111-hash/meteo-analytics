@@ -64,7 +64,7 @@ def update_usage_stats(self, stats: dict[str, Any]) -> None:
         stats: Usage statistics dictionary
     """
     try:
-        from .monitoring import _update_usage_display
+        from .monitoring import _update_usage_display  # noqa: PLC0415
 
         self.usage_stats.update(stats)
         _update_usage_display(self)
@@ -196,7 +196,7 @@ def refresh_usage_display(self) -> None:
     Args:
         self: ProviderWidget instance
     """
-    from .monitoring import _update_usage_display
+    from .monitoring import _update_usage_display  # noqa: PLC0415
 
     _update_usage_display(self)
 
@@ -221,6 +221,6 @@ def closeEvent(self, event) -> None:
         event: Close event
     """
     cleanup(self)
-    from PySide6.QtWidgets import QWidget
+    from PySide6.QtWidgets import QWidget  # noqa: PLC0415
 
     QWidget.closeEvent(self, event)

@@ -142,7 +142,7 @@ class TestBackwardCompatibility:
     def test_legacy_import_pattern_works(self) -> None:
         """A dokumentációban leírt legacy import működik."""
         # Ez a régi import minta, amit a dokumentáció említ
-        from src.data.weather_client import (
+        from src.data.weather_client import (  # noqa: PLC0415
             WeatherClient,
             WeatherData,
         )
@@ -152,16 +152,16 @@ class TestBackwardCompatibility:
 
     def test_recommended_import_pattern_works(self) -> None:
         """A dokumentációban javasolt új import minta működik."""
-        from src.data.weather_client_extensions import WeatherClientExtensions
-        from src.data.weather_types import WeatherData
+        from src.data.weather_client_extensions import WeatherClientExtensions  # noqa: PLC0415
+        from src.data.weather_types import WeatherData  # noqa: PLC0415
 
         assert WeatherClientExtensions is not None
         assert WeatherData is not None
 
     def test_both_imports_reference_same_class(self) -> None:
         """A WeatherClient mindkét import módszerrel ugyanazt az osztályt adja."""
-        from src.data.weather_client import WeatherClient as LegacyClient
-        from src.data.weather_client_extensions import WeatherClientExtensions
+        from src.data.weather_client import WeatherClient as LegacyClient  # noqa: PLC0415
+        from src.data.weather_client_extensions import WeatherClientExtensions  # noqa: PLC0415
 
         assert LegacyClient is WeatherClientExtensions
 

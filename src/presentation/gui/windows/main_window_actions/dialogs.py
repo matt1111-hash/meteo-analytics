@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def handle_export_request(window: "MainWindow", format: str) -> None:
     """Export request kezelése."""
     try:
-        from ..data_widgets import WeatherDataTable
+        from ..data_widgets import WeatherDataTable  # noqa: PLC0415
 
         if window.results_panel and hasattr(window.results_panel, "data_table"):
             data_table: WeatherDataTable = window.results_panel.data_table
@@ -33,7 +33,7 @@ def handle_export_request(window: "MainWindow", format: str) -> None:
 def show_extreme_weather(window: "MainWindow") -> None:
     """Szélsőséges időjárás dialog."""
     try:
-        from ..dialogs import ExtremeWeatherDialog
+        from ..dialogs import ExtremeWeatherDialog  # noqa: PLC0415
 
         dialog = ExtremeWeatherDialog(window)
         dialog.exec()
@@ -43,7 +43,7 @@ def show_extreme_weather(window: "MainWindow") -> None:
 
 def show_about(window: "MainWindow") -> None:
     """Névjegy dialog."""
-    from src.config import AppInfo
+    from src.config import AppInfo  # noqa: PLC0415
 
     QMessageBox.about(
         window,

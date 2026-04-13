@@ -227,7 +227,7 @@ class DataFrameExtractorPart1Mixin:  # noqa: D101
 
         except Exception as e:
             logger.error(f"❌ DataFrame extract hiba: {e}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             traceback.print_exc()
             return pd.DataFrame()

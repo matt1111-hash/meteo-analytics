@@ -141,7 +141,7 @@ def setup_web_view(self) -> None:
     Args:
         self: HungarianMapVisualizer instance
     """
-    from PySide6.QtWebEngineWidgets import QWebEngineView
+    from PySide6.QtWebEngineWidgets import QWebEngineView  # noqa: PLC0415
 
     layout = self.layout()
 
@@ -149,7 +149,7 @@ def setup_web_view(self) -> None:
     register_widget_for_theming(self.web_view, "container")
 
     try:
-        from PySide6.QtWebEngineCore import QWebEngineSettings
+        from PySide6.QtWebEngineCore import QWebEngineSettings  # noqa: PLC0415
 
         settings = self.web_view.settings()
         settings.setAttribute(QWebEngineSettings.JavascriptEnabled, True)

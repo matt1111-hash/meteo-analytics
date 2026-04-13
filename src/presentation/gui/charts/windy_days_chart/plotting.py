@@ -31,9 +31,9 @@ def _plot_windy_days_chart(self) -> None:
     Args:
         self: WindyDaysChart instance
     """
-    from .helpers import _plot_error_message, _plot_no_data_message
-    from .interactivity import _setup_chart_interactivity
-    from .styling import (
+    from .helpers import _plot_error_message, _plot_no_data_message  # noqa: PLC0415
+    from .interactivity import _setup_chart_interactivity  # noqa: PLC0415
+    from .styling import (  # noqa: PLC0415
         _add_value_labels,
         _apply_chart_styling,
         _get_bar_colors,

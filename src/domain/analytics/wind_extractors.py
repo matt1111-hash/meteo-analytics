@@ -104,7 +104,7 @@ def extract_daily_wind_data(weather_data: pd.DataFrame) -> pd.DataFrame:
 
     except Exception as e:
         logger.error(f"❌ Hiba a szélsebességi adatok kinyerésében: {e}")
-        import traceback
+        import traceback  # noqa: PLC0415
 
         traceback.print_exc()
         return _empty_wind_dataframe()

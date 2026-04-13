@@ -51,7 +51,7 @@ class GeocodingHandlerPart1Mixin:  # noqa: D101
 
         # Geocoding worker indítása
         try:
-            from ..workers.data_fetch_worker import GeocodingWorker
+            from ..workers.data_fetch_worker import GeocodingWorker  # noqa: PLC0415
 
             self._logger.info("🚀 Creating GeocodingWorker...")
             worker = GeocodingWorker(self.active_search_query)
@@ -65,7 +65,7 @@ class GeocodingHandlerPart1Mixin:  # noqa: D101
         except Exception as e:
             error_msg = f"Geocoding worker indítási hiba: {e}"
             self._logger.error(error_msg)
-            import traceback
+            import traceback  # noqa: PLC0415
 
             traceback.print_exc()
             self.error_occurred.emit(error_msg)
@@ -110,7 +110,7 @@ class GeocodingHandlerPart1Mixin:  # noqa: D101
 
         except Exception as e:
             self._logger.error(f"Geocoding feldolgozási hiba: {e}")
-            import traceback
+            import traceback  # noqa: PLC0415
 
             traceback.print_exc()
             self.error_occurred.emit(f"Keresési eredmények feldolgozási hiba: {e}")

@@ -224,7 +224,7 @@ class TestDemoExports:
 
     def test_all_exports_exist(self) -> None:
         """All items in __all__ should be accessible."""
-        from src.analytics import multi_city_demo
+        from src.analytics import multi_city_demo  # noqa: PLC0415
 
         assert hasattr(multi_city_demo, "demo_multi_city_engine")
         assert "demo_multi_city_engine" in multi_city_demo.__all__

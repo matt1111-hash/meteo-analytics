@@ -169,7 +169,7 @@ class GUIAuditor:
                 if isinstance(node, ast.ClassDef):
                     methods = set()
                     for item in node.body:
-                        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):  # noqa: UP038
+                        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
                             methods.add(item.name)
                     rel_path = str(py_file.relative_to(self.project_root))
                     self.class_methods[f"{rel_path}:{node.name}"] = methods

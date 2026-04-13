@@ -27,7 +27,7 @@ def create_header_section(dialog: object) -> QWidget:
 
 def create_profile_section(dialog: object) -> object:
     """Profil választó és menedzsment gombok."""
-    from PySide6.QtWidgets import QComboBox, QGroupBox
+    from PySide6.QtWidgets import QComboBox, QGroupBox  # noqa: PLC0415
 
     group = QGroupBox("📁 Profilok")
     layout = QHBoxLayout(group)

@@ -85,7 +85,7 @@ def _generate_mock_usage_data(self) -> None:
     Args:
         self: ProviderWidget instance
     """
-    from .provider_data import generate_mock_usage_data
+    from .provider_data import generate_mock_usage_data  # noqa: PLC0415
 
     self.usage_stats = generate_mock_usage_data()
 

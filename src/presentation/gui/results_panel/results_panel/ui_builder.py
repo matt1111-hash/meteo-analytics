@@ -36,7 +36,7 @@ def init_ui(self) -> None:
     """
     logger.debug("ResultsPanel._init_ui() START")
 
-    from PySide6.QtWidgets import QVBoxLayout
+    from PySide6.QtWidgets import QVBoxLayout  # noqa: PLC0415
 
     layout = QVBoxLayout(self)
     layout.setContentsMargins(5, 5, 5, 5)
@@ -66,7 +66,7 @@ def create_title_layout(self) -> QHBoxLayout:
     Returns:
         QHBoxLayout: Title layout
     """
-    from .signal_handlers import _on_extreme_weather_clicked
+    from .signal_handlers import _on_extreme_weather_clicked  # noqa: PLC0415
 
     title_layout = QHBoxLayout()
 

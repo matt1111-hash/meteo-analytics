@@ -10,7 +10,7 @@ class TestUserPreferencesSetSelected:
 
     def test_set_selected_provider_valid_provider(self, config_fs: dict[str, str]) -> None:
         """Setting a valid provider should succeed."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         result = UserPreferences.set_selected_provider("meteostat")
 
@@ -21,7 +21,7 @@ class TestUserPreferencesSetSelected:
 
     def test_set_selected_provider_invalid_provider(self, config_fs: dict[str, str]) -> None:
         """Setting an invalid provider should fail."""
-        from src.config.provider_config import UserPreferences
+        from src.config.provider_config import UserPreferences  # noqa: PLC0415
 
         result = UserPreferences.set_selected_provider("invalid_provider")
 
@@ -29,7 +29,7 @@ class TestUserPreferencesSetSelected:
 
     def test_set_selected_provider_all_valid_providers(self, config_fs: dict[str, str]) -> None:
         """All valid providers should be settable."""
-        from src.config.provider_config import ProviderConfig, UserPreferences
+        from src.config.provider_config import ProviderConfig, UserPreferences  # noqa: PLC0415
 
         for provider in ProviderConfig.PROVIDERS:
             result = UserPreferences.set_selected_provider(provider)

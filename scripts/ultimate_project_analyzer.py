@@ -258,7 +258,7 @@ class AstParser:
         """
         cc = 1
         for child in ast.walk(node):
-            if isinstance(child, (ast.If, ast.While, ast.For, ast.ExceptHandler)):  # noqa: UP038
+            if isinstance(child, (ast.If, ast.While, ast.For, ast.ExceptHandler)):
                 cc += 1
             elif isinstance(child, ast.BoolOp):
                 cc += len(child.values) - 1
@@ -595,7 +595,7 @@ class ProjectAnalyzer:
         def dfs(node: str, path: list[str]) -> None:
             if node in rec_stack:
                 cycle_start = path.index(node)
-                cycle = path[cycle_start:] + [node]
+                cycle = path[cycle_start:] + [node]  # noqa: RUF005
                 if cycle not in self.result.cycles:
                     self.result.cycles.append(cycle)
                 return
@@ -647,7 +647,7 @@ class ProjectAnalyzer:
                 self.result.hotspots_threading.append(module_info)
 
         # Sort by LOC + CC (combined score)
-        loc_cc_items.sort(key=lambda x: (x[1].loc + x[1].complexity * 10), reverse=True)
+        loc_cc_items.sort(key=lambda x: x[1].loc + x[1].complexity * 10, reverse=True)
         self.result.hotspots_loc_cc = loc_cc_items
 
     def _get_layer(self, module_name: str) -> str:  # noqa: PLR0911

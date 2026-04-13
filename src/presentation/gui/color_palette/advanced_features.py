@@ -82,7 +82,7 @@ class AdvancedFeaturesMixin:
         if not color:
             return None
 
-        return get_color_metrics(color, lambda c1, c2: self.calculate_contrast_ratio(c1, c2))
+        return get_color_metrics(color, self.calculate_contrast_ratio)
 
     def suggest_accessible_variants(
         self, semantic_name: str, target_background: str
@@ -104,7 +104,7 @@ class AdvancedFeaturesMixin:
         return suggest_accessible_variants(
             base_color,
             target_background,
-            lambda c1, c2: self.calculate_contrast_ratio(c1, c2),
+            self.calculate_contrast_ratio,
             self._hex_to_hsl,
         )
 

@@ -12,7 +12,7 @@ class TestUsageTrackerLoad:
 
     def test_load_usage_returns_default_when_file_missing(self, config_fs: dict[str, str]) -> None:
         """Missing usage file should return default usage data."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         config_fs.pop("usage", None)
 
@@ -27,7 +27,7 @@ class TestUsageTrackerLoad:
 
     def test_load_usage_returns_saved_data(self, config_fs: dict[str, str]) -> None:
         """Should return saved usage data."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
         UsageTracker.track_request("open_meteo", 50)
@@ -42,8 +42,8 @@ class TestUsageTrackerLoad:
         self, config_fs: dict[str, str], monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Should reset usage data when month changes."""
-        from src import config
-        from src.config.usage_config import UsageTracker
+        from src import config  # noqa: PLC0415
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
 
@@ -68,7 +68,7 @@ class TestUsageTrackerLoad:
 
     def test_load_usage_handles_corrupted_json(self, config_fs: dict[str, str]) -> None:
         """Corrupted JSON should return default usage data."""
-        from src.config.usage_config import UsageTracker
+        from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         config_fs["usage"] = "{ not valid json"
 

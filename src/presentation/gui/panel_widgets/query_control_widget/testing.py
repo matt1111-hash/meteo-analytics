@@ -98,7 +98,7 @@ class QueryControlTestWindow(QMainWindow):
 
 def run_standalone_test():
     """Standalone teszt futtatása."""
-    from .core import QueryControlWidget
+    from .core import QueryControlWidget  # noqa: PLC0415
 
     app = QApplication(sys.argv)
     query_widget = QueryControlWidget()

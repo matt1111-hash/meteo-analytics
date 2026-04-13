@@ -30,7 +30,7 @@ def start_local_server(self) -> None:
     if self.local_server and self.local_server.running:
         return
 
-    from ..map_interactions import LocalHttpServerThread
+    from ..map_interactions import LocalHttpServerThread  # noqa: PLC0415
 
     self.local_server = LocalHttpServerThread(self)
     self.local_server.server_ready.connect(self._on_server_ready)
@@ -53,7 +53,7 @@ def _on_server_ready(self, host: str, port: int) -> None:
     self.server_status_label.setStyleSheet("color: #27AE60; font-weight: bold;")
 
     try:
-        import folium  # noqa: F401
+        import folium  # noqa: F401, PLC0415
 
         self._generate_default_map()
     except ImportError:

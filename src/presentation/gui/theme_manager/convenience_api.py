@@ -12,7 +12,7 @@ from PySide6.QtWidgets import QWidget
 
 def get_theme_manager():
     """Get ThemeManager singleton (imported in __init__ to avoid circular import)."""
-    from .core import ProfessionalThemeManager
+    from .core import ProfessionalThemeManager  # noqa: PLC0415
 
     return ProfessionalThemeManager()
 

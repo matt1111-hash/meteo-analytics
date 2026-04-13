@@ -173,7 +173,7 @@ def log_provider_usage_event(provider_name: str, use_case: str, success: bool) -
         use_case: Use case
         success: Whether successful
     """
-    import logging
+    import logging  # noqa: PLC0415
 
     logger = logging.getLogger(__name__)
 

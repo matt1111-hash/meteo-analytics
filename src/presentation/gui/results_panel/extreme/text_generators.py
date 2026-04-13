@@ -44,7 +44,7 @@ def _build_precipitation_summary(
 
 def _build_wind_category_line(category: str) -> str:
     """Build the warning line for gust categories."""
-    from ..utils import WindGustsConstants
+    from ..utils import WindGustsConstants  # noqa: PLC0415
 
     if category == "hurricane":
         threshold = WindGustsConstants.HURRICANE_THRESHOLD
@@ -75,7 +75,7 @@ def _build_gust_summary(max_wind_value: float, max_date: str, category: str) -> 
 
 def _build_wind_summary(max_wind_value: float, max_date: str) -> str:
     """Build the average-wind headline block."""
-    return f"💨 SZÉL REKORDOK:\n" f"   🌪️ Legerősebb szél: {max_wind_value:.1f}km/h ({max_date})\n"
+    return f"💨 SZÉL REKORDOK:\n   🌪️ Legerősebb szél: {max_wind_value:.1f}km/h ({max_date})\n"
 
 
 class TextGenerators:
@@ -178,7 +178,7 @@ class TextGenerators:
                     valid_winds = [w for w in wind_data if w is not None]
                     avg_wind = sum(valid_winds) / len(valid_winds)
 
-                    from ..utils import WindGustsAnalyzer
+                    from ..utils import WindGustsAnalyzer  # noqa: PLC0415
 
                     if wind_source == "wind_gusts_max":
                         category = WindGustsAnalyzer.categorize_wind_gust(

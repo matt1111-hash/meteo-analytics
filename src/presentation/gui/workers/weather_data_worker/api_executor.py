@@ -55,7 +55,7 @@ class APIExecutor:
             True if successful
         """
         try:
-            from ...utils import APIConstants, get_source_display_name
+            from ...utils import APIConstants, get_source_display_name  # noqa: PLC0415
 
             headers = self.get_provider_headers(provider)
             timeout = APIConstants.DEFAULT_TIMEOUT
@@ -104,12 +104,12 @@ class APIExecutor:
         Returns:
             HTTP headers dictionary
         """
-        from ...utils import APIConstants
+        from ...utils import APIConstants  # noqa: PLC0415
 
         base_headers = {"User-Agent": APIConstants.USER_AGENT}
 
         if provider == "meteostat":
-            import os
+            import os  # noqa: PLC0415
 
             api_key = os.getenv("METEOSTAT_API_KEY")
             if api_key:
