@@ -12,7 +12,6 @@ import {
   ProviderInfo,
   ProviderStatusInfo,
   ProviderUsage,
-  ProviderId,
 } from '../services/providerService';
 
 interface UseProviderManagementReturn {

@@ -262,42 +262,42 @@
   .wind-tab {
     padding: 0.5rem;
   }
-  
+
   .tab-header {
     margin-bottom: 1.5rem;
   }
-  
+
   .tab-header h3 {
     font-size: 1.3rem;
   }
-  
+
   .period-info {
     font-size: 0.8rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .heatmap-section {
     padding: 1rem;
     margin: 1.5rem 0;
   }
-  
+
   .wind-summary {
     padding: 1rem;
     margin-top: 1.5rem;
   }
-  
+
   .distribution-bar {
     height: 30px;
   }
-  
+
   .section-label {
     font-size: 0.8rem;
   }
-  
+
   .distribution-legend {
     gap: 1rem;
     flex-direction: column;
@@ -310,16 +310,16 @@
   .wind-tab.empty {
     padding: 1rem;
   }
-  
+
   .error-icon,
   .empty-icon {
     font-size: 2rem;
   }
-  
+
   .distribution-legend {
     font-size: 0.8rem;
   }
-  
+
   .legend-color {
     width: 12px;
     height: 12px;

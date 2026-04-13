@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.test_weather_client_core_new_support import *
 
@@ -9,9 +11,7 @@ from tests.data.test_weather_client_core_new_support import *
 class TestGetProviderFallbackChain:
     """Test _get_provider_fallback_chain method."""
 
-    def test_get_provider_fallback_chain_puts_primary_first(
-        self, client: WeatherClient
-    ) -> None:
+    def test_get_provider_fallback_chain_puts_primary_first(self, client: WeatherClient) -> None:
         """_get_provider_fallback_chain puts primary provider first."""
         chain = client._get_provider_fallback_chain("open-meteo")
 
@@ -37,9 +37,7 @@ class TestGetProviderFallbackChain:
 
         assert chain == ["open-meteo"]
 
-    def test_get_provider_fallback_chain_orders_correctly(
-        self, client: WeatherClient
-    ) -> None:
+    def test_get_provider_fallback_chain_orders_correctly(self, client: WeatherClient) -> None:
         """_get_provider_fallback_chain orders providers correctly."""
         chain = client._get_provider_fallback_chain("meteostat")
 
@@ -50,23 +48,17 @@ class TestGetProviderFallbackChain:
 class TestRetryWeatherRequest:
     """Test _retry_weather_request method."""
 
-    def test_retry_weather_request_returns_on_first_success(
-        self, client: WeatherClient
-    ) -> None:
+    def test_retry_weather_request_returns_on_first_success(self, client: WeatherClient) -> None:
         """_retry_weather_request returns immediately on first success."""
         provider = client.providers["open-meteo"]
         provider.get_weather_data.return_value = [{"date": "2020-01-01"}]
 
-        result = client._retry_weather_request(
-            provider, 47.5, 19.0, "2020-01-01", "2020-01-31"
-        )
+        result = client._retry_weather_request(provider, 47.5, 19.0, "2020-01-01", "2020-01-31")
 
         assert result == [{"date": "2020-01-01"}]
         provider.get_weather_data.assert_called_once()
 
-    def test_retry_weather_request_retries_on_failure(
-        self, client: WeatherClient
-    ) -> None:
+    def test_retry_weather_request_retries_on_failure(self, client: WeatherClient) -> None:
         """_retry_weather_request retries on WeatherAPIError."""
         provider = client.providers["open-meteo"]
         provider.get_weather_data.side_effect = [
@@ -75,31 +67,23 @@ class TestRetryWeatherRequest:
         ]
 
         with patch("time.sleep"):
-            result = client._retry_weather_request(
-                provider, 47.5, 19.0, "2020-01-01", "2020-01-31"
-            )
+            result = client._retry_weather_request(provider, 47.5, 19.0, "2020-01-01", "2020-01-31")
 
         assert result == [{"date": "2020-01-01"}]
         assert provider.get_weather_data.call_count == 2
 
-    def test_retry_weather_request_raises_after_max_retries(
-        self, client: WeatherClient
-    ) -> None:
+    def test_retry_weather_request_raises_after_max_retries(self, client: WeatherClient) -> None:
         """_retry_weather_request raises after max retries exhausted."""
         provider = client.providers["open-meteo"]
         provider.get_weather_data.side_effect = WeatherAPIError("Always fails")
 
         with patch("time.sleep"):
             with pytest.raises(WeatherAPIError, match="Always fails"):
-                client._retry_weather_request(
-                    provider, 47.5, 19.0, "2020-01-01", "2020-01-31"
-                )
+                client._retry_weather_request(provider, 47.5, 19.0, "2020-01-01", "2020-01-31")
 
         assert provider.get_weather_data.call_count == 3
 
-    def test_retry_weather_request_uses_exponential_backoff(
-        self, client: WeatherClient
-    ) -> None:
+    def test_retry_weather_request_uses_exponential_backoff(self, client: WeatherClient) -> None:
         """_retry_weather_request uses exponential backoff delays."""
         provider = client.providers["open-meteo"]
         provider.get_weather_data.side_effect = [
@@ -114,9 +98,7 @@ class TestRetryWeatherRequest:
             sleep_calls.append(delay)
 
         with patch("time.sleep", side_effect=fake_sleep):
-            client._retry_weather_request(
-                provider, 47.5, 19.0, "2020-01-01", "2020-01-31"
-            )
+            client._retry_weather_request(provider, 47.5, 19.0, "2020-01-01", "2020-01-31")
 
         # Should have slept with delays: 1.0, 2.0 (attempt + 1)
         assert sleep_calls == [1.0, 2.0]

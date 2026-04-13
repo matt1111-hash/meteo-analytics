@@ -2,7 +2,14 @@
 
 from __future__ import annotations
 
-# ruff: noqa: F403, F405
+import sqlite3
+from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+from src.data.city_manager_db import CityDatabaseError, CityManagerDB
+
+# ruff: noqa: F403
 from tests.data.test_city_manager_db_new_support import *
 
 
@@ -34,9 +41,7 @@ class TestCityManagerDBInit:
             manager = CityManagerDB()
 
             assert manager.db_path == mock_data_dir / "cities.db"
-            assert (
-                manager.hungarian_db_path == mock_data_dir / "hungarian_settlements.db"
-            )
+            assert manager.hungarian_db_path == mock_data_dir / "hungarian_settlements.db"
 
     def test_init_sets_custom_paths(self, cities_db: Path, hungarian_db: Path) -> None:
         """Initialization with custom database paths."""
@@ -45,9 +50,7 @@ class TestCityManagerDBInit:
         assert manager.db_path == cities_db
         assert manager.hungarian_db_path == hungarian_db
 
-    def test_init_initializes_query_counters(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_init_initializes_query_counters(self, cities_db: Path, hungarian_db: Path) -> None:
         """Initialization resets query counters."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -57,22 +60,20 @@ class TestCityManagerDBInit:
 
     def test_init_raises_when_no_databases_available(self, mock_data_dir: Path) -> None:
         """Initialization raises CityDatabaseError when neither database exists."""
-        with patch("src.data.city_manager_db.DATA_DIR", mock_data_dir):
-            with pytest.raises(CityDatabaseError, match="No database available"):
-                CityManagerDB()
+        with (
+            patch("src.data.city_manager_db.DATA_DIR", mock_data_dir),
+            pytest.raises(CityDatabaseError, match="No database available"),
+        ):
+            CityManagerDB()
 
-    def test_init_connects_to_global_database(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_init_connects_to_global_database(self, cities_db: Path, hungarian_db: Path) -> None:
         """Initialization connects to global cities database."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
 
         assert manager.connection is not None
         assert isinstance(manager.connection, sqlite3.Connection)
 
-    def test_init_connects_to_hungarian_database(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_init_connects_to_hungarian_database(self, cities_db: Path, hungarian_db: Path) -> None:
         """Initialization connects to Hungarian settlements database."""
         manager = CityManagerDB(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -130,9 +131,7 @@ class TestValidateDatabaseStructure:
         with pytest.raises(CityDatabaseError, match="Missing columns"):
             CityManagerDB(db_path=incomplete_cities_db, hungarian_db_path=hungarian_db)
 
-    def test_validate_returns_early_when_no_connection(
-        self, mock_data_dir: Path
-    ) -> None:
+    def test_validate_returns_early_when_no_connection(self, mock_data_dir: Path) -> None:
         """_validate_database_structure returns early when connection is None."""
         # Create a minimal DB to allow initialization
         cities_db = mock_data_dir / "cities.db"

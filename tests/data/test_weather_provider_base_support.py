@@ -4,10 +4,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import pytest
-import requests
-from unittest.mock import Mock, patch
-
 from src.data.weather_provider_base import WeatherProvider
 
 

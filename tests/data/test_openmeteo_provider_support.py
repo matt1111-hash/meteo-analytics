@@ -2,15 +2,10 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 import pytest
-
 from src.data.openmeteo_provider import OpenMeteoProvider
-from src.data.weather_provider_base import WeatherProvider
-from src.data.weather_types import WeatherAPIError
-import requests
 
 
 @pytest.fixture

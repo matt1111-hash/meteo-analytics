@@ -6,7 +6,6 @@
  */
 import React, { useState, useCallback, useEffect } from 'react';
 import { Modal } from '../common/Modal';
-import { useModal } from '../../hooks/useModal';
 import './AnomalySettingsModal.css';
 
 // =============================================================================

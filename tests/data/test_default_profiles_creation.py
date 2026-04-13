@@ -114,9 +114,7 @@ class TestCreateDefaultProfiles:
 
         for profile_name, profile_data in profiles.items():
             missing_fields = required_fields - set(profile_data.keys())
-            assert not missing_fields, (
-                f"{profile_name} missing fields: {missing_fields}"
-            )
+            assert not missing_fields, f"{profile_name} missing fields: {missing_fields}"
 
     def test_all_profiles_have_timestamps(self) -> None:
         """All profiles have created_at and modified_at timestamps."""
@@ -189,9 +187,9 @@ class TestCreateProfilesData:
             default_profile = profiles[profile_name]
             for key in default_profile:
                 if key not in ("created_at", "modified_at"):
-                    assert data_profile[key] == default_profile[key], (
-                        f"{profile_name}.{key} mismatch"
-                    )
+                    assert (
+                        data_profile[key] == default_profile[key]
+                    ), f"{profile_name}.{key} mismatch"
 
     def test_created_at_is_valid_timestamp(self) -> None:
         """created_at is a valid ISO timestamp."""

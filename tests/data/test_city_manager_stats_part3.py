@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.data.city_manager_stats import CityManagerStats
+
 # ruff: noqa: F403, F405
 from tests.data.test_city_manager_stats_support import *
 
@@ -18,9 +20,7 @@ class TestGetCitiesForHungarianCounty:
         assert isinstance(results, list)
         assert len(results) >= 1
 
-    def test_dict_has_required_fields(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_dict_has_required_fields(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_for_hungarian_county dicts have required fields."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -32,9 +32,7 @@ class TestGetCitiesForHungarianCounty:
             assert "lon" in city_dict
             assert "is_hungarian" in city_dict
 
-    def test_returns_empty_for_unknown_county(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_returns_empty_for_unknown_county(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_for_hungarian_county returns empty for unknown county."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -65,9 +63,7 @@ class TestCityManagerStatsInheritance:
 class TestCityManagerStatsEdgeCases:
     """Edge case tests for CityManagerStats."""
 
-    def test_statistics_after_queries(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_statistics_after_queries(self, cities_db: Path, hungarian_db: Path) -> None:
         """Statistics reflect query counts after queries."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -90,13 +86,9 @@ class TestCityManagerStatsEdgeCases:
         stats = manager.get_database_statistics()
         assert stats["last_query"] is not None
 
-    def test_empty_hungarian_db_statistics(
-        self, cities_db: Path, empty_hungarian_db: Path
-    ) -> None:
+    def test_empty_hungarian_db_statistics(self, cities_db: Path, empty_hungarian_db: Path) -> None:
         """Statistics work with empty Hungarian database."""
-        manager = CityManagerStats(
-            db_path=cities_db, hungarian_db_path=empty_hungarian_db
-        )
+        manager = CityManagerStats(db_path=cities_db, hungarian_db_path=empty_hungarian_db)
 
         stats = manager.get_database_statistics()
 
@@ -104,13 +96,9 @@ class TestCityManagerStatsEdgeCases:
         assert stats["hungarian_counties"] == []
         assert stats["settlement_types"] == []
 
-    def test_hungarian_statistics_empty_db(
-        self, cities_db: Path, empty_hungarian_db: Path
-    ) -> None:
+    def test_hungarian_statistics_empty_db(self, cities_db: Path, empty_hungarian_db: Path) -> None:
         """get_hungarian_statistics works with empty database."""
-        manager = CityManagerStats(
-            db_path=cities_db, hungarian_db_path=empty_hungarian_db
-        )
+        manager = CityManagerStats(db_path=cities_db, hungarian_db_path=empty_hungarian_db)
 
         stats = manager.get_hungarian_statistics()
 

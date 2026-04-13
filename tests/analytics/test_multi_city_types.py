@@ -162,27 +162,23 @@ class TestRegions:
         """max_cities should be positive integers."""
         for region_name, config in REGIONS.items():
             max_cities = config["max_cities"]
-            assert isinstance(max_cities, int), (
-                f"max_cities in {region_name} is not int"
-            )
+            assert isinstance(max_cities, int), f"max_cities in {region_name} is not int"
             assert max_cities > 0, f"max_cities in {region_name} is not positive"
 
     def test_batch_sizes_are_positive_integers(self) -> None:
         """batch_size should be positive integers."""
         for region_name, config in REGIONS.items():
             batch_size = config["batch_size"]
-            assert isinstance(batch_size, int), (
-                f"batch_size in {region_name} is not int"
-            )
+            assert isinstance(batch_size, int), f"batch_size in {region_name} is not int"
             assert batch_size > 0, f"batch_size in {region_name} is not positive"
 
     def test_rate_limit_delays_are_positive_numbers(self) -> None:
         """rate_limit_delay should be positive numbers."""
         for region_name, config in REGIONS.items():
             delay = config["rate_limit_delay"]
-            assert isinstance(delay, (int, float)), (
-                f"rate_limit_delay in {region_name} is not number"
-            )
+            assert isinstance(
+                delay, (int, float)
+            ), f"rate_limit_delay in {region_name} is not number"
             assert delay > 0, f"rate_limit_delay in {region_name} is not positive"
 
     def test_europe_contains_hungary(self) -> None:

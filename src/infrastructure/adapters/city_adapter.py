@@ -8,9 +8,10 @@ following Clean Architecture's dependency direction (outer → inner).
 
 from typing import TYPE_CHECKING
 
+from src.domain.value_objects.city_info import CityInfo
+
 if TYPE_CHECKING:
-    from src.data.city_types import City
-    from src.domain.value_objects.city_info import CityInfo
+    from src.domain.entities.city import City
 
 
 def city_to_city_info(city: "City") -> "CityInfo":
@@ -26,8 +27,6 @@ def city_to_city_info(city: "City") -> "CityInfo":
     Returns:
         CityInfo value object for domain layer use
     """
-    from src.domain.value_objects.city_info import CityInfo
-
     return CityInfo(
         id=city.id,
         city=city.city,
@@ -53,8 +52,6 @@ def city_dict_to_city_info(data: dict) -> "CityInfo":
     Returns:
         CityInfo value object
     """
-    from src.domain.value_objects.city_info import CityInfo
-
     return CityInfo(
         id=data.get("id", 0),
         city=data.get("city", ""),
@@ -70,4 +67,4 @@ def city_dict_to_city_info(data: dict) -> "CityInfo":
     )
 
 
-__all__ = ["city_to_city_info", "city_dict_to_city_info"]
+__all__ = ["city_dict_to_city_info", "city_to_city_info"]

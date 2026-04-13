@@ -7,15 +7,12 @@
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import WindChart from './WindChart';
 import { BEAUFORT_LEVELS, WIND_THRESHOLDS } from '../constants/windConstants';
 
 // Mock Recharts since it requires canvas/DOM
-jest.mock('recharts', () => {
-  const OriginalModule = jest.requireActual('recharts');
+vi.mock('recharts', () => {
   return {
-    ...OriginalModule,
     ResponsiveContainer: ({ children }: any) => (
       <div data-testid="responsive-container" style={{ width: '100%', height: 450 }}>
         {children}
@@ -37,13 +34,15 @@ jest.mock('recharts', () => {
 });
 
 // Mock BeaufortLegend
-jest.mock('./charts/BeaufortLegend', () => {
-  return function MockBeaufortLegend(props: any) {
-    return (
-      <div data-testid="beaufort-legend" data-compact={props.compact} data-highlight={props.highlightLevel}>
-        Beaufort Legend Mock
-      </div>
-    );
+vi.mock('./charts/BeaufortLegend', () => {
+  return {
+    default: function MockBeaufortLegend(props: any) {
+      return (
+        <div data-testid="beaufort-legend" data-compact={props.compact} data-highlight={props.highlightLevel}>
+          Beaufort Legend Mock
+        </div>
+      );
+    },
   };
 });
 

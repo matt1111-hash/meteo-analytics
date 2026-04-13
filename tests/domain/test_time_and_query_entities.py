@@ -15,7 +15,6 @@ from src.domain.entities.universal_query import UniversalQuery
 from src.domain.entities.universal_time_range import UniversalTimeRange
 from src.domain.value_objects.enums import (
     AnalyticsMetric,
-    AnomalySeverity,
     DataSource,
     QuestionType,
     RegionScope,
@@ -79,9 +78,7 @@ def test_universal_time_range_generates_description_and_helpers() -> None:
     assert multi_year.to_dict()["seasonal_filter"] == ["winter"]
 
 
-def test_universal_time_range_split_by_years_handles_single_and_multi_year_ranges() -> (
-    None
-):
+def test_universal_time_range_split_by_years_handles_single_and_multi_year_ranges() -> None:
     """Year splitting returns unchanged single-year ranges and segmented multi-year ranges."""
     single_year = UniversalTimeRange(
         start_date=date(2021, 2, 1),

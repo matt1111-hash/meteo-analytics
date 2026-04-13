@@ -212,13 +212,13 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
       <div className="heatmap-section">
         <h4>📅 Daily Temperature Heatmap</h4>
         <p className="heatmap-description">
-          365-day calendar view showing daily temperature variations. 
+          365-day calendar view showing daily temperature variations.
           Each rectangle represents one day, colored by temperature.
         </p>
-        <TemperatureHeatmap 
-          data={temperatureData} 
-          width={1000} 
-          height={400} 
+        <TemperatureHeatmap
+          data={temperatureData}
+          width={1000}
+          height={400}
         />
       </div>
     </div>

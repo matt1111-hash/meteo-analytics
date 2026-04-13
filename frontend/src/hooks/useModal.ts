@@ -11,6 +11,8 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 
+import React from 'react';
+
 export interface UseModalReturn {
   isOpen: boolean;
   open: () => void;
@@ -49,7 +51,6 @@ export interface UseModalOptions {
 export function useModal(options: UseModalOptions = {}): UseModalReturn {
   const {
     closeOnEsc = true,
-    closeOnBackdropClick = true,
     onClose,
     onOpen,
   } = options;
@@ -156,5 +157,3 @@ export function useModal(options: UseModalOptions = {}): UseModalReturn {
     modalRef,
   };
 }
-
-import React from 'react';

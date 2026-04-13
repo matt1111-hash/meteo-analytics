@@ -28,9 +28,7 @@ class TestProfileValuesValidation:
             precip_high = profile["precip_high"]
             precip_low = profile["precip_low"]
             assert precip_low >= 0, f"{profile_name}: precip_low negative"
-            assert precip_high > precip_low, (
-                f"{profile_name}: precip_high <= precip_low"
-            )
+            assert precip_high > precip_low, f"{profile_name}: precip_high <= precip_low"
             assert precip_high <= 300, f"{profile_name}: precip_high too high"
 
     def test_wind_thresholds_are_sorted(self) -> None:
@@ -44,9 +42,7 @@ class TestProfileValuesValidation:
                 profile["wind_extreme"],
                 profile["wind_hurricane"],
             ]
-            assert wind_values == sorted(wind_values), (
-                f"{profile_name}: wind thresholds not sorted"
-            )
+            assert wind_values == sorted(wind_values), f"{profile_name}: wind thresholds not sorted"
 
     def test_wind_thresholds_are_reasonable(self) -> None:
         """Wind thresholds are within reasonable ranges."""
@@ -69,9 +65,9 @@ class TestProfileDifferences:
 
         for profile_name, profile in profiles.items():
             if profile_name != "arctic":
-                assert profile["temp_cold"] > arctic_cold, (
-                    f"{profile_name} should be warmer than arctic"
-                )
+                assert (
+                    profile["temp_cold"] > arctic_cold
+                ), f"{profile_name} should be warmer than arctic"
 
     def test_tropical_is_hottest(self) -> None:
         """Tropical profile has the highest heat threshold."""
@@ -80,9 +76,9 @@ class TestProfileDifferences:
 
         for profile_name, profile in profiles.items():
             if profile_name != "tropical" and profile_name != "mediterranean":
-                assert profile["temp_hot"] <= tropical_hot, (
-                    f"{profile_name} should be cooler than tropical"
-                )
+                assert (
+                    profile["temp_hot"] <= tropical_hot
+                ), f"{profile_name} should be cooler than tropical"
 
     def test_tropical_has_highest_precipitation(self) -> None:
         """Tropical profile has the highest high precipitation threshold."""
@@ -90,9 +86,9 @@ class TestProfileDifferences:
         tropical_precip = profiles["tropical"]["precip_high"]
 
         for profile_name, profile in profiles.items():
-            assert profile["precip_high"] <= tropical_precip, (
-                f"{profile_name} precip_high exceeds tropical"
-            )
+            assert (
+                profile["precip_high"] <= tropical_precip
+            ), f"{profile_name} precip_high exceeds tropical"
 
     def test_mediterranean_has_lowest_precipitation_low(self) -> None:
         """Mediterranean profile has a very low low precipitation threshold."""

@@ -14,24 +14,24 @@ dev = [
     # === LINTING & FORMATTING ===
     "ruff>=0.8.0",
     "mypy>=1.8.0",
-    
+
     # === TESTING ===
     "pytest>=8.0.0",
     "pytest-cov>=4.1.0",
     "mutmut>=2.4",              # Mutation testing
-    
+
     # === COMPLEXITY & METRICS ===
     "radon>=5.0,<6",            # Complexity analysis (xenon kompatibilis)
     "xenon>=0.9",               # Complexity gate
     "wily>=1.25",               # Historical trends
-    
+
     # === ARCHITECTURE ===
     "import-linter>=2.0",       # Clean Architecture enforcement
-    
+
     # === CODE QUALITY ===
     "vulture>=2.11",            # Dead code detection
     "bandit>=1.7.7",            # Security scanning
-    
+
     # === SECRETS ===
     "detect-secrets>=1.4",
 

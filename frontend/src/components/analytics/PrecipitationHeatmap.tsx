@@ -45,19 +45,19 @@ const getWeekNumber = (dateStr: string): number => {
 // 🎯 Kalendárium mátrix építése (7×53) - Qt kompatibilis
 const buildCalendarMatrix = (data: PrecipitationData[]): number[][] => {
   if (!data || data.length === 0) return Array(7).fill(null).map(() => Array(53).fill(NaN));
-  
+
   const calendarMatrix = Array(7).fill(null).map(() => Array(53).fill(NaN));
-  
+
   data.forEach(item => {
     const date = new Date(item.date);
     const dayOfWeek = date.getDay(); // 0=Vasárnap, 1=Hétfő, ..., 6=Vasárnap
     const weekNumber = getWeekNumber(item.date);
-    
+
     if (weekNumber >= 0 && weekNumber < 53 && dayOfWeek >= 0 && dayOfWeek < 7) {
       calendarMatrix[dayOfWeek][weekNumber] = item.value;
     }
   });
-  
+
   return calendarMatrix;
 };
 
@@ -76,23 +76,23 @@ const PrecipitationHeatmap: React.FC<PrecipitationHeatmapProps> = ({
 
     // Rendezés dátum szerint
     const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    
+
     // Csapadék határok
     const precipitations = sortedData.map(d => d.value);
     const minPrecip = Math.min(...precipitations);
     const maxPrecip = Math.max(...precipitations);
-    
+
     // 🗓️ Qt kompatibilis 7×53-as kalendárium mátrix
     const rows = 7; // 7 nap (Hétfőtől Vasárnapig)
     const cols = 53; // 53 hét egy évben
-    
+
     // Cellák méretezése - Qt kompatibilis (15-16px per cella)
     const cellWidth = Math.floor(width / cols);
     const cellHeight = Math.max(15, Math.floor((height - 40) / rows)); // -40px a hét napjai címkéknek
-    
+
     // 🗓️ Kalendárium mátrix építése
     const calendarMatrix = buildCalendarMatrix(sortedData);
-    
+
     // 🎯 Cellák létrehozása 7×53-as elrendezésben
     const cells: any[] = [];
     for (let week = 0; week < cols; week++) {
@@ -105,7 +105,7 @@ const PrecipitationHeatmap: React.FC<PrecipitationHeatmapProps> = ({
           const firstWeekday = firstDayOfYear.getDay();
           const daysFromStart = week * 7 + day - firstWeekday;
           const cellDate = new Date(year, 0, 1 + daysFromStart);
-          
+
           cells.push({
             x: week * cellWidth,
             y: day * cellHeight + 20, // +20px a hét napjai címkéknek
@@ -122,10 +122,10 @@ const PrecipitationHeatmap: React.FC<PrecipitationHeatmapProps> = ({
         }
       }
     }
-    
+
     // Hét napjai címkék - ISO szabvány szerint (Hétfőtől Vasárnapig)
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    
+
     return {
       cells,
       minPrecip,
@@ -155,22 +155,22 @@ const PrecipitationHeatmap: React.FC<PrecipitationHeatmapProps> = ({
           Range: {heatmapData.minPrecip.toFixed(1)}mm - {heatmapData.maxPrecip.toFixed(1)}mm
         </div>
       </div>
-      
-      <svg 
-        width={width} 
-        height={height} 
+
+      <svg
+        width={width}
+        height={height}
         className="heatmap-svg"
         viewBox={`0 -20 ${width} ${height + 20}`}
       >
         {/* Rács vonalak - 7×53 Qt kalendárium elrendezés */}
         <defs>
           <pattern id="precip-grid" width={heatmapData.cellWidth} height={heatmapData.cellHeight} patternUnits="userSpaceOnUse">
-            <path d={`M ${heatmapData.cellWidth} 0 L ${heatmapData.cellWidth} ${heatmapData.cellHeight} L 0 ${heatmapData.cellHeight}`} 
+            <path d={`M ${heatmapData.cellWidth} 0 L ${heatmapData.cellWidth} ${heatmapData.cellHeight} L 0 ${heatmapData.cellHeight}`}
                   fill="none" stroke="#e0e0e0" strokeWidth="0.5"/>
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#precip-grid)" />
-        
+
         {/* Hét napjai címkék - Minden 7. nap címkézése vertikálisan */}
         {heatmapData.dayNames.map((dayName, index) => (
           <text
@@ -186,18 +186,18 @@ const PrecipitationHeatmap: React.FC<PrecipitationHeatmapProps> = ({
             {dayName}
           </text>
         ))}
-        
+
         {/* Hónap címkék - Csak új hónap kezdeténél */}
         {(() => {
           const monthLabels = [];
           let prevMonth = -1;
-          
+
           for (let week = 0; week < heatmapData.cols; week++) {
             const cell = heatmapData.cells.find(c => c.week === week && c.day === 0); // Hétfői cella
             if (cell) {
               const cellDate = new Date(cell.date);
               const currentMonth = cellDate.getMonth();
-              
+
               // Csak akkor jelenítjük meg, ha új hónap kezdődik
               if (currentMonth !== prevMonth) {
                 prevMonth = currentMonth;
@@ -220,7 +220,7 @@ const PrecipitationHeatmap: React.FC<PrecipitationHeatmapProps> = ({
           }
           return monthLabels;
         })()}
-        
+
         {/* 7×53 kalendárium cellák - Qt kompatibilis */}
         {heatmapData.cells.map((cell, index) => (
           <g key={index}>
@@ -234,20 +234,20 @@ const PrecipitationHeatmap: React.FC<PrecipitationHeatmapProps> = ({
               strokeWidth="0.5"
               className="heatmap-cell"
             />
-            
+
             {/* Tooltip megjelenítés hover esetén */}
             <title>{`${cell.formattedDate}: ${cell.formattedPrecip}`}</title>
           </g>
         ))}
       </svg>
-      
+
       {/* Szín skála magyarázat - Qt színskála szerint */}
       <div className="color-scale precip-scale">
         <span className="scale-label">🏜️ Dry (0mm)</span>
         <div className="scale-gradient precip-gradient"></div>
         <span className="scale-label">🌧️ Wet (100mm+)</span>
       </div>
-      
+
       <div className="heatmap-stats">
         <small>📊 {heatmapData.cells.length} days visualized • 7×53 calendar matrix • Qt compatible</small>
       </div>

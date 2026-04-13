@@ -7,17 +7,10 @@
 
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
+import type { MockedFunction } from 'vitest';
 import HierarchicalSelector from './HierarchicalSelector';
 import { SelectedLocation } from './HierarchicalSelector';
-
-// Mock the HungaryService module
-jest.mock('../../services/hungaryService', () => ({
-  getHungarianRegions: jest.fn(),
-  getHungarianCounties: jest.fn(),
-  getHungarianSettlements: jest.fn(),
-}));
 
 import {
   getHungarianRegions,
@@ -25,13 +18,20 @@ import {
   getHungarianSettlements,
 } from '../../services/hungaryService';
 
-const mockGetHungarianRegions = getHungarianRegions as jest.MockedFunction<
+// Mock the HungaryService module
+vi.mock('../../services/hungaryService', () => ({
+  getHungarianRegions: vi.fn(),
+  getHungarianCounties: vi.fn(),
+  getHungarianSettlements: vi.fn(),
+}));
+
+const mockGetHungarianRegions = getHungarianRegions as MockedFunction<
   typeof getHungarianRegions
 >;
-const mockGetHungarianCounties = getHungarianCounties as jest.MockedFunction<
+const mockGetHungarianCounties = getHungarianCounties as MockedFunction<
   typeof getHungarianCounties
 >;
-const mockGetHungarianSettlements = getHungarianSettlements as jest.MockedFunction<
+const mockGetHungarianSettlements = getHungarianSettlements as MockedFunction<
   typeof getHungarianSettlements
 >;
 
@@ -99,11 +99,11 @@ const MOCK_SETTLEMENTS = {
 };
 
 describe('HierarchicalSelector Component', () => {
-  let mockOnLocationSelect: jest.MockedFunction<(location: SelectedLocation) => void>;
+  let mockOnLocationSelect: MockedFunction<(location: SelectedLocation) => void>;
 
   beforeEach(() => {
-    mockOnLocationSelect = jest.fn();
-    jest.clearAllMocks();
+    mockOnLocationSelect = vi.fn();
+    vi.clearAllMocks();
 
     mockGetHungarianRegions.mockResolvedValue(MOCK_REGIONS);
     mockGetHungarianCounties.mockResolvedValue(MOCK_COUNTIES);

@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List
-from unittest.mock import Mock, patch
+from collections.abc import Callable
+from typing import Any
+from unittest.mock import Mock
 
 import pytest
-
 from src.data.anomaly_profile.profile_actions import ProfileActions
 from src.data.anomaly_types import AnomalyProfileSettings
 
@@ -20,16 +20,16 @@ def mock_storage() -> Mock:
 
 
 @pytest.fixture
-def mock_save_func() -> Callable[[str, Dict[str, Any]], bool]:
+def mock_save_func() -> Callable[[str, dict[str, Any]], bool]:
     """Mock save function."""
     return Mock(return_value=True)
 
 
 @pytest.fixture
-def mock_load_func() -> Callable[[str], Dict[str, Any]]:
+def mock_load_func() -> Callable[[str], dict[str, Any]]:
     """Mock load function."""
 
-    def load(profile_name: str) -> Dict[str, Any]:
+    def load(profile_name: str) -> dict[str, Any]:
         if profile_name == "default":
             return AnomalyProfileSettings(profile_name="default").to_dict()
         return {}
@@ -38,13 +38,13 @@ def mock_load_func() -> Callable[[str], Dict[str, Any]]:
 
 
 @pytest.fixture
-def mock_get_available_func() -> Callable[[], List[str]]:
+def mock_get_available_func() -> Callable[[], list[str]]:
     """Mock get_available function."""
     return Mock(return_value=["default", "custom"])
 
 
 @pytest.fixture
-def mock_get_cache_func() -> Callable[[], Dict[str, Dict[str, Any]]]:
+def mock_get_cache_func() -> Callable[[], dict[str, dict[str, Any]]]:
     """Mock get_cache function."""
     cache = {
         "default": AnomalyProfileSettings(profile_name="default").to_dict(),
@@ -67,10 +67,10 @@ def mock_active_setter() -> Callable[[str], None]:
 
 @pytest.fixture
 def profile_actions(
-    mock_save_func: Callable[[str, Dict[str, Any]], bool],
-    mock_load_func: Callable[[str], Dict[str, Any]],
-    mock_get_available_func: Callable[[], List[str]],
-    mock_get_cache_func: Callable[[], Dict[str, Dict[str, Any]]],
+    mock_save_func: Callable[[str, dict[str, Any]], bool],
+    mock_load_func: Callable[[str], dict[str, Any]],
+    mock_get_available_func: Callable[[], list[str]],
+    mock_get_cache_func: Callable[[], dict[str, dict[str, Any]]],
     mock_active_getter: Callable[[], str],
     mock_active_setter: Callable[[str], None],
 ) -> ProfileActions:

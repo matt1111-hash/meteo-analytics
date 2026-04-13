@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.test_openmeteo_provider_support import *
 
@@ -9,17 +11,13 @@ from tests.data.test_openmeteo_provider_support import *
 class TestMakeApiRequest:
     """Test _make_api_request method."""
 
-    def test_make_api_request_calls_correct_endpoint(
-        self, provider: OpenMeteoProvider
-    ) -> None:
+    def test_make_api_request_calls_correct_endpoint(self, provider: OpenMeteoProvider) -> None:
         """_make_api_request calls the correct Open-Meteo endpoint."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"daily": {"time": []}}
 
-        with patch.object(
-            provider.session, "get", return_value=mock_response
-        ) as mock_get:
+        with patch.object(provider.session, "get", return_value=mock_response) as mock_get:
             provider._make_api_request({"latitude": 47.5})
 
             mock_get.assert_called_once()
@@ -28,9 +26,7 @@ class TestMakeApiRequest:
             assert kwargs["params"] == {"latitude": 47.5}
             assert kwargs["timeout"] == 30
 
-    def test_make_api_request_returns_processed_data(
-        self, provider: OpenMeteoProvider
-    ) -> None:
+    def test_make_api_request_returns_processed_data(self, provider: OpenMeteoProvider) -> None:
         """_make_api_request returns processed response data."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -56,9 +52,7 @@ class TestMakeApiRequest:
             with pytest.raises(WeatherAPIError, match="Invalid response"):
                 provider._make_api_request({})
 
-    def test_make_api_request_raises_on_400_status(
-        self, provider: OpenMeteoProvider
-    ) -> None:
+    def test_make_api_request_raises_on_400_status(self, provider: OpenMeteoProvider) -> None:
         """_make_api_request raises WeatherAPIError on 400."""
         mock_response = Mock()
         mock_response.status_code = 400
@@ -68,9 +62,7 @@ class TestMakeApiRequest:
             with pytest.raises(WeatherAPIError, match="Bad request"):
                 provider._make_api_request({})
 
-    def test_make_api_request_raises_on_429_status(
-        self, provider: OpenMeteoProvider
-    ) -> None:
+    def test_make_api_request_raises_on_429_status(self, provider: OpenMeteoProvider) -> None:
         """_make_api_request raises WeatherAPIError on 429."""
         mock_response = Mock()
         mock_response.status_code = 429
@@ -90,19 +82,13 @@ class TestMakeApiRequest:
             with pytest.raises(WeatherAPIError, match="API error: 500"):
                 provider._make_api_request({})
 
-    def test_make_api_request_raises_on_timeout(
-        self, provider: OpenMeteoProvider
-    ) -> None:
+    def test_make_api_request_raises_on_timeout(self, provider: OpenMeteoProvider) -> None:
         """_make_api_request raises WeatherAPIError on timeout."""
-        with patch.object(
-            provider.session, "get", side_effect=requests.exceptions.Timeout()
-        ):
+        with patch.object(provider.session, "get", side_effect=requests.exceptions.Timeout()):
             with pytest.raises(WeatherAPIError, match="API timeout"):
                 provider._make_api_request({})
 
-    def test_make_api_request_raises_on_connection_error(
-        self, provider: OpenMeteoProvider
-    ) -> None:
+    def test_make_api_request_raises_on_connection_error(self, provider: OpenMeteoProvider) -> None:
         """_make_api_request raises WeatherAPIError on connection error."""
         with patch.object(
             provider.session, "get", side_effect=requests.exceptions.ConnectionError()
@@ -110,9 +96,7 @@ class TestMakeApiRequest:
             with pytest.raises(WeatherAPIError, match="Connection error"):
                 provider._make_api_request({})
 
-    def test_make_api_request_updates_request_tracking(
-        self, provider: OpenMeteoProvider
-    ) -> None:
+    def test_make_api_request_updates_request_tracking(self, provider: OpenMeteoProvider) -> None:
         """_make_api_request updates request count and last request time."""
         mock_response = Mock()
         mock_response.status_code = 200

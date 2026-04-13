@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.test_openmeteo_provider_support import *
 
@@ -20,9 +22,7 @@ class TestGetWeatherDataBatched:
         with patch.object(provider, "get_weather_data_single") as mock_single:
             mock_single.side_effect = [batch1_data, batch2_data]
 
-            result = provider.get_weather_data_batched(
-                47.5, 19.0, "2020-01-01", "2020-06-28"
-            )
+            result = provider.get_weather_data_batched(47.5, 19.0, "2020-01-01", "2020-06-28")
 
             assert mock_single.call_count == 2
             assert len(result) == 2
@@ -44,9 +44,7 @@ class TestGetWeatherDataBatched:
         """get_weather_data_batched sleeps between batches except last."""
         with patch.object(provider, "get_weather_data_single", return_value=[]):
             with patch("time.sleep") as mock_sleep:
-                provider.get_weather_data_batched(
-                    47.5, 19.0, "2020-01-01", "2020-12-31"
-                )
+                provider.get_weather_data_batched(47.5, 19.0, "2020-01-01", "2020-12-31")
 
                 # 5 batches, 4 sleeps between them
                 assert mock_sleep.call_count == 4
@@ -62,9 +60,7 @@ class TestGetWeatherDataBatched:
                 [{"date": "2020-03-31", "temperature_2m_max": 15.0}],
             ]
 
-            result = provider.get_weather_data_batched(
-                47.5, 19.0, "2020-01-01", "2020-06-28"
-            )
+            result = provider.get_weather_data_batched(47.5, 19.0, "2020-01-01", "2020-06-28")
 
             # Should return only second batch data
             assert len(result) == 1
@@ -80,9 +76,7 @@ class TestGetWeatherDataBatched:
         with patch.object(provider, "get_weather_data_single") as mock_single:
             mock_single.side_effect = [batch1, batch2]
 
-            result = provider.get_weather_data_batched(
-                47.5, 19.0, "2020-01-01", "2020-06-28"
-            )
+            result = provider.get_weather_data_batched(47.5, 19.0, "2020-01-01", "2020-06-28")
 
             assert result[0]["date"] == "2020-01-01"
             assert result[1]["date"] == "2020-03-31"

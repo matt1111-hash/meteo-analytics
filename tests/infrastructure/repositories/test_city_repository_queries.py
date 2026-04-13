@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.infrastructure.repositories.city_repository_queries import CityRepositoryQueries
+from src.infrastructure.repositories.city_repository_queries import (
+    CityRepositoryQueries,
+)
 
 from tests.infrastructure.repositories.test_city_repository_support import (
     create_cities_db,

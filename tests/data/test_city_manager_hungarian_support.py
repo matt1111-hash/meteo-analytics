@@ -7,9 +7,6 @@ from pathlib import Path
 
 import pytest
 
-from src.data.city_manager_db import CityManagerDB
-from src.data.city_manager_hungarian import CityManagerHungarian
-
 
 @pytest.fixture
 def mock_data_dir(tmp_path: Path) -> Path:

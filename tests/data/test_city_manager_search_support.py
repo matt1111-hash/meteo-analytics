@@ -7,10 +7,6 @@ from pathlib import Path
 
 import pytest
 
-from src.data.city_manager_hungarian import CityManagerHungarian
-from src.data.city_manager_search import CityManagerSearch
-from src.data.city_types import City
-
 
 @pytest.fixture
 def mock_data_dir(tmp_path: Path) -> Path:

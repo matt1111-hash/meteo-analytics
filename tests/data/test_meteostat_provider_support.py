@@ -5,11 +5,7 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
-
 from src.data.meteostat_provider import MeteostatProvider
-from src.data.weather_provider_base import WeatherProvider
-from src.data.weather_types import ProviderValidationError, WeatherAPIError
-import requests
 
 
 @pytest.fixture
@@ -51,16 +47,12 @@ def provider(mock_api_config: Mock, mock_env_with_key: Mock) -> MeteostatProvide
 
 
 @pytest.fixture
-def provider_no_key(
-    mock_api_config: Mock, mock_env_without_key: Mock
-) -> MeteostatProvider:
+def provider_no_key(mock_api_config: Mock, mock_env_without_key: Mock) -> MeteostatProvider:
     """Create MeteostatProvider without API key."""
     return MeteostatProvider()
 
 
 @pytest.fixture
-def provider_short_key(
-    mock_api_config: Mock, mock_env_with_short_key: Mock
-) -> MeteostatProvider:
+def provider_short_key(mock_api_config: Mock, mock_env_with_short_key: Mock) -> MeteostatProvider:
     """Create MeteostatProvider with short API key."""
     return MeteostatProvider()

@@ -205,11 +205,11 @@ Ha a modell módosítja ezeket a coverage/lint elkerülésére = **AZONNALI FAIL
 
 **Remember: Code is written once, read many times. Git tracks everything - or it doesn't exist.** 🚀
 ### 🔍 PROJEKT INTEGRITÁS — AGENT FELELŐSSÉGE:
-- Az agent MINDIG végigkövet minden hívási láncot: 
+- Az agent MINDIG végigkövet minden hívási láncot:
   frontend → endpoint → DI → factory → inicializálás
 - Tünet alapú debuggolás TILOS — a gyökér okot kell megtalálni
-- Az agent MAGA fedezi fel az architektúra inkonzisztenciákat 
+- Az agent MAGA fedezi fel az architektúra inkonzisztenciákat
   (párhuzamos singleton-ok, dupla factory, stb.)
-- Ha hibát keres: először a teljes dependency graph-ot térképezi fel, 
+- Ha hibát keres: először a teljes dependency graph-ot térképezi fel,
   AZTÁN javasol megoldást
 - Az EMBER SOHA nem mutat rá a hibára — ez az agent dolga

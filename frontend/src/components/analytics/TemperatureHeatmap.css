@@ -216,17 +216,17 @@
     padding: 0.5rem;
     margin: 0;
   }
-  
+
   .heatmap-header {
     flex-direction: column;
     gap: 0.5rem;
     text-align: center;
   }
-  
+
   .scale-gradient {
     width: 150px;
   }
-  
+
   .heatmap-svg {
     max-width: 100%;
     height: auto;
@@ -237,11 +237,11 @@
   .temperature-heatmap {
     padding: 0.25rem;
   }
-  
+
   .heatmap-header h4 {
     font-size: 1rem;
   }
-  
+
   .temp-range {
     font-size: 0.8rem;
   }

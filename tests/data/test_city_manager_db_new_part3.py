@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.data.city_manager_db import CityDatabaseError, CityManagerDB
+
 # ruff: noqa: F403, F405
 from tests.data.test_city_manager_db_new_support import *
 

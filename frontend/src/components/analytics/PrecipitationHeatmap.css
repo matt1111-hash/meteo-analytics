@@ -118,36 +118,36 @@
     padding: 12px;
     margin: 6px 0;
   }
-  
+
   .heatmap-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .heatmap-header h4 {
     font-size: 14px;
   }
-  
+
   .precip-range {
     font-size: 11px;
   }
-  
+
   .color-scale {
     flex-direction: column;
     gap: 8px;
     text-align: center;
   }
-  
+
   .scale-gradient {
     width: 100%;
     margin: 8px 0;
   }
-  
+
   .scale-label {
     font-size: 10px;
   }
-  
+
   .heatmap-stats small {
     font-size: 10px;
   }
@@ -157,19 +157,19 @@
   .precipitation-heatmap {
     padding: 8px;
   }
-  
+
   .heatmap-header h4 {
     font-size: 13px;
   }
-  
+
   .precip-range {
     font-size: 10px;
   }
-  
+
   .scale-label {
     font-size: 9px;
   }
-  
+
   .heatmap-stats small {
     font-size: 9px;
   }

@@ -3,14 +3,9 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
-
-from src.data.city_manager_db import CityManagerDB
-from src.data.city_types import CityDatabaseError
 
 
 @pytest.fixture

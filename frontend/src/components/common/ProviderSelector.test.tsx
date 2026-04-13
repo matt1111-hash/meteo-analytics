@@ -3,16 +3,15 @@
  */
 import React from 'react';
 import { render, screen, fireEvent, within, waitFor, act } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { ProviderSelector } from './ProviderSelector';
 
 // Mock axios first
-jest.mock('axios', () => ({
-  get: jest.fn(),
-  post: jest.fn(),
+vi.mock('axios', () => ({
+  get: vi.fn(),
+  post: vi.fn(),
   default: {
-    get: jest.fn(),
-    post: jest.fn(),
+    get: vi.fn(),
+    post: vi.fn(),
   },
 }));
 
@@ -86,10 +85,10 @@ const mockStatuses = [
   },
 ];
 
-const mockSelectProvider = jest.fn().mockResolvedValue(true);
+const mockSelectProvider = vi.fn().mockResolvedValue(true);
 
 // Mock the providerService
-jest.mock('../../services/providerService', () => ({
+vi.mock('../../services/providerService', () => ({
   PROVIDER_LABELS: { auto: 'Automatikus', 'open-meteo': 'Open-Meteo', meteostat: 'Meteostat' },
   STATUS_LABELS: { healthy: 'Egészséges', warning: 'Figyelmeztetés', critical: 'Kritikus' },
   STATUS_COLORS: { healthy: '#22c55e', warning: '#f59e0b', critical: '#ef4444' },
@@ -102,7 +101,7 @@ jest.mock('../../services/providerService', () => ({
 }));
 
 // Mock the useProviderManagement hook
-jest.mock('../../hooks/useProviderManagement', () => ({
+vi.mock('../../hooks/useProviderManagement', () => ({
   useProviderManagement: () => ({
     providers: mockProviders,
     providerStatuses: mockStatuses,
@@ -111,18 +110,18 @@ jest.mock('../../hooks/useProviderManagement', () => ({
     isLoadingProviders: false,
     isSelecting: false,
     error: null,
-    clearError: jest.fn(),
-    fetchProviders: jest.fn(),
-    fetchStatus: jest.fn(),
-    fetchUsage: jest.fn(),
-    refreshAll: jest.fn(),
+    clearError: vi.fn(),
+    fetchProviders: vi.fn(),
+    fetchStatus: vi.fn(),
+    fetchUsage: vi.fn(),
+    refreshAll: vi.fn(),
   }),
 }));
 
 describe('ProviderSelector', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.useRealTimers();
+    vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   describe('Rendering', () => {
@@ -253,7 +252,7 @@ describe('ProviderSelector', () => {
     });
 
     it('should call onChange callback when provider is selected', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       render(<ProviderSelector onChange={onChange} />);
 
       // Open dropdown

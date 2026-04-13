@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.anomaly_profile.test_profile_actions_support import *
 
@@ -35,9 +37,7 @@ class TestRenameProfile:
         mock_save_func.return_value = True
 
         # Mock delete_profile to avoid actual deletion
-        with patch.object(
-            profile_actions, "delete_profile", return_value=True
-        ) as mock_delete:
+        with patch.object(profile_actions, "delete_profile", return_value=True) as mock_delete:
             result = profile_actions.rename_profile("old_name", "new_name")
 
             assert result is True

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.anomaly_profile.test_manager_support import *
 
@@ -31,9 +33,7 @@ class TestSaveProfileEdgeCases:
         valid_settings = AnomalyProfileSettings(profile_name="test").to_dict()
 
         # Mock save_profiles to raise exception
-        with patch.object(
-            manager.storage, "save_profiles", side_effect=Exception("Test error")
-        ):
+        with patch.object(manager.storage, "save_profiles", side_effect=Exception("Test error")):
             result = manager.save_profile("test", valid_settings)
 
         assert result is False
@@ -48,9 +48,7 @@ class TestGetCurrentSettingsEdgeCases:
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {
-            "profiles": {
-                "custom": AnomalyProfileSettings(profile_name="custom").to_dict()
-            },
+            "profiles": {"custom": AnomalyProfileSettings(profile_name="custom").to_dict()},
             "active_profile": "custom",
             "version": "1.0",
         }
@@ -77,9 +75,7 @@ class TestGetCurrentSettingsEdgeCases:
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {
-            "profiles": {
-                "default": AnomalyProfileSettings(profile_name="default").to_dict()
-            },
+            "profiles": {"default": AnomalyProfileSettings(profile_name="default").to_dict()},
             "active_profile": "default",
             "version": "1.0",
         }
@@ -88,8 +84,6 @@ class TestGetCurrentSettingsEdgeCases:
         manager = AnomalyProfileManager(config_dir=temp_dir)
 
         # Mock load_profile to raise exception (this is the final fallback)
-        with patch.object(
-            manager, "load_profile", side_effect=Exception("Complete failure")
-        ):
+        with patch.object(manager, "load_profile", side_effect=Exception("Complete failure")):
             with pytest.raises(Exception, match="Complete failure"):
                 manager.get_current_settings()

@@ -35,6 +35,22 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "**/*.test.ts",
+          "**/*.test.tsx"
+        ],
+        "rules": {
+          "testing-library/no-container": "off",
+          "testing-library/no-node-access": "off",
+          "testing-library/prefer-presence-queries": "off",
+          "testing-library/no-wait-for-multiple-assertions": "off",
+          "jest/no-conditional-expect": "off",
+          "@typescript-eslint/no-unused-vars": "off"
+        }
+      }
     ]
   },
   "browserslist": {
@@ -51,6 +67,8 @@
   },
   "devDependencies": {
     "@types/plotly.js": "^3.0.9",
-    "@types/plotly.js-dist-min": "^2.3.4"
+    "@types/plotly.js-dist-min": "^2.3.4",
+    "jsdom": "^22.1.0",
+    "vitest": "^0.34.6"
   }
 }

@@ -17,7 +17,7 @@ import {
   Tooltip,
   useMap
 } from 'react-leaflet';
-import { LatLng, LatLngBounds, GeoJSON as GeoJSONType } from 'leaflet';
+import { LatLng, LatLngBounds } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './HungaryMap.css';
 import {
@@ -87,13 +87,6 @@ const REGION_COLORS: Record<string, string> = {
  */
 function getCountyColor(region: string): string {
   return REGION_COLORS[region] || '#6b7280';
-}
-
-/**
- * Get highlight color for selected county
- */
-function getSelectedColor(baseColor: string): string {
-  return baseColor;
 }
 
 /**

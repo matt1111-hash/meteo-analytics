@@ -12,7 +12,6 @@ import {
   STATUS_COLORS,
   STATUS_BG_COLORS,
   getStatusIcon,
-  type ProviderId,
 } from '../../services/providerService';
 import './ProviderSelector.css';
 
@@ -177,11 +176,11 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
           aria-label={`${label} lehetőségek`}
         >
           {isLoadingProviders ? (
-            <li className="provider-selector-option loading" role="option">
+            <li className="provider-selector-option loading" role="option" aria-selected={false}>
               <span className="spinner" /> Betöltés...
             </li>
           ) : error ? (
-            <li className="provider-selector-option error" role="option">
+            <li className="provider-selector-option error" role="option" aria-selected={false}>
               <span className="error-icon">⚠</span>
               <span>{error}</span>
               <button
@@ -196,7 +195,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
               </button>
             </li>
           ) : providers.length === 0 ? (
-            <li className="provider-selector-option empty" role="option">
+            <li className="provider-selector-option empty" role="option" aria-selected={false}>
               Nincs elérhető szolgáltató
             </li>
           ) : (

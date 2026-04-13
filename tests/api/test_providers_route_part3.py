@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from starlette import status
 from unittest.mock import patch
+
+from starlette import status
 
 # ruff: noqa: F403, F405
 from tests.api.test_providers_route_support import *
@@ -50,9 +51,7 @@ class TestGetProviderUsage:
 
             assert response.status_code == status.HTTP_404_NOT_FOUND
 
-    def test_get_provider_usage_calculates_cost_correctly(
-        self, client, mock_provider_config
-    ):
+    def test_get_provider_usage_calculates_cost_correctly(self, client, mock_provider_config):
         """Should calculate cost based on usage."""
         with (
             patch(
@@ -87,9 +86,7 @@ class TestGetProviderUsage:
             assert data["estimated_cost_usd"] == 5.0
             assert data["budget_remaining_usd"] == 5.0
 
-    def test_get_provider_usage_returns_500_on_usage_error(
-        self, client, mock_provider_config
-    ):
+    def test_get_provider_usage_returns_500_on_usage_error(self, client, mock_provider_config):
         """Usage endpoint should return HTTP 500 on unexpected service errors."""
         with (
             patch(

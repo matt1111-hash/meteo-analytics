@@ -45,7 +45,7 @@ const PrecipitationChart: React.FC<PrecipitationChartProps> = ({ data, city }) =
   const maxPrecipitation = Math.max(...chartData.map((d) => d.precipitation));
   const avgPrecipitation = totalPrecipitation / chartData.length;
 
-  
+
   return (
     <div className="precipitation-chart">
       <div className="chart-header">

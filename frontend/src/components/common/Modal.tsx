@@ -126,7 +126,6 @@ export const Modal: React.FC<ModalProps> = ({
   ariaDescribedby,
   ariaLabelledby,
 }) => {
-  const modalRef = React.useRef<HTMLDivElement>(null);
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   // Apply focus trap when modal is open
@@ -210,12 +209,12 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen]);
 
-  // Don't render if not open (optional - can also use CSS for animations)
-  if (!isOpen) return null;
-
   const modalId = React.useId();
   const titleId = ariaLabelledby || `${modalId}-title`;
   const descId = ariaDescribedby || `${modalId}-description`;
+
+  // Don't render if not open (optional - can also use CSS for animations)
+  if (!isOpen) return null;
 
   return createPortal(
     <div

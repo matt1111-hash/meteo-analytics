@@ -25,8 +25,12 @@ name = Clean Architecture Layers
 type = layers
 containers = src
 layers =
+    presentation
+    api
+    analytics
+    data
+    config
     infrastructure
-    adapters
     application
     domain
 

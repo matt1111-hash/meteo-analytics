@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   getHungarianRegions,
   getHungarianCounties,
   getHungarianSettlements,
-  HungarianRegion,
-  HungarianCounty,
   HungarianSettlement,
   RegionsResponse,
   CountiesResponse,

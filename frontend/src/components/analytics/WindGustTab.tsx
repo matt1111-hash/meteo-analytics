@@ -207,7 +207,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
       {/* 🌪️ Qt kompatibilis Beaufort heatmap vizualizáció */}
       <div className="heatmap-section">
         <h4>📊 Daily Wind Gust Heatmap (Beaufort Scale)</h4>
-        <WindGustHeatmap 
+        <WindGustHeatmap
           data={windGustData}
           width={1000}
           height={400}

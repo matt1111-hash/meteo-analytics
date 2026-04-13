@@ -2,20 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Dict, List
 from unittest.mock import Mock, patch
 
 import pytest
-
 from src.data.weather_client_core import WeatherClient
-from src.data.weather_types import (
-    ProviderNotAvailableError,
-    WeatherAPIError,
-)
 
 
 @pytest.fixture
-def mock_providers() -> Dict[str, Mock]:
+def mock_providers() -> dict[str, Mock]:
     """Mock weather providers."""
     openmeteo = Mock()
     openmeteo.validate_provider.return_value = True
@@ -39,7 +33,7 @@ def mock_api_config() -> Mock:
 
 
 @pytest.fixture
-def client(mock_api_config: Mock, mock_providers: Dict[str, Mock]) -> WeatherClient:
+def client(mock_api_config: Mock, mock_providers: dict[str, Mock]) -> WeatherClient:
     """Create WeatherClient with mocked providers."""
     client = WeatherClient()
     client.providers = mock_providers

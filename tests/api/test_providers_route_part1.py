@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from starlette import status
 from unittest.mock import patch
+
+from starlette import status
 
 # ruff: noqa: F403, F405
 from tests.api.test_providers_route_support import *
@@ -14,9 +15,7 @@ class TestListProviders:
 
     def test_list_providers_returns_all_providers(self, client, mock_provider_config):
         """Should return list of all available providers."""
-        with patch(
-            "src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config
-        ):
+        with patch("src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config):
             response = client.get("/api/providers/list")
 
             assert response.status_code == status.HTTP_200_OK
@@ -25,13 +24,9 @@ class TestListProviders:
             assert len(data["providers"]) == 3
             assert data["default_provider"] == "auto"
 
-    def test_list_providers_returns_correct_provider_info(
-        self, client, mock_provider_config
-    ):
+    def test_list_providers_returns_correct_provider_info(self, client, mock_provider_config):
         """Should return correct information for each provider."""
-        with patch(
-            "src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config
-        ):
+        with patch("src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config):
             response = client.get("/api/providers/list")
 
             assert response.status_code == status.HTTP_200_OK
@@ -54,13 +49,9 @@ class TestListProviders:
             assert "meteostat" in providers
             assert providers["meteostat"]["name"] == "Meteostat (Prémium)"
 
-    def test_list_providers_includes_routing_logic_for_auto(
-        self, client, mock_provider_config
-    ):
+    def test_list_providers_includes_routing_logic_for_auto(self, client, mock_provider_config):
         """Should include routing logic for auto provider."""
-        with patch(
-            "src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config
-        ):
+        with patch("src.api.routes.providers.ProviderConfig.PROVIDERS", mock_provider_config):
             response = client.get("/api/providers/list")
 
             assert response.status_code == status.HTTP_200_OK

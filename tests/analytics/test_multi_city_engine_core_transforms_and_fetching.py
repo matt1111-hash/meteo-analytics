@@ -18,6 +18,8 @@ from tests.analytics.multi_city_engine_core_support import (
 )
 
 pytest_plugins = ("tests.analytics.multi_city_engine_core_support",)
+
+
 class TestMultiCityEngineTransformMethods:
     """Test transform methods."""
 
@@ -67,9 +69,7 @@ class TestMultiCityEngineTransformMethods:
     ) -> None:
         """Should delegate to analytics_transform_service."""
         mock_weather_data = [MagicMock()]
-        mock_analytics_transform_service.get_provider_stats.return_value = {
-            "openmeteo": 10
-        }
+        mock_analytics_transform_service.get_provider_stats.return_value = {"openmeteo": 10}
 
         engine._get_provider_stats(mock_weather_data)
 
@@ -110,9 +110,7 @@ class TestMultiCityEngineFetchMethods:
     ) -> None:
         """Should delegate to weather_fetch_service."""
         city = {"name": "Budapest"}
-        mock_weather_fetch_service.fetch_single_city_weather_dual_api.return_value = (
-            MagicMock()
-        )
+        mock_weather_fetch_service.fetch_single_city_weather_dual_api.return_value = MagicMock()
 
         engine._fetch_single_city_weather_dual_api(city, "2026-02-13")
 
@@ -137,9 +135,7 @@ class TestMultiCityEngineFetchMethods:
 class TestMultiCityEngineCreateEmptyAnalyticsResult:
     """Test _create_empty_analytics_result method."""
 
-    def test_creates_result_with_provided_question(
-        self, engine: MultiCityEngine
-    ) -> None:
+    def test_creates_result_with_provided_question(self, engine: MultiCityEngine) -> None:
         """Should create result with provided question."""
         question = AnalyticsQuestion(
             question_text="Test question",
@@ -155,9 +151,7 @@ class TestMultiCityEngineCreateEmptyAnalyticsResult:
         assert result.total_cities_found == 0
         assert result.execution_time == 0.0
 
-    def test_creates_result_with_fallback_question(
-        self, engine: MultiCityEngine
-    ) -> None:
+    def test_creates_result_with_fallback_question(self, engine: MultiCityEngine) -> None:
         """Should create fallback question when None provided."""
         result = engine._create_empty_analytics_result(None, "Test error")
 
@@ -170,13 +164,9 @@ class TestMultiCityEngineCreateEmptyAnalyticsResult:
 
         assert isinstance(result, AnalyticsResult)
 
-    def test_uses_ultra_fallback_on_critical_error(
-        self, engine: MultiCityEngine
-    ) -> None:
+    def test_uses_ultra_fallback_on_critical_error(self, engine: MultiCityEngine) -> None:
         """Should use ultra-fallback when first attempt fails."""
-        with patch(
-            "src.analytics.multi_city_engine_core.AnalyticsQuestion"
-        ) as mock_question:
+        with patch("src.analytics.multi_city_engine_core.AnalyticsQuestion") as mock_question:
             mock_question.side_effect = [
                 Exception("First error"),
                 MagicMock(
@@ -187,22 +177,16 @@ class TestMultiCityEngineCreateEmptyAnalyticsResult:
                 ),
             ]
 
-            with patch(
-                "src.analytics.multi_city_engine_core.AnalyticsResult"
-            ) as mock_result:
+            with patch("src.analytics.multi_city_engine_core.AnalyticsResult") as mock_result:
                 mock_result.return_value = MagicMock(spec=AnalyticsResult)
 
                 result = engine._create_empty_analytics_result(None, "Test error")
 
                 assert result is not None
 
-    def test_raises_runtime_error_on_total_failure(
-        self, engine: MultiCityEngine
-    ) -> None:
+    def test_raises_runtime_error_on_total_failure(self, engine: MultiCityEngine) -> None:
         """Should raise RuntimeError when all attempts fail."""
-        with patch(
-            "src.analytics.multi_city_engine_core.AnalyticsQuestion"
-        ) as mock_question:
+        with patch("src.analytics.multi_city_engine_core.AnalyticsQuestion") as mock_question:
             mock_question.side_effect = Exception("Total failure")
 
             with pytest.raises(RuntimeError, match="Cannot create AnalyticsResult"):

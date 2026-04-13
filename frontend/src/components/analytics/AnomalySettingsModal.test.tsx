@@ -3,11 +3,10 @@
  */
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { AnomalySettingsModal, AnomalyThresholds, DetectionMethod } from './AnomalySettingsModal';
 
 // Mock the Modal component
-jest.mock('../common/Modal', () => ({
+vi.mock('../common/Modal', () => ({
   Modal: ({ isOpen, onClose, title, children, footer }: any) => {
     if (!isOpen) return null;
     return (
@@ -26,12 +25,12 @@ jest.mock('../common/Modal', () => ({
 describe('AnomalySettingsModal', () => {
   const defaultProps = {
     isOpen: true,
-    onClose: jest.fn(),
-    onSave: jest.fn(),
+    onClose: vi.fn(),
+    onSave: vi.fn(),
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Rendering', () => {
@@ -295,7 +294,7 @@ describe('AnomalySettingsModal', () => {
 
   describe('Save functionality', () => {
     it('should call onSave with thresholds and method when clicking save', () => {
-      const onSave = jest.fn();
+      const onSave = vi.fn();
       render(<AnomalySettingsModal {...defaultProps} onSave={onSave} />);
 
       const saveButton = screen.getByText('Mentés');
@@ -320,7 +319,7 @@ describe('AnomalySettingsModal', () => {
     });
 
     it('should include custom threshold values in save', () => {
-      const onSave = jest.fn();
+      const onSave = vi.fn();
       render(<AnomalySettingsModal {...defaultProps} onSave={onSave} />);
 
       const tempInput = screen.getByLabelText('Forró (°C)');

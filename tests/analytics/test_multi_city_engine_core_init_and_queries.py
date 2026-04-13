@@ -12,12 +12,12 @@ from tests.analytics.multi_city_engine_core_support import (
 )
 
 pytest_plugins = ("tests.analytics.multi_city_engine_core_support",)
+
+
 class TestMultiCityEngineInit:
     """Test MultiCityEngine initialization."""
 
-    def test_initializes_with_default_paths(
-        self, mock_city_repository: MagicMock
-    ) -> None:
+    def test_initializes_with_default_paths(self, mock_city_repository: MagicMock) -> None:
         """Should initialize with default database paths."""
         with (
             patch(
@@ -38,9 +38,7 @@ class TestMultiCityEngineInit:
             assert engine.db_path.name == "cities.db"
             assert engine.hungarian_db_path.name == "hungarian_settlements.db"
 
-    def test_initializes_with_custom_paths(
-        self, mock_city_repository: MagicMock
-    ) -> None:
+    def test_initializes_with_custom_paths(self, mock_city_repository: MagicMock) -> None:
         """Should accept custom database paths."""
         with (
             patch(
@@ -65,9 +63,7 @@ class TestMultiCityEngineInit:
             assert str(engine.db_path) == "/custom/cities.db"
             assert str(engine.hungarian_db_path) == "/custom/hungarian.db"
 
-    def test_initializes_default_configuration(
-        self, mock_city_repository: MagicMock
-    ) -> None:
+    def test_initializes_default_configuration(self, mock_city_repository: MagicMock) -> None:
         """Should have default configuration values."""
         with (
             patch(
@@ -90,9 +86,7 @@ class TestMultiCityEngineInit:
             assert engine.max_retries == 2
             assert engine.retry_delay == 3.0
 
-    def test_handles_weather_client_import_error(
-        self, mock_city_repository: MagicMock
-    ) -> None:
+    def test_handles_weather_client_import_error(self, mock_city_repository: MagicMock) -> None:
         """Should handle ImportError when weather client is not available."""
         with (
             patch(

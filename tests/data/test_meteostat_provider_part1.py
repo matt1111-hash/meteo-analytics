@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.test_meteostat_provider_support import *
 
@@ -83,9 +85,7 @@ class TestGetWeatherData:
         self, provider: MeteostatProvider
     ) -> None:
         """get_weather_data calls single request for period <= 10 years."""
-        with patch.object(
-            provider, "get_weather_data_single", return_value=[]
-        ) as mock_single:
+        with patch.object(provider, "get_weather_data_single", return_value=[]) as mock_single:
             provider.get_weather_data(47.5, 19.0, "2020-01-01", "2029-12-31")
 
             mock_single.assert_called_once_with(47.5, 19.0, "2020-01-01", "2029-12-31")
@@ -94,9 +94,7 @@ class TestGetWeatherData:
         self, provider: MeteostatProvider
     ) -> None:
         """get_weather_data calls batched request for period > 10 years."""
-        with patch.object(
-            provider, "get_weather_data_batched", return_value=[]
-        ) as mock_batched:
+        with patch.object(provider, "get_weather_data_batched", return_value=[]) as mock_batched:
             provider.get_weather_data(47.5, 19.0, "2020-01-01", "2035-12-31")
 
             mock_batched.assert_called_once_with(47.5, 19.0, "2020-01-01", "2035-12-31")
@@ -105,9 +103,7 @@ class TestGetWeatherData:
         self, provider: MeteostatProvider
     ) -> None:
         """get_weather_data calls single request for exactly 10 years."""
-        with patch.object(
-            provider, "get_weather_data_single", return_value=[]
-        ) as mock_single:
+        with patch.object(provider, "get_weather_data_single", return_value=[]) as mock_single:
             provider.get_weather_data(47.5, 19.0, "2020-01-01", "2029-12-31")
 
             mock_single.assert_called_once()
@@ -116,9 +112,7 @@ class TestGetWeatherData:
         self, provider: MeteostatProvider
     ) -> None:
         """get_weather_data calls batched request for 10 years + 1 day."""
-        with patch.object(
-            provider, "get_weather_data_batched", return_value=[]
-        ) as mock_batched:
+        with patch.object(provider, "get_weather_data_batched", return_value=[]) as mock_batched:
             provider.get_weather_data(47.5, 19.0, "2020-01-01", "2030-01-01")
 
             mock_batched.assert_called_once()
@@ -131,9 +125,7 @@ class TestGetWeatherDataSingle:
         self, provider: MeteostatProvider
     ) -> None:
         """get_weather_data_single calls _make_api_request with correct params."""
-        with patch.object(
-            provider, "_make_api_request", return_value=[]
-        ) as mock_request:
+        with patch.object(provider, "_make_api_request", return_value=[]) as mock_request:
             provider.get_weather_data_single(47.5, 19.0, "2020-01-01", "2020-01-31")
 
             mock_request.assert_called_once_with(
@@ -146,8 +138,6 @@ class TestGetWeatherDataSingle:
         """get_weather_data_single returns data from API response."""
         expected_data = [{"date": "2020-01-01", "temperature_2m_mean": 5.0}]
         with patch.object(provider, "_make_api_request", return_value=expected_data):
-            result = provider.get_weather_data_single(
-                47.5, 19.0, "2020-01-01", "2020-01-31"
-            )
+            result = provider.get_weather_data_single(47.5, 19.0, "2020-01-01", "2020-01-31")
 
             assert result == expected_data

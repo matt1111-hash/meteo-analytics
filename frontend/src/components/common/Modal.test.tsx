@@ -8,7 +8,6 @@
 
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import Modal from './Modal';
 
@@ -18,7 +17,7 @@ import Modal from './Modal';
 
 const defaultProps = {
   isOpen: false,
-  onClose: jest.fn(),
+  onClose: vi.fn(),
   title: 'Test Modal',
   children: <div>Modal content</div>,
 };
@@ -140,7 +139,7 @@ describe('Modal - Close Button', () => {
   });
 
   test('should call onClose when close button is clicked', async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     renderModal({ isOpen: true, onClose });
     await waitForModalToRender();
 
@@ -157,7 +156,7 @@ describe('Modal - Close Button', () => {
 
 describe('Modal - Backdrop Click', () => {
   test('should close when clicking backdrop', async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     renderModal({ isOpen: true, onClose, closeOnBackdropClick: true });
     await waitForModalToRender();
 
@@ -171,7 +170,7 @@ describe('Modal - Backdrop Click', () => {
   });
 
   test('should not close when clicking modal content', async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     renderModal({ isOpen: true, onClose, closeOnBackdropClick: true });
     await waitForModalToRender();
 
@@ -182,7 +181,7 @@ describe('Modal - Backdrop Click', () => {
   });
 
   test('should not close when closeOnBackdropClick is false', async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     renderModal({ isOpen: true, onClose, closeOnBackdropClick: false });
     await waitForModalToRender();
 
@@ -200,7 +199,7 @@ describe('Modal - Backdrop Click', () => {
 
 describe('Modal - ESC Key', () => {
   test('should close on ESC key press by default', async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     renderModal({ isOpen: true, onClose, closeOnEsc: true });
     await waitForModalToRender();
 
@@ -211,7 +210,7 @@ describe('Modal - ESC Key', () => {
   });
 
   test('should not close on ESC key when closeOnEsc is false', async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     renderModal({ isOpen: true, onClose, closeOnEsc: false });
     await waitForModalToRender();
 
@@ -221,7 +220,7 @@ describe('Modal - ESC Key', () => {
   });
 
   test('should not close on other key presses', async () => {
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     renderModal({ isOpen: true, onClose });
     await waitForModalToRender();
 

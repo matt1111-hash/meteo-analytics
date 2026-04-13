@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 # ruff: noqa: F403, F405
+from unittest.mock import patch
+
 from tests.data.anomaly_profile.test_manager_support import *
 
 
@@ -37,9 +39,7 @@ class TestInternalMethods:
         assert "test" in result
         assert manager._profiles_cache is not None
 
-    def test_get_profiles_cache_returns_empty_dict_on_failure(
-        self, temp_dir: Path
-    ) -> None:
+    def test_get_profiles_cache_returns_empty_dict_on_failure(self, temp_dir: Path) -> None:
         """_get_profiles_cache returns empty dict when load fails."""
         from src.data.anomaly_storage import AnomalyProfileStorage
 
@@ -148,9 +148,7 @@ class TestCRUDDelegation:
     ) -> None:
         """reset_profile_to_defaults delegates to ProfileActions."""
         # First modify a profile
-        custom_settings = AnomalyProfileSettings(
-            profile_name="custom", temp_hot=50.0
-        ).to_dict()
+        custom_settings = AnomalyProfileSettings(profile_name="custom", temp_hot=50.0).to_dict()
         manager_with_profiles.save_profile("custom", custom_settings)
 
         # Reset to defaults

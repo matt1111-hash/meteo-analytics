@@ -206,7 +206,7 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
       {/* 🌧️ Qt kompatibilis heatmap vizualizáció */}
       <div className="heatmap-section">
         <h4>📊 Daily Precipitation Heatmap</h4>
-        <PrecipitationHeatmap 
+        <PrecipitationHeatmap
           data={precipitationData}
           width={1000}
           height={400}

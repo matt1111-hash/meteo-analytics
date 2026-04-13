@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.test_weather_client_core_new_support import *
 
@@ -31,18 +33,14 @@ class TestWeatherClientInit:
 class TestSetProviderChangeCallback:
     """Test set_provider_change_callback method."""
 
-    def test_set_provider_change_callback_sets_callback(
-        self, client: WeatherClient
-    ) -> None:
+    def test_set_provider_change_callback_sets_callback(self, client: WeatherClient) -> None:
         """set_provider_change_callback sets the callback function."""
         callback = Mock()
         client.set_provider_change_callback(callback)
 
         assert client.provider_change_callback == callback
 
-    def test_set_provider_fallback_callback_sets_callback(
-        self, client: WeatherClient
-    ) -> None:
+    def test_set_provider_fallback_callback_sets_callback(self, client: WeatherClient) -> None:
         """set_provider_fallback_callback sets the callback function."""
         callback = Mock()
         client.set_provider_fallback_callback(callback)
@@ -53,24 +51,18 @@ class TestSetProviderChangeCallback:
 class TestValidateInputs:
     """Test _validate_inputs method."""
 
-    def test_validate_inputs_accepts_valid_coordinates(
-        self, client: WeatherClient
-    ) -> None:
+    def test_validate_inputs_accepts_valid_coordinates(self, client: WeatherClient) -> None:
         """_validate_inputs accepts valid latitude and longitude."""
         # Should not raise
         client._validate_inputs(47.5, 19.0, "2020-01-01", "2020-01-31")
 
-    def test_validate_inputs_accepts_boundary_values(
-        self, client: WeatherClient
-    ) -> None:
+    def test_validate_inputs_accepts_boundary_values(self, client: WeatherClient) -> None:
         """_validate_inputs accepts boundary coordinate values."""
         # Should not raise
         client._validate_inputs(-90, -180, "2020-01-01", "2020-01-31")
         client._validate_inputs(90, 180, "2020-01-01", "2020-01-31")
 
-    def test_validate_inputs_rejects_invalid_latitude(
-        self, client: WeatherClient
-    ) -> None:
+    def test_validate_inputs_rejects_invalid_latitude(self, client: WeatherClient) -> None:
         """_validate_inputs raises ValueError for invalid latitude."""
         with pytest.raises(ValueError, match="Invalid latitude"):
             client._validate_inputs(91, 0, "2020-01-01", "2020-01-31")
@@ -78,9 +70,7 @@ class TestValidateInputs:
         with pytest.raises(ValueError, match="Invalid latitude"):
             client._validate_inputs(-91, 0, "2020-01-01", "2020-01-31")
 
-    def test_validate_inputs_rejects_invalid_longitude(
-        self, client: WeatherClient
-    ) -> None:
+    def test_validate_inputs_rejects_invalid_longitude(self, client: WeatherClient) -> None:
         """_validate_inputs raises ValueError for invalid longitude."""
         with pytest.raises(ValueError, match="Invalid longitude"):
             client._validate_inputs(0, 181, "2020-01-01", "2020-01-31")
@@ -88,9 +78,7 @@ class TestValidateInputs:
         with pytest.raises(ValueError, match="Invalid longitude"):
             client._validate_inputs(0, -181, "2020-01-01", "2020-01-31")
 
-    def test_validate_inputs_rejects_invalid_date_format(
-        self, client: WeatherClient
-    ) -> None:
+    def test_validate_inputs_rejects_invalid_date_format(self, client: WeatherClient) -> None:
         """_validate_inputs raises ValueError for invalid date format."""
         with pytest.raises(ValueError, match="Invalid date format"):
             client._validate_inputs(47.5, 19.0, "01-01-2020", "2020-01-31")
@@ -98,9 +86,7 @@ class TestValidateInputs:
         with pytest.raises(ValueError, match="Invalid date format"):
             client._validate_inputs(47.5, 19.0, "2020/01/01", "2020-01-31")
 
-    def test_validate_inputs_rejects_start_after_end(
-        self, client: WeatherClient
-    ) -> None:
+    def test_validate_inputs_rejects_start_after_end(self, client: WeatherClient) -> None:
         """_validate_inputs raises ValueError when start_date > end_date."""
         with pytest.raises(ValueError, match="Start date cannot be after end date"):
             client._validate_inputs(47.5, 19.0, "2020-12-31", "2020-01-01")
@@ -109,9 +95,7 @@ class TestValidateInputs:
 class TestSelectProvider:
     """Test _select_provider method."""
 
-    def test_select_provider_returns_user_override_when_valid(
-        self, client: WeatherClient
-    ) -> None:
+    def test_select_provider_returns_user_override_when_valid(self, client: WeatherClient) -> None:
         """_select_provider returns user_override when provider is valid."""
         result = client._select_provider("open-meteo")
 
@@ -161,9 +145,7 @@ class TestSelectProvider:
 
         assert result is None
 
-    def test_select_provider_with_explicit_preferred_provider(
-        self, client: WeatherClient
-    ) -> None:
+    def test_select_provider_with_explicit_preferred_provider(self, client: WeatherClient) -> None:
         """_select_provider with explicit preferred provider returns that provider."""
         client.preferred_provider = "meteostat"
 

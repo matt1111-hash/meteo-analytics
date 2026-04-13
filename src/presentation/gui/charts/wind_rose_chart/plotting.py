@@ -5,13 +5,10 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-
 from src.presentation.gui.theme_manager import get_current_colors
 
 
-def _get_wind_rose_style() -> tuple[
-    list[int], list[str], list[str], Any, list[str], Any
-]:
+def _get_wind_rose_style() -> tuple[list[int], list[str], list[str], Any, list[str], Any]:
     """Return wind rose binning and color configuration."""
     speed_bins = [0, 25, 50, 70, 100, 120, 200]
     speed_labels = ["0-25", "25-50", "50-70", "70-100", "100-120", "120+ km/h"]
@@ -76,7 +73,7 @@ def _plot_wind_rose_bars(
 ) -> None:
     """Plot stacked polar bars."""
     bottom = np.zeros(len(theta))
-    for index, (color, label) in enumerate(zip(colors, speed_labels)):
+    for index, (color, label) in enumerate(zip(colors, speed_labels, strict=False)):
         values = [row[index] for row in wind_rose_data]
         ax.bar(
             theta,
@@ -97,9 +94,7 @@ def _build_stats_text(df: pd.DataFrame) -> str:
     total_records = len(df)
     avg_speed = df["windspeed"].mean()
     max_speed = df["windspeed"].max()
-    data_source = (
-        df["_data_source"].iloc[0] if "_data_source" in df.columns else "unknown"
-    )
+    data_source = df["_data_source"].iloc[0] if "_data_source" in df.columns else "unknown"
     if data_source == "wind_gusts_max":
         speed_label = "széllökés"
         icon = "🌪️"

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from starlette import status
 from unittest.mock import patch
+
+from starlette import status
 
 # ruff: noqa: F403, F405
 from tests.api.test_providers_route_support import *
@@ -49,9 +50,7 @@ class TestGetProviderStatus:
 
             assert response.status_code == status.HTTP_404_NOT_FOUND
 
-    def test_get_provider_status_includes_is_selected_flag(
-        self, client, mock_provider_config
-    ):
+    def test_get_provider_status_includes_is_selected_flag(self, client, mock_provider_config):
         """Should include is_selected flag in response."""
         with (
             patch(
@@ -157,9 +156,7 @@ class TestSelectProvider:
             assert data["success"] is False
             assert "message" in data
 
-    def test_select_provider_returns_500_on_unexpected_error(
-        self, client, mock_provider_config
-    ):
+    def test_select_provider_returns_500_on_unexpected_error(self, client, mock_provider_config):
         """Unexpected persistence errors should return HTTP 500."""
         with (
             patch(
@@ -174,17 +171,13 @@ class TestSelectProvider:
             response = client.post("/api/providers/open-meteo/select")
 
             assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-            assert response.json()["detail"] == (
-                "Failed to select provider 'open-meteo'"
-            )
+            assert response.json()["detail"] == ("Failed to select provider 'open-meteo'")
 
 
 class TestGetSelectedProvider:
     """Tests for GET /api/providers/selected endpoint."""
 
-    def test_get_selected_provider_returns_correct_info(
-        self, client, mock_provider_config
-    ):
+    def test_get_selected_provider_returns_correct_info(self, client, mock_provider_config):
         """Should return information about selected provider."""
         with (
             patch(
@@ -203,9 +196,7 @@ class TestGetSelectedProvider:
             assert data["provider_id"] == "meteostat"
             assert data["name"] == "Meteostat (Prémium)"
 
-    def test_get_selected_provider_defaults_to_auto_on_invalid(
-        self, client, mock_provider_config
-    ):
+    def test_get_selected_provider_defaults_to_auto_on_invalid(self, client, mock_provider_config):
         """Should default to auto provider if selected provider is invalid."""
         with (
             patch(
@@ -224,9 +215,7 @@ class TestGetSelectedProvider:
             data = response.json()
             assert data["provider_id"] == "auto"
 
-    def test_get_selected_provider_returns_500_on_error(
-        self, client, mock_provider_config
-    ):
+    def test_get_selected_provider_returns_500_on_error(self, client, mock_provider_config):
         """Selected provider endpoint should return HTTP 500 on unexpected errors."""
         with (
             patch(

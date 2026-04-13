@@ -13,6 +13,8 @@ from tests.analytics.multi_city_engine_core_support import (
 )
 
 pytest_plugins = ("tests.analytics.multi_city_engine_core_support",)
+
+
 class TestMultiCityEngineResolveRegionName:
     """Test resolve_region_name method."""
 
@@ -35,9 +37,7 @@ class TestMultiCityEngineGetCitiesForRegion:
         self, engine: MultiCityEngine, mock_region_resolver: MagicMock
     ) -> None:
         """Should return empty list for invalid region."""
-        mock_region_resolver.resolve_region_name.side_effect = ValueError(
-            "Invalid region"
-        )
+        mock_region_resolver.resolve_region_name.side_effect = ValueError("Invalid region")
 
         result = engine.get_cities_for_region("invalid_region")
 
@@ -124,9 +124,7 @@ class TestMultiCityEngineGetCitiesForRegion:
 class TestMultiCityEngineExecuteAnalyticsQuery:
     """Test execute_analytics_query method."""
 
-    def test_delegates_to_use_case(
-        self, engine: MultiCityEngine, mock_use_case: MagicMock
-    ) -> None:
+    def test_delegates_to_use_case(self, engine: MultiCityEngine, mock_use_case: MagicMock) -> None:
         """Should delegate to use_case.execute."""
         mock_result = MagicMock(spec=AnalyticsResult)
         mock_use_case.execute.return_value = mock_result
@@ -180,9 +178,7 @@ class TestMultiCityEngineAnalyzeMultiCity:
         mock_use_case.execute.assert_called_once()
         assert result == mock_result
 
-    def test_passes_limit_to_query(
-        self, engine: MultiCityEngine, mock_use_case: MagicMock
-    ) -> None:
+    def test_passes_limit_to_query(self, engine: MultiCityEngine, mock_use_case: MagicMock) -> None:
         """Should pass limit to query."""
         mock_result = MagicMock(spec=AnalyticsResult)
         mock_use_case.execute.return_value = mock_result

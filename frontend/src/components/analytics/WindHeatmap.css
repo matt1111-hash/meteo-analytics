@@ -249,17 +249,17 @@
     padding: 0.5rem;
     margin: 0;
   }
-  
+
   .heatmap-header {
     flex-direction: column;
     gap: 0.5rem;
     text-align: center;
   }
-  
+
   .scale-gradient {
     width: 150px;
   }
-  
+
   .heatmap-svg {
     max-width: 100%;
     height: auto;
@@ -270,11 +270,11 @@
   .wind-heatmap {
     padding: 0.25rem;
   }
-  
+
   .heatmap-header h4 {
     font-size: 1rem;
   }
-  
+
   .wind-range {
     font-size: 0.8rem;
   }
@@ -289,50 +289,50 @@
     padding: 12px;
     margin: 6px 0;
   }
-  
+
   .heatmap-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .heatmap-header h4 {
     font-size: 14px;
   }
-  
+
   .wind-range {
     font-size: 11px;
   }
-  
+
   .color-scale {
     flex-direction: column;
     gap: 8px;
     text-align: center;
   }
-  
+
   .scale-gradient {
     width: 100%;
     margin: 8px 0;
   }
-  
+
   .scale-label {
     font-size: 10px;
   }
-  
+
   .beaufort-legend {
     padding: 8px;
   }
-  
+
   .legend-row {
     flex-direction: column;
     gap: 4px;
   }
-  
+
   .legend-item {
     font-size: 9px;
     padding: 3px 4px;
   }
-  
+
   .heatmap-stats small {
     font-size: 10px;
   }
@@ -342,23 +342,23 @@
   .wind-heatmap {
     padding: 8px;
   }
-  
+
   .heatmap-header h4 {
     font-size: 13px;
   }
-  
+
   .wind-range {
     font-size: 10px;
   }
-  
+
   .scale-label {
     font-size: 9px;
   }
-  
+
   .legend-item {
     font-size: 8px;
   }
-  
+
   .heatmap-stats small {
     font-size: 9px;
   }

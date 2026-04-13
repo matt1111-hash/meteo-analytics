@@ -3,11 +3,10 @@
  */
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { StatusBar } from './StatusBar';
 
 // Mock the providerService
-jest.mock('../../services/providerService', () => ({
+vi.mock('../../services/providerService', () => ({
   STATUS_LABELS: { healthy: 'Egészséges', warning: 'Figyelmeztetés', critical: 'Kritikus' },
   STATUS_COLORS: { healthy: '#22c55e', warning: '#f59e0b', critical: '#ef4444' },
   STATUS_BG_COLORS: {
@@ -22,7 +21,7 @@ jest.mock('../../services/providerService', () => ({
 }));
 
 // Mock the useProviderManagement hook
-const mockRefreshAll = jest.fn().mockResolvedValue(undefined);
+const mockRefreshAll = vi.fn().mockResolvedValue(undefined);
 
 const mockSelectedProvider = {
   provider_id: 'auto',
@@ -64,7 +63,7 @@ const mockUsage = {
   monthly_reset_date: '2024-02-01T00:00:00Z',
 };
 
-jest.mock('../../hooks/useProviderManagement', () => ({
+vi.mock('../../hooks/useProviderManagement', () => ({
   useProviderManagement: () => ({
     providerStatuses: mockStatuses,
     selectedProvider: mockSelectedProvider,
@@ -73,21 +72,21 @@ jest.mock('../../hooks/useProviderManagement', () => ({
     isLoadingUsage: false,
     error: null,
     refreshAll: mockRefreshAll,
-    fetchProviders: jest.fn(),
-    fetchStatus: jest.fn(),
-    fetchUsage: jest.fn(),
-    clearError: jest.fn(),
+    fetchProviders: vi.fn(),
+    fetchStatus: vi.fn(),
+    fetchUsage: vi.fn(),
+    clearError: vi.fn(),
   }),
 }));
 
 describe('StatusBar', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.useFakeTimers();
+    vi.clearAllMocks();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   describe('Rendering', () => {
@@ -188,7 +187,7 @@ describe('StatusBar', () => {
 
       expect(mockRefreshAll).not.toHaveBeenCalled();
 
-      jest.advanceTimersByTime(10000);
+      vi.advanceTimersByTime(10000);
 
       expect(mockRefreshAll).toHaveBeenCalled();
     });
@@ -196,7 +195,7 @@ describe('StatusBar', () => {
     it('should not auto-refresh when interval is 0', () => {
       render(<StatusBar refreshInterval={0} />);
 
-      jest.advanceTimersByTime(10000);
+      vi.advanceTimersByTime(10000);
 
       expect(mockRefreshAll).not.toHaveBeenCalled();
     });

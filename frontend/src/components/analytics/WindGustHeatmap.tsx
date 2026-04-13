@@ -23,11 +23,11 @@ const getWindGustColor = (windgust: number): string => {
   if (windgust <= 11) return '#CCE7FF'; // 3: Gyenge szél - Világosabb kék
   if (windgust <= 19) return '#90EE90'; // 4: Mérsékelt szél - Világos zöld (természet)
   if (windgust <= 29) return '#32CD32'; // 5: Élénk szél - Lime zöld (aktív, de biztonságos)
-  
+
   // === ELSŐFOK ZÓNA (6-7): FIGYELMEZTETŐ SZÍNEK ===
   if (windgust <= 39) return '#FFD700'; // 6: Erős szél - Arany sárga (FIGYELEM!)
   if (windgust <= 49) return '#FFA500'; // 7: Viharos szél - Narancs (FOKOZOTT FIGYELEM!)
-  
+
   // === MÁSODFOK ZÓNA (8-12): VESZÉLY SZÍNEK ===
   if (windgust <= 60) return '#FF6347'; // 8: Élénk viharos - Paradicsom piros (VESZÉLY!)
   if (windgust <= 72) return '#FF4500'; // 9: Heves vihar - Narancs-piros (NAGY VESZÉLY!)
@@ -53,19 +53,19 @@ const getWeekNumber = (dateStr: string): number => {
 // 🎯 Kalendárium mátrix építése (7×53) - Qt kompatibilis
 const buildCalendarMatrix = (data: WindGustData[]): number[][] => {
   if (!data || data.length === 0) return Array(7).fill(null).map(() => Array(53).fill(NaN));
-  
+
   const calendarMatrix = Array(7).fill(null).map(() => Array(53).fill(NaN));
-  
+
   data.forEach(item => {
     const date = new Date(item.date);
     const dayOfWeek = date.getDay(); // 0=Vasárnap, 1=Hétfő, ..., 6=Vasárnap
     const weekNumber = getWeekNumber(item.date);
-    
+
     if (weekNumber >= 0 && weekNumber < 53 && dayOfWeek >= 0 && dayOfWeek < 7) {
       calendarMatrix[dayOfWeek][weekNumber] = item.value;
     }
   });
-  
+
   return calendarMatrix;
 };
 
@@ -101,23 +101,23 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
 
     // Rendezés dátum szerint
     const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    
+
     // Széllökés határok
     const windGusts = sortedData.map(d => d.value);
     const minGust = Math.min(...windGusts);
     const maxGust = Math.max(...windGusts);
-    
+
     // 🗓️ Qt kompatibilis 7×53-as kalendárium mátrix
     const rows = 7; // 7 nap (Hétfőtől Vasárnapig)
     const cols = 53; // 53 hét egy évben
-    
+
     // Cellák méretezése - Qt kompatibilis (15-16px per cella)
     const cellWidth = Math.floor(width / cols);
     const cellHeight = Math.max(15, Math.floor((height - 40) / rows)); // -40px a hét napjai címkéknek
-    
+
     // 🗓️ Kalendárium mátrix építése
     const calendarMatrix = buildCalendarMatrix(sortedData);
-    
+
     // 🎯 Cellák létrehozása 7×53-as elrendezésben
     const cells: any[] = [];
     for (let week = 0; week < cols; week++) {
@@ -130,7 +130,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
           const firstWeekday = firstDayOfYear.getDay();
           const daysFromStart = week * 7 + day - firstWeekday;
           const cellDate = new Date(year, 0, 1 + daysFromStart);
-          
+
           cells.push({
             x: week * cellWidth,
             y: day * cellHeight + 20, // +20px a hét napjai címkéknek
@@ -148,10 +148,10 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
         }
       }
     }
-    
+
     // Hét napjai címkék - ISO szabvány szerint (Hétfőtől Vasárnapig)
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    
+
     return {
       cells,
       minGust,
@@ -181,22 +181,22 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
           Range: {Math.round(heatmapData.minGust)}-{Math.round(heatmapData.maxGust)} km/h
         </div>
       </div>
-      
-      <svg 
-        width={width} 
-        height={height} 
+
+      <svg
+        width={width}
+        height={height}
         className="heatmap-svg"
         viewBox={`0 -20 ${width} ${height + 20}`}
       >
         {/* Rács vonalak - 7×53 Qt kalendárium elrendezés */}
         <defs>
           <pattern id="windgust-grid" width={heatmapData.cellWidth} height={heatmapData.cellHeight} patternUnits="userSpaceOnUse">
-            <path d={`M ${heatmapData.cellWidth} 0 L ${heatmapData.cellWidth} ${heatmapData.cellHeight} L 0 ${heatmapData.cellHeight}`} 
+            <path d={`M ${heatmapData.cellWidth} 0 L ${heatmapData.cellWidth} ${heatmapData.cellHeight} L 0 ${heatmapData.cellHeight}`}
                   fill="none" stroke="#e0e0e0" strokeWidth="0.5"/>
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#windgust-grid)" />
-        
+
         {/* Hét napjai címkék - Minden 7. nap címkézése vertikálisan */}
         {heatmapData.dayNames.map((dayName, index) => (
           <text
@@ -212,18 +212,18 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
             {dayName}
           </text>
         ))}
-        
+
         {/* Hónap címkék - Csak új hónap kezdeténél */}
         {(() => {
           const monthLabels = [];
           let prevMonth = -1;
-          
+
           for (let week = 0; week < heatmapData.cols; week++) {
             const cell = heatmapData.cells.find(c => c.week === week && c.day === 0); // Hétfői cella
             if (cell) {
               const cellDate = new Date(cell.date);
               const currentMonth = cellDate.getMonth();
-              
+
               // Csak akkor jelenítjük meg, ha új hónap kezdődik
               if (currentMonth !== prevMonth) {
                 prevMonth = currentMonth;
@@ -246,7 +246,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
           }
           return monthLabels;
         })()}
-        
+
         {/* 7×53 kalendárium cellák - Qt kompatibilis */}
         {heatmapData.cells.map((cell, index) => (
           <g key={index}>
@@ -260,20 +260,20 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
               strokeWidth="0.5"
               className="heatmap-cell"
             />
-            
+
             {/* Tooltip megjelenítés hover esetén - Beaufort skálával */}
             <title>{`${cell.formattedDate}: ${cell.formattedGust} (${cell.beaufortScale})`}</title>
           </g>
         ))}
       </svg>
-      
+
       {/* Szín skála magyarázat - Beaufort 13 fokozat szerint */}
       <div className="color-scale windgust-scale">
         <span className="scale-label">🍃 Calm (0 km/h)</span>
         <div className="scale-gradient windgust-gradient"></div>
         <span className="scale-label">🌪️ Hurricane (115+ km/h)</span>
       </div>
-      
+
       {/* Beaufort skála magyarázat */}
       <div className="beaufort-legend">
         <div className="legend-row">
@@ -289,7 +289,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
           <span className="legend-item violent">50+: 🔴 Szélsőséges</span>
         </div>
       </div>
-      
+
       <div className="heatmap-stats">
         <small>📊 {heatmapData.cells.length} days visualized • 7×53 calendar matrix • Beaufort 13 fokozat • Qt compatible</small>
       </div>

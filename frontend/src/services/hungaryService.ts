@@ -3,7 +3,7 @@
  */
 import axios from 'axios';
 
-import { API_BASE_URL, getApiHeaders } from '../config/apiConfig';
+import { API_BASE_URL } from '../config/apiConfig';
 
 // =============================================================================
 // TYPES

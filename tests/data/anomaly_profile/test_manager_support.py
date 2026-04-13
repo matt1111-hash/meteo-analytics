@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
-
 from src.data.anomaly_profile.manager import AnomalyProfileManager
 from src.data.anomaly_types import AnomalyProfileSettings
 

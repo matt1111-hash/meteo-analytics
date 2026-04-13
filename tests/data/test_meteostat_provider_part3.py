@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.test_meteostat_provider_support import *
 
@@ -62,9 +64,7 @@ class TestProcessResponse:
         assert result[0]["apparent_temperature_max"] == 10.0
         assert result[0]["apparent_temperature_min"] == -2.0
 
-    def test_process_response_adds_data_source_field(
-        self, provider: MeteostatProvider
-    ) -> None:
+    def test_process_response_adds_data_source_field(self, provider: MeteostatProvider) -> None:
         """_process_response adds data_source field with provider_id."""
         response_data = {"data": [{"date": "2020-01-01"}]}
 
@@ -89,13 +89,9 @@ class TestProcessResponse:
         assert "temperature_2m_mean" in result[0]
         assert "precipitation_sum" in result[1]
 
-    def test_process_response_handles_null_values(
-        self, provider: MeteostatProvider
-    ) -> None:
+    def test_process_response_handles_null_values(self, provider: MeteostatProvider) -> None:
         """_process_response handles null values in fields."""
-        response_data = {
-            "data": [{"date": "2020-01-01", "tavg": None, "tmin": None, "tmax": None}]
-        }
+        response_data = {"data": [{"date": "2020-01-01", "tavg": None, "tmin": None, "tmax": None}]}
 
         result = provider._process_response(response_data)
 
@@ -107,15 +103,11 @@ class TestProcessResponse:
 class TestInheritedMethods:
     """Test inherited methods from WeatherProvider base class."""
 
-    def test_get_request_count_returns_zero_initially(
-        self, provider: MeteostatProvider
-    ) -> None:
+    def test_get_request_count_returns_zero_initially(self, provider: MeteostatProvider) -> None:
         """get_request_count returns 0 for new provider."""
         assert provider.get_request_count() == 0
 
-    def test_get_request_count_increments_after_requests(
-        self, provider: MeteostatProvider
-    ) -> None:
+    def test_get_request_count_increments_after_requests(self, provider: MeteostatProvider) -> None:
         """get_request_count increments after API requests."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -127,9 +119,7 @@ class TestInheritedMethods:
 
         assert provider.get_request_count() == 2
 
-    def test_reset_request_count_clears_counter(
-        self, provider: MeteostatProvider
-    ) -> None:
+    def test_reset_request_count_clears_counter(self, provider: MeteostatProvider) -> None:
         """reset_request_count sets request count to 0."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -143,9 +133,7 @@ class TestInheritedMethods:
         provider.reset_request_count()
         assert provider.get_request_count() == 0
 
-    def test_rate_limit_check_sleeps_when_needed(
-        self, provider: MeteostatProvider
-    ) -> None:
+    def test_rate_limit_check_sleeps_when_needed(self, provider: MeteostatProvider) -> None:
         """_rate_limit_check sleeps when requests are too frequent."""
         provider.last_request_time = 0  # Far in the past
         provider.min_request_interval = 0.5

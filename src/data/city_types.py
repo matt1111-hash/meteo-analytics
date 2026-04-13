@@ -1,111 +1,38 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 City Manager - Type Definitions
 Global Weather Analyzer project
 
 Part of the city_manager refactoring - split into focused modules.
+
+Note: City dataclass inherits from domain City and adds database-specific
+factory methods. This maintains compatibility with existing code while
+allowing infrastructure layer to type-check against domain City.
 """
 
 import sqlite3
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    pass
 
-class RegionType(Enum):
-    """Region type enumeration."""
-
-    GLOBAL = "global"
-    CONTINENT = "continent"
-    COUNTRY = "country"
-    REGION = "region"
-    CUSTOM = "custom"
-    HUNGARIAN_SETTLEMENT = "hungarian_settlement"
-
-
-class CitySort(Enum):
-    """City sorting options."""
-
-    POPULATION_DESC = "population_desc"
-    POPULATION_ASC = "population_asc"
-    NAME_ASC = "name_asc"
-    NAME_DESC = "name_desc"
-    DISTANCE_ASC = "distance_asc"
-    HUNGARIAN_PRIORITY = "hungarian_priority"
+# Import domain enums
+# Import domain City base class
+from src.domain.entities.city import City as DomainCity
+from src.domain.entities.city import CitySort, RegionType
 
 
 @dataclass
-class City:
-    """City data structure with Hungarian settlements support."""
+class City(DomainCity):
+    """City entity with database factory methods.
 
-    id: int
-    city: str
-    lat: float
-    lon: float
-    country: str
-    country_code: str
-    population: Optional[int] = None
-    continent: Optional[str] = None
-    admin_name: Optional[str] = None
-    capital: Optional[str] = None
-    timezone: Optional[str] = None
-
-    settlement_type: Optional[str] = None
-    megye: Optional[str] = None
-    jaras: Optional[str] = None
-    climate_zone: Optional[str] = None
-    region_priority: Optional[int] = None
-    is_hungarian: bool = False
-    terulet_hektar: Optional[int] = None
-    lakasok_szama: Optional[int] = None
-
-    distance_km: Optional[float] = field(default=None, init=False)
-    display_name: Optional[str] = field(default=None, init=False)
-
-    def __post_init__(self):
-        """Auto-compute calculated fields."""
-        parts = [self.city]
-
-        if self.is_hungarian and self.megye:
-            parts.append(f"{self.megye} megye")
-        elif self.admin_name and self.admin_name != self.city:
-            parts.append(self.admin_name)
-
-        if not self.is_hungarian:
-            parts.append(self.country)
-
-        self.display_name = ", ".join(parts)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert City object to dictionary."""
-        return {
-            "id": self.id,
-            "city": self.city,
-            "lat": self.lat,
-            "lon": self.lon,
-            "country": self.country,
-            "country_code": self.country_code,
-            "population": self.population,
-            "continent": self.continent,
-            "admin_name": self.admin_name,
-            "capital": self.capital,
-            "timezone": self.timezone,
-            "settlement_type": self.settlement_type,
-            "megye": self.megye,
-            "jaras": self.jaras,
-            "climate_zone": self.climate_zone,
-            "region_priority": self.region_priority,
-            "is_hungarian": self.is_hungarian,
-            "terulet_hektar": self.terulet_hektar,
-            "lakasok_szama": self.lakasok_szama,
-            "distance_km": self.distance_km,
-            "display_name": self.display_name,
-        }
+    Inherits from domain City and adds data-layer specific class methods.
+    """
 
     @classmethod
-    def from_db_row(cls, row: Tuple) -> "City":
+    def from_db_row(cls, row: tuple) -> "City":
         """Create City object from database row (original format)."""
         return cls(
             id=row[0],
@@ -150,22 +77,22 @@ class CityQuery:
     """City query parameters with Hungarian support."""
 
     region_type: RegionType
-    region_value: Optional[str] = None
+    region_value: str | None = None
     limit: int = 50
-    min_population: Optional[int] = None
-    max_population: Optional[int] = None
+    min_population: int | None = None
+    max_population: int | None = None
     sort_by: CitySort = CitySort.POPULATION_DESC
     include_capitals_only: bool = False
-    center_lat: Optional[float] = None
-    center_lon: Optional[float] = None
-    max_distance_km: Optional[float] = None
-    exclude_countries: List[str] = field(default_factory=list)
-    include_countries: List[str] = field(default_factory=list)
+    center_lat: float | None = None
+    center_lon: float | None = None
+    max_distance_km: float | None = None
+    exclude_countries: list[str] = field(default_factory=list)
+    include_countries: list[str] = field(default_factory=list)
 
     include_hungarian: bool = True
     hungarian_priority: bool = True
-    settlement_types: List[str] = field(default_factory=list)
-    hungarian_counties: List[str] = field(default_factory=list)
+    settlement_types: list[str] = field(default_factory=list)
+    hungarian_counties: list[str] = field(default_factory=list)
 
 
 class CityDatabaseError(Exception):
@@ -174,4 +101,4 @@ class CityDatabaseError(Exception):
     pass
 
 
-__all__ = ["RegionType", "CitySort", "City", "CityQuery", "CityDatabaseError"]
+__all__ = ["City", "CityDatabaseError", "CityQuery", "CitySort", "RegionType"]

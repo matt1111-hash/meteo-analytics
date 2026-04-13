@@ -28,7 +28,7 @@ const SingleCityForm: React.FC<SingleCityFormProps> = ({
   onMetricChange,
   onSubmit,
 }) => {
-  
+
   return (
     <form className="single-city-form" onSubmit={onSubmit}>
       <div className="view-mode-toggle">

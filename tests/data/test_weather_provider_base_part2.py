@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 # ruff: noqa: F403, F405
 from tests.data.test_weather_provider_base_support import *
 
@@ -11,9 +13,7 @@ class TestGetWeatherData:
 
     def test_get_weather_data_returns_data(self) -> None:
         """get_weather_data returns weather data."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         result = provider.get_weather_data(
             latitude=47.4979,
             longitude=19.0402,
@@ -24,13 +24,9 @@ class TestGetWeatherData:
         assert len(result) > 0
         assert "date" in result[0]
 
-    def test_get_weather_data_calls_rate_limit_check(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_get_weather_data_calls_rate_limit_check(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """get_weather_data calls _rate_limit_check."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
 
         with patch.object(provider, "_rate_limit_check") as mock_check:
             provider.get_weather_data(
@@ -43,9 +39,7 @@ class TestGetWeatherData:
 
     def test_get_weather_data_updates_tracking(self) -> None:
         """get_weather_data updates request tracking."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         initial_count = provider.get_request_count()
         provider.get_weather_data(
             latitude=47.4979,
@@ -61,17 +55,13 @@ class TestValidateProvider:
 
     def test_validate_provider_returns_bool(self) -> None:
         """validate_provider returns a boolean."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         result = provider.validate_provider()
         assert isinstance(result, bool)
 
     def test_validate_provider_mock_returns_true(self) -> None:
         """Mock provider validation returns True."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert provider.validate_provider() is True
 
 
@@ -87,9 +77,7 @@ class TestAbstractMethods:
 
     def test_concrete_implementation_can_be_instantiated(self) -> None:
         """Concrete implementation can be instantiated."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         assert provider is not None
 
 
@@ -98,9 +86,7 @@ class TestSession:
 
     def test_session_persists_across_calls(self) -> None:
         """Session persists across multiple method calls."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         session1 = provider.session
         provider.get_weather_data(
             latitude=47.4979,
@@ -117,9 +103,7 @@ class TestMultipleRequests:
 
     def test_multiple_requests_increment_count(self) -> None:
         """Multiple requests increment count correctly."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         for _ in range(5):
             provider.get_weather_data(
                 latitude=47.4979,
@@ -129,13 +113,9 @@ class TestMultipleRequests:
             )
         assert provider.get_request_count() == 5
 
-    def test_multiple_requests_respect_rate_limit(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_multiple_requests_respect_rate_limit(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Multiple requests respect rate limiting."""
-        provider = MockWeatherProvider(
-            provider_id="test_provider", display_name="Test Provider"
-        )
+        provider = MockWeatherProvider(provider_id="test_provider", display_name="Test Provider")
         provider.min_request_interval = 0.5
 
         sleep_count: dict[str, int] = {"count": 0}

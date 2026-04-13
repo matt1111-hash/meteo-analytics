@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.data.city_manager_stats import CityManagerStats
+
 # ruff: noqa: F403, F405
 from tests.data.test_city_manager_stats_support import *
 
@@ -9,9 +11,7 @@ from tests.data.test_city_manager_stats_support import *
 class TestGetCitiesByContinent:
     """Test get_cities_by_continent method."""
 
-    def test_returns_cities_for_europe(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_returns_cities_for_europe(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_by_continent returns European cities."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -29,9 +29,7 @@ class TestGetCitiesByContinent:
 
         assert len(results) <= 2
 
-    def test_with_min_population_filter(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_with_min_population_filter(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_by_continent filters by min_population."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -41,9 +39,7 @@ class TestGetCitiesByContinent:
             if city.population:
                 assert city.population >= 1000000
 
-    def test_returns_empty_for_unknown_continent(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_returns_empty_for_unknown_continent(self, cities_db: Path, hungarian_db: Path) -> None:
         """get_cities_by_continent returns empty for unknown continent."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -67,9 +63,7 @@ class TestGetCitiesByContinent:
 class TestGetAvailableContinents:
     """Test _get_available_continents method."""
 
-    def test_returns_list_of_continents(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_returns_list_of_continents(self, cities_db: Path, hungarian_db: Path) -> None:
         """_get_available_continents returns list of continents."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -103,9 +97,7 @@ class TestGetAvailableContinents:
 class TestGetAvailableCountries:
     """Test _get_available_countries method."""
 
-    def test_returns_list_of_countries(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_returns_list_of_countries(self, cities_db: Path, hungarian_db: Path) -> None:
         """_get_available_countries returns list of country dicts."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -114,9 +106,7 @@ class TestGetAvailableCountries:
         assert isinstance(countries, list)
         assert len(countries) >= 1
 
-    def test_country_dicts_have_required_fields(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_country_dicts_have_required_fields(self, cities_db: Path, hungarian_db: Path) -> None:
         """_get_available_countries returns dicts with required fields."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 
@@ -172,9 +162,7 @@ class TestContextManager:
         assert manager.connection is None
         assert manager.hungarian_connection is None
 
-    def test_context_manager_with_exception(
-        self, cities_db: Path, hungarian_db: Path
-    ) -> None:
+    def test_context_manager_with_exception(self, cities_db: Path, hungarian_db: Path) -> None:
         """Context manager closes connections even with exception."""
         manager = CityManagerStats(db_path=cities_db, hungarian_db_path=hungarian_db)
 

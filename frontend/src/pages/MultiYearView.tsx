@@ -125,7 +125,7 @@ const MultiYearView: React.FC = () => {
     console.log('Debug: fetchMultiYearData completed');
   };
 
-  
+
   return (
     <div className="multi-year-view">
       <div className="view-header">
