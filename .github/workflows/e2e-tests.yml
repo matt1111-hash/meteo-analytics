@@ -1,11 +1,11 @@
 name: 🎭 E2E Tesztek (Phase 11)
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
-  workflow_dispatch:
+  workflow_dispatch:  # Manual only — tests/e2e directory not yet created
+  # push:
+  #   branches: [main, develop]
+  # pull_request:
+  #   branches: [main, develop]
 
 jobs:
   e2e-tests:
