@@ -22,7 +22,7 @@ jobs:
 
     - name: 📦 Install pre-commit and dev dependencies
       run: |
-        sudo apt-get update && sudo apt-get install -y libegl1-mesa libopengl0
+        sudo apt-get update && sudo apt-get install -y libegl1 libopengl0
         python -m pip install --upgrade pip
         pip install pre-commit
         pip install -r requirements.txt
