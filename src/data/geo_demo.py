@@ -7,6 +7,8 @@ Global Weather Analyzer - Geo Utils Demo
 Part of the geo_utils refactoring - split into focused modules.
 """
 
+from typing import cast
+
 from .distance_calculator import DistanceCalculator
 from .geo_utils_analytics import GeoUtilsAnalytics
 
@@ -44,7 +46,10 @@ def demo_geo_utils():  # noqa: PLR0915
         {"lat": 46.0727, "lon": 18.2324, "population": 145000, "name": "Pécs"},
     ]
 
-    coordinates = [(city["lat"], city["lon"]) for city in test_cities]
+    coordinates = cast(
+        list[tuple[float, float]],
+        [(city["lat"], city["lon"]) for city in test_cities],
+    )
     bbox = geo_utils.calculate_bounding_box(coordinates, padding_degrees=0.1)
 
     print("Hungarian cities bounding box:")

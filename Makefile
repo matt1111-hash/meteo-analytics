@@ -5,10 +5,10 @@
 # Minden parancsnak van -be és -fe variánsa, az alap mindkettőt futtatja.
 # =============================================================================
 
-BE_DIR  ?= backend
+BE_DIR  ?= .
 FE_DIR  ?= frontend
 
-# Python forrás detekció a backend/ mappán belül
+# Python forrás detekció
 SRC_DIR ?= $(shell for d in $(BE_DIR)/src $(BE_DIR)/app $(BE_DIR)/lib $(BE_DIR); do \
     [ -d "$$d" ] && find "$$d" -name "*.py" -maxdepth 3 -type f 2>/dev/null | grep -q . && echo "$$d" && break; \
 done)

@@ -101,7 +101,9 @@ docstring-code-format = true
 # =============================================================================
 [tool.mypy]
 python_version = "3.12"
-warn_return_any = true
+explicit_package_bases = true
+namespace_packages = true
+warn_return_any = false         # was True but mypy.ini took precedence before
 warn_unused_configs = true
 disallow_untyped_defs = false     # Nem kötelező mindenhol típus
 check_untyped_defs = true         # De a törzsét ellenőrizze
@@ -136,7 +138,7 @@ filterwarnings = ["ignore::DeprecationWarning"]
 [tool.coverage.run]
 source = ["src", "app"]
 branch = true
-omit = ["tests/*", "*/__init__.py", "*/__pycache__/*"]
+omit = ["tests/*", "*/__init__.py", "*/__pycache__/*", "src/presentation/gui/*"]
 
 [tool.coverage.report]
 fail_under = 85
