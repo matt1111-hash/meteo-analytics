@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config/apiConfig';
 import './AnomalyPanel.css';
-
-const API_BASE_URL = 'http://localhost:8003';
 
 interface AnomalyThresholds {
   temp_hot?: number;

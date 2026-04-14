@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/apiConfig';
 import ExtremeRecordsTable from '../components/ExtremeRecordsTable';
 import CityAutocomplete from '../components/common/CityAutocomplete';
 import {
@@ -13,8 +14,6 @@ import {
 } from '../utils/extremeCalculator/index';
 import { CityWeatherResult } from '../types/weather';
 import './ExtremeEventsView.css';
-
-const API_BASE_URL = 'http://localhost:8003';
 
 interface FormData {
   city: string;

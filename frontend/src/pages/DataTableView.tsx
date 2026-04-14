@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/apiConfig';
 import CityAutocomplete from '../components/common/CityAutocomplete';
 import DataTablePanel, { WeatherTableRow } from '../components/panels/DataTablePanel';
 import { CityWeatherResult } from '../types/weather';
 import './DataTableView.css';
-
-const API_BASE_URL = 'http://localhost:8003';
 
 interface FormData {
   city: string;

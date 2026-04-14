@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/apiConfig';
 import { MetricsResponse } from '../types/weather';
 import './MetricSelector.css';
 
@@ -8,8 +9,6 @@ interface MetricSelectorProps {
   onMetricChange: (metric: string) => void;
   disabled?: boolean;
 }
-
-const API_BASE_URL = 'http://localhost:8003';
 
 const MetricSelector: React.FC<MetricSelectorProps> = ({
   selectedMetric,

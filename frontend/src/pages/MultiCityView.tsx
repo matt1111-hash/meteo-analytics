@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/apiConfig';
 import WeatherForm from '../components/WeatherForm';
 import WeatherResults from '../components/WeatherResults';
 import MetricSelector from '../components/MetricSelector';
@@ -10,8 +11,6 @@ import { WeatherAnalysisRequest, WeatherAnalysisResponse } from '../types/weathe
 import './MultiCityView.css';
 
 type ViewTab = 'chart' | 'heatmap' | 'map';
-
-const API_BASE_URL = 'http://localhost:8003';
 
 const MultiCityView: React.FC = () => {
   const [results, setResults] = useState<WeatherAnalysisResponse | null>(null);

@@ -1,6 +1,7 @@
 /** WindyDaysView - Szeles napok analízis (táblázat + oszlopdiagram + szélrózsa) */
 import React, { useState, useMemo } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/apiConfig';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import CityAutocomplete from '../components/common/CityAutocomplete';
 import WindRoseChart, { WindRoseData } from '../components/charts/WindRoseChart';
@@ -114,7 +115,7 @@ const WindyDaysView: React.FC = () => {
 
     try {
       // Fetch detailed wind data
-      const response = await axios.post('http://localhost:8003/api/weather/single-city-detailed', {
+      const response = await axios.post(`${API_BASE_URL}/api/weather/single-city-detailed`, {
         city,
         start: startDate,
         end: endDate,
@@ -129,7 +130,7 @@ const WindyDaysView: React.FC = () => {
       // Fetch wind rose data if enabled
       if (showWindRose) {
         try {
-          const windRoseResponse = await axios.post('http://localhost:8003/api/weather/wind-rose', {
+          const windRoseResponse = await axios.post(`${API_BASE_URL}/api/weather/wind-rose`, {
             city,
             start: startDate,
             end: endDate,
