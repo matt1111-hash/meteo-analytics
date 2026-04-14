@@ -247,12 +247,106 @@ a33f746 fix: consolidate config into pyproject.toml, fix Makefile BE_DIR
 c8ec895 chore: rename PRODUCTION_MANDATE .md, generate .secrets.baseline
 ```
 
+**CI javítások (utóbb):**
+```
+e6c121f fix: correct EGL package name for Ubuntu CI runner
+e0007c8 fix: install libegl1-mesa for PySide6 in headless CI
+1e95c54 fix: set QT_QPA_PLATFORM=offscreen for headless CI pytest
+7cfedba fix: ignore GUI dir in pre-commit pytest to avoid headless CI crash
+f02619c style: apply ruff format to 5 remaining files
+dd723f7 fix: install dev deps in pre-commit CI, disable E2E workflow
+66c6adf fix: align CI health-check Python matrix with requires-python >=3.12
+```
+
+### Production-readiness értékelés (PRODUCTION_MANDATE v2.0)
+
+A PRODUCTION_MANDATE 12 kötelező kritériumából (solo desktop):
+
+| # | Kritérium | Státusz | Megjegyzés |
+|---|-----------|---------|------------|
+| 1 | Fő user flow-k működnek | **PIROS** | Lásd lejjebb |
+| 2 | Nincs ismert blocker bug | **PIROS** | _part fájlok (106 db) karbantarthatósági kockázat |
+| 3 | Graceful degradation | **PIROS** | Frontend: backend nem elérhető → "Failed to fetch cities", nincs retry |
+| 4 | Idempotencia / race condition | **SÁRGA** | Nincs explicit védelem dupla kattintásokra frontend oldalon |
+| 5 | Kritikus üzleti logika unit teszt | **ZÖLD** | 1584 teszt, 91% coverage |
+| 6 | Integration teszt határfelületeken | **SÁRGA** | DB tesztek vannak, de city search endpoint nincs IT-vel fedve |
+| 7 | E2E smoke test | **PIROS** | `tests/e2e/` nem létezik, workflow disabled |
+| 13 | CI/CD, reprodukálható build | **ZÖLD** | 3/3 workflow zöld (CI, Pre-commit, Health-check) |
+| 17 | Konfiguráció kódtól elválasztva | **ZÖLD** | apiConfig.ts, .env, pyproject.toml single source |
+| 20 | Secret nem kerül repo-ba | **ZÖLD** | .secrets.baseline, .gitignore tartalmazza |
+| 22 | README: lokális futtatás lépései | **PIROS** | Nem validált, valószínűleg elavult |
+| 26 | Dependency rule nem sérül | **ZÖLD** | Import-linter 3/3 kept |
+
+**Eredmény: 5 zöld, 2 sárga, 5 piros — NEM KÉSZ.**
+
+### Blokkoló hiányosságok (részletezve)
+
+#### 1. Frontend hibatűrés hiányzik (Kritérium 1, 3)
+
+A `CityAutocomplete` komponens `fetch('/api/cities/search')` hívása:
+- Ha a backend nem fut → "Failed to fetch cities" üres üzenet, nincs útmutató
+- Nincs retry logika, nincs exponential backoff
+- Nincs vizuális jelzés, hogy "a backend szerver nem fut, indítsd el a ..."
+- A többi API hívás (useCityWeather, AnomalyPanel stb.) sincs retry/logikával védve
+
+**Javítás**: globális axios/fetch interceptor retry-logikával + informatív hibaüzenetek,
+amik jelzik a usernek, hogy a backendet el kell indítani.
+
+#### 2. E2E smoke test nem létezik (Kritérium 7)
+
+- A `tests/e2e/` könyvtár nem létezik
+- Az `e2e-tests.yml` workflow disabled (workflow_dispatch only)
+- Nincs egyetlen teszt sem, ami a kritikus flow-t végigjárja:
+  backend indul → városkeresés → adatlekérés → eredmény megjelenítés
+
+**Javítás**: Playwright vagy kézi smoke test szkript, ami legalább a happy pathet lefedi.
+
+#### 3. _part fájlok (106 db) — karbantarthatósági kockázat (Kritérium 2)
+
+- 85 _part + 41 _support fájl a GUI rétegben
+- 21 _part fájl a non-GUI rétegben
+- Minden jövőbeli módosításnál: nehéz navigáció, magas merge conflict kockázat
+- 4 dupla-split fájl (`_part*_part*`) mindenképpen egyesítésre szorul
+
+**Javítás**: FÁZIS 5 végrehajtása (cél: ≤53 fájl, 50% csökkentés).
+
+#### 4. README nem validált (Kritérium 22)
+
+- A README tartalma nem ellenőrzött
+- A telepítési/futtatási lépések (venv, backend indítás, frontend indítás)
+  valószínűleg elavultak vagy hiányosak
+- A desktop launcher parancsok nincsenek dokumentálva
+
+**Javítás**: README rewrite a tényleges indítási lépésekkel.
+
+#### 5. Integration teszt hiányosságok (Kritérium 6)
+
+- A `/api/cities/search` endpoint nincs integration tesztelve
+- A frontend API hívások nincsenek mockolt integration teszttel fedve
+- A weather API külső függőségeket (Open-Meteo, Meteostat) mock nélkül hívja
+
+**Javítás**: legalább a city search és a single-city weather endpoint IT-vel fedése.
+
+### Mérleg
+
+A projekt technikai alapjai rendben vannak (lint, type check, unit tesztek, CA sértések).
+A PRODUCTION_MANDATE azonban nem csak technikai minőséget követel — a user élménye
+is számít. Jelenleg egy nem futó backend case-ben a user sötétben van, és nincs
+egyetlen E2E teszt sem, ami garantálná, hogy a kritikus flow működik.
+
+**A mércét nem csökkenthetjük.** A fenti 5 blokkoló hiányosság javítása szükséges
+a "production ready" státuszhoz.
+
 ### Nyitott, következo sessionre marado pontok
 
+- [ ] BLOKKOLÓ: Frontend hibatűrés — retry logika + informatív hibaüzenetek
+- [ ] BLOKKOLÓ: E2E smoke test — legalább happy path (backend→keresés→adat)
+- [ ] BLOKKOLÓ: README validálás és frissítés
 - [ ] FÁZIS 5: _part fájlok konszolidálása (106 db → ≤53 cél)
 - [ ] FÁZIS 6: Frontend page tesztek bővítése, CRA→Vite migráció dokumentálás
 - [ ] FÁZIS 7: Desktop launcher validáció, CI workflow review
 - [ ] FÁZIS 8: Full quality gate, coverage report, vulture, bandit review
+- [ ] Integration tesztek: city search + weather endpoint
 - [ ] Prettier 113 frontend fájl formázandó. Opcionális.
 - [ ] Ruff noqa cleanup: fokozatos docstring/ARG/PLC0415 javítások
 
