@@ -187,9 +187,9 @@ class TestCreateProfilesData:
             default_profile = profiles[profile_name]
             for key in default_profile:
                 if key not in ("created_at", "modified_at"):
-                    assert (
-                        data_profile[key] == default_profile[key]
-                    ), f"{profile_name}.{key} mismatch"
+                    assert data_profile[key] == default_profile[key], (
+                        f"{profile_name}.{key} mismatch"
+                    )
 
     def test_created_at_is_valid_timestamp(self) -> None:
         """created_at is a valid ISO timestamp."""

@@ -29,7 +29,7 @@ class AnomalyThresholdSet:  # pylint: disable=too-many-instance-attributes
         """Validate temperature threshold ordering and ranges."""
         if self.temp_hot <= self.temp_cold:
             raise ValueError(
-                f"temp_hot ({self.temp_hot}) must be greater than " f"temp_cold ({self.temp_cold})"
+                f"temp_hot ({self.temp_hot}) must be greater than temp_cold ({self.temp_cold})"
             )
         if self.temp_cold < -50.0 or self.temp_cold > 40.0:  # noqa: PLR2004
             raise ValueError("temp_cold must be between -50 and 40")

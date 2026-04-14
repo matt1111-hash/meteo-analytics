@@ -87,17 +87,17 @@ class TestPresentationAndStructure(TestCleanArchitectureCompliance):
         assert init_file.exists(), "infrastructure/container/__init__.py should exist"
 
         imports = get_imports_from_file(init_file)
-        assert any(
-            "get_city_manager_port" in imp for imp in imports
-        ), "get_city_manager_port should be exported from infrastructure.container"
+        assert any("get_city_manager_port" in imp for imp in imports), (
+            "get_city_manager_port should be exported from infrastructure.container"
+        )
 
     def test_city_info_value_object_exists(self, src_path: Path):
         """CityInfo value object should exist in domain layer."""
         city_info_file = src_path / "domain" / "value_objects" / "city_info.py"
 
-        assert (
-            city_info_file.exists()
-        ), "domain/value_objects/city_info.py should exist for Clean Architecture compliance"
+        assert city_info_file.exists(), (
+            "domain/value_objects/city_info.py should exist for Clean Architecture compliance"
+        )
 
     def test_city_adapter_exists(self, src_path: Path):
         """City adapter should exist to convert data.City to domain.CityInfo."""

@@ -43,9 +43,7 @@ def _build_count_message(hungarian_count: int, total_results: int) -> str:
     """Build count-based search result status message."""
     global_count = total_results - hungarian_count
     if hungarian_count > 0 and global_count > 0:
-        return (
-            f"✅ {hungarian_count} magyar + {global_count} globális = " f"{total_results} találat"
-        )
+        return f"✅ {hungarian_count} magyar + {global_count} globális = {total_results} találat"
     if hungarian_count > 0:
         return f"✅ {hungarian_count} magyar találat"
     return f"✅ {global_count} globális találat"
