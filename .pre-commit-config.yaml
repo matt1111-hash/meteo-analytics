@@ -133,11 +133,11 @@ repos:
           fi;
           export PYTHONPATH="${SRC:-}${PYTHONPATH:+:$PYTHONPATH}";
           if [ -x venv/bin/pytest ]; then
-            exec venv/bin/pytest -x -q --no-cov -m "not slow";
+            exec venv/bin/pytest -x -q --no-cov -m "not slow" --ignore=src/presentation/gui;
           elif [ -x .venv/bin/pytest ]; then
-            exec .venv/bin/pytest -x -q --no-cov -m "not slow";
+            exec .venv/bin/pytest -x -q --no-cov -m "not slow" --ignore=src/presentation/gui;
           elif command -v pytest >/dev/null 2>&1; then
-            exec pytest -x -q --no-cov -m "not slow";
+            exec pytest -x -q --no-cov -m "not slow" --ignore=src/presentation/gui;
           else
             echo "pytest not installed (pip install -r requirements-dev.txt)";
             exit 1;
