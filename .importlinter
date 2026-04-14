@@ -28,11 +28,14 @@ layers =
     presentation
     api
     analytics
-    data
+    data | infrastructure
     config
-    infrastructure
     application
     domain
+ignore_imports =
+    src.infrastructure.container.factories -> src.data.city_manager_stats
+    src.infrastructure.container.factories -> src.data.weather_client_extensions
+    src.infrastructure.container.factories -> src.data.anomaly_profile.manager
 
 # -----------------------------------------------------------------------------
 # DOMAIN PURITY
