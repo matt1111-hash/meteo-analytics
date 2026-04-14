@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.9, "3.10", "3.11", "3.12"]
+        python-version: ["3.12", "3.13"]
 
     permissions:
       contents: read
@@ -62,13 +62,13 @@ jobs:
         echo "✅ Gyors ellenőrzés befejezve!"
 
     - name: 🔬 Teljes fejlett elemzés
-      if: matrix.python-version == '3.11'  # Csak egy verzión fusson a teljes
+      if: matrix.python-version == '3.12'  # Csak egy verzión fusson a teljes
       run: |
         echo "🧬 Fejlett health check indítása..."
         python tools/advanced_health_check.py || true
 
     - name: 📋 Coverage riport feltöltése
-      if: matrix.python-version == '3.11'
+      if: matrix.python-version == '3.12'
       uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
@@ -77,7 +77,7 @@ jobs:
         fail_ci_if_error: false
 
     - name: 📊 Riportok artifact-ként mentése
-      if: matrix.python-version == '3.11'
+      if: matrix.python-version == '3.12'
       uses: actions/upload-artifact@v4
       with:
         name: health-reports
@@ -88,7 +88,7 @@ jobs:
         retention-days: 30
 
     - name: 💬 PR komment a health score-ral
-      if: github.event_name == 'pull_request' && matrix.python-version == '3.11'
+      if: github.event_name == 'pull_request' && matrix.python-version == '3.12'
       uses: actions/github-script@v6
       with:
         script: |
@@ -138,9 +138,7 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "| Python verzió | Státusz |" >> $GITHUB_STEP_SUMMARY
         echo "|---------------|---------|" >> $GITHUB_STEP_SUMMARY
-        echo "| 3.9 | ${{ needs.health-check.result }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| 3.10 | ${{ needs.health-check.result }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| 3.11 | ${{ needs.health-check.result }} |" >> $GITHUB_STEP_SUMMARY
         echo "| 3.12 | ${{ needs.health-check.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| 3.13 | ${{ needs.health-check.result }} |" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "📊 **Riportok az Artifacts-ben találhatók**" >> $GITHUB_STEP_SUMMARY
