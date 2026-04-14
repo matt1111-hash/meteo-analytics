@@ -53,7 +53,7 @@ class HungarianCitySelector(HungarianCityEventHandlersMixin, HungarianCityPublic
     data_loaded = Signal(int)  # cities_count
     error_occurred = Signal(str)  # error_message
 
-    def __init__(self, db_path: str = "src/data/cities.db", parent=None):  # noqa: D107
+    def __init__(self, db_path: str = "data/cities.db", parent=None):  # noqa: D107
         super().__init__(parent)
 
         # Konfiguráció
