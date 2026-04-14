@@ -132,6 +132,7 @@ repos:
             SRC=".";
           fi;
           export PYTHONPATH="${SRC:-}${PYTHONPATH:+:$PYTHONPATH}";
+          export QT_QPA_PLATFORM=offscreen;
           if [ -x venv/bin/pytest ]; then
             exec venv/bin/pytest -x -q --no-cov -m "not slow" --ignore=src/presentation/gui;
           elif [ -x .venv/bin/pytest ]; then
