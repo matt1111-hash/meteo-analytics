@@ -28,10 +28,10 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Global Weather Analyzer API")
 
-# CORS middleware - allow frontend on localhost:3000
+# CORS middleware - origins configurable via CORS_ORIGINS env var
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=APIConfig.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

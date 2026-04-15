@@ -26,6 +26,13 @@ class APIConfig:
     API_KEY: ClassVar[str | None] = os.getenv("API_KEY")
     API_KEY_ENABLED: ClassVar[bool] = bool(API_KEY)
 
+    # CORS
+    CORS_ORIGINS: ClassVar[list[str]] = [
+        origin.strip()
+        for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+        if origin.strip()
+    ]
+
     REQUEST_TIMEOUT: ClassVar[int] = 30
     MAX_RETRIES: ClassVar[int] = 3
     CACHE_DURATION: ClassVar[int] = 3600

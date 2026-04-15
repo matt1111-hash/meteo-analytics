@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from '../services/apiClient';
+import { logger } from '../utils/logger';
 import { CityWeatherResult, MetricsResponse } from '../types/weather';
 import MetricSelector from '../components/MetricSelector';
 import HeatmapChart from '../components/HeatmapChart';
@@ -37,10 +37,10 @@ const HeatmapView: React.FC = () => {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await axios.get<MetricsResponse>(`${API_BASE_URL}/api/weather/metrics`);
+        const response = await apiClient.get<MetricsResponse>('/api/weather/metrics');
         setMetrics(response.data.metrics);
       } catch (err) {
-        console.error('Failed to fetch metrics:', err);
+        logger.error('Failed to fetch metrics:', err);
       }
     };
     fetchMetrics();
@@ -75,8 +75,8 @@ const HeatmapView: React.FC = () => {
         return;
       }
 
-      const response = await axios.post(
-        `${API_BASE_URL}/api/weather/multi-city?aggregate=false`,
+      const response = await apiClient.post(
+        '/api/weather/multi-city?aggregate=false',
         {
           cities: cityList,
           date_range: {
@@ -93,7 +93,7 @@ const HeatmapView: React.FC = () => {
         setError('No data returned from API');
       }
     } catch (err: any) {
-      console.error('Heatmap fetch error:', err);
+      logger.error('Heatmap fetch error');
       setError(err.response?.data?.detail || err.message || 'Failed to fetch heatmap data');
     } finally {
       setLoading(false);

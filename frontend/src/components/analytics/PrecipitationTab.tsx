@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
 import PrecipitationHeatmap from './PrecipitationHeatmap';
+import { logger } from '../../utils/logger';
 import './PrecipitationTab.css';
 import './PrecipitationHeatmap.css';
 
@@ -107,7 +108,7 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
       }
 
     } catch (err) {
-      console.error('Precipitation fetch error:', err);
+      logger.error('Precipitation fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch precipitation data');
       setPrecipitationData([]);
       setStats(null);

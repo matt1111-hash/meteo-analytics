@@ -3,6 +3,7 @@
  */
 import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
+import { logger } from '../utils/logger';
 import {
   getProviders,
   getProvidersStatus,
@@ -181,7 +182,7 @@ export const useProviderManagement = (): UseProviderManagementReturn => {
       }
     } catch (err) {
       // Non-critical error, log but don't fail the refresh
-      console.error('Error refreshing selected provider:', err);
+      logger.error('Error refreshing selected provider:', err);
     }
   }, [fetchProviders, fetchStatus, fetchUsage]);
 

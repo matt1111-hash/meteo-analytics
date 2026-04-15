@@ -8,6 +8,7 @@ import {
   CountiesResponse,
   SettlementsResponse,
 } from '../../services/hungaryService';
+import { logger } from '../../utils/logger';
 import './HierarchicalSelector.css';
 
 // =============================================================================
@@ -99,7 +100,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
         const data: RegionsResponse = await getHungarianRegions();
         setRegions(data.regions);
       } catch (err) {
-        console.error('Error fetching regions:', err);
+        logger.error('Error fetching regions:', err);
         setRegionError('Nem sikerült betölteni a régiókat');
       } finally {
         setLoadingRegions(false);
@@ -130,7 +131,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
         );
         setCounties(filteredCounties);
       } catch (err) {
-        console.error('Error fetching counties:', err);
+        logger.error('Error fetching counties:', err);
         setCountyError('Nem sikerült betölteni a megyéket');
       } finally {
         setLoadingCounties(false);
@@ -158,7 +159,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
         });
         setSettlements(data.settlements);
       } catch (err) {
-        console.error('Error fetching settlements:', err);
+        logger.error('Error fetching settlements:', err);
         setSettlementError('Nem sikerült betölteni a településeket');
       } finally {
         setLoadingSettlements(false);

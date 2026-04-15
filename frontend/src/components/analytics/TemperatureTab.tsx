@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
 import TemperatureHeatmap from './TemperatureHeatmap';
+import { logger } from '../../utils/logger';
 import './TemperatureTab.css';
 
 interface TemperatureData {
@@ -97,7 +98,7 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
       }
 
     } catch (err) {
-      console.error('Temperature fetch error:', err);
+      logger.error('Temperature fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch temperature data');
       setTemperatureData([]);
       setStats(null);

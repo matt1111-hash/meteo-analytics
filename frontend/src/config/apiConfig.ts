@@ -14,11 +14,11 @@
 
 // API Base URL - defaults to localhost:8003 for development
 export const API_BASE_URL: string =
-  process.env.REACT_APP_API_BASE_URL || 'http://localhost:8003';
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8003';
 
 // API Key for authentication (optional)
-// Set REACT_APP_API_KEY in .env if backend has API_KEY enabled
-export const API_KEY: string | undefined = process.env.REACT_APP_API_KEY;
+// Set VITE_API_KEY in .env if backend has API_KEY enabled
+export const API_KEY: string | undefined = import.meta.env.VITE_API_KEY;
 
 // Whether API key is configured
 export const API_KEY_ENABLED: boolean = API_KEY !== undefined && API_KEY !== '';

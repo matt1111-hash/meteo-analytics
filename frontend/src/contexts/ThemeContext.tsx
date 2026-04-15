@@ -7,6 +7,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import type { ThemeType, ThemeColors, ThemeContextType } from '../types/theme';
 import { THEME_STORAGE_KEY } from '../types/theme';
+import { logger } from '../utils/logger';
 
 /**
  * Light theme colors - RED (#C43939) primary
@@ -222,7 +223,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       // localStorage not available
     }
 
-    console.log(`🎨 Theme changed to: ${theme}`);
+    logger.debug(`Theme changed to: ${theme}`);
   }, [theme, isInitialized]);
 
   // Initialize theme on mount (run once)
@@ -237,7 +238,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Set theme function
   const setTheme = useCallback((newTheme: ThemeType) => {
     if (newTheme !== 'light' && newTheme !== 'dark') {
-      console.warn(`Invalid theme: ${newTheme}. Use 'light' or 'dark'.`);
+      logger.warn(`Invalid theme: ${newTheme}. Use 'light' or 'dark'.`);
       return;
     }
     setThemeState(newTheme);

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from '../services/apiClient';
+import { logger } from '../utils/logger';
 import { CityWeatherResult, DetailedData } from '../types/weather';
 
 interface UseCityWeatherParams {
@@ -24,10 +25,10 @@ export const useCityWeather = () => {
     try {
       if (params.viewMode === 'simple') {
         // Simple view: fetch single metric
-        const response = await axios.post<{
+        const response = await apiClient.post<{
           city_results: CityWeatherResult[];
           [key: string]: unknown;
-        }>(`${API_BASE_URL}/api/weather/single-city`, {
+        }>('/api/weather/single-city', {
           city: params.city.trim(),
           start: params.startDate,
           end: params.endDate,
@@ -38,13 +39,13 @@ export const useCityWeather = () => {
         setDetailedData(null);
       } else {
         // Detailed view: fetch all metrics
-        const response = await axios.post<{
+        const response = await apiClient.post<{
           temperature_data: CityWeatherResult[];
           wind_data: CityWeatherResult[];
           wind_gusts_data: CityWeatherResult[];
           precipitation_data: CityWeatherResult[];
           [key: string]: unknown;
-        }>(`${API_BASE_URL}/api/weather/single-city-detailed`, {
+        }>('/api/weather/single-city-detailed', {
           city: params.city.trim(),
           start: params.startDate,
           end: params.endDate,
@@ -71,15 +72,13 @@ export const useCityWeather = () => {
         setDetailedData(detailedDataToSet);
       }
     } catch (err) {
-      console.log('ERROR: Fetch failed:', err);
       if (axios.isAxiosError(err)) {
-        const errorMessage = err.response?.data?.detail || err.message;
+        const errorMessage = err.message;
         setError(`API Error: ${errorMessage}`);
-        console.log('ERROR: Axios error - response status:', err.response?.status);
-        console.log('ERROR: Axios error - response data:', err.response?.data);
+        logger.error('API request failed:', err.response?.status);
       } else {
         setError('An unexpected error occurred');
-        console.log('ERROR: Non-axios error:', err);
+        logger.error('Unexpected error:', err);
       }
       // Don't reset detailedData on error - preserve existing data
       setResults([]);

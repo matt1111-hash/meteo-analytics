@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { logger } from '../utils/logger';
 import CityAutocomplete from '../components/common/CityAutocomplete';
 import YearSelector from '../components/YearSelector';
 import MetricSelector from '../components/MetricSelector';
@@ -107,22 +108,22 @@ const MultiYearView: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('Debug: Form submit with data:', formData);
+    logger.debug('Form submit with data:', formData);
 
     const validationError = validateForm();
     if (validationError) {
-      console.log('Debug: Validation failed:', validationError);
+      logger.debug('Validation failed:', validationError);
       return;
     }
 
-    console.log('Debug: Validation passed, calling fetchMultiYearData');
+    logger.debug('Validation passed, calling fetchMultiYearData');
     resetData(); // Clear previous data
     await fetchMultiYearData({
       city: formData.city,
       years: formData.years,
       metric: formData.metric,
     });
-    console.log('Debug: fetchMultiYearData completed');
+    logger.debug('fetchMultiYearData completed');
   };
 
 

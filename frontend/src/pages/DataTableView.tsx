@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from '../services/apiClient';
+import { logger } from '../utils/logger';
 import CityAutocomplete from '../components/common/CityAutocomplete';
 import DataTablePanel, { WeatherTableRow } from '../components/panels/DataTablePanel';
 import { CityWeatherResult } from '../types/weather';
@@ -100,9 +101,9 @@ const DataTableView: React.FC = () => {
 
     for (const metric of metrics) {
       try {
-        const response = await axios.post<{
+        const response = await apiClient.post<{
           city_results: CityWeatherResult[];
-        }>(`${API_BASE_URL}/api/weather/single-city`, {
+        }>('/api/weather/single-city', {
           city: formData.city.trim(),
           start: startDate,
           end: endDate,
@@ -110,7 +111,7 @@ const DataTableView: React.FC = () => {
         });
         results.push(...response.data.city_results);
       } catch (err) {
-        console.warn(`Failed to fetch ${metric}:`, err);
+        logger.warn(`Failed to fetch ${metric}:`, err);
       }
     }
 

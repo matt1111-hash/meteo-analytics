@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
 import WindHeatmap from './WindHeatmap';
+import { logger } from '../../utils/logger';
 import './WindTab.css';
 import './WindHeatmap.css';
 
@@ -110,7 +111,7 @@ const WindTab: React.FC<WindTabProps> = ({
       }
 
     } catch (err) {
-      console.error('Wind fetch error:', err);
+      logger.error('Wind fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch wind data');
       setWindData([]);
       setStats(null);

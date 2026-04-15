@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from '../services/apiClient';
+import { logger } from '../utils/logger';
 import { MetricsResponse } from '../types/weather';
 import './MetricSelector.css';
 
@@ -23,11 +23,11 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({
     const fetchMetrics = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<MetricsResponse>(`${API_BASE_URL}/api/weather/metrics`);
+        const response = await apiClient.get<MetricsResponse>('/api/weather/metrics');
         setMetrics(response.data.metrics);
         setError(null);
       } catch (err) {
-        console.error('Failed to fetch metrics:', err);
+        logger.error('Failed to fetch metrics:', err);
         setError('Failed to load metrics');
       } finally {
         setLoading(false);

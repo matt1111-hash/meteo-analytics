@@ -136,7 +136,7 @@ if ! curl -fsS "$FRONTEND_HEALTH_URL" >/dev/null 2>&1; then
   : >"$FRONTEND_LOG"
   (
     cd "$FRONTEND_DIR"
-    exec env CI=true DANGEROUSLY_DISABLE_HOST_CHECK=true BROWSER=none PORT="$FRONTEND_PORT" npm start </dev/null
+    exec env PORT="$FRONTEND_PORT" npm run dev </dev/null
   ) >"$FRONTEND_LOG" 2>&1 &
   frontend_pid="$!"
   frontend_started=1
@@ -153,7 +153,7 @@ for _ in $(seq 1 "$FRONTEND_RETRY_COUNT"); do
 done
 
 if ! curl -fsS "$FRONTEND_HEALTH_URL" >/dev/null 2>&1; then
-  if ! grep -Eq "Starting the development server|Compiled with warnings|webpack compiled" "$FRONTEND_LOG" 2>/dev/null; then
+  if ! grep -Eq "VITE v|ready in|Local:" "$FRONTEND_LOG" 2>/dev/null; then
     show_error "Indítási hiba" "A frontend nem indult el. Log: $FRONTEND_LOG"
     exit 1
   fi

@@ -58,8 +58,6 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
 
         # Enable tooltips
         self.enable_tooltips(hover_tolerance=15)
-        print("🎯 DEBUG: WindChart tooltip-ok aktiválva!")
-        print("🌪️ DEBUG: WindChart.__init__() SIKERES!")
 
     def update_data(self, data: dict[str, Any]) -> None:
         """
@@ -68,20 +66,16 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
         Args:
             data: API response dictionary with daily weather data
         """
-        print("🌪️ DEBUG: WindChart.update_data() - STARTED")
-
         try:
             if self._is_updating:
-                print("🌪️ DEBUG: WindChart already updating, skipping...")
                 return
 
             self._is_updating = True
 
             # Extract wind data
-            df = self._data_extractor.extract(data, debug=True)
+            df = self._data_extractor.extract(data)
 
             if df.empty:
-                print("⚠️ DEBUG: Üres DataFrame, szél chart törlése")
                 self.clear_chart()
                 self._is_updating = False
                 return
@@ -116,13 +110,7 @@ class WindChart(WeatherChart, WeatherTooltipMixin):
 
             self._is_updating = False
 
-            print("✅ DEBUG: WindChart frissítés TELJESEN KÉSZ")
-
-        except Exception as e:
-            print(f"❌ DEBUG: Szél chart hiba: {e}")
-            import traceback  # noqa: PLC0415
-
-            print(f"❌ DEBUG: WindChart traceback: {traceback.format_exc()}")
+        except Exception:
             self._is_updating = False
             self.clear_chart()
 

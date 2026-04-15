@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import apiClient from '../../services/apiClient';
+import { logger } from '../../utils/logger';
 import './CityAutocomplete.css';
 
 interface City {
@@ -59,21 +61,18 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
     setError(null);
 
     try {
-      const response = await fetch(
+      const response = await apiClient.get<{ cities: City[] }>(
         `/api/cities/search?query=${encodeURIComponent(query)}&limit=${maxResults}`
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setSuggestions(data.cities || []);
+      setSuggestions(response.data.cities || []);
       setIsOpen(true);
       setHighlightedIndex(-1);
     } catch (err) {
-      console.error('Error fetching cities:', err);
-      setError('Failed to fetch cities');
+      logger.error('Error fetching cities');
+      const message =
+        err instanceof Error ? err.message : 'Failed to fetch cities';
+      setError(message);
       setSuggestions([]);
       setIsOpen(false);
     } finally {
@@ -135,7 +134,7 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
 
   // Handle city selection
   const handleCityClick = (city: City) => {
-    console.log('City clicked:', city.name);
+    logger.debug('City clicked:', city.name);
     onChange(city.name);
     setIsOpen(false);
     setHighlightedIndex(-1);

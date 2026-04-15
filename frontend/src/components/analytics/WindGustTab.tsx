@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
 import WindGustHeatmap from './WindGustHeatmap';
+import { logger } from '../../utils/logger';
 import './WindGustTab.css';
 import './WindGustHeatmap.css';
 
@@ -108,7 +109,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
       }
 
     } catch (err) {
-      console.error('Wind gust fetch error:', err);
+      logger.error('Wind gust fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch wind gust data');
       setWindGustData([]);
       setStats(null);

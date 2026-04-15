@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { logger } from '../utils/logger';
 
 interface MultiYearChartProps {
   data: Array<{
@@ -113,7 +114,7 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({
       });
       return filteredItem;
     });
-    console.log('Debug: Final data for LineChart:', filtered);
+    logger.debug('Final data for LineChart:', filtered);
     return filtered;
   }, [data, years, hiddenYears]);
 
@@ -151,14 +152,11 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({
 
           {(() => {
         const visibleYears = years.filter(year => !hiddenYears.has(year));
-        console.log('Debug: Visible years for Line rendering:', visibleYears);
-        console.log('Debug: Year colors:', yearColors);
+        logger.debug('Visible years for Line rendering:', visibleYears);
 
         return visibleYears.map(year => {
           // Check if year has any data
           const hasData = data.some(item => item[year.toString()] !== null);
-          const yearData = data.map(item => item[year.toString()]);
-          console.log(`Debug: Year ${year} has data: ${hasData}, values:`, yearData);
 
           return (
             <Line

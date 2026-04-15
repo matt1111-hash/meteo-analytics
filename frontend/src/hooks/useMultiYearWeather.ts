@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from '../services/apiClient';
+import { logger } from '../utils/logger';
 import { CityWeatherResult } from '../types/weather';
 
 interface MonthlyData {
@@ -28,7 +29,7 @@ export const useMultiYearWeather = () => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchMultiYearData = async (params: UseMultiYearWeatherParams): Promise<void> => {
-    console.log('Debug: fetchMultiYearData called with:', params);
+    logger.debug('fetchMultiYearData called with:', params);
     setLoading(true);
     setError(null);
 
@@ -39,10 +40,10 @@ export const useMultiYearWeather = () => {
       // Fetch data for each year
       const yearPromises = params.years.map(async (year) => {
         try {
-          const response = await axios.post<{
+          const response = await apiClient.post<{
             city_results: CityWeatherResult[];
             [key: string]: unknown;
-          }>(`${API_BASE_URL}/api/weather/single-city`, {
+          }>('/api/weather/single-city', {
             city: params.city.trim(),
             start: `${year}-01-01`,
             end: `${year}-12-31`,
@@ -51,7 +52,7 @@ export const useMultiYearWeather = () => {
 
           return { year, data: response.data.city_results };
         } catch (err) {
-          console.error(`Error fetching data for year ${year}:`, err);
+          logger.error(`Error fetching data for year ${year}:`, err);
           return { year, data: [] as CityWeatherResult[] };
         }
       });
@@ -90,7 +91,7 @@ export const useMultiYearWeather = () => {
           }
         });
 
-        console.log(`Debug: Year ${year} month counts:`, monthCounts);
+        logger.debug(`Year ${year} month counts:`, monthCounts);
 
         // Calculate averages
         Object.keys(monthSums).forEach((monthName) => {
