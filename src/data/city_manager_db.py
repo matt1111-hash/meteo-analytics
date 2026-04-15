@@ -187,7 +187,7 @@ class CityManagerDB:
             return results
 
         except sqlite3.Error as e:
-            logger.error(f"SQL query error: {sql} | Error: {e}")
+            logger.error(f"SQL query error (table query) | Error: {e}")
             raise CityDatabaseError(f"Query execution error: {e}")  # noqa: B904
 
     def close(self) -> None:

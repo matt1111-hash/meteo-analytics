@@ -33,6 +33,9 @@ class APIConfig:
         if origin.strip()
     ]
 
+    # Environment
+    APP_ENV: ClassVar[str] = os.getenv("APP_ENV", "development")
+
     REQUEST_TIMEOUT: ClassVar[int] = 30
     MAX_RETRIES: ClassVar[int] = 3
     CACHE_DURATION: ClassVar[int] = 3600

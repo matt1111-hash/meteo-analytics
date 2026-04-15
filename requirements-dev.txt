@@ -1,17 +1,22 @@
 # =============================================================================
-# requirements-dev.txt - Alternatíva a pyproject.toml [dev] helyett
+# requirements-dev.txt - Dev/test dependencies
 # pip install -r requirements-dev.txt
 # =============================================================================
+
+# Runtime (install first)
+-r requirements.txt
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=1.1.0
+pytest-cov>=4.1.0
+pytest-qt>=4.5.0
+pytest-timeout>=2.3.1
+mutmut>=2.4
 
 # Linting & Formatting
 ruff>=0.8.0
 mypy>=1.8.0
-
-# Testing
-pytest>=8.0.0
-pytest-cov>=4.1.0
-pytest-timeout>=2.3.1
-mutmut>=2.4
 
 # Complexity & Metrics
 radon>=5.0,<6
@@ -25,6 +30,7 @@ import-linter>=2.0
 vulture>=2.11
 bandit>=1.7.7
 detect-secrets>=1.4
+pip-audit>=2.6
 
 # Dev Tools
 pre-commit>=3.7

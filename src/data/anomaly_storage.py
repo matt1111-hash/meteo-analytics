@@ -92,6 +92,7 @@ class AnomalyProfileStorage:
                 # Mentés
                 with open(self.profiles_file, "w", encoding="utf-8") as f:  # noqa: PTH123
                     json.dump(data, f, indent=2, ensure_ascii=False)
+                self.profiles_file.chmod(0o600)
 
                 logger.debug(f"📁 Profilok mentve: {self.profiles_file}")
                 return True
@@ -140,6 +141,7 @@ class AnomalyProfileStorage:
 
             with open(self.settings_file, "w", encoding="utf-8") as f:  # noqa: PTH123
                 json.dump(current_data, f, indent=2, ensure_ascii=False)
+            self.settings_file.chmod(0o600)
 
             logger.debug(f"📁 Jelenlegi beállítások mentve: {profile_name}")
             return True

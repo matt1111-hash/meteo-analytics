@@ -28,6 +28,29 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Global Weather Analyzer API")
 
+
+@app.on_event("startup")
+def _enforce_production_security() -> None:
+    """Fail fast if production security prerequisites are not met."""
+    if APIConfig.APP_ENV == "production":
+        if not APIConfig.API_KEY_ENABLED:
+            raise RuntimeError(
+                "FATAL: APP_ENV=production but API_KEY is not set. "
+                "Refusing to start without authentication."
+            )
+        if "*" in APIConfig.CORS_ORIGINS:
+            raise RuntimeError(
+                "FATAL: APP_ENV=production but CORS_ORIGINS contains '*'. "
+                "Refusing to start with wildcard CORS in production."
+            )
+        logger.info("Production security checks passed")
+
+    if not APIConfig.API_KEY_ENABLED:
+        logger.warning(
+            "API key authentication is DISABLED. Set API_KEY env var to enable authentication."
+        )
+
+
 # CORS middleware - origins configurable via CORS_ORIGINS env var
 app.add_middleware(
     CORSMiddleware,

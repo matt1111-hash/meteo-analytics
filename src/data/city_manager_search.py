@@ -9,6 +9,7 @@ Part of the city_manager refactoring - split into focused modules.
 """
 
 import logging
+from typing import Any
 
 from .city_manager_hungarian import CityManagerHungarian
 from .city_types import City
@@ -18,6 +19,13 @@ logger = logging.getLogger(__name__)
 
 class CityManagerSearch(CityManagerHungarian):
     """Global cities and unified search methods."""
+
+    MAX_SEARCH_LIMIT = 500
+
+    @staticmethod
+    def _safe_limit(limit: int) -> int:
+        """Coerce and cap limit to safe integer range."""
+        return max(1, min(int(limit), CityManagerSearch.MAX_SEARCH_LIMIT))
 
     @staticmethod
     def _find_exact_match(city_name: str, candidates: list[City]) -> tuple[float, float] | None:
@@ -143,9 +151,10 @@ class CityManagerSearch(CityManagerHungarian):
             logger.warning("Global cities database not available")
             return []
 
+        safe_limit = self._safe_limit(limit)
         sql_parts = ["SELECT * FROM cities"]
         where_conditions = ["city LIKE ?"]
-        params = [f"%{search_term}%"]
+        params: list[Any] = [f"%{search_term}%"]
 
         if country_filter:
             where_conditions.append("country_code = ?")
@@ -153,7 +162,7 @@ class CityManagerSearch(CityManagerHungarian):
 
         sql_parts.append("WHERE " + " AND ".join(where_conditions))
         sql_parts.append("ORDER BY population DESC NULLS LAST")
-        sql_parts.append(f"LIMIT {limit}")
+        sql_parts.append(f"LIMIT {safe_limit}")
 
         sql = " ".join(sql_parts)
         rows = self._execute_query(sql, tuple(params))
@@ -173,15 +182,16 @@ class CityManagerSearch(CityManagerHungarian):
         if not self.connection:
             return []
 
+        safe_limit = self._safe_limit(limit)
         sql_parts = ["SELECT * FROM cities WHERE country_code = ?"]
-        params = [country_code.upper()]
+        params: list[Any] = [country_code.upper()]
 
         if min_population:
             sql_parts.append("AND population >= ?")
             params.append(min_population)
 
         sql_parts.append("ORDER BY population DESC NULLS LAST")
-        sql_parts.append(f"LIMIT {limit}")
+        sql_parts.append(f"LIMIT {safe_limit}")
 
         sql = " ".join(sql_parts)
         rows = self._execute_query(sql, tuple(params))
@@ -194,17 +204,18 @@ class CityManagerSearch(CityManagerHungarian):
         """Hungarian cities combined query (settlements + global)."""
         results = []
 
-        hungarian_limit = int(limit * 0.75)
+        safe_limit = self._safe_limit(limit)
+        hungarian_limit = min(int(safe_limit * 0.75), safe_limit)
         if self.hungarian_connection:
             sql_parts = ["SELECT * FROM hungarian_settlements"]
-            params = []
+            params: list[Any] = []
 
             if min_population:
                 sql_parts.append("WHERE population >= ?")
                 params.append(min_population)
 
             sql_parts.append("ORDER BY region_priority DESC, population DESC NULLS LAST")
-            sql_parts.append(f"LIMIT {hungarian_limit}")
+            sql_parts.append(f"LIMIT {self._safe_limit(hungarian_limit)}")
 
             sql = " ".join(sql_parts)
             rows = self._execute_query(sql, tuple(params), use_hungarian=True)
@@ -220,7 +231,7 @@ class CityManagerSearch(CityManagerHungarian):
                 params.append(min_population)
 
             sql_parts.append("ORDER BY population DESC NULLS LAST")
-            sql_parts.append(f"LIMIT {global_limit}")
+            sql_parts.append(f"LIMIT {self._safe_limit(global_limit)}")
 
             sql = " ".join(sql_parts)
             rows = self._execute_query(sql, tuple(params))

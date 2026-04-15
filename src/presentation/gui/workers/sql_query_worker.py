@@ -2,12 +2,13 @@
 # mypy: ignore-errors
 
 """
-SQL Query Worker - SQLite query worker
+SQL Query Worker - SQLite query worker (read-only, SELECT-only).
 
-Adatbázis lekérdezéseket végző worker thread SQL injection
-védelemmel és cancellation support-tal.
+Read-only DB connection + strict SELECT-only validation.
 """
 
+import logging
+import re
 import sqlite3
 from pathlib import Path
 from typing import Any, Optional
@@ -16,24 +17,36 @@ from PySide6.QtCore import QObject, Signal
 
 from .base_worker import BaseWorkerThread
 
+logger = logging.getLogger(__name__)
+
+# Only SELECT statements are allowed — validated via regex before execution.
+_SELECT_PATTERN = re.compile(r"^\s*SELECT\s", re.IGNORECASE | re.DOTALL)
+
+# Forbidden patterns that can appear inside a SELECT but change state.
+_FORBIDDEN_PATTERNS = re.compile(
+    r";\s*(?!$)"  # semicolons followed by more statements
+    r"|/\*.*?\*/"  # block comments (obfuscation vector)
+    r"|--",  # line comments (obfuscation vector)
+    re.IGNORECASE | re.DOTALL,
+)
+
 
 def _is_cancelled(worker: "SQLQueryWorker") -> bool:
     """Return whether the worker has been cancelled."""
     return worker.isInterruptionRequested() or worker.is_cancelled
 
 
-def _contains_dangerous_sql(query: str) -> str | None:
-    """Return the first dangerous SQL keyword if present."""
-    dangerous_keywords = ["DROP", "DELETE", "INSERT", "UPDATE", "ALTER", "CREATE"]
-    query_upper = query.upper()
-    for keyword in dangerous_keywords:
-        if keyword in query_upper:
-            return keyword
+def _validate_select_only(query: str) -> str | None:
+    """Return error message if query is not a safe single SELECT, else None."""
+    if not _SELECT_PATTERN.match(query):
+        return "Csak SELECT utasítás engedélyezett"
+    if _FORBIDDEN_PATTERNS.search(query):
+        return "Tiltott karakterlánc az SQL-ben (megjegyzés vagy több utasítás)"
     return None
 
 
 def _execute_query(query: str, conn: sqlite3.Connection) -> Any:
-    """Execute a SQL query using pandas when available."""
+    """Execute a SELECT query using pandas when available."""
     try:
         import pandas as pd  # noqa: PLC0415
 
@@ -41,21 +54,20 @@ def _execute_query(query: str, conn: sqlite3.Connection) -> Any:
     except ImportError:
         cursor = conn.cursor()
         cursor.execute(query)
-        if query.upper().startswith("SELECT"):
-            rows = cursor.fetchall()
-            columns = [description[0] for description in cursor.description]
-            return {"columns": columns, "rows": rows}
-        return {"affected_rows": cursor.rowcount}
+        rows = cursor.fetchall()
+        columns = [description[0] for description in cursor.description]
+        return {"columns": columns, "rows": rows}
 
 
 def _open_database(worker: "SQLQueryWorker") -> sqlite3.Connection | None:
-    """Open the SQLite database unless cancellation was requested."""
-    worker.emit_status("🗄️ Adatbázis kapcsolat...")
+    """Open the SQLite database in READ-ONLY mode."""
+    worker.emit_status("🗄️ Adatbázis kapcsolat (read-only)...")
     worker.progress_updated.emit(20)
     if _is_cancelled(worker):
-        print("🛑 DEBUG: SQL query cancelled before DB connection")
         return None
-    conn = sqlite3.connect(str(worker.db_path))
+    # Open DB in immutable read-only mode via URI
+    db_uri = f"file:{worker.db_path}?mode=ro&nolock=1"
+    conn = sqlite3.connect(db_uri, uri=True)
     if worker.is_cancelled:
         conn.close()
         return None
@@ -64,12 +76,12 @@ def _open_database(worker: "SQLQueryWorker") -> sqlite3.Connection | None:
 
 
 def _validate_query_safety(worker: "SQLQueryWorker", conn: sqlite3.Connection) -> bool:
-    """Validate SQL safety before execution."""
-    dangerous_keyword = _contains_dangerous_sql(worker.query)
-    if dangerous_keyword is None:
+    """Validate SQL is a single SELECT statement."""
+    error = _validate_select_only(worker.query)
+    if error is None:
         return True
     conn.close()
-    worker.emit_error(f"Tiltott SQL kulcsszó: {dangerous_keyword}")
+    worker.emit_error(f"SQL validációs hiba: {error}")
     return False
 
 
@@ -78,7 +90,6 @@ def _execute_worker_query(worker: "SQLQueryWorker", conn: sqlite3.Connection) ->
     worker.emit_status("📊 SQL lekérdezés végrehajtása...")
     worker.progress_updated.emit(70)
     if _is_cancelled(worker):
-        print("🛑 DEBUG: SQL query cancelled before execution")
         conn.close()
         return False
     worker.result = _execute_query(worker.query, conn)
@@ -103,16 +114,14 @@ def _run_sql_query(worker: "SQLQueryWorker") -> None:
 
 class SQLQueryWorker(BaseWorkerThread):
     """
-    🔧 FIX: SQL lekérdezéseket végző worker thread cancellation support-tal.
+    SQL query worker thread with read-only SELECT-only enforcement.
 
-    FUNKCIÓK:
-    ✅ SQLite adatbázis safe querying
-    ✅ SQL injection védelem
-    ✅ Pandas integration
-    ✅ Cancellation support
+    Security:
+    - Database opened in read-only mode (immutable URI)
+    - Only SELECT statements allowed (regex validated)
+    - No comments or multi-statement queries permitted
     """
 
-    # Specifikus signalok
     query_completed = Signal(object)  # pandas DataFrame vagy list
 
     def __init__(  # noqa: D107
@@ -124,9 +133,7 @@ class SQLQueryWorker(BaseWorkerThread):
         self.result: Any | None = None
 
     def execute(self) -> None:
-        """
-        🔧 FIX: SQL lekérdezés végrehajtása cancellation support-tal.
-        """
+        """SQL query execution with cancellation support."""
         if not self.query:
             self.emit_error("Üres SQL lekérdezés")
             return
