@@ -1,6 +1,6 @@
 # ruff: noqa: F403, F405,noqa: I001
 # mypy: ignore-errors
-"""Mixin part 1 for TemperatureTooltipHandlerMixin."""
+"""Merged part1+part3 for TemperatureTooltipHandlerMixin."""
 
 from __future__ import annotations
 
@@ -71,12 +71,11 @@ class TemperatureTooltipHandlerMixinPart1Mixin:  # noqa: D101
 
     def _find_closest_chart_point(self, event) -> Optional[Dict[str, Any]]:
         """
-        🎯 MULTI-LINE TOOLTIP DETECTION - MINDEN VONALRA REAGÁL!
+        Multi-line tooltip detection - all temperature lines.
 
-        🔧 ENHANCED LOGIC:
-        - temp_mean, temp_max, temp_min ÖSSZES vonal ellenőrzése
-        - Legközelebbi pont bármelyik vonalról
-        - Professional tooltip adatok minden hőmérséklet típussal
+        Enhanced logic:
+        - temp_mean, temp_max, temp_min all lines checked
+        - Closest point from any line
         """
         try:
             if (
@@ -88,7 +87,6 @@ class TemperatureTooltipHandlerMixinPart1Mixin:  # noqa: D101
 
             df = self.current_data
 
-            # Matplotlib dátum koordináták
             if "date" not in df.columns:
                 return None
 
@@ -122,3 +120,96 @@ class TemperatureTooltipHandlerMixinPart1Mixin:  # noqa: D101
             print(f"⚠️ DEBUG: Temperature point calculation error: {e}")
 
         return None
+
+    def _show_tooltip(self, event, point_data: Dict[str, Any]) -> None:  # noqa: ARG002
+        """
+        Smart tooltip positioning - dynamic placement.
+
+        Intelligent tooltip:
+        - Professional design
+        - Weather-specific formatting
+        - Smart positioning: automatically avoids chart edges
+        """
+        if not hasattr(self, "ax"):
+            return
+
+        # Clear previous tooltip
+        self._hide_tooltip()
+
+        # Format tooltip text
+        tooltip_text = self._format_tooltip_text(point_data)
+
+        # Determine coordinates
+        import matplotlib.dates as mdates  # noqa: PLC0415
+
+        x_pos = mdates.date2num(point_data["date"])
+        y_pos = point_data["primary_temp"]
+
+        # Smart positioning logic
+        xlim = self.ax.get_xlim()
+        ylim = self.ax.get_ylim()
+
+        x_relative = (x_pos - xlim[0]) / (xlim[1] - xlim[0])
+        y_relative = (y_pos - ylim[0]) / (ylim[1] - ylim[0])
+
+        # Dynamic offset calculation
+        if y_relative > 0.7:  # noqa: PLR2004
+            offset_y = -80
+            va_align = "top"
+        else:
+            offset_y = 50
+            va_align = "bottom"
+
+        if x_relative > 0.8:  # noqa: PLR2004
+            offset_x = -100
+            ha_align = "right"
+        else:
+            offset_x = 40
+            ha_align = "left"
+
+        current_colors = get_current_colors()
+
+        self.tooltip_annotation = self.ax.annotate(
+            tooltip_text,
+            xy=(x_pos, y_pos),
+            xytext=(offset_x, offset_y),
+            textcoords="offset points",
+            bbox={
+                "boxstyle": "round,pad=1.0",
+                "facecolor": "lightyellow",
+                "edgecolor": current_colors.get("border", "#34495E"),
+                "linewidth": 2,
+                "alpha": 0.95,
+            },
+            arrowprops={
+                "arrowstyle": "->",
+                "color": current_colors.get("border", "#34495E"),
+                "lw": 2,
+                "alpha": 0.8,
+            },
+            fontsize=10,
+            fontweight="bold",
+            ha=ha_align,
+            va=va_align,
+            zorder=1000,
+        )
+
+        self._tooltip_visible = True
+        self._tooltip_annotation = self.tooltip_annotation
+
+        if hasattr(self, "draw_idle"):
+            self.draw_idle()
+
+    def _hide_tooltip(self) -> None:
+        """Tooltip hiding - clean removal."""
+        if self._tooltip_annotation:
+            try:
+                self._tooltip_annotation.remove()
+            except Exception as e:
+                print(f"⚠️ DEBUG: Tooltip remove error: {e}")
+
+            self._tooltip_annotation = None
+            self._tooltip_visible = False
+
+            if hasattr(self, "draw_idle"):
+                self.draw_idle()

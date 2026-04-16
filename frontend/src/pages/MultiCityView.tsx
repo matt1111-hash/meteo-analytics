@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from '../services/apiClient';
 import WeatherForm from '../components/WeatherForm';
 import WeatherResults from '../components/WeatherResults';
 import MetricSelector from '../components/MetricSelector';
@@ -46,8 +46,8 @@ const MultiCityView: React.FC = () => {
     setError(null);
 
     try {
-      const response = await axios.post<WeatherAnalysisResponse>(
-        `${API_BASE_URL}/api/weather/multi-city?aggregate=${aggregate}`,
+      const response = await apiClient.post<WeatherAnalysisResponse>(
+        `/api/weather/multi-city?aggregate=${aggregate}`,
         {
           cities: request.cities,
           date_range: request.date_range,

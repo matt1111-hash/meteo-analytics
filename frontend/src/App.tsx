@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import ConnectionStatus from './components/common/ConnectionStatus';
 import ThemeToggle from './components/common/ThemeToggle';
 import HomePage from './pages/HomePage';
 import AnalyticsView from './pages/AnalyticsView';
@@ -110,10 +112,12 @@ function AppHeader() {
 
 function App() {
   return (
-    <Router>
-      <ThemeProvider>
-        <div className="app">
-          <AppHeader />
+    <ErrorBoundary>
+      <Router>
+        <ThemeProvider>
+          <ConnectionStatus />
+          <div className="app">
+            <AppHeader />
 
           <main className="app-main">
             <Routes>
@@ -133,6 +137,7 @@ function App() {
         </div>
       </ThemeProvider>
     </Router>
+  </ErrorBoundary>
   );
 }
 

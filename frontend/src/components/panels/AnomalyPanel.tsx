@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../../config/apiConfig';
+import apiClient from '../../services/apiClient';
 import './AnomalyPanel.css';
 
 interface AnomalyThresholds {
@@ -62,8 +62,8 @@ const AnomalyPanel: React.FC<AnomalyPanelProps> = ({
     setError(null);
 
     try {
-      const response = await axios.post<AnomalyResponse>(
-        `${API_BASE_URL}/api/weather/anomalies`,
+      const response = await apiClient.post<AnomalyResponse>(
+        '/api/weather/anomalies',
         {
           city,
           start: startDate,

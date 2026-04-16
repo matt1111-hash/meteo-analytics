@@ -1,9 +1,7 @@
 /**
  * Hungary Service - Hungarian regions, counties, and settlements
  */
-import axios from 'axios';
-
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from './apiClient';
 
 // =============================================================================
 // TYPES
@@ -76,8 +74,8 @@ export interface StationsResponse {
  * Get list of Hungarian counties (19 counties + Budapest)
  */
 export const getHungarianCounties = async (): Promise<CountiesResponse> => {
-  const response = await axios.get<CountiesResponse>(
-    `${API_BASE_URL}/api/hungary/counties`
+  const response = await apiClient.get<CountiesResponse>(
+    '/api/hungary/counties'
   );
   return response.data;
 };
@@ -86,8 +84,8 @@ export const getHungarianCounties = async (): Promise<CountiesResponse> => {
  * Get list of Hungarian statistical regions (7 regions)
  */
 export const getHungarianRegions = async (): Promise<RegionsResponse> => {
-  const response = await axios.get<RegionsResponse>(
-    `${API_BASE_URL}/api/hungary/regions`
+  const response = await apiClient.get<RegionsResponse>(
+    '/api/hungary/regions'
   );
   return response.data;
 };
@@ -110,8 +108,8 @@ export const getHungarianSettlements = async (options?: {
   if (options?.settlementType) params.append('settlement_type', options.settlementType);
   if (options?.limit) params.append('limit', options.limit.toString());
 
-  const response = await axios.get<SettlementsResponse>(
-    `${API_BASE_URL}/api/hungary/settlements?${params.toString()}`
+  const response = await apiClient.get<SettlementsResponse>(
+    `/api/hungary/settlements?${params.toString()}`
   );
   return response.data;
 };
@@ -131,8 +129,8 @@ export const getHungarianWeatherStations = async (options?: {
   if (options?.county) params.append('county', options.county);
   if (options?.limit) params.append('limit', options.limit.toString());
 
-  const response = await axios.get<StationsResponse>(
-    `${API_BASE_URL}/api/hungary/stations?${params.toString()}`
+  const response = await apiClient.get<StationsResponse>(
+    `/api/hungary/stations?${params.toString()}`
   );
   return response.data;
 };

@@ -5,9 +5,8 @@
 from __future__ import annotations
 
 from .analysis_runners_part1 import AnalysisRunnersPart1Mixin
-from .analysis_runners_part2 import AnalysisRunnersPart2Mixin
 from .analysis_runners_support import *
 
 
-class AnalysisRunners(AnalysisRunnersPart1Mixin, AnalysisRunnersPart2Mixin):
+class AnalysisRunners(AnalysisRunnersPart1Mixin):
     """Run different analysis types based on request."""

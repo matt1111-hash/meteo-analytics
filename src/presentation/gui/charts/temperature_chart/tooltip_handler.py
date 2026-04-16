@@ -6,15 +6,13 @@ from __future__ import annotations
 
 from .tooltip_handler_part1 import TemperatureTooltipHandlerMixinPart1Mixin
 from .tooltip_handler_part2 import TemperatureTooltipHandlerMixinPart2Mixin
-from .tooltip_handler_part3 import TemperatureTooltipHandlerMixinPart3Mixin
 from .tooltip_handler_support import *
 
 
 class TemperatureTooltipHandlerMixin(
     TemperatureTooltipHandlerMixinPart1Mixin,
     TemperatureTooltipHandlerMixinPart2Mixin,
-    TemperatureTooltipHandlerMixinPart3Mixin,
 ):
     """
-    🎯 Tooltip kezelése keverék osztály.
+    Tooltip handler mixin.
     """

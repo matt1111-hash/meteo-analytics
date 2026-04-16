@@ -1,9 +1,7 @@
 /**
  * Provider Service - Weather data provider management API
  */
-import axios from 'axios';
-
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from './apiClient';
 
 // =============================================================================
 // TYPES
@@ -96,8 +94,8 @@ export interface ProviderListResponse {
  * @returns List of all providers with their information
  */
 export const getProviders = async (): Promise<ProviderListResponse> => {
-  const response = await axios.get<ProviderListResponse>(
-    `${API_BASE_URL}/api/providers/list`
+  const response = await apiClient.get<ProviderListResponse>(
+    '/api/providers/list'
   );
   return response.data;
 };
@@ -108,8 +106,8 @@ export const getProviders = async (): Promise<ProviderListResponse> => {
  * @returns Array of provider status information
  */
 export const getProvidersStatus = async (): Promise<ProviderStatusInfo[]> => {
-  const response = await axios.get<ProviderStatusInfo[]>(
-    `${API_BASE_URL}/api/providers/status`
+  const response = await apiClient.get<ProviderStatusInfo[]>(
+    '/api/providers/status'
   );
   return response.data;
 };
@@ -123,8 +121,8 @@ export const getProvidersStatus = async (): Promise<ProviderStatusInfo[]> => {
 export const getProviderStatus = async (
   providerId: string
 ): Promise<ProviderStatusInfo> => {
-  const response = await axios.get<ProviderStatusInfo>(
-    `${API_BASE_URL}/api/providers/${providerId}/status`
+  const response = await apiClient.get<ProviderStatusInfo>(
+    `/api/providers/${providerId}/status`
   );
   return response.data;
 };
@@ -138,8 +136,8 @@ export const getProviderStatus = async (
 export const getProviderUsage = async (
   providerId: string
 ): Promise<ProviderUsage> => {
-  const response = await axios.get<ProviderUsage>(
-    `${API_BASE_URL}/api/providers/${providerId}/usage`
+  const response = await apiClient.get<ProviderUsage>(
+    `/api/providers/${providerId}/usage`
   );
   return response.data;
 };
@@ -153,8 +151,8 @@ export const getProviderUsage = async (
 export const selectProvider = async (
   providerId: string
 ): Promise<ProviderSelectionResult> => {
-  const response = await axios.post<ProviderSelectionResult>(
-    `${API_BASE_URL}/api/providers/${providerId}/select`
+  const response = await apiClient.post<ProviderSelectionResult>(
+    `/api/providers/${providerId}/select`
   );
   return response.data;
 };
@@ -165,8 +163,8 @@ export const selectProvider = async (
  * @returns Information about the selected provider
  */
 export const getSelectedProvider = async (): Promise<ProviderInfo> => {
-  const response = await axios.get<ProviderInfo>(
-    `${API_BASE_URL}/api/providers/selected`
+  const response = await apiClient.get<ProviderInfo>(
+    '/api/providers/selected'
   );
   return response.data;
 };

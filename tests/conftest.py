@@ -15,23 +15,25 @@ def anyio_backend() -> str:
     return "asyncio"
 
 
-@pytest.fixture(name="config_fs")
-def fixture_config_fs(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
-    """Egyszerű in-memory fájlrendszer a konfig tesztekhez."""
-    store: dict[str, str] = {}
+class _FakePath:
+    """In-memory path stand-in used by the config_fs fixture."""
 
-    class FakePath:
-        def __init__(self, key: str):
-            self.key = key
+    def __init__(self, key: str, store: dict[str, str]) -> None:
+        self.key = key
+        self._store = store
 
-        def exists(self) -> bool:
-            return self.key in store
+    def exists(self) -> bool:
+        return self.key in self._store
 
-        def unlink(self) -> None:
-            if self.key in store:
-                del store[self.key]
+    def unlink(self) -> None:
+        self._store.pop(self.key, None)
 
-    real_open = builtins.open
+    def chmod(self, mode: int) -> None:
+        """No-op in-memory mock for Path.chmod()."""
+
+
+def _make_fake_open(store: dict[str, str], real_open):  # type: ignore[type-arg]
+    """Return an open() replacement that reads/writes into *store*."""
 
     def fake_open(path_obj, mode: str = "r", encoding: str | None = None):
         if not hasattr(path_obj, "key"):
@@ -53,9 +55,17 @@ def fixture_config_fs(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
         file_obj.close = close_and_save  # type: ignore[assignment]
         return file_obj
 
-    monkeypatch.setattr(builtins, "open", fake_open)
-    monkeypatch.setattr(config, "PROVIDER_PREFS_FILE", FakePath("prefs"))
-    monkeypatch.setattr(config, "USAGE_TRACKING_FILE", FakePath("usage"))
+    return fake_open
+
+
+@pytest.fixture(name="config_fs")
+def fixture_config_fs(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
+    """Egyszerű in-memory fájlrendszer a konfig tesztekhez."""
+    store: dict[str, str] = {}
+
+    monkeypatch.setattr(builtins, "open", _make_fake_open(store, builtins.open))
+    monkeypatch.setattr(config, "PROVIDER_PREFS_FILE", _FakePath("prefs", store))
+    monkeypatch.setattr(config, "USAGE_TRACKING_FILE", _FakePath("usage", store))
     monkeypatch.setattr(config, "ensure_directories", lambda: None)
 
     return store

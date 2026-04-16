@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-from .tooltip_part1 import _find_closest_chart_point
-from .tooltip_part2 import _format_tooltip_text
+from .tooltip_part1 import _find_closest_chart_point, _format_tooltip_text
 from .tooltip_part3 import _hide_tooltip, _show_tooltip
 from .tooltip_support import *

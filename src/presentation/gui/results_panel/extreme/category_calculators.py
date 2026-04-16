@@ -4,9 +4,8 @@
 
 from __future__ import annotations
 
-from .category_calculators_part1 import CategoryCalculatorsPart1Mixin
+from .category_calculators_part1 import CategoryCalculatorsPart1Mixin, CategoryCalculatorsPart3Mixin
 from .category_calculators_part2 import CategoryCalculatorsPart2Mixin
-from .category_calculators_part3 import CategoryCalculatorsPart3Mixin
 from .category_calculators_support import *
 
 
@@ -16,7 +15,7 @@ class CategoryCalculators(
     CategoryCalculatorsPart3Mixin,
 ):
     """
-    🌡️ Kategória alapú rekord számítások
+    Kategória alapú rekord számítások
 
     Felelős:
     - Hőmérséklet rekordok számítása

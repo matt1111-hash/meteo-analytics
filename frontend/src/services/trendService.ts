@@ -1,9 +1,7 @@
 /**
  * Trend Service - Climate trend analysis API
  */
-import axios from 'axios';
-
-import { API_BASE_URL } from '../config/apiConfig';
+import apiClient from './apiClient';
 
 // =============================================================================
 // TYPES
@@ -101,8 +99,8 @@ export interface TrendAnalysisResult {
 export const fetchTrendAnalysis = async (
   request: TrendAnalysisRequest
 ): Promise<TrendAnalysisResult> => {
-  const response = await axios.post<TrendAnalysisResult>(
-    `${API_BASE_URL}/api/analytics/trend`,
+  const response = await apiClient.post<TrendAnalysisResult>(
+    '/api/analytics/trend',
     request
   );
   return response.data;
