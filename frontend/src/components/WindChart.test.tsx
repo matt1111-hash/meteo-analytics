@@ -18,9 +18,7 @@ vi.mock('recharts', () => {
         {children}
       </div>
     ),
-    ComposedChart: ({ children }: any) => (
-      <div data-testid="composed-chart">{children}</div>
-    ),
+    ComposedChart: ({ children }: any) => <div data-testid="composed-chart">{children}</div>,
     Line: () => <div data-testid="line-chart" />,
     Bar: () => <div data-testid="bar-chart" />,
     XAxis: () => <div data-testid="x-axis" />,
@@ -38,7 +36,11 @@ vi.mock('./charts/BeaufortLegend', () => {
   return {
     default: function MockBeaufortLegend(props: any) {
       return (
-        <div data-testid="beaufort-legend" data-compact={props.compact} data-highlight={props.highlightLevel}>
+        <div
+          data-testid="beaufort-legend"
+          data-compact={props.compact}
+          data-highlight={props.highlightLevel}
+        >
           Beaufort Legend Mock
         </div>
       );
@@ -113,9 +115,7 @@ describe('WindChart Component', () => {
       expect(statValues.length).toBeGreaterThan(0);
 
       // At least one stat should have Beaufort info
-      const hasBeaufort = Array.from(statValues).some((stat) =>
-        stat.textContent?.match(/\(\d+\)/)
-      );
+      const hasBeaufort = Array.from(statValues).some((stat) => stat.textContent?.match(/\(\d+\)/));
       expect(hasBeaufort).toBe(true);
     });
   });
@@ -236,7 +236,7 @@ describe('WindChart Component', () => {
 
       // Check for Hungarian Beaufort names
       const hasHungarianNames = Array.from(statValues).some((stat) =>
-        stat.textContent?.match(/(Szélcsend|Enyhe szellő|Gyenge szél|Erős szél|Vihar|Orkán)/)
+        stat.textContent?.match(/(Szélcsend|Enyhe szellő|Gyenge szél|Erős szél|Vihar|Orkán)/),
       );
       expect(hasHungarianNames).toBe(true);
     });
@@ -291,7 +291,7 @@ describe('WindChart Component', () => {
       ];
       const { container } = render(<WindChart data={data} city="Budapest" />);
       const avgSpeedText = Array.from(container.querySelectorAll('.stat-value')).find((el) =>
-        el.textContent?.includes('20.0')
+        el.textContent?.includes('20.0'),
       );
       expect(avgSpeedText).toBeInTheDocument();
     });
@@ -316,7 +316,7 @@ describe('WindChart Component', () => {
       ];
       const { container } = render(<WindChart data={data} city="Budapest" />);
       const windyDaysText = Array.from(container.querySelectorAll('.stat-value')).find((el) =>
-        el.textContent?.includes('2 / 3')
+        el.textContent?.includes('2 / 3'),
       );
       expect(windyDaysText).toBeInTheDocument();
     });

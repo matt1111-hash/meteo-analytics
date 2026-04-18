@@ -36,10 +36,11 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
   endDate,
 }) => {
   // Early return if all data arrays are empty
-  const hasAnyData = temperatureData?.length > 0 ||
-                    windData?.length > 0 ||
-                    windGustsData?.length > 0 ||
-                    precipitationData?.length > 0;
+  const hasAnyData =
+    temperatureData?.length > 0 ||
+    windData?.length > 0 ||
+    windGustsData?.length > 0 ||
+    precipitationData?.length > 0;
 
   if (!hasAnyData) {
     return (
@@ -54,39 +55,35 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
 
   // Convert CityWeatherResult to chart-specific formats
   // Create maps for quick date lookup
-  const windGustsMap = new Map(
-    windGustsData?.map(item => [item.date, item.value]) || []
-  );
+  const windGustsMap = new Map(windGustsData?.map((item) => [item.date, item.value]) || []);
 
-  const precipitationMap = new Map(
-    precipitationData?.map(item => [item.date, item.value]) || []
-  );
+  const precipitationMap = new Map(precipitationData?.map((item) => [item.date, item.value]) || []);
 
   // Merge all data by date for consistent visualization
   const allDates = new Set([
-    ...(windData?.map(item => item.date) || []),
-    ...(windGustsData?.map(item => item.date) || []),
-    ...(precipitationData?.map(item => item.date) || [])
+    ...(windData?.map((item) => item.date) || []),
+    ...(windGustsData?.map((item) => item.date) || []),
+    ...(precipitationData?.map((item) => item.date) || []),
   ]);
 
   const windChartData: WindDataPoint[] = Array.from(allDates)
     .sort()
-    .map(date => {
-      const windItem = windData?.find(item => item.date === date);
+    .map((date) => {
+      const windItem = windData?.find((item) => item.date === date);
       const windGustsValue = windGustsMap.get(date);
 
       return {
         date,
         windspeed: windItem?.value || null,
-        windgusts: windGustsValue || null
+        windgusts: windGustsValue || null,
       };
     });
 
   const precipitationChartData: PrecipitationDataPoint[] = Array.from(allDates)
     .sort()
-    .map(date => ({
+    .map((date) => ({
       date,
-      precipitation: precipitationMap.get(date) || null
+      precipitation: precipitationMap.get(date) || null,
     }));
 
   return (
@@ -117,10 +114,7 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
       )}
 
       {windChartData && windChartData.length > 0 ? (
-        <WindChart
-          data={windChartData}
-          city={city}
-        />
+        <WindChart data={windChartData} city={city} />
       ) : (
         <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
           No wind data available for {city} in selected period.
@@ -141,10 +135,7 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
       )}
 
       {precipitationChartData && precipitationChartData.length > 0 ? (
-        <PrecipitationChart
-          data={precipitationChartData}
-          city={city}
-        />
+        <PrecipitationChart data={precipitationChartData} city={city} />
       ) : (
         <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
           No precipitation data available for {city} in selected period.

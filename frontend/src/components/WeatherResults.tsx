@@ -60,16 +60,16 @@ const WeatherResults: React.FC<WeatherResultsProps> = ({ data }) => {
     .slice(0, 5)
     .join(', ');
 
-  const displayTitle = city_results.length > 5
-    ? `${cityNames} and ${city_results.length - 5} more`
-    : cityNames;
+  const displayTitle =
+    city_results.length > 5 ? `${cityNames} and ${city_results.length - 5} more` : cityNames;
 
   return (
     <div className="weather-results">
       <div className="results-header">
         <h2>{displayTitle}</h2>
         <p className="question-meta">
-          {getMetricDisplayName(question.metric)} • {city_results.length} {city_results.length === 1 ? 'city' : 'cities'}
+          {getMetricDisplayName(question.metric)} • {city_results.length}{' '}
+          {city_results.length === 1 ? 'city' : 'cities'}
         </p>
       </div>
 
@@ -137,9 +137,7 @@ const WeatherResults: React.FC<WeatherResultsProps> = ({ data }) => {
                       style={{ width: `${result.quality_score * 100}%` }}
                     />
                   </div>
-                  <span className="quality-text">
-                    {(result.quality_score * 100).toFixed(0)}%
-                  </span>
+                  <span className="quality-text">{(result.quality_score * 100).toFixed(0)}%</span>
                 </td>
               </tr>
             ))}

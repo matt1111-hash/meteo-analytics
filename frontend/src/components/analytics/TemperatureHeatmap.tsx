@@ -25,19 +25,19 @@ const getTemperatureColor = (temp: number, minTemp: number, maxTemp: number): st
   const normalized = (temp - absoluteMin) / (absoluteMax - absoluteMin);
 
   // RdYlBu_r színskála: 14+ szín a részletesebb megjelenítésért
-  if (normalized < 0.08) return '#08519c';      // -20°C: Nagyon hideg, sötét kék
-  if (normalized < 0.15) return '#2171b5';      // -15°C: Hideg kék
-  if (normalized < 0.23) return '#4292c6';      // -10°C: Mérsékelt hideg kék
-  if (normalized < 0.31) return '#6baed6';      // -5°C: Enyhe hideg kék
-  if (normalized < 0.38) return '#9ecae1';      // 0°C: Fagyhatár világoskék
-  if (normalized < 0.46) return '#c6dbef';      // 5°C: Hideg világoskék
-  if (normalized < 0.54) return '#fee0d2';      // 10°C: Semleges világosrózsaszín
-  if (normalized < 0.62) return '#fcbba1';      // 15°C: Enyhe meleg rózsaszín
-  if (normalized < 0.69) return '#fc9272';      // 20°C: Mérsékelt meleg narancs
-  if (normalized < 0.77) return '#fb6a4a';      // 25°C: Meleg narancs
-  if (normalized < 0.85) return '#ef3b2c';      // 30°C: Forró vörös
-  if (normalized < 0.92) return '#cb181d';      // 35°C: Nagyon forró sötétvörös
-  return '#99000d';                             // 40°C: Extrém forró bordó
+  if (normalized < 0.08) return '#08519c'; // -20°C: Nagyon hideg, sötét kék
+  if (normalized < 0.15) return '#2171b5'; // -15°C: Hideg kék
+  if (normalized < 0.23) return '#4292c6'; // -10°C: Mérsékelt hideg kék
+  if (normalized < 0.31) return '#6baed6'; // -5°C: Enyhe hideg kék
+  if (normalized < 0.38) return '#9ecae1'; // 0°C: Fagyhatár világoskék
+  if (normalized < 0.46) return '#c6dbef'; // 5°C: Hideg világoskék
+  if (normalized < 0.54) return '#fee0d2'; // 10°C: Semleges világosrózsaszín
+  if (normalized < 0.62) return '#fcbba1'; // 15°C: Enyhe meleg rózsaszín
+  if (normalized < 0.69) return '#fc9272'; // 20°C: Mérsékelt meleg narancs
+  if (normalized < 0.77) return '#fb6a4a'; // 25°C: Meleg narancs
+  if (normalized < 0.85) return '#ef3b2c'; // 30°C: Forró vörös
+  if (normalized < 0.92) return '#cb181d'; // 35°C: Nagyon forró sötétvörös
+  return '#99000d'; // 40°C: Extrém forró bordó
 };
 
 // 📅 Dátum formázás hónap/nap formátumba
@@ -56,11 +56,16 @@ const getWeekNumber = (dateStr: string): number => {
 
 // 🎯 Kalendárium mátrix építése (7×53) - Qt kompatibilis
 const buildCalendarMatrix = (data: TemperatureData[]): number[][] => {
-  if (!data || data.length === 0) return Array(7).fill(null).map(() => Array(53).fill(NaN));
+  if (!data || data.length === 0)
+    return Array(7)
+      .fill(null)
+      .map(() => Array(53).fill(NaN));
 
-  const calendarMatrix = Array(7).fill(null).map(() => Array(53).fill(NaN));
+  const calendarMatrix = Array(7)
+    .fill(null)
+    .map(() => Array(53).fill(NaN));
 
-  data.forEach(item => {
+  data.forEach((item) => {
     const date = new Date(item.date);
     const dayOfWeek = date.getDay(); // 0=Vasárnap, 1=Hétfő, ..., 6=Vasárnap
     const weekNumber = getWeekNumber(item.date);
@@ -81,18 +86,20 @@ const formatTemperature = (temp: number): string => {
 const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
   data,
   width = 1000,
-  height = 400
+  height = 400,
 }) => {
   const heatmapData = useMemo(() => {
     if (!data || data.length === 0) return null;
 
     // Rendezés dátum szerint
-    const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const sortedData = [...data].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
 
     // Hőmérséklet határok - kibővített tartomány -20°C és +40°C között
-    const temperatures = sortedData.map(d => d.value);
+    const temperatures = sortedData.map((d) => d.value);
     const minTemp = Math.max(-20, Math.min(...temperatures)); // Minimum -20°C
-    const maxTemp = Math.min(40, Math.max(...temperatures));  // Maximum +40°C
+    const maxTemp = Math.min(40, Math.max(...temperatures)); // Maximum +40°C
 
     // 🗓️ Qt kompatibilis 7×53-as kalendárium mátrix
     const rows = 7; // 7 nap (Hétfőtől Vasárnapig)
@@ -129,7 +136,7 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
             formattedDate: formatDate(cellDate.toISOString().split('T')[0]),
             formattedTemp: formatTemperature(tempValue),
             week: week,
-            day: day
+            day: day,
           });
         }
       }
@@ -147,7 +154,7 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
       rows,
       cols,
       dayNames,
-      calendarMatrix
+      calendarMatrix,
     };
   }, [data, width, height]);
 
@@ -176,9 +183,18 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
       >
         {/* Rács vonalak - 7×53 Qt kalendárium elrendezés */}
         <defs>
-          <pattern id="grid" width={heatmapData.cellWidth} height={heatmapData.cellHeight} patternUnits="userSpaceOnUse">
-            <path d={`M ${heatmapData.cellWidth} 0 L ${heatmapData.cellWidth} ${heatmapData.cellHeight} L 0 ${heatmapData.cellHeight}`}
-                  fill="none" stroke="#e0e0e0" strokeWidth="0.5"/>
+          <pattern
+            id="grid"
+            width={heatmapData.cellWidth}
+            height={heatmapData.cellHeight}
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d={`M ${heatmapData.cellWidth} 0 L ${heatmapData.cellWidth} ${heatmapData.cellHeight} L 0 ${heatmapData.cellHeight}`}
+              fill="none"
+              stroke="#e0e0e0"
+              strokeWidth="0.5"
+            />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#grid)" />
@@ -188,7 +204,7 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
           <text
             key={index}
             x={10}
-            y={(index * heatmapData.cellHeight) + 20 + (heatmapData.cellHeight / 2)}
+            y={index * heatmapData.cellHeight + 20 + heatmapData.cellHeight / 2}
             textAnchor="middle"
             dominantBaseline="middle"
             fontSize="10"
@@ -205,7 +221,7 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
           let prevMonth = -1;
 
           for (let week = 0; week < heatmapData.cols; week++) {
-            const cell = heatmapData.cells.find(c => c.week === week && c.day === 0); // Hétfői cella
+            const cell = heatmapData.cells.find((c) => c.week === week && c.day === 0); // Hétfői cella
             if (cell) {
               const cellDate = new Date(cell.date);
               const currentMonth = cellDate.getMonth();
@@ -217,7 +233,7 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
                 monthLabels.push(
                   <text
                     key={week}
-                    x={(week * heatmapData.cellWidth) + (heatmapData.cellWidth / 2)}
+                    x={week * heatmapData.cellWidth + heatmapData.cellWidth / 2}
                     y={25}
                     textAnchor="middle"
                     fontSize="10"
@@ -225,7 +241,7 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
                     fontWeight="500"
                   >
                     {monthName}
-                  </text>
+                  </text>,
                 );
               }
             }
@@ -313,7 +329,9 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
       </div>
 
       <div className="heatmap-stats">
-        <small>📊 {heatmapData.cells.length} days visualized • 7×53 calendar matrix • Qt compatible</small>
+        <small>
+          📊 {heatmapData.cells.length} days visualized • 7×53 calendar matrix • Qt compatible
+        </small>
       </div>
     </div>
   );

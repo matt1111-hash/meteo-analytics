@@ -31,28 +31,6 @@
     "test": "vitest run",
     "lint": "tsc --noEmit"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "overrides": [
-      {
-        "files": [
-          "**/*.test.ts",
-          "**/*.test.tsx"
-        ],
-        "rules": {
-          "testing-library/no-container": "off",
-          "testing-library/no-node-access": "off",
-          "testing-library/prefer-presence-queries": "off",
-          "testing-library/no-wait-for-multiple-assertions": "off",
-          "jest/no-conditional-expect": "off",
-          "@typescript-eslint/no-unused-vars": "off"
-        }
-      }
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -66,10 +44,16 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.24.0",
     "@types/plotly.js": "^3.0.9",
     "@types/plotly.js-dist-min": "^2.3.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.24.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
     "jsdom": "^22.1.0",
+    "prettier": "^3.8.3",
+    "typescript-eslint": "^8.30.0",
     "vite": "^6.0.0",
     "vitest": "^0.34.6"
   }

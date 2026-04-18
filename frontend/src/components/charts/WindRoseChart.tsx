@@ -7,9 +7,9 @@ import Plotly from 'plotly.js-dist-min';
 
 // Wind rose direction data structure
 export interface WindRoseDirection {
-  direction: string;        // N, NNE, NE, etc.
-  angle: number;            // Center angle in degrees
-  speed_buckets: number[];  // [0-25, 25-50, 50-70, 70-100, 100-120, 120+] counts
+  direction: string; // N, NNE, NE, etc.
+  angle: number; // Center angle in degrees
+  speed_buckets: number[]; // [0-25, 25-50, 50-70, 70-100, 100-120, 120+] counts
 }
 
 export interface WindRoseData {
@@ -37,19 +37,19 @@ interface WindRoseChartProps {
 // Speed bucket labels and colors (defined outside component to avoid recreation)
 const SPEED_LABELS = ['0-25', '25-50', '50-70', '70-100', '100-120', '120+'];
 const SPEED_COLORS = [
-  '#9ca3af',  // calm - gray
-  '#34d399',  // light - green
-  '#fbbf24',  // moderate - yellow
-  '#f97316',  // strong - orange
-  '#ef4444',  // very strong - red
-  '#dc2626',  // extreme - dark red
+  '#9ca3af', // calm - gray
+  '#34d399', // light - green
+  '#fbbf24', // moderate - yellow
+  '#f97316', // strong - orange
+  '#ef4444', // very strong - red
+  '#dc2626', // extreme - dark red
 ];
 
 const WindRoseChart: React.FC<WindRoseChartProps> = ({
   data,
   loading = false,
   error = '',
-  height = 500
+  height = 500,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -66,7 +66,7 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
     const directions = data.directions;
 
     for (let i = 0; i < SPEED_LABELS.length; i++) {
-      const values = directions.map(d => d.speed_buckets[i]);
+      const values = directions.map((d) => d.speed_buckets[i]);
       const r = values.map((v, idx) => {
         // Stack the values on top of previous buckets
         let sum = 0;
@@ -80,7 +80,7 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
         type: 'scatterpolar',
         mode: 'lines',
         r: r,
-        theta: directions.map(d => d.angle),
+        theta: directions.map((d) => d.angle),
         fill: 'toself',
         name: SPEED_LABELS[i],
         marker: {
@@ -92,10 +92,11 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
 
     const layout: Partial<Plotly.Layout> = {
       title: {
-        text: `🌹 Szélrózsa - ${data.city}<br>` +
-               `<sub>${data.start} ↔ ${data.end} | ` +
-               `Összesen: ${data.total_observations} mérés</sub>`,
-        font: { size: 16, color: '#374151' }
+        text:
+          `🌹 Szélrózsa - ${data.city}<br>` +
+          `<sub>${data.start} ↔ ${data.end} | ` +
+          `Összesen: ${data.total_observations} mérés</sub>`,
+        font: { size: 16, color: '#374151' },
       },
       polar: {
         radialaxis: {
@@ -108,8 +109,8 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
           direction: 'clockwise',
           rotation: 90,
           tickmode: 'array',
-          tickvals: directions.map(d => d.angle),
-          ticktext: directions.map(d => d.direction),
+          tickvals: directions.map((d) => d.angle),
+          ticktext: directions.map((d) => d.direction),
           tickfont: { size: 12, weight: 'bold', color: '#374151' },
           gridcolor: '#e5e7eb',
           linecolor: '#e5e7eb',
@@ -133,10 +134,11 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
           y: -0.15,
           xref: 'paper',
           yref: 'paper',
-          text: `<b>Statisztika:</b><br>` +
-                 `Átlag: ${data.statistics.avg_speed} km/h | ` +
-                 `Max: ${data.statistics.max_speed} km/h<br>` +
-                 `Csendes napok: ${data.calms_percentage}%`,
+          text:
+            `<b>Statisztika:</b><br>` +
+            `Átlag: ${data.statistics.avg_speed} km/h | ` +
+            `Max: ${data.statistics.max_speed} km/h<br>` +
+            `Csendes napok: ${data.calms_percentage}%`,
           showarrow: false,
           font: { size: 11, color: '#4b5563' },
           bgcolor: 'rgba(243, 244, 246, 0.8)',
@@ -150,7 +152,7 @@ const WindRoseChart: React.FC<WindRoseChartProps> = ({
     const config: Partial<Plotly.Config> = {
       responsive: true,
       displayModeBar: false,
-      staticPlot: true,  // Disable drag/zoom - chart is view-only
+      staticPlot: true, // Disable drag/zoom - chart is view-only
     };
 
     Plotly.newPlot(chartElement, traces, layout, config);

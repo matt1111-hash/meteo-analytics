@@ -48,9 +48,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   return (
     <div className="time-series-chart">
       <div className="chart-header">
-        <h3 className="chart-title">
-          📈 {metricName} Time Series
-        </h3>
+        <h3 className="chart-title">📈 {metricName} Time Series</h3>
         {data[0]?.city_name && (
           <p className="chart-subtitle">
             {data[0].city_name}, {data[0].country}
@@ -103,10 +101,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
                 year: 'numeric',
               });
             }}
-            formatter={(value: number) => [
-              `${value.toFixed(1)} ${metricUnit}`,
-              metricName,
-            ]}
+            formatter={(value) => [`${Number(value).toFixed(1)} ${metricUnit}`, metricName]}
           />
           <Legend />
           <Line
@@ -141,9 +136,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
         <div className="stat-item">
           <span className="stat-label">Average:</span>
           <span className="stat-value">
-            {(
-              chartData.reduce((sum, d) => sum + d.value, 0) / chartData.length
-            ).toFixed(1)}{' '}
+            {(chartData.reduce((sum, d) => sum + d.value, 0) / chartData.length).toFixed(1)}{' '}
             {metricUnit}
           </span>
         </div>

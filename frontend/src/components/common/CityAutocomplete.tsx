@@ -32,12 +32,12 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
   value,
   onChange,
   onCitySelect,
-  placeholder = "Search for a city...",
+  placeholder = 'Search for a city...',
   disabled = false,
-  className = "",
+  className = '',
   minLength = 2,
   debounceMs = 300,
-  maxResults = 20
+  maxResults = 20,
 }) => {
   const [suggestions, setSuggestions] = useState<City[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,35 +50,37 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch cities from API
-  const fetchCities = useCallback(async (query: string) => {
-    if (query.length < minLength) {
-      setSuggestions([]);
-      setIsOpen(false);
-      return;
-    }
+  const fetchCities = useCallback(
+    async (query: string) => {
+      if (query.length < minLength) {
+        setSuggestions([]);
+        setIsOpen(false);
+        return;
+      }
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const response = await apiClient.get<{ cities: City[] }>(
-        `/api/cities/search?query=${encodeURIComponent(query)}&limit=${maxResults}`
-      );
+      try {
+        const response = await apiClient.get<{ cities: City[] }>(
+          `/api/cities/search?query=${encodeURIComponent(query)}&limit=${maxResults}`,
+        );
 
-      setSuggestions(response.data.cities || []);
-      setIsOpen(true);
-      setHighlightedIndex(-1);
-    } catch (err) {
-      logger.error('Error fetching cities');
-      const message =
-        err instanceof Error ? err.message : 'Failed to fetch cities';
-      setError(message);
-      setSuggestions([]);
-      setIsOpen(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [minLength, maxResults]);
+        setSuggestions(response.data.cities || []);
+        setIsOpen(true);
+        setHighlightedIndex(-1);
+      } catch (err) {
+        logger.error('Error fetching cities');
+        const message = err instanceof Error ? err.message : 'Failed to fetch cities';
+        setError(message);
+        setSuggestions([]);
+        setIsOpen(false);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [minLength, maxResults],
+  );
 
   // Debounced search
   const debouncedFetch = useCallback(
@@ -91,7 +93,7 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
         fetchCities(query);
       }, debounceMs);
     },
-    [fetchCities, debounceMs]
+    [fetchCities, debounceMs],
   );
 
   // Handle input change
@@ -108,15 +110,11 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setHighlightedIndex(prev =>
-          prev < suggestions.length - 1 ? prev + 1 : 0
-        );
+        setHighlightedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setHighlightedIndex(prev =>
-          prev > 0 ? prev - 1 : suggestions.length - 1
-        );
+        setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
         break;
       case 'Enter':
         e.preventDefault();
@@ -240,7 +238,9 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
               aria-selected={index === highlightedIndex}
             >
               <div className="suggestion-main">
-                <span className="city-name" style={{ color: '#000000', fontWeight: 'bold' }}>{city.name}</span>
+                <span className="city-name" style={{ color: '#000000', fontWeight: 'bold' }}>
+                  {city.name}
+                </span>
                 <span className="country-name">{city.country}</span>
               </div>
               {city.coordinates && (
@@ -249,9 +249,7 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
                     {city.coordinates.lat.toFixed(2)}°, {city.coordinates.lon.toFixed(2)}°
                   </span>
                   {city.population && (
-                    <span className="population">
-                      {city.population.toLocaleString()}
-                    </span>
+                    <span className="population">{city.population.toLocaleString()}</span>
                   )}
                 </div>
               )}
@@ -261,9 +259,7 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
       )}
 
       {isOpen && !loading && suggestions.length === 0 && value.length >= minLength && (
-        <div className="autocomplete-no-results">
-          No cities found for "{value}"
-        </div>
+        <div className="autocomplete-no-results">No cities found for "{value}"</div>
       )}
     </div>
   );

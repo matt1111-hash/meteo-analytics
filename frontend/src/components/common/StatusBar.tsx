@@ -53,7 +53,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
 
   // Get selected provider status
-  const selectedStatus = providerStatuses.find(s => s.is_selected);
+  const selectedStatus = providerStatuses.find((s) => s.is_selected);
 
   // Auto-refresh effect
   useEffect(() => {
@@ -144,7 +144,8 @@ export const StatusBar: React.FC<StatusBarProps> = ({
             </span>
             {selectedStatus.monthly_limit && (
               <span className="status-bar-stat-max">
-                {' '} / {formatRequestCount(selectedStatus.monthly_limit)}
+                {' '}
+                / {formatRequestCount(selectedStatus.monthly_limit)}
               </span>
             )}
           </span>

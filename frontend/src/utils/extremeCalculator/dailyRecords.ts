@@ -2,12 +2,7 @@
  * Daily Records Calculation
  */
 
-import {
-  ExtremeRecord,
-  DailyWeatherData,
-  WIND_CATEGORIES,
-  categorizeWindGust,
-} from './types';
+import { ExtremeRecord, DailyWeatherData, WIND_CATEGORIES, categorizeWindGust } from './types';
 
 export function calculateDailyRecords(data: DailyWeatherData[]): ExtremeRecord[] {
   const records: ExtremeRecord[] = [];
@@ -18,7 +13,7 @@ export function calculateDailyRecords(data: DailyWeatherData[]): ExtremeRecord[]
 
   if (validTempMax.length > 0) {
     const hottest = validTempMax.reduce((max, d) =>
-      (d.temperature_max! > max.temperature_max!) ? d : max
+      d.temperature_max! > max.temperature_max! ? d : max,
     );
     records.push({
       category: 'Temperature',
@@ -31,7 +26,7 @@ export function calculateDailyRecords(data: DailyWeatherData[]): ExtremeRecord[]
 
   if (validTempMin.length > 0) {
     const coldest = validTempMin.reduce((min, d) =>
-      (d.temperature_min! < min.temperature_min!) ? d : min
+      d.temperature_min! < min.temperature_min! ? d : min,
     );
     records.push({
       category: 'Temperature',
@@ -43,9 +38,7 @@ export function calculateDailyRecords(data: DailyWeatherData[]): ExtremeRecord[]
   }
 
   // Temperature range
-  const validRanges = data.filter(
-    (d) => d.temperature_max !== null && d.temperature_min !== null
-  );
+  const validRanges = data.filter((d) => d.temperature_max !== null && d.temperature_min !== null);
   if (validRanges.length > 0) {
     const maxRange = validRanges.reduce((max, d) => {
       const range = d.temperature_max! - d.temperature_min!;
@@ -66,7 +59,7 @@ export function calculateDailyRecords(data: DailyWeatherData[]): ExtremeRecord[]
   const validPrecip = data.filter((d) => d.precipitation !== null);
   if (validPrecip.length > 0) {
     const wettest = validPrecip.reduce((max, d) =>
-      (d.precipitation! > max.precipitation!) ? d : max
+      d.precipitation! > max.precipitation! ? d : max,
     );
     records.push({
       category: 'Precipitation',

@@ -61,18 +61,18 @@
 }
 
 .metric-select:hover {
-  border-color: #C43939;
+  border-color: #c43939;
 }
 
 .metric-select:focus {
   outline: none;
-  border-color: #C43939;
+  border-color: #c43939;
   box-shadow: 0 0 0 3px rgba(196, 57, 57, 0.1);
 }
 
 .analyze-button {
   padding: 12px 24px;
-  background: #C43939;
+  background: #c43939;
   color: white;
   border: none;
   border-radius: 8px;
@@ -113,8 +113,8 @@
 }
 
 .export-button:hover {
-  border-color: #C43939;
-  color: #C43939;
+  border-color: #c43939;
+  color: #c43939;
   transform: translateY(-1px);
 }
 
@@ -198,7 +198,7 @@
 }
 
 .trend-statistics-table tbody tr.active-row td {
-  color: #C43939;
+  color: #c43939;
 }
 
 /* Dark theme support */

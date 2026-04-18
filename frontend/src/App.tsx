@@ -28,10 +28,7 @@ function Navigation() {
 
   return (
     <nav className="app-nav">
-      <Link
-        to="/"
-        className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-      >
+      <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
         🏠 Home
       </Link>
       <Link
@@ -119,25 +116,25 @@ function App() {
           <div className="app">
             <AppHeader />
 
-          <main className="app-main">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/analytics" element={<AnalyticsView />} />
-              <Route path="/multi-city" element={<MultiCityView />} />
-              <Route path="/single-city" element={<SingleCityView />} />
-              <Route path="/multi-year" element={<MultiYearView />} />
-              <Route path="/anomalies" element={<AnomalyView />} />
-              <Route path="/heatmap" element={<HeatmapView />} />
-              <Route path="/extreme-events" element={<ExtremeEventsView />} />
-              <Route path="/windy-days" element={<WindyDaysView />} />
-              <Route path="/data-table" element={<DataTableView />} />
-              <Route path="/trend-analytics" element={<TrendAnalyticsView />} />
-            </Routes>
-          </main>
-        </div>
-      </ThemeProvider>
-    </Router>
-  </ErrorBoundary>
+            <main className="app-main">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/analytics" element={<AnalyticsView />} />
+                <Route path="/multi-city" element={<MultiCityView />} />
+                <Route path="/single-city" element={<SingleCityView />} />
+                <Route path="/multi-year" element={<MultiYearView />} />
+                <Route path="/anomalies" element={<AnomalyView />} />
+                <Route path="/heatmap" element={<HeatmapView />} />
+                <Route path="/extreme-events" element={<ExtremeEventsView />} />
+                <Route path="/windy-days" element={<WindyDaysView />} />
+                <Route path="/data-table" element={<DataTableView />} />
+                <Route path="/trend-analytics" element={<TrendAnalyticsView />} />
+              </Routes>
+            </main>
+          </div>
+        </ThemeProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

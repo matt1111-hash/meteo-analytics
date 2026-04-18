@@ -275,7 +275,7 @@ describe('BeaufortLegend Component', () => {
   describe('Edge Cases', () => {
     test('should render correctly with all props enabled', () => {
       const { container } = render(
-        <BeaufortLegend compact={false} highlightLevel={6} className="test-class" />
+        <BeaufortLegend compact={false} highlightLevel={6} className="test-class" />,
       );
 
       expect(container.querySelector('.beaufort-legend.test-class')).toBeInTheDocument();

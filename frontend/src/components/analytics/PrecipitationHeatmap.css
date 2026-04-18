@@ -89,16 +89,16 @@
 .precip-gradient {
   background: linear-gradient(
     to right,
-    #FFFFFF 0%,    /* 0mm - FEHÉR (száraz) */
-    #E6F3FF 10%,   /* 1mm - nagyon világoskék */
-    #CCE7FF 20%,   /* 5mm - világoskék */
-    #99D6FF 30%,   /* 10mm - kék */
-    #66C2FF 40%,   /* 20mm - sötétkék */
-    #3399FF 50%,   /* 30mm - erős kék */
-    #0066CC 60%,   /* 40mm - sötét kék */
-    #004499 70%,   /* 50mm - nagyon sötét kék */
-    #002266 85%,   /* 80mm - sötétbordó */
-    #001133 100%   /* 100mm+ - fekete-kék */
+    #ffffff 0%,
+    /* 0mm - FEHÉR (száraz) */ #e6f3ff 10%,
+    /* 1mm - nagyon világoskék */ #cce7ff 20%,
+    /* 5mm - világoskék */ #99d6ff 30%,
+    /* 10mm - kék */ #66c2ff 40%,
+    /* 20mm - sötétkék */ #3399ff 50%,
+    /* 30mm - erős kék */ #0066cc 60%,
+    /* 40mm - sötét kék */ #004499 70%,
+    /* 50mm - nagyon sötét kék */ #002266 85%,
+    /* 80mm - sötétbordó */ #001133 100% /* 100mm+ - fekete-kék */
   );
 }
 

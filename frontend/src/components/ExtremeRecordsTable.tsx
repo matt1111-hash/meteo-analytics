@@ -44,7 +44,9 @@ const ExtremeRecordsTable: React.FC<ExtremeRecordsTableProps> = ({ records, load
   if (records.length === 0) {
     return (
       <div className="extreme-records-table-container">
-        <div className="empty-state">No extreme records available. Submit a query to analyze weather data.</div>
+        <div className="empty-state">
+          No extreme records available. Submit a query to analyze weather data.
+        </div>
       </div>
     );
   }

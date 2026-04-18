@@ -33,7 +33,7 @@ const MultiYearView: React.FC = () => {
 
     // Build CSV content
     const headers = ['month', 'year', 'metric', 'value', 'city'];
-    const rows = data.flatMap(item =>
+    const rows = data.flatMap((item) =>
       Object.entries(item)
         .filter(([key]) => key !== 'month')
         .map(([year, value]) => [
@@ -42,13 +42,10 @@ const MultiYearView: React.FC = () => {
           formData.metric,
           value?.toString() ?? '',
           formData.city,
-        ])
+        ]),
     );
 
-    const csvContent = [
-      headers.join(','),
-      ...rows.map((row) => row.join(',')),
-    ].join('\n');
+    const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
 
     // Create blob and download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -125,7 +122,6 @@ const MultiYearView: React.FC = () => {
     });
     logger.debug('fetchMultiYearData completed');
   };
-
 
   return (
     <div className="multi-year-view">

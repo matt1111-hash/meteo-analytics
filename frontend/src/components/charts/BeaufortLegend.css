@@ -65,15 +65,17 @@
   border-color: var(--level-color, #94a3b8);
   border-width: 2px;
   background: white;
-  box-shadow: 0 0 0 2px var(--level-color, #94a3b8),
-              0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 0 2px var(--level-color, #94a3b8),
+    0 4px 12px rgba(0, 0, 0, 0.15);
   transform: scale(1.02);
 }
 
 .beaufort-legend.compact .beaufort-level.highlighted {
   transform: scale(1.15);
-  box-shadow: 0 0 0 2px var(--level-color, #94a3b8),
-              0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 0 0 2px var(--level-color, #94a3b8),
+    0 4px 12px rgba(0, 0, 0, 0.2);
   background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
 }
 

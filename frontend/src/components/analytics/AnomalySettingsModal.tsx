@@ -139,52 +139,55 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
   }, []);
 
   // Handle threshold value change
-  const handleThresholdChange = useCallback((key: keyof AnomalyThresholds, value: string) => {
-    const numValue = parseFloat(value);
+  const handleThresholdChange = useCallback(
+    (key: keyof AnomalyThresholds, value: string) => {
+      const numValue = parseFloat(value);
 
-    if (isNaN(numValue)) {
-      setThresholds(prev => ({ ...prev, [key]: undefined }));
-      setErrors(prev => ({ ...prev, [key]: undefined }));
-    } else {
-      setThresholds(prev => ({ ...prev, [key]: numValue }));
+      if (isNaN(numValue)) {
+        setThresholds((prev) => ({ ...prev, [key]: undefined }));
+        setErrors((prev) => ({ ...prev, [key]: undefined }));
+      } else {
+        setThresholds((prev) => ({ ...prev, [key]: numValue }));
 
-      // Validate
-      const newErrors = { ...errors };
-      switch (key) {
-        case 'temp_hot':
-          if (numValue < -50 || numValue > 60) {
-            newErrors[key] = 'Érvénytelen tartomány (-50 to 60°C)';
-          } else {
+        // Validate
+        const newErrors = { ...errors };
+        switch (key) {
+          case 'temp_hot':
+            if (numValue < -50 || numValue > 60) {
+              newErrors[key] = 'Érvénytelen tartomány (-50 to 60°C)';
+            } else {
+              delete newErrors[key];
+            }
+            break;
+          case 'temp_cold':
+            if (numValue < -50 || numValue > 40) {
+              newErrors[key] = 'Érvénytelen tartomány (-50 to 40°C)';
+            } else {
+              delete newErrors[key];
+            }
+            break;
+          case 'precip_high':
+            if (numValue < 0 || numValue > 500) {
+              newErrors[key] = 'Érvénytelen tartomány (0 to 500mm)';
+            } else {
+              delete newErrors[key];
+            }
+            break;
+          case 'wind_hurricane':
+            if (numValue < 100 || numValue > 200) {
+              newErrors[key] = 'Érvénytelen tartomány (100 to 200km/h)';
+            } else {
+              delete newErrors[key];
+            }
+            break;
+          default:
             delete newErrors[key];
-          }
-          break;
-        case 'temp_cold':
-          if (numValue < -50 || numValue > 40) {
-            newErrors[key] = 'Érvénytelen tartomány (-50 to 40°C)';
-          } else {
-            delete newErrors[key];
-          }
-          break;
-        case 'precip_high':
-          if (numValue < 0 || numValue > 500) {
-            newErrors[key] = 'Érvénytelen tartomány (0 to 500mm)';
-          } else {
-            delete newErrors[key];
-          }
-          break;
-        case 'wind_hurricane':
-          if (numValue < 100 || numValue > 200) {
-            newErrors[key] = 'Érvénytelen tartomány (100 to 200km/h)';
-          } else {
-            delete newErrors[key];
-          }
-          break;
-        default:
-          delete newErrors[key];
+        }
+        setErrors(newErrors);
       }
-      setErrors(newErrors);
-    }
-  }, [errors]);
+    },
+    [errors],
+  );
 
   // Validate all thresholds
   const hasErrors = Object.keys(errors).length > 0;
@@ -221,11 +224,7 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             Alaphelyzet
           </button>
           <div className="modal-footer-spacer" />
-          <button
-            type="button"
-            className="modal-button modal-button-secondary"
-            onClick={onClose}
-          >
+          <button type="button" className="modal-button modal-button-secondary" onClick={onClose}>
             Mégse
           </button>
           <button
@@ -293,7 +292,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
         <h4 className="settings-group-title">🌡️ Hőmérséklet küszöbértékek</h4>
         <div className="settings-row">
           <div className="settings-field">
-            <label className="field-label" htmlFor="temp-hot">Forró (°C)</label>
+            <label className="field-label" htmlFor="temp-hot">
+              Forró (°C)
+            </label>
             <input
               id="temp-hot"
               type="number"
@@ -306,7 +307,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             {errors.temp_hot && <span className="field-error">{errors.temp_hot}</span>}
           </div>
           <div className="settings-field">
-            <label className="field-label" htmlFor="temp-cold">Hideg (°C)</label>
+            <label className="field-label" htmlFor="temp-cold">
+              Hideg (°C)
+            </label>
             <input
               id="temp-cold"
               type="number"
@@ -326,7 +329,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
         <h4 className="settings-group-title">🌧️ Csapadék küszöbértékek</h4>
         <div className="settings-row">
           <div className="settings-field">
-            <label className="field-label" htmlFor="precip-high">Magas (mm)</label>
+            <label className="field-label" htmlFor="precip-high">
+              Magas (mm)
+            </label>
             <input
               id="precip-high"
               type="number"
@@ -339,7 +344,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             {errors.precip_high && <span className="field-error">{errors.precip_high}</span>}
           </div>
           <div className="settings-field">
-            <label className="field-label" htmlFor="precip-low">Alacsony (mm)</label>
+            <label className="field-label" htmlFor="precip-low">
+              Alacsony (mm)
+            </label>
             <input
               id="precip-low"
               type="number"
@@ -358,7 +365,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
         <h4 className="settings-group-title">💨 Szélsebesség küszöbértékek</h4>
         <div className="settings-row settings-row-4">
           <div className="settings-field">
-            <label className="field-label" htmlFor="wind-normal">Normál (km/h)</label>
+            <label className="field-label" htmlFor="wind-normal">
+              Normál (km/h)
+            </label>
             <input
               id="wind-normal"
               type="number"
@@ -370,7 +379,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             />
           </div>
           <div className="settings-field">
-            <label className="field-label" htmlFor="wind-strong">Erős (km/h)</label>
+            <label className="field-label" htmlFor="wind-strong">
+              Erős (km/h)
+            </label>
             <input
               id="wind-strong"
               type="number"
@@ -382,7 +393,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             />
           </div>
           <div className="settings-field">
-            <label className="field-label" htmlFor="wind-extreme">Extrém (km/h)</label>
+            <label className="field-label" htmlFor="wind-extreme">
+              Extrém (km/h)
+            </label>
             <input
               id="wind-extreme"
               type="number"
@@ -394,7 +407,9 @@ export const AnomalySettingsModal: React.FC<AnomalySettingsModalProps> = ({
             />
           </div>
           <div className="settings-field">
-            <label className="field-label" htmlFor="wind-hurricane">Hurrikán (km/h)</label>
+            <label className="field-label" htmlFor="wind-hurricane">
+              Hurrikán (km/h)
+            </label>
             <input
               id="wind-hurricane"
               type="number"

@@ -200,7 +200,7 @@ describe('hungary constants', () => {
     test('total counties across all regions should be 20', () => {
       const totalCounties = Object.values(REGION_TO_COUNTIES_MAP).reduce(
         (sum, counties) => sum + counties.length,
-        0
+        0,
       );
       expect(totalCounties).toBe(20);
     });
@@ -413,7 +413,7 @@ describe('hungary constants', () => {
     test('should be sorted by population descending', () => {
       for (let i = 0; i < COUNTIES_BY_POPULATION.length - 1; i++) {
         expect(COUNTIES_BY_POPULATION[i].population).toBeGreaterThanOrEqual(
-          COUNTIES_BY_POPULATION[i + 1].population
+          COUNTIES_BY_POPULATION[i + 1].population,
         );
       }
     });
@@ -430,9 +430,7 @@ describe('hungary constants', () => {
   describe('COUNTIES_BY_AREA', () => {
     test('should be sorted by area descending', () => {
       for (let i = 0; i < COUNTIES_BY_AREA.length - 1; i++) {
-        expect(COUNTIES_BY_AREA[i].areaKm2).toBeGreaterThanOrEqual(
-          COUNTIES_BY_AREA[i + 1].areaKm2
-        );
+        expect(COUNTIES_BY_AREA[i].areaKm2).toBeGreaterThanOrEqual(COUNTIES_BY_AREA[i + 1].areaKm2);
       }
     });
 
@@ -484,18 +482,15 @@ describe('hungary constants', () => {
     test('total population should be reasonable for Hungary (~9-10 million)', () => {
       const totalPopulation = HUNGARIAN_COUNTIES.reduce(
         (sum, county) => sum + county.population,
-        0
+        0,
       );
       // Hungary's population is around 9.7 million (as of 2020s)
       expect(totalPopulation).toBeGreaterThan(9000000);
       expect(totalPopulation).toBeLessThan(11000000);
     });
 
-    test('total area should be close to Hungary\'s actual area (~93,000 km²)', () => {
-      const totalArea = HUNGARIAN_COUNTIES.reduce(
-        (sum, county) => sum + county.areaKm2,
-        0
-      );
+    test("total area should be close to Hungary's actual area (~93,000 km²)", () => {
+      const totalArea = HUNGARIAN_COUNTIES.reduce((sum, county) => sum + county.areaKm2, 0);
       // Hungary's area is approximately 93,030 km²
       expect(totalArea).toBeGreaterThan(90000);
       expect(totalArea).toBeLessThan(95000);

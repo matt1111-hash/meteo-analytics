@@ -28,7 +28,6 @@ const SingleCityForm: React.FC<SingleCityFormProps> = ({
   onMetricChange,
   onSubmit,
 }) => {
-
   return (
     <form className="single-city-form" onSubmit={onSubmit}>
       <div className="view-mode-toggle">
@@ -104,7 +103,11 @@ const SingleCityForm: React.FC<SingleCityFormProps> = ({
       )}
 
       <button type="submit" disabled={loading} className="submit-button">
-        {loading ? '⏳ Loading...' : viewMode === 'simple' ? '🔍 Analyze Weather Data' : '📊 Run Detailed Analysis'}
+        {loading
+          ? '⏳ Loading...'
+          : viewMode === 'simple'
+            ? '🔍 Analyze Weather Data'
+            : '📊 Run Detailed Analysis'}
       </button>
     </form>
   );

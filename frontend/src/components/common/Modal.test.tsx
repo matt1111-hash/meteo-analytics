@@ -32,7 +32,7 @@ const waitForModalToRender = async () => {
     () => {
       expect(document.querySelector('.modal-backdrop')).toBeInTheDocument();
     },
-    { timeout: 300 }
+    { timeout: 300 },
   );
 };
 
@@ -333,14 +333,17 @@ describe('Modal - Focus Management', () => {
     await waitForModalToRender();
 
     // Wait for focus to be set (there's a 50ms timeout in the component)
-    await waitFor(() => {
-      const modal = screen.getByRole('dialog');
-      // Either modal or close button should have focus
-      const closeButton = screen.getByLabelText('Bezárás');
-      const modalHasFocus = modal === document.activeElement;
-      const closeButtonHasFocus = closeButton === document.activeElement;
-      expect(modalHasFocus || closeButtonHasFocus).toBe(true);
-    }, { timeout: 200 });
+    await waitFor(
+      () => {
+        const modal = screen.getByRole('dialog');
+        // Either modal or close button should have focus
+        const closeButton = screen.getByLabelText('Bezárás');
+        const modalHasFocus = modal === document.activeElement;
+        const closeButtonHasFocus = closeButton === document.activeElement;
+        expect(modalHasFocus || closeButtonHasFocus).toBe(true);
+      },
+      { timeout: 200 },
+    );
   });
 
   test('should focus first focusable element if available', async () => {
@@ -356,10 +359,13 @@ describe('Modal - Focus Management', () => {
     await waitForModalToRender();
 
     // The close button in the header is the first focusable element
-    await waitFor(() => {
-      const closeButton = screen.getByLabelText('Bezárás');
-      expect(closeButton).toHaveFocus();
-    }, { timeout: 200 });
+    await waitFor(
+      () => {
+        const closeButton = screen.getByLabelText('Bezárás');
+        expect(closeButton).toHaveFocus();
+      },
+      { timeout: 200 },
+    );
   });
 
   test('should trap focus within modal on Tab', async () => {
@@ -440,7 +446,7 @@ describe('Modal - Portal Rendering', () => {
     await waitForModalToRender();
 
     const { rerender: rerender2 } = render(
-      <Modal {...defaultProps} isOpen={true} title="Modal 2" />
+      <Modal {...defaultProps} isOpen={true} title="Modal 2" />,
     );
     await waitForModalToRender();
 

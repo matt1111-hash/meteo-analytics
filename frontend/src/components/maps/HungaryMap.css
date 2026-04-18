@@ -15,11 +15,11 @@
 }
 
 /* Dark theme support */
-[data-theme="dark"] .hungary-map-container {
+[data-theme='dark'] .hungary-map-container {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="dark"] .hungary-map-container .leaflet-container {
+[data-theme='dark'] .hungary-map-container .leaflet-container {
   background: #1f2937;
 }
 
@@ -56,15 +56,15 @@
   color: #6b7280;
 }
 
-[data-theme="dark"] .hungary-map-legend {
+[data-theme='dark'] .hungary-map-legend {
   background: rgba(31, 41, 55, 0.95);
 }
 
-[data-theme="dark"] .hungary-map-legend .legend-label {
+[data-theme='dark'] .hungary-map-legend .legend-label {
   color: #e5e7eb;
 }
 
-[data-theme="dark"] .hungary-map-legend .legend-values {
+[data-theme='dark'] .hungary-map-legend .legend-values {
   color: #9ca3af;
 }
 
@@ -94,15 +94,15 @@
   color: #4b5563;
 }
 
-[data-theme="dark"] .hungary-map-stats {
+[data-theme='dark'] .hungary-map-stats {
   background: rgba(31, 41, 55, 0.95);
 }
 
-[data-theme="dark"] .hungary-map-stats .stat-selected {
+[data-theme='dark'] .hungary-map-stats .stat-selected {
   color: #e5e7eb;
 }
 
-[data-theme="dark"] .hungary-map-stats .stat-stations {
+[data-theme='dark'] .hungary-map-stats .stat-stations {
   color: #9ca3af;
 }
 
@@ -129,17 +129,17 @@
   color: #4b5563;
 }
 
-[data-theme="dark"] .leaflet-popup-content {
+[data-theme='dark'] .leaflet-popup-content {
   background: #1f2937;
 }
 
-[data-theme="dark"] .county-popup h3,
-[data-theme="dark"] .station-popup h4 {
+[data-theme='dark'] .county-popup h3,
+[data-theme='dark'] .station-popup h4 {
   color: #e5e7eb;
 }
 
-[data-theme="dark"] .county-popup p,
-[data-theme="dark"] .station-popup p {
+[data-theme='dark'] .county-popup p,
+[data-theme='dark'] .station-popup p {
   color: #9ca3af;
 }
 
@@ -185,7 +185,7 @@
   font-size: 14px;
 }
 
-[data-theme="dark"] .hungary-map-empty {
+[data-theme='dark'] .hungary-map-empty {
   color: #9ca3af;
 }
 

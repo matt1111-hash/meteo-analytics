@@ -47,12 +47,7 @@ interface AnomalyPanelProps {
   thresholds?: AnomalyThresholds;
 }
 
-const AnomalyPanel: React.FC<AnomalyPanelProps> = ({
-  city,
-  startDate,
-  endDate,
-  thresholds,
-}) => {
+const AnomalyPanel: React.FC<AnomalyPanelProps> = ({ city, startDate, endDate, thresholds }) => {
   const [data, setData] = useState<AnomalyResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,15 +57,12 @@ const AnomalyPanel: React.FC<AnomalyPanelProps> = ({
     setError(null);
 
     try {
-      const response = await apiClient.post<AnomalyResponse>(
-        '/api/weather/anomalies',
-        {
-          city,
-          start: startDate,
-          end: endDate,
-          thresholds: thresholds || undefined,
-        }
-      );
+      const response = await apiClient.post<AnomalyResponse>('/api/weather/anomalies', {
+        city,
+        start: startDate,
+        end: endDate,
+        thresholds: thresholds || undefined,
+      });
 
       setData(response.data);
     } catch (err) {
@@ -116,16 +108,10 @@ const AnomalyPanel: React.FC<AnomalyPanelProps> = ({
     <div className="anomaly-panel">
       <div className="panel-header">
         <h3>🔍 Anomaly Detection</h3>
-        <p className="panel-subtitle">
-          Detect unusual weather patterns for {city}
-        </p>
+        <p className="panel-subtitle">Detect unusual weather patterns for {city}</p>
       </div>
 
-      <button
-        onClick={detectAnomalies}
-        disabled={loading}
-        className="detect-button"
-      >
+      <button onClick={detectAnomalies} disabled={loading} className="detect-button">
         {loading ? '🔄 Detecting...' : '🔍 Detect Anomalies'}
       </button>
 
@@ -159,15 +145,12 @@ const AnomalyPanel: React.FC<AnomalyPanelProps> = ({
               }
 
               return (
-                <div
-                  key={key}
-                  className={`anomaly-card ${getSeverityClass(anomaly.severity)}`}
-                >
+                <div key={key} className={`anomaly-card ${getSeverityClass(anomaly.severity)}`}>
                   <div className="card-header">
-                    <span className="severity-icon">
-                      {getSeverityIcon(anomaly.severity)}
-                    </span>
-                    <h5>{anomaly.parameter.charAt(0).toUpperCase() + anomaly.parameter.slice(1)}</h5>
+                    <span className="severity-icon">{getSeverityIcon(anomaly.severity)}</span>
+                    <h5>
+                      {anomaly.parameter.charAt(0).toUpperCase() + anomaly.parameter.slice(1)}
+                    </h5>
                   </div>
 
                   <div className="card-body">
@@ -176,7 +159,9 @@ const AnomalyPanel: React.FC<AnomalyPanelProps> = ({
                       <div className="detail-row">
                         <span className="detail-label">Value:</span>
                         <span className="detail-value">
-                          {anomaly.measured_value !== null ? anomaly.measured_value.toFixed(1) : 'N/A'}
+                          {anomaly.measured_value !== null
+                            ? anomaly.measured_value.toFixed(1)
+                            : 'N/A'}
                         </span>
                       </div>
                       <div className="detail-row">
@@ -202,9 +187,7 @@ const AnomalyPanel: React.FC<AnomalyPanelProps> = ({
             <div className="threshold-grid">
               {Object.entries(data.thresholds_used).map(([key, value]) => (
                 <div key={key} className="threshold-item">
-                  <span className="threshold-key">
-                    {key.replace(/_/g, ' ')}:
-                  </span>
+                  <span className="threshold-key">{key.replace(/_/g, ' ')}:</span>
                   <span className="threshold-value">{value}</span>
                 </div>
               ))}

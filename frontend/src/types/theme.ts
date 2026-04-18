@@ -58,17 +58,17 @@ export interface TextColors {
  * Weather-specific colors matching PySide weather palette
  */
 export interface WeatherColors {
-  hot: string;        // Extreme heat
-  warm: string;       // Warm temperature
-  mild: string;       // Mild/pleasant
-  cool: string;       // Cool temperature
-  cold: string;       // Cold temperature
-  freezing: string;   // Freezing/extreme cold
-  humidity: string;   // Humidity indicator
-  wind: string;       // Wind speed
-  pressure: string;   // Atmospheric pressure
+  hot: string; // Extreme heat
+  warm: string; // Warm temperature
+  mild: string; // Mild/pleasant
+  cool: string; // Cool temperature
+  cold: string; // Cold temperature
+  freezing: string; // Freezing/extreme cold
+  humidity: string; // Humidity indicator
+  wind: string; // Wind speed
+  pressure: string; // Atmospheric pressure
   precipitation: string; // Rain/snow
-  clouds: string;     // Cloud cover
+  clouds: string; // Cloud cover
 }
 
 /**

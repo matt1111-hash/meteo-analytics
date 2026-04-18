@@ -180,43 +180,50 @@ export function formatWindWithBeaufort(speedKmh: number): string {
  * Wind direction labels in Hungarian
  */
 export const WIND_DIRECTIONS_HU: readonly string[] = [
-  'É', 'ÉK', 'K', 'DK', 'D', 'DNY', 'NY', 'ÉNY',
+  'É',
+  'ÉK',
+  'K',
+  'DK',
+  'D',
+  'DNY',
+  'NY',
+  'ÉNY',
 ] as const;
 
 /**
  * Wind direction angle mapping
  */
 export const WIND_DIRECTION_ANGLES: Readonly<Record<string, number>> = {
-  'N': 0,
-  'NNE': 22.5,
-  'NE': 45,
-  'ENE': 67.5,
-  'E': 90,
-  'ESE': 112.5,
-  'SE': 135,
-  'SSE': 157.5,
-  'S': 180,
-  'SSW': 202.5,
-  'SW': 225,
-  'WSW': 247.5,
-  'W': 270,
-  'WNW': 292.5,
-  'NW': 315,
-  'NNW': 337.5,
+  N: 0,
+  NNE: 22.5,
+  NE: 45,
+  ENE: 67.5,
+  E: 90,
+  ESE: 112.5,
+  SE: 135,
+  SSE: 157.5,
+  S: 180,
+  SSW: 202.5,
+  SW: 225,
+  WSW: 247.5,
+  W: 270,
+  WNW: 292.5,
+  NW: 315,
+  NNW: 337.5,
 } as const;
 
 /**
  * Wind speed thresholds for different categories
  */
 export const WIND_THRESHOLDS = {
-  CALM: 1,          // km/h - End of Beaufort 0
-  LIGHT: 6,         // km/h - End of Beaufort 1-2
-  MODERATE: 20,     // km/h - End of Beaufort 3-4
-  FRESH: 39,        // km/h - End of Beaufort 5
-  STRONG: 50,       // km/h - End of Beaufort 6
-  GALE: 62,         // km/h - Start of Beaufort 8
-  STORM: 89,        // km/h - Start of Beaufort 10
-  HURRICANE: 118,   // km/h - Start of Beaufort 12
+  CALM: 1, // km/h - End of Beaufort 0
+  LIGHT: 6, // km/h - End of Beaufort 1-2
+  MODERATE: 20, // km/h - End of Beaufort 3-4
+  FRESH: 39, // km/h - End of Beaufort 5
+  STRONG: 50, // km/h - End of Beaufort 6
+  GALE: 62, // km/h - Start of Beaufort 8
+  STORM: 89, // km/h - Start of Beaufort 10
+  HURRICANE: 118, // km/h - Start of Beaufort 12
 } as const;
 
 /**
@@ -260,9 +267,7 @@ export interface BeaufortStats {
 /**
  * Calculate Beaufort distribution from wind speeds
  */
-export function calculateBeaufortDistribution(
-  speeds: readonly number[]
-): BeaufortStats[] {
+export function calculateBeaufortDistribution(speeds: readonly number[]): BeaufortStats[] {
   const distribution = new Map<number, number>();
 
   // Count occurrences per level
@@ -273,10 +278,12 @@ export function calculateBeaufortDistribution(
 
   // Convert to stats array with percentages
   const total = speeds.length;
-  return Array.from(distribution.entries()).map(([level, count]) => ({
-    level,
-    nameHu: BEAUFORT_LEVELS[level].nameHu,
-    count,
-    percentage: total > 0 ? (count / total) * 100 : 0,
-  })).sort((a, b) => a.level - b.level);
+  return Array.from(distribution.entries())
+    .map(([level, count]) => ({
+      level,
+      nameHu: BEAUFORT_LEVELS[level].nameHu,
+      count,
+      percentage: total > 0 ? (count / total) * 100 : 0,
+    }))
+    .sort((a, b) => a.level - b.level);
 }

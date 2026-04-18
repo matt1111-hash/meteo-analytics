@@ -63,9 +63,7 @@ const AnomalyView: React.FC = () => {
     <div className="anomaly-view">
       <div className="view-header">
         <h1>🔍 Anomaly Detection</h1>
-        <p className="view-subtitle">
-          Detect unusual weather patterns and extreme events
-        </p>
+        <p className="view-subtitle">Detect unusual weather patterns and extreme events</p>
       </div>
 
       <div className="view-content">
@@ -215,11 +213,7 @@ const AnomalyView: React.FC = () => {
             )}
           </div>
 
-          <button
-            type="submit"
-            disabled={!isFormValid}
-            className="submit-button"
-          >
+          <button type="submit" disabled={!isFormValid} className="submit-button">
             🔍 Detect Anomalies
           </button>
         </form>

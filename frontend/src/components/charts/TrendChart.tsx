@@ -57,7 +57,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
   error = null,
 }) => {
   // Get selected period data
-  const selectedPeriodData = periods.find(p => p.time_period === selectedPeriod);
+  const selectedPeriodData = periods.find((p) => p.time_period === selectedPeriod);
 
   // Prepare chart data
   const chartData: ChartDataPoint[] = React.useMemo(() => {
@@ -66,8 +66,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
     return selectedPeriodData.years.map((year, index) => ({
       year,
       value: selectedPeriodData.yearly_means[index] || 0,
-      trend: selectedPeriodData.intercept +
-             (selectedPeriodData.slope * index * 12), // Convert to monthly trend
+      trend: selectedPeriodData.intercept + selectedPeriodData.slope * index * 12, // Convert to monthly trend
     }));
   }, [selectedPeriodData]);
 
@@ -141,36 +140,31 @@ const TrendChart: React.FC<TrendChartProps> = ({
           unit={getUnit()}
           color={trendColor}
         />
-        <KPICard
-          label="R² (illesztés)"
-          value={selectedPeriodData.r_squared}
-          color="#10b981"
-        />
-        <KPICard
-          label="p-érték"
-          value={selectedPeriodData.p_value}
-          color="#f59e0b"
-        />
+        <KPICard label="R² (illesztés)" value={selectedPeriodData.r_squared} color="#10b981" />
+        <KPICard label="p-érték" value={selectedPeriodData.p_value} color="#f59e0b" />
         <KPICard
           label="Irány"
           value={
-            selectedPeriodData.trend_direction === 'increasing' ? '↗ Növekvő' :
-            selectedPeriodData.trend_direction === 'decreasing' ? '↘ Csökkenő' :
-            '→ Stabil'
+            selectedPeriodData.trend_direction === 'increasing'
+              ? '↗ Növekvő'
+              : selectedPeriodData.trend_direction === 'decreasing'
+                ? '↘ Csökkenő'
+                : '→ Stabil'
           }
           color={trendColor}
         />
         <KPICard
           label="Szignifikancia"
           value={
-            selectedPeriodData.significance === 'highly_significant' ? 'Nagyon szignifikáns' :
-            selectedPeriodData.significance === 'significant' ? 'Szignifikáns' :
-            selectedPeriodData.significance === 'moderately_significant' ? 'Mérsékelten' :
-            'Nem szignifikáns'
+            selectedPeriodData.significance === 'highly_significant'
+              ? 'Nagyon szignifikáns'
+              : selectedPeriodData.significance === 'significant'
+                ? 'Szignifikáns'
+                : selectedPeriodData.significance === 'moderately_significant'
+                  ? 'Mérsékelten'
+                  : 'Nem szignifikáns'
           }
-          color={
-            selectedPeriodData.significance === 'not_significant' ? '#9ca3af' : '#8b5cf6'
-          }
+          color={selectedPeriodData.significance === 'not_significant' ? '#9ca3af' : '#8b5cf6'}
         />
       </div>
 
@@ -207,8 +201,8 @@ const TrendChart: React.FC<TrendChartProps> = ({
                 border: '1px solid #e5e7eb',
                 borderRadius: '8px',
               }}
-              formatter={(value: number, name: string) => [
-                `${value.toFixed(2)} ${getUnit()}`,
+              formatter={(value, name) => [
+                `${Number(value).toFixed(2)} ${getUnit()}`,
                 name === 'value' ? 'Mért érték' : 'Trendvonal',
               ]}
             />
@@ -238,7 +232,8 @@ const TrendChart: React.FC<TrendChartProps> = ({
       {selectedPeriodData.confidence_interval && (
         <div className="trend-confidence-interval">
           <small className="text-gray-500">
-            95%-os konfidencia intervallum: ({selectedPeriodData.confidence_interval[0].toFixed(3)}, {selectedPeriodData.confidence_interval[1].toFixed(3)}) {getUnit()}
+            95%-os konfidencia intervallum: ({selectedPeriodData.confidence_interval[0].toFixed(3)},{' '}
+            {selectedPeriodData.confidence_interval[1].toFixed(3)}) {getUnit()}
           </small>
         </div>
       )}

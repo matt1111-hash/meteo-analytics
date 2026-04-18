@@ -70,7 +70,9 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
   // State for each level
   const [selectedRegion, setSelectedRegion] = useState<string | undefined>(initialRegion);
   const [selectedCounty, setSelectedCounty] = useState<string | undefined>(initialCounty);
-  const [selectedSettlement, setSelectedSettlement] = useState<string | undefined>(initialSettlement);
+  const [selectedSettlement, setSelectedSettlement] = useState<string | undefined>(
+    initialSettlement,
+  );
 
   // Data state
   const [regions, setRegions] = useState<string[]>([]);
@@ -126,9 +128,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
       try {
         const data: CountiesResponse = await getHungarianCounties();
         const regionCounties = REGION_COUNTY_MAP[selectedRegion] || [];
-        const filteredCounties = data.counties.filter((county) =>
-          regionCounties.includes(county)
-        );
+        const filteredCounties = data.counties.filter((county) => regionCounties.includes(county));
         setCounties(filteredCounties);
       } catch (err) {
         logger.error('Error fetching counties:', err);
@@ -211,7 +211,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
     loading: boolean,
     error: string | null,
     disabled: boolean,
-    id: string
+    id: string,
   ) => (
     <div className="hierarchical-select-wrapper">
       <label htmlFor={id} className="hierarchical-label">
@@ -250,9 +250,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
     <div className={`hierarchical-selector ${className}`}>
       <div className="hierarchical-header">
         <h3 className="hierarchical-title">Magyarországi településválasztó</h3>
-        <p className="hierarchical-subtitle">
-          Válassz régiót, majd megyét és végül települést
-        </p>
+        <p className="hierarchical-subtitle">Válassz régiót, majd megyét és végül települést</p>
       </div>
 
       <div className="hierarchical-levels">
@@ -265,7 +263,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
           loadingRegions,
           regionError,
           disabled,
-          'hierarchical-region'
+          'hierarchical-region',
         )}
 
         {/* County */}
@@ -277,7 +275,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
           loadingCounties,
           countyError,
           disabled || !selectedRegion,
-          'hierarchical-county'
+          'hierarchical-county',
         )}
 
         {/* Settlement */}
@@ -289,7 +287,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
           loadingSettlements,
           settlementError,
           disabled || !selectedCounty,
-          'hierarchical-settlement'
+          'hierarchical-settlement',
         )}
       </div>
 
@@ -307,9 +305,7 @@ const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
           {settlements.find((s) => s.name === selectedSettlement)?.population && (
             <div className="hierarchical-selected-details">
               Lakosság:{' '}
-              {settlements
-                .find((s) => s.name === selectedSettlement)
-                ?.population?.toLocaleString()}
+              {settlements.find((s) => s.name === selectedSettlement)?.population?.toLocaleString()}
             </div>
           )}
         </div>

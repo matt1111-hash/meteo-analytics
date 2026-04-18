@@ -105,14 +105,16 @@ export function detectAnomalies(data: DailyWeatherData[]): AnomalyStatus {
 
     if (maxTemp >= 40 || minTemp <= -20) {
       status.temperature = 'danger';
-      status.temperatureMessage = maxTemp >= 40
-        ? `Extreme heat: ${maxTemp.toFixed(1)}°C`
-        : `Extreme cold: ${minTemp.toFixed(1)}°C`;
+      status.temperatureMessage =
+        maxTemp >= 40
+          ? `Extreme heat: ${maxTemp.toFixed(1)}°C`
+          : `Extreme cold: ${minTemp.toFixed(1)}°C`;
     } else if (maxTemp >= 35 || minTemp <= -10) {
       status.temperature = 'warning';
-      status.temperatureMessage = maxTemp >= 35
-        ? `High temperature: ${maxTemp.toFixed(1)}°C`
-        : `Low temperature: ${minTemp.toFixed(1)}°C`;
+      status.temperatureMessage =
+        maxTemp >= 35
+          ? `High temperature: ${maxTemp.toFixed(1)}°C`
+          : `Low temperature: ${minTemp.toFixed(1)}°C`;
     }
   }
 

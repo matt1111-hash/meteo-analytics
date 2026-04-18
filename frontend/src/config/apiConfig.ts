@@ -10,8 +10,7 @@
  */
 
 // API Base URL - defaults to localhost:8003 for development
-export const API_BASE_URL: string =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8003';
+export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8003';
 
 /**
  * Get headers for API requests.

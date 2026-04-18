@@ -26,23 +26,23 @@ export function calculateMonthlyRecords(data: DailyWeatherData[]): ExtremeRecord
     };
 
     if (d.temperature_max !== null) {
-      existing.tempMax = existing.tempMax !== null
-        ? Math.max(existing.tempMax, d.temperature_max)
-        : d.temperature_max;
+      existing.tempMax =
+        existing.tempMax !== null
+          ? Math.max(existing.tempMax, d.temperature_max)
+          : d.temperature_max;
     }
     if (d.temperature_min !== null) {
-      existing.tempMin = existing.tempMin !== null
-        ? Math.min(existing.tempMin, d.temperature_min)
-        : d.temperature_min;
+      existing.tempMin =
+        existing.tempMin !== null
+          ? Math.min(existing.tempMin, d.temperature_min)
+          : d.temperature_min;
     }
     if (d.precipitation !== null) {
       existing.precipSum += d.precipitation;
     }
     const windVal = d.windgusts ?? d.windspeed;
     if (windVal !== null) {
-      existing.windMax = existing.windMax !== null
-        ? Math.max(existing.windMax, windVal)
-        : windVal;
+      existing.windMax = existing.windMax !== null ? Math.max(existing.windMax, windVal) : windVal;
     }
     existing.count++;
     monthlyMap.set(yearMonth, existing);
@@ -53,9 +53,7 @@ export function calculateMonthlyRecords(data: DailyWeatherData[]): ExtremeRecord
   // Hottest month
   const validTempMax = months.filter((m) => m.tempMax !== null);
   if (validTempMax.length > 0) {
-    const hottest = validTempMax.reduce((max, m) =>
-      m.tempMax! > max.tempMax! ? m : max
-    );
+    const hottest = validTempMax.reduce((max, m) => (m.tempMax! > max.tempMax! ? m : max));
     records.push({
       category: 'Temperature',
       recordType: 'Hottest Month',
@@ -68,9 +66,7 @@ export function calculateMonthlyRecords(data: DailyWeatherData[]): ExtremeRecord
   // Coldest month
   const validTempMin = months.filter((m) => m.tempMin !== null);
   if (validTempMin.length > 0) {
-    const coldest = validTempMin.reduce((min, m) =>
-      m.tempMin! < min.tempMin! ? m : min
-    );
+    const coldest = validTempMin.reduce((min, m) => (m.tempMin! < min.tempMin! ? m : min));
     records.push({
       category: 'Temperature',
       recordType: 'Coldest Month',
@@ -82,12 +78,8 @@ export function calculateMonthlyRecords(data: DailyWeatherData[]): ExtremeRecord
 
   // Wettest/Driest month
   if (months.length > 0) {
-    const wettest = months.reduce((max, m) =>
-      m.precipSum > max.precipSum ? m : max
-    );
-    const driest = months.reduce((min, m) =>
-      m.precipSum < min.precipSum ? m : min
-    );
+    const wettest = months.reduce((max, m) => (m.precipSum > max.precipSum ? m : max));
+    const driest = months.reduce((min, m) => (m.precipSum < min.precipSum ? m : min));
     records.push({
       category: 'Precipitation',
       recordType: 'Wettest Month',
@@ -107,9 +99,7 @@ export function calculateMonthlyRecords(data: DailyWeatherData[]): ExtremeRecord
   // Windiest month
   const validWind = months.filter((m) => m.windMax !== null);
   if (validWind.length > 0) {
-    const windiest = validWind.reduce((max, m) =>
-      m.windMax! > max.windMax! ? m : max
-    );
+    const windiest = validWind.reduce((max, m) => (m.windMax! > max.windMax! ? m : max));
     const category = categorizeWindGust(windiest.windMax!);
     records.push({
       category: 'Wind',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
 import WindGustHeatmap from './WindGustHeatmap';
+import apiClient from '../../services/apiClient';
 import { logger } from '../../utils/logger';
 import './WindGustTab.css';
 import './WindGustHeatmap.css';
@@ -25,11 +26,7 @@ interface WindGustTabProps {
   endDate: string;
 }
 
-const WindGustTab: React.FC<WindGustTabProps> = ({
-  city,
-  startDate,
-  endDate
-}) => {
+const WindGustTab: React.FC<WindGustTabProps> = ({ city, startDate, endDate }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [windGustData, setWindGustData] = useState<WindGustData[]>([]);
@@ -42,11 +39,11 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
         avg: 0,
         strongGusts: 0,
         extremeGusts: 0,
-        count: 0
+        count: 0,
       };
     }
 
-    const values = data.map(d => d.value).filter(v => v !== null && v !== undefined);
+    const values = data.map((d) => d.value).filter((v) => v !== null && v !== undefined);
     const max = Math.max(...values);
     const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
 
@@ -55,17 +52,17 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
     const EXTREME_THRESHOLD = 90; // km/h - extreme gusts (25 m/s * 3.6)
 
     // Count strong and extreme gust days
-    const strongGusts = values.filter(v => v >= STRONG_THRESHOLD && v < EXTREME_THRESHOLD).length;
-    const extremeGusts = values.filter(v => v >= EXTREME_THRESHOLD).length;
+    const strongGusts = values.filter((v) => v >= STRONG_THRESHOLD && v < EXTREME_THRESHOLD).length;
+    const extremeGusts = values.filter((v) => v >= EXTREME_THRESHOLD).length;
 
-    const maxEntry = data.find(d => d.value === max);
+    const maxEntry = data.find((d) => d.value === max);
 
     return {
       max: { value: max, date: maxEntry?.date || '-' },
       avg: Math.round(avg * 10) / 10,
       strongGusts,
       extremeGusts,
-      count: values.length
+      count: values.length,
     };
   };
 
@@ -74,23 +71,13 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
     setError(null);
 
     try {
-      const response = await fetch('/api/weather/single-city-detailed', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          city,
-          start: startDate,
-          end: endDate
-        })
+      const response = await apiClient.post('/api/weather/single-city-detailed', {
+        city,
+        start: startDate,
+        end: endDate,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = response.data;
 
       // 🚨 API PARAMÉTER JAVÍTÁS: wind_gusts_10m_max → wind_gusts_max (Qt verzióval egyező)
       if (data.wind_gusts_data && Array.isArray(data.wind_gusts_data)) {
@@ -99,7 +86,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
           .map((item: any) => ({
             date: item.date,
             value: item.value, // Keep as km/h
-            location: item.city_name || city
+            location: item.city_name || city,
           }));
 
         setWindGustData(processedData);
@@ -107,7 +94,6 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
       } else {
         throw new Error('Invalid wind gust data format received');
       }
-
     } catch (err) {
       logger.error('Wind gust fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch wind gust data');
@@ -120,7 +106,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
 
   useEffect(() => {
     fetchWindGustData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, startDate, endDate]);
 
   const handleRetry = () => {
@@ -208,11 +194,7 @@ const WindGustTab: React.FC<WindGustTabProps> = ({
       {/* 🌪️ Qt kompatibilis Beaufort heatmap vizualizáció */}
       <div className="heatmap-section">
         <h4>📊 Daily Wind Gust Heatmap (Beaufort Scale)</h4>
-        <WindGustHeatmap
-          data={windGustData}
-          width={1000}
-          height={400}
-        />
+        <WindGustHeatmap data={windGustData} width={1000} height={400} />
       </div>
 
       <div className="gust-summary">

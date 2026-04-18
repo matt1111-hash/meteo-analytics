@@ -31,7 +31,9 @@ const HeatmapView: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [heatmapData, setHeatmapData] = useState<CityWeatherResult[]>([]);
-  const [metrics, setMetrics] = useState<Record<string, { name: string; unit: string; description: string }>>({});
+  const [metrics, setMetrics] = useState<
+    Record<string, { name: string; unit: string; description: string }>
+  >({});
 
   // Fetch metrics metadata on mount
   useEffect(() => {
@@ -66,8 +68,8 @@ const HeatmapView: React.FC = () => {
     try {
       const cityList = cities
         .split(',')
-        .map(c => c.trim())
-        .filter(c => c.length > 0);
+        .map((c) => c.trim())
+        .filter((c) => c.length > 0);
 
       if (cityList.length === 0) {
         setError('Please enter at least one city');
@@ -75,17 +77,14 @@ const HeatmapView: React.FC = () => {
         return;
       }
 
-      const response = await apiClient.post(
-        '/api/weather/multi-city?aggregate=false',
-        {
-          cities: cityList,
-          date_range: {
-            start: startDate,
-            end: endDate,
-          },
-          metric: selectedMetric,
-        }
-      );
+      const response = await apiClient.post('/api/weather/multi-city?aggregate=false', {
+        cities: cityList,
+        date_range: {
+          start: startDate,
+          end: endDate,
+        },
+        metric: selectedMetric,
+      });
 
       if (response.data && response.data.city_results) {
         setHeatmapData(response.data.city_results);
@@ -175,10 +174,7 @@ const HeatmapView: React.FC = () => {
         <div className="form-row">
           <div className="form-group">
             <label>Weather Metric</label>
-            <MetricSelector
-              selectedMetric={selectedMetric}
-              onMetricChange={handleMetricChange}
-            />
+            <MetricSelector selectedMetric={selectedMetric} onMetricChange={handleMetricChange} />
           </div>
         </div>
 
@@ -194,16 +190,15 @@ const HeatmapView: React.FC = () => {
       )}
 
       {heatmapData.length > 0 && (
-        <HeatmapChart
-          data={heatmapData}
-          metric={selectedMetric}
-          unit={metricUnit}
-        />
+        <HeatmapChart data={heatmapData} metric={selectedMetric} unit={metricUnit} />
       )}
 
       {!loading && !error && heatmapData.length === 0 && (
         <div className="empty-state">
-          <p>Enter cities and date range above, then click "Generate Heatmap" to visualize weather patterns.</p>
+          <p>
+            Enter cities and date range above, then click "Generate Heatmap" to visualize weather
+            patterns.
+          </p>
         </div>
       )}
     </div>

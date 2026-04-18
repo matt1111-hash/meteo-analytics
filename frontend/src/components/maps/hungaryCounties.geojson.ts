@@ -41,15 +41,22 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Budapest',
         region: 'Közép-Magyarország',
         population: 1752000,
-        areaKm2: 525
+        areaKm2: 525,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [19.15, 47.55], [19.20, 47.55], [19.22, 47.50], [19.20, 47.47],
-          [19.15, 47.47], [19.12, 47.50], [19.15, 47.55]
-        ]]
-      }
+        coordinates: [
+          [
+            [19.15, 47.55],
+            [19.2, 47.55],
+            [19.22, 47.5],
+            [19.2, 47.47],
+            [19.15, 47.47],
+            [19.12, 47.5],
+            [19.15, 47.55],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -58,17 +65,28 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Pest',
         region: 'Közép-Magyarország',
         population: 1290000,
-        areaKm2: 6393
+        areaKm2: 6393,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [19.12, 47.50], [19.15, 47.55], [19.22, 47.50], [19.45, 47.55],
-          [19.65, 47.75], [19.85, 47.85], [20.00, 47.80], [20.05, 47.60],
-          [19.90, 47.45], [19.70, 47.35], [19.50, 47.30], [19.30, 47.35],
-          [19.12, 47.50]
-        ]]
-      }
+        coordinates: [
+          [
+            [19.12, 47.5],
+            [19.15, 47.55],
+            [19.22, 47.5],
+            [19.45, 47.55],
+            [19.65, 47.75],
+            [19.85, 47.85],
+            [20.0, 47.8],
+            [20.05, 47.6],
+            [19.9, 47.45],
+            [19.7, 47.35],
+            [19.5, 47.3],
+            [19.3, 47.35],
+            [19.12, 47.5],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -77,16 +95,26 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Fejér',
         region: 'Közép-Dunántúl',
         population: 421000,
-        areaKm2: 4359
+        areaKm2: 4359,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [18.40, 47.25], [18.65, 47.25], [18.80, 47.35], [18.95, 47.40],
-          [19.15, 47.45], [19.30, 47.35], [19.30, 47.20], [19.10, 47.15],
-          [18.85, 47.10], [18.55, 47.15], [18.40, 47.25]
-        ]]
-      }
+        coordinates: [
+          [
+            [18.4, 47.25],
+            [18.65, 47.25],
+            [18.8, 47.35],
+            [18.95, 47.4],
+            [19.15, 47.45],
+            [19.3, 47.35],
+            [19.3, 47.2],
+            [19.1, 47.15],
+            [18.85, 47.1],
+            [18.55, 47.15],
+            [18.4, 47.25],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -95,15 +123,23 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Komárom-Esztergom',
         region: 'Közép-Dunántúl',
         population: 299000,
-        areaKm2: 2265
+        areaKm2: 2265,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [18.05, 47.60], [18.30, 47.65], [18.55, 47.70], [18.70, 47.60],
-          [18.65, 47.45], [18.45, 47.35], [18.20, 47.40], [18.05, 47.60]
-        ]]
-      }
+        coordinates: [
+          [
+            [18.05, 47.6],
+            [18.3, 47.65],
+            [18.55, 47.7],
+            [18.7, 47.6],
+            [18.65, 47.45],
+            [18.45, 47.35],
+            [18.2, 47.4],
+            [18.05, 47.6],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -112,16 +148,25 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Veszprém',
         region: 'Közép-Dunántúl',
         population: 342000,
-        areaKm2: 4613
+        areaKm2: 4613,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [17.55, 47.15], [17.80, 47.20], [18.10, 47.30], [18.40, 47.25],
-          [18.55, 47.15], [18.45, 46.95], [18.20, 46.85], [17.90, 46.90],
-          [17.60, 47.00], [17.55, 47.15]
-        ]]
-      }
+        coordinates: [
+          [
+            [17.55, 47.15],
+            [17.8, 47.2],
+            [18.1, 47.3],
+            [18.4, 47.25],
+            [18.55, 47.15],
+            [18.45, 46.95],
+            [18.2, 46.85],
+            [17.9, 46.9],
+            [17.6, 47.0],
+            [17.55, 47.15],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -130,16 +175,25 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Győr-Moson-Sopron',
         region: 'Nyugat-Dunántúl',
         population: 465000,
-        areaKm2: 4089
+        areaKm2: 4089,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [16.80, 47.70], [17.20, 47.75], [17.55, 47.65], [18.05, 47.60],
-          [18.20, 47.40], [18.00, 47.30], [17.65, 47.25], [17.30, 47.35],
-          [16.95, 47.50], [16.80, 47.70]
-        ]]
-      }
+        coordinates: [
+          [
+            [16.8, 47.7],
+            [17.2, 47.75],
+            [17.55, 47.65],
+            [18.05, 47.6],
+            [18.2, 47.4],
+            [18.0, 47.3],
+            [17.65, 47.25],
+            [17.3, 47.35],
+            [16.95, 47.5],
+            [16.8, 47.7],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -148,15 +202,23 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Vas',
         region: 'Nyugat-Dunántúl',
         population: 244000,
-        areaKm2: 3357
+        areaKm2: 3357,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [16.40, 47.00], [16.80, 47.00], [17.05, 47.15], [17.30, 47.35],
-          [16.95, 47.50], [16.70, 47.45], [16.45, 47.30], [16.40, 47.00]
-        ]]
-      }
+        coordinates: [
+          [
+            [16.4, 47.0],
+            [16.8, 47.0],
+            [17.05, 47.15],
+            [17.3, 47.35],
+            [16.95, 47.5],
+            [16.7, 47.45],
+            [16.45, 47.3],
+            [16.4, 47.0],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -165,16 +227,25 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Zala',
         region: 'Nyugat-Dunántúl',
         population: 268000,
-        areaKm2: 3844
+        areaKm2: 3844,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [16.45, 46.60], [16.85, 46.55], [17.10, 46.65], [17.30, 46.85],
-          [17.50, 46.95], [17.45, 47.15], [17.05, 47.15], [16.80, 47.00],
-          [16.45, 46.85], [16.45, 46.60]
-        ]]
-      }
+        coordinates: [
+          [
+            [16.45, 46.6],
+            [16.85, 46.55],
+            [17.1, 46.65],
+            [17.3, 46.85],
+            [17.5, 46.95],
+            [17.45, 47.15],
+            [17.05, 47.15],
+            [16.8, 47.0],
+            [16.45, 46.85],
+            [16.45, 46.6],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -183,16 +254,25 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Baranya',
         region: 'Dél-Dunántúl',
         population: 376000,
-        areaKm2: 4430
+        areaKm2: 4430,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [18.00, 45.85], [18.35, 45.80], [18.60, 45.95], [18.80, 46.15],
-          [18.85, 46.45], [18.65, 46.60], [18.45, 46.65], [18.15, 46.55],
-          [17.95, 46.35], [18.00, 45.85]
-        ]]
-      }
+        coordinates: [
+          [
+            [18.0, 45.85],
+            [18.35, 45.8],
+            [18.6, 45.95],
+            [18.8, 46.15],
+            [18.85, 46.45],
+            [18.65, 46.6],
+            [18.45, 46.65],
+            [18.15, 46.55],
+            [17.95, 46.35],
+            [18.0, 45.85],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -201,16 +281,26 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Somogy',
         region: 'Dél-Dunántúl',
         population: 310000,
-        areaKm2: 6036
+        areaKm2: 6036,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [17.45, 46.65], [17.50, 46.95], [17.70, 47.10], [17.90, 46.90],
-          [18.20, 46.85], [18.45, 46.95], [18.45, 47.15], [18.20, 47.20],
-          [17.90, 47.00], [17.70, 46.80], [17.45, 46.65]
-        ]]
-      }
+        coordinates: [
+          [
+            [17.45, 46.65],
+            [17.5, 46.95],
+            [17.7, 47.1],
+            [17.9, 46.9],
+            [18.2, 46.85],
+            [18.45, 46.95],
+            [18.45, 47.15],
+            [18.2, 47.2],
+            [17.9, 47.0],
+            [17.7, 46.8],
+            [17.45, 46.65],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -219,15 +309,23 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Tolna',
         region: 'Dél-Dunántúl',
         population: 213000,
-        areaKm2: 3703
+        areaKm2: 3703,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [18.45, 46.35], [18.65, 46.40], [18.85, 46.45], [18.90, 46.75],
-          [18.75, 46.95], [18.45, 46.95], [18.35, 46.70], [18.45, 46.35]
-        ]]
-      }
+        coordinates: [
+          [
+            [18.45, 46.35],
+            [18.65, 46.4],
+            [18.85, 46.45],
+            [18.9, 46.75],
+            [18.75, 46.95],
+            [18.45, 46.95],
+            [18.35, 46.7],
+            [18.45, 46.35],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -236,16 +334,27 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Bács-Kiskun',
         region: 'Dél-Alföld',
         population: 509000,
-        areaKm2: 8445
+        areaKm2: 8445,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [19.10, 46.60], [19.50, 46.50], [19.90, 46.45], [20.30, 46.55],
-          [20.50, 46.85], [20.35, 47.15], [20.05, 47.30], [19.70, 47.35],
-          [19.50, 47.30], [19.30, 47.20], [19.10, 46.95], [19.10, 46.60]
-        ]]
-      }
+        coordinates: [
+          [
+            [19.1, 46.6],
+            [19.5, 46.5],
+            [19.9, 46.45],
+            [20.3, 46.55],
+            [20.5, 46.85],
+            [20.35, 47.15],
+            [20.05, 47.3],
+            [19.7, 47.35],
+            [19.5, 47.3],
+            [19.3, 47.2],
+            [19.1, 46.95],
+            [19.1, 46.6],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -254,16 +363,25 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Békés',
         region: 'Dél-Alföld',
         population: 350000,
-        areaKm2: 5630
+        areaKm2: 5630,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [20.35, 46.55], [20.90, 46.50], [21.30, 46.55], [21.45, 46.75],
-          [21.35, 47.00], [21.10, 47.15], [20.75, 47.20], [20.50, 47.15],
-          [20.35, 46.85], [20.35, 46.55]
-        ]]
-      }
+        coordinates: [
+          [
+            [20.35, 46.55],
+            [20.9, 46.5],
+            [21.3, 46.55],
+            [21.45, 46.75],
+            [21.35, 47.0],
+            [21.1, 47.15],
+            [20.75, 47.2],
+            [20.5, 47.15],
+            [20.35, 46.85],
+            [20.35, 46.55],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -272,16 +390,25 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Csongrád-Csanád',
         region: 'Dél-Alföld',
         population: 406000,
-        areaKm2: 4263
+        areaKm2: 4263,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [20.05, 46.15], [20.50, 46.10], [20.95, 46.20], [21.20, 46.40],
-          [21.30, 46.55], [20.90, 46.50], [20.50, 46.55], [20.30, 46.55],
-          [20.05, 46.40], [20.05, 46.15]
-        ]]
-      }
+        coordinates: [
+          [
+            [20.05, 46.15],
+            [20.5, 46.1],
+            [20.95, 46.2],
+            [21.2, 46.4],
+            [21.3, 46.55],
+            [20.9, 46.5],
+            [20.5, 46.55],
+            [20.3, 46.55],
+            [20.05, 46.4],
+            [20.05, 46.15],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -290,16 +417,25 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Jász-Nagykun-Szolnok',
         region: 'Észak-Alföld',
         population: 374000,
-        areaKm2: 5582
+        areaKm2: 5582,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [20.05, 47.30], [20.35, 47.15], [20.50, 47.15], [20.75, 47.20],
-          [20.90, 47.45], [20.80, 47.70], [20.55, 47.85], [20.25, 47.80],
-          [20.00, 47.60], [20.05, 47.30]
-        ]]
-      }
+        coordinates: [
+          [
+            [20.05, 47.3],
+            [20.35, 47.15],
+            [20.5, 47.15],
+            [20.75, 47.2],
+            [20.9, 47.45],
+            [20.8, 47.7],
+            [20.55, 47.85],
+            [20.25, 47.8],
+            [20.0, 47.6],
+            [20.05, 47.3],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -308,16 +444,26 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Hajdú-Bihar',
         region: 'Észak-Alföld',
         population: 527000,
-        areaKm2: 6211
+        areaKm2: 6211,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [21.10, 47.15], [21.45, 47.10], [21.90, 47.15], [22.20, 47.30],
-          [22.30, 47.55], [22.15, 47.80], [21.85, 47.90], [21.50, 47.85],
-          [21.20, 47.75], [21.10, 47.50], [21.10, 47.15]
-        ]]
-      }
+        coordinates: [
+          [
+            [21.1, 47.15],
+            [21.45, 47.1],
+            [21.9, 47.15],
+            [22.2, 47.3],
+            [22.3, 47.55],
+            [22.15, 47.8],
+            [21.85, 47.9],
+            [21.5, 47.85],
+            [21.2, 47.75],
+            [21.1, 47.5],
+            [21.1, 47.15],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -326,16 +472,25 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Szabolcs-Szatmár-Bereg',
         region: 'Észak-Alföld',
         population: 549000,
-        areaKm2: 5936
+        areaKm2: 5936,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [22.15, 47.80], [22.45, 47.75], [22.80, 47.85], [22.70, 48.15],
-          [22.40, 48.35], [22.00, 48.40], [21.75, 48.30], [21.70, 48.00],
-          [21.85, 47.90], [22.15, 47.80]
-        ]]
-      }
+        coordinates: [
+          [
+            [22.15, 47.8],
+            [22.45, 47.75],
+            [22.8, 47.85],
+            [22.7, 48.15],
+            [22.4, 48.35],
+            [22.0, 48.4],
+            [21.75, 48.3],
+            [21.7, 48.0],
+            [21.85, 47.9],
+            [22.15, 47.8],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -344,15 +499,23 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Nógrád',
         region: 'Észak-Magyarország',
         population: 194000,
-        areaKm2: 2544
+        areaKm2: 2544,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [19.45, 47.95], [19.85, 47.90], [20.10, 48.00], [20.15, 48.20],
-          [19.90, 48.35], [19.55, 48.30], [19.35, 48.15], [19.45, 47.95]
-        ]]
-      }
+        coordinates: [
+          [
+            [19.45, 47.95],
+            [19.85, 47.9],
+            [20.1, 48.0],
+            [20.15, 48.2],
+            [19.9, 48.35],
+            [19.55, 48.3],
+            [19.35, 48.15],
+            [19.45, 47.95],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -361,16 +524,24 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Heves',
         region: 'Észak-Magyarország',
         population: 295000,
-        areaKm2: 3637
+        areaKm2: 3637,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [20.00, 47.60], [20.25, 47.80], [20.55, 47.85], [20.60, 48.10],
-          [20.40, 48.30], [20.00, 48.35], [19.80, 48.20], [19.85, 47.90],
-          [20.00, 47.60]
-        ]]
-      }
+        coordinates: [
+          [
+            [20.0, 47.6],
+            [20.25, 47.8],
+            [20.55, 47.85],
+            [20.6, 48.1],
+            [20.4, 48.3],
+            [20.0, 48.35],
+            [19.8, 48.2],
+            [19.85, 47.9],
+            [20.0, 47.6],
+          ],
+        ],
+      },
     },
     {
       type: 'Feature',
@@ -379,28 +550,37 @@ export const HUNGARY_COUNTIES_GEOJSON: HungaryCountiesGeoJSON = {
         nameHu: 'Borsod-Abaúj-Zemplén',
         region: 'Észak-Magyarország',
         population: 668000,
-        areaKm2: 7247
+        areaKm2: 7247,
       },
       geometry: {
         type: 'Polygon',
-        coordinates: [[
-          [20.00, 48.35], [20.40, 48.30], [20.85, 48.35], [21.25, 48.45],
-          [21.65, 48.60], [21.75, 48.90], [21.45, 49.10], [20.95, 49.15],
-          [20.55, 49.05], [20.20, 48.85], [19.95, 48.70], [19.80, 48.55],
-          [20.00, 48.35]
-        ]]
-      }
-    }
-  ]
+        coordinates: [
+          [
+            [20.0, 48.35],
+            [20.4, 48.3],
+            [20.85, 48.35],
+            [21.25, 48.45],
+            [21.65, 48.6],
+            [21.75, 48.9],
+            [21.45, 49.1],
+            [20.95, 49.15],
+            [20.55, 49.05],
+            [20.2, 48.85],
+            [19.95, 48.7],
+            [19.8, 48.55],
+            [20.0, 48.35],
+          ],
+        ],
+      },
+    },
+  ],
 };
 
 /**
  * Get county center point for zooming
  */
 export function getCountyCenter(countyName: string): [number, number] | null {
-  const feature = HUNGARY_COUNTIES_GEOJSON.features.find(
-    f => f.properties.name === countyName
-  );
+  const feature = HUNGARY_COUNTIES_GEOJSON.features.find((f) => f.properties.name === countyName);
   if (!feature) return null;
 
   const coords = feature.geometry.coordinates[0];

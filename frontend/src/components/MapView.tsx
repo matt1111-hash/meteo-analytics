@@ -46,9 +46,7 @@ const getMarkerRadius = (value: number, min: number, max: number): number => {
  * Format metric name for display
  */
 const formatMetricName = (metric: string): string => {
-  return metric
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, c => c.toUpperCase());
+  return metric.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 };
 
 /**
@@ -64,13 +62,14 @@ const formatValue = (value: number | null | undefined, unit: string): string => 
 const MapView: React.FC<MapViewProps> = ({ data, metric, unit }) => {
   // Filter valid data points with coordinates
   const validData = useMemo(() => {
-    return data.filter(d =>
-      d.latitude !== null &&
-      d.latitude !== undefined &&
-      d.longitude !== null &&
-      d.longitude !== undefined &&
-      !isNaN(d.latitude) &&
-      !isNaN(d.longitude)
+    return data.filter(
+      (d) =>
+        d.latitude !== null &&
+        d.latitude !== undefined &&
+        d.longitude !== null &&
+        d.longitude !== undefined &&
+        !isNaN(d.latitude) &&
+        !isNaN(d.longitude),
     );
   }, [data]);
 
@@ -80,7 +79,7 @@ const MapView: React.FC<MapViewProps> = ({ data, metric, unit }) => {
       return { minValue: 0, maxValue: 100, center: { lat: 47.5, lng: 19.0 } };
     }
 
-    const values = validData.map(d => d.value).filter(v => v !== null && !isNaN(v));
+    const values = validData.map((d) => d.value).filter((v) => v !== null && !isNaN(v));
     const min = Math.min(...values);
     const max = Math.max(...values);
 
@@ -91,7 +90,7 @@ const MapView: React.FC<MapViewProps> = ({ data, metric, unit }) => {
     return {
       minValue: min,
       maxValue: max,
-      center: { lat: avgLat, lng: avgLng }
+      center: { lat: avgLat, lng: avgLng },
     };
   }, [validData]);
 

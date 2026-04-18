@@ -31,7 +31,9 @@
   color: #fff;
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 150ms ease, background 150ms ease;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease;
 }
 
 .form-group input:focus,
@@ -107,13 +109,13 @@
   color: #e5e7eb;
 }
 
-.radio-label input[type="radio"] {
+.radio-label input[type='radio'] {
   width: auto;
   cursor: pointer;
   accent-color: #2563eb;
 }
 
-.radio-label input[type="radio"]:disabled {
+.radio-label input[type='radio']:disabled {
   cursor: not-allowed;
 }
 
@@ -143,7 +145,10 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 160ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background 160ms ease;
 }
 
 .submit-button:hover:not(:disabled) {

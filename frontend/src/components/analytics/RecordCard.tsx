@@ -16,7 +16,7 @@ const RecordCard: React.FC<RecordCardProps> = ({
   value,
   date,
   unit,
-  className = ''
+  className = '',
 }) => {
   const displayValue = typeof value === 'number' ? value.toFixed(1) : value;
 
@@ -29,11 +29,7 @@ const RecordCard: React.FC<RecordCardProps> = ({
           <span className="value-number">{displayValue}</span>
           {unit && <span className="value-unit">{unit}</span>}
         </div>
-        {date && (
-          <div className="record-date">
-            📅 {date}
-          </div>
-        )}
+        {date && <div className="record-date">📅 {date}</div>}
       </div>
     </div>
   );

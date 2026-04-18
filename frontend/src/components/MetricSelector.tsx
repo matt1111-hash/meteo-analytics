@@ -15,7 +15,9 @@ const MetricSelector: React.FC<MetricSelectorProps> = ({
   onMetricChange,
   disabled = false,
 }) => {
-  const [metrics, setMetrics] = useState<Record<string, { name: string; unit: string; description: string }>>({});
+  const [metrics, setMetrics] = useState<
+    Record<string, { name: string; unit: string; description: string }>
+  >({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

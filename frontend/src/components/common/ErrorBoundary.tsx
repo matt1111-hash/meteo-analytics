@@ -46,16 +46,10 @@ class ErrorBoundary extends Component<Props, State> {
             color: 'var(--text-primary, #333)',
           }}
         >
-          <h2 style={{ color: '#e74c3c', marginTop: 0 }}>
-            Something went wrong
-          </h2>
-          <p>
-            An unexpected error occurred in the application.
-          </p>
+          <h2 style={{ color: '#e74c3c', marginTop: 0 }}>Something went wrong</h2>
+          <p>An unexpected error occurred in the application.</p>
           <details style={{ marginBottom: '1rem' }}>
-            <summary style={{ cursor: 'pointer', fontWeight: 500 }}>
-              Error details
-            </summary>
+            <summary style={{ cursor: 'pointer', fontWeight: 500 }}>Error details</summary>
             <pre
               style={{
                 whiteSpace: 'pre-wrap',

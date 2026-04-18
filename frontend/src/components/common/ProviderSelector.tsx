@@ -57,7 +57,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
 
   // Get status for a specific provider
   const getStatusForProvider = (providerId: string) => {
-    return providerStatuses.find(s => s.provider_id === providerId);
+    return providerStatuses.find((s) => s.provider_id === providerId);
   };
 
   // Handle provider selection
@@ -83,15 +83,13 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
         if (!isOpen) {
           setIsOpen(true);
         } else {
-          setHighlightedIndex(prev =>
-            prev < providers.length - 1 ? prev + 1 : prev
-          );
+          setHighlightedIndex((prev) => (prev < providers.length - 1 ? prev + 1 : prev));
         }
         break;
       case 'ArrowUp':
         event.preventDefault();
         if (isOpen) {
-          setHighlightedIndex(prev => (prev > 0 ? prev - 1 : 0));
+          setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0));
         }
         break;
       case 'Enter':
@@ -116,7 +114,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
 
   // Get current display value
   const currentValue = value ?? selectedProvider?.provider_id ?? 'auto';
-  const currentProvider = providers.find(p => p.provider_id === currentValue);
+  const currentProvider = providers.find((p) => p.provider_id === currentValue);
   const currentStatus = getStatusForProvider(currentValue);
 
   return (
@@ -134,9 +132,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
         aria-label={`${label}: ${currentProvider?.name || currentValue}`}
       >
         <span className="provider-selector-value">
-          <span className="provider-selector-icon">
-            {currentProvider?.icon || '🔧'}
-          </span>
+          <span className="provider-selector-icon">{currentProvider?.icon || '🔧'}</span>
           <span className="provider-selector-name">
             {currentProvider?.name || PROVIDER_LABELS[currentValue] || currentValue}
           </span>
@@ -236,16 +232,12 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
                       </span>
                     )}
                   </div>
-                  <div className="provider-option-description">
-                    {provider.description}
-                  </div>
-                  {showCost && (
-                    <div className="provider-option-cost">{provider.cost}</div>
-                  )}
+                  <div className="provider-option-description">{provider.description}</div>
+                  {showCost && <div className="provider-option-cost">{provider.cost}</div>}
                   {status && status.monthly_limit && (
                     <div className="provider-option-usage">
-                      {Math.round(status.usage_percentage * 100)}% használva
-                      ({status.requests_this_month} / {status.monthly_limit})
+                      {Math.round(status.usage_percentage * 100)}% használva (
+                      {status.requests_this_month} / {status.monthly_limit})
                     </div>
                   )}
                   {provider.features && provider.features.length > 0 && (

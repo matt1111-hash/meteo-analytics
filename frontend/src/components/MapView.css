@@ -44,12 +44,7 @@
   width: 100px;
   height: 12px;
   border-radius: 6px;
-  background: linear-gradient(90deg,
-    #2166ac 0%,
-    #67a9cf 33%,
-    #fdae61 66%,
-    #d73027 100%
-  );
+  background: linear-gradient(90deg, #2166ac 0%, #67a9cf 33%, #fdae61 66%, #d73027 100%);
 }
 
 .legend-values {

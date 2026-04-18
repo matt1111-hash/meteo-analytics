@@ -17,64 +17,64 @@ const HomePage: React.FC = () => {
       title: 'Analytics',
       description: 'Detailed Analysis',
       icon: '📊',
-      path: '/analytics'
+      path: '/analytics',
     },
     {
       id: 'multi-city',
       title: 'Multi-City',
       description: 'Analysis',
       icon: '🌍',
-      path: '/multi-city'
+      path: '/multi-city',
     },
     {
       id: 'single-city',
       title: 'Single City',
       description: 'Time Series',
       icon: '📍',
-      path: '/single-city'
+      path: '/single-city',
     },
     {
       id: 'multi-year',
       title: 'Multi-Year',
       description: 'Comparison',
       icon: '📈',
-      path: '/multi-year'
+      path: '/multi-year',
     },
     {
       id: 'anomalies',
       title: 'Anomaly',
       description: 'Detection',
       icon: '🔍',
-      path: '/anomalies'
+      path: '/anomalies',
     },
     {
       id: 'heatmap',
       title: 'Heatmap',
       description: 'View',
       icon: '🗺️',
-      path: '/heatmap'
+      path: '/heatmap',
     },
     {
       id: 'extreme-events',
       title: 'Extreme',
       description: 'Events',
       icon: '⚡',
-      path: '/extreme-events'
+      path: '/extreme-events',
     },
     {
       id: 'windy-days',
       title: 'Windy Days',
       description: 'Wind Analysis',
       icon: '🌬️',
-      path: '/windy-days'
+      path: '/windy-days',
     },
     {
       id: 'data-table',
       title: 'Data Table',
       description: 'Raw Weather Data',
       icon: '📋',
-      path: '/data-table'
-    }
+      path: '/data-table',
+    },
   ];
 
   return (
@@ -86,11 +86,7 @@ const HomePage: React.FC = () => {
 
       <div className="dashboard-grid">
         {features.map((feature) => (
-          <Link
-            key={feature.id}
-            to={feature.path}
-            className="feature-card"
-          >
+          <Link key={feature.id} to={feature.path} className="feature-card">
             <div className="card-content">
               <div className="card-icon">{feature.icon}</div>
               <div className="card-text">

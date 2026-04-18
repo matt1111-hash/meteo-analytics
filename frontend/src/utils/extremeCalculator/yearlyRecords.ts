@@ -27,25 +27,25 @@ export function calculateYearlyRecords(data: DailyWeatherData[]): ExtremeRecord[
     };
 
     if (d.temperature_max !== null) {
-      existing.tempMax = existing.tempMax !== null
-        ? Math.max(existing.tempMax, d.temperature_max)
-        : d.temperature_max;
+      existing.tempMax =
+        existing.tempMax !== null
+          ? Math.max(existing.tempMax, d.temperature_max)
+          : d.temperature_max;
       existing.tempSum += d.temperature_max;
       existing.tempCount++;
     }
     if (d.temperature_min !== null) {
-      existing.tempMin = existing.tempMin !== null
-        ? Math.min(existing.tempMin, d.temperature_min)
-        : d.temperature_min;
+      existing.tempMin =
+        existing.tempMin !== null
+          ? Math.min(existing.tempMin, d.temperature_min)
+          : d.temperature_min;
     }
     if (d.precipitation !== null) {
       existing.precipSum += d.precipitation;
     }
     const windVal = d.windgusts ?? d.windspeed;
     if (windVal !== null) {
-      existing.windMax = existing.windMax !== null
-        ? Math.max(existing.windMax, windVal)
-        : windVal;
+      existing.windMax = existing.windMax !== null ? Math.max(existing.windMax, windVal) : windVal;
     }
     yearlyMap.set(year, existing);
   }
@@ -55,9 +55,7 @@ export function calculateYearlyRecords(data: DailyWeatherData[]): ExtremeRecord[
   // Hottest year (max temperature)
   const validTempMax = years.filter((y) => y.tempMax !== null);
   if (validTempMax.length > 0) {
-    const hottest = validTempMax.reduce((max, y) =>
-      y.tempMax! > max.tempMax! ? y : max
-    );
+    const hottest = validTempMax.reduce((max, y) => (y.tempMax! > max.tempMax! ? y : max));
     records.push({
       category: 'Temperature',
       recordType: 'Hottest Year',
@@ -88,9 +86,7 @@ export function calculateYearlyRecords(data: DailyWeatherData[]): ExtremeRecord[
   // Coldest year
   const validTempMin = years.filter((y) => y.tempMin !== null);
   if (validTempMin.length > 0) {
-    const coldest = validTempMin.reduce((min, y) =>
-      y.tempMin! < min.tempMin! ? y : min
-    );
+    const coldest = validTempMin.reduce((min, y) => (y.tempMin! < min.tempMin! ? y : min));
     records.push({
       category: 'Temperature',
       recordType: 'Coldest Year',
@@ -102,12 +98,8 @@ export function calculateYearlyRecords(data: DailyWeatherData[]): ExtremeRecord[
 
   // Wettest/Driest year
   if (years.length > 0) {
-    const wettest = years.reduce((max, y) =>
-      y.precipSum > max.precipSum ? y : max
-    );
-    const driest = years.reduce((min, y) =>
-      y.precipSum < min.precipSum ? y : min
-    );
+    const wettest = years.reduce((max, y) => (y.precipSum > max.precipSum ? y : max));
+    const driest = years.reduce((min, y) => (y.precipSum < min.precipSum ? y : min));
     records.push({
       category: 'Precipitation',
       recordType: 'Wettest Year',
@@ -127,9 +119,7 @@ export function calculateYearlyRecords(data: DailyWeatherData[]): ExtremeRecord[
   // Windiest year
   const validWind = years.filter((y) => y.windMax !== null);
   if (validWind.length > 0) {
-    const windiest = validWind.reduce((max, y) =>
-      y.windMax! > max.windMax! ? y : max
-    );
+    const windiest = validWind.reduce((max, y) => (y.windMax! > max.windMax! ? y : max));
     const category = categorizeWindGust(windiest.windMax!);
     records.push({
       category: 'Wind',

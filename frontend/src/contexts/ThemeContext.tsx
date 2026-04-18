@@ -232,7 +232,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute('data-theme', initialTheme);
     setThemeState(initialTheme);
     setIsInitialized(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Set theme function
@@ -246,7 +245,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Toggle theme function
   const toggleTheme = useCallback(() => {
-    setThemeState(prev => prev === 'light' ? 'dark' : 'light');
+    setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
   }, []);
 
   // Get colors based on current theme
@@ -261,14 +260,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setTheme,
       toggleTheme,
     }),
-    [theme, colors, setTheme, toggleTheme]
+    [theme, colors, setTheme, toggleTheme],
   );
 
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
 
 /**
@@ -308,7 +303,7 @@ export function useColor() {
  * HOC to inject theme props into a component
  */
 export function withTheme<P extends { theme?: ThemeType; colors?: ThemeColors }>(
-  Component: React.ComponentType<P>
+  Component: React.ComponentType<P>,
 ): React.ComponentType<Omit<P, 'theme' | 'colors'>> {
   return function ThemedComponent(props: Omit<P, 'theme' | 'colors'>) {
     const { theme, colors } = useTheme();

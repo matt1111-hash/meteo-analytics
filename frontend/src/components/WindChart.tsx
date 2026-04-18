@@ -66,9 +66,7 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
         minWidth: '200px',
       }}
     >
-      <p style={{ margin: '0 0 8px 0', fontWeight: 600, color: '#1e293b' }}>
-        {label}
-      </p>
+      <p style={{ margin: '0 0 8px 0', fontWeight: 600, color: '#1e293b' }}>{label}</p>
 
       {windSpeed !== null && speedInfo && (
         <div style={{ marginBottom: '8px' }}>
@@ -145,11 +143,7 @@ const BeaufortReferenceArea: React.FC<{ level: BeaufortLevel }> = ({ level }) =>
   );
 };
 
-const WindChart: React.FC<WindChartProps> = ({
-  data,
-  city,
-  showBeaufortLegend = true,
-}) => {
+const WindChart: React.FC<WindChartProps> = ({ data, city, showBeaufortLegend = true }) => {
   // Filter and sort data
   const chartData = useMemo(() => {
     return data
@@ -176,7 +170,7 @@ const WindChart: React.FC<WindChartProps> = ({
 
     // Count days above Beaufort 6 (Strong Breeze)
     const windyDays = chartData.filter(
-      (d) => d.windgusts !== null && d.windgusts >= WIND_THRESHOLDS.STRONG
+      (d) => d.windgusts !== null && d.windgusts >= WIND_THRESHOLDS.STRONG,
     ).length;
 
     return {
@@ -211,34 +205,27 @@ const WindChart: React.FC<WindChartProps> = ({
           <div className="chart-stats">
             <div className="stat-item">
               <span className="stat-label">Átlag szél</span>
-              <span
-                className="stat-value"
-                style={{ color: stats.avgSpeedLevel.color }}
-              >
+              <span className="stat-value" style={{ color: stats.avgSpeedLevel.color }}>
                 {stats.avgSpeed.toFixed(1)} km/h
                 <small style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500 }}>
-                  {stats.avgSpeedLevel.icon} {stats.avgSpeedLevel.nameHu} ({stats.avgSpeedLevel.level})
+                  {stats.avgSpeedLevel.icon} {stats.avgSpeedLevel.nameHu} (
+                  {stats.avgSpeedLevel.level})
                 </small>
               </span>
             </div>
             <div className="stat-item">
               <span className="stat-label">Max szél</span>
-              <span
-                className="stat-value"
-                style={{ color: stats.maxSpeedLevel.color }}
-              >
+              <span className="stat-value" style={{ color: stats.maxSpeedLevel.color }}>
                 {stats.maxSpeed.toFixed(1)} km/h
                 <small style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500 }}>
-                  {stats.maxSpeedLevel.icon} {stats.maxSpeedLevel.nameHu} ({stats.maxSpeedLevel.level})
+                  {stats.maxSpeedLevel.icon} {stats.maxSpeedLevel.nameHu} (
+                  {stats.maxSpeedLevel.level})
                 </small>
               </span>
             </div>
             <div className="stat-item">
               <span className="stat-label">Max széllökés</span>
-              <span
-                className="stat-value"
-                style={{ color: stats.maxGustLevel.color }}
-              >
+              <span className="stat-value" style={{ color: stats.maxGustLevel.color }}>
                 {stats.maxGust.toFixed(1)} km/h
                 <small style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500 }}>
                   {stats.maxGustLevel.icon} {stats.maxGustLevel.nameHu} ({stats.maxGustLevel.level})
@@ -259,10 +246,7 @@ const WindChart: React.FC<WindChartProps> = ({
       </div>
 
       <ResponsiveContainer width="100%" height={450}>
-        <ComposedChart
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-        >
+        <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
           {/* Beaufort Reference Areas */}
@@ -324,14 +308,7 @@ const WindChart: React.FC<WindChartProps> = ({
               if (payload.windspeed === null) return null;
               const level = getBeaufortLevel(payload.windspeed);
               return (
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r={5}
-                  fill={level.color}
-                  stroke="#2563eb"
-                  strokeWidth={2}
-                />
+                <circle cx={cx} cy={cy} r={5} fill={level.color} stroke="#2563eb" strokeWidth={2} />
               );
             }}
             activeDot={{ r: 7 }}
@@ -355,9 +332,7 @@ const WindChart: React.FC<WindChartProps> = ({
         <div style={{ marginTop: '20px' }}>
           <BeaufortLegend
             compact={false}
-            highlightLevel={
-              stats ? stats.maxGustLevel.level : undefined
-            }
+            highlightLevel={stats ? stats.maxGustLevel.level : undefined}
           />
         </div>
       )}

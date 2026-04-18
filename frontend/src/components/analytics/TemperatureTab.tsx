@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
 import TemperatureHeatmap from './TemperatureHeatmap';
+import apiClient from '../../services/apiClient';
 import { logger } from '../../utils/logger';
 import './TemperatureTab.css';
 
@@ -23,11 +24,7 @@ interface TemperatureTabProps {
   endDate: string;
 }
 
-const TemperatureTab: React.FC<TemperatureTabProps> = ({
-  city,
-  startDate,
-  endDate
-}) => {
+const TemperatureTab: React.FC<TemperatureTabProps> = ({ city, startDate, endDate }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [temperatureData, setTemperatureData] = useState<TemperatureData[]>([]);
@@ -39,23 +36,23 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
         max: { value: 0, date: '-' },
         min: { value: 0, date: '-' },
         avg: 0,
-        count: 0
+        count: 0,
       };
     }
 
-    const values = data.map(d => d.value).filter(v => v !== null && v !== undefined);
+    const values = data.map((d) => d.value).filter((v) => v !== null && v !== undefined);
     const max = Math.max(...values);
     const min = Math.min(...values);
     const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
 
-    const maxEntry = data.find(d => d.value === max);
-    const minEntry = data.find(d => d.value === min);
+    const maxEntry = data.find((d) => d.value === max);
+    const minEntry = data.find((d) => d.value === min);
 
     return {
       max: { value: max, date: maxEntry?.date || '-' },
       min: { value: min, date: minEntry?.date || '-' },
       avg: Math.round(avg * 10) / 10,
-      count: values.length
+      count: values.length,
     };
   };
 
@@ -64,23 +61,13 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
     setError(null);
 
     try {
-      const response = await fetch('/api/weather/single-city-detailed', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          city,
-          start: startDate,
-          end: endDate
-        })
+      const response = await apiClient.post('/api/weather/single-city-detailed', {
+        city,
+        start: startDate,
+        end: endDate,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = response.data;
 
       if (data.temperature_data && Array.isArray(data.temperature_data)) {
         const processedData: TemperatureData[] = data.temperature_data
@@ -88,7 +75,7 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
           .map((item: any) => ({
             date: item.date,
             value: item.value,
-            location: item.city_name || city
+            location: item.city_name || city,
           }));
 
         setTemperatureData(processedData);
@@ -96,7 +83,6 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
       } else {
         throw new Error('Invalid temperature data format received');
       }
-
     } catch (err) {
       logger.error('Temperature fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch temperature data');
@@ -109,7 +95,7 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
 
   useEffect(() => {
     fetchTemperatureData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, startDate, endDate]);
 
   const handleRetry = () => {
@@ -201,7 +187,7 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
             <div
               className="range-fill"
               style={{
-                width: `${((stats.avg - stats.min.value) / (stats.max.value - stats.min.value)) * 100}%`
+                width: `${((stats.avg - stats.min.value) / (stats.max.value - stats.min.value)) * 100}%`,
               }}
             ></div>
           </div>
@@ -213,14 +199,10 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({
       <div className="heatmap-section">
         <h4>📅 Daily Temperature Heatmap</h4>
         <p className="heatmap-description">
-          365-day calendar view showing daily temperature variations.
-          Each rectangle represents one day, colored by temperature.
+          365-day calendar view showing daily temperature variations. Each rectangle represents one
+          day, colored by temperature.
         </p>
-        <TemperatureHeatmap
-          data={temperatureData}
-          width={1000}
-          height={400}
-        />
+        <TemperatureHeatmap data={temperatureData} width={1000} height={400} />
       </div>
     </div>
   );

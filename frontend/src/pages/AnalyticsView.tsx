@@ -51,43 +51,19 @@ const AnalyticsView: React.FC = () => {
     { id: 'temperature', label: 'Temperature', icon: '🌡️' },
     { id: 'precipitation', label: 'Precipitation', icon: '🌧️' },
     { id: 'wind', label: 'Wind', icon: '💨' },
-    { id: 'wind-gust', label: 'Wind Gust', icon: '🌪️' }
+    { id: 'wind-gust', label: 'Wind Gust', icon: '🌪️' },
   ];
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'temperature':
-        return (
-          <TemperatureTab
-            city={city}
-            startDate={startDate}
-            endDate={endDate}
-          />
-        );
+        return <TemperatureTab city={city} startDate={startDate} endDate={endDate} />;
       case 'precipitation':
-        return (
-          <PrecipitationTab
-            city={city}
-            startDate={startDate}
-            endDate={endDate}
-          />
-        );
+        return <PrecipitationTab city={city} startDate={startDate} endDate={endDate} />;
       case 'wind':
-        return (
-          <WindTab
-            city={city}
-            startDate={startDate}
-            endDate={endDate}
-          />
-        );
+        return <WindTab city={city} startDate={startDate} endDate={endDate} />;
       case 'wind-gust':
-        return (
-          <WindGustTab
-            city={city}
-            startDate={startDate}
-            endDate={endDate}
-          />
-        );
+        return <WindGustTab city={city} startDate={startDate} endDate={endDate} />;
       default:
         return null;
     }
@@ -146,7 +122,9 @@ const AnalyticsView: React.FC = () => {
             <label className="control-label">Custom Dates:</label>
             <div className="date-inputs">
               <div className="date-input-group">
-                <label htmlFor="start-date" className="date-input-label">Start:</label>
+                <label htmlFor="start-date" className="date-input-label">
+                  Start:
+                </label>
                 <input
                   id="start-date"
                   type="date"
@@ -157,7 +135,9 @@ const AnalyticsView: React.FC = () => {
                 />
               </div>
               <div className="date-input-group">
-                <label htmlFor="end-date" className="date-input-label">End:</label>
+                <label htmlFor="end-date" className="date-input-label">
+                  End:
+                </label>
                 <input
                   id="end-date"
                   type="date"
@@ -193,9 +173,7 @@ const AnalyticsView: React.FC = () => {
           ))}
         </div>
 
-        <div className="tab-content">
-          {renderTabContent()}
-        </div>
+        <div className="tab-content">{renderTabContent()}</div>
       </div>
     </div>
   );

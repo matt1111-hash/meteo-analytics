@@ -128,7 +128,10 @@ describe('ProviderSelector', () => {
     it('should render the trigger button with current provider', () => {
       render(<ProviderSelector />);
 
-      expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Adatszolgáltató: Automatikus');
+      expect(screen.getByRole('button')).toHaveAttribute(
+        'aria-label',
+        'Adatszolgáltató: Automatikus',
+      );
     });
 
     it('should render custom label when provided', () => {
@@ -263,7 +266,7 @@ describe('ProviderSelector', () => {
       const options = within(listbox).getAllByRole('option');
 
       // Find the Open-Meteo option by text content
-      const openMeteoOption = options.find(o => o.textContent?.includes('Open-Meteo'));
+      const openMeteoOption = options.find((o) => o.textContent?.includes('Open-Meteo'));
       expect(openMeteoOption).toBeDefined();
 
       // Click the option
@@ -398,7 +401,10 @@ describe('ProviderSelector', () => {
 
       fireEvent.click(screen.getByRole('button'));
 
-      expect(screen.getByRole('listbox')).toHaveAttribute('aria-label', 'Adatszolgáltató lehetőségek');
+      expect(screen.getByRole('listbox')).toHaveAttribute(
+        'aria-label',
+        'Adatszolgáltató lehetőségek',
+      );
     });
 
     it('should have aria-selected on options', () => {
@@ -407,7 +413,7 @@ describe('ProviderSelector', () => {
       fireEvent.click(screen.getByRole('button'));
 
       const options = screen.getAllByRole('option');
-      const selectedOption = options.find(opt => opt.getAttribute('aria-selected') === 'true');
+      const selectedOption = options.find((opt) => opt.getAttribute('aria-selected') === 'true');
       expect(selectedOption).toBeInTheDocument();
     });
   });
@@ -416,7 +422,10 @@ describe('ProviderSelector', () => {
     it('should use controlled value when provided', () => {
       render(<ProviderSelector value="meteostat" />);
 
-      expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Adatszolgáltató: Meteostat');
+      expect(screen.getByRole('button')).toHaveAttribute(
+        'aria-label',
+        'Adatszolgáltató: Meteostat',
+      );
     });
 
     it('should display controlled provider in trigger', () => {

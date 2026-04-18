@@ -99,19 +99,19 @@
   height: 12px;
   background: linear-gradient(
     to right,
-    #FFFFFF 0%,    /* 0 km/h - Szélcsend */
-    #F0F8FF 7%,    /* 1 km/h - Gyenge szellő */
-    #E6F3FF 14%,   /* 6 km/h - Enyhe szél */
-    #CCE7FF 21%,   /* 11 km/h - Gyenge szél */
-    #90EE90 28%,   /* 19 km/h - Mérsékelt szél */
-    #32CD32 35%,   /* 29 km/h - Élénk szél */
-    #FFD700 42%,   /* 39 km/h - Erős szél */
-    #FFA500 49%,   /* 49 km/h - Viharos szél */
-    #FF6347 56%,   /* 60 km/h - Élénk viharos */
-    #FF4500 63%,   /* 72 km/h - Heves vihar */
-    #DC143C 70%,   /* 85 km/h - Dühöngő vihar */
-    #8B008B 85%,   /* 100 km/h - Heves szélvész */
-    #4B0082 100%   /* 115+ km/h - Orkán */
+    #ffffff 0%,
+    /* 0 km/h - Szélcsend */ #f0f8ff 7%,
+    /* 1 km/h - Gyenge szellő */ #e6f3ff 14%,
+    /* 6 km/h - Enyhe szél */ #cce7ff 21%,
+    /* 11 km/h - Gyenge szél */ #90ee90 28%,
+    /* 19 km/h - Mérsékelt szél */ #32cd32 35%,
+    /* 29 km/h - Élénk szél */ #ffd700 42%,
+    /* 39 km/h - Erős szél */ #ffa500 49%,
+    /* 49 km/h - Viharos szél */ #ff6347 56%,
+    /* 60 km/h - Élénk viharos */ #ff4500 63%,
+    /* 72 km/h - Heves vihar */ #dc143c 70%,
+    /* 85 km/h - Dühöngő vihar */ #8b008b 85%,
+    /* 100 km/h - Heves szélvész */ #4b0082 100% /* 115+ km/h - Orkán */
   );
   border-radius: 6px;
   border: 1px solid #dee2e6;
@@ -162,49 +162,49 @@
 
 /* Színkódolt legend elemek */
 .legend-item.calm {
-  background: #FFFFFF;
+  background: #ffffff;
   color: #495057;
   border-color: #dee2e6;
 }
 
 .legend-item.light {
-  background: #E6F3FF;
+  background: #e6f3ff;
   color: #495057;
   border-color: #b8daff;
 }
 
 .legend-item.moderate {
-  background: #90EE90;
+  background: #90ee90;
   color: #155724;
   border-color: #c3e6cb;
 }
 
 .legend-item.fresh {
-  background: #FFD700;
+  background: #ffd700;
   color: #856404;
   border-color: #ffeaa7;
 }
 
 .legend-item.strong {
-  background: #32CD32;
+  background: #32cd32;
   color: #155724;
   border-color: #c3e6cb;
 }
 
 .legend-item.gale {
-  background: #FFA500;
+  background: #ffa500;
   color: #856404;
   border-color: #ffeaa7;
 }
 
 .legend-item.storm {
-  background: #FF6347;
+  background: #ff6347;
   color: #721c24;
   border-color: #f5c6cb;
 }
 
 .legend-item.violent {
-  background: #DC143C;
+  background: #dc143c;
   color: white;
   border-color: #dc143c;
 }
@@ -212,35 +212,35 @@
 /* 💨 Beaufort színek referencia */
 
 .wind-calm {
-  color: #FFFFFF;    /* Szélcsend */
+  color: #ffffff; /* Szélcsend */
 }
 
 .wind-light {
-  color: #E6F3FF;    /* Enyhe szél */
+  color: #e6f3ff; /* Enyhe szél */
 }
 
 .wind-moderate {
-  color: #90EE90;    /* Mérsékelt szél */
+  color: #90ee90; /* Mérsékelt szél */
 }
 
 .wind-fresh {
-  color: #FFD700;    /* Élénk szél */
+  color: #ffd700; /* Élénk szél */
 }
 
 .wind-strong {
-  color: #32CD32;    /* Erős szél */
+  color: #32cd32; /* Erős szél */
 }
 
 .wind-gale {
-  color: #FFA500;    /* Viharos szél */
+  color: #ffa500; /* Viharos szél */
 }
 
 .wind-storm {
-  color: #FF6347;    /* Heves vihar */
+  color: #ff6347; /* Heves vihar */
 }
 
 .wind-violent {
-  color: #DC143C;    /* Szélsőséges */
+  color: #dc143c; /* Szélsőséges */
 }
 
 /* 📱 Responsive design - Calendar View */

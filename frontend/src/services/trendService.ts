@@ -97,12 +97,9 @@ export interface TrendAnalysisResult {
  * ```
  */
 export const fetchTrendAnalysis = async (
-  request: TrendAnalysisRequest
+  request: TrendAnalysisRequest,
 ): Promise<TrendAnalysisResult> => {
-  const response = await apiClient.post<TrendAnalysisResult>(
-    '/api/analytics/trend',
-    request
-  );
+  const response = await apiClient.post<TrendAnalysisResult>('/api/analytics/trend', request);
   return response.data;
 };
 

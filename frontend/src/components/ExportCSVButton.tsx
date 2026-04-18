@@ -23,17 +23,9 @@ const ExportCSVButton: React.FC<ExportCSVButtonProps> = ({
 
     // Build CSV content
     const headers = ['date', 'metric', 'value', 'city'];
-    const rows = data.map((r) => [
-      r.date,
-      metric,
-      r.value?.toString() ?? '',
-      city,
-    ]);
+    const rows = data.map((r) => [r.date, metric, r.value?.toString() ?? '', city]);
 
-    const csvContent = [
-      headers.join(','),
-      ...rows.map((row) => row.join(',')),
-    ].join('\n');
+    const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
 
     // Create blob and download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

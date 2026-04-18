@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecordCard from './RecordCard';
 import PrecipitationHeatmap from './PrecipitationHeatmap';
+import apiClient from '../../services/apiClient';
 import { logger } from '../../utils/logger';
 import './PrecipitationTab.css';
 import './PrecipitationHeatmap.css';
@@ -26,11 +27,7 @@ interface PrecipitationTabProps {
   endDate: string;
 }
 
-const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
-  city,
-  startDate,
-  endDate
-}) => {
+const PrecipitationTab: React.FC<PrecipitationTabProps> = ({ city, startDate, endDate }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [precipitationData, setPrecipitationData] = useState<PrecipitationData[]>([]);
@@ -44,20 +41,20 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
         avg: 0,
         rainyDays: 0,
         dryDays: 0,
-        count: 0
+        count: 0,
       };
     }
 
-    const values = data.map(d => d.value).filter(v => v !== null && v !== undefined);
+    const values = data.map((d) => d.value).filter((v) => v !== null && v !== undefined);
     const max = Math.max(...values);
     const total = values.reduce((sum, val) => sum + val, 0);
     const avg = total / values.length;
 
     // Count days with precipitation (> 0mm) and dry days (0mm)
-    const rainyDays = values.filter(v => v > 0).length;
-    const dryDays = values.filter(v => v === 0).length;
+    const rainyDays = values.filter((v) => v > 0).length;
+    const dryDays = values.filter((v) => v === 0).length;
 
-    const maxEntry = data.find(d => d.value === max);
+    const maxEntry = data.find((d) => d.value === max);
 
     return {
       total: { value: Math.round(total * 10) / 10, days: rainyDays },
@@ -65,7 +62,7 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
       avg: Math.round(avg * 10) / 10,
       rainyDays,
       dryDays,
-      count: values.length
+      count: values.length,
     };
   };
 
@@ -74,23 +71,13 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
     setError(null);
 
     try {
-      const response = await fetch('/api/weather/single-city-detailed', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          city,
-          start: startDate,
-          end: endDate
-        })
+      const response = await apiClient.post('/api/weather/single-city-detailed', {
+        city,
+        start: startDate,
+        end: endDate,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = response.data;
 
       if (data.precipitation_data && Array.isArray(data.precipitation_data)) {
         const processedData: PrecipitationData[] = data.precipitation_data
@@ -98,7 +85,7 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
           .map((item: any) => ({
             date: item.date,
             value: item.value,
-            location: item.city_name || city
+            location: item.city_name || city,
           }));
 
         setPrecipitationData(processedData);
@@ -106,7 +93,6 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
       } else {
         throw new Error('Invalid precipitation data format received');
       }
-
     } catch (err) {
       logger.error('Precipitation fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch precipitation data');
@@ -119,7 +105,7 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
 
   useEffect(() => {
     fetchPrecipitationData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, startDate, endDate]);
 
   const handleRetry = () => {
@@ -207,17 +193,16 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({
       {/* 🌧️ Qt kompatibilis heatmap vizualizáció */}
       <div className="heatmap-section">
         <h4>📊 Daily Precipitation Heatmap</h4>
-        <PrecipitationHeatmap
-          data={precipitationData}
-          width={1000}
-          height={400}
-        />
+        <PrecipitationHeatmap data={precipitationData} width={1000} height={400} />
       </div>
 
       <div className="data-summary">
         <h4>Precipitation Distribution</h4>
         <div className="distribution-bar">
-          <div className="rainy-section" style={{ width: `${(stats.rainyDays / stats.count) * 100}%` }}>
+          <div
+            className="rainy-section"
+            style={{ width: `${(stats.rainyDays / stats.count) * 100}%` }}
+          >
             <span className="section-label">🌧️ {stats.rainyDays} days</span>
           </div>
           <div className="dry-section" style={{ width: `${(stats.dryDays / stats.count) * 100}%` }}>

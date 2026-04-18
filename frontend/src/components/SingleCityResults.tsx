@@ -31,15 +31,16 @@ const SingleCityResults: React.FC<SingleCityResultsProps> = ({
   const mapData = useMemo((): CityWeatherResult[] => {
     if (data.length === 0) return [];
     const first = data[0];
-    const validValues = data.map(r => r.value).filter(v => v !== null && !isNaN(v));
-    const avgValue = validValues.length > 0
-      ? validValues.reduce((sum, v) => sum + v, 0) / validValues.length
-      : 0;
-    return [{
-      ...first,
-      value: avgValue,
-      date: `${startDate} - ${endDate}`,
-    }];
+    const validValues = data.map((r) => r.value).filter((v) => v !== null && !isNaN(v));
+    const avgValue =
+      validValues.length > 0 ? validValues.reduce((sum, v) => sum + v, 0) / validValues.length : 0;
+    return [
+      {
+        ...first,
+        value: avgValue,
+        date: `${startDate} - ${endDate}`,
+      },
+    ];
   }, [data, startDate, endDate]);
 
   return (
@@ -79,13 +80,7 @@ const SingleCityResults: React.FC<SingleCityResultsProps> = ({
           />
         )}
 
-        {activeTab === 'map' && (
-          <MapView
-            data={mapData}
-            metric={metric}
-            unit={metricUnit}
-          />
-        )}
+        {activeTab === 'map' && <MapView data={mapData} metric={metric} unit={metricUnit} />}
       </div>
     </div>
   );

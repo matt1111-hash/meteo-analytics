@@ -52,11 +52,16 @@ const getWeekNumber = (dateStr: string): number => {
 
 // 🎯 Kalendárium mátrix építése (7×53) - Qt kompatibilis
 const buildCalendarMatrix = (data: WindGustData[]): number[][] => {
-  if (!data || data.length === 0) return Array(7).fill(null).map(() => Array(53).fill(NaN));
+  if (!data || data.length === 0)
+    return Array(7)
+      .fill(null)
+      .map(() => Array(53).fill(NaN));
 
-  const calendarMatrix = Array(7).fill(null).map(() => Array(53).fill(NaN));
+  const calendarMatrix = Array(7)
+    .fill(null)
+    .map(() => Array(53).fill(NaN));
 
-  data.forEach(item => {
+  data.forEach((item) => {
     const date = new Date(item.date);
     const dayOfWeek = date.getDay(); // 0=Vasárnap, 1=Hétfő, ..., 6=Vasárnap
     const weekNumber = getWeekNumber(item.date);
@@ -91,19 +96,17 @@ const getBeaufortScaleGust = (windgust: number): string => {
   return '12 - Orkán';
 };
 
-const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
-  data,
-  width = 1000,
-  height = 400
-}) => {
+const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({ data, width = 1000, height = 400 }) => {
   const heatmapData = useMemo(() => {
     if (!data || data.length === 0) return null;
 
     // Rendezés dátum szerint
-    const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const sortedData = [...data].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
 
     // Széllökés határok
-    const windGusts = sortedData.map(d => d.value);
+    const windGusts = sortedData.map((d) => d.value);
     const minGust = Math.min(...windGusts);
     const maxGust = Math.max(...windGusts);
 
@@ -143,7 +146,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
             formattedGust: formatWindGust(gustValue),
             beaufortScale: getBeaufortScaleGust(gustValue),
             week: week,
-            day: day
+            day: day,
           });
         }
       }
@@ -161,7 +164,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
       rows,
       cols,
       dayNames,
-      calendarMatrix
+      calendarMatrix,
     };
   }, [data, width, height]);
 
@@ -190,9 +193,18 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
       >
         {/* Rács vonalak - 7×53 Qt kalendárium elrendezés */}
         <defs>
-          <pattern id="windgust-grid" width={heatmapData.cellWidth} height={heatmapData.cellHeight} patternUnits="userSpaceOnUse">
-            <path d={`M ${heatmapData.cellWidth} 0 L ${heatmapData.cellWidth} ${heatmapData.cellHeight} L 0 ${heatmapData.cellHeight}`}
-                  fill="none" stroke="#e0e0e0" strokeWidth="0.5"/>
+          <pattern
+            id="windgust-grid"
+            width={heatmapData.cellWidth}
+            height={heatmapData.cellHeight}
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d={`M ${heatmapData.cellWidth} 0 L ${heatmapData.cellWidth} ${heatmapData.cellHeight} L 0 ${heatmapData.cellHeight}`}
+              fill="none"
+              stroke="#e0e0e0"
+              strokeWidth="0.5"
+            />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#windgust-grid)" />
@@ -202,7 +214,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
           <text
             key={index}
             x={10}
-            y={(index * heatmapData.cellHeight) + 20 + (heatmapData.cellHeight / 2)}
+            y={index * heatmapData.cellHeight + 20 + heatmapData.cellHeight / 2}
             textAnchor="middle"
             dominantBaseline="middle"
             fontSize="10"
@@ -219,7 +231,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
           let prevMonth = -1;
 
           for (let week = 0; week < heatmapData.cols; week++) {
-            const cell = heatmapData.cells.find(c => c.week === week && c.day === 0); // Hétfői cella
+            const cell = heatmapData.cells.find((c) => c.week === week && c.day === 0); // Hétfői cella
             if (cell) {
               const cellDate = new Date(cell.date);
               const currentMonth = cellDate.getMonth();
@@ -231,7 +243,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
                 monthLabels.push(
                   <text
                     key={week}
-                    x={(week * heatmapData.cellWidth) + (heatmapData.cellWidth / 2)}
+                    x={week * heatmapData.cellWidth + heatmapData.cellWidth / 2}
                     y={25}
                     textAnchor="middle"
                     fontSize="10"
@@ -239,7 +251,7 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
                     fontWeight="500"
                   >
                     {monthName}
-                  </text>
+                  </text>,
                 );
               }
             }
@@ -291,7 +303,10 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({
       </div>
 
       <div className="heatmap-stats">
-        <small>📊 {heatmapData.cells.length} days visualized • 7×53 calendar matrix • Beaufort 13 fokozat • Qt compatible</small>
+        <small>
+          📊 {heatmapData.cells.length} days visualized • 7×53 calendar matrix • Beaufort 13 fokozat
+          • Qt compatible
+        </small>
       </div>
     </div>
   );

@@ -112,7 +112,9 @@
   border: 1px solid var(--color-border, #e2e8f0);
   border-radius: 0.375rem;
   color: var(--color-text-primary, #1e293b);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .settings-input:hover {

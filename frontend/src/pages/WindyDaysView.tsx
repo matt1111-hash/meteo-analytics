@@ -1,7 +1,16 @@
 /** WindyDaysView - Szeles napok analízis (táblázat + oszlopdiagram + szélrózsa) */
 import React, { useState, useMemo } from 'react';
 import apiClient from '../services/apiClient';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts';
 import CityAutocomplete from '../components/common/CityAutocomplete';
 import WindRoseChart, { WindRoseData } from '../components/charts/WindRoseChart';
 import BeaufortLegend from '../components/charts/BeaufortLegend';
@@ -24,7 +33,20 @@ interface MonthlyWindyStats {
   maxWind: number;
 }
 
-const MONTHS_HU = ['Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún', 'Júl', 'Aug', 'Sze', 'Okt', 'Nov', 'Dec'];
+const MONTHS_HU = [
+  'Jan',
+  'Feb',
+  'Már',
+  'Ápr',
+  'Máj',
+  'Jún',
+  'Júl',
+  'Aug',
+  'Sze',
+  'Okt',
+  'Nov',
+  'Dec',
+];
 const DEFAULT_THRESHOLD = 43; // km/h
 
 const getDefaultDates = () => {
@@ -96,7 +118,10 @@ const WindyDaysView: React.FC = () => {
     const totalWindy = monthlyStats.reduce((sum, m) => sum + m.windyDays, 0);
     const totalDays = monthlyStats.reduce((sum, m) => sum + m.totalDays, 0);
     const maxWind = Math.max(...monthlyStats.map((m) => m.maxWind));
-    const windiest = monthlyStats.reduce((max, m) => (m.windyDays > max.windyDays ? m : max), monthlyStats[0]);
+    const windiest = monthlyStats.reduce(
+      (max, m) => (m.windyDays > max.windyDays ? m : max),
+      monthlyStats[0],
+    );
     return { totalWindy, totalDays, maxWind, windiest, percentage: (totalWindy / totalDays) * 100 };
   }, [monthlyStats]);
 
@@ -136,8 +161,13 @@ const WindyDaysView: React.FC = () => {
           });
           setWindRoseData(windRoseResponse.data);
         } catch (wrErr: unknown) {
-          const axiosWrErr = wrErr as { response?: { data?: { detail?: string } }; message?: string };
-          setWindRoseError(axiosWrErr.response?.data?.detail || axiosWrErr.message || 'Wind Rose API hiba');
+          const axiosWrErr = wrErr as {
+            response?: { data?: { detail?: string } };
+            message?: string;
+          };
+          setWindRoseError(
+            axiosWrErr.response?.data?.detail || axiosWrErr.message || 'Wind Rose API hiba',
+          );
         } finally {
           setWindRoseLoading(false);
         }
@@ -204,11 +234,23 @@ const WindyDaysView: React.FC = () => {
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="startDate">Kezdő dátum</label>
-            <input type="date" id="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+            <input
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
           </div>
           <div className="form-group">
             <label htmlFor="endDate">Záró dátum</label>
-            <input type="date" id="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
+            />
           </div>
         </div>
 
@@ -242,11 +284,17 @@ const WindyDaysView: React.FC = () => {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={monthlyStats} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 11 }} />
+                <XAxis
+                  dataKey="month"
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  tick={{ fontSize: 11 }}
+                />
                 <YAxis label={{ value: 'Napok', angle: -90, position: 'insideLeft' }} />
                 <Tooltip
-                  formatter={(value: number, name: string) => [
-                    name === 'windyDays' ? `${value} nap` : `${value.toFixed(1)}%`,
+                  formatter={(value, name) => [
+                    name === 'windyDays' ? `${Number(value)} nap` : `${Number(value).toFixed(1)}%`,
                     name === 'windyDays' ? 'Szeles napok' : 'Arány',
                   ]}
                 />
@@ -263,7 +311,11 @@ const WindyDaysView: React.FC = () => {
             <h3>📋 Részletes Táblázat</h3>
             <table className="windy-table">
               <thead>
-                <tr>{['Hónap', 'Szeles', 'Összes', 'Arány', 'Max'].map((h) => <th key={h}>{h}</th>)}</tr>
+                <tr>
+                  {['Hónap', 'Szeles', 'Összes', 'Arány', 'Max'].map((h) => (
+                    <th key={h}>{h}</th>
+                  ))}
+                </tr>
               </thead>
               <tbody>
                 {monthlyStats.map((r) => (
@@ -299,9 +351,7 @@ const WindyDaysView: React.FC = () => {
           <h3>🌬️ Beaufort Skála</h3>
           <BeaufortLegend
             compact={true}
-            highlightLevel={
-              summary ? getBeaufortLevel(summary.maxWind).level : undefined
-            }
+            highlightLevel={summary ? getBeaufortLevel(summary.maxWind).level : undefined}
           />
         </div>
       )}

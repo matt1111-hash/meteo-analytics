@@ -3,7 +3,11 @@
  */
 import { useState } from 'react';
 import axios from 'axios';
-import { fetchTrendAnalysis, TrendAnalysisRequest, TrendAnalysisResult } from '../services/trendService';
+import {
+  fetchTrendAnalysis,
+  TrendAnalysisRequest,
+  TrendAnalysisResult,
+} from '../services/trendService';
 
 interface UseTrendAnalyticsReturn {
   data: TrendAnalysisResult | null;

@@ -94,9 +94,7 @@ export interface ProviderListResponse {
  * @returns List of all providers with their information
  */
 export const getProviders = async (): Promise<ProviderListResponse> => {
-  const response = await apiClient.get<ProviderListResponse>(
-    '/api/providers/list'
-  );
+  const response = await apiClient.get<ProviderListResponse>('/api/providers/list');
   return response.data;
 };
 
@@ -106,9 +104,7 @@ export const getProviders = async (): Promise<ProviderListResponse> => {
  * @returns Array of provider status information
  */
 export const getProvidersStatus = async (): Promise<ProviderStatusInfo[]> => {
-  const response = await apiClient.get<ProviderStatusInfo[]>(
-    '/api/providers/status'
-  );
+  const response = await apiClient.get<ProviderStatusInfo[]>('/api/providers/status');
   return response.data;
 };
 
@@ -118,12 +114,8 @@ export const getProvidersStatus = async (): Promise<ProviderStatusInfo[]> => {
  * @param providerId - Provider identifier
  * @returns Provider status information
  */
-export const getProviderStatus = async (
-  providerId: string
-): Promise<ProviderStatusInfo> => {
-  const response = await apiClient.get<ProviderStatusInfo>(
-    `/api/providers/${providerId}/status`
-  );
+export const getProviderStatus = async (providerId: string): Promise<ProviderStatusInfo> => {
+  const response = await apiClient.get<ProviderStatusInfo>(`/api/providers/${providerId}/status`);
   return response.data;
 };
 
@@ -133,12 +125,8 @@ export const getProviderStatus = async (
  * @param providerId - Provider identifier
  * @returns Detailed usage statistics
  */
-export const getProviderUsage = async (
-  providerId: string
-): Promise<ProviderUsage> => {
-  const response = await apiClient.get<ProviderUsage>(
-    `/api/providers/${providerId}/usage`
-  );
+export const getProviderUsage = async (providerId: string): Promise<ProviderUsage> => {
+  const response = await apiClient.get<ProviderUsage>(`/api/providers/${providerId}/usage`);
   return response.data;
 };
 
@@ -148,11 +136,9 @@ export const getProviderUsage = async (
  * @param providerId - Provider identifier to select
  * @returns Selection result with success status
  */
-export const selectProvider = async (
-  providerId: string
-): Promise<ProviderSelectionResult> => {
+export const selectProvider = async (providerId: string): Promise<ProviderSelectionResult> => {
   const response = await apiClient.post<ProviderSelectionResult>(
-    `/api/providers/${providerId}/select`
+    `/api/providers/${providerId}/select`,
   );
   return response.data;
 };
@@ -163,9 +149,7 @@ export const selectProvider = async (
  * @returns Information about the selected provider
  */
 export const getSelectedProvider = async (): Promise<ProviderInfo> => {
-  const response = await apiClient.get<ProviderInfo>(
-    '/api/providers/selected'
-  );
+  const response = await apiClient.get<ProviderInfo>('/api/providers/selected');
   return response.data;
 };
 

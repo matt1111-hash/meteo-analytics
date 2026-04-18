@@ -8,11 +8,7 @@
  * - Connection status tracking (backend up/down)
  */
 
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 import { API_BASE_URL } from '../config/apiConfig';
 
@@ -53,12 +49,7 @@ const BACKOFF_FACTOR = 2;
 const MAX_5XX_RETRIES = 1;
 
 /** Network-level codes that mean "backend is not running". */
-const NETWORK_CODES = new Set([
-  'ECONNREFUSED',
-  'ERR_NETWORK',
-  'ECONNRESET',
-  'ETIMEDOUT',
-]);
+const NETWORK_CODES = new Set(['ECONNREFUSED', 'ERR_NETWORK', 'ECONNRESET', 'ETIMEDOUT']);
 
 interface RetryableConfig extends InternalAxiosRequestConfig {
   _retryCount?: number;

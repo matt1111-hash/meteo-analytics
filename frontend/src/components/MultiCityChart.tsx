@@ -90,7 +90,12 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
               tick={{ fill: '#374151', fontSize: 12 }}
             />
             <YAxis
-              label={{ value: metricUnit, angle: -90, position: 'insideLeft', style: { fill: '#374151' } }}
+              label={{
+                value: metricUnit,
+                angle: -90,
+                position: 'insideLeft',
+                style: { fill: '#374151' },
+              }}
               tick={{ fill: '#374151', fontSize: 12 }}
             />
             <Tooltip
@@ -100,7 +105,7 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
                 borderRadius: '8px',
                 padding: '12px',
               }}
-              formatter={(value: number) => [`${value.toFixed(1)} ${metricUnit}`, metricName]}
+              formatter={(value) => [`${Number(value).toFixed(1)} ${metricUnit}`, metricName]}
             />
             <Bar dataKey="value" fill="#3b82f6" radius={[8, 8, 0, 0]} />
           </BarChart>
@@ -135,17 +140,17 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
             type="button"
             className={`legend-item ${isHidden ? 'legend-item--hidden' : ''}`}
             onClick={() => handleLegendClick(city)}
-            style={{
-              '--legend-color': color,
-            } as React.CSSProperties}
+            style={
+              {
+                '--legend-color': color,
+              } as React.CSSProperties
+            }
           >
             <span
               className="legend-color"
               style={{ backgroundColor: isHidden ? '#d1d5db' : color }}
             />
-            <span className={`legend-label ${isHidden ? 'legend-label--hidden' : ''}`}>
-              {city}
-            </span>
+            <span className={`legend-label ${isHidden ? 'legend-label--hidden' : ''}`}>{city}</span>
           </button>
         );
       })}
@@ -157,7 +162,8 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
       <div className="chart-header">
         <h3>📈 Time Series Comparison</h3>
         <p className="chart-subtitle">
-          {metricName} over {dates.length} days • {cities.length} {cities.length === 1 ? 'city' : 'cities'}
+          {metricName} over {dates.length} days • {cities.length}{' '}
+          {cities.length === 1 ? 'city' : 'cities'}
         </p>
         <p className="chart-hint">Kattints a város nevére a vonal elrejtéséhez/megjelenítéséhez</p>
       </div>
@@ -173,7 +179,12 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
             height={80}
           />
           <YAxis
-            label={{ value: metricUnit, angle: -90, position: 'insideLeft', style: { fill: '#374151' } }}
+            label={{
+              value: metricUnit,
+              angle: -90,
+              position: 'insideLeft',
+              style: { fill: '#374151' },
+            }}
             tick={{ fill: '#374151', fontSize: 12 }}
           />
           <Tooltip

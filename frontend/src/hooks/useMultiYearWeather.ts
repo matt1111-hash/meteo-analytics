@@ -64,10 +64,23 @@ export const useMultiYearWeather = () => {
         const monthlyData: MonthlyData = {};
 
         // Use consistent English month names
-        const englishMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const englishMonthNames = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ];
 
         // Initialize all months with null
-        englishMonthNames.forEach(monthName => {
+        englishMonthNames.forEach((monthName) => {
           monthlyData[monthName] = null;
         });
 
@@ -105,12 +118,22 @@ export const useMultiYearWeather = () => {
 
       // Transform to chart data format - only show months that have data
       const allMonths = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
       ];
 
       // Show all months - the backend provides actual data or null
-      let months = allMonths;
+      const months = allMonths;
 
       const chartData: ChartData[] = months.map((month) => {
         const dataPoint: ChartData = { month };
@@ -123,7 +146,7 @@ export const useMultiYearWeather = () => {
         return dataPoint;
       });
 
-            setData(chartData);
+      setData(chartData);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const errorMessage = err.response?.data?.detail || err.message;

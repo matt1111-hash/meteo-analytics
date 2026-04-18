@@ -25,9 +25,7 @@ vi.mock('../../services/hungaryService', () => ({
   getHungarianSettlements: vi.fn(),
 }));
 
-const mockGetHungarianRegions = getHungarianRegions as MockedFunction<
-  typeof getHungarianRegions
->;
+const mockGetHungarianRegions = getHungarianRegions as MockedFunction<typeof getHungarianRegions>;
 const mockGetHungarianCounties = getHungarianCounties as MockedFunction<
   typeof getHungarianCounties
 >;
@@ -119,7 +117,9 @@ describe('HierarchicalSelector Component', () => {
     test('should render title and subtitle', async () => {
       render(<HierarchicalSelector onLocationSelect={mockOnLocationSelect} />);
       expect(await screen.findByText('Magyarországi településválasztó')).toBeInTheDocument();
-      expect(screen.getByText(/Válassz régiót, majd megyét és végül települést/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Válassz régiót, majd megyét és végül települést/i),
+      ).toBeInTheDocument();
     });
 
     test('should render all three select dropdowns', async () => {
@@ -131,14 +131,14 @@ describe('HierarchicalSelector Component', () => {
 
     test('should have base CSS class', () => {
       const { container } = render(
-        <HierarchicalSelector onLocationSelect={mockOnLocationSelect} />
+        <HierarchicalSelector onLocationSelect={mockOnLocationSelect} />,
       );
       expect(container.querySelector('.hierarchical-selector')).toBeInTheDocument();
     });
 
     test('should add custom className when provided', () => {
       const { container } = render(
-        <HierarchicalSelector onLocationSelect={mockOnLocationSelect} className="custom-class" />
+        <HierarchicalSelector onLocationSelect={mockOnLocationSelect} className="custom-class" />,
       );
       const selector = container.querySelector('.hierarchical-selector');
       expect(selector?.classList.contains('custom-class')).toBe(true);
@@ -285,7 +285,7 @@ describe('HierarchicalSelector Component', () => {
   describe('Disabled State', () => {
     test('should disable all selects when disabled prop is true', () => {
       const { container } = render(
-        <HierarchicalSelector onLocationSelect={mockOnLocationSelect} disabled={true} />
+        <HierarchicalSelector onLocationSelect={mockOnLocationSelect} disabled={true} />,
       );
       const regionSelect = screen.getByLabelText('Régió');
       expect(regionSelect).toBeDisabled();
@@ -329,7 +329,9 @@ describe('HierarchicalSelector Component', () => {
       await screen.findByRole('option', { name: 'Pest' });
       const countySelect = screen.getByLabelText('Megye');
       await userEvent.selectOptions(countySelect, 'Pest');
-      expect(await screen.findByText(/Nem sikerült betölteni a településeket/i)).toBeInTheDocument();
+      expect(
+        await screen.findByText(/Nem sikerült betölteni a településeket/i),
+      ).toBeInTheDocument();
     });
   });
 

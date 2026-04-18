@@ -126,7 +126,7 @@ export const HUNGARIAN_REGIONS: readonly HungarianRegion[] = [
   'Dél-Alföld',
   'Dél-Dunántúl',
   'Nyugat-Dunántúl',
-  'Közép-Dunántúl'
+  'Közép-Dunántúl',
 ] as const;
 
 /**
@@ -140,7 +140,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Közép-Magyarország',
     seat: 'Budapest',
     areaKm2: 525,
-    population: 1752000
+    population: 1752000,
   },
   {
     name: 'Bács-Kiskun',
@@ -148,7 +148,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Dél-Alföld',
     seat: 'Kecskemét',
     areaKm2: 8445,
-    population: 509000
+    population: 509000,
   },
   {
     name: 'Baranya',
@@ -156,7 +156,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Dél-Dunántúl',
     seat: 'Pécs',
     areaKm2: 4430,
-    population: 376000
+    population: 376000,
   },
   {
     name: 'Békés',
@@ -164,7 +164,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Dél-Alföld',
     seat: 'Békéscsaba',
     areaKm2: 5630,
-    population: 350000
+    population: 350000,
   },
   {
     name: 'Borsod-Abaúj-Zemplén',
@@ -172,7 +172,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Észak-Magyarország',
     seat: 'Miskolc',
     areaKm2: 7247,
-    population: 668000
+    population: 668000,
   },
   {
     name: 'Csongrád-Csanád',
@@ -180,7 +180,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Dél-Alföld',
     seat: 'Szeged',
     areaKm2: 4263,
-    population: 406000
+    population: 406000,
   },
   {
     name: 'Fejér',
@@ -188,7 +188,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Közép-Dunántúl',
     seat: 'Székesfehérvár',
     areaKm2: 4359,
-    population: 421000
+    population: 421000,
   },
   {
     name: 'Győr-Moson-Sopron',
@@ -196,7 +196,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Nyugat-Dunántúl',
     seat: 'Győr',
     areaKm2: 4089,
-    population: 465000
+    population: 465000,
   },
   {
     name: 'Hajdú-Bihar',
@@ -204,7 +204,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Észak-Alföld',
     seat: 'Debrecen',
     areaKm2: 6211,
-    population: 527000
+    population: 527000,
   },
   {
     name: 'Heves',
@@ -212,7 +212,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Észak-Magyarország',
     seat: 'Eger',
     areaKm2: 3637,
-    population: 295000
+    population: 295000,
   },
   {
     name: 'Jász-Nagykun-Szolnok',
@@ -220,7 +220,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Észak-Alföld',
     seat: 'Szolnok',
     areaKm2: 5582,
-    population: 374000
+    population: 374000,
   },
   {
     name: 'Komárom-Esztergom',
@@ -228,7 +228,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Közép-Dunántúl',
     seat: 'Tatabánya',
     areaKm2: 2265,
-    population: 299000
+    population: 299000,
   },
   {
     name: 'Nógrád',
@@ -236,7 +236,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Észak-Magyarország',
     seat: 'Salgótarján',
     areaKm2: 2544,
-    population: 194000
+    population: 194000,
   },
   {
     name: 'Pest',
@@ -244,7 +244,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Közép-Magyarország',
     seat: 'Budapest',
     areaKm2: 6393,
-    population: 1290000
+    population: 1290000,
   },
   {
     name: 'Somogy',
@@ -252,7 +252,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Dél-Dunántúl',
     seat: 'Kaposvár',
     areaKm2: 6036,
-    population: 310000
+    population: 310000,
   },
   {
     name: 'Szabolcs-Szatmár-Bereg',
@@ -260,7 +260,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Észak-Alföld',
     seat: 'Nyíregyháza',
     areaKm2: 5936,
-    population: 549000
+    population: 549000,
   },
   {
     name: 'Tolna',
@@ -268,7 +268,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Dél-Dunántúl',
     seat: 'Szekszárd',
     areaKm2: 3703,
-    population: 213000
+    population: 213000,
   },
   {
     name: 'Vas',
@@ -276,7 +276,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Nyugat-Dunántúl',
     seat: 'Szombathely',
     areaKm2: 3357,
-    population: 244000
+    population: 244000,
   },
   {
     name: 'Veszprém',
@@ -284,7 +284,7 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Közép-Dunántúl',
     seat: 'Veszprém',
     areaKm2: 4613,
-    population: 342000
+    population: 342000,
   },
   {
     name: 'Zala',
@@ -292,44 +292,48 @@ export const HUNGARIAN_COUNTIES: readonly HungarianCounty[] = [
     region: 'Nyugat-Dunántúl',
     seat: 'Zalaegerszeg',
     areaKm2: 3844,
-    population: 268000
-  }
+    population: 268000,
+  },
 ] as const;
 
 /**
  * Settlement types in Hungarian
  */
-export const SETTLEMENT_TYPES_HU: readonly { type: SettlementType; name: string; description: string }[] = [
+export const SETTLEMENT_TYPES_HU: readonly {
+  type: SettlementType;
+  name: string;
+  description: string;
+}[] = [
   { type: 'főváros', name: 'Főváros', description: 'Capital city' },
   { type: 'város', name: 'Város', description: 'City/town' },
   { type: 'nagyközség', name: 'Nagyközség', description: 'Large village' },
-  { type: 'község', name: 'Község', description: 'Village' }
+  { type: 'község', name: 'Község', description: 'Village' },
 ] as const;
 
 /**
  * County to region mapping
  */
 export const COUNTY_TO_REGION_MAP: Readonly<Record<string, HungarianRegion>> = {
-  'Budapest': 'Közép-Magyarország',
-  'Pest': 'Közép-Magyarország',
-  'Fejér': 'Közép-Dunántúl',
+  Budapest: 'Közép-Magyarország',
+  Pest: 'Közép-Magyarország',
+  Fejér: 'Közép-Dunántúl',
   'Komárom-Esztergom': 'Közép-Dunántúl',
-  'Veszprém': 'Közép-Dunántúl',
+  Veszprém: 'Közép-Dunántúl',
   'Győr-Moson-Sopron': 'Nyugat-Dunántúl',
-  'Vas': 'Nyugat-Dunántúl',
-  'Zala': 'Nyugat-Dunántúl',
+  Vas: 'Nyugat-Dunántúl',
+  Zala: 'Nyugat-Dunántúl',
   'Borsod-Abaúj-Zemplén': 'Észak-Magyarország',
-  'Heves': 'Észak-Magyarország',
-  'Nógrád': 'Észak-Magyarország',
+  Heves: 'Észak-Magyarország',
+  Nógrád: 'Észak-Magyarország',
   'Hajdú-Bihar': 'Észak-Alföld',
   'Jász-Nagykun-Szolnok': 'Észak-Alföld',
   'Szabolcs-Szatmár-Bereg': 'Észak-Alföld',
-  'Békés': 'Dél-Alföld',
+  Békés: 'Dél-Alföld',
   'Csongrád-Csanád': 'Dél-Alföld',
   'Bács-Kiskun': 'Dél-Alföld',
-  'Baranya': 'Dél-Dunántúl',
-  'Somogy': 'Dél-Dunántúl',
-  'Tolna': 'Dél-Dunántúl'
+  Baranya: 'Dél-Dunántúl',
+  Somogy: 'Dél-Dunántúl',
+  Tolna: 'Dél-Dunántúl',
 } as const;
 
 /**
@@ -342,7 +346,7 @@ export const REGION_TO_COUNTIES_MAP: Readonly<Record<HungarianRegion, readonly s
   'Dél-Alföld': ['Békés', 'Csongrád-Csanád', 'Bács-Kiskun'],
   'Dél-Dunántúl': ['Baranya', 'Somogy', 'Tolna'],
   'Nyugat-Dunántúl': ['Győr-Moson-Sopron', 'Vas', 'Zala'],
-  'Közép-Dunántúl': ['Fejér', 'Komárom-Esztergom', 'Veszprém']
+  'Közép-Dunántúl': ['Fejér', 'Komárom-Esztergom', 'Veszprém'],
 } as const;
 
 // ============================================================================
@@ -353,7 +357,7 @@ export const REGION_TO_COUNTIES_MAP: Readonly<Record<HungarianRegion, readonly s
  * Get county name in Hungarian
  */
 export function getCountyNameHu(county: string): string {
-  const countyData = HUNGARIAN_COUNTIES.find(c => c.name === county);
+  const countyData = HUNGARIAN_COUNTIES.find((c) => c.name === county);
   return countyData?.nameHu ?? county;
 }
 
@@ -382,21 +386,21 @@ export function isValidRegion(region: string): region is HungarianRegion {
  * Check if a string is a valid Hungarian county
  */
 export function isValidCounty(county: string): boolean {
-  return HUNGARIAN_COUNTIES.some(c => c.name === county);
+  return HUNGARIAN_COUNTIES.some((c) => c.name === county);
 }
 
 /**
  * Get county data by name
  */
 export function getCountyData(county: string): HungarianCounty | undefined {
-  return HUNGARIAN_COUNTIES.find(c => c.name === county);
+  return HUNGARIAN_COUNTIES.find((c) => c.name === county);
 }
 
 /**
  * Format settlement type in Hungarian
  */
 export function formatSettlementType(type: SettlementType): string {
-  const typeData = SETTLEMENT_TYPES_HU.find(t => t.type === type);
+  const typeData = SETTLEMENT_TYPES_HU.find((t) => t.type === type);
   return typeData?.name ?? type;
 }
 
@@ -404,7 +408,7 @@ export function formatSettlementType(type: SettlementType): string {
  * Get all county names as string array
  */
 export function getCountyNames(): string[] {
-  return HUNGARIAN_COUNTIES.map(c => c.name);
+  return HUNGARIAN_COUNTIES.map((c) => c.name);
 }
 
 /**
@@ -426,7 +430,9 @@ export function getCountyDensity(county: string): number | undefined {
 /**
  * Counties ordered by population (descending)
  */
-export const COUNTIES_BY_POPULATION = [...HUNGARIAN_COUNTIES].sort((a, b) => b.population - a.population);
+export const COUNTIES_BY_POPULATION = [...HUNGARIAN_COUNTIES].sort(
+  (a, b) => b.population - a.population,
+);
 
 /**
  * Counties ordered by area (descending)

@@ -121,51 +121,51 @@ export const useProviderManagement = (): UseProviderManagementReturn => {
   /**
    * Select a provider as the active provider
    */
-  const selectProvider = useCallback(async (providerId: string): Promise<boolean> => {
-    setIsSelecting(true);
-    setError(null);
+  const selectProvider = useCallback(
+    async (providerId: string): Promise<boolean> => {
+      setIsSelecting(true);
+      setError(null);
 
-    try {
-      const result = await apiSelectProvider(providerId);
+      try {
+        const result = await apiSelectProvider(providerId);
 
-      if (result.success) {
-        // Refresh selected provider and statuses
-        const [selected, statuses] = await Promise.all([
-          getSelectedProvider(),
-          getProvidersStatus(),
-        ]);
-        setSelectedProvider(selected);
-        setProviderStatuses(statuses);
+        if (result.success) {
+          // Refresh selected provider and statuses
+          const [selected, statuses] = await Promise.all([
+            getSelectedProvider(),
+            getProvidersStatus(),
+          ]);
+          setSelectedProvider(selected);
+          setProviderStatuses(statuses);
 
-        // Fetch usage for the newly selected provider
-        await fetchUsage(providerId);
+          // Fetch usage for the newly selected provider
+          await fetchUsage(providerId);
 
-        return true;
-      } else {
-        setError(result.message);
+          return true;
+        } else {
+          setError(result.message);
+          return false;
+        }
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          const errorMessage = err.response?.data?.detail || err.message;
+          setError(`API Error: ${errorMessage}`);
+        } else {
+          setError('Nem sikerült kiválasztani a szolgáltatót');
+        }
         return false;
+      } finally {
+        setIsSelecting(false);
       }
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const errorMessage = err.response?.data?.detail || err.message;
-        setError(`API Error: ${errorMessage}`);
-      } else {
-        setError('Nem sikerült kiválasztani a szolgáltatót');
-      }
-      return false;
-    } finally {
-      setIsSelecting(false);
-    }
-  }, [fetchUsage]);
+    },
+    [fetchUsage],
+  );
 
   /**
    * Refresh all provider data
    */
   const refreshAll = useCallback(async (): Promise<void> => {
-    await Promise.all([
-      fetchProviders(),
-      fetchStatus(),
-    ]);
+    await Promise.all([fetchProviders(), fetchStatus()]);
 
     // Also fetch selected provider and its usage
     try {
@@ -176,7 +176,7 @@ export const useProviderManagement = (): UseProviderManagementReturn => {
       setSelectedProvider(selected);
 
       // Find selected provider ID from statuses
-      const selectedStatus = statuses.find(s => s.is_selected);
+      const selectedStatus = statuses.find((s) => s.is_selected);
       if (selectedStatus) {
         await fetchUsage(selectedStatus.provider_id);
       }

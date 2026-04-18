@@ -49,11 +49,7 @@ export interface UseModalOptions {
  * Hook for managing modal state with accessibility
  */
 export function useModal(options: UseModalOptions = {}): UseModalReturn {
-  const {
-    closeOnEsc = true,
-    onClose,
-    onOpen,
-  } = options;
+  const { closeOnEsc = true, onClose, onOpen } = options;
 
   const [isOpen, setIsOpen] = React.useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -122,9 +118,7 @@ export function useModal(options: UseModalOptions = {}): UseModalReturn {
           // Try to find the first focusable element
           const focusableSelector =
             'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-          const firstFocusable = modalRef.current.querySelector(
-            focusableSelector
-          ) as HTMLElement;
+          const firstFocusable = modalRef.current.querySelector(focusableSelector) as HTMLElement;
 
           if (firstFocusable) {
             firstFocusable.focus();

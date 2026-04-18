@@ -74,9 +74,7 @@ export interface StationsResponse {
  * Get list of Hungarian counties (19 counties + Budapest)
  */
 export const getHungarianCounties = async (): Promise<CountiesResponse> => {
-  const response = await apiClient.get<CountiesResponse>(
-    '/api/hungary/counties'
-  );
+  const response = await apiClient.get<CountiesResponse>('/api/hungary/counties');
   return response.data;
 };
 
@@ -84,9 +82,7 @@ export const getHungarianCounties = async (): Promise<CountiesResponse> => {
  * Get list of Hungarian statistical regions (7 regions)
  */
 export const getHungarianRegions = async (): Promise<RegionsResponse> => {
-  const response = await apiClient.get<RegionsResponse>(
-    '/api/hungary/regions'
-  );
+  const response = await apiClient.get<RegionsResponse>('/api/hungary/regions');
   return response.data;
 };
 
@@ -109,7 +105,7 @@ export const getHungarianSettlements = async (options?: {
   if (options?.limit) params.append('limit', options.limit.toString());
 
   const response = await apiClient.get<SettlementsResponse>(
-    `/api/hungary/settlements?${params.toString()}`
+    `/api/hungary/settlements?${params.toString()}`,
   );
   return response.data;
 };
@@ -130,7 +126,7 @@ export const getHungarianWeatherStations = async (options?: {
   if (options?.limit) params.append('limit', options.limit.toString());
 
   const response = await apiClient.get<StationsResponse>(
-    `/api/hungary/stations?${params.toString()}`
+    `/api/hungary/stations?${params.toString()}`,
   );
   return response.data;
 };
@@ -182,8 +178,8 @@ export const HUNGARIAN_COUNTIES = [
  * Hungarian settlement types
  */
 export const SETTLEMENT_TYPES = [
-  'város',          // city
-  'nagyközség',     // large village
-  'község',         // village
+  'város', // city
+  'nagyközség', // large village
+  'község', // village
   'megyei jogú város', // city with county rights
 ] as const;

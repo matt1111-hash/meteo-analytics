@@ -14,7 +14,10 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -81,6 +84,6 @@
   transform: rotate(15deg);
 }
 
-[data-theme="dark"] .theme-toggle:hover .theme-toggle-icon svg {
+[data-theme='dark'] .theme-toggle:hover .theme-toggle-icon svg {
   transform: rotate(-15deg);
 }

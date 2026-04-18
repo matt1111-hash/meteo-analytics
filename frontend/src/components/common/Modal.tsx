@@ -76,7 +76,7 @@ function useFocusTrap(isActive: boolean, containerRef: React.RefObject<HTMLEleme
     const focusableSelector =
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
     const focusableElements = Array.from(
-      container.querySelectorAll<HTMLElement>(focusableSelector)
+      container.querySelectorAll<HTMLElement>(focusableSelector),
     );
 
     if (focusableElements.length === 0) return;
@@ -143,7 +143,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClose();
       }
     },
-    [closeOnBackdropClick, onClose]
+    [closeOnBackdropClick, onClose],
   );
 
   /**
@@ -189,9 +189,7 @@ export const Modal: React.FC<ModalProps> = ({
         // Find first focusable element or focus container
         const focusableSelector =
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-        const firstFocusable = contentRef.current.querySelector<HTMLElement>(
-          focusableSelector
-        );
+        const firstFocusable = contentRef.current.querySelector<HTMLElement>(focusableSelector);
 
         // Focus the first focusable element, or the modal container if none exists
         if (firstFocusable) {
@@ -270,7 +268,7 @@ export const Modal: React.FC<ModalProps> = ({
         {footer && <div className="modal-footer">{footer}</div>}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

@@ -45,7 +45,6 @@ const PrecipitationChart: React.FC<PrecipitationChartProps> = ({ data, city }) =
   const maxPrecipitation = Math.max(...chartData.map((d) => d.precipitation));
   const avgPrecipitation = totalPrecipitation / chartData.length;
 
-
   return (
     <div className="precipitation-chart">
       <div className="chart-header">
@@ -74,10 +73,7 @@ const PrecipitationChart: React.FC<PrecipitationChartProps> = ({ data, city }) =
       </div>
 
       <ResponsiveContainer width="100%" height={450}>
-        <BarChart
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-        >
+        <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
             dataKey="date"
@@ -103,7 +99,7 @@ const PrecipitationChart: React.FC<PrecipitationChartProps> = ({ data, city }) =
               padding: '12px',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             }}
-            formatter={(value: number) => [`${value.toFixed(1)} mm`, 'Precipitation']}
+            formatter={(value) => [`${Number(value).toFixed(1)} mm`, 'Precipitation']}
             labelFormatter={(label) => `Date: ${label}`}
           />
           <Legend wrapperStyle={{ paddingTop: '20px' }} />

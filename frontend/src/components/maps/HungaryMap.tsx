@@ -15,7 +15,7 @@ import {
   CircleMarker,
   Popup,
   Tooltip,
-  useMap
+  useMap,
 } from 'react-leaflet';
 import { LatLng, LatLngBounds } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -25,7 +25,7 @@ import {
   HUNGARY_CENTER,
   DEFAULT_ZOOM,
   COUNTY_ZOOM,
-  getCountyCenter
+  getCountyCenter,
 } from './hungaryCounties.geojson';
 import { HungarianWeatherStation } from '../../services/hungaryService';
 
@@ -73,13 +73,13 @@ export interface HungaryMapProps {
  * Region colors for county highlighting
  */
 const REGION_COLORS: Record<string, string> = {
-  'Közép-Magyarország': '#3b82f6',    // blue
-  'Észak-Magyarország': '#8b5cf6',    // purple
-  'Észak-Alföld': '#06b6d4',          // cyan
-  'Dél-Alföld': '#10b981',            // green
-  'Dél-Dunántúl': '#f59e0b',          // amber
-  'Nyugat-Dunántúl': '#f97316',       // orange
-  'Közép-Dunántúl': '#ef4444',        // red
+  'Közép-Magyarország': '#3b82f6', // blue
+  'Észak-Magyarország': '#8b5cf6', // purple
+  'Észak-Alföld': '#06b6d4', // cyan
+  'Dél-Alföld': '#10b981', // green
+  'Dél-Dunántúl': '#f59e0b', // amber
+  'Nyugat-Dunántúl': '#f97316', // orange
+  'Közép-Dunántúl': '#ef4444', // red
 };
 
 /**
@@ -141,26 +141,26 @@ const HungaryMap: React.FC<HungaryMapProps> = ({
   onStationSelect,
   showStations = true,
   height = 500,
-  className = ''
+  className = '',
 }) => {
   const [hoveredCounty, setHoveredCounty] = useState<string | null>(null);
 
   // Calculate value range for heatmap coloring
   const { minValue, maxValue } = useMemo(() => {
     const values = countyData
-      .map(d => d.value)
+      .map((d) => d.value)
       .filter((v): v is number => v !== undefined && v !== null && !isNaN(v));
     if (values.length === 0) return { minValue: 0, maxValue: 100 };
     return {
       minValue: Math.min(...values),
-      maxValue: Math.max(...values)
+      maxValue: Math.max(...values),
     };
   }, [countyData]);
 
   // Create county data map for quick lookup
   const countyDataMap = useMemo(() => {
     const map = new Map<string, CountyData>();
-    countyData.forEach(d => map.set(d.county, d));
+    countyData.forEach((d) => map.set(d.county, d));
     return map;
   }, [countyData]);
 
@@ -184,7 +184,7 @@ const HungaryMap: React.FC<HungaryMapProps> = ({
         weight: 2,
         opacity: 1,
         color: '#ffffff',
-        fillOpacity: 0.4
+        fillOpacity: 0.4,
       };
     }
 
@@ -206,22 +206,19 @@ const HungaryMap: React.FC<HungaryMapProps> = ({
       opacity: 1,
       color: isSelected ? '#1f2937' : isHovered ? '#4b5563' : '#ffffff',
       dashArray: isSelected ? '' : '3',
-      fillOpacity: isSelected ? 0.7 : isHovered ? 0.6 : 0.4
+      fillOpacity: isSelected ? 0.7 : isHovered ? 0.6 : 0.4,
     };
   };
 
   // County feature handlers
-  const onEachCounty = (
-    feature: GeoJSON.Feature<GeoJSON.Geometry, any>,
-    layer: any
-  ) => {
+  const onEachCounty = (feature: GeoJSON.Feature<GeoJSON.Geometry, any>, layer: any) => {
     const countyName = feature.properties?.name as string;
     if (!countyName) return;
 
     layer.on({
       mouseover: () => setHoveredCounty(countyName),
       mouseout: () => setHoveredCounty(null),
-      click: () => onCountySelect?.(countyName)
+      click: () => onCountySelect?.(countyName),
     });
 
     // Build popup content
@@ -242,14 +239,14 @@ const HungaryMap: React.FC<HungaryMapProps> = ({
     // Tooltip on hover
     layer.bindTooltip(feature.properties?.nameHu || countyName, {
       sticky: true,
-      direction: 'top'
+      direction: 'top',
     });
   };
 
   // Filter valid stations
   const validStations = useMemo(() => {
     return stations.filter(
-      s => s.coordinates?.lat !== undefined && s.coordinates?.lon !== undefined
+      (s) => s.coordinates?.lat !== undefined && s.coordinates?.lon !== undefined,
     );
   }, [stations]);
 
@@ -276,40 +273,50 @@ const HungaryMap: React.FC<HungaryMapProps> = ({
         />
 
         {/* Weather station markers */}
-        {showStations && validStations.map((station, index) => (
-          <CircleMarker
-            key={`${station.id}-${index}`}
-            center={[station.coordinates!.lat, station.coordinates!.lon]}
-            radius={8}
-            fillColor="#dc2626"
-            color="#ffffff"
-            weight={2}
-            opacity={1}
-            fillOpacity={0.8}
-            eventHandlers={{
-              click: () => onStationSelect?.(station)
-            }}
-          >
-            <Tooltip direction="top" offset={[0, -10]} sticky>
-              <strong>{station.name}</strong>
-              {station.metric !== undefined && (
-                <>{station.metric.toFixed(1)} {station.metricUnit || ''}</>
-              )}
-            </Tooltip>
-            <Popup>
-              <div className="station-popup">
-                <h4>{station.name}</h4>
-                <p><strong>Megye:</strong> {station.county || 'N/A'}</p>
-                {station.data_quality_score !== undefined && (
-                  <p><strong>Adatminőség:</strong> {station.data_quality_score}%</p>
-                )}
+        {showStations &&
+          validStations.map((station, index) => (
+            <CircleMarker
+              key={`${station.id}-${index}`}
+              center={[station.coordinates!.lat, station.coordinates!.lon]}
+              radius={8}
+              fillColor="#dc2626"
+              color="#ffffff"
+              weight={2}
+              opacity={1}
+              fillOpacity={0.8}
+              eventHandlers={{
+                click: () => onStationSelect?.(station),
+              }}
+            >
+              <Tooltip direction="top" offset={[0, -10]} sticky>
+                <strong>{station.name}</strong>
                 {station.metric !== undefined && (
-                  <p><strong>{station.metricLabel || 'Érték'}:</strong> {station.metric.toFixed(1)} {station.metricUnit || ''}</p>
+                  <>
+                    {station.metric.toFixed(1)} {station.metricUnit || ''}
+                  </>
                 )}
-              </div>
-            </Popup>
-          </CircleMarker>
-        ))}
+              </Tooltip>
+              <Popup>
+                <div className="station-popup">
+                  <h4>{station.name}</h4>
+                  <p>
+                    <strong>Megye:</strong> {station.county || 'N/A'}
+                  </p>
+                  {station.data_quality_score !== undefined && (
+                    <p>
+                      <strong>Adatminőség:</strong> {station.data_quality_score}%
+                    </p>
+                  )}
+                  {station.metric !== undefined && (
+                    <p>
+                      <strong>{station.metricLabel || 'Érték'}:</strong> {station.metric.toFixed(1)}{' '}
+                      {station.metricUnit || ''}
+                    </p>
+                  )}
+                </div>
+              </Popup>
+            </CircleMarker>
+          ))}
       </MapContainer>
 
       {/* Legend */}
@@ -326,9 +333,7 @@ const HungaryMap: React.FC<HungaryMapProps> = ({
 
       {/* Stats bar */}
       <div className="hungary-map-stats">
-        {selectedCounty && (
-          <span className="stat-selected">Kiválasztva: {selectedCounty}</span>
-        )}
+        {selectedCounty && <span className="stat-selected">Kiválasztva: {selectedCounty}</span>}
         {validStations.length > 0 && (
           <span className="stat-stations">Állomások: {validStations.length}</span>
         )}

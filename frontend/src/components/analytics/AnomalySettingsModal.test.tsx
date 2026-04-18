@@ -108,12 +108,7 @@ describe('AnomalySettingsModal', () => {
         precip_high: 80,
       };
 
-      render(
-        <AnomalySettingsModal
-          {...defaultProps}
-          initialThresholds={customThresholds}
-        />
-      );
+      render(<AnomalySettingsModal {...defaultProps} initialThresholds={customThresholds} />);
 
       expect(screen.getByDisplayValue('40')).toBeInTheDocument();
       expect(screen.getByDisplayValue('-15')).toBeInTheDocument();
@@ -121,12 +116,7 @@ describe('AnomalySettingsModal', () => {
     });
 
     it('should use provided initial method', () => {
-      render(
-        <AnomalySettingsModal
-          {...defaultProps}
-          initialMethod="iqr"
-        />
-      );
+      render(<AnomalySettingsModal {...defaultProps} initialMethod="iqr" />);
 
       expect(screen.getByDisplayValue('IQR (Interquartile Range)')).toBeInTheDocument();
     });
@@ -305,7 +295,7 @@ describe('AnomalySettingsModal', () => {
           temp_hot: 35,
           temp_cold: -10,
         }),
-        'zscore'
+        'zscore',
       );
     });
 
@@ -335,7 +325,7 @@ describe('AnomalySettingsModal', () => {
         expect.objectContaining({
           temp_hot: 38,
         }),
-        'iqr'
+        'iqr',
       );
     });
   });
@@ -359,7 +349,9 @@ describe('AnomalySettingsModal', () => {
     it('should reset method to zscore', () => {
       render(<AnomalySettingsModal {...defaultProps} initialMethod="iqr" />);
 
-      const methodSelect = screen.getByDisplayValue('IQR (Interquartile Range)') as HTMLSelectElement;
+      const methodSelect = screen.getByDisplayValue(
+        'IQR (Interquartile Range)',
+      ) as HTMLSelectElement;
       expect(methodSelect.value).toBe('iqr');
 
       const resetButton = screen.getByText('Alaphelyzet');
@@ -404,14 +396,14 @@ describe('AnomalySettingsModal', () => {
           {...defaultProps}
           initialThresholds={{ temp_hot: 38 }}
           isOpen={false}
-        />
+        />,
       );
       rerender(
         <AnomalySettingsModal
           {...defaultProps}
           initialThresholds={{ temp_hot: 38 }}
           isOpen={true}
-        />
+        />,
       );
 
       // Should have new initial value, not the previously edited value

@@ -52,7 +52,7 @@ const MultiCityView: React.FC = () => {
           cities: request.cities,
           date_range: request.date_range,
           metric: selectedMetric,
-        }
+        },
       );
 
       setResults(response.data);
@@ -73,9 +73,7 @@ const MultiCityView: React.FC = () => {
     <div className="multi-city-view">
       <div className="view-header">
         <h1>🌍 Multi-City Comparison</h1>
-        <p className="view-subtitle">
-          Compare weather data across multiple cities
-        </p>
+        <p className="view-subtitle">Compare weather data across multiple cities</p>
       </div>
 
       <div className="view-content">

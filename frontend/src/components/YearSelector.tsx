@@ -15,14 +15,11 @@ const YearSelector: React.FC<YearSelectorProps> = ({
   minYear = 2018,
   maxYear = 2025,
 }) => {
-  const availableYears = Array.from(
-    { length: maxYear - minYear + 1 },
-    (_, i) => minYear + i
-  );
+  const availableYears = Array.from({ length: maxYear - minYear + 1 }, (_, i) => minYear + i);
 
   const handleYearToggle = (year: number) => {
     const newYears = selectedYears.includes(year)
-      ? selectedYears.filter(y => y !== year)
+      ? selectedYears.filter((y) => y !== year)
       : [...selectedYears, year].sort();
 
     onYearsChange(newYears);

@@ -12,12 +12,7 @@ import React, { useState } from 'react';
 import CityAutocomplete from '../components/common/CityAutocomplete';
 import TrendChart from '../components/charts/TrendChart';
 import { useTrendAnalytics } from '../hooks/useTrendAnalytics';
-import {
-  TIME_PERIODS,
-  METRIC_LABELS,
-  METRIC_UNITS,
-  TrendMetric,
-} from '../services/trendService';
+import { TIME_PERIODS, METRIC_LABELS, METRIC_UNITS, TrendMetric } from '../services/trendService';
 import './TrendAnalyticsView.css';
 
 const TrendAnalyticsView: React.FC = () => {
@@ -67,7 +62,7 @@ const TrendAnalyticsView: React.FC = () => {
   const handleExportCSV = () => {
     if (!data || !data.periods.length) return;
 
-    const selectedPeriodData = data.periods.find(p => p.time_period === selectedPeriod);
+    const selectedPeriodData = data.periods.find((p) => p.time_period === selectedPeriod);
     if (!selectedPeriodData) return;
 
     // CSV header
@@ -76,7 +71,7 @@ const TrendAnalyticsView: React.FC = () => {
     // CSV rows
     selectedPeriodData.years.forEach((year, index) => {
       const value = selectedPeriodData.yearly_means[index] || 0;
-      const trend = selectedPeriodData.intercept + (selectedPeriodData.slope * index * 12);
+      const trend = selectedPeriodData.intercept + selectedPeriodData.slope * index * 12;
       csv += `${year},${value.toFixed(3)},${trend.toFixed(3)}\n`;
     });
 
@@ -120,11 +115,7 @@ const TrendAnalyticsView: React.FC = () => {
       <div className="trend-controls">
         <div className="control-group">
           <label htmlFor="city-select">Helyszín:</label>
-          <CityAutocomplete
-            value={city}
-            onChange={handleCityChange}
-            placeholder="Város neve..."
-          />
+          <CityAutocomplete value={city} onChange={handleCityChange} placeholder="Város neve..." />
         </div>
 
         <div className="control-group">
@@ -143,11 +134,7 @@ const TrendAnalyticsView: React.FC = () => {
           </select>
         </div>
 
-        <button
-          onClick={handleAnalyze}
-          className="analyze-button"
-          disabled={loading || !city}
-        >
+        <button onClick={handleAnalyze} className="analyze-button" disabled={loading || !city}>
           {loading ? 'Betöltés...' : '📊 Elemzés indítása'}
         </button>
 
@@ -206,15 +193,20 @@ const TrendAnalyticsView: React.FC = () => {
                   <td>{period.r_squared.toFixed(4)}</td>
                   <td>{period.p_value.toFixed(6)}</td>
                   <td>
-                    {period.trend_direction === 'increasing' ? '↗ Növekvő' :
-                     period.trend_direction === 'decreasing' ? '↘ Csökkenő' :
-                     '→ Stabil'}
+                    {period.trend_direction === 'increasing'
+                      ? '↗ Növekvő'
+                      : period.trend_direction === 'decreasing'
+                        ? '↘ Csökkenő'
+                        : '→ Stabil'}
                   </td>
                   <td>
-                    {period.significance === 'highly_significant' ? 'Nagyon szignifikáns' :
-                     period.significance === 'significant' ? 'Szignifikáns' :
-                     period.significance === 'moderately_significant' ? 'Mérsékelten' :
-                     'Nem szignifikáns'}
+                    {period.significance === 'highly_significant'
+                      ? 'Nagyon szignifikáns'
+                      : period.significance === 'significant'
+                        ? 'Szignifikáns'
+                        : period.significance === 'moderately_significant'
+                          ? 'Mérsékelten'
+                          : 'Nem szignifikáns'}
                   </td>
                 </tr>
               ))}

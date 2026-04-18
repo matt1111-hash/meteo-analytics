@@ -6,9 +6,9 @@
 // ============================================================================
 
 export interface DateRange {
-  date?: string;        // Single date: "2025-11-22"
-  start?: string;       // Range start: "2025-11-01"
-  end?: string;         // Range end: "2025-11-22"
+  date?: string; // Single date: "2025-11-22"
+  start?: string; // Range start: "2025-11-01"
+  end?: string; // Range end: "2025-11-22"
 }
 
 export interface WeatherAnalysisRequest {
@@ -107,7 +107,7 @@ export interface DetailedData {
 // ============================================================================
 
 export interface FormData {
-  cities: string;        // Comma-separated city names
+  cities: string; // Comma-separated city names
   dateType: 'single' | 'range';
   singleDate: string;
   startDate: string;

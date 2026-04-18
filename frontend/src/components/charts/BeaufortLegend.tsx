@@ -34,9 +34,7 @@ const BeaufortLegend: React.FC<BeaufortLegendProps> = ({
     <div className={containerClass}>
       <div className="beaufort-legend-title">
         <h4>🌬️ Beaufort Skála</h4>
-        {!compact && (
-          <span className="beaufort-subtitle">Szélereősség skála (km/h)</span>
-        )}
+        {!compact && <span className="beaufort-subtitle">Szélereősség skála (km/h)</span>}
       </div>
 
       <div className="beaufort-scale">
@@ -53,9 +51,7 @@ const BeaufortLegend: React.FC<BeaufortLegendProps> = ({
             >
               <div className="beaufort-indicator">
                 <span className="beaufort-icon">{level.icon}</span>
-                {!compact && (
-                  <span className="beaufort-level-number">{level.level}</span>
-                )}
+                {!compact && <span className="beaufort-level-number">{level.level}</span>}
               </div>
 
               {!compact ? (
@@ -65,7 +61,7 @@ const BeaufortLegend: React.FC<BeaufortLegendProps> = ({
                     {level.speedRange.min === 0
                       ? `0-${level.speedRange.max}`
                       : `${level.speedRange.min}-${level.speedRange.max}`}
-                    </span>
+                  </span>
                 </div>
               ) : (
                 <span className="beaufort-compact-label">{level.level}</span>
@@ -78,8 +74,8 @@ const BeaufortLegend: React.FC<BeaufortLegendProps> = ({
       {!compact && (
         <div className="beaufort-footer">
           <small>
-            <strong>0</strong>: Szélcsend | <strong>6</strong>: Erős szél |{' '}
-            <strong>10</strong>: Vihar | <strong>12</strong>: Orkán
+            <strong>0</strong>: Szélcsend | <strong>6</strong>: Erős szél | <strong>10</strong>:
+            Vihar | <strong>12</strong>: Orkán
           </small>
         </div>
       )}

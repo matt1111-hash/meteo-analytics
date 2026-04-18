@@ -84,12 +84,8 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       title={label}
       data-no-transition
     >
-      <span className="theme-toggle-icon">
-        {isDark ? <SunIcon /> : <MoonIcon />}
-      </span>
-      <span className="theme-toggle-label">
-        {isDark ? 'Light' : 'Dark'}
-      </span>
+      <span className="theme-toggle-icon">{isDark ? <SunIcon /> : <MoonIcon />}</span>
+      <span className="theme-toggle-label">{isDark ? 'Light' : 'Dark'}</span>
     </button>
   );
 };

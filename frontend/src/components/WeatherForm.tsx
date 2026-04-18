@@ -32,7 +32,10 @@ const WeatherForm: React.FC<WeatherFormProps> = ({ onSubmit, loading = false }) 
       return 'Please enter at least one city';
     }
 
-    const cityList = formData.cities.split(',').map((c) => c.trim()).filter((c) => c);
+    const cityList = formData.cities
+      .split(',')
+      .map((c) => c.trim())
+      .filter((c) => c);
     if (cityList.length === 0) {
       return 'Please enter valid city names';
     }
@@ -67,9 +70,10 @@ const WeatherForm: React.FC<WeatherFormProps> = ({ onSubmit, loading = false }) 
       .map((c) => c.trim())
       .filter((c) => c);
 
-    const dateRange: DateRange = formData.dateType === 'single'
-      ? { date: formData.singleDate }
-      : { start: formData.startDate, end: formData.endDate };
+    const dateRange: DateRange =
+      formData.dateType === 'single'
+        ? { date: formData.singleDate }
+        : { start: formData.startDate, end: formData.endDate };
 
     const request: WeatherAnalysisRequest = {
       cities: cityList,

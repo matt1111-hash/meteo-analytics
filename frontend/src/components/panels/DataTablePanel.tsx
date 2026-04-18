@@ -33,21 +33,24 @@ const DataTablePanel: React.FC<DataTablePanelProps> = ({ data, loading = false }
   const [sortColumn, setSortColumn] = useState<SortColumn>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
-  const handleSort = useCallback((column: keyof WeatherTableRow) => {
-    if (sortColumn === column) {
-      if (sortDirection === 'asc') {
-        setSortDirection('desc');
-      } else if (sortDirection === 'desc') {
-        setSortDirection(null);
-        setSortColumn(null);
+  const handleSort = useCallback(
+    (column: keyof WeatherTableRow) => {
+      if (sortColumn === column) {
+        if (sortDirection === 'asc') {
+          setSortDirection('desc');
+        } else if (sortDirection === 'desc') {
+          setSortDirection(null);
+          setSortColumn(null);
+        } else {
+          setSortDirection('asc');
+        }
       } else {
+        setSortColumn(column);
         setSortDirection('asc');
       }
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  }, [sortColumn, sortDirection]);
+    },
+    [sortColumn, sortDirection],
+  );
 
   const sortedData = useMemo(() => {
     if (!sortColumn || !sortDirection) return data;
@@ -137,7 +140,8 @@ const DataTablePanel: React.FC<DataTablePanelProps> = ({ data, loading = false }
           </select>
         </div>
         <div className="table-info">
-          Showing {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, data.length)} of {data.length}
+          Showing {(currentPage - 1) * itemsPerPage + 1} -{' '}
+          {Math.min(currentPage * itemsPerPage, data.length)} of {data.length}
         </div>
       </div>
 
@@ -145,10 +149,7 @@ const DataTablePanel: React.FC<DataTablePanelProps> = ({ data, loading = false }
         <table className="data-table">
           <thead>
             <tr>
-              <th
-                className={getHeaderClass('date')}
-                onClick={() => handleSort('date')}
-              >
+              <th className={getHeaderClass('date')} onClick={() => handleSort('date')}>
                 Date {getSortIcon('date')}
               </th>
               <th
@@ -175,22 +176,13 @@ const DataTablePanel: React.FC<DataTablePanelProps> = ({ data, loading = false }
               >
                 Precipitation {getSortIcon('precipitation')}
               </th>
-              <th
-                className={getHeaderClass('windspeed')}
-                onClick={() => handleSort('windspeed')}
-              >
+              <th className={getHeaderClass('windspeed')} onClick={() => handleSort('windspeed')}>
                 Wind Speed {getSortIcon('windspeed')}
               </th>
-              <th
-                className={getHeaderClass('windgusts')}
-                onClick={() => handleSort('windgusts')}
-              >
+              <th className={getHeaderClass('windgusts')} onClick={() => handleSort('windgusts')}>
                 Wind Gusts {getSortIcon('windgusts')}
               </th>
-              <th
-                className={getHeaderClass('humidity')}
-                onClick={() => handleSort('humidity')}
-              >
+              <th className={getHeaderClass('humidity')} onClick={() => handleSort('humidity')}>
                 Humidity {getSortIcon('humidity')}
               </th>
             </tr>
@@ -199,7 +191,15 @@ const DataTablePanel: React.FC<DataTablePanelProps> = ({ data, loading = false }
             {paginatedData.map((row, idx) => (
               <tr key={`${row.date}-${idx}`}>
                 <td className="date-cell">{row.date}</td>
-                <td className={row.temperature_max !== null && row.temperature_max > 30 ? 'hot' : row.temperature_max !== null && row.temperature_max < 0 ? 'cold' : ''}>
+                <td
+                  className={
+                    row.temperature_max !== null && row.temperature_max > 30
+                      ? 'hot'
+                      : row.temperature_max !== null && row.temperature_max < 0
+                        ? 'cold'
+                        : ''
+                  }
+                >
                   {formatValue(row.temperature_max, '°C')}
                 </td>
                 <td>{formatValue(row.temperature_min, '°C')}</td>

@@ -38,7 +38,7 @@ export { calculateYearlyRecords } from './yearlyRecords';
  */
 export function calculateExtremes(
   data: DailyWeatherData[],
-  aggregation: AggregationType = 'daily'
+  aggregation: AggregationType = 'daily',
 ): ExtremeRecord[] {
   if (data.length === 0) return [];
 

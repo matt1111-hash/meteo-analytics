@@ -21,18 +21,21 @@ interface MultiYearChartProps {
   metricUnit: string;
 }
 
-const MultiYearChart: React.FC<MultiYearChartProps> = ({
-  data,
-  years,
-  metricName,
-  metricUnit,
-}) => {
+const MultiYearChart: React.FC<MultiYearChartProps> = ({ data, years, metricName, metricUnit }) => {
   const [hiddenYears, setHiddenYears] = useState<Set<number>>(new Set());
 
   const yearColors = useMemo(() => {
     const colors = [
-      '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316',
-      '#eab308', '#84cc16', '#10b981', '#14b8a6', '#06b6d4',
+      '#6366f1',
+      '#8b5cf6',
+      '#ec4899',
+      '#f43f5e',
+      '#f97316',
+      '#eab308',
+      '#84cc16',
+      '#10b981',
+      '#14b8a6',
+      '#06b6d4',
     ];
     const colorMap: Record<number, string> = {};
     years.forEach((year, index) => {
@@ -64,10 +67,7 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({
               onClick={() => toggleYear(year)}
               style={{ color: isHidden ? '#94a3b8' : color }}
             >
-              <span
-                className="legend-color"
-                style={{ backgroundColor: color }}
-              />
+              <span className="legend-color" style={{ backgroundColor: color }} />
               {year}
             </button>
           );
@@ -85,11 +85,7 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({
             const year = Number(entry.dataKey);
             if (hiddenYears.has(year)) return null;
             return (
-              <div
-                key={entry.dataKey}
-                className="tooltip-item"
-                style={{ color: yearColors[year] }}
-              >
+              <div key={entry.dataKey} className="tooltip-item" style={{ color: yearColors[year] }}>
                 <span className="tooltip-label">{entry.dataKey}:</span>
                 <span className="tooltip-value">
                   {entry.value !== null ? `${entry.value.toFixed(1)} ${metricUnit}` : 'N/A'}
@@ -105,9 +101,9 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({
 
   // Filter out hidden years from the data
   const visibleData = useMemo(() => {
-    const filtered = data.map(item => {
+    const filtered = data.map((item) => {
       const filteredItem: any = { month: item.month };
-      years.forEach(year => {
+      years.forEach((year) => {
         if (!hiddenYears.has(year)) {
           filteredItem[year.toString()] = item[year.toString()];
         }
@@ -143,71 +139,74 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({
                 value: metricName,
                 angle: -90,
                 position: 'insideLeft',
-                style: { fill: '#64748b' }
+                style: { fill: '#64748b' },
               }}
               domain={['auto', 'auto']}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend content={<CustomLegend />} />
 
-          {(() => {
-        const visibleYears = years.filter(year => !hiddenYears.has(year));
-        logger.debug('Visible years for Line rendering:', visibleYears);
+            {(() => {
+              const visibleYears = years.filter((year) => !hiddenYears.has(year));
+              logger.debug('Visible years for Line rendering:', visibleYears);
 
-        return visibleYears.map(year => {
-          // Check if year has any data
-          const hasData = data.some(item => item[year.toString()] !== null);
+              return visibleYears.map((year) => {
+                // Check if year has any data
+                const hasData = data.some((item) => item[year.toString()] !== null);
 
-          return (
-            <Line
-              key={year}
-              type="monotone"
-              dataKey={year.toString()}
-              stroke={yearColors[year]}
-              strokeWidth={hasData ? 2 : 1}
-              strokeDasharray={hasData ? undefined : "5 5"}
-              dot={{ r: hasData ? 3 : 2 }}
-              activeDot={{ r: 5 }}
-              connectNulls={false}
-              opacity={1}
-            />
-          );
-        });
-      })()}
+                return (
+                  <Line
+                    key={year}
+                    type="monotone"
+                    dataKey={year.toString()}
+                    stroke={yearColors[year]}
+                    strokeWidth={hasData ? 2 : 1}
+                    strokeDasharray={hasData ? undefined : '5 5'}
+                    dot={{ r: hasData ? 3 : 2 }}
+                    activeDot={{ r: 5 }}
+                    connectNulls={false}
+                    opacity={1}
+                  />
+                );
+              });
+            })()}
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       {(() => {
-        const yearsWithoutData = years.filter(year =>
-          !data.some(item => item[year.toString()] !== null)
+        const yearsWithoutData = years.filter(
+          (year) => !data.some((item) => item[year.toString()] !== null),
         );
         const currentYear = new Date().getFullYear();
 
         // Find the latest month with actual data for current year
-        const latestMonth = data.length > 0 && years.includes(currentYear)
-          ? data[data.length - 1]?.month
-          : null;
+        const latestMonth =
+          data.length > 0 && years.includes(currentYear) ? data[data.length - 1]?.month : null;
 
-        return (hiddenYears.size > 0 || yearsWithoutData.length > 0 || (latestMonth && years.includes(currentYear))) && (
-          <div className="chart-info">
-            <p>
-              {hiddenYears.size > 0 && (
-                <span>{hiddenYears.size} year{hiddenYears.size > 1 ? 's' : ''} hidden. </span>
-              )}
-              {yearsWithoutData.length > 0 && (
-                <span>
-                  {yearsWithoutData.join(', ')}: no data available.{' '}
-                </span>
-              )}
-              {latestMonth && years.includes(currentYear) && (
-                <span>
-                  {currentYear}: data available up to {latestMonth}.
-                </span>
-              )}
-              Click legend items to show/hide years.
-            </p>
-          </div>
+        return (
+          (hiddenYears.size > 0 ||
+            yearsWithoutData.length > 0 ||
+            (latestMonth && years.includes(currentYear))) && (
+            <div className="chart-info">
+              <p>
+                {hiddenYears.size > 0 && (
+                  <span>
+                    {hiddenYears.size} year{hiddenYears.size > 1 ? 's' : ''} hidden.{' '}
+                  </span>
+                )}
+                {yearsWithoutData.length > 0 && (
+                  <span>{yearsWithoutData.join(', ')}: no data available. </span>
+                )}
+                {latestMonth && years.includes(currentYear) && (
+                  <span>
+                    {currentYear}: data available up to {latestMonth}.
+                  </span>
+                )}
+                Click legend items to show/hide years.
+              </p>
+            </div>
+          )
         );
       })()}
     </div>

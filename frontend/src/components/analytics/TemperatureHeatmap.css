@@ -100,19 +100,19 @@
   height: 12px;
   background: linear-gradient(
     to right,
-    #08519c 0%,    /* -20°C: Nagyon hideg, sötét kék */
-    #2171b5 8%,    /* -15°C: Hideg kék */
-    #4292c6 15%,   /* -10°C: Mérsékelt hideg kék */
-    #6baed6 23%,   /* -5°C: Enyhe hideg kék */
-    #9ecae1 31%,   /* 0°C: Fagyhatár világoskék */
-    #c6dbef 38%,   /* 5°C: Hideg világoskék */
-    #fee0d2 46%,   /* 10°C: Semleges világosrózsaszín */
-    #fcbba1 54%,   /* 15°C: Enyhe meleg rózsaszín */
-    #fc9272 62%,   /* 20°C: Mérsékelt meleg narancs */
-    #fb6a4a 69%,   /* 25°C: Meleg narancs */
-    #ef3b2c 77%,   /* 30°C: Forró vörös */
-    #cb181d 85%,   /* 35°C: Nagyon forró sötétvörös */
-    #99000d 100%   /* 40°C: Extrém forró bordó */
+    #08519c 0%,
+    /* -20°C: Nagyon hideg, sötét kék */ #2171b5 8%,
+    /* -15°C: Hideg kék */ #4292c6 15%,
+    /* -10°C: Mérsékelt hideg kék */ #6baed6 23%,
+    /* -5°C: Enyhe hideg kék */ #9ecae1 31%,
+    /* 0°C: Fagyhatár világoskék */ #c6dbef 38%,
+    /* 5°C: Hideg világoskék */ #fee0d2 46%,
+    /* 10°C: Semleges világosrózsaszín */ #fcbba1 54%,
+    /* 15°C: Enyhe meleg rózsaszín */ #fc9272 62%,
+    /* 20°C: Mérsékelt meleg narancs */ #fb6a4a 69%,
+    /* 25°C: Meleg narancs */ #ef3b2c 77%,
+    /* 30°C: Forró vörös */ #cb181d 85%,
+    /* 35°C: Nagyon forró sötétvörös */ #99000d 100% /* 40°C: Extrém forró bordó */
   );
   border-radius: 6px;
   border: 1px solid #dee2e6;
@@ -159,55 +159,55 @@
 
 /* 🌡️ Hőmérséklet színek referencia - kibővített skála */
 .temp-very-cold {
-  color: #08519c;    /* -20°C: Nagyon hideg, sötét kék */
+  color: #08519c; /* -20°C: Nagyon hideg, sötét kék */
 }
 
 .temp-cold {
-  color: #2171b5;    /* -15°C: Hideg kék */
+  color: #2171b5; /* -15°C: Hideg kék */
 }
 
 .temp-cool {
-  color: #4292c6;    /* -10°C: Mérsékelt hideg kék */
+  color: #4292c6; /* -10°C: Mérsékelt hideg kék */
 }
 
 .temp-mild-cold {
-  color: #6baed6;    /* -5°C: Enyhe hideg kék */
+  color: #6baed6; /* -5°C: Enyhe hideg kék */
 }
 
 .temp-freezing {
-  color: #9ecae1;    /* 0°C: Fagyhatár világoskék */
+  color: #9ecae1; /* 0°C: Fagyhatár világoskék */
 }
 
 .temp-cool-light {
-  color: #c6dbef;    /* 5°C: Hideg világoskék */
+  color: #c6dbef; /* 5°C: Hideg világoskék */
 }
 
 .temp-neutral {
-  color: #fee0d2;    /* 10°C: Semleges világosrózsaszín */
+  color: #fee0d2; /* 10°C: Semleges világosrózsaszín */
 }
 
 .temp-mild-warm {
-  color: #fcbba1;    /* 15°C: Enyhe meleg rózsaszín */
+  color: #fcbba1; /* 15°C: Enyhe meleg rózsaszín */
 }
 
 .temp-warm {
-  color: #fc9272;    /* 20°C: Mérsékelt meleg narancs */
+  color: #fc9272; /* 20°C: Mérsékelt meleg narancs */
 }
 
 .temp-hot {
-  color: #fb6a4a;    /* 25°C: Meleg narancs */
+  color: #fb6a4a; /* 25°C: Meleg narancs */
 }
 
 .temp-very-hot {
-  color: #ef3b2c;    /* 30°C: Forró vörös */
+  color: #ef3b2c; /* 30°C: Forró vörös */
 }
 
 .temp-extreme-hot {
-  color: #cb181d;    /* 35°C: Nagyon forró sötétvörös */
+  color: #cb181d; /* 35°C: Nagyon forró sötétvörös */
 }
 
 .temp-max-hot {
-  color: #99000d;    /* 40°C: Extrém forró bordó */
+  color: #99000d; /* 40°C: Extrém forró bordó */
 }
 
 /* 📱 Responsive design - Qt 7×53 Calendar Matrix */
