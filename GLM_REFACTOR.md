@@ -855,6 +855,117 @@ cd frontend && npx vitest run                                   # 342 passed
 
 ---
 
+## Phase 7: Dead Code Cleanup + LOC Compliance + Coverage ✅ KÉSZ (2026-04-18)
+
+### 7.1 Halott kód eltávolítása (6 fájl)
+
+**Probléma:** 6 fájl 0% coverage, 0 importáló — korábbi refaktor maradványok.
+
+**Törölt fájlok:**
+- `src/config/provider_config_support.py`
+- `src/config/usage_config_support.py`
+- `src/data/anomaly_profile/manager_support.py`
+- `src/domain/analytics/services/analytics_transform_service_support.py`
+- `src/domain/entities/analytics_models_support.py`
+- `src/data/geo_demo.py`
+
+**Módosult:** `src/data/geo_utils.py` — demo import eltávolítva, tesztek frissítve
+
+---
+
+### 7.2 analytics_transform_service.py LOC csökkentés (337→292)
+
+**Probléma:** 337 LOC, meghaladja az AGENTS.md 300-as limitjét.
+
+**Javítás:** Statisztikai metódusok kiszervezése.
+
+**Új fájl:** `src/domain/analytics/services/analytics_statistics.py` (~88 LOC)
+- `calculate_statistics_for_results_none_safe()` — none-safe statisztikák
+- `get_provider_stats()` — provider használat számlálás
+- `create_empty_analytics_result()` — fallback eredmény gyár
+
+**Marad:** `analytics_transform_service.py` (292 LOC) — backward-compat delegáló wrapper-ek
+
+---
+
+### 7.3 weather_data_bridge/core.py LOC csökkentés (318→244)
+
+**Probléma:** 318 LOC, meghaladja a limitet.
+
+**Javítás:** Folium-specifikus metódusok kiszervezése.
+
+**Új fájl:** `src/presentation/gui/weather_data_bridge/folium_bridge.py` (~95 LOC)
+- `get_folium_heatmap_data()` — HeatMap formátum konverzió
+- `get_folium_marker_data()` — CircleMarker formátum konverzió
+- `calculate_marker_size()` / `calculate_marker_color()` — vizualizáció helper-ek
+- `debug_metric_mapping()` — debug információk
+
+---
+
+### 7.4 distance_calculator.py és usage_config.py LOC csökkentés
+
+**distance_calculator.py (308→262):**
+- Új: `src/data/distance_calculator_batch.py` (~57 LOC) — `DistanceBatchMixin`
+- `batch_haversine_distances()`, `closest_point()`, `get_calculation_statistics()`
+
+**usage_config.py (301→275):**
+- Új: `src/config/usage_config_helpers.py` (~40 LOC) — monkeypatch-safe helper-ek
+- `_resolve_config_attr()`, `_get_usage_tracking_file()`, `_ensure_directories()`, `_now()`
+
+---
+
+### 7.5 Coverage javítás — 104 új teszt
+
+#### 7.5.1 analyze_multi_city.py (73% → 96%)
+
+**Új fájl:** `tests/application/use_cases/test_analyze_multi_city_validation.py` (~20 teszt)
+- Üres query_types/regions → ValueError
+- Nincs város találat → ERROR státusz + fallback
+- Minden fetch sikertelen → ERROR státusz
+- aggregate=False útvonal
+- Érvénytelen limit/max_cities
+- _resolve_region_scope tesztek
+- Validációs edge case-ek (hiányzó query_type, region, date, ismeretlen értékek)
+
+#### 7.5.2 analytics_models.py (64% → 100%)
+
+**Új fájl:** `tests/domain/entities/test_analytics_models_coverage.py` (~42 teszt)
+- AnalyticsQuestion: `__str__`, `get_region_display`, `validate()` minden ág, `to_dict`
+- AnalyticsResult: `__len__`, `get_top/bottom_results`, `get_results_by_country`, `get_statistics_summary`, `get_countries_represented`
+- QueryResults: anomaly utility metódusok, `to_dict`
+
+#### 7.5.3 Egyéb coverage javítások
+
+| Fájl | Előtte | Utána | Tesztek |
+|------|--------|-------|---------|
+| `use_case_result.py` | 78% | 95%+ | `test_use_case_result.py` (6 teszt) |
+| `city_adapter.py` | 0% | 90%+ | `test_city_adapter.py` (6 teszt) |
+| `trend_request.py` | 65% | 96% | `test_trend_request_validation.py` (14 teszt) |
+| `location_dto.py` | 66% | 90%+ | `test_location_dto.py` (14 teszt) |
+| `composition_root.py` | 62% | 90%+ | kiegészítés meglévő fájlban (2 teszt) |
+
+---
+
+### Phase 7 Verification
+
+```bash
+python3 -m pytest tests/ --cov=src --cov-report=term-missing   # 1783 passed, 94%
+python3 -m ruff check src/                                      # All checks passed
+python3 -m mypy src/ --ignore-missing-imports                   # Success: 599 files
+find src/ -name "*.py" -exec wc -l {} + | sort -rn | head -5   # max 299 LOC
+```
+
+**Kritériumok:**
+- [x] 6 halott kódfájl törölve
+- [x] Minden src/ fájl ≤300 LOC (AGENTS.md compliance)
+- [x] Coverage: 90% → 94%
+- [x] Tesztek: 1679 → 1783 (+104)
+- [x] Ruff lint: 0 hiba
+- [x] Mypy: 0 hiba
+- [x] Pre-commit hook: minden PASS
+
+---
+
 ## Összesítés — VÉGREHAJTÁSI EREDMÉNYEK
 
 | Fázis | Állapot | Új fájl | Módosul | Tesztek |
@@ -865,21 +976,23 @@ cd frontend && npx vitest run                                   # 342 passed
 | 4 — Performance | ✅ KÉSZ | 1 | 8 | 1644 zöld |
 | 5 — Quality | ✅ KÉSZ | 0 | 9 | 1644 zöld |
 | 6 — Coverage + Frontend | ✅ KÉSZ | 6 | 109 | 1679 backend + 342 frontend zöld |
+| 7 — Dead Code + LOC + Coverage | ✅ KÉSZ | 4 | 17 | 1783 backend + 342 frontend zöld |
 
-**Végeredmény:** 1679/1679 backend teszt zöld, 342/342 frontend teszt zöld, 90.41% coverage, ruff/mypy clean, 0 TS hiba, ESLint flat config, Prettier uniform.
+**Végeredmény:** 1783/1783 backend teszt zöld, 342/342 frontend teszt zöld, 94% coverage, ruff/mypy clean, minden fájl ≤300 LOC.
 
 ### Git commit-ok
 - `3b6f0dd` refactor: Phase 1-4 — correctness, security, architecture, performance (47 fájl, +1794/-633)
 - `4f3304d` refactor: Phase 5 — quality and consistency fixes (15 fájl, +80/-49)
 - `860dc84` test: add coverage tests for analytics services — Phase 6 (4 fájl, +538)
 - `9a3d1ff` refactor: Phase 6 — frontend quality fixes (TS, ESLint, Prettier) (109 fájl, +3511/-1771)
+- `580420e` refactor: Phase 7 — dead code cleanup, LOC compliance, coverage boost (27 fájl, +2228/-480)
 
 ### Production Mandate megfelelés
 
 A refaktor a PRODUCTION_MANDATE 12 kötelező kritériumából:
 - **#1 Fő user flow-k:** Phase 1 javítja az adathelyességet, Phase 4 a teljesítményt
 - **#2 Nincs blocker bug:** Phase 1 eliminálja a 3 adatkorruptáló bugot
-- **#5 Unit tesztek:** Minden lépés kötelező tesztet tartalmaz, Phase 6 coverage 90.41%
+- **#5 Unit tesztek:** Minden lépés kötelező tesztet tartalmaz, Phase 7 coverage 94%
 - **#6 Integration tesztek:** Route szintű tesztek minden fázisban
 - **#7 E2E smoke test:** Quality gate tartalmazza
 - **#13 CI/CD:** Nem módosítjuk a config fájlokat
