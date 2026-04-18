@@ -5,6 +5,7 @@ from __future__ import annotations  # noqa: I001
 import logging
 
 from fastapi import APIRouter, HTTPException, Query
+from starlette.concurrency import run_in_threadpool
 
 from src.domain.ports import CityRepositoryPort
 from src.infrastructure.container import get_city_repository_port
@@ -35,8 +36,9 @@ async def search_cities(
     try:
         city_repo = _get_city_repository()
 
-        # Use the repository's autocomplete method
-        results = city_repo.autocomplete_city_name(query, limit=limit)
+        results = await run_in_threadpool(
+            lambda: city_repo.autocomplete_city_name(query, limit=limit)
+        )
 
         return {
             "query": query,

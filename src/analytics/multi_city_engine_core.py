@@ -58,6 +58,7 @@ class MultiCityEngine:
         db_path: str | None = None,
         hungarian_db_path: str | None = None,
         city_repository: CityRepositoryProtocol | None = None,
+        use_case: AnalyzeMultiCityUseCase | None = None,
     ):
         """MultiCityEngine inicializálása repository injekcióval (CA compliant - uses ports)."""
         project_root = Path(__file__).parent.parent.parent
@@ -93,15 +94,19 @@ class MultiCityEngine:
             retry_delay=self.retry_delay,
         )
         self.analytics_transform_service = AnalyticsTransformService(self.QUERY_TYPES)
-        self.use_case = AnalyzeMultiCityUseCase(
-            region_resolver=self.region_resolver,
-            city_repository=self.city_repository,
-            weather_fetch_service=self.weather_fetch_service,
-            analytics_transform_service=self.analytics_transform_service,
-            query_types=self.QUERY_TYPES,
-            regions=REGIONS,
-            hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
-        )
+
+        if use_case is not None:
+            self.use_case = use_case
+        else:
+            self.use_case = AnalyzeMultiCityUseCase(
+                region_resolver=self.region_resolver,
+                city_repository=self.city_repository,
+                weather_fetch_service=self.weather_fetch_service,
+                analytics_transform_service=self.analytics_transform_service,
+                query_types=self.QUERY_TYPES,
+                regions=REGIONS,
+                hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
+            )
 
         logger.info("🚀 Multi-city engine inicializálva")
 
@@ -111,7 +116,12 @@ class MultiCityEngine:
         progress_callback: callable | None = None,  # noqa: ARG002
     ) -> AnalyticsResult:
         """Execute analytics query with optional progress callback."""
-        return self.use_case.execute(query)
+        uc_result = self.use_case.execute(query)
+        if uc_result.is_success and uc_result.data is not None:
+            return uc_result.data
+        return self.analytics_transform_service.create_empty_analytics_result(
+            query.question, uc_result.error_message or "Unknown error"
+        )
 
     def get_cities_for_region(
         self, region: str, limit: int | None = None, max_cities: int | None = None
@@ -146,7 +156,12 @@ class MultiCityEngine:
             question=question,
             max_cities=None,
         )
-        return self.use_case.execute(query)
+        uc_result = self.use_case.execute(query)
+        if uc_result.is_success and uc_result.data is not None:
+            return uc_result.data
+        return self.analytics_transform_service.create_empty_analytics_result(
+            query.question, uc_result.error_message or "No results"
+        )
 
     def _transform_to_city_weather_result(
         self, city_data: CityWeatherData, query_type: str

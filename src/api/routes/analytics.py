@@ -5,8 +5,10 @@ from __future__ import annotations  # noqa: I001
 import logging
 
 from fastapi import APIRouter, HTTPException
+from starlette.concurrency import run_in_threadpool
 
 from src.api.dto.trend_request import TrendAnalysisRequest
+from src.application.commands.trend_command import TrendAnalysisCommand
 from src.application.use_cases.calculate_trend import CalculateTrendUseCase
 from src.infrastructure.container import get_city_manager_port, get_weather_client_port
 
@@ -48,7 +50,17 @@ async def calculate_trend(request: TrendAnalysisRequest) -> dict:
             weather_client=get_weather_client_port(),
             city_manager=get_city_manager_port(),
         )
-        result = use_case.execute(request)
+        result = await run_in_threadpool(
+            lambda: use_case.execute(
+                TrendAnalysisCommand(
+                    location=request.location,
+                    metric=request.metric.value,
+                    time_periods=request.time_periods,
+                    start_date=request.start_date,
+                    end_date=request.end_date,
+                )
+            )
+        )
         return result.to_dict()
 
     except ValueError as e:

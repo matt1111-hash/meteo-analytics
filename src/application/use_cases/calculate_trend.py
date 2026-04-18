@@ -7,10 +7,11 @@ Orchestrates weather data fetching and trend calculation.
 from __future__ import annotations
 
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from typing import Any
 
-from src.api.dto.trend_request import TrendAnalysisRequest
+from src.application.commands.trend_command import TrendAnalysisCommand
 from src.domain.analytics.services.trend_calculator import TrendCalculator
 from src.domain.entities.trend_result import TrendAnalysisResult
 from src.domain.ports import CityManagerPort, WeatherClientPort
@@ -38,11 +39,11 @@ class CalculateTrendUseCase:
         self._city_manager = city_manager
         self._trend_calculator = trend_calculator or TrendCalculator()
 
-    def execute(self, request: TrendAnalysisRequest) -> TrendAnalysisResult:
+    def execute(self, request: TrendAnalysisCommand) -> TrendAnalysisResult:
         """Execute trend analysis for the given request.
 
         Args:
-            request: Trend analysis request with location, metric, and time periods
+            request: Trend analysis command with location, metric, and time periods
 
         Returns:
             TrendAnalysisResult with trend statistics for each time period
@@ -118,38 +119,62 @@ class CalculateTrendUseCase:
     ) -> list[dict[str, Any]]:
         """Fetch weather data for the given location and date range.
 
-        Uses batch fetching for long date ranges.
+        Uses parallel yearly batch fetching for long date ranges.
         """
-        all_data = []
-        current_start = start_date
+        year_batches = self._build_year_batches(start_date, end_date)
+        if not year_batches:
+            return []
 
-        # Fetch in yearly batches
-        while current_start < end_date:
-            current_end = min(current_start + timedelta(days=365), end_date)
-
-            try:
-                batch_data = self._weather_client.get_weather_data(
-                    lat=lat,
-                    lon=lon,
-                    start_date=current_start.strftime("%Y-%m-%d"),
-                    end_date=current_end.strftime("%Y-%m-%d"),
-                )
-
-                if isinstance(batch_data, tuple):
-                    batch_data, _ = batch_data
-
+        all_data: list[dict[str, Any]] = []
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = {
+                executor.submit(self._fetch_batch, lat, lon, s, e): (s, e) for s, e in year_batches
+            }
+            for future in as_completed(futures):
+                batch_data = future.result()
                 if batch_data:
                     all_data.extend(batch_data)
-
-            except Exception as e:
-                logger.error("Error fetching weather data batch: %s", e)
-
-            current_start = current_end + timedelta(days=1)
 
         logger.info("Fetched %d weather records for trend analysis", len(all_data))
         return all_data
 
-    def _empty_result(self, request: TrendAnalysisRequest) -> TrendAnalysisResult:
+    @staticmethod
+    def _build_year_batches(
+        start_date: datetime,
+        end_date: datetime,
+    ) -> list[tuple[datetime, datetime]]:
+        """Split date range into yearly (≤365 day) batches."""
+        batches: list[tuple[datetime, datetime]] = []
+        current = start_date
+        while current < end_date:
+            batch_end = min(current + timedelta(days=365), end_date)
+            batches.append((current, batch_end))
+            current = batch_end + timedelta(days=1)
+        return batches
+
+    def _fetch_batch(
+        self,
+        lat: float,
+        lon: float,
+        start: datetime,
+        end: datetime,
+    ) -> list[dict[str, Any]]:
+        """Fetch a single yearly batch, returning an empty list on failure."""
+        try:
+            batch_data = self._weather_client.get_weather_data(
+                lat=lat,
+                lon=lon,
+                start_date=start.strftime("%Y-%m-%d"),
+                end_date=end.strftime("%Y-%m-%d"),
+            )
+            if isinstance(batch_data, tuple):
+                batch_data, _ = batch_data
+            return batch_data or []
+        except Exception as e:
+            logger.error("Error fetching weather data batch: %s", e)
+            return []
+
+    def _empty_result(self, request: TrendAnalysisCommand) -> TrendAnalysisResult:
         """Return empty result when no data is available."""
         return TrendAnalysisResult(
             location_name=request.location,

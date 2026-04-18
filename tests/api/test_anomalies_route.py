@@ -9,6 +9,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from src.api.main import app
 from src.api.routes import anomalies
+from src.application.use_cases.use_case_result import ResultStatus, UseCaseResult
 from src.domain.entities.climate_anomaly import ClimateAnomaly
 
 
@@ -60,8 +61,13 @@ async def test_detect_anomalies_returns_serialized_response(
         ),
     }
     anomaly_use_case = MagicMock()
-    anomaly_use_case.execute.return_value = anomaly_result
-    monkeypatch.setattr(anomalies, "_build_use_case", MagicMock(return_value=weather_use_case))
+    anomaly_use_case.execute.return_value = UseCaseResult(
+        status=ResultStatus.SUCCESS,
+        data=anomaly_result,
+    )
+    monkeypatch.setattr(
+        anomalies, "build_analyze_multi_city_use_case", MagicMock(return_value=weather_use_case)
+    )
     monkeypatch.setattr(anomalies, "anomaly_use_case", anomaly_use_case)
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
@@ -87,7 +93,9 @@ async def test_detect_anomalies_returns_404_when_city_not_found(
     """Endpoint should return 404 when the city lookup returns no match."""
     weather_use_case = _build_weather_use_case()
     weather_use_case.city_repository.get_cities_by_names.return_value = []
-    monkeypatch.setattr(anomalies, "_build_use_case", MagicMock(return_value=weather_use_case))
+    monkeypatch.setattr(
+        anomalies, "build_analyze_multi_city_use_case", MagicMock(return_value=weather_use_case)
+    )
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
@@ -107,7 +115,9 @@ async def test_detect_anomalies_returns_404_when_weather_data_missing(
     weather_use_case = _build_weather_use_case()
     weather_use_case.city_repository.get_cities_by_names.return_value = [{"city": "Budapest"}]
     weather_use_case.weather_fetch_service.fetch_weather_data_dual_api_batch.return_value = []
-    monkeypatch.setattr(anomalies, "_build_use_case", MagicMock(return_value=weather_use_case))
+    monkeypatch.setattr(
+        anomalies, "build_analyze_multi_city_use_case", MagicMock(return_value=weather_use_case)
+    )
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post(
@@ -136,7 +146,9 @@ async def test_detect_anomalies_maps_value_error_to_http_400(
     ]
     anomaly_use_case = MagicMock()
     anomaly_use_case.execute.side_effect = ValueError("bad thresholds")
-    monkeypatch.setattr(anomalies, "_build_use_case", MagicMock(return_value=weather_use_case))
+    monkeypatch.setattr(
+        anomalies, "build_analyze_multi_city_use_case", MagicMock(return_value=weather_use_case)
+    )
     monkeypatch.setattr(anomalies, "anomaly_use_case", anomaly_use_case)
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
@@ -156,7 +168,7 @@ async def test_detect_anomalies_maps_unexpected_error_to_http_500(
     """Unexpected errors should map to HTTP 500."""
     monkeypatch.setattr(
         anomalies,
-        "_build_use_case",
+        "build_analyze_multi_city_use_case",
         MagicMock(side_effect=RuntimeError("broken dependency graph")),
     )
 

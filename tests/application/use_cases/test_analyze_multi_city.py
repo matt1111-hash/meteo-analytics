@@ -133,11 +133,12 @@ def test_execute_returns_ranked_and_limited_results() -> None:
 
     result = use_case.execute(query)
 
-    assert len(result.city_results) == 1
-    assert result.city_results[0].city_name == "B"
-    assert result.city_results[0].rank == 1
-    assert result.total_cities_found == 2
-    assert result.statistics["max"] == pytest.approx(30.0)
+    assert result.is_success
+    assert len(result.data.city_results) == 1
+    assert result.data.city_results[0].city_name == "B"
+    assert result.data.city_results[0].rank == 1
+    assert result.data.total_cities_found == 2
+    assert result.data.statistics["max"] == pytest.approx(30.0)
 
 
 def test_execute_uses_region_default_city_limit_when_missing() -> None:
@@ -156,7 +157,8 @@ def test_execute_uses_region_default_city_limit_when_missing() -> None:
     result = use_case.execute(query)
 
     assert repo.last_limit == 5  # region default
-    assert len(result.city_results) == 1
+    assert result.is_success
+    assert len(result.data.city_results) == 1
 
 
 def test_execute_returns_empty_result_on_invalid_region() -> None:
@@ -171,5 +173,5 @@ def test_execute_returns_empty_result_on_invalid_region() -> None:
 
     result = use_case.execute(query)
 
-    assert result.city_results == []
-    assert result.total_cities_found == 0
+    assert result.status.value == "error"
+    assert result.data is None

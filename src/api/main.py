@@ -21,12 +21,28 @@ from src.api.routes.providers import router as providers_router
 from src.api.routes.single_city import router as single_city_router
 from src.api.routes.weather import router as weather_router
 from src.api.routes.wind_rose import router as wind_rose_router
+from src.api.middleware.rate_limit import RateLimitMiddleware
 from src.config.api_config import APIConfig
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Global Weather Analyzer API")
+
+
+@app.middleware("http")
+async def security_headers_middleware(request: Request, call_next: Callable):
+    """Add security headers to every response."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    if APIConfig.APP_ENV == "production":
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=63072000; includeSubDomains; preload"
+        )
+        response.headers["Content-Security-Policy"] = "default-src 'self'"
+    return response
 
 
 @app.on_event("startup")
@@ -60,6 +76,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Rate limiting — production: strict; development: generous for tests
+_rate_cfg = (
+    {"max_requests": 60, "window_seconds": 60}
+    if APIConfig.APP_ENV == "production"
+    else {"max_requests": 10000, "window_seconds": 60}
+)
+app.add_middleware(RateLimitMiddleware, **_rate_cfg)
+
 # API Key authentication setup
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
@@ -90,8 +114,13 @@ def verify_api_key(api_key: str | None = Depends(api_key_header)) -> str:
     return api_key
 
 
-# Public endpoints (no authentication required)
-PUBLIC_PATHS = {"/health", "/docs", "/openapi.json", "/redoc"}
+# Public endpoints (no authentication required) — env-dependent
+_BASE_PUBLIC_PATHS: set[str] = {"/health"}
+_DOCS_PATHS: set[str] = {"/docs", "/openapi.json", "/redoc"}
+if APIConfig.APP_ENV == "production":
+    PUBLIC_PATHS: set[str] = _BASE_PUBLIC_PATHS
+else:
+    PUBLIC_PATHS = _BASE_PUBLIC_PATHS | _DOCS_PATHS
 
 
 @app.middleware("http")

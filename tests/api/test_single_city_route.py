@@ -8,6 +8,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from src.api.main import app
 from src.api.routes import single_city
+from src.application.use_cases.use_case_result import ResultStatus, UseCaseResult
 from src.domain.analytics.models import MultiCityQuery
 
 
@@ -17,10 +18,17 @@ async def test_analyze_single_city_timeseries_returns_daily_breakdown(
 ) -> None:
     """Single-city endpoint should return raw daily data and metadata."""
     use_case = MagicMock()
-    use_case.execute.return_value = MagicMock(
-        to_dict=MagicMock(return_value={"city_results": [{"date": "2024-01-01", "value": 12.0}]})
+    use_case.execute.return_value = UseCaseResult(
+        status=ResultStatus.SUCCESS,
+        data=MagicMock(
+            to_dict=MagicMock(
+                return_value={"city_results": [{"date": "2024-01-01", "value": 12.0}]}
+            )
+        ),
     )
-    monkeypatch.setattr(single_city, "_build_use_case", MagicMock(return_value=use_case))
+    monkeypatch.setattr(
+        single_city, "build_analyze_multi_city_use_case", MagicMock(return_value=use_case)
+    )
     monkeypatch.setattr(
         single_city,
         "to_multi_city_query",
@@ -60,8 +68,13 @@ async def test_analyze_single_city_uses_default_mapping_for_unknown_metric(
 ) -> None:
     """Unknown metrics should fall back to hottest_today query type."""
     use_case = MagicMock()
-    use_case.execute.return_value = MagicMock(to_dict=MagicMock(return_value={"city_results": []}))
-    monkeypatch.setattr(single_city, "_build_use_case", MagicMock(return_value=use_case))
+    use_case.execute.return_value = UseCaseResult(
+        status=ResultStatus.SUCCESS,
+        data=MagicMock(to_dict=MagicMock(return_value={"city_results": []})),
+    )
+    monkeypatch.setattr(
+        single_city, "build_analyze_multi_city_use_case", MagicMock(return_value=use_case)
+    )
     monkeypatch.setattr(
         single_city,
         "to_multi_city_query",
@@ -96,7 +109,9 @@ async def test_analyze_single_city_maps_value_error_to_http_400(
     """Value errors should map to HTTP 400."""
     use_case = MagicMock()
     use_case.execute.side_effect = ValueError("bad request")
-    monkeypatch.setattr(single_city, "_build_use_case", MagicMock(return_value=use_case))
+    monkeypatch.setattr(
+        single_city, "build_analyze_multi_city_use_case", MagicMock(return_value=use_case)
+    )
     monkeypatch.setattr(
         single_city,
         "to_multi_city_query",
@@ -126,7 +141,7 @@ async def test_analyze_single_city_maps_unexpected_error_to_http_500(
     """Unexpected errors should map to HTTP 500."""
     monkeypatch.setattr(
         single_city,
-        "_build_use_case",
+        "build_analyze_multi_city_use_case",
         MagicMock(side_effect=RuntimeError("boom")),
     )
 

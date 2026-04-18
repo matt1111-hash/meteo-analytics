@@ -9,6 +9,7 @@ Part of the city_manager refactoring - split into focused modules.
 
 import logging
 import sqlite3
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -23,18 +24,21 @@ class CityManagerDB:
     """
     Database connection and initialization for CityManager.
 
-    Handles dual database setup:
+    Uses thread-local connections for safe concurrent access.
+    Dual database setup:
     - Global cities from cities.db (44k cities)
     - Hungarian settlements from hungarian_settlements.db (3200+ settlements)
     """
 
     def __init__(self, db_path: Path | None = None, hungarian_db_path: Path | None = None):
-        """Initialize database connections."""
+        """Initialize database paths and thread-local storage."""
         self.db_path = db_path or (DATA_DIR / "cities.db")
         self.hungarian_db_path = hungarian_db_path or (DATA_DIR / "hungarian_settlements.db")
 
-        self.connection: sqlite3.Connection | None = None
-        self.hungarian_connection: sqlite3.Connection | None = None
+        self._local = threading.local()
+        self._closed = False
+        self._global_db_valid = True
+        self._hungarian_db_valid = True
 
         self.query_count = 0
         self.hungarian_query_count = 0
@@ -46,52 +50,101 @@ class CityManagerDB:
 
         self._initialize_databases()
 
-    def _initialize_databases(self) -> None:
-        """Initialize and validate dual databases."""
+    @property
+    def connection(self) -> sqlite3.Connection | None:
+        """Thread-local global database connection (lazy per-thread)."""
+        conn = getattr(self._local, "connection", None)
+        if conn is None and not self._closed and self._global_db_valid and self.db_path.exists():
+            try:
+                conn = sqlite3.connect(self.db_path)
+                conn.row_factory = sqlite3.Row
+                self._local.connection = conn
+            except sqlite3.Error as e:
+                logger.error(f"Thread-local global connection error: {e}")
+                return None
+        return conn
 
+    @connection.setter
+    def connection(self, value: sqlite3.Connection | None) -> None:
+        self._local.connection = value
+
+    @property
+    def hungarian_connection(self) -> sqlite3.Connection | None:
+        """Thread-local Hungarian database connection (lazy per-thread)."""
+        conn = getattr(self._local, "hungarian_connection", None)
+        if (
+            conn is None
+            and not self._closed
+            and self._hungarian_db_valid
+            and self.hungarian_db_path.exists()
+        ):
+            try:
+                conn = sqlite3.connect(self.hungarian_db_path)
+                conn.row_factory = sqlite3.Row
+                self._local.hungarian_connection = conn
+            except sqlite3.Error as e:
+                logger.error(f"Thread-local Hungarian connection error: {e}")
+                return None
+        return conn
+
+    @hungarian_connection.setter
+    def hungarian_connection(self, value: sqlite3.Connection | None) -> None:
+        self._local.hungarian_connection = value
+
+    def _initialize_databases(self) -> None:
+        """Validate dual databases on startup."""
         if not self.db_path.exists():
+            self._global_db_valid = False
             logger.warning(f"Global cities.db not found: {self.db_path}")
             logger.warning("   Only Hungarian settlements will be available!")
         else:
             try:
-                self.connection = sqlite3.connect(self.db_path, check_same_thread=False)
-                self.connection.row_factory = sqlite3.Row
-                self._validate_database_structure()
-
-                total_global = self._get_total_city_count()
-                logger.info(f"Global database: {total_global:,} cities")
-
+                conn = sqlite3.connect(self.db_path)
+                conn.row_factory = sqlite3.Row
+                self._validate_database_structure_with(conn)
+                total = self._get_count_with(conn, "cities")
+                logger.info(f"Global database: {total:,} cities")
+                conn.close()
             except sqlite3.Error as e:
+                self._global_db_valid = False
                 logger.error(f"Global database connection error: {e}")
-                self.connection = None
 
         if not self.hungarian_db_path.exists():
+            self._hungarian_db_valid = False
             logger.warning(f"Hungarian settlements database not found: {self.hungarian_db_path}")
             logger.warning("   Run: python scripts/hungarian_settlements_importer.py")
         else:
             try:
-                self.hungarian_connection = sqlite3.connect(
-                    self.hungarian_db_path, check_same_thread=False
-                )
-                self.hungarian_connection.row_factory = sqlite3.Row
-                self._validate_hungarian_database_structure()
-
-                total_hungarian = self._get_total_hungarian_settlements_count()
-                logger.info(f"Hungarian settlements database: {total_hungarian:,} settlements")
-
+                conn = sqlite3.connect(self.hungarian_db_path)
+                conn.row_factory = sqlite3.Row
+                self._validate_hungarian_database_structure_with(conn)
+                total = self._get_count_with(conn, "hungarian_settlements")
+                logger.info(f"Hungarian settlements database: {total:,} settlements")
+                conn.close()
             except sqlite3.Error as e:
+                self._hungarian_db_valid = False
                 logger.error(f"Hungarian database connection error: {e}")
-                self.hungarian_connection = None
 
-        if not self.connection and not self.hungarian_connection:
+        if self.connection is None and self.hungarian_connection is None:
             raise CityDatabaseError("No database available!")
 
     def _validate_database_structure(self) -> None:
-        """Validate global database table structure."""
-        if not self.connection:
+        """Validate global database table structure (uses thread-local connection)."""
+        conn = self.connection
+        if not conn:
             return
+        self._validate_database_structure_with(conn)
 
-        cursor = self.connection.cursor()
+    def _validate_hungarian_database_structure(self) -> None:
+        """Validate Hungarian settlements database structure (uses thread-local connection)."""
+        conn = self.hungarian_connection
+        if not conn:
+            return
+        self._validate_hungarian_database_structure_with(conn)
+
+    def _validate_database_structure_with(self, conn: sqlite3.Connection) -> None:
+        """Validate global database table structure."""
+        cursor = conn.cursor()
         cursor.execute("PRAGMA table_info(cities)")
         columns = [row[1] for row in cursor.fetchall()]
 
@@ -115,12 +168,9 @@ class CityManagerDB:
 
         logger.debug("Global database structure validated")
 
-    def _validate_hungarian_database_structure(self) -> None:
+    def _validate_hungarian_database_structure_with(self, conn: sqlite3.Connection) -> None:
         """Validate Hungarian settlements database structure."""
-        if not self.hungarian_connection:
-            return
-
-        cursor = self.hungarian_connection.cursor()
+        cursor = conn.cursor()
         cursor.execute("PRAGMA table_info(hungarian_settlements)")
         columns = [row[1] for row in cursor.fetchall()]
 
@@ -145,25 +195,29 @@ class CityManagerDB:
         logger.debug("Hungarian database structure validated")
 
     def _get_total_city_count(self) -> int:
-        """Get total global city count."""
-        if not self.connection:
+        """Get total global city count (thread-local connection)."""
+        conn = self.connection
+        if not conn:
             return 0
-        cursor = self.connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM cities")
-        return cursor.fetchone()[0]
+        return self._get_count_with(conn, "cities")
 
     def _get_total_hungarian_settlements_count(self) -> int:
-        """Get total Hungarian settlement count."""
-        if not self.hungarian_connection:
+        """Get total Hungarian settlement count (thread-local connection)."""
+        conn = self.hungarian_connection
+        if not conn:
             return 0
-        cursor = self.hungarian_connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM hungarian_settlements")
+        return self._get_count_with(conn, "hungarian_settlements")
+
+    @staticmethod
+    def _get_count_with(conn: sqlite3.Connection, table: str) -> int:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT COUNT(*) FROM {table}")
         return cursor.fetchone()[0]
 
     def _execute_query(
         self, sql: str, params: tuple = (), use_hungarian: bool = False
     ) -> list[sqlite3.Row]:
-        """Execute SQL query on appropriate database."""
+        """Execute SQL query on appropriate database (thread-local connection)."""
         connection = self.hungarian_connection if use_hungarian else self.connection
 
         if not connection:
@@ -191,16 +245,18 @@ class CityManagerDB:
             raise CityDatabaseError(f"Query execution error: {e}")  # noqa: B904
 
     def close(self) -> None:
-        """Close dual database connections."""
-        if self.connection:
-            self.connection.close()
-            self.connection = None
+        """Close thread-local database connections and prevent reconnection."""
+        self._closed = True
 
-        if self.hungarian_connection:
-            self.hungarian_connection.close()
-            self.hungarian_connection = None
+        if hasattr(self._local, "connection") and self._local.connection:
+            self._local.connection.close()
+            self._local.connection = None
 
-        logger.info("Dual database connections closed")
+        if hasattr(self._local, "hungarian_connection") and self._local.hungarian_connection:
+            self._local.hungarian_connection.close()
+            self._local.hungarian_connection = None
+
+        logger.info("Thread-local database connections closed")
 
 
 __all__ = ["CityManagerDB"]

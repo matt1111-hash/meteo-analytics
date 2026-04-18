@@ -15,6 +15,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi import status
 from httpx import AsyncClient
+from src.application.use_cases.use_case_result import ResultStatus, UseCaseResult
 
 # ---------------------------------------------------------------------------
 # 1. Health check
@@ -108,10 +109,12 @@ class TestSingleCityWeather:
         mock_result.to_dict.return_value = MOCK_SINGLE_CITY_RESPONSE
 
         mock_use_case = MagicMock()
-        mock_use_case.execute = MagicMock(return_value=mock_result)
+        mock_use_case.execute = MagicMock(
+            return_value=UseCaseResult(status=ResultStatus.SUCCESS, data=mock_result)
+        )
 
         with patch(
-            "src.api.routes.single_city._build_use_case",
+            "src.api.routes.single_city.build_analyze_multi_city_use_case",
             return_value=mock_use_case,
         ):
             response = await client.post(

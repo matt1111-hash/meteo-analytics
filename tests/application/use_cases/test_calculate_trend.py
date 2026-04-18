@@ -6,7 +6,7 @@ from datetime import datetime
 from unittest.mock import MagicMock
 
 import pytest
-from src.api.dto.trend_request import TrendAnalysisRequest
+from src.application.commands.trend_command import TrendAnalysisCommand
 from src.application.use_cases.calculate_trend import CalculateTrendUseCase
 from src.domain.entities.trend_result import TrendAnalysisResult
 from src.domain.value_objects.enums import AnalyticsMetric
@@ -32,15 +32,15 @@ def test_execute_uses_injected_dependencies() -> None:
         city_manager=city_manager,
         trend_calculator=trend_calculator,
     )
-    request = TrendAnalysisRequest(
+    command = TrendAnalysisCommand(
         location="Budapest",
-        metric=AnalyticsMetric.TEMPERATURE_2M_MAX,
+        metric="temperature_2m_max",
         time_periods=[5],
         start_date="2024-01-01",
         end_date="2024-12-31",
     )
 
-    result = use_case.execute(request)
+    result = use_case.execute(command)
 
     city_manager.find_city_by_name.assert_called_once_with("Budapest")
     weather_client.get_weather_data.assert_called()
@@ -54,10 +54,12 @@ def test_execute_raises_for_unknown_location() -> None:
         weather_client=MagicMock(),
         city_manager=MagicMock(find_city_by_name=MagicMock(return_value=None)),
     )
-    request = TrendAnalysisRequest(location="Unknown", time_periods=[5])
+    command = TrendAnalysisCommand(
+        location="Unknown", metric="temperature_2m_max", time_periods=[5]
+    )
 
     with pytest.raises(ValueError, match="Location not found: Unknown"):
-        use_case.execute(request)
+        use_case.execute(command)
 
 
 def test_execute_returns_empty_result_when_weather_data_missing() -> None:
@@ -69,9 +71,11 @@ def test_execute_returns_empty_result_when_weather_data_missing() -> None:
         weather_client=weather_client,
         city_manager=city_manager,
     )
-    request = TrendAnalysisRequest(location="Budapest", time_periods=[5])
+    command = TrendAnalysisCommand(
+        location="Budapest", metric="temperature_2m_max", time_periods=[5]
+    )
 
-    result = use_case.execute(request)
+    result = use_case.execute(command)
 
     assert result.location_name == "Budapest"
     assert result.periods == []

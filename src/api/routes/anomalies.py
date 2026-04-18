@@ -9,18 +9,11 @@ from typing import Any, Dict, List  # noqa: UP035
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from starlette.concurrency import run_in_threadpool
 
-from src.analytics.multi_city_engine_core import MultiCityEngine
-from src.analytics.multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS
 from src.api.dto.weather_request import WeatherAnalysisRequest
 from src.application.use_cases import AnalyzeMultiCityUseCase, DetectAnomaliesUseCase
-from src.domain.analytics.services import (
-    AnalyticsTransformService,
-    RegionResolverService,
-    WeatherFetchService,
-)
-from src.domain.ports import CityRepositoryPort
-from src.infrastructure.container import get_city_repository_port
+from src.infrastructure.container import build_analyze_multi_city_use_case
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["anomalies"])
@@ -48,27 +41,6 @@ class AnomalyDetectionRequest(BaseModel):
     thresholds: AnomalyThresholds | None = Field(
         default=None,
         description="Custom thresholds (defaults provided if not specified)",
-    )
-
-
-def _build_use_case() -> AnalyzeMultiCityUseCase:
-    """Build use case with dependencies (CA compliant - uses ports)."""
-    engine = MultiCityEngine()
-    city_repo: CityRepositoryPort = get_city_repository_port()
-    return AnalyzeMultiCityUseCase(
-        region_resolver=RegionResolverService(),
-        city_repository=city_repo,
-        weather_fetch_service=WeatherFetchService(
-            weather_client=engine.weather_client,
-            max_workers=engine.max_workers,
-            request_timeout=engine.request_timeout,
-            max_retries=engine.max_retries,
-            retry_delay=engine.retry_delay,
-        ),
-        analytics_transform_service=AnalyticsTransformService(MultiCityEngine.QUERY_TYPES),
-        query_types=MultiCityEngine.QUERY_TYPES,
-        regions=REGIONS,
-        hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
     )
 
 
@@ -144,22 +116,27 @@ async def detect_anomalies(request: AnomalyDetectionRequest) -> dict:
         Anomaly detection results for temperature, precipitation, and wind.
     """
     try:
-        weather_use_case = _build_use_case()
+        weather_use_case = build_analyze_multi_city_use_case()
         WeatherAnalysisRequest(
             cities=[request.city],
             date_range={"start": request.start, "end": request.end},
         )
         cities = _get_city_or_404(weather_use_case, request.city)
-        raw_weather_data = _fetch_weather_or_404(
-            weather_use_case, request.city, request.start, request.end, cities
+        raw_weather_data = await run_in_threadpool(
+            lambda: _fetch_weather_or_404(
+                weather_use_case, request.city, request.start, request.end, cities
+            )
         )
         weather_data = _build_weather_metric_lists(raw_weather_data)
         thresholds_dict = _resolve_thresholds(request)
-        anomalies = anomaly_use_case.execute(
-            weather_data=weather_data,
-            thresholds=thresholds_dict,
-            location_name=request.city,
+        result = await run_in_threadpool(
+            lambda: anomaly_use_case.execute(
+                weather_data=weather_data,
+                thresholds=thresholds_dict,
+                location_name=request.city,
+            )
         )
+        anomalies = result.data
         return {
             "city": request.city,
             "date_range": {"start": request.start, "end": request.end},

@@ -8,6 +8,7 @@ import pytest
 from fastapi import HTTPException
 from src.api.dto.trend_request import TrendAnalysisRequest
 from src.api.routes import analytics
+from src.application.commands.trend_command import TrendAnalysisCommand
 
 
 @pytest.mark.asyncio
@@ -35,7 +36,9 @@ async def test_calculate_trend_builds_use_case_with_injected_ports(
         weather_client=weather_client,
         city_manager=city_manager,
     )
-    use_case_instance.execute.assert_called_once_with(request)
+    called_cmd = use_case_instance.execute.call_args[0][0]
+    assert isinstance(called_cmd, TrendAnalysisCommand)
+    assert called_cmd.location == "Budapest"
     assert response == {"location_name": "Budapest"}
 
 

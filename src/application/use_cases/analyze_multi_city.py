@@ -25,6 +25,7 @@ from src.domain.value_objects.enums import (
 
 # Re-export everything from support so that star-imports from this module still work.
 from .analyze_multi_city_support import *  # noqa: F403
+from .use_case_result import ResultStatus, UseCaseResult
 
 # pylint: disable=too-few-public-methods,too-many-arguments,too-many-locals,broad-exception-caught
 
@@ -62,12 +63,17 @@ class AnalyzeMultiCityUseCase:
     # Public entry point
     # ------------------------------------------------------------------
 
-    def execute(self, query: MultiCityQuery, aggregate: bool = True) -> AnalyticsResult:
+    def execute(
+        self, query: MultiCityQuery, aggregate: bool = True
+    ) -> UseCaseResult[AnalyticsResult]:
         """Execute the multi-city analytics flow.
 
         Args:
             query: The multi-city query parameters
             aggregate: If True, aggregates multi-day data per city. If False, returns all daily records.
+
+        Returns:
+            UseCaseResult with SUCCESS/ERROR status and optional data.
         """
         start_time = time.time()
         try:
@@ -90,7 +96,12 @@ class AnalyzeMultiCityUseCase:
                     hungarian_mapping=self.hungarian_mapping,
                 )
             if not cities:
-                return self._fallback_result(query, "Nincsenek városok a lekérdezéshez")
+                fallback = self._fallback_result(query, "Nincsenek városok a lekérdezéshez")
+                return UseCaseResult(
+                    status=ResultStatus.ERROR,
+                    data=fallback,
+                    error_message="Nincsenek városok a lekérdezéshez",
+                )
 
             # Pass both start_date and end_date to support date ranges
             weather_data = self.weather_fetch_service.fetch_weather_data_dual_api_batch(
@@ -107,7 +118,12 @@ class AnalyzeMultiCityUseCase:
             )
             transformed_results = self._transform_results(processed_data, query.query_type)
             if not transformed_results:
-                return self._fallback_result(query, "Nincsenek sikeres időjárási eredmények")
+                fallback = self._fallback_result(query, "Nincsenek sikeres időjárási eredmények")
+                return UseCaseResult(
+                    status=ResultStatus.ERROR,
+                    data=fallback,
+                    error_message="Nincsenek sikeres időjárási eredmények",
+                )
 
             # For daily time series (aggregate=False), don't limit results
             # For aggregated multi-city (aggregate=True), apply limit
@@ -123,7 +139,7 @@ class AnalyzeMultiCityUseCase:
             provider_stats = self.analytics_transform_service.get_provider_stats(weather_data)
             final_question = query.question or self._build_question(query_config, mapped_region)
 
-            return AnalyticsResult(
+            result = AnalyticsResult(
                 question=final_question,
                 city_results=limited_results,
                 execution_time=time.time() - start_time,
@@ -132,13 +148,14 @@ class AnalyzeMultiCityUseCase:
                 statistics=stats,
                 provider_statistics=provider_stats,
             )
+            return UseCaseResult(status=ResultStatus.SUCCESS, data=result)
         except Exception as exc:  # pragma: no cover - defensive fallback
             logger.error(
                 "Kritikus hiba az analyze_multi_city use case-ben: %s",
                 exc,
                 exc_info=True,
             )
-            return self._fallback_result(query, str(exc))
+            return UseCaseResult(status=ResultStatus.ERROR, data=None, error_message=str(exc))
 
     # ------------------------------------------------------------------
     # Private helpers

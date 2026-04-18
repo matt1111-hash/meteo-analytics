@@ -6,6 +6,8 @@ Main MultiCityEngine class for multi-city weather analytics
 
 from unittest.mock import MagicMock
 
+from src.application.use_cases.use_case_result import ResultStatus, UseCaseResult
+
 from tests.analytics.multi_city_engine_core_support import (
     AnalyticsResult,
     MultiCityEngine,
@@ -127,7 +129,9 @@ class TestMultiCityEngineExecuteAnalyticsQuery:
     def test_delegates_to_use_case(self, engine: MultiCityEngine, mock_use_case: MagicMock) -> None:
         """Should delegate to use_case.execute."""
         mock_result = MagicMock(spec=AnalyticsResult)
-        mock_use_case.execute.return_value = mock_result
+        mock_use_case.execute.return_value = UseCaseResult(
+            status=ResultStatus.SUCCESS, data=mock_result
+        )
 
         query = MultiCityQuery(
             query_type="hottest_today",
@@ -145,7 +149,9 @@ class TestMultiCityEngineExecuteAnalyticsQuery:
     ) -> None:
         """Should accept optional progress callback."""
         mock_result = MagicMock(spec=AnalyticsResult)
-        mock_use_case.execute.return_value = mock_result
+        mock_use_case.execute.return_value = UseCaseResult(
+            status=ResultStatus.SUCCESS, data=mock_result
+        )
 
         query = MultiCityQuery(
             query_type="hottest_today",
@@ -167,7 +173,9 @@ class TestMultiCityEngineAnalyzeMultiCity:
     ) -> None:
         """Should create query and delegate to use_case."""
         mock_result = MagicMock(spec=AnalyticsResult)
-        mock_use_case.execute.return_value = mock_result
+        mock_use_case.execute.return_value = UseCaseResult(
+            status=ResultStatus.SUCCESS, data=mock_result
+        )
 
         result = engine.analyze_multi_city(
             query_type="hottest_today",
@@ -181,7 +189,9 @@ class TestMultiCityEngineAnalyzeMultiCity:
     def test_passes_limit_to_query(self, engine: MultiCityEngine, mock_use_case: MagicMock) -> None:
         """Should pass limit to query."""
         mock_result = MagicMock(spec=AnalyticsResult)
-        mock_use_case.execute.return_value = mock_result
+        mock_use_case.execute.return_value = UseCaseResult(
+            status=ResultStatus.SUCCESS, data=mock_result
+        )
 
         engine.analyze_multi_city(
             query_type="hottest_today",

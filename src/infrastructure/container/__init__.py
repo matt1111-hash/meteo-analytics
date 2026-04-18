@@ -22,6 +22,10 @@ Migration Guide:
     NEW: from src.infrastructure.container import get_city_manager_port
 """
 
+from .composition_root import (
+    build_analyze_multi_city_use_case,
+    build_detailed_city_use_case,
+)
 from .factories import (
     get_anomaly_profile_port,
     get_city_manager_port,
@@ -30,6 +34,8 @@ from .factories import (
 )
 
 __all__ = [
+    "build_analyze_multi_city_use_case",
+    "build_detailed_city_use_case",
     "get_anomaly_profile_port",
     "get_city_manager_port",
     "get_city_repository_port",

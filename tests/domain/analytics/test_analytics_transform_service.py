@@ -100,7 +100,7 @@ def test_process_weather_results_handles_no_valid_data() -> None:
 
     processed = service.process_weather_results([invalid], "windiest_today")
 
-    assert len(processed) == 1
+    assert len(processed) == 0
 
 
 def test_calculate_statistics_for_results_none_safe_returns_stats() -> None:

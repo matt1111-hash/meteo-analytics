@@ -88,7 +88,7 @@ class WeatherClient:
 
         fallback_chain = self._get_provider_fallback_chain(selected_provider)
 
-        last_error = None
+        last_error: Exception | None = None
         for attempt_provider in fallback_chain:
             try:
                 logger.info(f"Trying provider: {attempt_provider}")
@@ -109,9 +109,14 @@ class WeatherClient:
 
                 return weather_data
 
-            except (WeatherAPIError, Exception) as e:
+            except WeatherAPIError as e:
                 last_error = e
-                logger.error(f"Provider {attempt_provider} failed: {e}")
+                logger.warning("Provider %s API error: %s", attempt_provider, e)
+                _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
+                continue
+            except Exception as e:
+                last_error = e
+                logger.exception("Unexpected error in provider %s", attempt_provider)
                 _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
                 continue
 

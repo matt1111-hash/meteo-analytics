@@ -7,19 +7,11 @@ import logging
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from starlette.concurrency import run_in_threadpool
 
-from src.analytics.multi_city_engine_core import MultiCityEngine
-from src.analytics.multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS
 from src.api.adapters.weather_adapter import to_multi_city_query
 from src.api.dto.weather_request import WeatherAnalysisRequest
-from src.application.use_cases import AnalyzeMultiCityUseCase
-from src.domain.analytics.services import (
-    AnalyticsTransformService,
-    RegionResolverService,
-    WeatherFetchService,
-)
-from src.domain.ports import CityRepositoryPort
-from src.infrastructure.container import get_city_repository_port
+from src.infrastructure.container import build_analyze_multi_city_use_case
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather"])
@@ -34,27 +26,6 @@ class SingleCityRequest(BaseModel):
     metric: str = Field(
         default="temperature_2m_max",
         description="Metric to analyze (temperature_2m_max, windspeed_10m_max, etc.)",
-    )
-
-
-def _build_use_case() -> AnalyzeMultiCityUseCase:
-    """Build use case with dependencies (CA compliant - uses ports)."""
-    engine = MultiCityEngine()
-    city_repo: CityRepositoryPort = get_city_repository_port()
-    return AnalyzeMultiCityUseCase(
-        region_resolver=RegionResolverService(),
-        city_repository=city_repo,
-        weather_fetch_service=WeatherFetchService(
-            weather_client=engine.weather_client,
-            max_workers=engine.max_workers,
-            request_timeout=engine.request_timeout,
-            max_retries=engine.max_retries,
-            retry_delay=engine.retry_delay,
-        ),
-        analytics_transform_service=AnalyticsTransformService(MultiCityEngine.QUERY_TYPES),
-        query_types=MultiCityEngine.QUERY_TYPES,
-        regions=REGIONS,
-        hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
     )
 
 
@@ -74,37 +45,28 @@ def _metric_to_query_type(metric: str) -> str:
 
 @router.post("/single-city")
 async def analyze_single_city_timeseries(request: SingleCityRequest) -> dict:
-    """Analyze single city with daily time series breakdown (NO aggregation).
-
-    Returns:
-        Daily weather data for the specified date range without aggregation.
-        Each day is a separate record in the results.
-    """
+    """Analyze single city with daily time series breakdown (NO aggregation)."""
     try:
-        use_case = _build_use_case()
-        # Map metric to query_type
+        use_case = build_analyze_multi_city_use_case()
         query_type = _metric_to_query_type(request.metric)
 
-        # Convert to multi-city request format (reuse existing logic)
         multi_city_request = WeatherAnalysisRequest(
             cities=[request.city],
             date_range={"start": request.start, "end": request.end},
         )
 
-        # Execute analysis WITHOUT aggregation (daily time series)
         query = to_multi_city_query(multi_city_request)
 
-        # Override query_type with metric-specific one
         from dataclasses import replace  # noqa: PLC0415
 
         query = replace(query, query_type=query_type)
 
-        result = use_case.execute(query, aggregate=False)
+        uc_result = await run_in_threadpool(lambda: use_case.execute(query, aggregate=False))
 
-        # Return RAW daily data WITHOUT aggregation
-        response = result.to_dict()
+        if not uc_result.is_success:
+            raise HTTPException(status_code=502, detail=uc_result.error_message or "Upstream error")
 
-        # Add metadata
+        response = uc_result.data.to_dict()
         response["requested_metrics"] = [request.metric]
         response["daily_breakdown"] = True
 

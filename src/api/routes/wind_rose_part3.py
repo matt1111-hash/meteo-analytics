@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+from starlette.concurrency import run_in_threadpool
+
 from .wind_rose_part1 import WindRoseRequest, WindRoseResponse
 from .wind_rose_part2 import _process_wind_rose_data
 from .wind_rose_support import *
@@ -143,7 +145,9 @@ async def get_wind_rose(request: WindRoseRequest) -> WindRoseResponse:
     """
     try:
         latitude, longitude = _resolve_city_coordinates(request)
-        weather_records = _fetch_weather_records(request, latitude, longitude)
+        weather_records = await run_in_threadpool(
+            lambda: _fetch_weather_records(request, latitude, longitude)
+        )
         daily_data = _extract_daily_data(weather_records)
         wind_rose_data = _process_wind_rose_data(daily_data)
         return _build_response(request, wind_rose_data)

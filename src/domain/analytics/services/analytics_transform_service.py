@@ -128,7 +128,7 @@ class AnalyticsTransformService:
         metric_enum: AnalyticsMetric,
     ) -> float:
         """Resolve final numeric metric value."""
-        if metric_value is not None and metric_value != 0:
+        if metric_value is not None:
             return float(metric_value)
         return self._resolve_fallback_value(city_data, metric_enum)
 
@@ -255,7 +255,7 @@ class AnalyticsTransformService:
         valid_data = self._filter_valid_records(aggregated_data, metric)
         if not valid_data:
             logger.error("NO VALID DATA for metric '%s'", metric)
-            return weather_data[:5]
+            return []
         sorted_data = self._sort_records(valid_data, metric, sort_desc)
 
         if query_type == "windiest_today":
