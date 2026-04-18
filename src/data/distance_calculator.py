@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import logging
 import math
-from typing import Any
 
+from .distance_calculator_batch import DistanceBatchMixin
 from .distance_calculator_support import (
     calculate_cos_2sigma_m,
     calculate_vincenty_coefficient,
@@ -26,7 +26,7 @@ from .geo_types import DistanceUnit
 logger = logging.getLogger(__name__)
 
 
-class DistanceCalculator:
+class DistanceCalculator(DistanceBatchMixin):
     """
     Haversine and Vincenty distance calculator.
 
@@ -257,52 +257,6 @@ class DistanceCalculator:
         distance = convert_distance_from_meters(distance_m, unit)
         self.calculation_count += 1
         return distance
-
-    def batch_haversine_distances(
-        self,
-        center_lat: float,
-        center_lon: float,
-        points: list[tuple[float, float]],
-        unit: DistanceUnit | None = None,
-    ) -> list[float]:
-        """Batch Haversine distance calculation from center point."""
-        if unit is None:
-            unit = self.default_unit
-
-        distances = []
-        for lat, lon in points:
-            distance = self.haversine_distance(center_lat, center_lon, lat, lon, unit)
-            distances.append(distance)
-
-        return distances
-
-    def closest_point(
-        self,
-        reference_lat: float,
-        reference_lon: float,
-        points: list[tuple[float, float, Any]],
-    ) -> tuple[float, float, Any, float]:
-        """Find closest point."""
-        if not points:
-            raise ValueError("Points list is empty")
-
-        min_distance = float("inf")
-        closest = None
-
-        for lat, lon, data in points:
-            distance = self.haversine_distance(reference_lat, reference_lon, lat, lon)
-            if distance < min_distance:
-                min_distance = distance
-                closest = (lat, lon, data, distance)
-
-        return closest
-
-    def get_calculation_statistics(self) -> dict[str, Any]:
-        """Get calculation statistics."""
-        return {
-            "total_calculations": self.calculation_count,
-            "default_unit": self.default_unit.value,
-        }
 
 
 __all__ = ["DistanceCalculator"]

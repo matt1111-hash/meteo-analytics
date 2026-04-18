@@ -228,7 +228,7 @@ class TestCreateEmptyResultEdgeCase:
         service = _service()
         with (
             patch(
-                "src.domain.analytics.services.analytics_transform_service.AnalyticsQuestion",
+                "src.domain.analytics.services.analytics_statistics.AnalyticsQuestion",
                 side_effect=TypeError("bad question"),
             ),
             pytest.raises(TypeError),

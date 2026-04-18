@@ -12,8 +12,6 @@ NEW STRUCTURE:
 - geo_utils_core.py - GeoUtils core class (basic operations)
 - geo_utils_region.py - GeoUtilsRegion class (region operations)
 - geo_utils_analytics.py - GeoUtilsAnalytics class (analytics operations)
-- geo_demo.py - Demo functions
-
 HASZNÁLAT (Legacy - működik tovább):
 from src.data.geo_utils import GeoUtils, DistanceCalculator, GeoPoint
 
@@ -28,9 +26,6 @@ from src.data.geo_types import GeoPoint
 # Re-export all types
 # Re-export calculator
 from .distance_calculator import DistanceCalculator
-
-# Re-export demo function
-from .geo_demo import demo_geo_utils
 from .geo_types import (
     BoundingBox,
     CoordinateSystem,
@@ -57,6 +52,4 @@ __all__ = [
     "GeoUtilsAnalytics",
     "GeoUtilsRegion",
     "GeographicRegion",
-    # Demo
-    "demo_geo_utils",
 ]

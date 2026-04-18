@@ -30,3 +30,28 @@ def test_build_injects_region_resolver() -> None:
     ):
         use_case = build_analyze_multi_city_use_case()
     assert use_case.region_resolver is not None
+
+
+def test_build_detailed_city_use_case_returns_correct_type() -> None:
+    from src.application.use_cases.detailed_city_use_case import DetailedCityUseCase
+    from src.infrastructure.container.composition_root import build_detailed_city_use_case
+
+    with (
+        patch("src.infrastructure.container.factories.get_city_repository_port"),
+        patch("src.infrastructure.container.factories.get_weather_client_port"),
+    ):
+        use_case = build_detailed_city_use_case()
+    assert isinstance(use_case, DetailedCityUseCase)
+
+
+def test_build_detailed_city_use_case_injects_dependencies() -> None:
+    from src.infrastructure.container.composition_root import build_detailed_city_use_case
+
+    with (
+        patch("src.infrastructure.container.factories.get_city_repository_port"),
+        patch("src.infrastructure.container.factories.get_weather_client_port"),
+    ):
+        use_case = build_detailed_city_use_case()
+    assert use_case._city_repo is not None
+    assert use_case._fetch_service is not None
+    assert use_case._transform_service is not None

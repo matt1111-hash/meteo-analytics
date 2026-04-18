@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from src.data import (
     distance_calculator,
-    geo_demo,
     geo_utils,
     geo_utils_analytics,
     geo_utils_core,
@@ -39,9 +38,8 @@ class TestGeoUtilsReexports:
         assert geo_utils.GeoUtilsAnalytics is geo_utils_analytics.GeoUtilsAnalytics
 
     def test_reexports_demo_function(self) -> None:
-        """A demo_geo_utils függvény elérhető."""
-        assert hasattr(geo_utils, "demo_geo_utils")
-        assert geo_utils.demo_geo_utils is geo_demo.demo_geo_utils
+        """Demo functions removed — module should not expose demo_geo_utils."""
+        assert not hasattr(geo_utils, "demo_geo_utils")
 
     def test_all_exports_defined(self) -> None:
         """A __all__ lista tartalmazza az összes exportot."""
@@ -55,7 +53,6 @@ class TestGeoUtilsReexports:
             "GeoUtils",
             "GeoUtilsRegion",
             "GeoUtilsAnalytics",
-            "demo_geo_utils",
         }
         actual_all = set(geo_utils.__all__)
         assert actual_all == expected_all
@@ -127,7 +124,6 @@ class TestGeoUtilsReexports:
         assert "geo_utils_core.py" in doc
         assert "geo_utils_region.py" in doc
         assert "geo_utils_analytics.py" in doc
-        assert "geo_demo.py" in doc
 
 
 class TestBackwardCompatibility:

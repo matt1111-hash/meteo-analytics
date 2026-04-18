@@ -48,7 +48,6 @@ class TestGeoUtilsReExport:
             "GeoUtils",
             "GeoUtilsRegion",
             "GeoUtilsAnalytics",
-            "demo_geo_utils",
         }
         for symbol in expected:
             assert hasattr(geo_utils, symbol)

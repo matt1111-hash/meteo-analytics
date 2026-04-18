@@ -16,33 +16,17 @@ from src.presentation.gui.weather_data_bridge.constants import (
     OVERLAY_CONFIGS,
 )
 from src.presentation.gui.weather_data_bridge.data import WeatherOverlayData
+from src.presentation.gui.weather_data_bridge.folium_bridge import (
+    debug_metric_mapping as _debug_metric_mapping,
+)
+from src.presentation.gui.weather_data_bridge.folium_bridge import (
+    get_folium_heatmap_data as _get_folium_heatmap_data,
+)
+from src.presentation.gui.weather_data_bridge.folium_bridge import (
+    get_folium_marker_data as _get_folium_marker_data,
+)
 
 logger = logging.getLogger(__name__)
-
-
-def _get_gradient_color(normalized: float) -> str:
-    """Return the default cold-to-hot gradient color."""
-    if normalized < 0.33:  # noqa: PLR2004
-        return "#0000FF"
-    if normalized < 0.66:  # noqa: PLR2004
-        return "#FFFF00"
-    return "#FF0000"
-
-
-def _get_precipitation_color(normalized: float) -> str:
-    """Return a precipitation palette color."""
-    if normalized < 0.5:  # noqa: PLR2004
-        return "#87CEEB"
-    return "#0000CD"
-
-
-def _resolve_marker_color(overlay_type: str, normalized: float) -> str:
-    """Resolve marker color by overlay type."""
-    if overlay_type == "precipitation":
-        return _get_precipitation_color(normalized)
-    if overlay_type in ["temperature", "wind_speed", "wind_gusts"]:
-        return _get_gradient_color(normalized)
-    return _get_gradient_color(normalized)
 
 
 class WeatherDataBridge:
@@ -247,72 +231,13 @@ class WeatherDataBridge:
         return overlays
 
     def get_folium_heatmap_data(self, overlay_data: WeatherOverlayData) -> list[list[float]]:
-        """Folium HeatMap plugin formatumra konvertalas"""
-        heatmap_data = []
-
-        for city_data in overlay_data.data.values():
-            lat, lon = city_data["coordinates"]
-            value = city_data["value"]
-            heatmap_data.append([lat, lon, value])
-
-        return heatmap_data
+        """Convert overlay data to Folium HeatMap format."""
+        return _get_folium_heatmap_data(overlay_data)
 
     def get_folium_marker_data(self, overlay_data: WeatherOverlayData) -> list[dict[str, Any]]:
-        """Folium CircleMarker formatumra konvertalas"""
-        marker_data = []
-        metadata = overlay_data.metadata
-
-        for city_name, city_data in overlay_data.data.items():
-            marker_config = {
-                "latitude": city_data["coordinates"][0],
-                "longitude": city_data["coordinates"][1],
-                "value": city_data["value"],
-                "city_name": city_name,
-                "country": city_data["country"],
-                "popup_text": f"{city_name}, {city_data['country']}<br>{city_data['value']:.1f} {metadata['unit']}",
-                "tooltip_text": f"{city_name}: {city_data['value']:.1f} {metadata['unit']}",
-                "marker_size": self._calculate_marker_size(city_data["value"], metadata),
-                "marker_color": self._calculate_marker_color(city_data["value"], metadata),
-                "rank": city_data.get("rank", 0),
-            }
-
-            if overlay_data.overlay_type in ["wind_speed", "wind_gusts"]:
-                marker_config["speed"] = city_data.get("speed", city_data["value"])
-                marker_config["direction"] = city_data.get("direction", 0)
-
-            marker_data.append(marker_config)
-
-        return marker_data
-
-    def _calculate_marker_size(self, value: float, metadata: dict[str, Any]) -> int:
-        """Marker meret szamitasa ertek alapjan"""
-        value_range = metadata["scale_max"] - metadata["scale_min"]
-        if value_range == 0:
-            return 8
-
-        normalized = (value - metadata["scale_min"]) / value_range
-        min_size, max_size = 4, 20
-        return int(min_size + normalized * (max_size - min_size))
-
-    def _calculate_marker_color(self, value: float, metadata: dict[str, Any]) -> str:
-        """Marker szin szamitasa ertek alapjan"""
-        value_range = metadata["scale_max"] - metadata["scale_min"]
-        if value_range == 0:
-            return "#FF0000"
-
-        normalized = (value - metadata["scale_min"]) / value_range
-        overlay_type = metadata["overlay_type"]
-        if overlay_type in ["wind_speed", "wind_gusts"]:
-            return "#00FF00" if normalized < 0.33 else _get_gradient_color(normalized)  # noqa: PLR2004
-        return _resolve_marker_color(overlay_type, normalized)
+        """Convert overlay data to Folium CircleMarker format."""
+        return _get_folium_marker_data(overlay_data)
 
     def debug_metric_mapping(self) -> dict[str, Any]:
-        """DEBUG: Metrika mapping informaciok"""
-        return {
-            "total_supported_metrics": len(self.METRIC_MAP),
-            "metric_mappings": {str(m): dp for m, dp in self.METRIC_MAP.items()},
-            "overlay_types": list(self.OVERLAY_CONFIGS.keys()),
-            "windspeed_supported": AnalyticsMetric.WINDSPEED_10M_MAX in self.METRIC_MAP,
-            "windspeed_maps_to": self.METRIC_MAP.get(AnalyticsMetric.WINDSPEED_10M_MAX),
-            "bridge_version": "2.0_METRIC_MAP_FIXED",
-        }
+        """Return debug information about metric mapping."""
+        return _debug_metric_mapping()

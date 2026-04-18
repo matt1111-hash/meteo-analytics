@@ -8,11 +8,9 @@ from __future__ import annotations
 
 import json
 import logging
-import sys
-from collections.abc import Callable
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 from .api_config import APIConfig
 from .paths_config import (
@@ -22,46 +20,21 @@ from .paths_config import (
     ensure_directories as default_ensure_directories,
 )
 from .provider_config import ProviderConfig
+from .usage_config_helpers import (
+    _ensure_directories,
+    _get_usage_tracking_file,
+    _now,
+)
 
 LOGGER = logging.getLogger(__name__)
 
 
-# ---------------------------------------------------------------------------
-# Monkeypatch-safe helpers
-# ---------------------------------------------------------------------------
+def _get_usage_tracking_file_resolved() -> Path:
+    return _get_usage_tracking_file(DEFAULT_USAGE_TRACKING_FILE)
 
 
-def _resolve_config_attr[T](attr: str, fallback: T) -> T:
-    """Return config module attribute if it was monkeypatched in tests."""
-    config_module = sys.modules.get("src.config")
-    if config_module and hasattr(config_module, attr):
-        return cast(T, getattr(config_module, attr))
-    return fallback
-
-
-def _get_usage_tracking_file() -> Path:
-    """Return the currently configured usage tracking file path."""
-    return _resolve_config_attr("USAGE_TRACKING_FILE", DEFAULT_USAGE_TRACKING_FILE)
-
-
-def _ensure_directories() -> None:
-    """Call the (possibly monkeypatched) ensure_directories helper."""
-    resolver: Callable[[], None] = _resolve_config_attr(
-        "ensure_directories", default_ensure_directories
-    )
-    resolver()
-
-
-def _get_datetime_cls() -> type[datetime]:
-    """Return datetime class from config for backward compatibility."""
-    config_module = sys.modules.get("src.config")
-    patched = getattr(config_module, "datetime", None) if config_module else None
-    return patched or datetime
-
-
-def _now() -> datetime:
-    """Return current datetime honoring possible monkeypatches."""
-    return _get_datetime_cls().now()
+def _ensure_dirs_resolved() -> None:
+    _ensure_directories(default_ensure_directories)
 
 
 class UsageTracker:
@@ -95,7 +68,7 @@ class UsageTracker:
             "last_updated": _now().isoformat(),
         }
 
-        usage_file = _get_usage_tracking_file()
+        usage_file = _get_usage_tracking_file_resolved()
 
         try:
             if usage_file.exists():
@@ -128,10 +101,10 @@ class UsageTracker:
         Returns:
             True if saved successfully, False otherwise
         """
-        usage_file = _get_usage_tracking_file()
+        usage_file = _get_usage_tracking_file_resolved()
 
         try:
-            _ensure_directories()
+            _ensure_dirs_resolved()
             usage_data["last_updated"] = _now().isoformat()
 
             with open(usage_file, "w", encoding="utf-8") as file_obj:  # noqa: PTH123
@@ -291,7 +264,7 @@ class UsageTracker:
         Returns:
             True if reset successfully, False otherwise
         """
-        usage_file = _get_usage_tracking_file()
+        usage_file = _get_usage_tracking_file_resolved()
         try:
             if usage_file.exists():
                 usage_file.unlink()
