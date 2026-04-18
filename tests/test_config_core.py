@@ -77,7 +77,7 @@ def test_usage_tracker_load_resets_new_month(
                 "estimated_cost_usd": 5.0,
                 "daily_breakdown": {"2024-06-10": 10},
             },
-            "open_meteo": {
+            "open-meteo": {
                 "requests_this_month": 5,
                 "daily_breakdown": {"2024-06-10": 5},
             },
@@ -102,8 +102,8 @@ def test_usage_tracker_load_resets_new_month(
     assert usage["meteostat"]["requests_this_month"] == 0
     assert usage["meteostat"]["estimated_cost_usd"] == 0.0
     assert usage["meteostat"]["daily_breakdown"] == {}
-    assert usage["open_meteo"]["requests_this_month"] == 0
-    assert usage["open_meteo"]["daily_breakdown"] == {}
+    assert usage["open-meteo"]["requests_this_month"] == 0
+    assert usage["open-meteo"]["daily_breakdown"] == {}
 
 
 # Lefedett ág: UsageTracker.load_usage_data hónapváltás reset (src/config.py:395–436)  # noqa: RUF003
@@ -136,7 +136,7 @@ def test_usage_tracker_load_handles_json_error(
     assert usage["total_requests"] == 0
     assert usage["meteostat"]["requests_this_month"] == 0
     assert usage["meteostat"]["daily_breakdown"] == {}
-    assert usage["open_meteo"]["requests_this_month"] == 0
+    assert usage["open-meteo"]["requests_this_month"] == 0
     assert usage["current_month"] == "2024-07"
 
 
@@ -164,13 +164,13 @@ def test_usage_tracker_reset_clears_monthly_stats() -> None:
             "estimated_cost_usd": 5.0,
             "daily_breakdown": {"2024-06-10": 10},
         },
-        "open_meteo": {"requests_this_month": 5, "daily_breakdown": {"2024-06-10": 5}},
+        "open-meteo": {"requests_this_month": 5, "daily_breakdown": {"2024-06-10": 5}},
     }
     updated = config.UsageTracker._reset_monthly_usage(usage, "2024-07")
     assert updated["current_month"] == "2024-07"
     assert updated["meteostat"]["requests_this_month"] == 0
     assert updated["meteostat"]["estimated_cost_usd"] == 0.0
-    assert updated["open_meteo"]["daily_breakdown"] == {}
+    assert updated["open-meteo"]["daily_breakdown"] == {}
     assert updated["total_requests"] == 0
 
 

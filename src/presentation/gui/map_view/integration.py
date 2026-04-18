@@ -16,10 +16,13 @@ Képességek:
 Fájl: src/presentation/gui/map_view/integration.py
 """
 
+import logging
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
+
+logger = logging.getLogger(__name__)
 
 
 class MapViewIntegrationMixin:
@@ -64,10 +67,10 @@ class MapViewIntegrationMixin:
         county_name = location_data.get("county") or location_data.get("name")
 
         if county_name and self.focus_on_county(county_name):
-            print(f"🎯 DEBUG: Folium map focused on county from external selection: {county_name}")
+            logger.debug("Folium map focused on county from external selection: %s", county_name)
         else:
-            print(
-                f"⚠️ DEBUG: Could not focus Folium map on county from external selection: {county_name}"
+            logger.debug(
+                "Could not focus Folium map on county from external selection: %s", county_name
             )
 
     def handle_external_county_click(self, county_name: str) -> None:
@@ -78,14 +81,14 @@ class MapViewIntegrationMixin:
             county_name: Kattintott megye neve
         """
         if self.focus_on_county(county_name):
-            print(f"🎯 DEBUG: Folium map focused on external county click: {county_name}")
+            logger.debug("Folium map focused on external county click: %s", county_name)
 
             # Location selector szinkronizáció
             location_selector = self.get_location_selector()
             if location_selector:
                 location_selector.set_county(county_name)
         else:
-            print(f"⚠️ DEBUG: Could not handle external county click: {county_name}")
+            logger.debug("Could not handle external county click: %s", county_name)
 
     def get_integration_status(self) -> dict[str, Any]:
         """
@@ -127,7 +130,7 @@ class MapViewIntegrationMixin:
         map_visualizer = self.get_map_visualizer()
         if map_visualizer:
             map_visualizer.highlight_counties(county_names)
-            print(f"✨ DEBUG: Highlighted counties on Folium map: {county_names}")
+            logger.debug("Highlighted counties on Folium map: %s", county_names)
 
     def set_selected_county(self, county_name: str) -> None:
         """
@@ -139,7 +142,7 @@ class MapViewIntegrationMixin:
         map_visualizer = self.get_map_visualizer()
         if map_visualizer:
             map_visualizer.set_selected_county(county_name)
-            print(f"🎯 DEBUG: Selected county set on Folium map: {county_name}")
+            logger.debug("Selected county set on Folium map: %s", county_name)
 
     def toggle_weather_overlay(self, enabled: bool) -> None:
         """
@@ -151,7 +154,7 @@ class MapViewIntegrationMixin:
         map_visualizer = self.get_map_visualizer()
         if map_visualizer:
             map_visualizer.toggle_weather_overlay(enabled)
-            print(f"🌤️ DEBUG: Folium weather overlay {'enabled' if enabled else 'disabled'}")
+            logger.debug("Folium weather overlay %s", "enabled" if enabled else "disabled")
 
     def get_folium_map_config(self):
         """
@@ -178,4 +181,4 @@ class MapViewIntegrationMixin:
         # Folium map style frissítése téma alapján
         self.set_theme(theme_name)
 
-        print(f"🎨 DEBUG: MapView Folium theme applied: {theme_name}")
+        logger.debug("MapView Folium theme applied: %s", theme_name)

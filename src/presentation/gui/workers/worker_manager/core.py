@@ -5,6 +5,7 @@
 WorkerManager Core - Main worker management class with signals.
 """
 
+import logging
 from typing import TYPE_CHECKING, Any, Optional
 
 from PySide6.QtCore import QMutex, QObject, QWaitCondition, Signal
@@ -16,6 +17,8 @@ from .components.provider_manager import ProviderManager
 from .components.shutdown import ShutdownManager
 from .components.worker_handlers import WorkerHandlers
 from .components.worker_starters import WorkerStarters
+
+logger = logging.getLogger(__name__)
 
 
 class WorkerManager(QObject):
@@ -79,7 +82,7 @@ class WorkerManager(QObject):
         self._provider_manager = ProviderManager(self)
         self._shutdown_manager = ShutdownManager(self)
 
-        print("✅ DEBUG: WorkerManager inicializálva (COMPLETION SIGNAL FIX + PROVIDER ROUTING)")
+        logger.debug("WorkerManager inicializálva (COMPLETION SIGNAL FIX + PROVIDER ROUTING)")
 
     def _get_worker_id(self, worker_type: str) -> str:
         """

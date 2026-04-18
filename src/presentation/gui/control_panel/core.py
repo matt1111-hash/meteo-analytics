@@ -29,6 +29,8 @@ SIGNAL AGGREGATOR PATTERN - FETCH_BUTTON FIX BEFEJEZVE!
 ✅ 🔥 PROGRESS TEXT FIX: set_progress_text → update_progress
 """
 
+import logging
+
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
 from src.domain.ports import CityManagerPort
@@ -54,6 +56,8 @@ from .mixins import (
     SignalHandlersMixin,
     UIManagerMixin,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class ControlPanel(
@@ -123,8 +127,8 @@ class ControlPanel(
         self._connect_widget_signals()
         self._setup_theme()
 
-        print(
-            "🎯 ControlPanel CLEAN ARCHITECTURE + MULTI-CITY WIDGET - Widget Aggregator Pattern initialized"
+        logger.debug(
+            "ControlPanel CLEAN ARCHITECTURE + MULTI-CITY WIDGET - Widget Aggregator Pattern initialized"
         )
 
     def _init_ui(self) -> None:
@@ -170,7 +174,7 @@ class ControlPanel(
         self.multi_city_widget = MultiCityWidget(self.city_manager)
         content_layout.addWidget(self.multi_city_widget)
 
-        print("🏙️ DEBUG: MultiCityWidget létrehozva és hozzáadva a layout-hoz")
+        logger.debug("MultiCityWidget létrehozva és hozzáadva a layout-hoz")
 
         # 4. Date Range Widget
         self.date_range_widget = DateRangeWidget()
@@ -194,11 +198,11 @@ class ControlPanel(
         # 🚨 KRITIKUS: Kezdeti UI állapot beállítása MULTI-CITY TÁMOGATÁSSAL
         self._update_ui_for_analysis_type_fixed("single_location")
 
-        print("✅ DEBUG: ControlPanel UI setup complete - MULTI-CITY WIDGET INTEGRÁLVA")
+        logger.debug("ControlPanel UI setup complete - MULTI-CITY WIDGET INTEGRÁLVA")
 
     def _setup_theme(self) -> None:
         """Theme setup - minden widget már regisztrálva van saját magában."""
         if hasattr(self.theme_manager, "theme_changed"):
             self.theme_manager.theme_changed.connect(self._on_theme_changed)
 
-        print("🎨 Theme setup completed for clean ControlPanel + MultiCityWidget")
+        logger.debug("Theme setup completed for clean ControlPanel + MultiCityWidget")

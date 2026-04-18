@@ -20,9 +20,9 @@ class TestUsageTrackerLoad:
 
         assert "current_month" in usage
         assert "meteostat" in usage
-        assert "open_meteo" in usage
+        assert "open-meteo" in usage
         assert usage["meteostat"]["requests_this_month"] == 0
-        assert usage["open_meteo"]["requests_this_month"] == 0
+        assert usage["open-meteo"]["requests_this_month"] == 0
         assert usage["total_requests"] == 0
 
     def test_load_usage_returns_saved_data(self, config_fs: dict[str, str]) -> None:
@@ -30,12 +30,12 @@ class TestUsageTrackerLoad:
         from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
-        UsageTracker.track_request("open_meteo", 50)
+        UsageTracker.track_request("open-meteo", 50)
 
         usage = UsageTracker.load_usage_data()
 
         assert usage["meteostat"]["requests_this_month"] == 100
-        assert usage["open_meteo"]["requests_this_month"] == 50
+        assert usage["open-meteo"]["requests_this_month"] == 50
         assert usage["total_requests"] == 150
 
     def test_load_usage_resets_on_new_month(

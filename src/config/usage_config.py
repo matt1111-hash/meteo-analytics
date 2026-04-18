@@ -85,7 +85,7 @@ class UsageTracker:
                 "last_request": None,
                 "daily_breakdown": {},
             },
-            "open_meteo": {
+            "open-meteo": {
                 "requests_this_month": 0,
                 "last_request": None,
                 "daily_breakdown": {},
@@ -101,6 +101,10 @@ class UsageTracker:
             if usage_file.exists():
                 with open(usage_file, encoding="utf-8") as file_obj:  # noqa: PTH123
                     usage = json.load(file_obj)
+
+                    # Normalize legacy provider key
+                    if "open_meteo" in usage and "open-meteo" not in usage:
+                        usage["open-meteo"] = usage.pop("open_meteo")
 
                     # Reset if new month
                     if usage.get("current_month") != current_month:
@@ -176,7 +180,7 @@ class UsageTracker:
         else:
             tracked_state: dict[str, int] = {
                 key: usage.get(key, {}).get("requests_this_month", 0)
-                for key in ("meteostat", "open_meteo")
+                for key in ("meteostat", "open-meteo")
                 if isinstance(usage.get(key), dict)
             }
             LOGGER.warning(
@@ -211,7 +215,7 @@ class UsageTracker:
             "meteostat_limit": meteostat_limit,
             "meteostat_percentage": meteostat_percentage,
             "meteostat_cost": usage.get("meteostat", {}).get("estimated_cost_usd", 0.0),
-            "openmeteo_requests": usage.get("open_meteo", {}).get("requests_this_month", 0),
+            "openmeteo_requests": usage.get("open-meteo", {}).get("requests_this_month", 0),
             "total_requests": usage.get("total_requests", 0),
             "warning_level": UsageTracker._get_warning_level(meteostat_percentage),
             "days_remaining": UsageTracker._get_days_remaining_in_month(),
@@ -224,7 +228,7 @@ class UsageTracker:
         old_usage["month_start_date"] = f"{new_month}-01"
 
         # Reset monthly counters but keep historical data
-        for provider in ["meteostat", "open_meteo"]:
+        for provider in ["meteostat", "open-meteo"]:
             if provider in old_usage:
                 old_usage[provider]["requests_this_month"] = 0
                 old_usage[provider]["daily_breakdown"] = {}

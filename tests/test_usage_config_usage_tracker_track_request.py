@@ -23,11 +23,11 @@ class TestUsageTrackerTrackRequest:
         """Tracking Open-Meteo request should update counters."""
         from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
-        result = UsageTracker.track_request("open_meteo", 3)
+        result = UsageTracker.track_request("open-meteo", 3)
 
-        assert result["open_meteo"]["requests_this_month"] == 3
+        assert result["open-meteo"]["requests_this_month"] == 3
         assert result["total_requests"] == 3
-        assert "last_request" in result["open_meteo"]
+        assert "last_request" in result["open-meteo"]
 
     def test_track_request_accumulates(self, config_fs: dict[str, str]) -> None:
         """Multiple track_request calls should accumulate."""

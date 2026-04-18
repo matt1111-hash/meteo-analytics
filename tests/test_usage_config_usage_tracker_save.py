@@ -15,7 +15,7 @@ class TestUsageTrackerSave:
         usage_data = {
             "current_month": "2024-01",
             "meteostat": {"requests_this_month": 10},
-            "open_meteo": {"requests_this_month": 5},
+            "open-meteo": {"requests_this_month": 5},
             "total_requests": 15,
         }
 

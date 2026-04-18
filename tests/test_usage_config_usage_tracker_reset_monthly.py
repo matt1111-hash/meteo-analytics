@@ -17,7 +17,7 @@ class TestUsageTrackerResetMonthly:
                 "estimated_cost_usd": 0.1,
                 "daily_breakdown": {"2024-01-15": 50},
             },
-            "open_meteo": {
+            "open-meteo": {
                 "requests_this_month": 50,
                 "daily_breakdown": {"2024-01-15": 25},
             },
@@ -28,7 +28,7 @@ class TestUsageTrackerResetMonthly:
 
         assert result["current_month"] == "2024-02"
         assert result["meteostat"]["requests_this_month"] == 0
-        assert result["open_meteo"]["requests_this_month"] == 0
+        assert result["open-meteo"]["requests_this_month"] == 0
         assert result["total_requests"] == 0
         assert result["meteostat"]["daily_breakdown"] == {}
         assert result["meteostat"]["estimated_cost_usd"] == 0.0

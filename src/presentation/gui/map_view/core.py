@@ -4,7 +4,11 @@
 
 from __future__ import annotations
 
+import logging
+
 from .core_support import *
+
+logger = logging.getLogger(__name__)
 
 
 class MapView(
@@ -59,7 +63,7 @@ class MapView(
         self._setup_theme()
         self._connect_signals()
 
-        print("🗺️ DEBUG: MapView initialized with Folium HungarianMapTab integration")
+        logger.debug("MapView initialized with Folium HungarianMapTab integration")
 
     def _setup_ui(self) -> None:
         """UI komponensek létrehozása - Folium HungarianMapTab integrációval."""
@@ -71,7 +75,7 @@ class MapView(
         self.map_tab = HungarianMapTab()
         layout.addWidget(self.map_tab)
 
-        print("✅ DEBUG: MapView UI setup complete with Folium HungarianMapTab")
+        logger.debug("MapView UI setup complete with Folium HungarianMapTab")
 
     def _setup_theme(self) -> None:
         """Téma beállítások alkalmazása."""
@@ -89,9 +93,9 @@ class MapView(
             self.map_tab.data_loading_completed.connect(self.data_loading_completed.emit)
             self.map_tab.folium_ready.connect(self.folium_ready.emit)
 
-            print("✅ DEBUG: MapView Folium signal forwarding setup complete")
+            logger.debug("MapView Folium signal forwarding setup complete")
         else:
-            print("❌ DEBUG: MapTab is None - cannot setup signal forwarding")
+            logger.debug("MapTab is None - cannot setup signal forwarding")
 
     # === PUBLIKUS API - FOLIUM HUNGARIANMAPTAB DELEGALAS ===
 
@@ -243,7 +247,7 @@ class MapView(
         """
         if self.map_tab:
             self.map_tab.set_theme(theme)
-            print(f"🎨 DEBUG: MapView Folium theme set to: {theme}")
+            logger.debug("MapView Folium theme set to: %s", theme)
 
     def set_weather_data(self, weather_data: Dict[str, Any]) -> None:
         """
@@ -254,7 +258,7 @@ class MapView(
         """
         if self.map_tab:
             self.map_tab.set_weather_data(weather_data)
-            print("🌤️ DEBUG: Weather data set for Folium overlay via MapView")
+            logger.debug("Weather data set for Folium overlay via MapView")
 
     def toggle_auto_sync(self, enabled: bool) -> None:
         """
@@ -265,4 +269,4 @@ class MapView(
         """
         if self.map_tab:
             self.map_tab.toggle_auto_sync(enabled)
-            print(f"🔗 DEBUG: MapView auto-sync {'enabled' if enabled else 'disabled'}")
+            logger.debug("MapView auto-sync %s", "enabled" if enabled else "disabled")

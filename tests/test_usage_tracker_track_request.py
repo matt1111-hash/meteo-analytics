@@ -20,11 +20,11 @@ def test_track_request_invalid_provider_logs_warning(
 
     assert usage["total_requests"] == 2
     assert usage["meteostat"]["requests_this_month"] == 0
-    assert usage["open_meteo"]["requests_this_month"] == 0
+    assert usage["open-meteo"]["requests_this_month"] == 0
 
     persisted = json.loads(config_fs["usage"])
     assert persisted["total_requests"] == usage["total_requests"]
 
     assert "storm_api" in caplog.text
     assert "UsageTracker track_request" in caplog.text
-    assert "meteostat" in caplog.text and "open_meteo" in caplog.text
+    assert "meteostat" in caplog.text and "open-meteo" in caplog.text

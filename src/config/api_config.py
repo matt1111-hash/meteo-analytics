@@ -56,6 +56,19 @@ class APIConfig:
 
     USER_AGENT: ClassVar[str] = "Global Weather Analyzer/2.2.0 (Provider-Selector Edition)"
 
+    @classmethod
+    def reload(cls) -> None:
+        """Re-read env vars so tests with monkeypatch see updated values."""
+        cls.METEOSTAT_API_KEY = os.getenv("METEOSTAT_API_KEY")
+        cls.API_KEY = os.getenv("API_KEY")
+        cls.API_KEY_ENABLED = bool(cls.API_KEY)
+        cls.CORS_ORIGINS = [
+            origin.strip()
+            for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+            if origin.strip()
+        ]
+        cls.APP_ENV = os.getenv("APP_ENV", "development")
+
 
 class DataConstants:
     """Data handling constants for dual-API system."""

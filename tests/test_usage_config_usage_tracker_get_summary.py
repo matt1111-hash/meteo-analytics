@@ -30,7 +30,7 @@ class TestUsageTrackerGetSummary:
         from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
-        UsageTracker.track_request("open_meteo", 50)
+        UsageTracker.track_request("open-meteo", 50)
 
         summary = UsageTracker.get_usage_summary()
 

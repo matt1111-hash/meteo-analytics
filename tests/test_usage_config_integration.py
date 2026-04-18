@@ -13,7 +13,7 @@ class TestIntegration:
         from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
-        UsageTracker.track_request("open_meteo", 50)
+        UsageTracker.track_request("open-meteo", 50)
 
         summary = UsageTracker.get_usage_summary()
 
@@ -65,12 +65,12 @@ class TestIntegration:
         from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
-        UsageTracker.track_request("open_meteo", 200)
+        UsageTracker.track_request("open-meteo", 200)
 
         usage = UsageTracker.load_usage_data()
 
         assert usage["meteostat"]["requests_this_month"] == 100
-        assert usage["open_meteo"]["requests_this_month"] == 200
+        assert usage["open-meteo"]["requests_this_month"] == 200
 
     def test_reset_clears_all_data(self, config_fs: dict[str, str]) -> None:
         """Reset should clear all tracked data."""
