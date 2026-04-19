@@ -1,11 +1,10 @@
-name: 🎭 E2E Tesztek (Phase 11)
+name: E2E Tests
 
 on:
-  workflow_dispatch:  # Manual only — tests/e2e directory not yet created
-  # push:
-  #   branches: [main, develop]
-  # pull_request:
-  #   branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
   e2e-tests:
@@ -17,58 +16,61 @@ jobs:
         browser: [chromium, firefox]
 
     steps:
-      - name: 📥 Kód letöltése
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - name: 🐍 Python beállítása
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: "pip"
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
 
-      - name: 📦 Backend függőségek telepítése
+      - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install uvicorn[standard] fastapi
 
-      - name: 📦 Node.js beállítása
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
-      - name: 📦 Frontend függőségek telepítése
+      - name: Install frontend dependencies
         working-directory: ./frontend
         run: npm ci
 
-      - name: 📦 E2E teszt függőségek telepítése
+      - name: Install E2E test dependencies
         working-directory: ./tests/e2e
         run: npm install
 
-      - name: 🎭 Playwright böngészők telepítése
+      - name: Install Playwright browsers
         working-directory: ./tests/e2e
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: 🏃 Full dev stack indítása
+      - name: Start dev stack
         run: |
-          ./scripts/dev.sh > /tmp/health-explorer-dev.log 2>&1 &
+          ./scripts/dev.sh > /tmp/dev.log 2>&1 &
           for _ in $(seq 1 60); do
             curl -fsS http://127.0.0.1:8001/health >/dev/null 2>&1 && \
             curl -fsS http://127.0.0.1:5173 >/dev/null 2>&1 && exit 0
             sleep 2
           done
-          cat /tmp/health-explorer-dev.log
+          cat /tmp/dev.log
           exit 1
 
-      - name: 🎭 E2E tesztek futtatása (${{ matrix.browser }})
+      - name: Run E2E tests (${{ matrix.browser }})
         working-directory: ./tests/e2e
         env:
           CI: true
         run: npx playwright test --project=${{ matrix.browser }}
 
-      - name: 📊 E2E teszt riport feltöltése
+      - name: Upload E2E report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -76,7 +78,7 @@ jobs:
           path: tests/e2e/playwright-report/
           retention-days: 30
 
-      - name: 📸 Képek feltöltése hiba esetén
+      - name: Upload screenshots on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -90,13 +92,11 @@ jobs:
     if: always()
 
     steps:
-      - name: 📈 E2E teszt összefoglaló
+      - name: Summary
         run: |
-          echo "## 🎭 E2E Teszt Összefoglaló" >> $GITHUB_STEP_SUMMARY
+          echo "## E2E Test Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Böngésző | Státusz |" >> $GITHUB_STEP_SUMMARY
-          echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Browser | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Chromium | ${{ needs.e2e-tests.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Firefox | ${{ needs.e2e-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 **Riportok az Artifacts-ben találhatók**" >> $GITHUB_STEP_SUMMARY
