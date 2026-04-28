@@ -8,6 +8,7 @@ Universal Weather Research Platform - Main Window
 FÁJL: src/presentation/gui/windows/main_window.py
 """
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -40,6 +41,18 @@ from .window_layout import (
     create_status_bar_provider_widgets,
     setup_window,
 )
+
+
+def _resolve_project_path(relative_path: str) -> Path:
+    """Resolve path relative to the project root (where pyproject.toml lives)."""
+    candidates = [
+        Path(__file__).resolve().parents[4] / relative_path,
+        Path.cwd() / relative_path,
+    ]
+    for p in candidates:
+        if p.is_file():
+            return p
+    return candidates[0]
 
 
 class MainWindow(
@@ -127,10 +140,21 @@ class MainWindow(
 
     def _load_hungarian_counties(self) -> None:
         """🗺️ Magyar megyék automatikus betöltése."""
-        # TODO: Implement counties loading from proper location
-        # The hungarian_counties_integration module was removed during refactoring
-        self.state.hungarian_counties.loaded = False
-        self.state.hungarian_counties.geodataframe = None
+        geojson_path = _resolve_project_path("data/geojson/counties.geojson")
+        if not geojson_path.is_file():
+            self.state.hungarian_counties.loaded = False
+            self.state.hungarian_counties.geodataframe = None
+            return
+
+        try:
+            import geopandas as gpd  # noqa: PLC0415
+
+            gdf = gpd.read_file(geojson_path)
+            self.state.hungarian_counties.geodataframe = gdf
+            self.state.hungarian_counties.loaded = True
+        except Exception:
+            self.state.hungarian_counties.loaded = False
+            self.state.hungarian_counties.geodataframe = None
 
     def _initialize_provider_status(self) -> None:
         """Provider státusz inicializálása."""

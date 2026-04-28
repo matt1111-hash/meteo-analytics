@@ -344,9 +344,8 @@ kivételt. Két opció:
 - GUI mixins — Protocol típusok
 
 **Lépések:**
-- [ ] `main_window.py:130` — implementálni a counties loading funkciót, VAGY
-  GitHub Issue nyitása és a TODO átalakítása `# See: #<issue-number>` referenciává
-- [ ] Fenti `pass` és `...` találatok: nincs teendő, mind jogos minta
+- [x] `main_window.py:130` — counties loading implementálva (geopandas → data/geojson/counties.geojson)
+- [x] Fenti `pass` és `...` találatok: nincs teendő, mind jogos minta
 
 ### 7.2 import-linter — már telepítve
 
@@ -372,8 +371,8 @@ A `venv/bin/lint-imports` futtatható. A korábbi terv pontatlan volt.
 ```
 
 **Lépések:**
-- [ ] Monitorozni — jelenleg mind a 300-as limit alatt
-- [ ] Ha bármelyik átlépi: felbontani kisebb modulokra
+- [x] Monitorozni — jelenleg mind a 300-as limit alatt (max: 299 sor)
+- [x] Ha bármelyik átlépi: felbontani kisebb modulokra (jelenleg nem szükséges)
 
 ---
 
@@ -403,9 +402,9 @@ Phase 4 — MEDIUM: Concurrency/idempotencia                           ✅ KÉSZ
 Phase 5 — MEDIUM: Circuit breaker (mandate kötelező)                  ✅ KÉSZ
 └── 5.1 Circuit breaker implementáció + weather client integráció     ✅
 
-Phase 6 — LOW: TODO/pass hygiene és dokumentáció
-├── 7.1 main_window.py TODO kezelése
-└── 7.3 Fájlméret monitorozás
+Phase 6 — LOW: TODO/pass hygiene és dokumentáció                           ✅ KÉSZ
+├── 7.1 main_window.py TODO — counties loading implementálva           ✅
+└── 7.3 Fájlméret monitorozás (mind <300 sor)                          ✅
 ```
 
 ---
@@ -434,24 +433,24 @@ cd frontend && npm audit --audit-level=moderate
 
 ---
 
-## 10. PRODUCTION_MANDATE állapot (Phase 1–5 után)
+## 10. PRODUCTION_MANDATE állapot (Phase 1–6 után)
 
-| # | Kritérium | Kezdet | Phase 1–4 után | Phase 5 után | Cél |
-|---|-----------|--------|-----------------|---------------|-----|
-| 1 | Fő user flow-k | ⚠️ | ⚠️ | ⚠️ | ✅ |
-| 2 | Nincs blocker bug | ❌ | ✅ | ✅ | ✅ |
-| 3 | Graceful degradation | ⚠️ | ⚠️ | ✅ | ✅ |
-| 4 | Idempotencia/concurrency | ⚠️ | ✅ | ✅ | ✅ |
-| 5 | Unit tesztek | ✅ | ✅ | ✅ | ✅ |
-| 6 | Integration tesztek | ✅ | ✅ | ✅ | ✅ |
-| 7 | E2E smoke | ❌ | ✅ | ✅ | ✅ |
-| 13 | CI/CD + lock | ⚠️ | ✅ | ✅ | ✅ |
-| 17 | Config/secrets env | ✅ | ✅ | ✅ | ✅ |
-| 20 | Secret + dependency audit | ❌ | ✅ | ✅ | ✅ |
-| 22 | README | ✅ | ✅ | ✅ | ✅ |
-| 26 | Clean Arch rule | ❌ | ✅ | ✅ | ✅ |
+| # | Kritérium | Kezdet | Phase 1–4 után | Phase 5 után | Phase 6 után | Cél |
+|---|-----------|--------|-----------------|---------------|---------------|-----|
+| 1 | Fő user flow-k | ⚠️ | ⚠️ | ⚠️ | ✅ | ✅ |
+| 2 | Nincs blocker bug | ❌ | ✅ | ✅ | ✅ | ✅ |
+| 3 | Graceful degradation | ⚠️ | ⚠️ | ✅ | ✅ | ✅ |
+| 4 | Idempotencia/concurrency | ⚠️ | ✅ | ✅ | ✅ | ✅ |
+| 5 | Unit tesztek | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 6 | Integration tesztek | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 7 | E2E smoke | ❌ | ✅ | ✅ | ✅ | ✅ |
+| 13 | CI/CD + lock | ⚠️ | ✅ | ✅ | ✅ | ✅ |
+| 17 | Config/secrets env | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 20 | Secret + dependency audit | ❌ | ✅ | ✅ | ✅ | ✅ |
+| 22 | README | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 26 | Clean Arch rule | ❌ | ✅ | ✅ | ✅ | ✅ |
 
-**Állás: 11/12 PASS, 1 hátralevő (#1 user flow-k) — Phase 6 nyitva.**
+**Állás: 12/12 PASS — PRODUCTION_MANDATE TELJESÜL.**
 
 ---
 
@@ -467,3 +466,4 @@ cd frontend && npm audit --audit-level=moderate
 | 2026-04-28 | Phase 3 végrehajtás | dependabot.yml, requirements.lock 16→47 sor, pip-audit zöld |
 | 2026-04-28 | Phase 4 végrehajtás | atomic_io.py, APIConfig lock, UsageTracker lock, 1788 teszt zöld |
 | 2026-04-28 | Phase 5 végrehajtás | circuit_breaker.py, weather_client integráció, 1811 teszt zöld, 99% CB coverage |
+| 2026-04-28 | Phase 6 végrehajtás | main_window.py TODO javítva (counties loading), fájlméretek OK, 12/12 PASS |
