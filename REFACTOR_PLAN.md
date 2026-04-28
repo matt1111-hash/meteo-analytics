@@ -400,8 +400,8 @@ Phase 4 — MEDIUM: Concurrency/idempotencia                           ✅ KÉSZ
 ├── 6.1 APIConfig.reload race fix                                     ✅
 └── 6.2 UsageTracker lock                                             ✅
 
-Phase 5 — MEDIUM: Circuit breaker (mandate kötelező)
-└── 5.1 Circuit breaker implementáció VAGY explicit mandate dokumentáció
+Phase 5 — MEDIUM: Circuit breaker (mandate kötelező)                  ✅ KÉSZ
+└── 5.1 Circuit breaker implementáció + weather client integráció     ✅
 
 Phase 6 — LOW: TODO/pass hygiene és dokumentáció
 ├── 7.1 main_window.py TODO kezelése
@@ -434,24 +434,24 @@ cd frontend && npm audit --audit-level=moderate
 
 ---
 
-## 10. PRODUCTION_MANDATE állapot (Phase 1–4 után)
+## 10. PRODUCTION_MANDATE állapot (Phase 1–5 után)
 
-| # | Kritérium | Kezdet | Phase 1–4 után | Cél |
-|---|-----------|--------|-----------------|-----|
-| 1 | Fő user flow-k | ⚠️ | ⚠️ | ✅ |
-| 2 | Nincs blocker bug | ❌ | ✅ | ✅ |
-| 3 | Graceful degradation | ⚠️ | ⚠️ | ✅ |
-| 4 | Idempotencia/concurrency | ⚠️ | ✅ | ✅ |
-| 5 | Unit tesztek | ✅ | ✅ | ✅ |
-| 6 | Integration tesztek | ✅ | ✅ | ✅ |
-| 7 | E2E smoke | ❌ | ✅ | ✅ |
-| 13 | CI/CD + lock | ⚠️ | ✅ | ✅ |
-| 17 | Config/secrets env | ✅ | ✅ | ✅ |
-| 20 | Secret + dependency audit | ❌ | ✅ | ✅ |
-| 22 | README | ✅ | ✅ | ✅ |
-| 26 | Clean Arch rule | ❌ | ✅ | ✅ |
+| # | Kritérium | Kezdet | Phase 1–4 után | Phase 5 után | Cél |
+|---|-----------|--------|-----------------|---------------|-----|
+| 1 | Fő user flow-k | ⚠️ | ⚠️ | ⚠️ | ✅ |
+| 2 | Nincs blocker bug | ❌ | ✅ | ✅ | ✅ |
+| 3 | Graceful degradation | ⚠️ | ⚠️ | ✅ | ✅ |
+| 4 | Idempotencia/concurrency | ⚠️ | ✅ | ✅ | ✅ |
+| 5 | Unit tesztek | ✅ | ✅ | ✅ | ✅ |
+| 6 | Integration tesztek | ✅ | ✅ | ✅ | ✅ |
+| 7 | E2E smoke | ❌ | ✅ | ✅ | ✅ |
+| 13 | CI/CD + lock | ⚠️ | ✅ | ✅ | ✅ |
+| 17 | Config/secrets env | ✅ | ✅ | ✅ | ✅ |
+| 20 | Secret + dependency audit | ❌ | ✅ | ✅ | ✅ |
+| 22 | README | ✅ | ✅ | ✅ | ✅ |
+| 26 | Clean Arch rule | ❌ | ✅ | ✅ | ✅ |
 
-**Állás: 10/12 PASS, 2 hátralevő (#1 user flow-k, #3 circuit breaker) — Phase 5–6 nyitva.**
+**Állás: 11/12 PASS, 1 hátralevő (#1 user flow-k) — Phase 6 nyitva.**
 
 ---
 
@@ -466,3 +466,4 @@ cd frontend && npm audit --audit-level=moderate
 | 2026-04-28 | Phase 2 végrehajtás | dev.sh, port fix 8003/3000, Playwright 4/4 smoke, E2E workflow javítva |
 | 2026-04-28 | Phase 3 végrehajtás | dependabot.yml, requirements.lock 16→47 sor, pip-audit zöld |
 | 2026-04-28 | Phase 4 végrehajtás | atomic_io.py, APIConfig lock, UsageTracker lock, 1788 teszt zöld |
+| 2026-04-28 | Phase 5 végrehajtás | circuit_breaker.py, weather_client integráció, 1811 teszt zöld, 99% CB coverage |

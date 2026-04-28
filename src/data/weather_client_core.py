@@ -9,6 +9,8 @@ from typing import Any
 
 from src.config import APIConfig, get_optimal_data_source
 
+from .circuit_breaker import CircuitBreaker
+
 
 def _log_provider_usage_mock(provider: str, event_type: str, **kwargs) -> None:
     """Mock function for provider usage logging (GUI-specific)."""
@@ -41,6 +43,15 @@ class WeatherClient:
         self.providers: dict[str, WeatherProvider] = {
             "open-meteo": OpenMeteoProvider(),
             "meteostat": MeteostatProvider(),
+        }
+
+        self.circuit_breakers: dict[str, CircuitBreaker] = {
+            name: CircuitBreaker(
+                failure_threshold=5,
+                reset_timeout=60.0,
+                name=name,
+            )
+            for name in self.providers
         }
 
         self.max_retries = APIConfig.MAX_RETRIES
@@ -91,6 +102,11 @@ class WeatherClient:
         last_error: Exception | None = None
         for attempt_provider in fallback_chain:
             try:
+                cb = self.circuit_breakers.get(attempt_provider)
+                if cb and not cb.allow_request():
+                    logger.info("Circuit [%s] is OPEN — skipping provider", attempt_provider)
+                    continue
+
                 logger.info(f"Trying provider: {attempt_provider}")
 
                 provider = self.providers.get(attempt_provider)
@@ -100,6 +116,9 @@ class WeatherClient:
                 weather_data = self._retry_weather_request(
                     provider, latitude, longitude, start_date, end_date
                 )
+
+                if cb:
+                    cb.record_success()
 
                 self._handle_successful_request(attempt_provider, selected_provider)
                 self.provider_usage_stats[attempt_provider] = (
@@ -112,11 +131,15 @@ class WeatherClient:
             except WeatherAPIError as e:
                 last_error = e
                 logger.warning("Provider %s API error: %s", attempt_provider, e)
+                if cb:
+                    cb.record_failure()
                 _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
                 continue
             except Exception as e:
                 last_error = e
                 logger.exception("Unexpected error in provider %s", attempt_provider)
+                if cb:
+                    cb.record_failure()
                 _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
                 continue
 
