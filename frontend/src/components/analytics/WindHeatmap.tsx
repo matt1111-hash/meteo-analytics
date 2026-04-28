@@ -121,7 +121,21 @@ const WindHeatmap: React.FC<WindHeatmapProps> = ({ data, width = 1000, height = 
     const calendarMatrix = buildCalendarMatrix(sortedData);
 
     // 🎯 Cellák létrehozása 7×53-as elrendezésben
-    const cells: any[] = [];
+    interface HeatmapCell {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      color: string;
+      windSpeed: number;
+      date: string;
+      formattedDate: string;
+      formattedWind: string;
+      beaufortScale: string;
+      week: number;
+      day: number;
+    }
+    const cells: HeatmapCell[] = [];
     for (let week = 0; week < cols; week++) {
       for (let day = 0; day < rows; day++) {
         const windValue = calendarMatrix[day][week];

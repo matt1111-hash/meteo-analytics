@@ -38,7 +38,11 @@ interface WindChartProps {
 }
 
 // Custom Tooltip with Beaufort information
-const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
+const CustomTooltip: React.FC<{
+  active?: boolean;
+  payload?: Array<{ payload: WindDataPoint }>;
+  label?: string;
+}> = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
 
   const data = payload[0].payload;

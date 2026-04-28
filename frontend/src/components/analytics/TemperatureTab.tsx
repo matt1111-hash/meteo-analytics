@@ -71,11 +71,13 @@ const TemperatureTab: React.FC<TemperatureTabProps> = ({ city, startDate, endDat
 
       if (data.temperature_data && Array.isArray(data.temperature_data)) {
         const processedData: TemperatureData[] = data.temperature_data
-          .filter((item: any) => item.value !== null && item.value !== undefined)
-          .map((item: any) => ({
-            date: item.date,
-            value: item.value,
-            location: item.city_name || city,
+          .filter(
+            (item: Record<string, unknown>) => item.value !== null && item.value !== undefined,
+          )
+          .map((item: Record<string, unknown>) => ({
+            date: item.date as string,
+            value: item.value as number,
+            location: (item.city_name as string) || city,
           }));
 
         setTemperatureData(processedData);

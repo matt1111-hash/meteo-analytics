@@ -91,9 +91,13 @@ const HeatmapView: React.FC = () => {
       } else {
         setError('No data returned from API');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       logger.error('Heatmap fetch error');
-      setError(err.response?.data?.detail || err.message || 'Failed to fetch heatmap data');
+      const message =
+        err instanceof Error
+          ? err.message
+          : (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
+      setError(message || 'Failed to fetch heatmap data');
     } finally {
       setLoading(false);
     }

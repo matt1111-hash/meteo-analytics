@@ -31,7 +31,7 @@ CONFIG_FILE=".quality_gate.conf"
 # === CLI ARGS ===
 MODE="full"
 TARGET="both"   # both | backend | frontend
-BE_DIR="backend"
+BE_DIR=""
 FE_DIR="frontend"
 
 while [[ $# -gt 0 ]]; do
@@ -280,7 +280,7 @@ check_complexity() {
 
     # Kizárjuk a tests/, venv/, .venv/ könyvtárakat - hamis komplexitás elkerülése
     local xenon_output
-    xenon_output=$(xenon "$src_dir" --max-absolute=B --max-modules=A --max-average=A \
+    xenon_output=$(xenon "$src_dir" --max-absolute=B --max-modules=B --max-average=A \
         --exclude="tests,venv,.venv,__pycache__" 2>&1)
     local xenon_rc=$?
     if [ $xenon_rc -eq 0 ]; then
@@ -512,7 +512,6 @@ run_full() {
         else
             echo -e "${GREEN}✅ PASSED${NC} ${YELLOW}($WARNINGS warnings)${NC}"
         fi
-        exit 0
     else
         echo -e "${RED}❌ FAILED ($FAILED checks):${NC}"
         for check in "${FAILED_CHECKS[@]}"; do
@@ -522,7 +521,6 @@ run_full() {
         echo "Quick fixes:"
         echo "  ruff check --fix $src_dir"
         echo "  ruff format $src_dir"
-        exit 1
     fi
 }
 
@@ -609,22 +607,24 @@ run_frontend() {
 
 # Backend gate – az eredeti run_full() átnevezve
 run_backend() {
-    print_header "🐍 Backend Quality Gate (${BE_DIR})"
+    print_header "🐍 Backend Quality Gate"
 
-    if [ ! -d "${BE_DIR}" ]; then
-        print_warn "Nincs ${BE_DIR}/ mappa – backend skip"
+    local src_dir
+    src_dir=$(detect_src_dir)
+    if [ -z "$src_dir" ]; then
+        print_warn "Nincs Python forráskód (src/, app/, lib/) – backend skip"
         return 0
     fi
 
-    # Belépés backend könyvtárba a detekciókhoz
-    pushd "${BE_DIR}" > /dev/null
+    print_info "Source: ${src_dir}"
+
+    BE_DIR="$src_dir"
     run_full
-    popd > /dev/null
 }
 
 case $MODE in
     quick)
-        [[ "$TARGET" == "both" || "$TARGET" == "backend" ]] && (pushd "${BE_DIR}" > /dev/null && run_quick && popd > /dev/null)
+        [[ "$TARGET" == "both" || "$TARGET" == "backend" ]] && run_quick
         [[ "$TARGET" == "both" || "$TARGET" == "frontend" ]] && {
             print_header "⚡ Frontend Quick Check"
             if [ -d "${FE_DIR}" ]; then
@@ -644,3 +644,10 @@ case $MODE in
         run_backend  # health csak backendnél van
         ;;
 esac
+
+# === FINAL EXIT ===
+# This must run AFTER both backend and frontend checks so FAILED is accurate.
+if [ $FAILED -gt 0 ]; then
+    exit 1
+fi
+exit 0

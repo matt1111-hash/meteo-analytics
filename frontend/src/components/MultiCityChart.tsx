@@ -120,7 +120,7 @@ const MultiCityChart: React.FC<MultiCityChartProps> = ({
 
   // Transform data for multi-line chart
   const chartData = dates.map((date) => {
-    const dataPoint: { date: string; [key: string]: any } = { date };
+    const dataPoint: { date: string; [key: string]: string | number | null } = { date };
     cities.forEach((city) => {
       const result = data.find((r) => r.city_name === city && r.date === date);
       dataPoint[city] = result ? result.value : null;

@@ -101,49 +101,70 @@ class WeatherClient:
 
         last_error: Exception | None = None
         for attempt_provider in fallback_chain:
-            try:
-                cb = self.circuit_breakers.get(attempt_provider)
-                if cb and not cb.allow_request():
-                    logger.info("Circuit [%s] is OPEN — skipping provider", attempt_provider)
-                    continue
-
-                logger.info(f"Trying provider: {attempt_provider}")
-
-                provider = self.providers.get(attempt_provider)
-                if not provider or not provider.validate_provider():
-                    continue
-
-                weather_data = self._retry_weather_request(
-                    provider, latitude, longitude, start_date, end_date
-                )
-
-                if cb:
-                    cb.record_success()
-
-                self._handle_successful_request(attempt_provider, selected_provider)
-                self.provider_usage_stats[attempt_provider] = (
-                    self.provider_usage_stats.get(attempt_provider, 0) + 1
-                )
-                _log_provider_usage_mock(attempt_provider, "weather_data", success=True)
-
-                return weather_data
-
-            except WeatherAPIError as e:
-                last_error = e
-                logger.warning("Provider %s API error: %s", attempt_provider, e)
-                if cb:
-                    cb.record_failure()
-                _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
-                continue
-            except Exception as e:
-                last_error = e
-                logger.exception("Unexpected error in provider %s", attempt_provider)
-                if cb:
-                    cb.record_failure()
-                _log_provider_usage_mock(attempt_provider, "weather_data", success=False)
-                continue
+            result, error = self._try_provider(
+                attempt_provider,
+                selected_provider,
+                latitude,
+                longitude,
+                start_date,
+                end_date,
+            )
+            if result is not None:
+                return result
+            if error is not None:
+                last_error = error
 
         raise ProviderNotAvailableError(f"All providers failed. Last error: {last_error}")
+
+    def _try_provider(
+        self,
+        provider_name: str,
+        selected_provider: str,
+        latitude: float,
+        longitude: float,
+        start_date: str,
+        end_date: str,
+    ) -> tuple[list[dict[str, Any]] | None, Exception | None]:
+        """Try a single provider with circuit breaker and retry."""
+        cb = self.circuit_breakers.get(provider_name)
+        if cb and not cb.allow_request():
+            logger.info("Circuit [%s] is OPEN — skipping provider", provider_name)
+            return None, None
+
+        logger.info(f"Trying provider: {provider_name}")
+
+        provider = self.providers.get(provider_name)
+        if not provider or not provider.validate_provider():
+            return None, None
+
+        try:
+            weather_data = self._retry_weather_request(
+                provider, latitude, longitude, start_date, end_date
+            )
+
+            if cb:
+                cb.record_success()
+
+            self._handle_successful_request(provider_name, selected_provider)
+            self.provider_usage_stats[provider_name] = (
+                self.provider_usage_stats.get(provider_name, 0) + 1
+            )
+            _log_provider_usage_mock(provider_name, "weather_data", success=True)
+
+            return weather_data, None
+
+        except WeatherAPIError as e:
+            logger.warning("Provider %s API error: %s", provider_name, e)
+            if cb:
+                cb.record_failure()
+            _log_provider_usage_mock(provider_name, "weather_data", success=False)
+            return None, e
+        except Exception as e:
+            logger.exception("Unexpected error in provider %s", provider_name)
+            if cb:
+                cb.record_failure()
+            _log_provider_usage_mock(provider_name, "weather_data", success=False)
+            return None, e
 
     def _is_valid_provider(self, provider_name: str) -> bool:
         """Return True when provider exists and validates."""

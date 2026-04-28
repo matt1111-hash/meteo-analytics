@@ -82,11 +82,13 @@ const WindGustTab: React.FC<WindGustTabProps> = ({ city, startDate, endDate }) =
       // 🚨 API PARAMÉTER JAVÍTÁS: wind_gusts_10m_max → wind_gusts_max (Qt verzióval egyező)
       if (data.wind_gusts_data && Array.isArray(data.wind_gusts_data)) {
         const processedData: WindGustData[] = data.wind_gusts_data
-          .filter((item: any) => item.value !== null && item.value !== undefined)
-          .map((item: any) => ({
-            date: item.date,
-            value: item.value, // Keep as km/h
-            location: item.city_name || city,
+          .filter(
+            (item: Record<string, unknown>) => item.value !== null && item.value !== undefined,
+          )
+          .map((item: Record<string, unknown>) => ({
+            date: item.date as string,
+            value: item.value as number, // Keep as km/h
+            location: (item.city_name as string) || city,
           }));
 
         setWindGustData(processedData);

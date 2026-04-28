@@ -122,7 +122,21 @@ const WindGustHeatmap: React.FC<WindGustHeatmapProps> = ({ data, width = 1000, h
     const calendarMatrix = buildCalendarMatrix(sortedData);
 
     // 🎯 Cellák létrehozása 7×53-as elrendezésben
-    const cells: any[] = [];
+    interface HeatmapCell {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      color: string;
+      windGust: number;
+      date: string;
+      formattedDate: string;
+      formattedGust: string;
+      beaufortScale: string;
+      week: number;
+      day: number;
+    }
+    const cells: HeatmapCell[] = [];
     for (let week = 0; week < cols; week++) {
       for (let day = 0; day < rows; day++) {
         const gustValue = calendarMatrix[day][week];

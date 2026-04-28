@@ -54,7 +54,7 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({ data, years, metricName
     setHiddenYears(newHiddenYears);
   };
 
-  const CustomLegend: React.FC<any> = (props) => {
+  const CustomLegend: React.FC<Record<string, unknown>> = (_props) => {
     return (
       <div className="multi-year-legend">
         {years.map((year) => {
@@ -76,12 +76,21 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({ data, years, metricName
     );
   };
 
-  const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
+  interface TooltipPayloadEntry {
+    dataKey: string;
+    value: number | null;
+  }
+
+  const CustomTooltip: React.FC<{
+    active?: boolean;
+    payload?: TooltipPayloadEntry[];
+    label?: string;
+  }> = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div className="multi-year-tooltip">
           <div className="tooltip-header">{label}</div>
-          {payload.map((entry: any, index: number) => {
+          {payload.map((entry: TooltipPayloadEntry, _index: number) => {
             const year = Number(entry.dataKey);
             if (hiddenYears.has(year)) return null;
             return (
@@ -102,7 +111,7 @@ const MultiYearChart: React.FC<MultiYearChartProps> = ({ data, years, metricName
   // Filter out hidden years from the data
   const visibleData = useMemo(() => {
     const filtered = data.map((item) => {
-      const filteredItem: any = { month: item.month };
+      const filteredItem: Record<string, string | number | null> = { month: item.month };
       years.forEach((year) => {
         if (!hiddenYears.has(year)) {
           filteredItem[year.toString()] = item[year.toString()];

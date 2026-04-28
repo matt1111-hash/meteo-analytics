@@ -113,7 +113,20 @@ const TemperatureHeatmap: React.FC<TemperatureHeatmapProps> = ({
     const calendarMatrix = buildCalendarMatrix(sortedData);
 
     // 🎯 Cellák létrehozása 7×53-as elrendezésben
-    const cells: any[] = [];
+    interface HeatmapCell {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      color: string;
+      temperature: number;
+      date: string;
+      formattedDate: string;
+      formattedTemp: string;
+      week: number;
+      day: number;
+    }
+    const cells: HeatmapCell[] = [];
     for (let week = 0; week < cols; week++) {
       for (let day = 0; day < rows; day++) {
         const tempValue = calendarMatrix[day][week];

@@ -17,7 +17,7 @@ import {
   Tooltip,
   useMap,
 } from 'react-leaflet';
-import { LatLng, LatLngBounds } from 'leaflet';
+import { LatLng, LatLngBounds, type Layer } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './HungaryMap.css';
 import {
@@ -176,7 +176,9 @@ const HungaryMap: React.FC<HungaryMapProps> = ({
   }, [selectedCounty]);
 
   // Style for each county feature
-  const getCountyStyle = (feature?: GeoJSON.Feature<GeoJSON.Geometry, any>) => {
+  const getCountyStyle = (
+    feature?: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>,
+  ) => {
     const countyName = feature?.properties?.name as string | undefined;
     if (!countyName) {
       return {
@@ -211,7 +213,10 @@ const HungaryMap: React.FC<HungaryMapProps> = ({
   };
 
   // County feature handlers
-  const onEachCounty = (feature: GeoJSON.Feature<GeoJSON.Geometry, any>, layer: any) => {
+  const onEachCounty = (
+    feature: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>,
+    layer: Layer,
+  ) => {
     const countyName = feature.properties?.name as string;
     if (!countyName) return;
 

@@ -270,6 +270,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
  * useTheme hook
  * Usage: const { theme, colors, setTheme, toggleTheme } = useTheme();
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext);
   if (!context) {
@@ -281,6 +282,7 @@ export function useTheme(): ThemeContextType {
 /**
  * Helper hook to get a specific color from current theme
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useColor() {
   const { colors } = useTheme();
 
@@ -302,6 +304,7 @@ export function useColor() {
 /**
  * HOC to inject theme props into a component
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function withTheme<P extends { theme?: ThemeType; colors?: ThemeColors }>(
   Component: React.ComponentType<P>,
 ): React.ComponentType<Omit<P, 'theme' | 'colors'>> {

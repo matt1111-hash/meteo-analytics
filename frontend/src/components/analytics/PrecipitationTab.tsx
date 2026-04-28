@@ -81,11 +81,13 @@ const PrecipitationTab: React.FC<PrecipitationTabProps> = ({ city, startDate, en
 
       if (data.precipitation_data && Array.isArray(data.precipitation_data)) {
         const processedData: PrecipitationData[] = data.precipitation_data
-          .filter((item: any) => item.value !== null && item.value !== undefined)
-          .map((item: any) => ({
-            date: item.date,
-            value: item.value,
-            location: item.city_name || city,
+          .filter(
+            (item: Record<string, unknown>) => item.value !== null && item.value !== undefined,
+          )
+          .map((item: Record<string, unknown>) => ({
+            date: item.date as string,
+            value: item.value as number,
+            location: (item.city_name as string) || city,
           }));
 
         setPrecipitationData(processedData);
