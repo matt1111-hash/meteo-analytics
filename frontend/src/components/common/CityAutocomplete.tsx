@@ -47,7 +47,7 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch cities from API
   const fetchCities = useCallback(

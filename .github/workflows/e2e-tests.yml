@@ -56,11 +56,21 @@ jobs:
       - name: Start dev stack
         run: |
           ./scripts/dev.sh > /tmp/dev.log 2>&1 &
-          for _ in $(seq 1 60); do
-            curl -fsS http://127.0.0.1:8001/health >/dev/null 2>&1 && \
-            curl -fsS http://127.0.0.1:5173 >/dev/null 2>&1 && exit 0
+          DEV_PID=$!
+          for _ in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:8003/health >/dev/null 2>&1 && \
+               curl -fsS http://127.0.0.1:3000 >/dev/null 2>&1; then
+              echo "Dev stack ready"
+              exit 0
+            fi
+            if ! kill -0 "$DEV_PID" 2>/dev/null; then
+              echo "ERROR: dev.sh exited unexpectedly"
+              cat /tmp/dev.log
+              exit 1
+            fi
             sleep 2
           done
+          echo "ERROR: timeout waiting for dev stack"
           cat /tmp/dev.log
           exit 1
 

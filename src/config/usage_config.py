@@ -8,11 +8,13 @@ from __future__ import annotations
 
 import json
 import logging
+import threading
 from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
 from .api_config import APIConfig
+from .atomic_io import atomic_write_json
 from .paths_config import (
     USAGE_TRACKING_FILE as DEFAULT_USAGE_TRACKING_FILE,
 )
@@ -39,6 +41,8 @@ def _ensure_dirs_resolved() -> None:
 
 class UsageTracker:
     """API usage tracking for Provider Selector."""
+
+    _lock: threading.Lock = threading.Lock()
 
     @staticmethod
     def load_usage_data() -> dict[str, Any]:
@@ -107,8 +111,7 @@ class UsageTracker:
             _ensure_dirs_resolved()
             usage_data["last_updated"] = _now().isoformat()
 
-            with open(usage_file, "w", encoding="utf-8") as file_obj:  # noqa: PTH123
-                json.dump(usage_data, file_obj, indent=2, ensure_ascii=False)
+            atomic_write_json(usage_file, usage_data)
             usage_file.chmod(0o600)
             return True
         except Exception as exc:  # pragma: no cover - defensive
@@ -127,47 +130,48 @@ class UsageTracker:
         Returns:
             Updated usage statistics
         """
-        usage = UsageTracker.load_usage_data()
-        today = _now().strftime("%Y-%m-%d")
-        now = _now().isoformat()
+        with UsageTracker._lock:
+            usage = UsageTracker.load_usage_data()
+            today = _now().strftime("%Y-%m-%d")
+            now = _now().isoformat()
 
-        if provider in usage:
-            # Update provider-specific stats
-            usage[provider]["requests_this_month"] += request_count
-            usage[provider]["last_request"] = now
+            if provider in usage:
+                # Update provider-specific stats
+                usage[provider]["requests_this_month"] += request_count
+                usage[provider]["last_request"] = now
 
-            # Update daily breakdown
-            if "daily_breakdown" not in usage[provider]:
-                usage[provider]["daily_breakdown"] = {}
+                # Update daily breakdown
+                if "daily_breakdown" not in usage[provider]:
+                    usage[provider]["daily_breakdown"] = {}
 
-            if today not in usage[provider]["daily_breakdown"]:
-                usage[provider]["daily_breakdown"][today] = 0
-            usage[provider]["daily_breakdown"][today] += request_count
+                if today not in usage[provider]["daily_breakdown"]:
+                    usage[provider]["daily_breakdown"][today] = 0
+                usage[provider]["daily_breakdown"][today] += request_count
 
-            # Update Meteostat cost estimation
-            if provider == "meteostat":
-                cost_per_request = ProviderConfig.METEOSTAT_COST_PER_REQUEST
-                usage[provider]["estimated_cost_usd"] = (
-                    usage[provider]["requests_this_month"] * cost_per_request
+                # Update Meteostat cost estimation
+                if provider == "meteostat":
+                    cost_per_request = ProviderConfig.METEOSTAT_COST_PER_REQUEST
+                    usage[provider]["estimated_cost_usd"] = (
+                        usage[provider]["requests_this_month"] * cost_per_request
+                    )
+            else:
+                tracked_state: dict[str, int] = {
+                    key: usage.get(key, {}).get("requests_this_month", 0)
+                    for key in ("meteostat", "open-meteo")
+                    if isinstance(usage.get(key), dict)
+                }
+                LOGGER.warning(
+                    "UsageTracker track_request - ismeretlen provider '%s'; számlálók: %s",
+                    provider,
+                    tracked_state,
                 )
-        else:
-            tracked_state: dict[str, int] = {
-                key: usage.get(key, {}).get("requests_this_month", 0)
-                for key in ("meteostat", "open-meteo")
-                if isinstance(usage.get(key), dict)
-            }
-            LOGGER.warning(
-                "UsageTracker track_request - ismeretlen provider '%s'; számlálók: %s",
-                provider,
-                tracked_state,
-            )
 
-        # Update total
-        usage["total_requests"] += request_count
+            # Update total
+            usage["total_requests"] += request_count
 
-        # Save and return
-        UsageTracker.save_usage_data(usage)
-        return usage
+            # Save and return
+            UsageTracker.save_usage_data(usage)
+            return usage
 
     @staticmethod
     def get_usage_summary() -> dict[str, Any]:

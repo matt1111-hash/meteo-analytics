@@ -208,10 +208,14 @@ class CityManagerDB:
             return 0
         return self._get_count_with(conn, "hungarian_settlements")
 
+    _VALID_TABLES = frozenset({"cities", "hungarian_settlements"})
+
     @staticmethod
     def _get_count_with(conn: sqlite3.Connection, table: str) -> int:
+        if table not in CityManagerDB._VALID_TABLES:
+            raise ValueError(f"Invalid table name: {table}")
         cursor = conn.cursor()
-        cursor.execute(f"SELECT COUNT(*) FROM {table}")
+        cursor.execute(f"SELECT COUNT(*) FROM {table}")  # nosec B608
         return cursor.fetchone()[0]
 
     def _execute_query(

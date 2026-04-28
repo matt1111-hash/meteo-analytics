@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import os
+import threading
 from collections.abc import Mapping
 from types import MappingProxyType
 from typing import Any, ClassVar
@@ -56,18 +57,21 @@ class APIConfig:
 
     USER_AGENT: ClassVar[str] = "Global Weather Analyzer/2.2.0 (Provider-Selector Edition)"
 
+    _reload_lock: ClassVar[threading.Lock] = threading.Lock()
+
     @classmethod
     def reload(cls) -> None:
         """Re-read env vars so tests with monkeypatch see updated values."""
-        cls.METEOSTAT_API_KEY = os.getenv("METEOSTAT_API_KEY")
-        cls.API_KEY = os.getenv("API_KEY")
-        cls.API_KEY_ENABLED = bool(cls.API_KEY)
-        cls.CORS_ORIGINS = [
-            origin.strip()
-            for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
-            if origin.strip()
-        ]
-        cls.APP_ENV = os.getenv("APP_ENV", "development")
+        with cls._reload_lock:
+            cls.METEOSTAT_API_KEY = os.getenv("METEOSTAT_API_KEY")
+            cls.API_KEY = os.getenv("API_KEY")
+            cls.API_KEY_ENABLED = bool(cls.API_KEY)
+            cls.CORS_ORIGINS = [
+                origin.strip()
+                for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+                if origin.strip()
+            ]
+            cls.APP_ENV = os.getenv("APP_ENV", "development")
 
 
 class DataConstants:

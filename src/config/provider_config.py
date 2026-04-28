@@ -15,6 +15,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, cast
 
+from .atomic_io import atomic_write_json
 from .paths_config import (
     PROVIDER_PREFS_FILE as DEFAULT_PROVIDER_PREFS_FILE,
 )
@@ -159,8 +160,7 @@ class UserPreferences:
             _ensure_directories()
             preferences["last_updated"] = datetime.now().isoformat()
 
-            with open(prefs_file, "w", encoding="utf-8") as file_obj:  # noqa: PTH123
-                json.dump(preferences, file_obj, indent=2, ensure_ascii=False)
+            atomic_write_json(prefs_file, preferences)
             return True
         except Exception as exc:  # pragma: no cover - defensive
             LOGGER.exception("Provider preferences mentése sikertelen", exc_info=exc)

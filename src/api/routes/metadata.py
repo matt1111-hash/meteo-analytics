@@ -6,7 +6,7 @@ from __future__ import annotations  # noqa: I001
 from fastapi import APIRouter
 
 from src.analytics.multi_city_engine_core import MultiCityEngine
-from src.analytics.multi_city_types import REGIONS
+from src.domain.constants.regions import REGIONS
 from src.domain.value_objects.enums import AnalyticsMetric
 
 router = APIRouter(prefix="/api/weather", tags=["metadata"])
