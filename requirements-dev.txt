@@ -34,4 +34,4 @@ pip-audit>=2.6
 
 # Dev Tools
 pre-commit>=3.7
-types-requests>=2.31.0
+types-requests>=2.33.0.20260408
