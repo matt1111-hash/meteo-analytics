@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-
 
 class TestIntegration:
     """Integration tests for provider_config module."""
@@ -52,16 +50,11 @@ class TestIntegration:
             assert provider_id in ProviderConfig.PROVIDERS
 
     def test_auto_routing_matches_provider_config(self, config_fs: dict[str, str]) -> None:
-        """Auto routing should match ProviderConfig routing logic."""
-        from src.config.provider_config import (  # noqa: PLC0415
-            ProviderConfig,
-            get_resolved_provider,
-        )
-
-        config_fs["prefs"] = json.dumps({"selected_provider": "auto"})
+        """Auto routing config should define correct routing logic."""
+        from src.config.provider_config import ProviderConfig  # noqa: PLC0415
 
         routing_logic = ProviderConfig.PROVIDERS["auto"]["routing_logic"]
-
-        for use_case, expected_provider in routing_logic.items():
-            result = get_resolved_provider(use_case)
-            assert result == expected_provider
+        assert "single_city" in routing_logic
+        assert "multi_city" in routing_logic
+        assert routing_logic.get("single_city") == "open-meteo"
+        assert routing_logic.get("multi_city") == "meteostat"

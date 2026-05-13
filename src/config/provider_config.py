@@ -218,34 +218,6 @@ class UserPreferences:
         return {key: dict(value) for key, value in ProviderConfig.PROVIDERS.items()}
 
 
-def get_resolved_provider(use_case: str, user_override: str | None = None) -> str:
-    """
-    Get resolved provider for specific use case.
-
-    Args:
-        use_case: Use case ("single_city", "multi_city", "historical_deep", "real_time")
-        user_override: User's provider preference override
-
-    Returns:
-        Resolved provider name
-    """
-    # User override has highest priority
-    if user_override and user_override != "auto":
-        return user_override
-
-    # Get user's selected provider
-    selected_provider = UserPreferences.get_selected_provider()
-
-    if selected_provider == "auto":
-        # Use smart routing
-        routing = ProviderConfig.PROVIDERS["auto"]["routing_logic"]
-        selected = routing.get(use_case, "open-meteo")
-        return str(selected)
-    else:
-        # Use user's fixed selection
-        return selected_provider
-
-
 def validate_provider_selection(provider: str) -> bool:
     """
     Validate that a provider is supported.

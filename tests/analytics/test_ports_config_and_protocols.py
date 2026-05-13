@@ -8,12 +8,8 @@ from dataclasses import fields
 from typing import Protocol
 
 from src.analytics.ports import (
-    AnalyticsQueryPort,
-    AnomalyDetectionPort,
     MultiCityEngineConfig,
     MultiCityEnginePort,
-    QueryTypeConfigPort,
-    WindAnalysisPort,
 )
 
 
@@ -70,77 +66,3 @@ class TestMultiCityEnginePort:
         ]
         for method in required_methods:
             assert hasattr(MultiCityEnginePort, method)
-
-
-class TestWindAnalysisPort:
-    """Test WindAnalysisPort protocol."""
-
-    def test_is_protocol(self) -> None:
-        """Should be a Protocol."""
-        assert issubclass(WindAnalysisPort, Protocol)
-
-    def test_has_required_methods(self) -> None:
-        """Should define required methods."""
-        required_methods = [
-            "analyze_wind_data",
-            "detect_windy_days",
-            "calculate_wind_statistics",
-        ]
-        for method in required_methods:
-            assert hasattr(WindAnalysisPort, method)
-
-    def test_has_threshold_constant(self) -> None:
-        """Should define WINDY_DAY_THRESHOLD_KMH."""
-        assert hasattr(WindAnalysisPort, "WINDY_DAY_THRESHOLD_KMH")
-        assert WindAnalysisPort.WINDY_DAY_THRESHOLD_KMH == 50.0
-
-
-class TestAnomalyDetectionPort:
-    """Test AnomalyDetectionPort protocol."""
-
-    def test_is_protocol(self) -> None:
-        """Should be a Protocol."""
-        assert issubclass(AnomalyDetectionPort, Protocol)
-
-    def test_has_required_methods(self) -> None:
-        """Should define required methods."""
-        required_methods = [
-            "detect_anomalies",
-            "classify_severity",
-            "calculate_z_score",
-        ]
-        for method in required_methods:
-            assert hasattr(AnomalyDetectionPort, method)
-
-
-class TestAnalyticsQueryPort:
-    """Test AnalyticsQueryPort protocol."""
-
-    def test_is_protocol(self) -> None:
-        """Should be a Protocol."""
-        assert issubclass(AnalyticsQueryPort, Protocol)
-
-    def test_has_required_methods(self) -> None:
-        """Should define required methods."""
-        required_methods = ["create_query", "validate_query"]
-        for method in required_methods:
-            assert hasattr(AnalyticsQueryPort, method)
-
-
-class TestQueryTypeConfigPort:
-    """Test QueryTypeConfigPort protocol."""
-
-    def test_is_protocol(self) -> None:
-        """Should be a Protocol."""
-        assert issubclass(QueryTypeConfigPort, Protocol)
-
-    def test_has_required_methods(self) -> None:
-        """Should define required methods."""
-        required_methods = [
-            "get_query_types",
-            "get_query_type",
-            "get_metric_for_query_type",
-            "get_unit_for_query_type",
-        ]
-        for method in required_methods:
-            assert hasattr(QueryTypeConfigPort, method)

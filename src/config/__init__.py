@@ -24,8 +24,6 @@ Usage:
 
 from __future__ import annotations
 
-from datetime import datetime as _datetime
-
 # API and data configuration
 from .api_config import (
     APIConfig,
@@ -71,16 +69,11 @@ from .paths_config import (
 from .provider_config import (
     ProviderConfig,
     UserPreferences,
-    get_resolved_provider,
     validate_provider_selection,
 )
 
 # Usage tracking
 from .usage_config import UsageTracker
-
-# Backward compatibility for tests monkeypatching datetime
-datetime = _datetime
-
 
 # Export all public interfaces
 __all__ = [
@@ -113,14 +106,11 @@ __all__ = [
     "UserPreferences",
     # Validation and utilities
     "check_environment",
-    # Backward compatibility
-    "datetime",
     "ensure_directories",
     "get_active_data_sources",
     "get_fallback_source_chain",
     "get_optimal_data_source",
     "get_project_info",
-    "get_resolved_provider",
     "get_source_display_name",
     "validate_api_keys",
     "validate_api_source_available",

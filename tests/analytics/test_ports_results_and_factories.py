@@ -7,11 +7,9 @@ Analytics Layer Ports (Abstractions)
 from unittest.mock import MagicMock, patch
 
 from src.analytics.ports import (
-    AnomalyDetectionResult,
     MultiCityEngineConfig,
     WindAnalysisResult,
     get_multi_city_engine_port,
-    get_wind_analysis_port,
 )
 
 
@@ -67,37 +65,6 @@ class TestWindAnalysisResult:
         assert isinstance(result.avg_wind_speed, float)
         assert isinstance(result.data, list)
         assert isinstance(result.threshold, float)
-
-
-class TestAnomalyDetectionResult:
-    """Test AnomalyDetectionResult dataclass."""
-
-    def test_default_factory_for_lists(self) -> None:
-        """List fields should use default_factory."""
-        result = AnomalyDetectionResult(
-            anomalies=[],
-            total_records=100,
-            anomaly_count=5,
-            anomaly_percentage=5.0,
-            severity_distribution={},
-        )
-        assert result.anomalies == []
-        assert result.severity_distribution == {}
-
-    def test_custom_values(self) -> None:
-        """Should accept custom values."""
-        anomalies = [{"type": "temperature", "value": 45.0}]
-        severity = {"high": 2, "medium": 3}
-
-        result = AnomalyDetectionResult(
-            anomalies=anomalies,
-            total_records=100,
-            anomaly_count=5,
-            anomaly_percentage=5.0,
-            severity_distribution=severity,
-        )
-        assert result.anomalies == anomalies
-        assert result.severity_distribution == severity
 
 
 class TestGetMultiCityEnginePort:
@@ -163,27 +130,3 @@ class TestGetMultiCityEnginePort:
             get_multi_city_engine_port(config=config)
 
             mock_engine_class.assert_called_once()
-
-
-class TestGetWindAnalysisPort:
-    """Test get_wind_analysis_port factory function."""
-
-    def test_returns_module(self) -> None:
-        """Should return the wind_analysis module."""
-        result = get_wind_analysis_port()
-        assert result is not None
-
-    def test_result_has_analyze_wind_patterns(self) -> None:
-        """Result should have analyze_wind_patterns function."""
-        result = get_wind_analysis_port()
-        assert hasattr(result, "analyze_wind_patterns")
-
-    def test_result_has_extract_daily_wind_data(self) -> None:
-        """Result should have extract_daily_wind_data function."""
-        result = get_wind_analysis_port()
-        assert hasattr(result, "extract_daily_wind_data")
-
-    def test_result_has_identify_windy_days(self) -> None:
-        """Result should have identify_windy_days function."""
-        result = get_wind_analysis_port()
-        assert hasattr(result, "identify_windy_days")

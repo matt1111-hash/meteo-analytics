@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 
 import pytest
+from src.config import usage_config
 
 
 class TestUsageTrackerLoad:
@@ -42,7 +43,6 @@ class TestUsageTrackerLoad:
         self, config_fs: dict[str, str], monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Should reset usage data when month changes."""
-        from src import config  # noqa: PLC0415
         from src.config.usage_config import UsageTracker  # noqa: PLC0415
 
         UsageTracker.track_request("meteostat", 100)
@@ -52,13 +52,7 @@ class TestUsageTrackerLoad:
         UsageTracker.save_usage_data(usage)
 
         fixed_now = datetime(2024, 2, 15, 12, 0, 0)
-
-        class FakeDatetime:
-            @classmethod
-            def now(cls):
-                return fixed_now
-
-        monkeypatch.setattr(config, "datetime", FakeDatetime)
+        monkeypatch.setattr(usage_config, "_now", lambda: fixed_now)
 
         usage = UsageTracker.load_usage_data()
 

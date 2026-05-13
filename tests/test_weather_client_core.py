@@ -6,11 +6,11 @@ import time
 from datetime import datetime
 
 import pytest
-from src.data import weather_client as weather_client_module
-
-WeatherData = weather_client_module.WeatherData
-OpenMeteoProvider = weather_client_module.OpenMeteoProvider
-WeatherClient = weather_client_module.WeatherClient
+from src.infrastructure.weather.openmeteo_provider import OpenMeteoProvider
+from src.infrastructure.weather.weather_client_extensions import (
+    WeatherClientExtensions as WeatherClient,
+)
+from src.infrastructure.weather.weather_types import WeatherData
 
 
 def test_weather_data_post_init_computes_range_and_mean() -> None:

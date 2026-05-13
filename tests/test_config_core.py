@@ -7,6 +7,7 @@ from datetime import datetime
 
 import pytest
 from src import config
+from src.config import usage_config
 
 
 def test_user_preferences_loads_defaults_when_file_missing(
@@ -85,17 +86,8 @@ def test_usage_tracker_load_resets_new_month(
     )
 
     fixed_now = datetime(2024, 7, 15, 12, 0, 0)
+    monkeypatch.setattr(usage_config, "_now", lambda: fixed_now)
 
-    class FakeDatetime:
-        @classmethod
-        def now(cls):
-            return fixed_now
-
-        @staticmethod
-        def strftime(value: str) -> str:
-            return fixed_now.strftime(value)
-
-    monkeypatch.setattr(config, "datetime", FakeDatetime)
     usage = config.UsageTracker.load_usage_data()
     assert usage["current_month"] == "2024-07"
     assert usage["total_requests"] == 0
@@ -119,18 +111,8 @@ def test_usage_tracker_load_handles_json_error(
         raise json.JSONDecodeError("boom", "xx", 0)
 
     fixed_now = datetime(2024, 7, 15, 12, 0, 0)
-
-    class FakeDatetime:
-        @classmethod
-        def now(cls):
-            return fixed_now
-
-        @staticmethod
-        def strftime(fmt: str) -> str:
-            return fixed_now.strftime(fmt)
-
+    monkeypatch.setattr(usage_config, "_now", lambda: fixed_now)
     monkeypatch.setattr(json, "load", fake_json_load)
-    monkeypatch.setattr(config, "datetime", FakeDatetime)
 
     usage = config.UsageTracker.load_usage_data()
     assert usage["total_requests"] == 0
@@ -172,23 +154,3 @@ def test_usage_tracker_reset_clears_monthly_stats() -> None:
     assert updated["meteostat"]["estimated_cost_usd"] == 0.0
     assert updated["open-meteo"]["daily_breakdown"] == {}
     assert updated["total_requests"] == 0
-
-
-def test_get_resolved_provider_prefers_override_and_auto(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Az override elsőbbséget élvez, egyébként az auto routing érvényesül."""
-    monkeypatch.setattr(
-        config.UserPreferences,
-        "get_selected_provider",
-        staticmethod(lambda: "auto"),
-    )
-    assert config.get_resolved_provider("multi_city") == "meteostat"
-    assert config.get_resolved_provider("single_city", user_override="open-meteo") == "open-meteo"
-
-    monkeypatch.setattr(
-        config.UserPreferences,
-        "get_selected_provider",
-        staticmethod(lambda: "meteostat"),
-    )
-    assert config.get_resolved_provider("single_city") == "meteostat"
