@@ -1,8 +1,8 @@
 # Meteo-Analytics Master Refactor Plan
 
-**Dátum:** 2026-05-12
+**Dátum:** 2026-05-12 (frissítve: 2026-05-13)
 **Alap:** 4 audit (PROMPT0–PROMPT3) validált finding-jei
-**Státusz:** 1811/1811 teszt zöld | Ruff clean | 499 fájl mypy ignore
+**Státusz:** 1815/1815 teszt zöld | Ruff clean | 93.56% coverage
 
 ---
 
@@ -19,7 +19,7 @@ validáltam a kód ellen. Az eredmény 47 Finding, amiből 44 megerősítve, 2 t
 | Metrika | Érték | Forrás |
 |---|---|---|
 | Python LOC (src/) | ~6204 sor (clean) / ~64K (teljes) | wc / audit |
-| Tesztek | 1811 db, mind PASS | pytest |
+| Tesztek | 1815 db, mind PASS (2026-05-13) | pytest |
 | Ruff | 0 error | ruff check |
 | mypy ignore fájlok | 499 db | grep |
 | Frontend JS bundle | 5.3 MB (1 chunk) | ls build |
@@ -69,7 +69,7 @@ Minden fázis végén: **tesztek zöldek, ruff clean, coverage ≥85%**.
 **Idő:** 1-2 nap
 **Függőség:** Nincs
 
-### 0.1 Trend kwargs mismatch javítás
+### 0.1 Trend kwargs mismatch javítás ✅ KÉSZ
 
 **Finding:** C1 — `calculate_trend.py:164-168` `lat`/`lon` kulcsszavakkal hívja
 a `WeatherClient.get_weather_data()` metódust, ami `latitude`/`longitude` paramétereket
@@ -88,7 +88,7 @@ batch_data = self._weather_client.get_weather_data(
 
 **Teszt:** Trend endpoint hívás után nem üres eredmény, integritás teszt.
 
-### 0.2 Hibaválasz információszivárgás megszüntetése
+### 0.2 Hibaválasz információszivárgás megszüntetése ✅ KÉSZ
 
 **Finding:** C2 — Három endpoint belső hibaüzenetet ad vissza a kliensnek.
 
@@ -101,7 +101,7 @@ batch_data = self._weather_client.get_weather_data(
 
 **Teszt:** API tesztek ellenőrzik, hogy hibaüzenet nem tartalmaz belső részleteket.
 
-### 0.3 Frontend devDependencies rendezés
+### 0.3 Frontend devDependencies rendezés ✅ KÉSZ
 
 **Finding:** C9 — 8 csomag tévesen `dependencies`-ben `devDependencies` helyett.
 
@@ -112,13 +112,14 @@ batch_data = self._weather_client.get_weather_data(
 
 **Teszt:** `npm run build` sikeres, production bundle méret csökken.
 
-### 0.4 Fázis 0 quality gate
+### 0.4 Fázis 0 quality gate ✅ KÉSZ
 
-- [ ] `python -m pytest tests/ -v` — 1811/1811 PASS
-- [ ] `python -m ruff check src/` — 0 error
-- [ ] Trend endpoint ad vissza eredményt
-- [ ] Hibás API hívás nem szivárogtat belső információt
-- [ ] `npm run build` sikeres
+- [x] `python -m pytest tests/ -v` — 1814/1814 PASS
+- [x] `python -m ruff check src/` — 0 error
+- [x] Trend endpoint ad vissza eredményt
+- [x] Hibás API hívás nem szivárogtat belső információt
+- [x] `npm run build` sikeres
+- **Extra:** rejtett 502→500 HTTPException bug javítva, +4 regressziós teszt
 
 ---
 
@@ -128,7 +129,7 @@ batch_data = self._weather_client.get_weather_data(
 **Idő:** 2-3 nap
 **Függőség:** Fázis 0
 
-### 1.1 Rate limiter memóriaszivárgás
+### 1.1 Rate limiter memóriaszivárgás ✅ KÉSZ
 
 **Finding:** C10 — `_timestamps` dict IP kulcsai sosem törlődnek.
 
@@ -143,7 +144,7 @@ Alternatíva: `cachetools.TTLCache` használata a dict helyett.
 
 **Teszt:** Long-running rate limiter teszt, memória nem nő végtelenül.
 
-### 1.2 CORS beállítások szűkítése
+### 1.2 CORS beállítások szűkítése ✅ KÉSZ
 
 **Művelet:** `main.py:75-76`:
 ```python
@@ -151,24 +152,24 @@ allow_methods=["GET", "POST", "OPTIONS"],
 allow_headers=["Authorization", "Content-Type"],
 ```
 
-### 1.3 @app.on_event → lifespan migráció
+### 1.3 @app.on_event → lifespan migráció ✅ KÉSZ
 
 **Művelet:** `main.py:48` — `on_event("startup")` → FastAPI `lifespan` context manager.
 Ez egyben a per-request DI (C3) megoldásának alapja is lesz.
 
-### 1.4 Hardcoded abszolút útvonal
+### 1.4 Hardcoded abszolút útvonal ✅ KÉSZ
 
 **Művelet:** `scripts/launch_meteo_analytics_fullstack.sh:38`:
 ```bash
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 ```
 
-### 1.5 logging.basicConfig eltávolítása
+### 1.5 logging.basicConfig eltávolítása ✅ KÉSZ
 
 **Művelet:** `main.py:27` — `logging.basicConfig(level=logging.INFO)` eltávolítása,
 uvicorn saját log konfigurációja marad.
 
-### 1.6 Database fájlok .gitignore-ba
+### 1.6 Database fájlok .gitignore-ba ✅ KÉSZ
 
 **Művelet:** `.gitignore` kiegészítés:
 ```
@@ -178,10 +179,10 @@ data/*.db-wal
 ```
 A `data/geojson/` és `data/user_preferences/` maradhat tracked.
 
-### 1.7 Fázis 1 quality gate
+### 1.7 Fázis 1 quality gate ✅ KÉSZ
 
-- [ ] Rate limiter memória teszt PASS
-- [ ] CORS teszt: csak engedélyezett methodok
+- [x] Rate limiter memória teszt PASS
+- [x] CORS teszt: csak engedélyezett methodok
 - [ ] Lifespan alapú startup/shutdown működik
 - [ ] Launch script más gépen is fut
 - [ ] `git status` nem mutat `.db` fájlokat
@@ -194,7 +195,7 @@ A `data/geojson/` és `data/user_preferences/` maradhat tracked.
 **Idő:** 1-2 hét
 **Függőség:** Fázis 1 (lifespan rendelkezésre áll)
 
-### 2.1 Dual City Repository Protocol egyesítése
+### 2.1 Dual City Repository Protocol egyesítése ✅ KÉSZ
 
 **Finding:** C5 — Két Protocol ugyanarra a fogalomra:
 - `CityRepositoryPort` (9 tag, `src/domain/ports/repository_ports.py`)
@@ -212,7 +213,7 @@ A `data/geojson/` és `data/user_preferences/` maradhat tracked.
 
 **Teszt:** `CityRepositoryPort` implementáció teszt, összes meglévő teszt PASS.
 
-### 2.2 WeatherClientPort signature javítás
+### 2.2 WeatherClientPort signature javítás ✅ KÉSZ
 
 **Finding:** C6 — A port `WeatherDataProtocol | None`-ot ígér, a valós
 `WeatherClient` `list[dict[str, Any]]`-t ad vissza.
@@ -630,8 +631,8 @@ a port factory-ket.
 
 | Metrika | Jelenleg | Cél | Fázis |
 |---|---|---|---|
-| Tesztek | 1811 PASS | 1811+ PASS | Minden |
-| Coverage | Ismeretlen | ≥90% | Fázis 4 |
+| Tesztek | 1815 PASS | 1815+ PASS | Minden |
+| Coverage | 93.56% | ≥90% | Fázis 4 |
 | mypy ignore fájlok | 499 | ≤50 | Fázis 4 |
 | Ruff error | 0 | 0 | Minden |
 | API cold start | ~3.0 s | <1.0 s | Fázis 3 |
@@ -639,8 +640,10 @@ a port factory-ket.
 | Frontend initial chunk | 5.3 MB | <500 KB | Fázis 3 |
 | Domain külső importok | 5 fájl | 0 | Fázis 5 |
 | `from src.data` importok | 50+ | 0 | Fázis 2 |
-| Funkcionális trend hiba | Igen | Nem | Fázis 0 |
-| Security findings (MAGAS) | 2 | 0 | Fázis 0 |
+| Funkcionális trend hiba | Nem ✅ | Nem | Fázis 0 |
+| Security findings (MAGAS) | 0 ✅ | 0 | Fázis 0 |
+| Dual protocol | Egyesítve ✅ | 1 port | Fázis 2 |
+| WeatherClientPort mismatch | Javítva ✅ | Kompatibilis | Fázis 2 |
 
 ---
 
