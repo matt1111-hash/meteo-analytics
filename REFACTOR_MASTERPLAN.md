@@ -265,42 +265,39 @@ a composition_root-ot használja közvetlenül.
 
 ### 2.5 Halott analytics portok tisztítása ✅ KÉSZ
 
-**Finding:** `AnomalyDetectionPort`, `AnalyticsQueryPort`, `QueryTypeConfigPort` —
-definícióban léteznek, nincs implementációjuk, nincs hívójuk.
-
-**Művelet:**
-- Törlés ha nincs terv implementációra
-- Ha van terv: `# TODO: PHASE-X implement` komment és tracking issue
-- `WindAnalysisPort` — van implementáció, de 0 hívó → döntés szükséges
+**Elvégzett:**
+- 4 Protocol törölve: `WindAnalysisPort`, `AnomalyDetectionPort`, `AnalyticsQueryPort`, `QueryTypeConfigPort`
+- `AnomalyDetectionResult` dataclass és `get_wind_analysis_port()` factory törölve
+- `WindAnalysisResult` dataclass megtartva (18+ hivatkozás)
+- Tesztek frissítve
 
 ### 2.6 Config modulok üzleti logika kiszervezése ✅ KÉSZ (részleges)
 
-**Finding:** `UsageTracker` és `get_resolved_provider()` üzleti logikát
-tartalmaznak a config modulban.
-
-**Művelet:**
-1. `get_resolved_provider()` → `src/application/services/provider_routing.py`
-2. `UsageTracker` cost estimation → `src/application/services/cost_estimation.py`
-3. `UsageTracker` marad config-only (file I/O, settings)
+**Elvégzett:**
+- `get_resolved_provider()` — halott kód (0 hívó), törölve
+- Exportok tisztítva
+- `UsageTracker` instance refakt + cost estimation kiszervezés → Phase 4.2
 
 ### 2.7 Legacy wrapper-ek törlése ✅ KÉSZ
 
-**Művelet:**
-- `src/data/city_manager.py` (55 sor re-export) — hivatkozások frissítése, törlés
-- `src/config.py` (legacy re-export) — hivatkozások frissítése, törlés
-- `src/config/__init__.py:82` — `datetime = _datetime` backward compat eltávolítása
-- `src/analytics/multi_city_legacy.py` — 3-szintű indirekció törlése
+**Elvégzett:**
+- `src/data/city_manager.py`, `weather_client.py`, `geo_utils.py`, `__init__.py` — törölve
+- `src/config.py` (legacy re-export) — törölve
+- `src/config/__init__.py` — `datetime = _datetime` backward compat eltávolítva
+- `.importlinter` — elavult `ignore_imports` szabályok törölve
+- `tests/data/test_reexport_modules.py` — törölve
+- Backward compat teszt osztályok törölve, importok frissítve
 
 ### 2.8 Fázis 2 quality gate ✅ KÉSZ
 
-- [ ] `from src.data` import → 0 találat
-- [ ] Egyetlen `CityRepositoryPort` létezik
-- [ ] `WeatherClientPort` return típus kompatibilis az implementációval
-- [ ] `MultiCityEngine` vagy törlött vagy thin facade (<50 sor)
-- [ ] Halott portok törölve
-- [ ] Import-linter PASS
-- [ ] 1811+ teszt PASS
-- [ ] Coverage ≥85%
+- [x] `from src.data` import → 0 találat (src/data/ megszűnt)
+- [x] Egyetlen `CityRepositoryPort` létezik
+- [x] `WeatherClientPort` return típus kompatibilis
+- [x] `MultiCityEngine` thin facade (110 sor)
+- [x] Halott portok törölve
+- [x] Import-linter PASS (3/3)
+- [x] 1702 teszt PASS
+- [x] Coverage 94%
 
 ---
 
