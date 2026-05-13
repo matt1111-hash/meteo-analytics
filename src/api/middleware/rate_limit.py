@@ -50,6 +50,10 @@ class RateLimitMiddleware:
             timestamps = self._timestamps[client_ip]
             self._timestamps[client_ip] = [t for t in timestamps if t > cutoff]
             timestamps = self._timestamps[client_ip]
+            if not timestamps:
+                del self._timestamps[client_ip]
+                self._timestamps[client_ip] = [now]
+                return False
             if len(timestamps) >= self.max_requests:
                 return True
             timestamps.append(now)

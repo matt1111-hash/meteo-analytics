@@ -5,6 +5,8 @@ from __future__ import annotations  # noqa: I001
 
 import logging
 import secrets
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from typing import Callable  # noqa: UP035
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
@@ -24,30 +26,12 @@ from src.api.routes.wind_rose import router as wind_rose_router
 from src.api.middleware.rate_limit import RateLimitMiddleware
 from src.config.api_config import APIConfig
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Global Weather Analyzer API")
 
-
-@app.middleware("http")
-async def security_headers_middleware(request: Request, call_next: Callable):
-    """Add security headers to every response."""
-    response = await call_next(request)
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-XSS-Protection"] = "1; mode=block"
-    if APIConfig.APP_ENV == "production":
-        response.headers["Strict-Transport-Security"] = (
-            "max-age=63072000; includeSubDomains; preload"
-        )
-        response.headers["Content-Security-Policy"] = "default-src 'self'"
-    return response
-
-
-@app.on_event("startup")
-def _enforce_production_security() -> None:
-    """Fail fast if production security prerequisites are not met."""
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    """Manage application startup and shutdown lifecycle."""
     if APIConfig.APP_ENV == "production":
         if not APIConfig.API_KEY_ENABLED:
             raise RuntimeError(
@@ -66,14 +50,36 @@ def _enforce_production_security() -> None:
             "API key authentication is DISABLED. Set API_KEY env var to enable authentication."
         )
 
+    yield
 
-# CORS middleware - origins configurable via CORS_ORIGINS env var
+    logger.info("Application shutting down")
+
+
+app = FastAPI(title="Global Weather Analyzer API", lifespan=lifespan)
+
+
+@app.middleware("http")
+async def security_headers_middleware(request: Request, call_next: Callable):
+    """Add security headers to every response."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    if APIConfig.APP_ENV == "production":
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=63072000; includeSubDomains; preload"
+        )
+        response.headers["Content-Security-Policy"] = "default-src 'self'"
+    return response
+
+
+# CORS middleware — restricted methods and headers
 app.add_middleware(
     CORSMiddleware,
     allow_origins=APIConfig.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # Rate limiting — production: strict; development: generous for tests

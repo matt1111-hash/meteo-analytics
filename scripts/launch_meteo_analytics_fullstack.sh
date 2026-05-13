@@ -35,7 +35,7 @@ require_file() {
   fi
 }
 
-PROJECT_ROOT="/home/tibor/PythonProjects/meteo-analytics"
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
 PYTHON_BIN="$PROJECT_ROOT/venv/bin/python"
 BACKEND_LOG="/tmp/meteo_analytics_backend.log"

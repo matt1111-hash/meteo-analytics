@@ -84,3 +84,22 @@ class TestRateLimitPerClient:
             # Different IP — allowed
             response3 = await client.get("/test", headers={"X-Forwarded-For": "5.6.7.8"})
             assert response3.status_code == 200
+
+
+class TestRateLimitMemoryEviction:
+    """IP entries with stale timestamps must be cleaned up."""
+
+    def test_stale_timestamps_evicted_on_return(self):
+        """When an IP returns after window expiry, old data is replaced with fresh entry."""
+        rl = RateLimitMiddleware(app=FastAPI(), max_requests=5, window_seconds=1)
+        old_t = time.monotonic() - 10.0
+        rl._timestamps["10.0.0.1"] = [old_t, old_t, old_t]
+        rl._timestamps["10.0.0.2"] = [old_t, old_t]
+
+        rl._is_limited("10.0.0.1")
+        rl._is_limited("10.0.0.2")
+
+        assert all(t != old_t for t in rl._timestamps["10.0.0.1"])
+        assert all(t != old_t for t in rl._timestamps["10.0.0.2"])
+        assert len(rl._timestamps["10.0.0.1"]) == 1
+        assert len(rl._timestamps["10.0.0.2"]) == 1
