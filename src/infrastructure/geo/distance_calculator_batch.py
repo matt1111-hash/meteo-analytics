@@ -5,10 +5,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from src.data.geo_types import DistanceUnit
+from src.infrastructure.geo.geo_types import DistanceUnit
 
 if TYPE_CHECKING:
-    from src.data.distance_calculator import DistanceCalculator
+    from src.infrastructure.geo.distance_calculator import DistanceCalculator
 
 
 class DistanceBatchMixin:

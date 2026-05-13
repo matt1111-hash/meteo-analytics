@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.data.city_manager_search import CityManagerSearch
+from src.infrastructure.city_manager.city_manager_search import CityManagerSearch
 
 # ruff: noqa: F403, F405
 from tests.data.test_city_manager_search_support import *

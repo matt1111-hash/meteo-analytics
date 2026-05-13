@@ -11,7 +11,7 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
-from ..anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
 
 logger = logging.getLogger(__name__)
 

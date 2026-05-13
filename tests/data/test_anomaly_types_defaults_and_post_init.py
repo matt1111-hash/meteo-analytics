@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from src.data.anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
 
 
 class TestAnomalyProfileSettingsDefaults:

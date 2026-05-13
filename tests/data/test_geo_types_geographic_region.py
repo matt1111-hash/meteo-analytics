@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.data.geo_types import BoundingBox, GeographicRegion, GeoPoint
+from src.infrastructure.geo.geo_types import BoundingBox, GeographicRegion, GeoPoint
 
 
 class TestGeographicRegion:

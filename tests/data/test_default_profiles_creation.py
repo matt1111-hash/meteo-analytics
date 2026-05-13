@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from src.data.anomaly_profile.default_profiles import (
+from src.infrastructure.anomaly_profile.default_profiles import (
     create_default_profiles,
     create_profiles_data,
 )

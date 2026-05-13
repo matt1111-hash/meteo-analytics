@@ -1,6 +1,6 @@
 # Meteo-Analytics Master Refactor Plan
 
-**Dátum:** 2026-05-12 (frissítve: 2026-05-13)
+**Dátum:** 2026-05-12 (frissítve: 2026-05-13, 2.3 kész: 2026-05-13)
 **Alap:** 4 audit (PROMPT0–PROMPT3) validált finding-jei
 **Státusz:** 1815/1815 teszt zöld | Ruff clean | 93.56% coverage
 
@@ -226,7 +226,7 @@ A `data/geojson/` és `data/user_preferences/` maradhat tracked.
 
 **Teszt:** Port konformancia teszt, API route tesztek.
 
-### 2.3 src/data/ → src/infrastructure/ migráció
+### 2.3 src/data/ → src/infrastructure/ migráció ✅ KÉSZ
 
 **Finding:** C8 — 34 fájl, 4432 LOC infrastruktúra kód `src/data/` alatt
 ahelyett, hogy `src/infrastructure/`-ben lenne.
@@ -247,7 +247,7 @@ ahelyett, hogy `src/infrastructure/`-ben lenne.
 
 **Teszt:** Import-linter PASS, `grep -r "from src.data" src/` — 0 találat.
 
-### 2.4 MultiCityEngine wrapper megszüntetése
+### 2.4 MultiCityEngine wrapper megszüntetése ✅ KÉSZ
 
 **Finding:** A `MultiCityEngine` felesleges delegáló réteg az
 `AnalyzeMultiCityUseCase` felett. A GUI ezen megy keresztül, az API

@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from ..anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
 
 
 def create_default_profiles() -> dict[str, dict[str, Any]]:

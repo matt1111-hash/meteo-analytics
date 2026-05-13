@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from src.data.city_manager_db import CityDatabaseError, CityManagerDB
+from src.infrastructure.city_manager.city_manager_db import CityDatabaseError, CityManagerDB
 
 # ruff: noqa: F403
 from tests.data.test_city_manager_db_new_support import *
@@ -37,7 +37,7 @@ class TestCityManagerDBInit:
         conn.commit()
         conn.close()
 
-        with patch("src.data.city_manager_db.DATA_DIR", mock_data_dir):
+        with patch("src.infrastructure.city_manager.city_manager_db.DATA_DIR", mock_data_dir):
             manager = CityManagerDB()
 
             assert manager.db_path == mock_data_dir / "cities.db"
@@ -61,7 +61,7 @@ class TestCityManagerDBInit:
     def test_init_raises_when_no_databases_available(self, mock_data_dir: Path) -> None:
         """Initialization raises CityDatabaseError when neither database exists."""
         with (
-            patch("src.data.city_manager_db.DATA_DIR", mock_data_dir),
+            patch("src.infrastructure.city_manager.city_manager_db.DATA_DIR", mock_data_dir),
             pytest.raises(CityDatabaseError, match="No database available"),
         ):
             CityManagerDB()

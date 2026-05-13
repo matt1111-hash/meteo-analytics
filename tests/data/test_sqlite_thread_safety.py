@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from src.data.city_manager_db import CityManagerDB
+from src.infrastructure.city_manager.city_manager_db import CityManagerDB
 
 
 def _create_valid_db(path: Path) -> None:

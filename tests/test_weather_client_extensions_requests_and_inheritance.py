@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
-from src.data.weather_client_extensions import WeatherClientExtensions
+from src.infrastructure.weather.weather_client_extensions import WeatherClientExtensions
 
 
 class TestGetCurrentWeather:
@@ -150,7 +150,7 @@ class TestInheritance:
     """Öröklődés tesztek."""
 
     def test_inherits_from_weather_client(self) -> None:
-        from src.data.weather_client_core import WeatherClient  # noqa: PLC0415
+        from src.infrastructure.weather.weather_client_core import WeatherClient  # noqa: PLC0415
 
         assert issubclass(WeatherClientExtensions, WeatherClient)
 

@@ -17,94 +17,92 @@ pytest_plugins = ("tests.analytics.multi_city_engine_core_support",)
 class TestMultiCityEngineInit:
     """Test MultiCityEngine initialization."""
 
-    def test_initializes_with_default_paths(self, mock_city_repository: MagicMock) -> None:
-        """Should initialize with default database paths."""
-        with (
-            patch(
-                "src.analytics.multi_city_engine_core.get_city_repository_port",
-                return_value=mock_city_repository,
-            ),
-            patch(
-                "src.analytics.multi_city_engine_core.get_weather_client_port",
-                return_value=MagicMock(),
-            ),
-            patch("src.analytics.multi_city_engine_core.RegionResolverService"),
-            patch("src.analytics.multi_city_engine_core.WeatherFetchService"),
-            patch("src.analytics.multi_city_engine_core.AnalyticsTransformService"),
-            patch("src.analytics.multi_city_engine_core.AnalyzeMultiCityUseCase"),
+    def test_init_with_injected_use_case(self) -> None:
+        """Should use injected use case and derive attributes from it."""
+        mock_use_case = MagicMock()
+        mock_repo = MagicMock()
+        mock_use_case.city_repository = mock_repo
+        mock_use_case.analytics_transform_service = MagicMock()
+
+        with patch(
+            "src.analytics.multi_city_engine_core.RegionResolverService",
         ):
-            engine = MultiCityEngine(city_repository=mock_city_repository)
+            engine = MultiCityEngine(use_case=mock_use_case)
 
-            assert engine.db_path.name == "cities.db"
-            assert engine.hungarian_db_path.name == "hungarian_settlements.db"
+        assert engine.use_case is mock_use_case
+        assert engine.city_repository is mock_repo
 
-    def test_initializes_with_custom_paths(self, mock_city_repository: MagicMock) -> None:
-        """Should accept custom database paths."""
-        with (
-            patch(
-                "src.analytics.multi_city_engine_core.get_city_repository_port",
-                return_value=mock_city_repository,
-            ),
-            patch(
-                "src.analytics.multi_city_engine_core.get_weather_client_port",
-                return_value=MagicMock(),
-            ),
-            patch("src.analytics.multi_city_engine_core.RegionResolverService"),
-            patch("src.analytics.multi_city_engine_core.WeatherFetchService"),
-            patch("src.analytics.multi_city_engine_core.AnalyticsTransformService"),
-            patch("src.analytics.multi_city_engine_core.AnalyzeMultiCityUseCase"),
+    def test_init_with_injected_use_case_and_explicit_repo(self) -> None:
+        """Should prefer explicit city_repository over use_case's repo."""
+        mock_use_case = MagicMock()
+        mock_use_case.city_repository = MagicMock()
+        explicit_repo = MagicMock()
+        mock_use_case.analytics_transform_service = MagicMock()
+
+        with patch(
+            "src.analytics.multi_city_engine_core.RegionResolverService",
         ):
             engine = MultiCityEngine(
-                db_path="/custom/cities.db",
-                hungarian_db_path="/custom/hungarian.db",
-                city_repository=mock_city_repository,
+                use_case=mock_use_case,
+                city_repository=explicit_repo,
             )
 
-            assert str(engine.db_path) == "/custom/cities.db"
-            assert str(engine.hungarian_db_path) == "/custom/hungarian.db"
+        assert engine.city_repository is explicit_repo
 
-    def test_initializes_default_configuration(self, mock_city_repository: MagicMock) -> None:
-        """Should have default configuration values."""
+    def test_init_builds_use_case_when_not_injected(self) -> None:
+        """Should call build_analyze_multi_city_use_case when no use_case given."""
+        mock_use_case = MagicMock()
+        mock_use_case.city_repository = MagicMock()
+        mock_use_case.analytics_transform_service = MagicMock()
+
         with (
             patch(
-                "src.analytics.multi_city_engine_core.get_city_repository_port",
-                return_value=mock_city_repository,
-            ),
+                "src.analytics.multi_city_engine_core.build_analyze_multi_city_use_case",
+                return_value=mock_use_case,
+            ) as build_fn,
             patch(
-                "src.analytics.multi_city_engine_core.get_weather_client_port",
-                return_value=MagicMock(),
+                "src.analytics.multi_city_engine_core.RegionResolverService",
             ),
-            patch("src.analytics.multi_city_engine_core.RegionResolverService"),
-            patch("src.analytics.multi_city_engine_core.WeatherFetchService"),
-            patch("src.analytics.multi_city_engine_core.AnalyticsTransformService"),
-            patch("src.analytics.multi_city_engine_core.AnalyzeMultiCityUseCase"),
         ):
-            engine = MultiCityEngine(city_repository=mock_city_repository)
+            engine = MultiCityEngine()
 
-            assert engine.max_workers == 8
-            assert engine.request_timeout == 90
-            assert engine.max_retries == 2
-            assert engine.retry_delay == 3.0
+        build_fn.assert_called_once()
+        assert engine.use_case is mock_use_case
 
-    def test_handles_weather_client_import_error(self, mock_city_repository: MagicMock) -> None:
-        """Should handle ImportError when weather client is not available."""
+    def test_init_creates_region_resolver(self) -> None:
+        """Should create RegionResolverService instance."""
+        mock_resolver = MagicMock()
+
         with (
             patch(
-                "src.analytics.multi_city_engine_core.get_city_repository_port",
-                return_value=mock_city_repository,
+                "src.analytics.multi_city_engine_core.build_analyze_multi_city_use_case",
+                return_value=MagicMock(
+                    city_repository=MagicMock(),
+                    analytics_transform_service=MagicMock(),
+                ),
             ),
             patch(
-                "src.analytics.multi_city_engine_core.get_weather_client_port",
-                side_effect=ImportError("No module"),
+                "src.analytics.multi_city_engine_core.RegionResolverService",
+                return_value=mock_resolver,
             ),
-            patch("src.analytics.multi_city_engine_core.RegionResolverService"),
-            patch("src.analytics.multi_city_engine_core.WeatherFetchService"),
-            patch("src.analytics.multi_city_engine_core.AnalyticsTransformService"),
-            patch("src.analytics.multi_city_engine_core.AnalyzeMultiCityUseCase"),
         ):
-            engine = MultiCityEngine(city_repository=mock_city_repository)
+            engine = MultiCityEngine()
 
-            assert engine.weather_client is None
+        assert engine.region_resolver is mock_resolver
+
+    def test_init_exposes_transform_service_from_use_case(self) -> None:
+        """Should expose analytics_transform_service from use case."""
+        mock_transform = MagicMock()
+        mock_use_case = MagicMock()
+        mock_use_case.city_repository = MagicMock()
+        mock_use_case.analytics_transform_service = mock_transform
+
+        with patch(
+            "src.analytics.multi_city_engine_core.RegionResolverService",
+        ):
+            engine = MultiCityEngine(use_case=mock_use_case)
+
+        assert engine.analytics_transform_service is mock_transform
 
 
 class TestMultiCityEngineQueryTypes:

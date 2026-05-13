@@ -21,7 +21,9 @@ class TestInternalMethods:
 
     def test_get_profiles_cache_when_cache_is_none(self, temp_dir: Path) -> None:
         """_get_profiles_cache loads profiles when cache is None."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {
@@ -41,7 +43,9 @@ class TestInternalMethods:
 
     def test_get_profiles_cache_returns_empty_dict_on_failure(self, temp_dir: Path) -> None:
         """_get_profiles_cache returns empty dict when load fails."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         # Save empty profiles data without active_profile
@@ -69,7 +73,9 @@ class TestCRUDDelegation:
 
     def test_delete_profile_delegates_to_actions(self, temp_dir: Path) -> None:
         """delete_profile delegates to ProfileActions."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {
@@ -113,7 +119,9 @@ class TestCRUDDelegation:
 
     def test_rename_profile_works_with_manager_workaround(self, temp_dir: Path) -> None:
         """rename_profile can work through manual save/load operations."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {
@@ -165,7 +173,9 @@ class TestSetActiveProfileEdgeCases:
 
     def test_set_active_profile_handles_storage_failure(self, temp_dir: Path) -> None:
         """set_active_profile returns False when storage save fails."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {

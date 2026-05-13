@@ -1,4 +1,5 @@
 # mypy: ignore-errors
+# ruff: noqa: D102, ARG001
 """Multi-city analytics ports."""
 
 from __future__ import annotations
@@ -14,7 +15,7 @@ from src.domain.ports import CityRepositoryPort
 class MultiCityEnginePort(Protocol):
     """Port for multi-city analytics operations."""
 
-    def analyze_multi_city(  # noqa: D102
+    def analyze_multi_city(
         self,
         query_type: str,
         region: str,
@@ -23,20 +24,20 @@ class MultiCityEnginePort(Protocol):
         question: AnalyticsQuestion | None = None,
     ) -> AnalyticsResult: ...
 
-    def execute_analytics_query(  # noqa: D102
+    def execute_analytics_query(
         self,
         query: MultiCityQuery,
-        progress_callback: callable | None = None,
+        progress_callback: Any | None = None,
     ) -> AnalyticsResult: ...
 
-    def get_cities_for_region(  # noqa: D102
+    def get_cities_for_region(
         self,
         region: str,
         limit: int | None = None,
         max_cities: int | None = None,
     ) -> list[dict[str, Any]]: ...
 
-    def resolve_region_name(self, region_input: str) -> str: ...  # noqa: D102
+    def resolve_region_name(self, region_input: str) -> str: ...
 
 
 @dataclass
@@ -51,20 +52,10 @@ class MultiCityEngineConfig:
 
 def get_multi_city_engine_port(
     city_repository: CityRepositoryPort | None = None,
-    weather_client: object | None = None,  # noqa: ARG001
-    config: MultiCityEngineConfig | None = None,  # noqa: ARG001
+    weather_client: object | None = None,
+    config: MultiCityEngineConfig | None = None,
 ) -> MultiCityEnginePort:
-    """Factory function to get a MultiCityEnginePort implementation."""
-    from pathlib import Path  # noqa: PLC0415
-
+    """Factory — creates MultiCityEngine via composition_root."""
     from src.analytics.multi_city_engine_core import MultiCityEngine  # noqa: PLC0415
 
-    project_root = Path(__file__).parent.parent.parent
-    db_path = project_root / "data" / "cities.db"
-    hungarian_db_path = project_root / "data" / "hungarian_settlements.db"
-
-    return MultiCityEngine(
-        db_path=str(db_path),
-        hungarian_db_path=str(hungarian_db_path),
-        city_repository=city_repository,
-    )
+    return MultiCityEngine(city_repository=city_repository)

@@ -24,18 +24,18 @@ For backward compatibility, all original symbols remain available.
 # ============================================================================
 # DEMO
 # ============================================================================
-from .anomaly_demo import demo_anomaly_profile_manager
-
-# ============================================================================
-# MANAGER
-# ============================================================================
-from .anomaly_profile.manager import AnomalyProfileManager
+from src.infrastructure.anomaly.anomaly_demo import demo_anomaly_profile_manager
 
 # ============================================================================
 # STORAGE
 # ============================================================================
-from .anomaly_storage import AnomalyProfileStorage
-from .anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_storage import AnomalyProfileStorage
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
+
+# ============================================================================
+# MANAGER
+# ============================================================================
+from src.infrastructure.anomaly_profile.manager import AnomalyProfileManager
 
 __all__ = [
     "AnomalyProfileManager",

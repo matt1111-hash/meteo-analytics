@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from src.data.weather_types import (
+from src.infrastructure.weather.weather_types import (
     ProviderNotAvailableError,
     ProviderValidationError,
     WeatherAPIError,

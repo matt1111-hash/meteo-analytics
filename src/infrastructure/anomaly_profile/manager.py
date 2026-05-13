@@ -11,8 +11,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from ..anomaly_storage import AnomalyProfileStorage
-from ..anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_storage import AnomalyProfileStorage
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
+
 from .default_profiles import create_profiles_data
 from .profile_actions import ProfileActions
 

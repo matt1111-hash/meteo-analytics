@@ -10,7 +10,7 @@ from typing import Any, Dict, List  # noqa: UP035
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from src.data.weather_client_core import WeatherClient
+from src.infrastructure.weather.weather_client_core import WeatherClient
 from src.infrastructure.container import get_city_manager_port
 
 logger = logging.getLogger(__name__)

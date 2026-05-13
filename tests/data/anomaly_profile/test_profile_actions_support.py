@@ -7,8 +7,8 @@ from typing import Any
 from unittest.mock import Mock
 
 import pytest
-from src.data.anomaly_profile.profile_actions import ProfileActions
-from src.data.anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly_profile.profile_actions import ProfileActions
 
 
 @pytest.fixture

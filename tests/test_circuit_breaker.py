@@ -6,7 +6,7 @@ import threading
 import time
 
 import pytest
-from src.data.circuit_breaker import (
+from src.infrastructure.resilience.circuit_breaker import (
     CircuitBreaker,
     CircuitState,
 )

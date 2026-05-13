@@ -4,9 +4,9 @@
 City Manager - Multi-Source Database Integration (Legacy Export)
 Global Weather Analyzer project
 
-This file now re-exports from the refactored modules for backward compatibility.
+BACKWARD COMPATIBILITY SHIM — Re-exports from src.infrastructure.city_manager.*
 
-NEW STRUCTURE:
+NEW STRUCTURE (moved to infrastructure):
 - city_types.py - RegionType, CitySort, City, CityQuery, CityDatabaseError
 - city_manager_db.py - Database connection and initialization
 - city_manager_hungarian.py - Hungarian-specific search methods
@@ -18,23 +18,26 @@ HASZNÁLAT (Legacy - működik tovább):
 from src.data.city_manager import CityManager, City, CityDatabaseError
 
 Javasolt új használat:
-from src.data.city_manager_stats import CityManagerStats as CityManager
-from src.data.city_types import City, CityDatabaseError
+from src.infrastructure.city_manager.city_manager_stats import CityManagerStats
+from src.infrastructure.city_manager.city_types import City, CityDatabaseError
 """
 
-# Re-export types
-# Also export individual classes for those who want partial functionality
-from .city_manager_db import CityManagerDB
-
-# Re-export demo function
-from .city_manager_demo import demo_dual_database_city_manager
-from .city_manager_hungarian import CityManagerHungarian
-from .city_manager_search import CityManagerSearch
-from .city_manager_stats import CityManagerStats
+# Re-export types from infrastructure
+from src.infrastructure.city_manager.city_manager_db import CityManagerDB
+from src.infrastructure.city_manager.city_manager_demo import demo_dual_database_city_manager
+from src.infrastructure.city_manager.city_manager_hungarian import CityManagerHungarian
+from src.infrastructure.city_manager.city_manager_search import CityManagerSearch
+from src.infrastructure.city_manager.city_manager_stats import CityManagerStats
 
 # Re-export main class (with all functionality)
-from .city_manager_stats import CityManagerStats as CityManager
-from .city_types import City, CityDatabaseError, CityQuery, CitySort, RegionType
+from src.infrastructure.city_manager.city_manager_stats import CityManagerStats as CityManager
+from src.infrastructure.city_manager.city_types import (
+    City,
+    CityDatabaseError,
+    CityQuery,
+    CitySort,
+    RegionType,
+)
 
 __all__ = [
     "City",

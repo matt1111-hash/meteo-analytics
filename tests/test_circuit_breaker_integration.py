@@ -5,9 +5,9 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
-from src.data.circuit_breaker import CircuitState
-from src.data.weather_client_core import WeatherClient
-from src.data.weather_types import ProviderNotAvailableError, WeatherAPIError
+from src.infrastructure.resilience.circuit_breaker import CircuitState
+from src.infrastructure.weather.weather_client_core import WeatherClient
+from src.infrastructure.weather.weather_types import ProviderNotAvailableError, WeatherAPIError
 
 
 def _make_client() -> WeatherClient:

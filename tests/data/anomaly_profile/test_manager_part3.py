@@ -44,7 +44,9 @@ class TestGetCurrentSettingsEdgeCases:
 
     def test_get_current_settings_handles_load_exception(self, temp_dir: Path) -> None:
         """get_current_settings falls back to default on exception."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {
@@ -71,7 +73,9 @@ class TestGetCurrentSettingsEdgeCases:
         self, temp_dir: Path
     ) -> None:
         """get_current_settings propagates exception when everything fails."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {

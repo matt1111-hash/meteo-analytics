@@ -5,8 +5,8 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
-from src.data.weather_client_core import WeatherClient
-from src.data.weather_types import ProviderNotAvailableError, WeatherAPIError
+from src.infrastructure.weather.weather_client_core import WeatherClient
+from src.infrastructure.weather.weather_types import ProviderNotAvailableError, WeatherAPIError
 
 __all__ = [
     "Mock",
@@ -38,7 +38,7 @@ def mock_providers() -> dict[str, Mock]:
 @pytest.fixture
 def mock_api_config() -> Mock:
     """Mock APIConfig."""
-    with patch("src.data.weather_client_core.APIConfig") as mock:
+    with patch("src.infrastructure.weather.weather_client_core.APIConfig") as mock:
         mock.MAX_RETRIES = 3
         mock.OPEN_METEO_ARCHIVE = "https://archive.open-meteo.com"
         mock.METEOSTAT_BASE = "https://meteostat.p.rapidapi.com"

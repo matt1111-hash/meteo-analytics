@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sqlite3
 
-from src.data.city_types import City
+from src.infrastructure.city_manager.city_types import City
 
 
 class TestCity:

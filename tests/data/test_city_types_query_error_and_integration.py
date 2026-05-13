@@ -5,7 +5,13 @@ from __future__ import annotations
 from enum import Enum
 
 import pytest
-from src.data.city_types import City, CityDatabaseError, CityQuery, CitySort, RegionType
+from src.infrastructure.city_manager.city_types import (
+    City,
+    CityDatabaseError,
+    CityQuery,
+    CitySort,
+    RegionType,
+)
 
 
 class TestCityQuery:

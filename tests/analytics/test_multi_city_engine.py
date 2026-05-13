@@ -51,11 +51,11 @@ class TestMultiCityEngineModule:
         assert callable(safe_statistics_stdev)
         assert callable(safe_stdev)
 
-    def test_exports_demo_function(self) -> None:
-        """Should export demo function."""
-        from src.analytics.multi_city_engine import demo_multi_city_engine  # noqa: PLC0415
+    def test_exports_query_types(self) -> None:
+        """Should export QUERY_TYPES."""
+        from src.analytics.multi_city_engine import QUERY_TYPES  # noqa: PLC0415
 
-        assert callable(demo_multi_city_engine)
+        assert isinstance(QUERY_TYPES, dict)
 
 
 class TestMultiCityEngineAllExports:
@@ -91,7 +91,7 @@ class TestMultiCityEngineAllExports:
             "safe_statistics_stdev",
             "safe_min_max",
             "MultiCityEngine",
-            "demo_multi_city_engine",
+            "QUERY_TYPES",
         ]
         for item in expected:
             assert item in multi_city_engine.__all__, f"Missing in __all__: {item}"

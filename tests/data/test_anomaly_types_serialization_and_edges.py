@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.data.anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
 
 
 class TestAnomalyProfileSettingsSerialization:

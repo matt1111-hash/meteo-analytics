@@ -6,9 +6,9 @@ from typing import Any
 
 import pytest
 
-from src.data.distance_calculator import DistanceCalculator
-from src.data.geo_types import BoundingBox, GeoPoint, GeographicRegion
-from src.data.geo_utils_region import GeoUtilsRegion
+from src.infrastructure.geo.distance_calculator import DistanceCalculator
+from src.infrastructure.geo.geo_types import BoundingBox, GeoPoint, GeographicRegion
+from src.infrastructure.geo.geo_utils_region import GeoUtilsRegion
 
 __all__ = [
     "BoundingBox",

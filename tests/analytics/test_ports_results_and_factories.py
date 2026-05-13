@@ -105,7 +105,10 @@ class TestGetMultiCityEnginePort:
 
     def test_returns_multi_city_engine_port(self) -> None:
         """Should return MultiCityEnginePort implementation."""
-        with patch("src.analytics.multi_city_engine_core.MultiCityEngine") as mock_engine_class:
+        with (
+            patch("src.analytics.multi_city_engine_core.MultiCityEngine") as mock_engine_class,
+            patch("src.analytics.multi_city_engine_core.RegionResolverService"),
+        ):
             mock_instance = MagicMock()
             mock_engine_class.return_value = mock_instance
 
@@ -118,7 +121,10 @@ class TestGetMultiCityEnginePort:
         """Should accept optional city_repository parameter."""
         mock_repo = MagicMock()
 
-        with patch("src.analytics.multi_city_engine_core.MultiCityEngine") as mock_engine_class:
+        with (
+            patch("src.analytics.multi_city_engine_core.MultiCityEngine") as mock_engine_class,
+            patch("src.analytics.multi_city_engine_core.RegionResolverService"),
+        ):
             mock_instance = MagicMock()
             mock_engine_class.return_value = mock_instance
 
@@ -131,7 +137,10 @@ class TestGetMultiCityEnginePort:
         """Should accept optional weather_client parameter."""
         mock_client = MagicMock()
 
-        with patch("src.analytics.multi_city_engine_core.MultiCityEngine") as mock_engine_class:
+        with (
+            patch("src.analytics.multi_city_engine_core.MultiCityEngine") as mock_engine_class,
+            patch("src.analytics.multi_city_engine_core.RegionResolverService"),
+        ):
             mock_instance = MagicMock()
             mock_engine_class.return_value = mock_instance
 
@@ -144,7 +153,10 @@ class TestGetMultiCityEnginePort:
         """Should accept optional config parameter (but doesn't pass it)."""
         config = MultiCityEngineConfig(max_workers=16)
 
-        with patch("src.analytics.multi_city_engine_core.MultiCityEngine") as mock_engine_class:
+        with (
+            patch("src.analytics.multi_city_engine_core.MultiCityEngine") as mock_engine_class,
+            patch("src.analytics.multi_city_engine_core.RegionResolverService"),
+        ):
             mock_instance = MagicMock()
             mock_engine_class.return_value = mock_instance
 

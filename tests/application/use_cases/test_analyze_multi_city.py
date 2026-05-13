@@ -6,13 +6,13 @@ from typing import Any
 
 import pytest
 from src.application.use_cases.analyze_multi_city import AnalyzeMultiCityUseCase
-from src.data.enums import AnalyticsMetric
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
 from src.domain.analytics.services.analytics_transform_service import (
     AnalyticsTransformService,
 )
 from src.domain.analytics.services.region_resolver import RegionResolverService
 from src.domain.ports import CityRepositoryPort
+from src.domain.value_objects.enums import AnalyticsMetric
 
 QUERY_TYPES = {
     "windiest_today": {

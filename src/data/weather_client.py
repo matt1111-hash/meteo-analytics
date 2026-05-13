@@ -3,40 +3,39 @@
 Weather Client - Multi-Provider API Integration (Legacy Export)
 Global Weather Analyzer project
 
-This file now re-exports from the refactored modules for backward compatibility.
+BACKWARD COMPATIBILITY SHIM — Re-exports from src.infrastructure.weather.*
 
-NEW STRUCTURE:
+NEW STRUCTURE (moved to infrastructure):
 - weather_types.py - WeatherData dataclass, exceptions
 - weather_provider_base.py - WeatherProvider abstract base class
 - openmeteo_provider.py - OpenMeteoProvider class
 - meteostat_provider.py - MeteostatProvider class
 - weather_client_core.py - WeatherClient core class
 - weather_client_extensions.py - Provider management and backward compatibility
-- weather_test.py - Test code
 
 HASZNÁLAT (Legacy - működik tovább):
 from src.data.weather_client import WeatherClient, WeatherData
 
 Javasolt új használat:
-from src.data.weather_client_extensions import WeatherClientExtensions as WeatherClient
-from src.data.weather_types import WeatherData
+from src.infrastructure.weather.weather_client_extensions import WeatherClientExtensions
+from src.infrastructure.weather.weather_types import WeatherData
 """
 
-# Re-export types
-from src.data.meteostat_provider import MeteostatProvider
-
-# Re-export providers
-from src.data.openmeteo_provider import OpenMeteoProvider
+# Re-export providers from infrastructure
+from src.infrastructure.weather.meteostat_provider import MeteostatProvider
+from src.infrastructure.weather.openmeteo_provider import OpenMeteoProvider
 
 # Also export core for those who want just the core functionality
-from src.data.weather_client_core import WeatherClient as WeatherClientCore
+from src.infrastructure.weather.weather_client_core import WeatherClient as WeatherClientCore
 
 # Re-export client with extensions (default export)
-from src.data.weather_client_extensions import WeatherClientExtensions as WeatherClient
+from src.infrastructure.weather.weather_client_extensions import (
+    WeatherClientExtensions as WeatherClient,
+)
 
 # Re-export base class
-from src.data.weather_provider_base import WeatherProvider
-from src.data.weather_types import (
+from src.infrastructure.weather.weather_provider_base import WeatherProvider
+from src.infrastructure.weather.weather_types import (
     ProviderNotAvailableError,
     ProviderValidationError,
     WeatherAPIError,

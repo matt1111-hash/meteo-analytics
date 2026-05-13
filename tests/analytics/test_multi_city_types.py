@@ -4,7 +4,7 @@ Tests for src/analytics/multi_city_types.py
 Type aliases, constants, and configuration mappings
 """
 
-from src.analytics.multi_city_types import (
+from src.analytics.multi_city_engine import (
     HUNGARIAN_REGIONAL_MAPPING,
     REGIONS,
     Number,
@@ -211,7 +211,7 @@ class TestExports:
 
     def test_all_exports_exist(self) -> None:
         """All items in __all__ should be accessible."""
-        from src.analytics import multi_city_types  # noqa: PLC0415
+        from src.analytics import multi_city_engine  # noqa: PLC0415
 
         expected_exports = [
             "Number",
@@ -220,4 +220,4 @@ class TestExports:
             "REGIONS",
         ]
         for export in expected_exports:
-            assert hasattr(multi_city_types, export), f"Missing export: {export}"
+            assert hasattr(multi_city_engine, export), f"Missing export: {export}"

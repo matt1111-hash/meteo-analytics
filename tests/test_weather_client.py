@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from src.data import (
+from src.data import weather_client
+from src.infrastructure.weather import (
     meteostat_provider,
     openmeteo_provider,
-    weather_client,
     weather_client_core,
     weather_client_extensions,
     weather_provider_base,
@@ -152,8 +152,10 @@ class TestBackwardCompatibility:
 
     def test_recommended_import_pattern_works(self) -> None:
         """A dokumentációban javasolt új import minta működik."""
-        from src.data.weather_client_extensions import WeatherClientExtensions  # noqa: PLC0415
-        from src.data.weather_types import WeatherData  # noqa: PLC0415
+        from src.infrastructure.weather.weather_client_extensions import (  # noqa: PLC0415
+            WeatherClientExtensions,
+        )
+        from src.infrastructure.weather.weather_types import WeatherData  # noqa: PLC0415
 
         assert WeatherClientExtensions is not None
         assert WeatherData is not None
@@ -161,7 +163,9 @@ class TestBackwardCompatibility:
     def test_both_imports_reference_same_class(self) -> None:
         """A WeatherClient mindkét import módszerrel ugyanazt az osztályt adja."""
         from src.data.weather_client import WeatherClient as LegacyClient  # noqa: PLC0415
-        from src.data.weather_client_extensions import WeatherClientExtensions  # noqa: PLC0415
+        from src.infrastructure.weather.weather_client_extensions import (  # noqa: PLC0415
+            WeatherClientExtensions,
+        )
 
         assert LegacyClient is WeatherClientExtensions
 

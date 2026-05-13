@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.data.city_types import CitySort, RegionType
+from src.infrastructure.city_manager.city_types import CitySort, RegionType
 
 
 class TestRegionType:

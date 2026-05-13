@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import pytest
-from src.data.distance_calculator import DistanceCalculator
-from src.data.geo_types import DistanceUnit
+from src.infrastructure.geo.distance_calculator import DistanceCalculator
+from src.infrastructure.geo.geo_types import DistanceUnit
 
 
 class TestBatchHaversineDistances:

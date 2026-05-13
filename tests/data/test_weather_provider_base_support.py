@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 import requests
-from src.data.weather_provider_base import WeatherProvider
+from src.infrastructure.weather.weather_provider_base import WeatherProvider
 
 __all__ = [
     "MockWeatherProvider",

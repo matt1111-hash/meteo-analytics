@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.data.anomaly_profile.default_profiles import create_default_profiles
+from src.infrastructure.anomaly_profile.default_profiles import create_default_profiles
 
 
 class TestProfileValuesValidation:

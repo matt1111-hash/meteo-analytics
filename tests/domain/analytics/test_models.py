@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from src.data.enums import RegionScope
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
+from src.domain.value_objects.enums import RegionScope
 
 
 def test_multi_city_query_uses_defaults_when_optional_fields_omitted() -> None:

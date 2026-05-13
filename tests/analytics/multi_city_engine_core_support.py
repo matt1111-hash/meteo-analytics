@@ -72,56 +72,51 @@ def mock_analytics_transform_service() -> MagicMock:
     service.process_weather_results = MagicMock(return_value=[])
     service.calculate_statistics_for_results_none_safe = MagicMock(return_value={})
     service.get_provider_stats = MagicMock(return_value={})
+    service.create_empty_analytics_result = MagicMock(
+        return_value=AnalyticsResult(
+            question=AnalyticsQuestion(
+                question_text="empty",
+                question_type=QuestionType.WEATHER_COMPARISON,
+                region_scope=RegionScope.GLOBAL,
+                metric=AnalyticsMetric.TEMPERATURE_2M_MAX,
+            ),
+            city_results=[],
+            total_cities_found=0,
+            execution_time=0.0,
+            data_sources_used=[],
+        )
+    )
     return service
 
 
 @pytest.fixture
-def mock_use_case() -> MagicMock:
-    """Create mock use case."""
+def mock_use_case(
+    mock_city_repository: MagicMock,
+    mock_analytics_transform_service: MagicMock,
+) -> MagicMock:
+    """Create mock use case with required attributes."""
     use_case = MagicMock()
     use_case.execute = MagicMock()
+    use_case.city_repository = mock_city_repository
+    use_case.analytics_transform_service = mock_analytics_transform_service
     return use_case
 
 
 @pytest.fixture
 def engine(
-    mock_city_repository: MagicMock,
-    mock_weather_client: MagicMock,
-    mock_region_resolver: MagicMock,
-    mock_weather_fetch_service: MagicMock,
-    mock_analytics_transform_service: MagicMock,
     mock_use_case: MagicMock,
+    mock_region_resolver: MagicMock,
 ) -> MultiCityEngine:
     """Create MultiCityEngine with all mocks."""
     with (
         patch(
-            "src.analytics.multi_city_engine_core.get_city_repository_port",
-            return_value=mock_city_repository,
-        ),
-        patch(
-            "src.analytics.multi_city_engine_core.get_weather_client_port",
-            return_value=mock_weather_client,
+            "src.analytics.multi_city_engine_core.build_analyze_multi_city_use_case",
+            return_value=mock_use_case,
         ),
         patch(
             "src.analytics.multi_city_engine_core.RegionResolverService",
             return_value=mock_region_resolver,
         ),
-        patch(
-            "src.analytics.multi_city_engine_core.WeatherFetchService",
-            return_value=mock_weather_fetch_service,
-        ),
-        patch(
-            "src.analytics.multi_city_engine_core.AnalyticsTransformService",
-            return_value=mock_analytics_transform_service,
-        ),
-        patch(
-            "src.analytics.multi_city_engine_core.AnalyzeMultiCityUseCase",
-            return_value=mock_use_case,
-        ),
     ):
-        engine = MultiCityEngine(city_repository=mock_city_repository)
-        engine.region_resolver = mock_region_resolver
-        engine.weather_fetch_service = mock_weather_fetch_service
-        engine.analytics_transform_service = mock_analytics_transform_service
-        engine.use_case = mock_use_case
-        return engine
+        eng = MultiCityEngine()
+        return eng

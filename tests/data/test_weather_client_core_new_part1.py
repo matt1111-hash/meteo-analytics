@@ -113,7 +113,7 @@ class TestSelectProvider:
     def test_select_provider_with_auto_mode(self, client: WeatherClient) -> None:
         """_select_provider with auto mode selects optimal provider."""
         with patch(
-            "src.data.weather_client_core.get_optimal_data_source",
+            "src.infrastructure.weather.weather_client_core.get_optimal_data_source",
             return_value="open-meteo",
         ):
             result = client._select_provider()
@@ -126,7 +126,7 @@ class TestSelectProvider:
         """_select_provider with auto mode falls back to any available provider."""
         # Make get_optimal_data_source return invalid provider
         with patch(
-            "src.data.weather_client_core.get_optimal_data_source",
+            "src.infrastructure.weather.weather_client_core.get_optimal_data_source",
             return_value="invalid",
         ):
             # Still should return a valid provider

@@ -5,14 +5,11 @@ from __future__ import annotations
 from datetime import date, datetime
 
 import pytest
-from src.data.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
-from src.data.models import (
-    AnalyticsQuestion,
-    AnalyticsResult,
-    CityWeatherResult,
-    Location,
-    LocationType,
-)
+from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
+from src.domain.entities.location import Location
+from src.domain.entities.location_types import LocationType
+from src.domain.entities.weather import CityWeatherResult
+from src.domain.value_objects.enums import AnalyticsMetric, DataSource, QuestionType, RegionScope
 
 
 def test_location_to_universal_location_preserves_metadata() -> None:

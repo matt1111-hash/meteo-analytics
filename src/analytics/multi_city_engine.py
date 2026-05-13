@@ -1,58 +1,34 @@
 #!/usr/bin/env python3
 """
-Multi-City Analytics Engine - Globális időjárás elemzés
-Global Weather Analyzer projekt
-
-Fájl: src/analytics/multi_city_engine.py
-Cél: Többváros időjárási elemzés koordinálása
-- DUAL-API TÁMOGATÁS (Open-Meteo + Meteostat)
-- Országválasztás (Magyarország, Európa, Globális)
-- BATCH PROCESSING - robusztus párhuzamos feldolgozás
-- PROGRESS TRACKING - real-time feedback
-- FALLBACK STRATEGY - hibás városok kihagyása
-
-This module re-exports all components from focused sub-modules.
-For backward compatibility, all original symbols remain available.
+Multi-City Analytics Engine - Module Entry Point
+Re-exports MultiCityEngine and domain types for backward compatibility.
 """
 
-# ============================================================================
-# TYPES AND CONSTANTS
-# ============================================================================
-# ============================================================================
-# DEMO
-# ============================================================================
-from .multi_city_demo import demo_multi_city_engine
-
-# ============================================================================
-# CORE ENGINE
-# ============================================================================
-from .multi_city_engine_core import MultiCityEngine
-
-# ============================================================================
-# LEGACY WRAPPERS
-# ============================================================================
-from .multi_city_legacy import (
+from src.domain.analytics.statistics import (
     safe_mean,
     safe_median,
     safe_min_max,
-    safe_statistics_mean,
-    safe_statistics_median,
-    safe_statistics_stdev,
     safe_stdev,
 )
-from .multi_city_types import HUNGARIAN_REGIONAL_MAPPING, REGIONS, Number, NumberOrNone
+from src.domain.constants.query_types import QUERY_TYPES
+from src.domain.constants.regions import HUNGARIAN_REGIONAL_MAPPING, REGIONS
+
+from .multi_city_engine_core import MultiCityEngine
+
+Number = float | int
+NumberOrNone = Number | None
+
+safe_statistics_mean = safe_mean
+safe_statistics_median = safe_median
+safe_statistics_stdev = safe_stdev
 
 __all__ = [
     "HUNGARIAN_REGIONAL_MAPPING",
+    "QUERY_TYPES",
     "REGIONS",
-    # Core
     "MultiCityEngine",
-    # Types
     "Number",
     "NumberOrNone",
-    # Demo
-    "demo_multi_city_engine",
-    # Legacy
     "safe_mean",
     "safe_median",
     "safe_min_max",
@@ -61,7 +37,3 @@ __all__ = [
     "safe_statistics_stdev",
     "safe_stdev",
 ]
-
-
-# 🔧 BACKWARD-COMPATIBILITY: Export QUERY_TYPES from engine class
-MultiCityEngine.QUERY_TYPES  # noqa: B018

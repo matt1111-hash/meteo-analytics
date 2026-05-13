@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from src.data.anomaly_profile.manager import AnomalyProfileManager
-from src.data.anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly_profile.manager import AnomalyProfileManager
 
 
 @pytest.fixture
@@ -24,7 +24,7 @@ def manager_with_empty_storage(temp_dir: Path) -> AnomalyProfileManager:
 @pytest.fixture
 def manager_with_profiles(temp_dir: Path) -> AnomalyProfileManager:
     """Create manager with existing profiles."""
-    from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+    from src.infrastructure.anomaly.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
 
     storage = AnomalyProfileStorage(config_dir=temp_dir)
     default_profiles = {

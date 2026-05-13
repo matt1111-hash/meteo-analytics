@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from src.data.geo_types import CoordinateSystem, DistanceUnit, GeoPoint
+from src.infrastructure.geo.geo_types import CoordinateSystem, DistanceUnit, GeoPoint
 
 
 class TestDistanceUnit:

@@ -26,7 +26,9 @@ class TestCityManagerReExport:
     def test_city_manager_is_city_manager_stats(self) -> None:
         """CityManager is aliased to CityManagerStats."""
         from src.data.city_manager import CityManager  # noqa: PLC0415
-        from src.data.city_manager_stats import CityManagerStats  # noqa: PLC0415
+        from src.infrastructure.city_manager.city_manager_stats import (  # noqa: PLC0415
+            CityManagerStats,
+        )
 
         # They should be the same class
         assert CityManager is CityManagerStats
@@ -58,22 +60,19 @@ class TestAnomalyProfileManagerReExport:
 
     def test_imports_from_anomaly_profile_manager(self) -> None:
         """anomaly_profile_manager module can be imported."""
-        # Import the submodules directly to avoid circular import
-        from src.data.anomaly_profile import manager  # noqa: PLC0415
+        from src.infrastructure.anomaly_profile import manager  # noqa: PLC0415
 
         # Verify the symbols are accessible from submodules
         assert hasattr(manager, "AnomalyProfileManager")
-        # Note: demo_anomaly_profile_manager causes circular import, skip that test
 
 
 class TestEnumsModule:
-    """Tests for enums.py module."""
+    """Tests for domain enums (previously in src.data.enums)."""
 
-    def test_imports_from_enums(self) -> None:
-        """enums module exports expected symbols."""
-        from src.data import enums  # noqa: PLC0415
+    def test_imports_from_domain_enums(self) -> None:
+        """Domain enums module exports expected symbols."""
+        from src.domain.value_objects import enums  # noqa: PLC0415
 
-        # Check that the module has expected attributes from domain.value_objects.enums
         expected = {
             "AnalysisType",
             "AnalyticsMetric",
@@ -86,31 +85,26 @@ class TestEnumsModule:
             assert hasattr(enums, symbol)
 
     def test_enums_has_display_functions(self) -> None:
-        """enums module has display functions."""
-        from src.data import enums  # noqa: PLC0415
+        """Domain enums module has display functions."""
+        from src.domain.value_objects import enums  # noqa: PLC0415
 
         assert hasattr(enums, "get_metric_display_name")
         assert hasattr(enums, "get_severity_color")
 
 
 class TestModelsModule:
-    """Tests for models.py re-export module."""
+    """Tests for domain models (previously in src.data.models)."""
 
-    def test_imports_from_models(self) -> None:
-        """models module can be imported and exports expected symbols."""
-        from src.data import models  # noqa: PLC0415
+    def test_imports_from_domain(self) -> None:
+        """Domain entities can be imported and export expected symbols."""
+        from src.domain.entities.analytics_models import AnalyticsResult  # noqa: PLC0415
+        from src.domain.entities.location import Location  # noqa: PLC0415
+        from src.domain.entities.location_types import LocationType  # noqa: PLC0415
+        from src.domain.entities.weather import AnomalyResult, CityWeatherResult  # noqa: PLC0415
 
-        # Check that the module exports expected symbols
-        expected = [
-            "City",
-            "CityQuery",
-            "CityDatabaseError",
-            "LocationType",
-            "Location",
-            "CityWeatherResult",
-            "AnomalyResult",
-            "TimeGranularity",
-            "AnalysisType",
-        ]
-        for symbol in expected:
-            assert hasattr(models, symbol)
+        # Verify symbols exist
+        assert AnalyticsResult is not None
+        assert Location is not None
+        assert LocationType is not None
+        assert CityWeatherResult is not None
+        assert AnomalyResult is not None

@@ -7,8 +7,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 import requests
-from src.data.openmeteo_provider import OpenMeteoProvider
-from src.data.weather_types import WeatherAPIError
+from src.infrastructure.weather.openmeteo_provider import OpenMeteoProvider
+from src.infrastructure.weather.weather_types import WeatherAPIError
 
 __all__ = [
     "Mock",
@@ -26,7 +26,7 @@ __all__ = [
 @pytest.fixture
 def mock_api_config() -> Mock:
     """Mock APIConfig."""
-    with patch("src.data.openmeteo_provider.APIConfig") as mock:
+    with patch("src.infrastructure.weather.openmeteo_provider.APIConfig") as mock:
         mock.OPEN_METEO_ARCHIVE = "https://archive.open-meteo.com/v1/era5"
         mock.USER_AGENT = "test-agent"
         mock.REQUEST_TIMEOUT = 30

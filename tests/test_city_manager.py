@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from src.data import (
-    city_manager,
+from src.data import city_manager
+from src.infrastructure.city_manager import (
     city_manager_db,
     city_manager_demo,
     city_manager_hungarian,
@@ -100,8 +100,13 @@ class TestBackwardCompatibility:
 
     def test_recommended_import_pattern_works(self) -> None:
         """A dokumentációban javasolt új import minta működik."""
-        from src.data.city_manager_stats import CityManagerStats as CityManager  # noqa: PLC0415
-        from src.data.city_types import City, CityDatabaseError  # noqa: PLC0415
+        from src.infrastructure.city_manager.city_manager_stats import (  # noqa: PLC0415
+            CityManagerStats as CityManager,
+        )
+        from src.infrastructure.city_manager.city_types import (  # noqa: PLC0415
+            City,
+            CityDatabaseError,
+        )
 
         assert CityManager is not None
         assert City is not None
@@ -110,7 +115,9 @@ class TestBackwardCompatibility:
     def test_both_imports_reference_same_class(self) -> None:
         """A CityManager mindkét import módszerrel ugyanazt az osztályt adja."""
         from src.data.city_manager import CityManager as LegacyCityManager  # noqa: PLC0415
-        from src.data.city_manager_stats import CityManagerStats  # noqa: PLC0415
+        from src.infrastructure.city_manager.city_manager_stats import (  # noqa: PLC0415
+            CityManagerStats,
+        )
 
         assert LegacyCityManager is CityManagerStats
 

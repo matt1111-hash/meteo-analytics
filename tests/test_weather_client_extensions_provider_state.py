@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
-from src.data.weather_client_extensions import WeatherClientExtensions
+from src.infrastructure.weather.weather_client_extensions import WeatherClientExtensions
 
 
 class TestSetPreferredProvider:

@@ -25,7 +25,9 @@ class TestAnomalyProfileManagerInit:
 
     def test_init_loads_existing_profiles(self, temp_dir: Path) -> None:
         """Initialization loads existing profiles from storage."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         profiles_data = {
@@ -57,7 +59,9 @@ class TestGetAvailableProfiles:
         self, temp_dir: Path
     ) -> None:
         """get_available_profiles returns empty list when no profiles exist."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         storage.save_profiles({"profiles": {}, "active_profile": "default"})
@@ -84,7 +88,9 @@ class TestGetActiveProfile:
 
     def test_get_active_profile_returns_default_when_none_set(self, temp_dir: Path) -> None:
         """get_active_profile returns 'default' when no active profile is set."""
-        from src.data.anomaly_storage import AnomalyProfileStorage  # noqa: PLC0415
+        from src.infrastructure.anomaly.anomaly_storage import (  # noqa: PLC0415
+            AnomalyProfileStorage,
+        )
 
         storage = AnomalyProfileStorage(config_dir=temp_dir)
         storage.save_profiles({"profiles": {}, "active_profile": None})

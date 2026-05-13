@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.data.weather_types import WeatherData
+from src.infrastructure.weather.weather_types import WeatherData
 
 
 class TestWeatherData:

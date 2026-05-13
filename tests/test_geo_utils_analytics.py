@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from src.data.geo_utils_analytics import GeoUtilsAnalytics
-from src.data.geo_utils_core import GeoUtils
-from src.data.geo_utils_region import GeoUtilsRegion
+from src.infrastructure.geo.geo_utils_analytics import GeoUtilsAnalytics
+from src.infrastructure.geo.geo_utils_core import GeoUtils
+from src.infrastructure.geo.geo_utils_region import GeoUtilsRegion
 
 
 class TestOptimizeCitiesForWeatherAnalytics:

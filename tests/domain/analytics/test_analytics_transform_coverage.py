@@ -6,12 +6,12 @@ from datetime import date
 from unittest.mock import patch
 
 import pytest
-from src.data.enums import AnalyticsMetric
-from src.data.models import CityWeatherResult
 from src.domain.analytics.models import CityWeatherData
 from src.domain.analytics.services.analytics_transform_service import (
     AnalyticsTransformService,
 )
+from src.domain.entities.weather import CityWeatherResult
+from src.domain.value_objects.enums import AnalyticsMetric
 from src.domain.value_objects.enums import AnalyticsMetric as DomainMetric
 
 QUERY_TYPES = {

@@ -8,8 +8,7 @@ from datetime import datetime
 from typing import Any
 
 from src.config import APIConfig, get_optimal_data_source
-
-from .circuit_breaker import CircuitBreaker
+from src.infrastructure.resilience.circuit_breaker import CircuitBreaker
 
 
 def _log_provider_usage_mock(provider: str, event_type: str, **kwargs) -> None:

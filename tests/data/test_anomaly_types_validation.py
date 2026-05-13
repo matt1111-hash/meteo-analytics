@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.data.anomaly_types import AnomalyProfileSettings
+from src.infrastructure.anomaly.anomaly_types import AnomalyProfileSettings
 
 
 class TestAnomalyProfileSettingsValidation:

@@ -6,8 +6,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 import requests
-from src.data.meteostat_provider import MeteostatProvider
-from src.data.weather_types import ProviderValidationError, WeatherAPIError
+from src.infrastructure.weather.meteostat_provider import MeteostatProvider
+from src.infrastructure.weather.weather_types import ProviderValidationError, WeatherAPIError
 
 __all__ = [
     "MeteostatProvider",
@@ -30,7 +30,7 @@ __all__ = [
 @pytest.fixture
 def mock_api_config() -> Mock:
     """Mock APIConfig."""
-    with patch("src.data.meteostat_provider.APIConfig") as mock:
+    with patch("src.infrastructure.weather.meteostat_provider.APIConfig") as mock:
         mock.METEOSTAT_BASE = "https://meteostat.p.rapidapi.com"
         mock.USER_AGENT = "test-agent"
         mock.METEOSTAT_RATE_LIMIT = 0.1

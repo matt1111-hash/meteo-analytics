@@ -57,18 +57,18 @@ class TestAnalyticsSubmodules:
         assert hasattr(multi_city_engine, "MultiCityEngine")
 
     def test_multi_city_types_module_accessible(self) -> None:
-        """multi_city_types submodule should be accessible."""
-        from src.analytics import multi_city_types  # noqa: PLC0415
+        """multi_city_engine now re-exports types from domain."""
+        from src.analytics import multi_city_engine  # noqa: PLC0415
 
-        assert hasattr(multi_city_types, "REGIONS")
-        assert hasattr(multi_city_types, "HUNGARIAN_REGIONAL_MAPPING")
+        assert hasattr(multi_city_engine, "REGIONS")
+        assert hasattr(multi_city_engine, "HUNGARIAN_REGIONAL_MAPPING")
 
     def test_multi_city_legacy_module_accessible(self) -> None:
-        """multi_city_legacy submodule should be accessible."""
-        from src.analytics import multi_city_legacy  # noqa: PLC0415
+        """multi_city_engine now re-exports legacy statistics from domain."""
+        from src.analytics import multi_city_engine  # noqa: PLC0415
 
-        assert hasattr(multi_city_legacy, "safe_mean")
-        assert hasattr(multi_city_legacy, "safe_median")
+        assert hasattr(multi_city_engine, "safe_mean")
+        assert hasattr(multi_city_engine, "safe_median")
 
     def test_wind_analysis_module_accessible(self) -> None:
         """wind_analysis submodule should be accessible."""

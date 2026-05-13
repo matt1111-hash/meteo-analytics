@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from src.data.geo_types import BoundingBox, GeoPoint
+from src.infrastructure.geo.geo_types import BoundingBox, GeoPoint
 
 
 class TestBoundingBox:

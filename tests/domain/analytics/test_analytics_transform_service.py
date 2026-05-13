@@ -5,12 +5,13 @@ from __future__ import annotations
 from datetime import date
 
 import pytest
-from src.data.enums import AnalyticsMetric, QuestionType, RegionScope
-from src.data.models import AnalyticsQuestion, CityWeatherResult
 from src.domain.analytics.models import CityWeatherData
 from src.domain.analytics.services.analytics_transform_service import (
     AnalyticsTransformService,
 )
+from src.domain.entities.analytics_models import AnalyticsQuestion
+from src.domain.entities.weather import CityWeatherResult
+from src.domain.value_objects.enums import AnalyticsMetric, QuestionType, RegionScope
 
 QUERY_TYPES = {
     "windiest_today": {

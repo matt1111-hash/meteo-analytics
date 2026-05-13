@@ -33,7 +33,7 @@ def get_city_manager_port() -> "CityManagerPort":
     Returns:
         CityManagerPort implementation from Data Layer
     """
-    from src.data.city_manager_stats import CityManagerStats  # noqa: PLC0415
+    from src.infrastructure.city_manager.city_manager_stats import CityManagerStats  # noqa: PLC0415
 
     return CityManagerStats()
 
@@ -45,7 +45,9 @@ def get_weather_client_port() -> "WeatherClientPort":
     Returns:
         WeatherClientPort implementation from Data Layer
     """
-    from src.data.weather_client_extensions import WeatherClientExtensions  # noqa: PLC0415
+    from src.infrastructure.weather.weather_client_extensions import (  # noqa: PLC0415
+        WeatherClientExtensions,
+    )
 
     return WeatherClientExtensions()
 
@@ -81,6 +83,6 @@ def get_anomaly_profile_port() -> "AnomalyProfilePort":
     Returns:
         AnomalyProfilePort implementation from Data Layer
     """
-    from src.data.anomaly_profile.manager import AnomalyProfileManager  # noqa: PLC0415
+    from src.infrastructure.anomaly_profile.manager import AnomalyProfileManager  # noqa: PLC0415
 
     return AnomalyProfileManager()
