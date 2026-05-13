@@ -64,7 +64,7 @@ async def analyze_single_city_timeseries(request: SingleCityRequest) -> dict:
         uc_result = await run_in_threadpool(lambda: use_case.execute(query, aggregate=False))
 
         if not uc_result.is_success:
-            raise HTTPException(status_code=502, detail=uc_result.error_message or "Upstream error")
+            raise HTTPException(status_code=502, detail="Upstream error")
 
         response = uc_result.data.to_dict()
         response["requested_metrics"] = [request.metric]
@@ -72,6 +72,8 @@ async def analyze_single_city_timeseries(request: SingleCityRequest) -> dict:
 
         return response
 
+    except HTTPException:
+        raise
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:

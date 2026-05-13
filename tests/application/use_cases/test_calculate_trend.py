@@ -102,6 +102,32 @@ def test_parse_date_returns_none_for_invalid_input() -> None:
     assert use_case._parse_date("2026-99-99") is None
 
 
+def test_fetch_batch_passes_latitude_longitude_kwargs() -> None:
+    """_fetch_batch must use latitude/longitude — not lat/lon — for WeatherClient."""
+    weather_client = MagicMock()
+    weather_client.get_weather_data.return_value = [
+        {"date": "2025-01-01", "temperature_2m_max": 10.0}
+    ]
+    use_case = CalculateTrendUseCase(
+        weather_client=weather_client,
+        city_manager=MagicMock(),
+    )
+
+    use_case._fetch_batch(
+        lat=47.5,
+        lon=19.0,
+        start=datetime(2025, 1, 1),
+        end=datetime(2025, 12, 31),
+    )
+
+    weather_client.get_weather_data.assert_called_once_with(
+        latitude=47.5,
+        longitude=19.0,
+        start_date="2025-01-01",
+        end_date="2025-12-31",
+    )
+
+
 def test_fetch_weather_data_flattens_tuple_batches_and_skips_failed_batch() -> None:
     """Batch fetching should accept tuple payloads and continue after errors."""
     weather_client = MagicMock()

@@ -76,7 +76,8 @@ async def test_calculate_trend_maps_unexpected_error_to_http_500(
     )
     request = TrendAnalysisRequest(location="Budapest", time_periods=[5])
 
-    with pytest.raises(HTTPException, match="Trend calculation failed: boom") as exc_info:
+    with pytest.raises(HTTPException, match="Trend calculation failed") as exc_info:
         await analytics.calculate_trend(request)
 
     assert exc_info.value.status_code == 500
+    assert "boom" not in exc_info.value.detail

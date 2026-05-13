@@ -30,8 +30,10 @@ async def analyze_multi_city(
         query = to_multi_city_query(request)
         uc_result = await run_in_threadpool(lambda: use_case.execute(query, aggregate=aggregate))
         if not uc_result.is_success:
-            raise HTTPException(status_code=502, detail=uc_result.error_message or "Upstream error")
+            raise HTTPException(status_code=502, detail="Upstream error")
         return uc_result.data.to_dict()
+    except HTTPException:
+        raise
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:  # pragma: no cover - safety net

@@ -71,7 +71,7 @@ async def calculate_trend(request: TrendAnalysisRequest) -> dict:
         logger.error("Error calculating trend: %s", e, exc_info=True)
         raise HTTPException(
             status_code=500,
-            detail=f"Trend calculation failed: {str(e)}",  # noqa: RUF010
+            detail="Trend calculation failed",
         ) from e
 
 

@@ -162,8 +162,8 @@ class CalculateTrendUseCase:
         """Fetch a single yearly batch, returning an empty list on failure."""
         try:
             batch_data = self._weather_client.get_weather_data(
-                lat=lat,
-                lon=lon,
+                latitude=lat,
+                longitude=lon,
                 start_date=start.strftime("%Y-%m-%d"),
                 end_date=end.strftime("%Y-%m-%d"),
             )

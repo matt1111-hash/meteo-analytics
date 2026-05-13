@@ -99,3 +99,40 @@ async def test_analyze_multi_city_maps_unexpected_error_to_http_500(
 
     assert response.status_code == 500
     assert response.json()["detail"] == "Internal server error"
+
+
+@pytest.mark.anyio
+async def test_502_does_not_leak_internal_error_message(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Failed use-case result must not expose internal error_message to client."""
+    use_case = MagicMock()
+    use_case.execute.return_value = UseCaseResult(
+        status=ResultStatus.ERROR,
+        error_message="Database connection refused: postgres://secret@internal-host:5432",
+    )
+    query = MultiCityQuery(
+        query_type="hottest_today",
+        region="Global",
+        date="2024-01-01",
+    )
+    monkeypatch.setattr(
+        weather, "build_analyze_multi_city_use_case", MagicMock(return_value=use_case)
+    )
+    monkeypatch.setattr(weather, "to_multi_city_query", MagicMock(return_value=query))
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/weather/multi-city",
+            json={
+                "cities": ["Budapest"],
+                "date_range": {"start": "2024-01-01", "end": "2024-01-03"},
+                "metric": "temperature_2m_max",
+            },
+        )
+
+    assert response.status_code == 502
+    detail = response.json()["detail"]
+    assert detail == "Upstream error"
+    assert "postgres" not in detail
+    assert "secret" not in detail
