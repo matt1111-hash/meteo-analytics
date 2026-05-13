@@ -3,7 +3,6 @@
 from .city_weather_ports import (
     CityManagerPort,
     WeatherClientPort,
-    WeatherDataProtocol,
     WeatherFetchParams,
     WeatherRepositoryPort,
 )
@@ -24,7 +23,6 @@ __all__ = [
     "QuestionTypePort",
     "RegionScopePort",
     "WeatherClientPort",
-    "WeatherDataProtocol",
     "WeatherFetchParams",
     "WeatherRepositoryPort",
 ]

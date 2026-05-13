@@ -12,11 +12,11 @@ from dataclasses import dataclass
 from typing import Any
 
 from src.domain.analytics.models import CityWeatherData
-from src.domain.analytics.repositories import CityRepositoryProtocol
 from src.domain.analytics.services import (
     AnalyticsTransformService,
     WeatherFetchService,
 )
+from src.domain.ports import CityRepositoryPort
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class DetailedCityUseCase:
     def __init__(  # noqa: D107
         self,
         *,
-        city_repository: CityRepositoryProtocol,
+        city_repository: CityRepositoryPort,
         weather_fetch_service: WeatherFetchService,
         analytics_transform_service: AnalyticsTransformService,
         query_types: dict[str, dict[str, Any]],

@@ -5,13 +5,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.domain.analytics.repositories import CityRepositoryProtocol
+from src.domain.ports import CityRepositoryPort
 
 from .city_repository_paths import CityRepositoryPaths
 from .city_repository_queries import CityRepositoryQueries
 
 
-class CityRepository(CityRepositoryProtocol):
+class CityRepository(CityRepositoryPort):
     """Provides city lookups with Hungarian regional filtering support."""
 
     def __init__(

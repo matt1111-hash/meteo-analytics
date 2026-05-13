@@ -13,7 +13,6 @@ from typing import Any
 
 from src.application.use_cases.analyze_multi_city import AnalyzeMultiCityUseCase
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
-from src.domain.analytics.repositories import CityRepositoryProtocol
 from src.domain.analytics.services import (
     AnalyticsTransformService,
     RegionResolverService,
@@ -21,6 +20,7 @@ from src.domain.analytics.services import (
 )
 from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
 from src.domain.entities.weather import CityWeatherResult
+from src.domain.ports import CityRepositoryPort
 from src.domain.value_objects.enums import AnalyticsMetric, QuestionType, RegionScope
 from src.infrastructure.container import (
     get_city_repository_port,
@@ -57,7 +57,7 @@ class MultiCityEngine:
         self,
         db_path: str | None = None,
         hungarian_db_path: str | None = None,
-        city_repository: CityRepositoryProtocol | None = None,
+        city_repository: CityRepositoryPort | None = None,
         use_case: AnalyzeMultiCityUseCase | None = None,
     ):
         """MultiCityEngine inicializálása repository injekcióval (CA compliant - uses ports)."""
@@ -69,7 +69,7 @@ class MultiCityEngine:
         self.hungarian_db_path = Path(hungarian_db_path) if hungarian_db_path else default_hu_db
 
         # Use port for city repository (CA compliant)
-        self.city_repository: CityRepositoryProtocol = city_repository or get_city_repository_port()
+        self.city_repository: CityRepositoryPort = city_repository or get_city_repository_port()
         self.city_repository.validate_paths()
         self.region_resolver = RegionResolverService()
 

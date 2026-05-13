@@ -15,14 +15,17 @@ class CityRepositoryPort(Protocol):
     @property
     def hungarian_db_path(self) -> Path: ...  # noqa: D102
 
-    def validate_paths(self) -> bool: ...  # noqa: D102
+    def validate_paths(self) -> None: ...  # noqa: D102
+    def get_cities_by_names(  # noqa: D102
+        self, city_names: list[str]
+    ) -> list[dict[str, Any]]: ...
     def get_cities_for_region(  # noqa: D102
         self,
         mapped_region: str,
         original_region: str,
         country_codes: list[str],
         limit: int,
-        hungarian_mapping: dict[str, str],
+        hungarian_mapping: dict[str, list[str]],
     ) -> list[dict[str, Any]]: ...
     def search_cities(self, query: str, limit: int = 20) -> list[dict[str, Any]]: ...  # noqa: D102
     def autocomplete_city_name(  # noqa: D102

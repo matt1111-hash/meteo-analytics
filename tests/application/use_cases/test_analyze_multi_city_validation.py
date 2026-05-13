@@ -18,12 +18,12 @@ from src.application.use_cases.analyze_multi_city import AnalyzeMultiCityUseCase
 from src.application.use_cases.use_case_result import ResultStatus
 from src.data.enums import AnalyticsMetric
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
-from src.domain.analytics.repositories import CityRepositoryProtocol
 from src.domain.analytics.services.analytics_transform_service import (
     AnalyticsTransformService,
 )
 from src.domain.analytics.services.region_resolver import RegionResolverService
 from src.domain.entities.weather import CityWeatherResult
+from src.domain.ports import CityRepositoryPort
 
 # ---------------------------------------------------------------------------
 # Shared constants
@@ -65,7 +65,7 @@ HUNGARIAN_MAPPING: dict[str, list[str]] = {"Budapest": ["Budapest"]}
 # ---------------------------------------------------------------------------
 
 
-class FakeCityRepository(CityRepositoryProtocol):
+class FakeCityRepository(CityRepositoryPort):
     """In-memory city repository for tests."""
 
     def __init__(self, cities: list[dict[str, Any]] | None = None) -> None:

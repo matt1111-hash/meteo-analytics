@@ -9,7 +9,6 @@ import time
 from typing import Any, Optional
 
 from src.domain.analytics.models import CityWeatherData, MultiCityQuery
-from src.domain.analytics.repositories import CityRepositoryProtocol
 from src.domain.analytics.services import (
     AnalyticsTransformService,
     RegionResolverService,
@@ -17,6 +16,7 @@ from src.domain.analytics.services import (
 )
 from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
 from src.domain.entities.weather import CityWeatherResult
+from src.domain.ports import CityRepositoryPort
 from src.domain.value_objects.enums import (
     AnalyticsMetric,
     DataSource,

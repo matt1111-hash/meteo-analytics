@@ -96,28 +96,15 @@ class WeatherClientPort(Protocol):
         longitude: float,
         start_date: str,
         end_date: str,
-        _daily_params: list[str] | None = None,
-        _hourly_params: list[str] | None = None,
-        provider: DataProvider | None = None,
-    ) -> WeatherDataProtocol | None: ...
+        user_override_provider: str | None = None,
+    ) -> list[dict[str, Any]]: ...
 
     def get_current_weather(  # noqa: D102
         self,
         latitude: float,
         longitude: float,
-        provider: DataProvider | None = None,
-    ) -> dict[str, Any] | None: ...
-
-    def get_forecast(  # noqa: D102
-        self,
-        latitude: float,
-        longitude: float,
-        days: int = 7,
-        provider: DataProvider | None = None,
-    ) -> WeatherDataProtocol | None: ...
-
-    def get_supported_providers(self) -> list[DataProvider]: ...  # noqa: D102
-    def is_provider_available(self, provider: DataProvider) -> bool: ...  # noqa: D102
+        user_override_provider: str | None = None,
+    ) -> tuple[dict[str, Any] | None, str]: ...
 
 
 class WeatherRepositoryPort(Protocol):
