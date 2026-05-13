@@ -88,6 +88,7 @@ class TestFallbackWithCircuitBreaker:
         cb_om = client.circuit_breakers["open-meteo"]
 
         with (
+            patch("src.infrastructure.weather.weather_client_core.time.sleep"),
             patch.object(
                 client.providers["open-meteo"],
                 "get_weather_data",
