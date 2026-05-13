@@ -10,7 +10,6 @@ from httpx import ASGITransport, AsyncClient
 from src.api.dependencies import ServiceRegistry, get_services
 from src.api.main import app
 from src.api.routes import anomalies
-from src.application.use_cases.use_case_result import ResultStatus, UseCaseResult
 from src.domain.entities.climate_anomaly import ClimateAnomaly
 
 
@@ -67,10 +66,7 @@ async def test_detect_anomalies_returns_serialized_response() -> None:
         ),
     }
     anomaly_use_case = MagicMock()
-    anomaly_use_case.execute.return_value = UseCaseResult(
-        status=ResultStatus.SUCCESS,
-        data=anomaly_result,
-    )
+    anomaly_use_case.execute.return_value = anomaly_result
     _setup_services(weather_use_case)
     monkeypatch_anomaly = anomaly_use_case
     anomalies.anomaly_use_case = monkeypatch_anomaly

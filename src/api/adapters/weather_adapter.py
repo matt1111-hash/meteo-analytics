@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Adapter from API DTOs to application use case inputs."""
 
 from __future__ import annotations
@@ -35,7 +34,7 @@ def to_multi_city_query(request: WeatherAnalysisRequest) -> MultiCityQuery:
     return MultiCityQuery(
         query_type=query_type,
         region=DEFAULT_REGION,
-        date=date_info["date"],
+        date=date_info["date"] or "",
         start_date=date_info.get("start_date"),
         end_date=date_info.get("end_date"),
         limit=limit,

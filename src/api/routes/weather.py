@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Weather analysis API routes."""
 
 from __future__ import annotations  # noqa: I001
@@ -31,7 +30,7 @@ async def analyze_multi_city(
         uc_result = await run_in_threadpool(
             lambda: services.analyze_multi_city_use_case.execute(query, aggregate=aggregate)
         )
-        if not uc_result.is_success:
+        if not uc_result.is_success or uc_result.data is None:
             raise HTTPException(status_code=502, detail="Upstream error")
         return uc_result.data.to_dict()
     except HTTPException:

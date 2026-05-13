@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # ruff: noqa: PLC0415
-# mypy: ignore-errors
 """Composition root — single factory for AnalyzeMultiCityUseCase."""
 
 from __future__ import annotations

@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Metadata API routes - available metrics, regions, etc."""
 
 from __future__ import annotations  # noqa: I001
@@ -97,12 +96,16 @@ async def get_query_types() -> dict:
     # Transform to frontend-friendly format
     formatted_types = {}
     for query_key, query_config in MultiCityEngine.QUERY_TYPES.items():
+        metric_enum_raw = query_config.get("metric_enum", "")
+        if isinstance(metric_enum_raw, AnalyticsMetric):
+            metric_enum_str = metric_enum_raw.value
+        else:
+            metric_enum_str = str(metric_enum_raw)
+
         formatted_types[query_key] = {
             "question_template": query_config.get("question_template", ""),
             "metric": query_config.get("metric", ""),
-            "metric_enum": query_config.get("metric_enum", "").value
-            if hasattr(query_config.get("metric_enum", ""), "value")
-            else str(query_config.get("metric_enum", "")),
+            "metric_enum": metric_enum_str,
             "sort_desc": query_config.get("sort_desc", True),
         }
 

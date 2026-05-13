@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Weather fetch service handling dual-API batch retrieval with retries."""
 
 from __future__ import annotations
@@ -178,7 +177,7 @@ class WeatherFetchService:
                     time.sleep(self.retry_delay)
 
         logger.error("⚠ Végső hiba a(z) %s lekérdezésénél: %s", city.get("city"), last_error)
-        return [self.create_empty_city_data(city, last_error)]
+        return [self.create_empty_city_data(city, last_error or "Ismeretlen hiba")]
 
     def create_empty_city_data(
         self, city: dict[str, Any], error_msg: str = "Ismeretlen hiba"

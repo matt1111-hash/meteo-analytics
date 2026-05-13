@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# mypy: ignore-errors
 """
 Weather Provider - Abstract Base Class
 Global Weather Analyzer project
@@ -12,7 +11,7 @@ import time
 from abc import ABC, abstractmethod
 from typing import Any
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ class WeatherProvider(ABC):
         self.display_name = display_name
         self.session = requests.Session()
         self.request_count = 0
-        self.last_request_time = 0
+        self.last_request_time: float = 0.0
         self.min_request_interval = 0.1
 
         logger.info(f"Weather provider initialized: {display_name}")

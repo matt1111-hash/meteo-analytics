@@ -1,5 +1,4 @@
 # ruff: noqa: F403, F405,noqa: I001  # noqa: RUF100
-# mypy: ignore-errors
 """Split definitions from wind_rose.py."""
 
 from __future__ import annotations

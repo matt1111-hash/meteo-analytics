@@ -1,5 +1,4 @@
 # ruff: noqa: F401,noqa: F401
-# mypy: ignore-errors
 """Use case orchestration for multi-city analytics."""
 
 from __future__ import annotations

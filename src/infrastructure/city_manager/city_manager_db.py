@@ -43,6 +43,7 @@ class CityManagerDB:
         self.query_count = 0
         self.hungarian_query_count = 0
         self.last_query_time: datetime | None = None
+        self._hungarian_counties_cache: list[str] | None = None
 
         logger.info("Dual Database initialization:")
         logger.info(f"   Global cities: {self.db_path}")

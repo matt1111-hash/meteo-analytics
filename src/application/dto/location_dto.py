@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# mypy: ignore-errors
 """
 Location DTOs - Data Transfer Objects for Location Information.
 

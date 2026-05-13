@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Support helpers for WeatherFetchService."""
 
 from __future__ import annotations

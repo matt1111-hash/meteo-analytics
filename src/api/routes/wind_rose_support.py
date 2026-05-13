@@ -1,5 +1,4 @@
 # ruff: noqa: F401,noqa: F401
-# mypy: ignore-errors
 """Wind Rose API route - wind direction and speed distribution analysis."""
 
 from __future__ import annotations  # noqa: I001

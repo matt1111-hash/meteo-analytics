@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Transform and statistics service for analytics results."""
 
 from __future__ import annotations

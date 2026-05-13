@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Anomaly detection API route."""
 
 from __future__ import annotations  # noqa: I001
@@ -139,7 +138,7 @@ async def detect_anomalies(
                 location_name=request.city,
             )
         )
-        anomalies = result.data
+        anomalies: dict[str, Any] = result
         return {
             "city": request.city,
             "date_range": {"start": request.start, "end": request.end},

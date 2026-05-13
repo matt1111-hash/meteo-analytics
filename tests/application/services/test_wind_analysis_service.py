@@ -14,33 +14,46 @@ from src.application.services.wind_analysis_service import (
 
 
 def test_result_dto_from_domain_converts_nested_objects() -> None:
-    """Domain-like results should be converted into DTO values."""
+    """Domain WindAnalysisResult should be converted into DTO values."""
     result = SimpleNamespace(
         location_name="Budapest",
         threshold_kmh=42.0,
         total_days=3,
         total_windy_days=1,
         overall_windy_percentage=33.3,
-        avg_max_wind_speed=25.0,
-        max_wind_speed=60.0,
-        windiest_month="March",
-        calmest_month="April",
+        windiest_month=SimpleNamespace(
+            year=2026,
+            month=3,
+            month_name="March",
+            windy_days_count=1,
+            total_days=3,
+            windy_percentage=33.3,
+            max_wind_speed=60.0,
+            avg_wind_speed=25.0,
+            windy_days_list=[],
+        ),
+        calmest_month=SimpleNamespace(
+            year=2026,
+            month=4,
+            month_name="April",
+            windy_days_count=0,
+            total_days=3,
+            windy_percentage=0.0,
+            max_wind_speed=10.0,
+            avg_wind_speed=5.0,
+            windy_days_list=[],
+        ),
         monthly_stats=[
             SimpleNamespace(
-                month="March",
+                year=2026,
+                month=3,
+                month_name="March",
                 windy_days_count=1,
                 total_days=3,
                 windy_percentage=33.3,
-                avg_max_speed=25.0,
-            )
-        ],
-        windy_days=[
-            SimpleNamespace(
-                date=pd.Timestamp("2026-03-15"),
-                max_wind_speed_kmh=60.0,
-                avg_wind_speed_kmh=30.0,
-                direction="NW",
-                is_windy=True,
+                max_wind_speed=60.0,
+                avg_wind_speed=25.0,
+                windy_days_list=[],
             )
         ],
     )
@@ -49,37 +62,31 @@ def test_result_dto_from_domain_converts_nested_objects() -> None:
 
     assert dto.location_name == "Budapest"
     assert dto.monthly_stats[0].month == "March"
-    assert dto.windy_days[0].date == "2026-03-15T00:00:00"
-    assert dto.windy_days[0].direction == "NW"
+    assert dto.windiest_month == "March"
+    assert dto.calmest_month == "April"
+    assert dto.avg_wind_speed == 25.0
+    assert dto.max_wind_speed == 60.0
 
 
-def test_result_dto_from_domain_handles_plain_string_dates() -> None:
-    """Date conversion should fall back to string when isoformat is unavailable."""
+def test_result_dto_from_domain_handles_none_months() -> None:
+    """DTO conversion should handle None windiest/calmest month."""
     result = SimpleNamespace(
         location_name="Budapest",
         threshold_kmh=42.0,
         total_days=1,
         total_windy_days=0,
         overall_windy_percentage=0.0,
-        avg_max_wind_speed=10.0,
-        max_wind_speed=10.0,
         windiest_month=None,
         calmest_month=None,
         monthly_stats=[],
-        windy_days=[
-            SimpleNamespace(
-                date="2026-03-16",
-                max_wind_speed_kmh=10.0,
-                avg_wind_speed_kmh=None,
-                direction=None,
-                is_windy=False,
-            )
-        ],
     )
 
     dto = WindAnalysisResultDTO.from_domain(result)
 
-    assert dto.windy_days[0].date == "2026-03-16"
+    assert dto.windiest_month is None
+    assert dto.calmest_month is None
+    assert dto.avg_wind_speed == 0.0
+    assert dto.max_wind_speed == 0.0
 
 
 def test_analyze_delegates_to_domain_service_and_wraps_result() -> None:
@@ -91,12 +98,9 @@ def test_analyze_delegates_to_domain_service_and_wraps_result() -> None:
         total_days=1,
         total_windy_days=0,
         overall_windy_percentage=0.0,
-        avg_max_wind_speed=10.0,
-        max_wind_speed=10.0,
         windiest_month=None,
         calmest_month=None,
         monthly_stats=[],
-        windy_days=[],
     )
     analyze_mock = MagicMock(return_value=domain_result)
     original = wind_analysis_service.analyze_wind_patterns

@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Location domain entity."""
 
 from dataclasses import dataclass, field
@@ -177,9 +176,7 @@ class Location:
             metadata={
                 "city_id": city_info.id,
                 "population": city_info.population,
-                "continent": city_info.continent,
                 "admin_name": city_info.admin_name,
-                "capital": city_info.capital,
                 "source": "city_manager",
             },
         )

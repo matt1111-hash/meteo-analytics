@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Statistics and result factory functions for analytics."""
 
 from __future__ import annotations

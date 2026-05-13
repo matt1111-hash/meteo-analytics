@@ -1,6 +1,4 @@
-# mypy: ignore-errors
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """Provider selector configuration and user preferences management."""
 

@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Analysis-specific ports."""
 
 from __future__ import annotations

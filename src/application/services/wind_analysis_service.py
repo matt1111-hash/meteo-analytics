@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# mypy: ignore-errors
 """
 Wind Analysis Application Service.
 
@@ -33,7 +32,8 @@ class MonthlyWindStatsDTO:
     windy_days_count: int
     total_days: int
     windy_percentage: float
-    avg_max_speed: float
+    avg_wind_speed: float
+    max_wind_speed: float
 
 
 @dataclass
@@ -45,46 +45,46 @@ class WindAnalysisResultDTO:
     total_days: int
     total_windy_days: int
     overall_windy_percentage: float
-    avg_max_wind_speed: float
+    avg_wind_speed: float
     max_wind_speed: float
     windiest_month: str | None
     calmest_month: str | None
     monthly_stats: list[MonthlyWindStatsDTO]
-    windy_days: list[WindyDayDTO]
+    windy_days: list[str]
 
     @classmethod
     def from_domain(cls, result: WindAnalysisResult) -> "WindAnalysisResultDTO":
         """Create DTO from domain entity."""
+        avg_ws = sum(s.avg_wind_speed for s in result.monthly_stats) / max(
+            len(result.monthly_stats), 1
+        )
+        max_ws = max((s.max_wind_speed for s in result.monthly_stats), default=0.0)
+        all_windy_dates = [
+            d.isoformat() for stat in result.monthly_stats for d in stat.windy_days_list
+        ]
+
         return cls(
             location_name=result.location_name,
             threshold_kmh=result.threshold_kmh,
             total_days=result.total_days,
             total_windy_days=result.total_windy_days,
             overall_windy_percentage=result.overall_windy_percentage,
-            avg_max_wind_speed=result.avg_max_wind_speed,
-            max_wind_speed=result.max_wind_speed,
-            windiest_month=result.windiest_month,
-            calmest_month=result.calmest_month,
+            avg_wind_speed=avg_ws,
+            max_wind_speed=max_ws,
+            windiest_month=result.windiest_month.month_name if result.windiest_month else None,
+            calmest_month=result.calmest_month.month_name if result.calmest_month else None,
             monthly_stats=[
                 MonthlyWindStatsDTO(
-                    month=stat.month,
+                    month=stat.month_name,
                     windy_days_count=stat.windy_days_count,
                     total_days=stat.total_days,
                     windy_percentage=stat.windy_percentage,
-                    avg_max_speed=stat.avg_max_speed,
+                    avg_wind_speed=stat.avg_wind_speed,
+                    max_wind_speed=stat.max_wind_speed,
                 )
                 for stat in result.monthly_stats
             ],
-            windy_days=[
-                WindyDayDTO(
-                    date=day.date.isoformat() if hasattr(day.date, "isoformat") else str(day.date),
-                    max_wind_speed_kmh=day.max_wind_speed_kmh,
-                    avg_wind_speed_kmh=getattr(day, "avg_wind_speed_kmh", None),
-                    direction=getattr(day, "direction", None),
-                    is_windy=day.is_windy,
-                )
-                for day in result.windy_days
-            ],
+            windy_days=all_windy_dates,
         )
 
 

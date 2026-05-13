@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Analytics models domain entities."""
 
 from __future__ import annotations
@@ -212,7 +211,7 @@ class QueryResults:
 
     def get_anomalies_by_severity(self) -> dict[str, int]:
         """Get anomalies by severity."""
-        severity_counts = {}
+        severity_counts: dict[str, int] = {}
         for anomaly_list in self.anomalies.values():
             for anomaly in anomaly_list:
                 severity = anomaly.severity.value
@@ -221,7 +220,7 @@ class QueryResults:
 
     def get_most_active_days(self, n: int = 10) -> list[tuple[date, int]]:
         """Get most active days by anomaly count."""
-        day_counts = {}
+        day_counts: dict[date, int] = {}
         for anomaly_list in self.anomalies.values():
             for anomaly in anomaly_list:
                 day = anomaly.date

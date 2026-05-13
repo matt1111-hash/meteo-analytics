@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Global Weather Analyzer - Anomaly Profile Manager.
 
 Main manager class for anomaly profile CRUD operations.

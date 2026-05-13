@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Use case for trend analysis calculation.
 
 Orchestrates weather data fetching and trend calculation.
@@ -15,6 +14,7 @@ from src.application.commands.trend_command import TrendAnalysisCommand
 from src.domain.analytics.services.trend_calculator import TrendCalculator
 from src.domain.entities.trend_result import TrendAnalysisResult
 from src.domain.ports import CityManagerPort, WeatherClientPort
+from src.domain.value_objects.enums import AnalyticsMetric
 
 logger = logging.getLogger(__name__)
 
@@ -78,9 +78,13 @@ class CalculateTrendUseCase:
             return self._empty_result(request)
 
         # Calculate trends for all periods
+        try:
+            metric_enum = AnalyticsMetric(request.metric)
+        except ValueError:
+            metric_enum = AnalyticsMetric.TEMPERATURE_2M_MAX
         result = self._trend_calculator.calculate_multiple_periods(
             weather_data=weather_data,
-            metric=request.metric,
+            metric=metric_enum,
             location_name=request.location,
             time_periods=request.time_periods,
             end_date=end_date.strftime("%Y-%m-%d") if request.end_date else None,
@@ -176,9 +180,13 @@ class CalculateTrendUseCase:
 
     def _empty_result(self, request: TrendAnalysisCommand) -> TrendAnalysisResult:
         """Return empty result when no data is available."""
+        try:
+            metric_enum = AnalyticsMetric(request.metric)
+        except ValueError:
+            metric_enum = AnalyticsMetric.TEMPERATURE_2M_MAX
         return TrendAnalysisResult(
             location_name=request.location,
-            metric=request.metric,
+            metric=metric_enum,
             periods=[],
             execution_time=0.0,
             total_data_points=0,

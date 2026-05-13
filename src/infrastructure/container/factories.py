@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# mypy: ignore-errors
 """
 Factory Functions for Port Implementations.
 
@@ -35,7 +34,7 @@ def get_city_manager_port() -> "CityManagerPort":
     """
     from src.infrastructure.city_manager.city_manager_stats import CityManagerStats  # noqa: PLC0415
 
-    return CityManagerStats()
+    return CityManagerStats()  # type: ignore[return-value]
 
 
 def get_weather_client_port() -> "WeatherClientPort":
@@ -73,7 +72,7 @@ def get_city_repository_port(
         db_path = project_root / "data" / "cities.db"
         hungarian_db_path = project_root / "data" / "hungarian_settlements.db"
 
-    return CityRepository(db_path, hungarian_db_path)
+    return CityRepository(db_path, hungarian_db_path)  # type: ignore[abstract]
 
 
 def get_anomaly_profile_port() -> "AnomalyProfilePort":
@@ -85,4 +84,4 @@ def get_anomaly_profile_port() -> "AnomalyProfilePort":
     """
     from src.infrastructure.anomaly_profile.manager import AnomalyProfileManager  # noqa: PLC0415
 
-    return AnomalyProfileManager()
+    return AnomalyProfileManager()  # type: ignore[return-value]

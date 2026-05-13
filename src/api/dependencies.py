@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """FastAPI dependency injection — lifespan-managed service registry."""
 
 from __future__ import annotations

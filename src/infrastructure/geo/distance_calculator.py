@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """
 Global Weather Analyzer - Distance Calculator.
 

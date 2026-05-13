@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """SQLite-backed city repository with regional filtering and validation."""
 
 from __future__ import annotations
@@ -57,6 +56,7 @@ class CityRepository(CityRepositoryPort):
         """Fetch cities by explicit city names (case-insensitive)."""
         if self._queries is None:
             self._update_queries()
+        assert self._queries is not None
         return self._queries.get_cities_by_names(city_names)
 
     def get_cities_for_region(
@@ -70,6 +70,7 @@ class CityRepository(CityRepositoryPort):
         """Fetch cities for a region with optional Hungarian filtering."""
         if self._queries is None:
             self._update_queries()
+        assert self._queries is not None
         return self._queries.get_cities_for_region(
             mapped_region, original_region, country_codes, limit, hungarian_mapping
         )
@@ -78,6 +79,7 @@ class CityRepository(CityRepositoryPort):
         """Autocomplete city names by partial match."""
         if self._queries is None:
             self._update_queries()
+        assert self._queries is not None
         return self._queries.autocomplete_city_name(query, limit)
 
 

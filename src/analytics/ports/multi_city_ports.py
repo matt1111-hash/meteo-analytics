@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 # ruff: noqa: D102, ARG001
 """Multi-city analytics ports."""
 

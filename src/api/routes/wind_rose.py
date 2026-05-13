@@ -1,5 +1,4 @@
 # ruff: noqa: F401, F403,noqa: I001
-# mypy: ignore-errors
 """Compatibility wrapper for wind_rose.py."""
 
 from __future__ import annotations

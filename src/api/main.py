@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """FastAPI entrypoint for Global Weather Analyzer backend."""
 
 from __future__ import annotations  # noqa: I001
@@ -117,7 +116,7 @@ def verify_api_key(api_key: str | None = Depends(api_key_header)) -> str:
         )
 
     # Use constant-time comparison to prevent timing attacks
-    if not secrets.compare_digest(api_key, APIConfig.API_KEY):
+    if not APIConfig.API_KEY or not secrets.compare_digest(api_key, APIConfig.API_KEY):
         logger.warning("Invalid API key attempt")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -160,7 +159,7 @@ async def auth_middleware(request: Request, call_next: Callable):
             detail="API key required. Provide X-API-Key header.",
         )
 
-    if not secrets.compare_digest(api_key, APIConfig.API_KEY):
+    if not APIConfig.API_KEY or not secrets.compare_digest(api_key, APIConfig.API_KEY):
         logger.warning(
             "Invalid API key attempt from %s",
             request.client.host if request.client else "unknown",

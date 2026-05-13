@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Single city time series API route."""
 
 from __future__ import annotations  # noqa: I001
@@ -67,7 +66,7 @@ async def analyze_single_city_timeseries(
             lambda: services.analyze_multi_city_use_case.execute(query, aggregate=False)
         )
 
-        if not uc_result.is_success:
+        if not uc_result.is_success or uc_result.data is None:
             raise HTTPException(status_code=502, detail="Upstream error")
 
         response = uc_result.data.to_dict()

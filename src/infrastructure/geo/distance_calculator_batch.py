@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Batch and utility methods for DistanceCalculator."""
 
 from __future__ import annotations
@@ -14,7 +13,7 @@ if TYPE_CHECKING:
 class DistanceBatchMixin:
     """Batch calculation mixin for DistanceCalculator."""
 
-    def batch_haversine_distances(
+    def batch_haversine_distances(  # type: ignore[misc]
         self: DistanceCalculator,
         center_lat: float,
         center_lon: float,
@@ -28,7 +27,7 @@ class DistanceBatchMixin:
             self.haversine_distance(center_lat, center_lon, lat, lon, unit) for lat, lon in points
         ]
 
-    def closest_point(
+    def closest_point(  # type: ignore[misc]
         self: DistanceCalculator,
         reference_lat: float,
         reference_lon: float,
@@ -39,15 +38,17 @@ class DistanceBatchMixin:
             raise ValueError("Points list is empty")
 
         min_distance = float("inf")
-        closest = None
+        closest: tuple[float, float, Any, float] | None = None
         for lat, lon, data in points:
             distance = self.haversine_distance(reference_lat, reference_lon, lat, lon)
             if distance < min_distance:
                 min_distance = distance
                 closest = (lat, lon, data, distance)
+        if closest is None:
+            raise ValueError("No valid closest point found")
         return closest
 
-    def get_calculation_statistics(self: DistanceCalculator) -> dict[str, Any]:
+    def get_calculation_statistics(self: DistanceCalculator) -> dict[str, Any]:  # type: ignore[misc]
         """Get calculation statistics."""
         return {
             "total_calculations": self.calculation_count,

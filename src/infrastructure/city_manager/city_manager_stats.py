@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# mypy: ignore-errors
 
 """
 City Manager - Statistics and Context Manager
@@ -30,7 +29,7 @@ class CityManagerStats(CityManagerSearch):
 
     def get_database_statistics(self) -> dict[str, Any]:
         """Extended database statistics with dual database support."""
-        stats = {
+        stats: dict[str, Any] = {
             "query_count": self.query_count,
             "hungarian_query_count": self.hungarian_query_count,
             "last_query": self.last_query_time.isoformat() if self.last_query_time else None,
@@ -125,7 +124,7 @@ class CityManagerStats(CityManagerSearch):
             return []
 
         sql_parts = ["SELECT * FROM cities WHERE continent = ?"]
-        params = [continent]
+        params: list[str | int] = [continent]
 
         if min_population:
             sql_parts.append("AND population >= ?")

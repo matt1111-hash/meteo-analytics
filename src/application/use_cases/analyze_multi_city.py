@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """Use case orchestration for multi-city analytics."""
 
 from __future__ import annotations

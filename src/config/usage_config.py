@@ -1,6 +1,4 @@
-# mypy: ignore-errors
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """API usage tracking and monitoring for provider selector."""
 

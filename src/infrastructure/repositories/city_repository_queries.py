@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """City repository database query methods."""
 
 from __future__ import annotations

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# mypy: ignore-errors
 
 """
 City Manager - Hungarian Settlements Search

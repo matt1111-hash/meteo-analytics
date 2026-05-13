@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# mypy: ignore-errors
 # ruff: noqa: D102, D107, ARG002
 """
 Multi-City Analytics Engine - Thin Facade
@@ -11,7 +10,7 @@ Kept for backward compatibility with GUI and port consumers.
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import Any, cast
 
 from src.domain.analytics.models import MultiCityQuery
 from src.domain.analytics.services import RegionResolverService
@@ -60,7 +59,7 @@ class MultiCityEngine:
             date=date,
             limit=limit,
             question=question,
-            max_cities=None,
+            max_cities=50,
         )
         uc_result = self.use_case.execute(query)
         if uc_result.is_success and uc_result.data is not None:
@@ -90,13 +89,13 @@ class MultiCityEngine:
         try:
             mapped_region = self.resolve_region_name(region)
             region_config = REGIONS[mapped_region]
-            final_limit = max_cities or limit or region_config["max_cities"]
+            final_limit = max_cities or limit or int(str(region_config["max_cities"]))
 
             return self.city_repository.get_cities_for_region(
                 mapped_region=mapped_region,
                 original_region=region,
-                country_codes=region_config["country_codes"],
-                limit=final_limit,
+                country_codes=cast(list[str], region_config["country_codes"]),
+                limit=int(final_limit),
                 hungarian_mapping=HUNGARIAN_REGIONAL_MAPPING,
             )
         except Exception as exc:
