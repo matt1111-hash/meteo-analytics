@@ -7,13 +7,13 @@ import logging
 from dataclasses import asdict
 from typing import Any, Dict, List  # noqa: UP035
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 
+from src.api.dependencies import ServiceRegistry, get_services
 from src.api.dto.weather_request import WeatherAnalysisRequest
 from src.application.use_cases import AnalyzeMultiCityUseCase, DetectAnomaliesUseCase
-from src.infrastructure.container import build_analyze_multi_city_use_case
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["anomalies"])
@@ -109,14 +109,17 @@ def _resolve_thresholds(request: AnomalyDetectionRequest) -> Dict[str, Any]:  # 
 
 
 @router.post("/anomalies")
-async def detect_anomalies(request: AnomalyDetectionRequest) -> dict:
+async def detect_anomalies(
+    request: AnomalyDetectionRequest,
+    services: ServiceRegistry = Depends(get_services),
+) -> dict:
     """Detect weather anomalies for a city over a date range.
 
     Returns:
         Anomaly detection results for temperature, precipitation, and wind.
     """
     try:
-        weather_use_case = build_analyze_multi_city_use_case()
+        weather_use_case = services.analyze_multi_city_use_case
         WeatherAnalysisRequest(
             cities=[request.city],
             date_range={"start": request.start, "end": request.end},

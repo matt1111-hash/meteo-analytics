@@ -4,6 +4,10 @@
 
 from __future__ import annotations
 
+from typing import Any
+
+from fastapi import Depends, HTTPException
+from src.api.dependencies import ServiceRegistry, get_services
 from starlette.concurrency import run_in_threadpool
 
 from .wind_rose_part1 import WindRoseRequest, WindRoseResponse
@@ -11,9 +15,8 @@ from .wind_rose_part2 import _process_wind_rose_data
 from .wind_rose_support import *
 
 
-def _resolve_city_coordinates(request: WindRoseRequest) -> tuple[float, float]:
+def _resolve_city_coordinates(request: WindRoseRequest, city_manager: Any) -> tuple[float, float]:
     """Resolve city coordinates or raise HTTP 404."""
-    city_manager = get_city_manager_port()
     coords = city_manager.find_city_by_name(request.city.strip())
     if not coords:
         raise HTTPException(status_code=404, detail=f"City not found: {request.city}")
@@ -122,29 +125,13 @@ def _build_response(request: WindRoseRequest, wind_rose_data: dict[str, Any]) ->
 
 
 @router.post("/wind-rose")
-async def get_wind_rose(request: WindRoseRequest) -> WindRoseResponse:
-    """
-    Get wind rose data for a city and date range.
-
-    Wind rose shows the distribution of wind speed and direction.
-    Returns 16 compass directions, each with 6 speed buckets.
-
-    Speed buckets (km/h):
-    - 0-25: Calm to Light
-    - 25-50: Light to Moderate
-    - 50-70: Moderate to Fresh
-    - 70-100: Fresh to Strong
-    - 100-120: Strong to Very Strong
-    - 120+: Extreme / Hurricane force
-
-    Args:
-        request: WindRoseRequest with city, start, and end dates
-
-    Returns:
-        WindRoseResponse with directions array and statistics
-    """
+async def get_wind_rose(
+    request: WindRoseRequest,
+    services: ServiceRegistry = Depends(get_services),
+) -> WindRoseResponse:
+    """Get wind rose data for a city and date range."""
     try:
-        latitude, longitude = _resolve_city_coordinates(request)
+        latitude, longitude = _resolve_city_coordinates(request, services.city_manager)
         weather_records = await run_in_threadpool(
             lambda: _fetch_weather_records(request, latitude, longitude)
         )

@@ -10,11 +10,12 @@ Critical flow: backend health → city search → weather data → metadata.
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi import status
 from httpx import AsyncClient
+from src.api.main import app
 from src.application.use_cases.use_case_result import ResultStatus, UseCaseResult
 
 # ---------------------------------------------------------------------------
@@ -113,10 +114,13 @@ class TestSingleCityWeather:
             return_value=UseCaseResult(status=ResultStatus.SUCCESS, data=mock_result)
         )
 
-        with patch(
-            "src.api.routes.single_city.build_analyze_multi_city_use_case",
-            return_value=mock_use_case,
-        ):
+        from src.api.dependencies import ServiceRegistry, get_services  # noqa: PLC0415
+
+        mock_services = MagicMock(spec=ServiceRegistry)
+        mock_services.analyze_multi_city_use_case = mock_use_case
+        app.dependency_overrides[get_services] = lambda: mock_services
+
+        try:
             response = await client.post(
                 "/api/weather/single-city",
                 json={
@@ -126,6 +130,8 @@ class TestSingleCityWeather:
                     "metric": "temperature_2m_max",
                 },
             )
+        finally:
+            app.dependency_overrides.clear()
 
         assert response.status_code == status.HTTP_200_OK
         body = response.json()

@@ -34,65 +34,36 @@ export const useMultiYearWeather = () => {
     setError(null);
 
     try {
-      // Initialize yearly data structure
-      const yearlyData: YearlyData = {};
-
-      // Fetch data for each year
-      const yearPromises = params.years.map(async (year) => {
-        try {
-          const response = await apiClient.post<{
-            city_results: CityWeatherResult[];
-            [key: string]: unknown;
-          }>('/api/weather/single-city', {
-            city: params.city.trim(),
-            start: `${year}-01-01`,
-            end: `${year}-12-31`,
-            metric: params.metric,
-          });
-
-          return { year, data: response.data.city_results };
-        } catch (err) {
-          logger.error(`Error fetching data for year ${year}:`, err);
-          return { year, data: [] as CityWeatherResult[] };
-        }
+      const response = await apiClient.post<{
+        city: string;
+        metric: string;
+        years: Record<string, CityWeatherResult[]>;
+      }>('/api/weather/multi-year-batch', {
+        city: params.city.trim(),
+        years: params.years,
+        metric: params.metric,
       });
 
-      const yearResults = await Promise.all(yearPromises);
+      const yearlyData: YearlyData = {};
+      const englishMonthNames = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      ];
 
-      // Process data into monthly aggregates
-      yearResults.forEach(({ year, data }) => {
+      Object.entries(response.data.years).forEach(([yearStr, cityResults]) => {
+        const year = parseInt(yearStr, 10);
         const monthlyData: MonthlyData = {};
-
-        // Use consistent English month names
-        const englishMonthNames = [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec',
-        ];
-
-        // Initialize all months with null
         englishMonthNames.forEach((monthName) => {
           monthlyData[monthName] = null;
         });
 
-        // Initialize month sums and counts
         const monthSums: Record<string, number> = {};
         const monthCounts: Record<string, number> = {};
 
-        // Aggregate data by month (using English month names)
-        data.forEach((item) => {
+        (cityResults as CityWeatherResult[]).forEach((item) => {
           if (item.date && item.value !== null && !isNaN(item.value)) {
             const date = new Date(item.date);
-            const monthIndex = date.getMonth(); // 0-11
+            const monthIndex = date.getMonth();
             const monthName = englishMonthNames[monthIndex];
 
             if (!monthSums[monthName]) {
@@ -104,9 +75,6 @@ export const useMultiYearWeather = () => {
           }
         });
 
-        logger.debug(`Year ${year} month counts:`, monthCounts);
-
-        // Calculate averages
         Object.keys(monthSums).forEach((monthName) => {
           if (monthCounts[monthName] > 0) {
             monthlyData[monthName] = monthSums[monthName] / monthCounts[monthName];
@@ -116,33 +84,12 @@ export const useMultiYearWeather = () => {
         yearlyData[year] = monthlyData;
       });
 
-      // Transform to chart data format - only show months that have data
-      const allMonths = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-      ];
-
-      // Show all months - the backend provides actual data or null
-      const months = allMonths;
-
-      const chartData: ChartData[] = months.map((month) => {
+      const chartData: ChartData[] = englishMonthNames.map((month) => {
         const dataPoint: ChartData = { month };
-
         params.years.forEach((year) => {
           const value = yearlyData[year]?.[month];
           dataPoint[year.toString()] = value !== undefined ? value : null;
         });
-
         return dataPoint;
       });
 

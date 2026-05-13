@@ -53,7 +53,7 @@ class WeatherFetchService:
         """Log batch processing summary."""
         batch_time = time.time() - batch_start_time
         successful_in_batch = len([result for result in batch_results if result.fetch_success])
-        logger.info(
+        logger.debug(
             "Batch %d/%d: %d/%d siker, idő: %.1fs",
             batch_idx + 1,
             batch_count,
@@ -85,7 +85,7 @@ class WeatherFetchService:
         batch_size = region_config["batch_size"]
         rate_limit_delay = region_config["rate_limit_delay"]
         batches = split_batches(cities, batch_size)
-        logger.info(
+        logger.debug(
             "Dual-API batch processing: %d batch, %d város/batch",
             len(batches),
             batch_size,
@@ -101,7 +101,7 @@ class WeatherFetchService:
             if batch_idx < len(batches) - 1:
                 time.sleep(rate_limit_delay)
 
-        logger.info("Dual-API batch processing befejezve: %d város", len(weather_data))
+        logger.debug("Dual-API batch processing befejezve: %d város", len(weather_data))
         return weather_data
 
     def process_dual_api_batch(

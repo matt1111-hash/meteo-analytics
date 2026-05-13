@@ -32,10 +32,12 @@ def create_cities_db(path: Path, rows: list[dict[str, object]]) -> None:
                 lon REAL,
                 population INTEGER,
                 meteostat_station_id TEXT,
-                data_quality_score REAL
+                data_quality_score REAL,
+                city_lower TEXT GENERATED ALWAYS AS (LOWER(city)) VIRTUAL
             )
             """
         )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_city_lower ON cities (city_lower)")
         for row in rows:
             cursor.execute(
                 """
@@ -74,9 +76,13 @@ def create_hungarian_settlements_db(path: Path, rows: list[dict[str, object]]) -
                 latitude REAL,
                 longitude REAL,
                 population INTEGER,
-                region_priority REAL
+                region_priority REAL,
+                name_lower TEXT GENERATED ALWAYS AS (LOWER(name)) VIRTUAL
             )
             """
+        )
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS idx_name_lower ON hungarian_settlements (name_lower)"
         )
         for row in rows:
             cursor.execute(

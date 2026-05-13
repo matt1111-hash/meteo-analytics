@@ -84,7 +84,7 @@ class CityManagerSearch(CityManagerHungarian):
         4. Exact match priority - Exact name match takes precedence
         """
         try:
-            logger.info(f"find_city_by_name: '{city_name}'")
+            logger.debug(f"find_city_by_name: '{city_name}'")
             match = self._resolve_hungarian_match(city_name)
             if match:
                 return match

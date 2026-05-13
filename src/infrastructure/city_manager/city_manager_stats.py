@@ -195,5 +195,40 @@ class CityManagerStats(CityManagerSearch):
         cities = self.get_hungarian_settlements_by_county(county)
         return [city.to_dict() for city in cities]
 
+    def get_settlements_bulk(self, limit: int = 200) -> list[dict[str, Any]]:
+        """Get Hungarian settlements in a single query (no N+1).
+
+        Args:
+            limit: Maximum number of settlements to return
+
+        Returns:
+            List of dictionaries with settlement data
+        """
+        if not self.hungarian_connection:
+            return []
+
+        cursor = self.hungarian_connection.cursor()
+        cursor.execute(
+            """
+            SELECT id, name, megye, latitude, longitude,
+                   population, region_priority, settlement_type
+            FROM hungarian_settlements
+            ORDER BY region_priority DESC, population DESC
+            LIMIT ?
+            """,
+            (limit,),
+        )
+        columns = [
+            "id",
+            "city",
+            "megye",
+            "lat",
+            "lon",
+            "population",
+            "region_priority",
+            "settlement_type",
+        ]
+        return [dict(zip(columns, row, strict=True)) for row in cursor.fetchall()]
+
 
 __all__ = ["CityManagerStats"]

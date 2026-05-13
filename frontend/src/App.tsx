@@ -1,22 +1,39 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import ConnectionStatus from './components/common/ConnectionStatus';
 import ThemeToggle from './components/common/ThemeToggle';
-import HomePage from './pages/HomePage';
-import AnalyticsView from './pages/AnalyticsView';
-import MultiCityView from './pages/MultiCityView';
-import SingleCityView from './pages/SingleCityView';
-import MultiYearView from './pages/MultiYearView';
-import AnomalyView from './pages/AnomalyView';
-import HeatmapView from './pages/HeatmapView';
-import ExtremeEventsView from './pages/ExtremeEventsView';
-import WindyDaysView from './pages/WindyDaysView';
-import DataTableView from './pages/DataTableView';
-import TrendAnalyticsView from './pages/TrendAnalyticsView';
+
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const AnalyticsView = React.lazy(() => import('./pages/AnalyticsView'));
+const MultiCityView = React.lazy(() => import('./pages/MultiCityView'));
+const SingleCityView = React.lazy(() => import('./pages/SingleCityView'));
+const MultiYearView = React.lazy(() => import('./pages/MultiYearView'));
+const AnomalyView = React.lazy(() => import('./pages/AnomalyView'));
+const HeatmapView = React.lazy(() => import('./pages/HeatmapView'));
+const ExtremeEventsView = React.lazy(() => import('./pages/ExtremeEventsView'));
+const WindyDaysView = React.lazy(() => import('./pages/WindyDaysView'));
+const DataTableView = React.lazy(() => import('./pages/DataTableView'));
+const TrendAnalyticsView = React.lazy(() => import('./pages/TrendAnalyticsView'));
+
 import './styles/theme.css';
 import './App.css';
+
+function LoadingFallback() {
+  return (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '50vh',
+      fontSize: '1.2rem',
+      color: 'var(--text-secondary, #666)',
+    }}>
+      Loading...
+    </div>
+  );
+}
 
 function Navigation() {
   const location = useLocation();
@@ -89,9 +106,6 @@ function Navigation() {
   );
 }
 
-/**
- * Header with Theme Toggle
- */
 function AppHeader() {
   return (
     <header className="app-header">
@@ -117,19 +131,21 @@ function App() {
             <AppHeader />
 
             <main className="app-main">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/analytics" element={<AnalyticsView />} />
-                <Route path="/multi-city" element={<MultiCityView />} />
-                <Route path="/single-city" element={<SingleCityView />} />
-                <Route path="/multi-year" element={<MultiYearView />} />
-                <Route path="/anomalies" element={<AnomalyView />} />
-                <Route path="/heatmap" element={<HeatmapView />} />
-                <Route path="/extreme-events" element={<ExtremeEventsView />} />
-                <Route path="/windy-days" element={<WindyDaysView />} />
-                <Route path="/data-table" element={<DataTableView />} />
-                <Route path="/trend-analytics" element={<TrendAnalyticsView />} />
-              </Routes>
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/analytics" element={<AnalyticsView />} />
+                  <Route path="/multi-city" element={<MultiCityView />} />
+                  <Route path="/single-city" element={<SingleCityView />} />
+                  <Route path="/multi-year" element={<MultiYearView />} />
+                  <Route path="/anomalies" element={<AnomalyView />} />
+                  <Route path="/heatmap" element={<HeatmapView />} />
+                  <Route path="/extreme-events" element={<ExtremeEventsView />} />
+                  <Route path="/windy-days" element={<WindyDaysView />} />
+                  <Route path="/data-table" element={<DataTableView />} />
+                  <Route path="/trend-analytics" element={<TrendAnalyticsView />} />
+                </Routes>
+              </Suspense>
             </main>
           </div>
         </ThemeProvider>

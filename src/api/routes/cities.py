@@ -4,25 +4,20 @@ from __future__ import annotations  # noqa: I001
 
 import logging
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from starlette.concurrency import run_in_threadpool
 
-from src.domain.ports import CityRepositoryPort
-from src.infrastructure.container import get_city_repository_port
+from src.api.dependencies import ServiceRegistry, get_services
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/cities", tags=["cities"])
-
-
-def _get_city_repository() -> CityRepositoryPort:
-    """Get city repository instance through port (CA compliant)."""
-    return get_city_repository_port()
 
 
 @router.get("/search")
 async def search_cities(
     query: str = Query(..., min_length=2, description="Search query for city names"),
     limit: int = Query(default=20, ge=1, le=50, description="Maximum number of results"),
+    services: ServiceRegistry = Depends(get_services),
 ) -> dict:
     """Search for cities by name.
 
@@ -34,10 +29,8 @@ async def search_cities(
         Dictionary with search results containing city information
     """
     try:
-        city_repo = _get_city_repository()
-
         results = await run_in_threadpool(
-            lambda: city_repo.autocomplete_city_name(query, limit=limit)
+            lambda: services.city_repository.autocomplete_city_name(query, limit=limit)
         )
 
         return {

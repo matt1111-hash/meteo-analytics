@@ -5,11 +5,11 @@ from __future__ import annotations  # noqa: I001
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 
-from src.infrastructure.container import build_detailed_city_use_case
+from src.api.dependencies import ServiceRegistry, get_services
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather"])
@@ -24,12 +24,16 @@ class DetailedCityRequest(BaseModel):
 
 
 @router.post("/single-city-detailed")
-async def analyze_single_city_detailed(request: DetailedCityRequest) -> dict:
+async def analyze_single_city_detailed(
+    request: DetailedCityRequest,
+    services: ServiceRegistry = Depends(get_services),
+) -> dict:
     """Analyze single city with ALL metrics — single fetch, four metric extractions."""
     try:
-        use_case = build_detailed_city_use_case()
         result = await run_in_threadpool(
-            lambda: use_case.execute(city=request.city, start=request.start, end=request.end)
+            lambda: services.detailed_city_use_case.execute(
+                city=request.city, start=request.start, end=request.end
+            )
         )
         return {
             "city": result.city,

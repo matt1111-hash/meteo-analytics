@@ -90,14 +90,14 @@ class AnalyticsTransformService:
         city_data: CityWeatherData, metric_name: str, metric_value: Any
     ) -> None:
         """Log inputs used for transformation."""
-        logger.info(
+        logger.debug(
             "TRANSFORM DEBUG: %s - %s=%s (type: %s)",
             city_data.city,
             metric_name,
             metric_value,
             type(metric_value),
         )
-        logger.info(
+        logger.debug(
             "RAW DATA: temp_max=%s, temp_min=%s, precip=%s, windspeed=%s",
             city_data.temperature_2m_max,
             city_data.temperature_2m_min,
@@ -239,7 +239,7 @@ class AnalyticsTransformService:
             aggregate: If True, aggregates multi-day data per city by taking max value.
                       If False, returns all daily records without aggregation.
         """
-        logger.info(
+        logger.debug(
             "WEATHER RESULT PROCESSING: %d total records (aggregate=%s)",
             len(weather_data),
             aggregate,
@@ -250,10 +250,10 @@ class AnalyticsTransformService:
         self._compute_temperature_ranges(weather_data, metric)
         if aggregate:
             aggregated_data = self._aggregate_by_city(weather_data, metric)
-            logger.info("AGGREGATED TO: %d unique cities", len(aggregated_data))
+            logger.debug("AGGREGATED TO: %d unique cities", len(aggregated_data))
         else:
             aggregated_data = weather_data
-            logger.info("NO AGGREGATION: Returning all %d daily records", len(aggregated_data))
+            logger.debug("NO AGGREGATION: Returning all %d daily records", len(aggregated_data))
         self._log_filtered_records(aggregated_data, metric)
         valid_data = self._filter_valid_records(aggregated_data, metric)
         if not valid_data:
@@ -262,7 +262,7 @@ class AnalyticsTransformService:
         sorted_data = self._sort_records(valid_data, metric, sort_desc)
 
         if query_type == "windiest_today":
-            logger.info(
+            logger.debug(
                 "TOP WINDIEST CITIES: %s",
                 [(c.city, getattr(c, metric, None)) for c in sorted_data[:3]],
             )

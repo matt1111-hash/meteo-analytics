@@ -44,6 +44,7 @@ class CityManagerPort(Protocol):
     def get_hungarian_counties(self) -> list[str]: ...  # noqa: D102
     def get_cities_for_hungarian_county(self, county: str) -> list[dict[str, Any]]: ...  # noqa: D102
     def get_cities_for_hungarian_region(self, region: str) -> list[dict[str, Any]]: ...  # noqa: D102
+    def get_settlements_bulk(self, limit: int = 200) -> list[dict[str, Any]]: ...  # noqa: D102
     def validate_paths(self) -> bool: ...  # noqa: D102
     def close(self) -> None: ...  # noqa: D102
 

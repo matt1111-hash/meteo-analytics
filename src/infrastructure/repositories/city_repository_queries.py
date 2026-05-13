@@ -145,50 +145,71 @@ class CityRepositoryQueries:
         return self._execute(self.db_path, base_select, params)
 
     def autocomplete_city_name(self, query: str, limit: int = 20) -> list[dict[str, object]]:
-        """Autocomplete city names by partial match."""
+        """Autocomplete city names by prefix match (indexed)."""
         if not query or len(query.strip()) < 2:  # noqa: PLR2004
             return []
 
         query_str = query.strip().lower()
 
-        # Search in global cities database first
+        # Determine which column/filter to use based on migration state
+        city_col, city_like = self._autocomplete_column(
+            self.db_path, "cities", "city_lower", "city"
+        )
+        hun_col, hun_like = self._autocomplete_column(
+            self.hungarian_db_path, "hungarian_settlements", "name_lower", "name"
+        )
+
         base_select = (
             "SELECT city, country, country_code, lat, lon, population, "
             "meteostat_station_id, data_quality_score FROM cities "
-            "WHERE LOWER(city) LIKE ? "
+            f"WHERE {city_col} LIKE ? "
             "ORDER BY population DESC, city ASC "
             "LIMIT ?"
         )
-        params = [f"%{query_str}%", limit]
+        params = [city_like.format(query_str), limit]
 
         results = []
         if self.db_path.exists():
             global_results = self._execute(self.db_path, base_select, params)
             results.extend(global_results)
 
-        # If we have enough results from global database, return them
         if len(results) >= limit:
             return results[:limit]
 
-        # Otherwise, search in Hungarian database for additional results
         remaining_limit = limit - len(results)
         hun_query = (
             "SELECT name, 'Hungary' as country, 'HU' as country_code, "
             "latitude as lat, longitude as lon, population, "
             "NULL as meteostat_station_id, NULL as data_quality_score "
             "FROM hungarian_settlements "
-            "WHERE LOWER(name) LIKE ? "
+            f"WHERE {hun_col} LIKE ? "
             "ORDER BY population DESC, name ASC "
             "LIMIT ?"
         )
 
         if self.hungarian_db_path.exists():
             hun_results = self._execute_hungarian(
-                self.hungarian_db_path, hun_query, [f"%{query_str}%", remaining_limit]
+                self.hungarian_db_path, hun_query, [hun_like.format(query_str), remaining_limit]
             )
             results.extend(hun_results)
 
         return results[:limit]
+
+    @staticmethod
+    def _autocomplete_column(
+        db_path: Path, table: str, index_col: str, fallback_col: str
+    ) -> tuple[str, str]:
+        """Return (where_column, like_pattern) based on whether migration ran."""
+        if db_path.exists():
+            try:
+                with sqlite3.connect(db_path) as conn:
+                    cur = conn.cursor()
+                    cur.execute(f"PRAGMA table_info({table})")
+                    if any(row[1] == index_col for row in cur.fetchall()):
+                        return index_col, "{}%"
+            except sqlite3.OperationalError:
+                pass
+        return f"LOWER({fallback_col})", "%{}%"
 
     def _execute(
         self,

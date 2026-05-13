@@ -7,6 +7,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from src.api.dependencies import ServiceRegistry, get_services
 from src.api.main import app
 from src.api.routes import anomalies
 from src.application.use_cases.use_case_result import ResultStatus, UseCaseResult
@@ -22,10 +23,15 @@ def _build_weather_use_case() -> MagicMock:
     return use_case
 
 
+def _setup_services(weather_use_case: MagicMock) -> None:
+    """Register mock service registry with the given weather use case."""
+    mock_services = MagicMock(spec=ServiceRegistry)
+    mock_services.analyze_multi_city_use_case = weather_use_case
+    app.dependency_overrides[get_services] = lambda: mock_services
+
+
 @pytest.mark.anyio
-async def test_detect_anomalies_returns_serialized_response(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_detect_anomalies_returns_serialized_response() -> None:
     """Endpoint should return serialized anomalies for all categories."""
     weather_use_case = _build_weather_use_case()
     weather_use_case.city_repository.get_cities_by_names.return_value = [{"city": "Budapest"}]
@@ -65,74 +71,72 @@ async def test_detect_anomalies_returns_serialized_response(
         status=ResultStatus.SUCCESS,
         data=anomaly_result,
     )
-    monkeypatch.setattr(
-        anomalies, "build_analyze_multi_city_use_case", MagicMock(return_value=weather_use_case)
-    )
-    monkeypatch.setattr(anomalies, "anomaly_use_case", anomaly_use_case)
+    _setup_services(weather_use_case)
+    monkeypatch_anomaly = anomaly_use_case
+    anomalies.anomaly_use_case = monkeypatch_anomaly
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        response = await client.post(
-            "/api/weather/anomalies",
-            json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
-        )
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.post(
+                "/api/weather/anomalies",
+                json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
+            )
 
-    assert response.status_code == 200
-    data = response.json()
-    assert data["city"] == "Budapest"
-    assert data["anomalies"]["temperature"]["category"] == "hot"
-    assert data["anomalies"]["temperature"]["date"] == "2024-01-02"
-    assert data["anomalies"]["precipitation"] is None
-    assert data["anomalies"]["wind"]["severity"] == "error"
-    anomaly_use_case.execute.assert_called_once()
+        assert response.status_code == 200
+        data = response.json()
+        assert data["city"] == "Budapest"
+        assert data["anomalies"]["temperature"]["category"] == "hot"
+        assert data["anomalies"]["temperature"]["date"] == "2024-01-02"
+        assert data["anomalies"]["precipitation"] is None
+        assert data["anomalies"]["wind"]["severity"] == "error"
+        anomaly_use_case.execute.assert_called_once()
+    finally:
+        app.dependency_overrides.clear()
 
 
 @pytest.mark.anyio
-async def test_detect_anomalies_returns_404_when_city_not_found(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_detect_anomalies_returns_404_when_city_not_found() -> None:
     """Endpoint should return 404 when the city lookup returns no match."""
     weather_use_case = _build_weather_use_case()
     weather_use_case.city_repository.get_cities_by_names.return_value = []
-    monkeypatch.setattr(
-        anomalies, "build_analyze_multi_city_use_case", MagicMock(return_value=weather_use_case)
-    )
+    _setup_services(weather_use_case)
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        response = await client.post(
-            "/api/weather/anomalies",
-            json={"city": "Missing", "start": "2024-01-01", "end": "2024-01-03"},
-        )
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.post(
+                "/api/weather/anomalies",
+                json={"city": "Missing", "start": "2024-01-01", "end": "2024-01-03"},
+            )
 
-    assert response.status_code == 404
-    assert response.json()["detail"] == "City not found: Missing"
+        assert response.status_code == 404
+        assert response.json()["detail"] == "City not found: Missing"
+    finally:
+        app.dependency_overrides.clear()
 
 
 @pytest.mark.anyio
-async def test_detect_anomalies_returns_404_when_weather_data_missing(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_detect_anomalies_returns_404_when_weather_data_missing() -> None:
     """Endpoint should return 404 when weather fetch returns no rows."""
     weather_use_case = _build_weather_use_case()
     weather_use_case.city_repository.get_cities_by_names.return_value = [{"city": "Budapest"}]
     weather_use_case.weather_fetch_service.fetch_weather_data_dual_api_batch.return_value = []
-    monkeypatch.setattr(
-        anomalies, "build_analyze_multi_city_use_case", MagicMock(return_value=weather_use_case)
-    )
+    _setup_services(weather_use_case)
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        response = await client.post(
-            "/api/weather/anomalies",
-            json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
-        )
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.post(
+                "/api/weather/anomalies",
+                json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
+            )
 
-    assert response.status_code == 404
-    assert response.json()["detail"] == "No weather data found for Budapest"
+        assert response.status_code == 404
+        assert response.json()["detail"] == "No weather data found for Budapest"
+    finally:
+        app.dependency_overrides.clear()
 
 
 @pytest.mark.anyio
-async def test_detect_anomalies_maps_value_error_to_http_400(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_detect_anomalies_maps_value_error_to_http_400() -> None:
     """Value errors should map to HTTP 400."""
     weather_use_case = _build_weather_use_case()
     weather_use_case.city_repository.get_cities_by_names.return_value = [{"city": "Budapest"}]
@@ -146,37 +150,39 @@ async def test_detect_anomalies_maps_value_error_to_http_400(
     ]
     anomaly_use_case = MagicMock()
     anomaly_use_case.execute.side_effect = ValueError("bad thresholds")
-    monkeypatch.setattr(
-        anomalies, "build_analyze_multi_city_use_case", MagicMock(return_value=weather_use_case)
-    )
-    monkeypatch.setattr(anomalies, "anomaly_use_case", anomaly_use_case)
+    _setup_services(weather_use_case)
+    anomalies.anomaly_use_case = anomaly_use_case
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        response = await client.post(
-            "/api/weather/anomalies",
-            json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
-        )
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.post(
+                "/api/weather/anomalies",
+                json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
+            )
 
-    assert response.status_code == 400
-    assert response.json()["detail"] == "bad thresholds"
+        assert response.status_code == 400
+        assert response.json()["detail"] == "bad thresholds"
+    finally:
+        app.dependency_overrides.clear()
 
 
 @pytest.mark.anyio
-async def test_detect_anomalies_maps_unexpected_error_to_http_500(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_detect_anomalies_maps_unexpected_error_to_http_500() -> None:
     """Unexpected errors should map to HTTP 500."""
-    monkeypatch.setattr(
-        anomalies,
-        "build_analyze_multi_city_use_case",
-        MagicMock(side_effect=RuntimeError("broken dependency graph")),
+    mock_services = MagicMock(spec=ServiceRegistry)
+    type(mock_services).analyze_multi_city_use_case = property(
+        lambda self: (_ for _ in ()).throw(RuntimeError("broken dependency graph"))
     )
+    app.dependency_overrides[get_services] = lambda: mock_services
 
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        response = await client.post(
-            "/api/weather/anomalies",
-            json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
-        )
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.post(
+                "/api/weather/anomalies",
+                json={"city": "Budapest", "start": "2024-01-01", "end": "2024-01-03"},
+            )
 
-    assert response.status_code == 500
-    assert response.json()["detail"] == "Internal server error"
+        assert response.status_code == 500
+        assert response.json()["detail"] == "Internal server error"
+    finally:
+        app.dependency_overrides.clear()

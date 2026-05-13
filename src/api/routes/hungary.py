@@ -4,10 +4,11 @@ from __future__ import annotations  # noqa: I001
 
 import logging
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from starlette.concurrency import run_in_threadpool
 
+from src.api.dependencies import ServiceRegistry, get_services
 from src.domain.ports import CityManagerPort
-from src.infrastructure.container import get_city_manager_port
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/hungary", tags=["hungary"])
@@ -94,39 +95,25 @@ def _build_settlements_response(
 def _fetch_station_candidates(
     city_manager: CityManagerPort, county: str | None, limit: int
 ) -> list[dict]:
-    """Fetch candidate station settlements."""
+    """Fetch candidate station settlements — single query when no county filter."""
     if county:
         return city_manager.get_cities_for_hungarian_county(county)[:limit]
 
-    all_cities: list[dict] = []
-    for county_name in city_manager.get_hungarian_counties():
-        if not county_name:
-            continue
-        all_cities.extend(city_manager.get_cities_for_hungarian_county(county_name))
-        if len(all_cities) >= limit * 2:
-            break
-    return all_cities
-
-
-def _get_city_manager() -> CityManagerPort:
-    """Get city manager instance through port (CA compliant)."""
-    return get_city_manager_port()
+    return city_manager.get_settlements_bulk(limit=limit * 2)
 
 
 @router.get("/counties")
-async def get_hungarian_counties() -> dict:
+async def get_hungarian_counties(
+    services: ServiceRegistry = Depends(get_services),
+) -> dict:
     """Get list of Hungarian counties (megyék).
 
     Returns 19 counties + Budapest in alphabetical order.
-
-    Returns:
-        Dictionary with county list
     """
     try:
-        city_manager = _get_city_manager()
-        counties = city_manager.get_hungarian_counties()
+        city_manager = services.city_manager
+        counties = await run_in_threadpool(city_manager.get_hungarian_counties)
 
-        # Clean up: remove empty strings, normalize "főváros" → "Budapest"
         cleaned = [
             _normalize_county_name(county_name)
             for county_name in counties
@@ -143,20 +130,7 @@ async def get_hungarian_counties() -> dict:
 
 @router.get("/regions")
 async def get_hungarian_regions() -> dict:
-    """Get list of Hungarian statistical regions (statisztikai régiók).
-
-    Returns 7 statistical regions:
-    - Közép-Magyarország
-    - Észak-Magyarország
-    - Észak-Alföld
-    - Dél-Alföld
-    - Dél-Dunántúl
-    - Nyugat-Dunántúl
-    - Közép-Dunántúl
-
-    Returns:
-        Dictionary with region list
-    """
+    """Get list of Hungarian statistical regions (statisztikai régiók)."""
     regions = [
         "Közép-Magyarország",
         "Észak-Magyarország",
@@ -177,20 +151,12 @@ async def get_hungarian_settlements(
         None, description="Filter by settlement type (város, község, nagyközség)"
     ),
     limit: int = Query(default=50, ge=1, le=500, description="Maximum results"),
+    services: ServiceRegistry = Depends(get_services),
 ) -> dict:
-    """Get Hungarian settlements with optional filtering.
-
-    Args:
-        county: Filter by county (e.g., "Pest", "Bács-Kiskun")
-        settlement_type: Filter by type (város, község, nagyközség)
-        limit: Maximum number of results (1-500, default 50)
-
-    Returns:
-        Dictionary with settlement list
-    """
+    """Get Hungarian settlements with optional filtering."""
     try:
-        city_manager = _get_city_manager()
-        cities = _fetch_settlements(city_manager, county, limit)
+        city_manager = services.city_manager
+        cities = await run_in_threadpool(lambda: _fetch_settlements(city_manager, county, limit))
         cities = _filter_settlements_by_type(cities, settlement_type)
         cities = cities[:limit]
         return _build_settlements_response(cities, county, settlement_type)
@@ -204,22 +170,14 @@ async def get_hungarian_settlements(
 async def get_hungarian_weather_stations(
     county: str | None = Query(None, description="Filter by county"),
     limit: int = Query(default=100, ge=1, le=500, description="Maximum results"),
+    services: ServiceRegistry = Depends(get_services),
 ) -> dict:
-    """Get Hungarian weather stations (settlements with weather data capability).
-
-    Returns all Hungarian settlements that can serve as weather stations.
-    Filtered by county optionally.
-
-    Args:
-        county: Filter by county
-        limit: Maximum number of results
-
-    Returns:
-        Dictionary with weather station list
-    """
+    """Get Hungarian weather stations (settlements with weather data capability)."""
     try:
-        city_manager = _get_city_manager()
-        all_cities = _fetch_station_candidates(city_manager, county, limit)
+        city_manager = services.city_manager
+        all_cities = await run_in_threadpool(
+            lambda: _fetch_station_candidates(city_manager, county, limit)
+        )
         stations = [_serialize_station(city_data) for city_data in all_cities[:limit]]
 
         return {

@@ -19,6 +19,7 @@ from src.api.routes.cities import router as cities_router
 from src.api.routes.detailed_city import router as detailed_city_router
 from src.api.routes.hungary import router as hungary_router
 from src.api.routes.metadata import router as metadata_router
+from src.api.routes.multi_year import router as multi_year_router
 from src.api.routes.providers import router as providers_router
 from src.api.routes.single_city import router as single_city_router
 from src.api.routes.weather import router as weather_router
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Manage application startup and shutdown lifecycle."""
     if APIConfig.APP_ENV == "production":
         if not APIConfig.API_KEY_ENABLED:
@@ -50,8 +51,14 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
             "API key authentication is DISABLED. Set API_KEY env var to enable authentication."
         )
 
+    from src.api.dependencies import build_service_registry  # noqa: PLC0415
+
+    app.state.services = build_service_registry()
+    logger.info("Service registry initialized")
+
     yield
 
+    del app.state.services
     logger.info("Application shutting down")
 
 
@@ -190,4 +197,5 @@ app.include_router(metadata_router)
 app.include_router(anomalies_router)
 app.include_router(cities_router)
 app.include_router(hungary_router)
+app.include_router(multi_year_router)
 app.include_router(providers_router)
