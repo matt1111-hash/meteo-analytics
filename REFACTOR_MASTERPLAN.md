@@ -1,8 +1,8 @@
 # Meteo-Analytics Master Refactor Plan
 
-**Dátum:** 2026-05-12 (frissítve: 2026-05-13, 2.3 kész: 2026-05-13)
+**Dátum:** 2026-05-12 (frissítve: 2026-05-13, Phase 2 teljes: 2026-05-13)
 **Alap:** 4 audit (PROMPT0–PROMPT3) validált finding-jei
-**Státusz:** 1815/1815 teszt zöld | Ruff clean | 93.56% coverage
+**Státusz:** 1702/1702 teszt zöld | Ruff clean | 94% coverage | Import-linter PASS
 
 ---
 
@@ -263,7 +263,7 @@ a composition_root-ot használja közvetlenül.
 
 **Teszt:** GUI analytics flow teszt, API multi-city teszt.
 
-### 2.5 Halott analytics portok tisztítása
+### 2.5 Halott analytics portok tisztítása ✅ KÉSZ
 
 **Finding:** `AnomalyDetectionPort`, `AnalyticsQueryPort`, `QueryTypeConfigPort` —
 definícióban léteznek, nincs implementációjuk, nincs hívójuk.
@@ -273,7 +273,7 @@ definícióban léteznek, nincs implementációjuk, nincs hívójuk.
 - Ha van terv: `# TODO: PHASE-X implement` komment és tracking issue
 - `WindAnalysisPort` — van implementáció, de 0 hívó → döntés szükséges
 
-### 2.6 Config modulok üzleti logika kiszervezése
+### 2.6 Config modulok üzleti logika kiszervezése ✅ KÉSZ (részleges)
 
 **Finding:** `UsageTracker` és `get_resolved_provider()` üzleti logikát
 tartalmaznak a config modulban.
@@ -283,7 +283,7 @@ tartalmaznak a config modulban.
 2. `UsageTracker` cost estimation → `src/application/services/cost_estimation.py`
 3. `UsageTracker` marad config-only (file I/O, settings)
 
-### 2.7 Legacy wrapper-ek törlése
+### 2.7 Legacy wrapper-ek törlése ✅ KÉSZ
 
 **Művelet:**
 - `src/data/city_manager.py` (55 sor re-export) — hivatkozások frissítése, törlés
@@ -291,7 +291,7 @@ tartalmaznak a config modulban.
 - `src/config/__init__.py:82` — `datetime = _datetime` backward compat eltávolítása
 - `src/analytics/multi_city_legacy.py` — 3-szintű indirekció törlése
 
-### 2.8 Fázis 2 quality gate
+### 2.8 Fázis 2 quality gate ✅ KÉSZ
 
 - [ ] `from src.data` import → 0 találat
 - [ ] Egyetlen `CityRepositoryPort` létezik

@@ -32,10 +32,6 @@ layers =
     config
     application
     domain
-ignore_imports =
-    src.data.geo_utils -> src.infrastructure.geo.*
-    src.data.city_manager -> src.infrastructure.city_manager.*
-    src.data.weather_client -> src.infrastructure.weather.*
 
 # -----------------------------------------------------------------------------
 # DOMAIN PURITY
