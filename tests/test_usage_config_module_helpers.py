@@ -1,9 +1,11 @@
-"""Comprehensive tests for src/config/usage_config.py."""
+"""Tests for module helper functions in usage_config_helpers."""
 
 from __future__ import annotations
 
 from datetime import datetime
-from pathlib import Path
+
+from src.config.usage_config import UsageTracker, build_usage_tracker
+from src.config.usage_config_helpers import _get_datetime_cls, _now, _resolve_config_attr
 
 
 class TestModuleHelpers:
@@ -11,28 +13,20 @@ class TestModuleHelpers:
 
     def test_resolve_config_attr_with_fallback(self) -> None:
         """Should return fallback when attribute not in config module."""
-        from src.config.usage_config_helpers import _resolve_config_attr  # noqa: PLC0415
-
         result = _resolve_config_attr("nonexistent_attr", "fallback_value")
         assert result == "fallback_value"
 
-    def test_get_usage_tracking_file_returns_path(self) -> None:
-        """Should return a Path object."""
-        from src.config.usage_config import _get_usage_tracking_file_resolved  # noqa: PLC0415
-
-        result = _get_usage_tracking_file_resolved()
-        assert isinstance(result, Path)
+    def test_build_usage_tracker_returns_instance(self) -> None:
+        """build_usage_tracker should return a UsageTracker instance."""
+        tracker = build_usage_tracker()
+        assert isinstance(tracker, UsageTracker)
 
     def test_get_datetime_cls_returns_datetime_class(self) -> None:
         """Should return datetime class."""
-        from src.config.usage_config_helpers import _get_datetime_cls  # noqa: PLC0415
-
         result = _get_datetime_cls()
         assert result is datetime
 
     def test_now_returns_datetime(self) -> None:
         """Should return current datetime."""
-        from src.config.usage_config_helpers import _now  # noqa: PLC0415
-
         result = _now()
         assert isinstance(result, datetime)

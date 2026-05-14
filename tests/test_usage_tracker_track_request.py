@@ -6,17 +6,18 @@ import json
 import logging
 
 import pytest
-from src import config
+from src.config.usage_config import UsageTracker
 
 
 def test_track_request_invalid_provider_logs_warning(
     config_fs: dict[str, str],
+    usage_tracker: UsageTracker,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Ismeretlen provider esetén warning log készüljön és a számlálók maradjanak érintetlenek."""
     caplog.set_level(logging.WARNING)
 
-    usage = config.UsageTracker.track_request("storm_api", request_count=2)
+    usage = usage_tracker.track_request("storm_api", request_count=2)
 
     assert usage["total_requests"] == 2
     assert usage["meteostat"]["requests_this_month"] == 0

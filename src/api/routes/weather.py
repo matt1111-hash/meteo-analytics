@@ -10,6 +10,7 @@ from starlette.concurrency import run_in_threadpool
 from src.api.adapters.weather_adapter import to_multi_city_query
 from src.api.dependencies import ServiceRegistry, get_services
 from src.api.dto.weather_request import WeatherAnalysisRequest
+from src.api.error_handling import raise_for_use_case_result
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather"])
@@ -30,8 +31,8 @@ async def analyze_multi_city(
         uc_result = await run_in_threadpool(
             lambda: services.analyze_multi_city_use_case.execute(query, aggregate=aggregate)
         )
-        if not uc_result.is_success or uc_result.data is None:
-            raise HTTPException(status_code=502, detail="Upstream error")
+        raise_for_use_case_result(uc_result)
+        assert uc_result.data is not None
         return uc_result.data.to_dict()
     except HTTPException:
         raise

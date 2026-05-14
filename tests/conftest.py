@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import builtins
 import io
+from datetime import datetime
 
 import pytest
 from src import config
+from src.config.usage_config import UsageTracker
 
 
 @pytest.fixture(params=["asyncio"])
@@ -69,3 +71,10 @@ def fixture_config_fs(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
     monkeypatch.setattr(config, "ensure_directories", lambda: None)
 
     return store
+
+
+@pytest.fixture()
+def usage_tracker(config_fs: dict[str, str]) -> UsageTracker:
+    """Pre-built UsageTracker instance backed by the in-memory config_fs."""
+    fake_path = _FakePath("usage", config_fs)
+    return UsageTracker(storage_path=fake_path, clock=datetime.now, ensure_dirs=lambda: None)

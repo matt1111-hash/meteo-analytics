@@ -24,7 +24,7 @@ from src.domain.value_objects.enums import (
 
 # Re-export everything from support so that star-imports from this module still work.
 from .analyze_multi_city_support import *  # noqa: F403
-from .use_case_result import ResultStatus, UseCaseResult
+from .use_case_result import ErrorCategory, ResultStatus, UseCaseResult
 
 # pylint: disable=too-few-public-methods,too-many-arguments,too-many-locals,broad-exception-caught
 
@@ -100,6 +100,7 @@ class AnalyzeMultiCityUseCase:
                     status=ResultStatus.ERROR,
                     data=fallback,
                     error_message="Nincsenek városok a lekérdezéshez",
+                    error_category=ErrorCategory.VALIDATION,
                 )
 
             # Pass both start_date and end_date to support date ranges
@@ -122,6 +123,7 @@ class AnalyzeMultiCityUseCase:
                     status=ResultStatus.ERROR,
                     data=fallback,
                     error_message="Nincsenek sikeres időjárási eredmények",
+                    error_category=ErrorCategory.PROVIDER,
                 )
 
             # For daily time series (aggregate=False), don't limit results
@@ -154,7 +156,7 @@ class AnalyzeMultiCityUseCase:
                 exc,
                 exc_info=True,
             )
-            return UseCaseResult(status=ResultStatus.ERROR, data=None, error_message=str(exc))
+            return UseCaseResult.internal_error(str(exc))
 
     # ------------------------------------------------------------------
     # Private helpers

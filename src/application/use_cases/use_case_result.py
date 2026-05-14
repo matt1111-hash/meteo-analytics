@@ -17,6 +17,14 @@ class ResultStatus(Enum):
     ERROR = "error"
 
 
+class ErrorCategory(Enum):
+    """Classification of use case errors for structured handling."""
+
+    VALIDATION = "validation"
+    PROVIDER = "provider"
+    INTERNAL = "internal"
+
+
 @dataclass(frozen=True)
 class UseCaseResult(Generic[T]):  # noqa: UP046
     """Wraps use case output with explicit success/error status.
@@ -27,6 +35,7 @@ class UseCaseResult(Generic[T]):  # noqa: UP046
     status: ResultStatus
     data: T | None = None
     error_message: str | None = None
+    error_category: ErrorCategory | None = None
 
     @property
     def is_success(self) -> bool:  # noqa: D102
@@ -37,3 +46,30 @@ class UseCaseResult(Generic[T]):  # noqa: UP046
         if self.status != ResultStatus.SUCCESS or self.data is None:
             raise RuntimeError(f"UseCaseResult is not successful: {self.error_message}")
         return self.data
+
+    @classmethod
+    def validation_error(cls, message: str) -> UseCaseResult[T]:
+        """Create a result for input validation failures."""
+        return cls(
+            status=ResultStatus.ERROR,
+            error_message=message,
+            error_category=ErrorCategory.VALIDATION,
+        )
+
+    @classmethod
+    def provider_error(cls, message: str) -> UseCaseResult[T]:
+        """Create a result for upstream provider failures."""
+        return cls(
+            status=ResultStatus.ERROR,
+            error_message=message,
+            error_category=ErrorCategory.PROVIDER,
+        )
+
+    @classmethod
+    def internal_error(cls, message: str) -> UseCaseResult[T]:
+        """Create a result for unexpected internal errors."""
+        return cls(
+            status=ResultStatus.ERROR,
+            error_message=message,
+            error_category=ErrorCategory.INTERNAL,
+        )

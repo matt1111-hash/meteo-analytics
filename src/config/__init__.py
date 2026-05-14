@@ -73,7 +73,7 @@ from .provider_config import (
 )
 
 # Usage tracking
-from .usage_config import UsageTracker
+from .usage_config import UsageTracker, build_usage_tracker
 
 # Export all public interfaces
 __all__ = [
@@ -104,6 +104,7 @@ __all__ = [
     # Usage tracking
     "UsageTracker",
     "UserPreferences",
+    "build_usage_tracker",
     # Validation and utilities
     "check_environment",
     "ensure_directories",

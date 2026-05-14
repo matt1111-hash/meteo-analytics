@@ -1,16 +1,16 @@
-"""Comprehensive tests for src/config/usage_config.py."""
+"""Comprehensive tests for UsageTracker instance — get_usage_summary()."""
 
 from __future__ import annotations
+
+from src.config.usage_config import UsageTracker
 
 
 class TestUsageTrackerGetSummary:
     """Test cases for UsageTracker.get_usage_summary() method."""
 
-    def test_get_usage_summary_returns_all_fields(self, config_fs: dict[str, str]) -> None:
+    def test_get_usage_summary_returns_all_fields(self, usage_tracker: UsageTracker) -> None:
         """Should return all summary fields."""
-        from src.config.usage_config import UsageTracker  # noqa: PLC0415
-
-        summary = UsageTracker.get_usage_summary()
+        summary = usage_tracker.get_usage_summary()
 
         expected_keys = {
             "meteostat_requests",
@@ -25,14 +25,12 @@ class TestUsageTrackerGetSummary:
 
         assert set(summary.keys()) == expected_keys
 
-    def test_get_usage_summary_with_tracked_requests(self, config_fs: dict[str, str]) -> None:
+    def test_get_usage_summary_with_tracked_requests(self, usage_tracker: UsageTracker) -> None:
         """Summary should reflect tracked requests."""
-        from src.config.usage_config import UsageTracker  # noqa: PLC0415
+        usage_tracker.track_request("meteostat", 100)
+        usage_tracker.track_request("open-meteo", 50)
 
-        UsageTracker.track_request("meteostat", 100)
-        UsageTracker.track_request("open-meteo", 50)
-
-        summary = UsageTracker.get_usage_summary()
+        summary = usage_tracker.get_usage_summary()
 
         assert summary["meteostat_requests"] == 100
         assert summary["openmeteo_requests"] == 50

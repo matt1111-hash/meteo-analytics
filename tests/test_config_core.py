@@ -9,6 +9,8 @@ import pytest
 from src import config
 from src.config import usage_config
 
+from tests.conftest import _FakePath
+
 
 def test_user_preferences_loads_defaults_when_file_missing(
     config_fs: dict[str, str],
@@ -66,7 +68,7 @@ def test_user_preferences_save_handles_failure(
 
 
 def test_usage_tracker_load_resets_new_month(
-    monkeypatch: pytest.MonkeyPatch, config_fs: dict[str, str]
+    config_fs: dict[str, str],
 ) -> None:
     """Hónapváltáskor resetelődjön az API usage."""
     config_fs["usage"] = json.dumps(
@@ -86,9 +88,13 @@ def test_usage_tracker_load_resets_new_month(
     )
 
     fixed_now = datetime(2024, 7, 15, 12, 0, 0)
-    monkeypatch.setattr(usage_config, "_now", lambda: fixed_now)
+    tracker = usage_config.UsageTracker(
+        storage_path=_FakePath("usage", config_fs),
+        clock=lambda: fixed_now,
+        ensure_dirs=lambda: None,
+    )
 
-    usage = config.UsageTracker.load_usage_data()
+    usage = tracker.load_usage_data()
     assert usage["current_month"] == "2024-07"
     assert usage["total_requests"] == 0
     assert usage["meteostat"]["requests_this_month"] == 0
@@ -102,19 +108,19 @@ def test_usage_tracker_load_resets_new_month(
 
 
 def test_usage_tracker_load_handles_json_error(
-    monkeypatch: pytest.MonkeyPatch, config_fs: dict[str, str]
+    config_fs: dict[str, str],
 ) -> None:
     """JSON parse hiba esetén default usage térjen vissza."""
     config_fs["usage"] = "invalid"
 
-    def fake_json_load(_):
-        raise json.JSONDecodeError("boom", "xx", 0)
-
     fixed_now = datetime(2024, 7, 15, 12, 0, 0)
-    monkeypatch.setattr(usage_config, "_now", lambda: fixed_now)
-    monkeypatch.setattr(json, "load", fake_json_load)
+    tracker = usage_config.UsageTracker(
+        storage_path=_FakePath("usage", config_fs),
+        clock=lambda: fixed_now,
+        ensure_dirs=lambda: None,
+    )
 
-    usage = config.UsageTracker.load_usage_data()
+    usage = tracker.load_usage_data()
     assert usage["total_requests"] == 0
     assert usage["meteostat"]["requests_this_month"] == 0
     assert usage["meteostat"]["daily_breakdown"] == {}
@@ -135,7 +141,7 @@ def test_validate_api_keys_checks_length(monkeypatch: pytest.MonkeyPatch) -> Non
     assert invalid["meteostat_key_valid"] is False
 
 
-def test_usage_tracker_reset_clears_monthly_stats() -> None:
+def test_usage_tracker_reset_clears_monthly_stats(usage_tracker: usage_config.UsageTracker) -> None:
     """Új hónap esetén a számlálók nullázódnak."""
     usage = {
         "current_month": "2024-06",
@@ -148,7 +154,7 @@ def test_usage_tracker_reset_clears_monthly_stats() -> None:
         },
         "open-meteo": {"requests_this_month": 5, "daily_breakdown": {"2024-06-10": 5}},
     }
-    updated = config.UsageTracker._reset_monthly_usage(usage, "2024-07")
+    updated = usage_tracker._reset_monthly_usage(usage, "2024-07")
     assert updated["current_month"] == "2024-07"
     assert updated["meteostat"]["requests_this_month"] == 0
     assert updated["meteostat"]["estimated_cost_usd"] == 0.0

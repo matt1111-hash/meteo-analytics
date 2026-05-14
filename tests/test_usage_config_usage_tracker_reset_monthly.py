@@ -1,15 +1,15 @@
-"""Comprehensive tests for src/config/usage_config.py."""
+"""Comprehensive tests for UsageTracker instance — _reset_monthly_usage()."""
 
 from __future__ import annotations
+
+from src.config.usage_config import UsageTracker
 
 
 class TestUsageTrackerResetMonthly:
     """Test cases for UsageTracker._reset_monthly_usage() method."""
 
-    def test_reset_monthly_usage_clears_counters(self) -> None:
+    def test_reset_monthly_usage_clears_counters(self, usage_tracker: UsageTracker) -> None:
         """Reset should clear monthly counters."""
-        from src.config.usage_config import UsageTracker  # noqa: PLC0415
-
         old_usage = {
             "current_month": "2024-01",
             "meteostat": {
@@ -24,7 +24,7 @@ class TestUsageTrackerResetMonthly:
             "total_requests": 150,
         }
 
-        result = UsageTracker._reset_monthly_usage(old_usage, "2024-02")
+        result = usage_tracker._reset_monthly_usage(old_usage, "2024-02")
 
         assert result["current_month"] == "2024-02"
         assert result["meteostat"]["requests_this_month"] == 0

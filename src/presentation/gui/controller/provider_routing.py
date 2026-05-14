@@ -5,7 +5,12 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+from src.config.usage_config import UsageTracker
+
+if TYPE_CHECKING:
+    from src.config.provider_config import ProviderConfig, UserPreferences
 
 
 def _is_non_default_provider(provider_name: str) -> bool:
@@ -68,15 +73,13 @@ class ProviderRouting:
     - Rate limit kezelés
     """
 
-    def __init__(self, provider_config, user_preferences, usage_tracker):
-        """
-        ProviderRouting inicializálása.
-
-        Args:
-            provider_config: ProviderConfig objektum
-            user_preferences: UserPreferences objektum
-            usage_tracker: UsageTracker objektum
-        """
+    def __init__(
+        self,
+        provider_config: ProviderConfig,
+        user_preferences: UserPreferences,
+        usage_tracker: UsageTracker,
+    ) -> None:
+        """Initialize provider routing with injected dependencies."""
         self.provider_config = provider_config
         self.user_preferences = user_preferences
         self.usage_tracker = usage_tracker

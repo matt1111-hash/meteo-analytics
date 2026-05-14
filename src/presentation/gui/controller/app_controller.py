@@ -17,8 +17,8 @@ from PySide6.QtCore import QObject, Signal
 from src.config import (
     DATA_DIR,
     ProviderConfig,
-    UsageTracker,
     UserPreferences,
+    build_usage_tracker,
 )
 
 from ..workers import WorkerManager
@@ -104,7 +104,7 @@ class AppController(
         # 2. Provider Routing
         self.provider_config = ProviderConfig()
         self.user_preferences = UserPreferences()
-        self.usage_tracker = UsageTracker()
+        self.usage_tracker = build_usage_tracker()
         self.provider_routing = ProviderRouting(
             self.provider_config, self.user_preferences, self.usage_tracker
         )
