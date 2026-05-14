@@ -82,7 +82,7 @@ class AppController(
     provider_warning = Signal(str, int)  # provider_name, usage_percent
     provider_fallback = Signal(str, str)  # from_provider, to_provider
 
-    def __init__(self, parent: QObject | None = None):
+    def __init__(self, parent: QObject | None = None, gui_services: Any = None):
         """Controller inicializálása CLEAN ARCHITECTURE támogatással."""
         super().__init__(parent)
 
@@ -96,23 +96,28 @@ class AppController(
 
         # === KOMPONENSEK INICIALIZÁLÁSA ===
 
-        # 1. Database Manager
-        self.db_path = DATA_DIR / "meteo_data.db"
-        self.database_manager = DatabaseManager(self.db_path)
-        self._logger.info("✅ DatabaseManager initialized")
-
-        # 2. Provider Routing
-        self.provider_config = ProviderConfig()
-        self.user_preferences = UserPreferences()
-        self.usage_tracker = build_usage_tracker()
-        self.provider_routing = ProviderRouting(
-            self.provider_config, self.user_preferences, self.usage_tracker
-        )
-        self._logger.info("✅ ProviderRouting initialized")
-
-        # 3. Worker Manager
-        self.worker_manager = WorkerManager()
-        self._logger.info("✅ WorkerManager created")
+        if gui_services is not None:
+            # DI path — services pre-built by composition root
+            self.db_path = gui_services.db_path
+            self.database_manager = gui_services.database_manager
+            self.provider_config = gui_services.provider_config
+            self.user_preferences = gui_services.user_preferences
+            self.usage_tracker = gui_services.usage_tracker
+            self.provider_routing = gui_services.provider_routing
+            self.worker_manager = gui_services.worker_manager
+            self._logger.info("✅ AppController initialized via GuiServices (DI)")
+        else:
+            # Legacy path — direct construction (backward compatible)
+            self.db_path = DATA_DIR / "meteo_data.db"
+            self.database_manager = DatabaseManager(self.db_path)
+            self.provider_config = ProviderConfig()
+            self.user_preferences = UserPreferences()
+            self.usage_tracker = build_usage_tracker()
+            self.provider_routing = ProviderRouting(
+                self.provider_config, self.user_preferences, self.usage_tracker
+            )
+            self.worker_manager = WorkerManager()
+            self._logger.info("✅ AppController initialized via direct construction")
 
         # 4. Geocoding Handler
         self.geocoding_handler = GeocodingHandler(self.worker_manager, self.database_manager, self)

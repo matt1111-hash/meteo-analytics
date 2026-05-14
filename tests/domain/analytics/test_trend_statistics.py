@@ -7,7 +7,7 @@ Trend statistics calculator for linear regression analysis
 import numpy as np
 import pandas as pd
 import pytest
-from src.domain.analytics.services.trend_statistics import TrendStatisticsCalculator
+from src.infrastructure.analytics.trend_statistics import TrendStatisticsCalculator
 
 
 class TestTrendStatisticsCalculator:

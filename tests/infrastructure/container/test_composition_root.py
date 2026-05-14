@@ -55,3 +55,32 @@ def test_build_detailed_city_use_case_injects_dependencies() -> None:
     assert use_case._city_repo is not None
     assert use_case._fetch_service is not None
     assert use_case._transform_service is not None
+
+
+def test_build_gui_services_returns_gui_services() -> None:
+    from src.infrastructure.container.composition_root import GuiServices, build_gui_services
+
+    with (
+        patch("src.presentation.gui.controller.database_manager.DatabaseManager"),
+        patch("src.presentation.gui.controller.provider_routing.ProviderRouting"),
+        patch("src.presentation.gui.workers.WorkerManager"),
+    ):
+        services = build_gui_services()
+    assert isinstance(services, GuiServices)
+    assert services.database_manager is not None
+    assert services.provider_routing is not None
+    assert services.worker_manager is not None
+
+
+def test_build_gui_services_wires_dependencies() -> None:
+    from src.infrastructure.container.composition_root import build_gui_services
+
+    with (
+        patch("src.presentation.gui.controller.database_manager.DatabaseManager"),
+        patch("src.presentation.gui.controller.provider_routing.ProviderRouting"),
+        patch("src.presentation.gui.workers.WorkerManager"),
+    ):
+        services = build_gui_services()
+    assert services.provider_config is not None
+    assert services.user_preferences is not None
+    assert services.usage_tracker is not None

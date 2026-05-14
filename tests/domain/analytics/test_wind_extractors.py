@@ -5,11 +5,11 @@ Wind analysis extractors and classification helpers
 """
 
 import pandas as pd
-from src.domain.analytics.wind_extractors import (
+from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
+from src.infrastructure.analytics.wind_extractors import (
     extract_daily_wind_data,
     identify_windy_days,
 )
-from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 
 
 class TestExtractDailyWindData:

@@ -7,7 +7,8 @@ from unittest.mock import patch
 
 import pandas as pd
 import pytest
-from src.domain.analytics.wind_analysis_service import (
+from src.domain.analytics.wind_models import WindAnalysisResult, WindyDayStats
+from src.infrastructure.analytics.wind_analysis_service import (
     _build_analysis_period,
     _calculate_wind_summary,
     _log_analysis_completion,
@@ -15,7 +16,6 @@ from src.domain.analytics.wind_analysis_service import (
     _resolve_extreme_months,
     analyze_wind_patterns,
 )
-from src.domain.analytics.wind_models import WindAnalysisResult, WindyDayStats
 
 
 class TestLogWindSpeedRange:
@@ -136,7 +136,7 @@ class TestAnalyzeWindPatternsException:
     def test_exception_returns_empty_result(self) -> None:
         df = pd.DataFrame({"date": ["2024-01-01"]})
         with patch(
-            "src.domain.analytics.wind_analysis_service.extract_daily_wind_data",
+            "src.infrastructure.analytics.wind_analysis_service.extract_daily_wind_data",
             side_effect=RuntimeError("test error"),
         ):
             result = analyze_wind_patterns(df)

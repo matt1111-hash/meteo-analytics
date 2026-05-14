@@ -6,8 +6,19 @@ GUI, Hardware, Multi-City and Application metadata configuration
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from typing import ClassVar
+
+
+@dataclass(frozen=True)
+class WeatherFetchConfig:
+    """Weather fetch service tuning — overridable via env vars."""
+
+    max_workers: int = int(os.environ.get("METEO_FETCH_MAX_WORKERS", "8"))
+    request_timeout: int = int(os.environ.get("METEO_FETCH_TIMEOUT", "90"))
+    max_retries: int = int(os.environ.get("METEO_FETCH_RETRIES", "2"))
+    retry_delay: float = float(os.environ.get("METEO_FETCH_RETRY_DELAY", "3.0"))
 
 
 @dataclass(frozen=True)
@@ -93,4 +104,4 @@ class AppInfo:
     LEGACY_VERSION: str = "1.0.0"
 
 
-__all__ = ["AppInfo", "GUIConfig", "HardwareConfig", "MultiCityConfig"]
+__all__ = ["AppInfo", "GUIConfig", "HardwareConfig", "MultiCityConfig", "WeatherFetchConfig"]

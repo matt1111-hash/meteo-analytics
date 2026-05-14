@@ -6,7 +6,7 @@ Wind monthly statistics calculations
 
 import pandas as pd
 from src.domain.analytics.wind_models import MONTHS_HU, WindyDayStats
-from src.domain.analytics.wind_statistics import calculate_monthly_windy_stats
+from src.infrastructure.analytics.wind_statistics import calculate_monthly_windy_stats
 
 
 class TestCalculateMonthlyWindyStats:

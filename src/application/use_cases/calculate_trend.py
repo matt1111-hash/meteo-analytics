@@ -11,10 +11,11 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from src.application.commands.trend_command import TrendAnalysisCommand
-from src.domain.analytics.services.trend_calculator import TrendCalculator
+from src.domain.analytics.services.trend_calculator import TrendCalculatorPort
 from src.domain.entities.trend_result import TrendAnalysisResult
 from src.domain.ports import CityManagerPort, WeatherClientPort
 from src.domain.value_objects.enums import AnalyticsMetric
+from src.infrastructure.analytics.trend_calculator import TrendCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ class CalculateTrendUseCase:
         self,
         weather_client: WeatherClientPort,
         city_manager: CityManagerPort,
-        trend_calculator: TrendCalculator | None = None,
+        trend_calculator: TrendCalculatorPort | None = None,
     ) -> None:
         """Initialize the use case with dependencies.
 
@@ -37,7 +38,7 @@ class CalculateTrendUseCase:
         """
         self._weather_client = weather_client
         self._city_manager = city_manager
-        self._trend_calculator = trend_calculator or TrendCalculator()
+        self._trend_calculator: TrendCalculatorPort = trend_calculator or TrendCalculator()
 
     def execute(self, request: TrendAnalysisCommand) -> TrendAnalysisResult:
         """Execute trend analysis for the given request.

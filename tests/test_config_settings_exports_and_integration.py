@@ -10,7 +10,13 @@ class TestModuleExports:
         """__all__ should export all config classes."""
         from src.config import config_settings  # noqa: PLC0415
 
-        expected_exports = {"GUIConfig", "HardwareConfig", "MultiCityConfig", "AppInfo"}
+        expected_exports = {
+            "GUIConfig",
+            "HardwareConfig",
+            "MultiCityConfig",
+            "AppInfo",
+            "WeatherFetchConfig",
+        }
         actual_exports = set(config_settings.__all__)
 
         assert actual_exports == expected_exports

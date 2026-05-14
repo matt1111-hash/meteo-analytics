@@ -5,8 +5,8 @@ from __future__ import annotations
 import datetime
 
 import pytest
-from src.domain.analytics.services.trend_calculator import TrendCalculator
 from src.domain.value_objects.enums import AnalyticsMetric
+from src.infrastructure.analytics.trend_calculator import TrendCalculator
 
 
 def _make_daily_data(n_days: int = 60) -> list[dict]:

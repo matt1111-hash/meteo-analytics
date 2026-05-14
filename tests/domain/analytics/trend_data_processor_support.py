@@ -5,7 +5,7 @@ Trend data processor for DataFrame preparation and aggregation
 """
 
 import pytest
-from src.domain.analytics.services.trend_data_processor import TrendDataProcessor
+from src.infrastructure.analytics.trend_data_processor import TrendDataProcessor
 
 
 class TestTrendDataProcessor:

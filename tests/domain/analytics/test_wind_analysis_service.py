@@ -7,11 +7,11 @@ Wind analysis orchestration logic
 import datetime
 
 import pandas as pd
-from src.domain.analytics.wind_analysis_service import (
+from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH, WindAnalysisResult
+from src.infrastructure.analytics.wind_analysis_service import (
     _create_empty_analysis_result,
     analyze_wind_patterns,
 )
-from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH, WindAnalysisResult
 
 
 class TestAnalyzeWindPatterns:

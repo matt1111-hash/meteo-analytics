@@ -7,8 +7,8 @@ Trend calculator service for climate trend analysis
 from unittest.mock import MagicMock, patch
 
 import pytest
-from src.domain.analytics.services.trend_calculator import TrendCalculator
 from src.domain.value_objects.enums import AnalyticsMetric
+from src.infrastructure.analytics.trend_calculator import TrendCalculator
 
 
 class TestTrendCalculator:
