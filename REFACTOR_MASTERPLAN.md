@@ -2,7 +2,7 @@
 
 **Dátum:** 2026-05-12 (frissítve: 2026-05-14, Phase 4 teljes: 2026-05-14)
 **Alap:** 4 audit (PROMPT0–PROMPT3) validált finding-jei
-**Státusz:** 1713/1713 teszt zöld | Ruff clean | 93% coverage | Phase 0–4 KÉSZ
+**Státusz:** 1713/1713 teszt zöld | Ruff clean | 93% coverage | Phase 0–4 KÉSZ | CI zöld ✅
 
 ---
 
