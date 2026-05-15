@@ -161,11 +161,19 @@ class MainWindow(
         self.state.provider.current_provider = self.settings.value("current_provider", "auto")
         self._update_provider_status_display()
 
+    def _cleanup_embedded_map(self) -> None:
+        """Térképes nézet saját háttérszálainak leállítása."""
+        map_tab = getattr(self, "hungarian_map_tab", None)
+        map_visualizer = getattr(map_tab, "map_visualizer", None)
+        if map_visualizer and hasattr(map_visualizer, "cleanup"):
+            map_visualizer.cleanup()
+
     # === CLOSE EVENT ===
 
     def closeEvent(self, event) -> None:
         """Ablak bezárása."""
         self._save_settings()
+        self._cleanup_embedded_map()
         cleanup_all_timers(self)
         cleanup_all_web_engines(self)
         cleanup_all_workers(self)

@@ -22,14 +22,16 @@ import './App.css';
 
 function LoadingFallback() {
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '50vh',
-      fontSize: '1.2rem',
-      color: 'var(--text-secondary, #666)',
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '50vh',
+        fontSize: '1.2rem',
+        color: 'var(--text-secondary, #666)',
+      }}
+    >
       Loading...
     </div>
   );

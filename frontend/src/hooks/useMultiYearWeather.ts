@@ -46,8 +46,18 @@ export const useMultiYearWeather = () => {
 
       const yearlyData: YearlyData = {};
       const englishMonthNames = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
       ];
 
       Object.entries(response.data.years).forEach(([yearStr, cityResults]) => {

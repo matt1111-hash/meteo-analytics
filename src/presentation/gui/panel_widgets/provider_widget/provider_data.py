@@ -9,7 +9,6 @@ Provider Widget - Provider Data
 Képességek:
 - Provider listák
 - Status üzenetek
-- Mock adat generálás
 
 Fájl: src/presentation/gui/panel_widgets/provider_widget/provider_data.py
 """
@@ -46,34 +45,6 @@ def get_status_messages() -> dict[str, str]:
         "weatherapi": "🌤️ WeatherAPI aktív - Premium API, monthly limits",
         "openweather": "☁️ OpenWeatherMap aktív - Premium API, call limits",
         "auto": "🤖 Automatikus routing aktív - Smart provider selection",
-    }
-
-
-def generate_mock_usage_data() -> dict[str, Any]:
-    """
-    Mock usage adatok generálása teszteléshez.
-
-    Returns:
-        Dict[str, Any]: Provider usage stats
-    """
-    import random  # noqa: PLC0415
-
-    return {
-        "open-meteo": {
-            "requests": random.randint(100, 1000),
-            "limit": float("inf"),  # Korlátlan
-            "estimated_cost": 0.0,  # Ingyenes
-        },
-        "meteostat": {
-            "requests": random.randint(50, 500),
-            "limit": 1000,
-            "estimated_cost": random.uniform(5.0, 25.0),
-        },
-        "weatherapi": {
-            "requests": random.randint(20, 200),
-            "limit": 1000000,
-            "estimated_cost": random.uniform(10.0, 50.0),
-        },
     }
 
 

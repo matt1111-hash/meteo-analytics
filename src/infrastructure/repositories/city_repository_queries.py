@@ -150,21 +150,25 @@ class CityRepositoryQueries:
 
         query_str = query.strip().lower()
 
-        # Determine which column/filter to use based on migration state
-        city_col, city_like = self._autocomplete_column(
-            self.db_path, "cities", "city_lower", "city"
-        )
-        hun_col, hun_like = self._autocomplete_column(
-            self.hungarian_db_path, "hungarian_settlements", "name_lower", "name"
-        )
-
-        base_select = (
-            "SELECT city, country, country_code, lat, lon, population, "
-            "meteostat_station_id, data_quality_score FROM cities "
-            f"WHERE {city_col} LIKE ? "
-            "ORDER BY population DESC, city ASC "
-            "LIMIT ?"
-        )
+        city_has_index = self._has_column(self.db_path, "cities", "city_lower")
+        if city_has_index:
+            base_select = (
+                "SELECT city, country, country_code, lat, lon, population, "
+                "meteostat_station_id, data_quality_score FROM cities "
+                "WHERE city_lower LIKE ? "
+                "ORDER BY population DESC, city ASC "
+                "LIMIT ?"
+            )
+            city_like = "{}%"
+        else:
+            base_select = (
+                "SELECT city, country, country_code, lat, lon, population, "
+                "meteostat_station_id, data_quality_score FROM cities "
+                "WHERE LOWER(city) LIKE ? "
+                "ORDER BY population DESC, city ASC "
+                "LIMIT ?"
+            )
+            city_like = "%{}%"
         params = [city_like.format(query_str), limit]
 
         results = []
@@ -176,15 +180,31 @@ class CityRepositoryQueries:
             return results[:limit]
 
         remaining_limit = limit - len(results)
-        hun_query = (
-            "SELECT name, 'Hungary' as country, 'HU' as country_code, "
-            "latitude as lat, longitude as lon, population, "
-            "NULL as meteostat_station_id, NULL as data_quality_score "
-            "FROM hungarian_settlements "
-            f"WHERE {hun_col} LIKE ? "
-            "ORDER BY population DESC, name ASC "
-            "LIMIT ?"
+        hun_has_index = self._has_column(
+            self.hungarian_db_path, "hungarian_settlements", "name_lower"
         )
+        if hun_has_index:
+            hun_query = (
+                "SELECT name, 'Hungary' as country, 'HU' as country_code, "
+                "latitude as lat, longitude as lon, population, "
+                "NULL as meteostat_station_id, NULL as data_quality_score "
+                "FROM hungarian_settlements "
+                "WHERE name_lower LIKE ? "
+                "ORDER BY population DESC, name ASC "
+                "LIMIT ?"
+            )
+            hun_like = "{}%"
+        else:
+            hun_query = (
+                "SELECT name, 'Hungary' as country, 'HU' as country_code, "
+                "latitude as lat, longitude as lon, population, "
+                "NULL as meteostat_station_id, NULL as data_quality_score "
+                "FROM hungarian_settlements "
+                "WHERE LOWER(name) LIKE ? "
+                "ORDER BY population DESC, name ASC "
+                "LIMIT ?"
+            )
+            hun_like = "%{}%"
 
         if self.hungarian_db_path.exists():
             hun_results = self._execute_hungarian(
@@ -195,20 +215,25 @@ class CityRepositoryQueries:
         return results[:limit]
 
     @staticmethod
-    def _autocomplete_column(
-        db_path: Path, table: str, index_col: str, fallback_col: str
-    ) -> tuple[str, str]:
-        """Return (where_column, like_pattern) based on whether migration ran."""
+    def _has_column(db_path: Path, table: str, column: str) -> bool:
+        """Return whether a whitelisted table contains the given column."""
+        table_names = {
+            "cities": "cities",
+            "hungarian_settlements": "hungarian_settlements",
+        }
+        table_name = table_names.get(table)
+        if table_name is None:
+            return False
+
         if db_path.exists():
             try:
                 with sqlite3.connect(db_path) as conn:
                     cur = conn.cursor()
-                    cur.execute(f"PRAGMA table_info({table})")
-                    if any(row[1] == index_col for row in cur.fetchall()):
-                        return index_col, "{}%"
+                    cur.execute(f"PRAGMA table_info({table_name})")
+                    return any(row[1] == column for row in cur.fetchall())
             except sqlite3.OperationalError:
-                pass
-        return f"LOWER({fallback_col})", "%{}%"
+                return False
+        return False
 
     def _execute(
         self,

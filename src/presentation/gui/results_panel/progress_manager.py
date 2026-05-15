@@ -9,6 +9,7 @@ timeout kezelést és a progress frissítéseket.
 """
 
 import logging
+from contextlib import suppress
 
 from PySide6.QtCore import QObject, QTimer, Signal
 from PySide6.QtWidgets import QLabel
@@ -146,10 +147,13 @@ class ProgressManager(QObject):
 
     def cleanup(self) -> None:
         """Cleanup - timer törlése."""
-        if self._loading_timer:
-            if self._loading_timer.isActive():
-                self._loading_timer.stop()
-            self._loading_timer.deleteLater()
+        timer = self._loading_timer
+        if timer:
+            with suppress(RuntimeError):
+                if timer.isActive():
+                    timer.stop()
+            with suppress(RuntimeError):
+                timer.deleteLater()
             self._loading_timer = None
         self._is_loading = False
 

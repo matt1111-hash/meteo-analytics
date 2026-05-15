@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from src.domain.analytics.services.trend_calculator import TrendCalculatorPort
     from src.domain.ports import (
         AnomalyProfilePort,
         CityManagerPort,
@@ -49,6 +50,18 @@ def get_weather_client_port() -> "WeatherClientPort":
     )
 
     return WeatherClientExtensions()
+
+
+def get_trend_calculator_port() -> "TrendCalculatorPort":
+    """
+    Factory function to get TrendCalculatorPort implementation.
+
+    Returns:
+        TrendCalculatorPort implementation from Infrastructure Layer
+    """
+    from src.infrastructure.analytics.trend_calculator import TrendCalculator  # noqa: PLC0415
+
+    return TrendCalculator()
 
 
 def get_city_repository_port(

@@ -16,7 +16,7 @@ Fájl: src/presentation/gui/map/map_visualizer/ui_builder.py
 
 from typing import TYPE_CHECKING
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -25,12 +25,35 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QPushButton,
     QSlider,
+    QTextBrowser,
 )
+from src.presentation.gui.runtime_environment import is_headless_qt_platform
 
 from ...theme_manager import register_widget_for_theming
 
 if TYPE_CHECKING:
     pass
+
+
+class HeadlessHtmlView(QTextBrowser):
+    """Minimal HTML view used when QtWebEngine cannot run headless."""
+
+    loadFinished = Signal(bool)
+
+    def stop(self) -> None:
+        """Keep QWebEngineView-compatible cleanup calls harmless."""
+
+    def load(self, url) -> None:
+        """Show the requested URL as static text in headless mode."""
+        self.setHtml(f"<p>Headless map view loaded: {url.toString()}</p>")
+        self.loadFinished.emit(True)
+
+    def setUrl(self, url) -> None:
+        """Keep cleanup code compatible with QWebEngineView."""
+        if isinstance(url, str):
+            self.setHtml("")
+            return
+        self.load(url)
 
 
 def setup_map_visualizer_ui(self) -> None:  # noqa: PLR0915
@@ -141,9 +164,17 @@ def setup_web_view(self) -> None:
     Args:
         self: HungarianMapVisualizer instance
     """
-    from PySide6.QtWebEngineWidgets import QWebEngineView  # noqa: PLC0415
-
     layout = self.layout()
+
+    if is_headless_qt_platform():
+        self.web_view = HeadlessHtmlView()
+        register_widget_for_theming(self.web_view, "container")
+        layout.addWidget(self.web_view)
+        layout.setStretchFactor(layout.itemAt(0).widget(), 0)
+        layout.setStretchFactor(self.web_view, 1)
+        return
+
+    from PySide6.QtWebEngineWidgets import QWebEngineView  # noqa: PLC0415
 
     self.web_view = QWebEngineView()
     register_widget_for_theming(self.web_view, "container")

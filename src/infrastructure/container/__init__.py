@@ -12,6 +12,7 @@ Usage:
         get_weather_client_port,
         get_city_repository_port,
         get_anomaly_profile_port,
+        get_trend_calculator_port,
     )
 
     # Get a city manager instance
@@ -30,6 +31,7 @@ from .factories import (
     get_anomaly_profile_port,
     get_city_manager_port,
     get_city_repository_port,
+    get_trend_calculator_port,
     get_weather_client_port,
 )
 
@@ -39,5 +41,6 @@ __all__ = [
     "get_anomaly_profile_port",
     "get_city_manager_port",
     "get_city_repository_port",
+    "get_trend_calculator_port",
     "get_weather_client_port",
 ]

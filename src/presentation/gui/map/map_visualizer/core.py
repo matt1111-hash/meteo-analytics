@@ -19,6 +19,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWidgets import QWidget
 from src.presentation.gui.color_palette import ColorPalette
+from src.presentation.gui.runtime_environment import is_headless_qt_platform
 from src.presentation.gui.theme_manager import register_widget_for_theming
 
 from ..map_interactions import JavaScriptBridge
@@ -129,10 +130,33 @@ class HungarianMapVisualizer(QWidget):
         setup_web_view(self)
         register_widget_for_theming(self, "container")
         connect_signals(self)
-        start_local_server(self)
+        if not is_headless_qt_platform():
+            start_local_server(self)
 
         if not FOLIUM_AVAILABLE:
             _show_folium_error(self)
+
+    def cleanup(self) -> None:
+        """Leállítja a térképhez tartozó háttérszálakat."""
+        if self.map_generator and self.map_generator.isRunning():
+            self.map_generator.quit()
+            if not self.map_generator.wait(3000):
+                self.map_generator.terminate()
+                self.map_generator.wait(1000)
+
+        if self.local_server:
+            if self.local_server.running:
+                self.local_server.stop()
+            if self.local_server.isRunning():
+                self.local_server.quit()
+                if not self.local_server.wait(3000):
+                    self.local_server.terminate()
+                    self.local_server.wait(1000)
+
+    def closeEvent(self, event) -> None:
+        """Widget bezárása előtt felszabadítja a háttér erőforrásokat."""
+        self.cleanup()
+        super().closeEvent(event)
 
 
 # Attach imported methods as class methods

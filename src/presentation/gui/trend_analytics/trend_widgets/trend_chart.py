@@ -20,8 +20,8 @@ import logging
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QVBoxLayout, QWidget
+from PySide6.QtWidgets import QTextBrowser, QVBoxLayout, QWidget
+from src.presentation.gui.runtime_environment import is_headless_qt_platform
 
 logger = logging.getLogger(__name__)
 
@@ -48,8 +48,7 @@ class InteractiveTrendChart(QWidget):
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
 
-        # QWebEngineView a Plotly HTML megjelenítéshez
-        self.web_view = QWebEngineView()
+        self.web_view = self._create_html_view()
         self.web_view.setMinimumHeight(500)
 
         layout.addWidget(self.web_view)
@@ -59,6 +58,17 @@ class InteractiveTrendChart(QWidget):
         self.show_placeholder()
 
         logger.info("✅ InteractiveTrendChart inicializálva")
+
+    def _create_html_view(self) -> QWidget:
+        """Create a WebEngine view unless the process runs headless."""
+        if is_headless_qt_platform():
+            view = QTextBrowser()
+            view.setOpenExternalLinks(True)
+            return view
+
+        from PySide6.QtWebEngineWidgets import QWebEngineView  # noqa: PLC0415
+
+        return QWebEngineView()
 
     def show_placeholder(self) -> None:
         """Placeholder chart megjelenítése"""

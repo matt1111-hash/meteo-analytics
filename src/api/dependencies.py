@@ -36,6 +36,7 @@ def build_service_registry() -> ServiceRegistry:
     from src.infrastructure.container.factories import (  # noqa: PLC0415
         get_city_manager_port,
         get_city_repository_port,
+        get_trend_calculator_port,
         get_weather_client_port,
     )
 
@@ -49,6 +50,7 @@ def build_service_registry() -> ServiceRegistry:
         calculate_trend_use_case=CalculateTrendUseCase(
             weather_client=weather_client,
             city_manager=city_manager,
+            trend_calculator=get_trend_calculator_port(),
         ),
         city_manager=city_manager,
         city_repository=city_repository,

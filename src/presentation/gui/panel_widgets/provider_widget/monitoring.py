@@ -8,7 +8,7 @@ Provider Widget - Monitoring
 
 Képességek:
 - Usage display frissítés
-- Mock adat generálás
+- Valós usage adat betöltés
 - Warning ellenőrzés
 - Details display frissítés
 
@@ -29,9 +29,8 @@ def _update_usage_display(self) -> None:
         self: ProviderWidget instance
     """
     try:
-        # Mock data if no real stats available
         if not self.usage_stats:
-            _generate_mock_usage_data(self)
+            _load_usage_stats(self)
 
         current_provider_stats = self.usage_stats.get(self.current_provider, {})
 
@@ -78,16 +77,36 @@ def _update_usage_display(self) -> None:
         self.cost_label.setText("💰 Költség: $0.00/hó")
 
 
-def _generate_mock_usage_data(self) -> None:
+def _load_usage_stats(self) -> None:
     """
-    Mock usage adatok generálása teszteléshez.
+    Usage adatok betöltése a perzisztált UsageTracker állapotból.
 
     Args:
         self: ProviderWidget instance
     """
-    from .provider_data import generate_mock_usage_data  # noqa: PLC0415
+    try:
+        from src.config import APIConfig, build_usage_tracker  # noqa: PLC0415
 
-    self.usage_stats = generate_mock_usage_data()
+        tracker = build_usage_tracker()
+        summary = tracker.get_usage_summary()
+        self.usage_stats = {
+            "open-meteo": {
+                "requests": summary.get("openmeteo_requests", 0),
+                "limit": None,
+                "estimated_cost": 0.0,
+            },
+            "meteostat": {
+                "requests": summary.get("meteostat_requests", 0),
+                "limit": summary.get("meteostat_limit", APIConfig.METEOSTAT_MONTHLY_LIMIT_RATE),
+                "estimated_cost": summary.get("meteostat_cost", 0.0),
+            },
+        }
+    except Exception as exc:
+        print(f"❌ DEBUG: Usage stats load error: {exc}")
+        self.usage_stats = {
+            "open-meteo": {"requests": 0, "limit": None, "estimated_cost": 0.0},
+            "meteostat": {"requests": 0, "limit": 10000, "estimated_cost": 0.0},
+        }
 
 
 def _check_usage_warnings(self, usage_percent: float, estimated_cost: float) -> None:
@@ -149,8 +168,7 @@ def _refresh_usage_stats(self) -> None:
     """
     print("🔄 DEBUG: Refreshing usage statistics...")
 
-    # Mock refresh - in real implementation this would call API
-    _generate_mock_usage_data(self)
+    _load_usage_stats(self)
     _update_usage_display(self)
 
     print("✅ DEBUG: Usage statistics refreshed")

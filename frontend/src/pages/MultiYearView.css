@@ -1,3 +1,5 @@
+@import '../components/YearSelector.css';
+
 .multi-year-view {
   max-width: 1400px;
   margin: 0 auto;
@@ -143,6 +145,3 @@
     text-align: center;
   }
 }
-
-/* Import YearSelector styles */
-@import '../components/YearSelector.css';

@@ -15,7 +15,6 @@ from src.domain.analytics.services.trend_calculator import TrendCalculatorPort
 from src.domain.entities.trend_result import TrendAnalysisResult
 from src.domain.ports import CityManagerPort, WeatherClientPort
 from src.domain.value_objects.enums import AnalyticsMetric
-from src.infrastructure.analytics.trend_calculator import TrendCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -34,11 +33,11 @@ class CalculateTrendUseCase:
         Args:
             weather_client: Weather client for fetching data
             city_manager: City manager for location lookup
-            trend_calculator: Trend calculator (default: new instance)
+            trend_calculator: Trend calculator implementation supplied by composition root
         """
         self._weather_client = weather_client
         self._city_manager = city_manager
-        self._trend_calculator: TrendCalculatorPort = trend_calculator or TrendCalculator()
+        self._trend_calculator = trend_calculator
 
     def execute(self, request: TrendAnalysisCommand) -> TrendAnalysisResult:
         """Execute trend analysis for the given request.
@@ -83,7 +82,7 @@ class CalculateTrendUseCase:
             metric_enum = AnalyticsMetric(request.metric)
         except ValueError:
             metric_enum = AnalyticsMetric.TEMPERATURE_2M_MAX
-        result = self._trend_calculator.calculate_multiple_periods(
+        result = self._get_trend_calculator().calculate_multiple_periods(
             weather_data=weather_data,
             metric=metric_enum,
             location_name=request.location,
@@ -92,6 +91,15 @@ class CalculateTrendUseCase:
         )
 
         return result
+
+    def _get_trend_calculator(self) -> TrendCalculatorPort:
+        """Return the injected trend calculator or fail with a wiring error."""
+        if self._trend_calculator is None:
+            raise RuntimeError(
+                "Trend calculator dependency is not configured. "
+                "Build CalculateTrendUseCase through the infrastructure composition root."
+            )
+        return self._trend_calculator
 
     def _get_coordinates(self, location: str) -> tuple[float, float] | None:
         """Get coordinates for a location.

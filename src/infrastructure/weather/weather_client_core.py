@@ -10,16 +10,10 @@ from typing import Any
 from src.config import APIConfig, get_optimal_data_source
 from src.infrastructure.resilience.circuit_breaker import CircuitBreaker
 
-
-def _log_provider_usage_mock(provider: str, event_type: str, **kwargs) -> None:
-    """Mock function for provider usage logging (GUI-specific)."""
-    pass
-
-
-from .meteostat_provider import MeteostatProvider  # noqa: E402
-from .openmeteo_provider import OpenMeteoProvider  # noqa: E402
-from .weather_provider_base import WeatherProvider  # noqa: E402
-from .weather_types import ProviderNotAvailableError, WeatherAPIError  # noqa: E402
+from .meteostat_provider import MeteostatProvider
+from .openmeteo_provider import OpenMeteoProvider
+from .weather_provider_base import WeatherProvider
+from .weather_types import ProviderNotAvailableError, WeatherAPIError
 
 logger = logging.getLogger(__name__)
 
@@ -148,7 +142,6 @@ class WeatherClient:
             self.provider_usage_stats[provider_name] = (
                 self.provider_usage_stats.get(provider_name, 0) + 1
             )
-            _log_provider_usage_mock(provider_name, "weather_data", success=True)
 
             return weather_data, None
 
@@ -156,13 +149,11 @@ class WeatherClient:
             logger.warning("Provider %s API error: %s", provider_name, e)
             if cb:
                 cb.record_failure()
-            _log_provider_usage_mock(provider_name, "weather_data", success=False)
             return None, e
         except Exception as e:
             logger.exception("Unexpected error in provider %s", provider_name)
             if cb:
                 cb.record_failure()
-            _log_provider_usage_mock(provider_name, "weather_data", success=False)
             return None, e
 
     def _is_valid_provider(self, provider_name: str) -> bool:
