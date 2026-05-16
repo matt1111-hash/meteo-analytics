@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 
 import pandas as pd
+
 from src.application.services.wind_extractors import (
     extract_daily_wind_data,
     identify_windy_days,

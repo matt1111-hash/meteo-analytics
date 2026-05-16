@@ -9,6 +9,7 @@ Keresés és szűrés logika magyar városokhoz.
 import logging
 
 from PySide6.QtCore import QTimer, Signal
+
 from src.presentation.gui.hungarian_city_selector.types import (
     HungarianCity,
     HungarianRegions,

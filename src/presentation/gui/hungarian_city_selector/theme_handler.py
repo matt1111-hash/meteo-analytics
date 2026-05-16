@@ -9,6 +9,7 @@ Téma kezelési logika a HungarianCitySelector widgethez.
 import logging
 
 from PySide6.QtWidgets import QPushButton, QWidget
+
 from src.presentation.gui.theme_manager import (
     get_current_colors,
     get_theme_manager,

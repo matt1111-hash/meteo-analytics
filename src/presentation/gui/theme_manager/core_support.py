@@ -12,6 +12,7 @@ from typing import Any, Optional
 
 from PySide6.QtCore import QObject, QSettings, Signal
 from PySide6.QtWidgets import QApplication
+
 from src.presentation.gui.color_palette import (
     ColorPalette,
     create_color_palette,

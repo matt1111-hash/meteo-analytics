@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING, Optional
 import pandas as pd
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QCheckBox, QVBoxLayout, QWidget
+
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 from src.presentation.gui.charts.windy_days_chart import WindyDaysChart
 from src.presentation.gui.theme_manager import (

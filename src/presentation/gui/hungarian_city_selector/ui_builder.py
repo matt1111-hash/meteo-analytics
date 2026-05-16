@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from src.presentation.gui.hungarian_city_selector.types import (
     HungarianCity,
     HungarianRegions,

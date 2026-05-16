@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from PySide6.QtWidgets import QTextBrowser, QVBoxLayout, QWidget
+
 from src.presentation.gui.runtime_environment import is_headless_qt_platform
 
 logger = logging.getLogger(__name__)

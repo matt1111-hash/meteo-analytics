@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
+
 from src.presentation.gui.analytics.analytics_statistics import AnalyticsStatistics
 
 if TYPE_CHECKING:

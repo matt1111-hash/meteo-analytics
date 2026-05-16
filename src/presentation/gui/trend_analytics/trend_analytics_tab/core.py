@@ -18,6 +18,7 @@ import logging
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
+
 from src.presentation.gui.theme_manager import ThemeManager
 
 from ..trend_data_processor import TrendDataProcessor

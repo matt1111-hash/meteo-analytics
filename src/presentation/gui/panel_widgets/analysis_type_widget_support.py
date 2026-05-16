@@ -24,6 +24,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
 from src.presentation.gui.theme_manager import (
     get_theme_manager,
     register_widget_for_theming,

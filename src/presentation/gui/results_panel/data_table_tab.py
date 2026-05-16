@@ -11,6 +11,7 @@ from typing import Any
 
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+
 from src.presentation.gui.theme_manager import (
     get_theme_manager,
     register_widget_for_theming,

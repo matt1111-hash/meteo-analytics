@@ -5,6 +5,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+
 from src.presentation.gui.theme_manager import get_current_colors
 
 

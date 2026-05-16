@@ -9,6 +9,7 @@ from typing import Any
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
+
 from src.domain.entities.universal_location import UniversalLocation
 from src.domain.ports import CityManagerPort
 from src.presentation.gui.theme_manager import get_theme_manager

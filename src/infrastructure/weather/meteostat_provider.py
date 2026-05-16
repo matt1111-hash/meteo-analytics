@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 import requests
+
 from src.config import APIConfig
 
 from .weather_provider_base import WeatherProvider

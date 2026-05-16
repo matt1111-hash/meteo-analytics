@@ -59,14 +59,17 @@ echo "Backend ready at $BACKEND_HEALTH"
 if ! curl -fsS "$FRONTEND_HEALTH" >/dev/null 2>&1; then
   (
     cd "$PROJECT_ROOT/frontend"
-    exec env PORT="$FRONTEND_PORT" npm run dev
+    exec npx vite --host 127.0.0.1 --port "$FRONTEND_PORT" --strictPort
   ) &
   frontend_pid=$!
   started_frontend=1
 fi
 
 for _ in $(seq 1 120); do
-  curl -fsS "$FRONTEND_HEALTH" >/dev/null 2>&1 && break
+  if curl -fsS "$FRONTEND_HEALTH" >/dev/null 2>&1; then
+    echo "Frontend responded OK"
+    break
+  fi
   if [[ -n "$frontend_pid" ]] && ! kill -0 "$frontend_pid" 2>/dev/null; then
     echo "ERROR: frontend process exited prematurely" >&2
     exit 1

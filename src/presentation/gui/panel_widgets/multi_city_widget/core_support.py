@@ -21,6 +21,7 @@ from typing import Optional
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget
+
 from src.domain.ports import CityManagerPort
 from src.presentation.gui.theme_manager import get_theme_manager
 

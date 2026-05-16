@@ -10,6 +10,7 @@ import logging
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QListWidgetItem
+
 from src.presentation.gui.hungarian_city_selector.database_loader import (
     HungarianCityDatabaseLoader,
 )

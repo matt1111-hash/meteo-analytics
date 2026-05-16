@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QWidget,
 )
+
 from src.domain.entities.location_types import LocationType
 from src.domain.entities.universal_location import UniversalLocation
 from src.domain.ports import CityManagerPort

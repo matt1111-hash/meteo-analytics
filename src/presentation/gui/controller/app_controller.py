@@ -14,6 +14,7 @@ import logging
 from typing import Any
 
 from PySide6.QtCore import QObject, Signal
+
 from src.config import (
     DATA_DIR,
     ProviderConfig,

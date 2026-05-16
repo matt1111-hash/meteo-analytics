@@ -17,6 +17,7 @@ Fájl: src/presentation/gui/universal_location_selector/public_api.py
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QLabel, QLineEdit, QListWidget, QPushButton
+
 from src.domain.entities.universal_location import UniversalLocation
 
 from .location_card import LocationCard

@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Any
 
 import pandas as pd
+
 from src.presentation.gui.controller.weather_data_handler.constants import (
     OPTIONAL_DAILY_FIELDS,
     REQUIRED_DAILY_FIELDS,

@@ -15,6 +15,7 @@ import logging
 from typing import TYPE_CHECKING
 
 import pandas as pd
+
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH
 
 if TYPE_CHECKING:

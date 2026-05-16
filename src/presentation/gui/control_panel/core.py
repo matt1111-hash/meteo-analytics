@@ -33,6 +33,7 @@ import logging
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
+
 from src.domain.ports import CityManagerPort
 from src.infrastructure.container import get_city_manager_port
 

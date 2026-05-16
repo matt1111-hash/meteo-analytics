@@ -10,6 +10,7 @@ import logging
 
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import QDialog, QMessageBox, QVBoxLayout
+
 from src.domain.ports import AnomalyProfilePort
 from src.infrastructure.container import get_anomaly_profile_port
 
