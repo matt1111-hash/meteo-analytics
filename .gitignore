@@ -47,6 +47,7 @@ logs/
 *.save
 *.tmp
 *.zip
+*.orig
 python_files.txt
 
 # Data files (large JSONs should be in data/)

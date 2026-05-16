@@ -4,6 +4,7 @@
 import logging
 
 from PySide6.QtCore import QObject, Signal
+
 from src.infrastructure.container import (
     get_city_manager_port,
     get_weather_client_port,

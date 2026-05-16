@@ -9,6 +9,7 @@ Wind Chart Plotter - Plot wind data with Hungarian categories.
 from typing import TYPE_CHECKING
 
 import pandas as pd
+
 from src.presentation.gui.theme_manager import get_current_colors
 
 from .wind_categories import (

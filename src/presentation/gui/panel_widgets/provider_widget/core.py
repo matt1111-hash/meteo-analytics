@@ -17,6 +17,7 @@ Fájl: src/presentation/gui/panel_widgets/provider_widget/core.py
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QComboBox, QLabel, QProgressBar, QTextEdit, QWidget
+
 from src.presentation.gui.theme_manager import register_widget_for_theming
 
 from .monitoring import _update_usage_display

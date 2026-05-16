@@ -27,6 +27,7 @@ from PySide6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
 )
+
 from src.presentation.gui.theme_manager import register_widget_for_theming
 
 if TYPE_CHECKING:

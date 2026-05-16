@@ -4,6 +4,7 @@
 from typing import Any
 
 from PySide6.QtWidgets import QWidget
+
 from src.presentation.gui.charts.base_chart import WeatherChart
 from src.presentation.gui.charts.wind_rose_chart.data_handler import extract_wind_data
 from src.presentation.gui.charts.wind_rose_chart.plotting import (

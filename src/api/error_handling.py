@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from fastapi import HTTPException
+
 from src.application.use_cases.use_case_result import ErrorCategory, UseCaseResult
 
 

@@ -27,6 +27,7 @@ from PySide6.QtWidgets import (
     QSlider,
     QTextBrowser,
 )
+
 from src.presentation.gui.runtime_environment import is_headless_qt_platform
 
 from ...theme_manager import register_widget_for_theming

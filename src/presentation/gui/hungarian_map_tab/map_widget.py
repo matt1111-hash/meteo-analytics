@@ -5,6 +5,7 @@ from typing import Any
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
+
 from src.domain.entities.analytics_models import AnalyticsResult
 from src.presentation.gui.map import HungarianMapVisualizer
 from src.presentation.gui.weather_data_bridge import WeatherDataBridge

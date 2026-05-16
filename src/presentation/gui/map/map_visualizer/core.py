@@ -18,6 +18,7 @@ Fájl: src/presentation/gui/map/map_visualizer/core.py
 from PySide6.QtCore import Signal
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWidgets import QWidget
+
 from src.presentation.gui.color_palette import ColorPalette
 from src.presentation.gui.runtime_environment import is_headless_qt_platform
 from src.presentation.gui.theme_manager import register_widget_for_theming

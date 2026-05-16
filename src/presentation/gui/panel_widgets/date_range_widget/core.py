@@ -17,6 +17,7 @@ Fájl: src/presentation/gui/panel_widgets/date_range_widget/core.py
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
+
 from src.presentation.gui.theme_manager import get_theme_manager
 
 from .date_handlers import DateHandlerMixin

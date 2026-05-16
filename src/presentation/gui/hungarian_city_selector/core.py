@@ -11,6 +11,7 @@ from pathlib import Path
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout
+
 from src.presentation.gui.hungarian_city_selector.database_loader import (
     HungarianCityDatabaseLoader,
 )

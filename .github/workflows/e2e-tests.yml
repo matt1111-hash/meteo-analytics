@@ -1,6 +1,9 @@
 name: E2E Tests
 
 on:
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
@@ -24,14 +27,12 @@ jobs:
         with:
           python-version: "3.12"
           cache: "pip"
-          cache-dependency-path: |
-            requirements.txt
-            requirements-dev.txt
+          cache-dependency-path: requirements.lock
 
       - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.lock
           pip install uvicorn[standard] fastapi
 
       - name: Set up Node.js

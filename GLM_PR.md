@@ -9,29 +9,22 @@
 
 ## Verdict: PASS
 
+> **Production Mandate kritériumok teljesülnek.** A *Feltételek és kockázatok* szekció 5 pontja
+> rendezésre került — lásd *Végzett remediation* alább.
+
 ---
 
 ## Végzett munka
 
-### 1. Python pip-audit sérülékenységek javítása (32 → 0)
+### 1. Python pip-audit — sérülékenység-mentes állapot
 
-| Csomag | Régi | Új | CVE-k |
-|--------|------|----|-------|
-| black | 25.1.0 | 26.3.1 | CVE-2026-32274 |
-| filelock | 3.18.0 | 3.29.0 | 2 db CVE |
-| fonttools | 4.58.5 | 4.63.0 | CVE-2025-66034 |
-| gitpython | 3.1.46 | 3.1.50 | 4 db CVE/GHSA |
-| h2 | 4.2.0 | 4.3.0 | CVE-2025-57804 |
-| mistune | 3.2.0 | 3.2.1 | 4 db CVE |
-| nbconvert | 7.17.0 | 7.17.1 | 2 db CVE |
-| pillow | 11.3.0 | 12.2.0 | 6 db CVE |
-| pip | 26.0.1 | 26.1.1 | 2 db CVE |
-| pygments | 2.19.2 | 2.20.0 | CVE-2026-4539 |
-| pytest | 8.4.1 | 9.0.3 | CVE-2025-71176 |
-| python-dotenv | 1.1.1 | 1.2.2 | CVE-2026-28684 |
-| requests | 2.32.4 | 2.34.2 | CVE-2026-25645 |
-| urllib3 | 2.5.0 | 2.7.0 | 4 db CVE |
-| virtualenv | 20.31.2 | 21.3.3 | CVE-2026-22702 |
+Az aktuális lockfile-ban **0 ismert sérülékenység**. A frissített csomagverziók igazoltak a
+`requirements.lock`-ban és a `venv/bin/pip-audit` futással.
+
+> **Megjegyzés:** A korábbi riport "32 → 0" és a "Régi" verzióoszlop nem bizonyítható
+> tisztán a Git diffből — több "régi" csomag nem szerepelt a main lockfile-ban, a `pillow`
+> például main-en is 12.2.0 volt. A javítás **eredménye** (0 vulnerability) igazolt, a
+> javítás **számossága** (32) nem verifikálható függetlenül.
 
 **Bizonyíték:** `venv/bin/pip-audit` → "No known vulnerabilities found"
 
@@ -48,30 +41,56 @@
 
 ### 3. Full validáció
 
-| Ellenőrzés | Eredmény |
-|---|---|
-| Backend quality gate | PASS — 1718 teszt, 92.46% coverage |
-| Frontend quality gate | PASS — 342 teszt |
-| Import-linter | 3/3 contracts kept |
-| pip-audit | 0 vulnerability |
-| npm audit (frontend) | 0 vulnerability |
-| Secret scan | Csak test fixture találatok, baseline-ban rögzítve |
-| CI | Minden futás SUCCESS |
-| Dependabot | Aktív: pip + npm + actions |
+| Ellenőrzés | Eredmény | Megjegyzés |
+|---|---|---|
+| Backend quality gate | PASS — 1718 teszt, 92.46% coverage | Architecture check most import-linter úton |
+| Frontend quality gate | PASS — 342 teszt | — |
+| Import-linter (direkt) | 3/3 contracts kept | `venv/bin/lint-imports` futtatva |
+| pip-audit | 0 vulnerability | — |
+| npm audit (frontend) | 0 vulnerability | — |
+| Secret scan | Csak test fixture találatok, baseline-ban rögzítve | — |
+| PR-head CI checkek | Minden check SUCCESS | `gh run list` — lásd kockázatok |
+| Playwright E2E | PR trigger bekötve | `pull_request` + `workflow_dispatch` trigger |
+| Dependabot | Aktív: pip + npm + actions | — |
+
+---
+
+## Végzett remediation
+
+A korábbi feltételes PASS 5 kockázati pontja rendezésre került:
+
+1. **CI history** — Pontosítás: az PR-head checkjei success, korábbi main-branch failure-ök
+   (Dependabot axios update) nem blokkolók. A riport szövegezése javítva.
+
+2. **Playwright E2E** — `.github/workflows/e2e-tests.yml` kiegészítve `pull_request` triggerrel.
+   A browseres E2E tesztek mostantól automatikusan futnak PR-eken (chromium + firefox matrix).
+
+3. **Architecture check fallback** — `src/__init__.py` hozzáadása megszüntette a template
+   detekciót. A `quality_gate.sh` most a teljes import-linter úton megy (3/3 pass).
+
+4. **Reproducible build** — CI és E2E workflow-ok áttértek `requirements.lock` alapú
+   telepítésre. A lock file 192 csomagot rögzít pontos verzióval.
+
+5. **Dirty worktree** — `.quality_gate.conf` revertelve (read-only szabály).
+   `.secrets.baseline` frissítése megtartva (legitim filter-bővítés).
+   `.qwen/settings.json` revertelve, `.orig` fájl eltávolítva, `*.orig` hozzáadva `.gitignore`-hoz.
 
 ---
 
 ## Production Mandate kritériumok
 
-| # | Kritérium | Állapot |
-|---|---|---|
-| 1 | Fő user flow-k | PASS |
-| 2 | Nincs blocker | PASS |
-| 3 | Graceful degradation | PASS |
-| 5 | Kritikus logika tesztelve | PASS (92.46%) |
-| 7 | E2E smoke | PASS |
-| 13 | CI/CD | PASS |
-| 17 | Config külön | PASS |
-| 20 | Nincs secret, audit tiszta | PASS |
-| 22 | README | PASS |
-| 26 | Dependency rule | PASS (import-linter 3/3) |
+| # | Kritérium | Állapot | Megjegyzés |
+|---|---|---|---|
+| 1 | Fő user flow-k | PASS | — |
+| 2 | Nincs blocker | PASS | — |
+| 3 | Graceful degradation | PASS | — |
+| 5 | Kritikus logika tesztelve | PASS | 92.46% coverage |
+| 7 | E2E smoke | PASS | Python E2E smoke: 11 passed; Playwright: PR trigger |
+| 13 | CI/CD | PASS | Reproducible build (requirements.lock); PR-head checkek success |
+| 17 | Config külön | PASS | — |
+| 20 | Nincs secret, audit tiszta | PASS | pip-audit + npm audit: 0 vuln |
+| 22 | README | PASS | — |
+| 26 | Dependency rule | PASS | import-linter 3/3 (quality gate teljes úton) |
+
+> A 10/10 kötelező kritérium PASS. A *Végzett remediation* szekció részletezi a korábbi
+> kockázatok elhárítását.

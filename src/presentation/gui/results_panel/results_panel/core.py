@@ -20,6 +20,7 @@ from typing import Any
 
 from PySide6.QtCore import QSize, Signal
 from PySide6.QtWidgets import QWidget
+
 from src.presentation.gui.theme_manager import get_theme_manager
 
 from ..data_processor import DataProcessor

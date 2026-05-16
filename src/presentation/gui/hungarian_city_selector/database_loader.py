@@ -12,6 +12,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from PySide6.QtCore import Signal
+
 from src.presentation.gui.hungarian_city_selector.types import (
     HungarianCity,
     HungarianRegions,

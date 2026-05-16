@@ -18,6 +18,7 @@ from PySide6.QtCore import QSettings, Qt, Signal
 from PySide6.QtWidgets import (
     QMainWindow,
 )
+
 from src.config import AppInfo
 
 from ..color_palette import ColorPalette

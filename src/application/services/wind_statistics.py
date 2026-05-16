@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 
 import pandas as pd
+
 from src.domain.analytics.wind_models import MONTHS_HU, WindyDayStats
 
 logger = logging.getLogger(__name__)

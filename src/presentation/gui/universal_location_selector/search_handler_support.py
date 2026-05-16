@@ -22,6 +22,7 @@ from typing import Any, Optional
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QLabel, QLineEdit, QListWidget, QListWidgetItem
+
 from src.domain.ports import CityManagerPort
 
 logger = logging.getLogger(__name__)

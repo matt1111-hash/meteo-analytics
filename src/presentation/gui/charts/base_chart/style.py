@@ -2,6 +2,7 @@
 """Base chart style configuration."""
 
 import matplotlib
+
 from src.presentation.gui.charts.base_chart.constants import MATPLOTLIB_PARAMS
 
 

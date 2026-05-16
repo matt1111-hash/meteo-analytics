@@ -9,6 +9,7 @@ wrapping domain services for use by the presentation layer.
 from dataclasses import dataclass
 
 import pandas as pd
+
 from src.application.services.wind_pattern_analyzer import analyze_wind_patterns
 from src.domain.analytics.wind_models import WINDY_DAY_THRESHOLD_KMH, WindAnalysisResult
 

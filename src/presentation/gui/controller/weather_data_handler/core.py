@@ -5,6 +5,7 @@ import logging
 from typing import Any
 
 from PySide6.QtCore import QObject, Signal, Slot
+
 from src.presentation.gui.controller.weather_data_handler.processor import (
     calculate_daily_max_wind_gusts,
     process_weather_data,
