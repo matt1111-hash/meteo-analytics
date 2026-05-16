@@ -58,7 +58,7 @@ def test_build_detailed_city_use_case_injects_dependencies() -> None:
 
 
 def test_build_gui_services_returns_gui_services() -> None:
-    from src.infrastructure.container.composition_root import GuiServices, build_gui_services
+    from src.presentation.gui.gui_composition_root import GuiServices, build_gui_services
 
     with (
         patch("src.presentation.gui.controller.database_manager.DatabaseManager"),
@@ -73,7 +73,7 @@ def test_build_gui_services_returns_gui_services() -> None:
 
 
 def test_build_gui_services_wires_dependencies() -> None:
-    from src.infrastructure.container.composition_root import build_gui_services
+    from src.presentation.gui.gui_composition_root import build_gui_services
 
     with (
         patch("src.presentation.gui.controller.database_manager.DatabaseManager"),
