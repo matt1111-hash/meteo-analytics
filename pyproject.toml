@@ -21,7 +21,7 @@ dev = [
     "mutmut>=2.4",              # Mutation testing
 
     # === COMPLEXITY & METRICS ===
-    "radon>=5.0,<6",            # Complexity analysis (xenon kompatibilis)
+    "radon>=5.0,<7",            # Complexity analysis (xenon kompatibilis)
     "xenon>=0.9",               # Complexity gate
     "wily>=1.25",               # Historical trends
 
