@@ -7,7 +7,7 @@ PyQtDarkTheme2==2.1.2
 anyio==4.13.0
 fastapi==0.135.1
 httpx==0.28.1
-matplotlib==3.10.5
+matplotlib==3.10.9
 matplotlib-inline==0.1.7
 pydantic==2.11.7
 pydantic_core==2.33.2
