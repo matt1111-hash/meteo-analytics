@@ -19,7 +19,7 @@ ruff>=0.8.0
 mypy>=1.8.0
 
 # Complexity & Metrics
-radon>=5.0,<6
+radon>=5.0,<7
 xenon>=0.9
 wily>=1.25
 
