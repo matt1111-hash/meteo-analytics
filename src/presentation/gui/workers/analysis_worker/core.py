@@ -18,14 +18,12 @@ try:
     from src.analytics.ports import MultiCityEnginePort, get_multi_city_engine_port
     from src.domain.ports import WeatherClientPort
     from src.domain.value_objects.enums import AnalysisType, DataProvider  # noqa: F401
-    from src.infrastructure.container import get_weather_client_port
 
     IMPORTS_OK = True
 except ImportError as e:
     print(f"❌ AnalysisWorker import error: {e}")
     IMPORTS_OK = False
     get_multi_city_engine_port = None
-    get_weather_client_port = None
     MultiCityEnginePort = None
     WeatherClientPort = None
 
@@ -52,11 +50,12 @@ class AnalysisWorker(QThread):
     analysis_failed = Signal(str)
     analysis_cancelled = Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, weather_client: WeatherClientPort, parent=None):
         """
         Initialize AnalysisWorker.
 
         Args:
+            weather_client: WeatherClientPort instance (FIX-05: injected, not self-resolved)
             parent: Parent QObject
         """
         super().__init__(parent)
@@ -67,7 +66,7 @@ class AnalysisWorker(QThread):
 
         # === ANALYTICS COMPONENTS (using ports - CA compliant) ===
         self._multi_city_engine: MultiCityEnginePort | None = None
-        self._weather_client: WeatherClientPort | None = None
+        self._weather_client: WeatherClientPort | None = weather_client
 
         # === LOGGING ===
         self._logger = logging.getLogger(__name__)

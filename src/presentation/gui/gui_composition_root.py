@@ -20,11 +20,19 @@ class GuiServices:
     provider_config: Any = field(default=None, repr=False)
     user_preferences: Any = field(default=None, repr=False)
     usage_tracker: Any = field(default=None, repr=False)
+    city_manager: Any = field(default=None, repr=False)
+    weather_client: Any = field(default=None, repr=False)
+    anomaly_profile_port: Any = field(default=None, repr=False)
 
 
 def build_gui_services() -> GuiServices:
     """Build all GUI services with their dependencies wired up."""
     from src.config import DATA_DIR, ProviderConfig, UserPreferences, build_usage_tracker
+    from src.infrastructure.container import (
+        get_anomaly_profile_port,
+        get_city_manager_port,
+        get_weather_client_port,
+    )
     from src.presentation.gui.controller.database_manager import DatabaseManager
     from src.presentation.gui.controller.provider_routing import ProviderRouting
     from src.presentation.gui.workers import WorkerManager
@@ -42,6 +50,9 @@ def build_gui_services() -> GuiServices:
         usage_tracker=usage_tracker,
         provider_routing=ProviderRouting(provider_config, user_preferences, usage_tracker),
         worker_manager=WorkerManager(),
+        city_manager=get_city_manager_port(),
+        weather_client=get_weather_client_port(),
+        anomaly_profile_port=get_anomaly_profile_port(),
     )
 
 

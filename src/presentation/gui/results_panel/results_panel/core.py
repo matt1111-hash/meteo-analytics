@@ -85,16 +85,24 @@ class ResultsPanel(QWidget):
     data_updated = Signal(dict, str)
     extreme_weather_requested = Signal()
 
-    def __init__(self, parent: QWidget | None = None):
-        """ResultsPanel inicializálása."""
+    def __init__(self, anomaly_profile_port=None, parent: QWidget | None = None):
+        """ResultsPanel inicializálása.
+
+        Args:
+            anomaly_profile_port: AnomalyProfilePort instance (FIX-05: injected down
+                to ExtremeEventsTab → AnomalySettingsDialog; None keeps backward
+                compatibility for callers that never open anomaly settings).
+            parent: Szülő widget
+        """
         super().__init__(parent)
 
         logger.info("🎯 ResultsPanel inicializálása (REFACTORED)")
 
         # === KOMPONENSEK ===
         self.theme_manager = get_theme_manager()
+        self.anomaly_profile_port = anomaly_profile_port
         self.progress_manager = ProgressManagerWithTimeout(self)
-        self.tab_manager = TabManager(self)
+        self.tab_manager = TabManager(self, anomaly_profile_port=anomaly_profile_port)
         self.data_processor = DataProcessor(self)
 
         # === ÁLLAPOT VÁLTOZÓK ===

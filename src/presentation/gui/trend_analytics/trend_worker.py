@@ -17,6 +17,8 @@ import logging
 
 from PySide6.QtCore import QThread, Signal
 
+from src.domain.ports import CityManagerPort, WeatherClientPort
+
 from .trend_data_processor import TrendDataProcessor
 
 # Logging beállítás
@@ -37,12 +39,19 @@ class TrendAnalyticsWorker(QThread):
     error_occurred = Signal(str)
     finished = Signal()
 
-    def __init__(self, settlement_name: str, parameter: str, time_range: str):  # noqa: D107
+    def __init__(  # noqa: D107
+        self,
+        settlement_name: str,
+        parameter: str,
+        time_range: str,
+        city_manager: CityManagerPort,
+        weather_client: WeatherClientPort,
+    ):
         super().__init__()
         self.settlement_name = settlement_name
         self.parameter = parameter
         self.time_range = time_range
-        self.processor = TrendDataProcessor()
+        self.processor = TrendDataProcessor(city_manager, weather_client)
 
         # Signal routing
         self.processor.progress_updated.connect(self.progress_updated.emit)

@@ -23,10 +23,17 @@ def _resolve_city_coordinates(request: WindRoseRequest, city_manager: Any) -> tu
 
 
 def _fetch_weather_records(
-    request: WindRoseRequest, latitude: float, longitude: float
+    request: WindRoseRequest,
+    latitude: float,
+    longitude: float,
+    weather_client: Any,
 ) -> list[dict[str, Any]]:
-    """Fetch weather records for the requested city and date range."""
-    weather_client = WeatherClient()
+    """Fetch weather records for the requested city and date range.
+
+    The weather client is injected by the caller (FIX-04) instead of being
+    instantiated locally, so the route depends on the ServiceRegistry port and
+    stays free of direct infrastructure coupling.
+    """
     weather_records = weather_client.get_weather_data(
         latitude=latitude,
         longitude=longitude,
@@ -132,7 +139,7 @@ async def get_wind_rose(
     try:
         latitude, longitude = _resolve_city_coordinates(request, services.city_manager)
         weather_records = await run_in_threadpool(
-            lambda: _fetch_weather_records(request, latitude, longitude)
+            lambda: _fetch_weather_records(request, latitude, longitude, services.weather_client)
         )
         daily_data = _extract_daily_data(weather_records)
         wind_rose_data = _process_wind_rose_data(daily_data)

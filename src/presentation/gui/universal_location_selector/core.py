@@ -26,7 +26,6 @@ from PySide6.QtWidgets import (
 from src.domain.entities.location_types import LocationType
 from src.domain.entities.universal_location import UniversalLocation
 from src.domain.ports import CityManagerPort
-from src.infrastructure.container import get_city_manager_port
 
 from ..theme_manager import register_widget_for_theming
 from .public_api import UniversalLocationSelectorPublicAPI
@@ -97,17 +96,17 @@ class UniversalLocationSelector(QWidget, UniversalLocationSelectorPublicAPI):
     city_selected = Signal(str, float, float, dict)
     location_changed = Signal(object)
 
-    def __init__(self, city_manager: CityManagerPort | None = None, parent=None):
+    def __init__(self, city_manager: CityManagerPort, parent=None):
         """
         UniversalLocationSelector inicializálása (CA compliant - uses port).
 
         Args:
-            city_manager: CityManagerPort instance
+            city_manager: CityManagerPort instance (FIX-05: required, injected by caller)
             parent: Szülő widget
         """
         super().__init__(parent)
 
-        self.city_manager: CityManagerPort = city_manager or get_city_manager_port()
+        self.city_manager: CityManagerPort = city_manager
         self.current_location: UniversalLocation | None = None
 
         # UI setup

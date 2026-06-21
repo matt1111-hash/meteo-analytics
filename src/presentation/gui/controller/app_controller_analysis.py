@@ -32,7 +32,7 @@ class AppControllerAnalysisMixin:
             print(f"🚨 DEBUG: enhanced_request={enhanced_request}")
             print("=" * 80)
 
-            worker = AnalysisWorker(parent=self)
+            worker = AnalysisWorker(weather_client=self.weather_client, parent=self)
             handler.set_active_worker(worker)
 
             worker.progress_updated.connect(handler.on_analysis_progress)

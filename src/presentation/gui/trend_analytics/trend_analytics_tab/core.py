@@ -76,8 +76,10 @@ class TrendAnalyticsTab(TrendAnalyticsPublicAPIMixin, TrendAnalysisHandlerMixin,
     error_occurred = Signal(str)
     location_selected = Signal(str, float, float)  # name, lat, lon
 
-    def __init__(self):  # noqa: D107
+    def __init__(self, city_manager, weather_client):  # noqa: D107
         super().__init__()
+        self.city_manager = city_manager
+        self.weather_client = weather_client
         self.current_worker: any = None
         self.setup_ui()
         self.connect_signals()
@@ -125,7 +127,7 @@ class TrendAnalyticsTab(TrendAnalyticsPublicAPIMixin, TrendAnalysisHandlerMixin,
         """Location selection kezelése (VÁLTOZATLAN)"""
         if location_name and len(location_name.strip()) > 2:  # noqa: PLR2004
             # Get coordinates for location
-            processor = TrendDataProcessor()
+            processor = TrendDataProcessor(self.city_manager, self.weather_client)
             coordinates = processor.get_settlement_coordinates(location_name.strip())
 
             if coordinates:

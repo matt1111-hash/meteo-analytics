@@ -10,6 +10,8 @@ Part of the city_manager refactoring - split into focused modules.
 import logging
 from typing import Any
 
+from src.infrastructure.db.like_utils import escape_like
+
 from .city_manager_hungarian import CityManagerHungarian
 from .city_types import City
 
@@ -152,8 +154,8 @@ class CityManagerSearch(CityManagerHungarian):
 
         safe_limit = self._safe_limit(limit)
         sql_parts = ["SELECT * FROM cities"]
-        where_conditions = ["city LIKE ?"]
-        params: list[Any] = [f"%{search_term}%"]
+        where_conditions = ["city LIKE ? ESCAPE '\\'"]
+        params: list[Any] = [f"%{escape_like(search_term)}%"]
 
         if country_filter:
             where_conditions.append("country_code = ?")

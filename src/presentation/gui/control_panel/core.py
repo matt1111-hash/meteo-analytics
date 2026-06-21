@@ -35,7 +35,6 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
 
 from src.domain.ports import CityManagerPort
-from src.infrastructure.container import get_city_manager_port
 
 # Refaktorált widget komponensek
 from ..panel_widgets.analysis_type_widget import AnalysisTypeWidget
@@ -104,19 +103,25 @@ class ControlPanel(
     city_selected = Signal(str, float, float, dict)  # LocationWidget selection
     local_error_occurred = Signal(str)  # Error handling
 
-    def __init__(self, worker_manager: WorkerManager, parent: QWidget | None = None):
+    def __init__(
+        self,
+        worker_manager: WorkerManager,
+        city_manager: CityManagerPort,
+        parent: QWidget | None = None,
+    ):
         """
         Clean ControlPanel inicializálása.
 
         Args:
             worker_manager: Worker manager (kompatibilitás)
+            city_manager: CityManagerPort instance (FIX-05: injected, not self-resolved)
             parent: Szülő widget
         """
         super().__init__(parent)
 
         # Dependencies (CA compliant - uses port)
         self.worker_manager = worker_manager
-        self.city_manager: CityManagerPort = get_city_manager_port()
+        self.city_manager: CityManagerPort = city_manager
         self.theme_manager = get_theme_manager()
 
         # 🔧 WIDGET STATE PRESERVATION

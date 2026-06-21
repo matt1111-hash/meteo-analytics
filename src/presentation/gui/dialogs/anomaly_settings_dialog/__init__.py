@@ -36,8 +36,11 @@ def demo_anomaly_settings_dialog():
         from src.presentation.gui.dialogs.anomaly_settings_dialog import (  # noqa: PLC0415
             AnomalySettingsDialog,
         )
+        from src.presentation.gui.gui_composition_root import build_gui_services  # noqa: PLC0415
 
-        dialog = AnomalySettingsDialog(main_window)
+        services = build_gui_services()
+
+        dialog = AnomalySettingsDialog(services.anomaly_profile_port, main_window)
         dialog.settings_changed.connect(
             lambda settings: print(f"🔧 Beállítások változtak: {settings}")
         )

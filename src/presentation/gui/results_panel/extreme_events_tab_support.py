@@ -69,13 +69,6 @@ except ImportError:
 
 
 try:
-    from src.infrastructure.container import get_anomaly_profile_port
-
-    _profile_manager_available = True
-except ImportError:
-    _profile_manager_available = False
-
-try:
     from .extreme import ExtremeCalculator
 
     _extreme_calculator_available = True

@@ -12,9 +12,14 @@ class TabManager(QObject):
 
     tab_changed = Signal(str)
 
-    def __init__(self, parent: QObject | None = None) -> None:  # noqa: D107
+    def __init__(  # noqa: D107
+        self,
+        parent: QObject | None = None,
+        anomaly_profile_port=None,
+    ) -> None:
         super().__init__(parent)
         self._logger = logging.getLogger(__name__)
+        self._anomaly_profile_port = anomaly_profile_port
 
         self.tab_widget: QTabWidget | None = None
         self.overview_tab: QWidget | None = None
@@ -79,7 +84,7 @@ class TabManager(QObject):
         try:
             from ..extreme_events_tab import ExtremeEventsTab  # noqa: PLC0415
 
-            self.extreme_tab = ExtremeEventsTab()
+            self.extreme_tab = ExtremeEventsTab(anomaly_profile_port=self._anomaly_profile_port)
             self.tab_widget.addTab(self.extreme_tab, "⚡ Extrém Események")
             self._extreme_available = True
         except ImportError as e:

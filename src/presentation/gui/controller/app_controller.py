@@ -15,21 +15,11 @@ from typing import Any
 
 from PySide6.QtCore import QObject, Signal
 
-from src.config import (
-    DATA_DIR,
-    ProviderConfig,
-    UserPreferences,
-    build_usage_tracker,
-)
-
-from ..workers import WorkerManager
 from .analysis_handler import AnalysisHandler
 from .app_controller_analysis import AppControllerAnalysisMixin
 from .app_controller_lifecycle import AppControllerLifecycleMixin
 from .app_controller_signals import AppControllerSignalsMixin
-from .database_manager import DatabaseManager
 from .geocoding_handler import GeocodingHandler
-from .provider_routing import ProviderRouting
 from .weather_data_handler import WeatherDataHandler
 
 
@@ -97,28 +87,30 @@ class AppController(
 
         # === KOMPONENSEK INICIALIZÁLÁSA ===
 
-        if gui_services is not None:
-            # DI path — services pre-built by composition root
-            self.db_path = gui_services.db_path
-            self.database_manager = gui_services.database_manager
-            self.provider_config = gui_services.provider_config
-            self.user_preferences = gui_services.user_preferences
-            self.usage_tracker = gui_services.usage_tracker
-            self.provider_routing = gui_services.provider_routing
-            self.worker_manager = gui_services.worker_manager
-            self._logger.info("✅ AppController initialized via GuiServices (DI)")
-        else:
-            # Legacy path — direct construction (backward compatible)
-            self.db_path = DATA_DIR / "meteo_data.db"
-            self.database_manager = DatabaseManager(self.db_path)
-            self.provider_config = ProviderConfig()
-            self.user_preferences = UserPreferences()
-            self.usage_tracker = build_usage_tracker()
-            self.provider_routing = ProviderRouting(
-                self.provider_config, self.user_preferences, self.usage_tracker
+        if gui_services is None:
+            # Legacy path — build services via the composition root so port
+            # construction stays isolated there (no presentation→infrastructure
+            # import leakage at this layer).
+            from src.presentation.gui.gui_composition_root import (  # noqa: PLC0415
+                build_gui_services,
             )
-            self.worker_manager = WorkerManager()
-            self._logger.info("✅ AppController initialized via direct construction")
+
+            gui_services = build_gui_services()
+            self._logger.info("✅ AppController initialized via build_gui_services()")
+
+        # DI path — services pre-built by composition root
+        self.db_path = gui_services.db_path
+        self.database_manager = gui_services.database_manager
+        self.provider_config = gui_services.provider_config
+        self.user_preferences = gui_services.user_preferences
+        self.usage_tracker = gui_services.usage_tracker
+        self.provider_routing = gui_services.provider_routing
+        self.worker_manager = gui_services.worker_manager
+        # Ports (FIX-05) — injected into widgets that previously self-resolved them.
+        self.city_manager = gui_services.city_manager
+        self.weather_client = gui_services.weather_client
+        self.anomaly_profile_port = gui_services.anomaly_profile_port
+        self._logger.info("✅ AppController initialized via GuiServices (DI)")
 
         # 4. Geocoding Handler
         self.geocoding_handler = GeocodingHandler(self.worker_manager, self.database_manager, self)

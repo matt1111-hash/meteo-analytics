@@ -6,9 +6,29 @@ from __future__ import annotations
 
 import os
 import threading
+import warnings
 from collections.abc import Mapping
 from types import MappingProxyType
 from typing import Any, ClassVar
+
+
+def _resolve_app_env() -> str:
+    """Resolve APP_ENV, warning when it falls back to the development default.
+
+    FIX-06: a silent default to 'development' is dangerous in production (security
+    headers, rate limits, debug toggles all key off this value). Surfacing a
+    RuntimeWarning keeps backward compatibility while making the fallback audible.
+    """
+    value = os.getenv("APP_ENV")
+    if value is None:
+        warnings.warn(
+            "APP_ENV not set, defaulting to 'development'. "
+            "Set APP_ENV=production in production deployments.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return "development"
+    return value
 
 
 class APIConfig:
@@ -35,7 +55,7 @@ class APIConfig:
     ]
 
     # Environment
-    APP_ENV: ClassVar[str] = os.getenv("APP_ENV", "development")
+    APP_ENV: ClassVar[str] = _resolve_app_env()
 
     REQUEST_TIMEOUT: ClassVar[int] = 30
     MAX_RETRIES: ClassVar[int] = 3
@@ -71,7 +91,7 @@ class APIConfig:
                 for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
                 if origin.strip()
             ]
-            cls.APP_ENV = os.getenv("APP_ENV", "development")
+            cls.APP_ENV = _resolve_app_env()
 
 
 class DataConstants:

@@ -9,6 +9,8 @@ Part of the city_manager refactoring - split into focused modules.
 
 import logging
 
+from src.infrastructure.db.like_utils import escape_like
+
 from .city_manager_db import CityManagerDB
 from .city_types import City
 
@@ -47,8 +49,8 @@ class CityManagerHungarian(CityManagerDB):
             return []
 
         sql_parts = ["SELECT * FROM hungarian_settlements"]
-        where_conditions = ["name LIKE ?"]
-        params = [f"%{search_term}%"]
+        where_conditions = ["name LIKE ? ESCAPE '\\'"]
+        params = [f"%{escape_like(search_term)}%"]
 
         if county_filter:
             where_conditions.append("megye = ?")

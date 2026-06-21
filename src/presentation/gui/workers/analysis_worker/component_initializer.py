@@ -38,9 +38,6 @@ class ComponentInitializer:
         # Port import ellenőrzés (Clean Architecture)
         try:
             from src.analytics.ports import get_multi_city_engine_port  # noqa: F401, PLC0415
-            from src.infrastructure.container import (  # noqa: PLC0415
-                get_weather_client_port,  # noqa: F401
-            )
 
             self._worker._emit_progress("Portok ellenőrzése...", 10)
         except ImportError as e:
@@ -84,15 +81,17 @@ class ComponentInitializer:
 
     def _init_weather_client(self) -> bool:
         """
-        Initialize WeatherClient via port (CA compliant).
+        Validate the WeatherClient port injected via the worker constructor.
+
+        FIX-05: the client is no longer resolved here from infrastructure; it is
+        supplied by the composition root through AnalysisWorker.__init__.
 
         Returns:
             True if successful
         """
-        from src.infrastructure.container import get_weather_client_port  # noqa: PLC0415
-
         try:
-            self._worker._weather_client = get_weather_client_port()
+            if self._worker._weather_client is None:
+                raise RuntimeError("WeatherClient port was not injected into the worker")
             self._logger.info("✅ WeatherClient port inicializálás sikeres")
             return True
         except Exception as e:

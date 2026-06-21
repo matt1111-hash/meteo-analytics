@@ -6,47 +6,47 @@ from unittest.mock import MagicMock
 
 import pytest
 from fastapi import HTTPException
-from src.api.routes import wind_rose, wind_rose_part3
+from src.api.routes import wind_rose
 
 
-def _mock_services_with_city_manager(city_manager: MagicMock) -> MagicMock:
-    """Create mock ServiceRegistry with the given city_manager."""
+def _mock_services_with_city_manager(
+    city_manager: MagicMock, weather_client: MagicMock | None = None
+) -> MagicMock:
+    """Create mock ServiceRegistry with the given city_manager and weather_client.
+
+    FIX-04: the route now reads services.weather_client instead of instantiating
+    WeatherClient() locally, so tests configure the registry rather than patching
+    the module attribute.
+    """
     from src.api.dependencies import ServiceRegistry  # noqa: PLC0415
 
     mock_services = MagicMock(spec=ServiceRegistry)
     mock_services.city_manager = city_manager
+    mock_services.weather_client = weather_client if weather_client is not None else MagicMock()
     return mock_services
 
 
 @pytest.mark.asyncio
-async def test_get_wind_rose_reconstructs_daily_data_from_flat_records(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_get_wind_rose_reconstructs_daily_data_from_flat_records() -> None:
     """The route should rebuild daily payloads from flat weather records."""
     city_manager = MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))
-    mock_services = _mock_services_with_city_manager(city_manager)
-    monkeypatch.setattr(
-        wind_rose_part3,
-        "WeatherClient",
-        MagicMock(
-            return_value=MagicMock(
-                get_weather_data=MagicMock(
-                    return_value=[
-                        {
-                            "date": "2026-03-01",
-                            "winddirection_10m_dominant": 0.0,
-                            "wind_gusts_10m_max": 10.0,
-                        },
-                        {
-                            "date": "2026-03-02",
-                            "winddirection_10m_dominant": 90.0,
-                            "wind_gusts_10m_max": 30.0,
-                        },
-                    ]
-                )
-            )
-        ),
+    weather_client = MagicMock(
+        get_weather_data=MagicMock(
+            return_value=[
+                {
+                    "date": "2026-03-01",
+                    "winddirection_10m_dominant": 0.0,
+                    "wind_gusts_10m_max": 10.0,
+                },
+                {
+                    "date": "2026-03-02",
+                    "winddirection_10m_dominant": 90.0,
+                    "wind_gusts_10m_max": 30.0,
+                },
+            ]
+        )
     )
+    mock_services = _mock_services_with_city_manager(city_manager, weather_client)
     request = wind_rose.WindRoseRequest(
         city="Budapest",
         start="2026-03-01",
@@ -61,31 +61,23 @@ async def test_get_wind_rose_reconstructs_daily_data_from_flat_records(
 
 
 @pytest.mark.asyncio
-async def test_get_wind_rose_uses_embedded_daily_payload(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_get_wind_rose_uses_embedded_daily_payload() -> None:
     """The route should accept records that already contain a daily payload."""
     city_manager = MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))
-    mock_services = _mock_services_with_city_manager(city_manager)
-    monkeypatch.setattr(
-        wind_rose_part3,
-        "WeatherClient",
-        MagicMock(
-            return_value=MagicMock(
-                get_weather_data=MagicMock(
-                    return_value=[
-                        {
-                            "daily": {
-                                "time": ["2026-03-01"],
-                                "winddirection_10m_dominant": [45.0],
-                                "windspeed_10m_max": [15.0],
-                            }
-                        }
-                    ]
-                )
-            )
-        ),
+    weather_client = MagicMock(
+        get_weather_data=MagicMock(
+            return_value=[
+                {
+                    "daily": {
+                        "time": ["2026-03-01"],
+                        "winddirection_10m_dominant": [45.0],
+                        "windspeed_10m_max": [15.0],
+                    }
+                }
+            ]
+        )
     )
+    mock_services = _mock_services_with_city_manager(city_manager, weather_client)
 
     response = await wind_rose.get_wind_rose(
         wind_rose.WindRoseRequest(city="Budapest", start="2026-03-01", end="2026-03-01"),
@@ -114,17 +106,11 @@ async def test_get_wind_rose_returns_404_for_unknown_city() -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_wind_rose_returns_404_for_missing_weather_data(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_get_wind_rose_returns_404_for_missing_weather_data() -> None:
     """Missing weather rows should map to HTTP 404."""
     city_manager = MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))
-    mock_services = _mock_services_with_city_manager(city_manager)
-    monkeypatch.setattr(
-        wind_rose_part3,
-        "WeatherClient",
-        MagicMock(return_value=MagicMock(get_weather_data=MagicMock(return_value=[]))),
-    )
+    weather_client = MagicMock(get_weather_data=MagicMock(return_value=[]))
+    mock_services = _mock_services_with_city_manager(city_manager, weather_client)
 
     with pytest.raises(HTTPException, match="No weather data found") as exc_info:
         await wind_rose.get_wind_rose(
@@ -136,21 +122,11 @@ async def test_get_wind_rose_returns_404_for_missing_weather_data(
 
 
 @pytest.mark.asyncio
-async def test_get_wind_rose_returns_400_when_no_daily_weather_data(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_get_wind_rose_returns_400_when_no_daily_weather_data() -> None:
     """Records without usable daily wind fields should return HTTP 400."""
     city_manager = MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))
-    mock_services = _mock_services_with_city_manager(city_manager)
-    monkeypatch.setattr(
-        wind_rose_part3,
-        "WeatherClient",
-        MagicMock(
-            return_value=MagicMock(
-                get_weather_data=MagicMock(return_value=[{"date": "2026-03-01"}])
-            )
-        ),
-    )
+    weather_client = MagicMock(get_weather_data=MagicMock(return_value=[{"date": "2026-03-01"}]))
+    mock_services = _mock_services_with_city_manager(city_manager, weather_client)
 
     with pytest.raises(HTTPException, match="No daily weather data available") as exc_info:
         await wind_rose.get_wind_rose(
@@ -177,19 +153,11 @@ async def test_get_wind_rose_maps_value_error_to_400() -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_wind_rose_maps_unexpected_error_to_500(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+async def test_get_wind_rose_maps_unexpected_error_to_500() -> None:
     """Unexpected errors should be converted to HTTP 500."""
     city_manager = MagicMock(find_city_by_name=MagicMock(return_value=(47.5, 19.0)))
-    mock_services = _mock_services_with_city_manager(city_manager)
-    monkeypatch.setattr(
-        wind_rose_part3,
-        "WeatherClient",
-        MagicMock(
-            return_value=MagicMock(get_weather_data=MagicMock(side_effect=RuntimeError("boom")))
-        ),
-    )
+    weather_client = MagicMock(get_weather_data=MagicMock(side_effect=RuntimeError("boom")))
+    mock_services = _mock_services_with_city_manager(city_manager, weather_client)
 
     with pytest.raises(HTTPException, match="Internal server error") as exc_info:
         await wind_rose.get_wind_rose(

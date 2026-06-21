@@ -7,16 +7,17 @@ from __future__ import annotations
 from .extreme_events_tab_part2_support import *
 from .extreme_events_tab_support import (
     _extreme_calculator_available,
-    _profile_manager_available,
 )
 
 
 class ExtremeEventsTabPart1Mixin:  # noqa: D101
-    def __init__(self, parent: Optional[QWidget] = None):  # noqa: D107
+    def __init__(self, anomaly_profile_port=None, parent: Optional[QWidget] = None):  # noqa: D107
         super().__init__(parent)
 
         self.theme_manager = get_theme_manager()
-        self.profile_manager = get_anomaly_profile_port() if _profile_manager_available else None
+        # FIX-05: anomaly profile port injected by the caller (TabManager) instead
+        # of being resolved from infrastructure here.
+        self.profile_manager = anomaly_profile_port
         self.use_case = DetectAnomaliesUseCase()
         self.extreme_calculator = ExtremeCalculator() if _extreme_calculator_available else None
 
@@ -226,7 +227,7 @@ class ExtremeEventsTabPart2Mixin:  # noqa: D101
                 AnomalySettingsDialog,
             )
 
-            dialog = AnomalySettingsDialog(self)
+            dialog = AnomalySettingsDialog(self.profile_manager, self)
             if dialog.exec() and self.current_data:
                 self.update_data(self.current_data)
         except Exception as e:

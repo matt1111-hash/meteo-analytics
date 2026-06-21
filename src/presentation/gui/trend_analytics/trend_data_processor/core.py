@@ -5,10 +5,7 @@ import logging
 
 from PySide6.QtCore import QObject, Signal
 
-from src.infrastructure.container import (
-    get_city_manager_port,
-    get_weather_client_port,
-)
+from src.domain.ports import CityManagerPort, WeatherClientPort
 from src.presentation.gui.trend_analytics.trend_data_processor.calculator import (
     calculate_trend_statistics,
 )
@@ -42,10 +39,14 @@ class TrendDataProcessor(QObject):
     data_received = Signal(dict)
     error_occurred = Signal(str)
 
-    def __init__(self) -> None:  # noqa: D107
+    def __init__(  # noqa: D107
+        self,
+        city_manager: CityManagerPort,
+        weather_client: WeatherClientPort,
+    ) -> None:
         super().__init__()
-        self.city_manager = get_city_manager_port()
-        self.weather_client = get_weather_client_port()
+        self.city_manager = city_manager
+        self.weather_client = weather_client
         self.trend_parameters = TREND_PARAMETERS
         self.time_ranges = TIME_RANGES
 

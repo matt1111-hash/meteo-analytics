@@ -12,7 +12,6 @@ from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import QDialog, QMessageBox, QVBoxLayout
 
 from src.domain.ports import AnomalyProfilePort
-from src.infrastructure.container import get_anomaly_profile_port
 
 from ...theme_manager import get_theme_manager, register_widget_for_theming
 from .preview_handler import AnomalySettingsPreviewHandler
@@ -31,12 +30,17 @@ class AnomalySettingsDialog(QDialog):
     settings_changed = Signal(dict)
     profile_changed = Signal(str)
 
-    def __init__(self, parent=None):
-        """Anomália beállítások dialog inicializálása (CA compliant - uses port)."""
+    def __init__(self, anomaly_profile_port: AnomalyProfilePort, parent=None):
+        """Anomália beállítások dialog inicializálása (CA compliant - uses port).
+
+        Args:
+            anomaly_profile_port: AnomalyProfilePort instance (FIX-05: injected, not self-resolved)
+            parent: Szülő widget
+        """
         super().__init__(parent)
 
         self.theme_manager = get_theme_manager()
-        self.profile_manager: AnomalyProfilePort = get_anomaly_profile_port()
+        self.profile_manager: AnomalyProfilePort = anomaly_profile_port
 
         # Belső állapot
         self.current_profile: str = "default"

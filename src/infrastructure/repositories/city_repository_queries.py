@@ -6,6 +6,8 @@ import sqlite3
 from collections.abc import Sequence
 from pathlib import Path
 
+from src.infrastructure.db.like_utils import escape_like
+
 
 class CityRepositoryQueries:
     """Database query operations for city repository."""
@@ -149,13 +151,14 @@ class CityRepositoryQueries:
             return []
 
         query_str = query.strip().lower()
+        escaped_query = escape_like(query_str)
 
         city_has_index = self._has_column(self.db_path, "cities", "city_lower")
         if city_has_index:
             base_select = (
                 "SELECT city, country, country_code, lat, lon, population, "
                 "meteostat_station_id, data_quality_score FROM cities "
-                "WHERE city_lower LIKE ? "
+                "WHERE city_lower LIKE ? ESCAPE '\\' "
                 "ORDER BY population DESC, city ASC "
                 "LIMIT ?"
             )
@@ -164,12 +167,12 @@ class CityRepositoryQueries:
             base_select = (
                 "SELECT city, country, country_code, lat, lon, population, "
                 "meteostat_station_id, data_quality_score FROM cities "
-                "WHERE LOWER(city) LIKE ? "
+                "WHERE LOWER(city) LIKE ? ESCAPE '\\' "
                 "ORDER BY population DESC, city ASC "
                 "LIMIT ?"
             )
             city_like = "%{}%"
-        params = [city_like.format(query_str), limit]
+        params = [city_like.format(escaped_query), limit]
 
         results = []
         if self.db_path.exists():
@@ -189,7 +192,7 @@ class CityRepositoryQueries:
                 "latitude as lat, longitude as lon, population, "
                 "NULL as meteostat_station_id, NULL as data_quality_score "
                 "FROM hungarian_settlements "
-                "WHERE name_lower LIKE ? "
+                "WHERE name_lower LIKE ? ESCAPE '\\' "
                 "ORDER BY population DESC, name ASC "
                 "LIMIT ?"
             )
@@ -200,7 +203,7 @@ class CityRepositoryQueries:
                 "latitude as lat, longitude as lon, population, "
                 "NULL as meteostat_station_id, NULL as data_quality_score "
                 "FROM hungarian_settlements "
-                "WHERE LOWER(name) LIKE ? "
+                "WHERE LOWER(name) LIKE ? ESCAPE '\\' "
                 "ORDER BY population DESC, name ASC "
                 "LIMIT ?"
             )
@@ -208,7 +211,7 @@ class CityRepositoryQueries:
 
         if self.hungarian_db_path.exists():
             hun_results = self._execute_hungarian(
-                self.hungarian_db_path, hun_query, [hun_like.format(query_str), remaining_limit]
+                self.hungarian_db_path, hun_query, [hun_like.format(escaped_query), remaining_limit]
             )
             results.extend(hun_results)
 

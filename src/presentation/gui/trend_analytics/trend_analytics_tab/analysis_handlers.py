@@ -86,7 +86,13 @@ class TrendAnalysisHandlerMixin:
             from ..trend_worker import TrendAnalyticsWorker  # noqa: PLC0415
 
             # Worker thread létrehozása
-            self.current_worker = TrendAnalyticsWorker(location, parameter, time_range)
+            self.current_worker = TrendAnalyticsWorker(
+                location,
+                parameter,
+                time_range,
+                self.city_manager,
+                self.weather_client,
+            )
 
             # Worker signals connecting
             self.current_worker.progress_updated.connect(self.progress_bar.setValue)

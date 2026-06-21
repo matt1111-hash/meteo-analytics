@@ -106,7 +106,7 @@ def create_single_city_view(window: "MainWindow") -> QWidget:
     register_widget_for_theming(main_splitter, "splitter")
 
     # Control Panel
-    window.control_panel = ControlPanel(window.worker_manager)
+    window.control_panel = ControlPanel(window.worker_manager, window.controller.city_manager)
     register_widget_for_theming(window.control_panel, "container")
     window.control_panel.setMinimumWidth(320)
     window.control_panel.setMaximumWidth(520)
@@ -114,7 +114,7 @@ def create_single_city_view(window: "MainWindow") -> QWidget:
     main_splitter.addWidget(window.control_panel)
 
     # Results Panel
-    window.results_panel = ResultsPanel()
+    window.results_panel = ResultsPanel(anomaly_profile_port=window.controller.anomaly_profile_port)
     register_widget_for_theming(window.results_panel, "container")
     window.results_panel.setMinimumWidth(450)
     window.results_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -147,7 +147,9 @@ def create_trend_analysis_view(window: "MainWindow") -> QWidget:
     from ..theme_manager import register_widget_for_theming  # noqa: PLC0415
     from ..trend_analytics import TrendAnalyticsTab  # noqa: PLC0415
 
-    window.trend_analytics_tab = TrendAnalyticsTab()
+    window.trend_analytics_tab = TrendAnalyticsTab(
+        window.controller.city_manager, window.controller.weather_client
+    )
     register_widget_for_theming(window.trend_analytics_tab, "container")
     return window.trend_analytics_tab
 
