@@ -16,10 +16,21 @@ import tempfile
 import threading
 from pathlib import Path
 
-from src.presentation.gui.map.map_interactions import (
-    create_map_temp_dir,
-    make_map_request_handler,
-)
+import pytest
+
+# map_interactions pulls in PySide6, which needs the libEGL system library.
+# Headless CI runners (ubuntu) lack libEGL, so the import fails there — skip the
+# module instead of aborting collection. The tests run locally (real desktop).
+try:
+    from src.presentation.gui.map.map_interactions import (
+        create_map_temp_dir,
+        make_map_request_handler,
+    )
+except ImportError as exc:  # pragma: no cover - environment-dependent
+    pytest.skip(
+        f"map_interactions (PySide6/Qt) unavailable in this environment: {exc}",
+        allow_module_level=True,
+    )
 
 
 def test_create_map_temp_dir_is_dedicated_and_owner_only() -> None:
