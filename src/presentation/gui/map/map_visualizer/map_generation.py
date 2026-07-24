@@ -67,6 +67,7 @@ def _start_map_generation(self) -> None:
         counties_gdf=self.counties_gdf,
         weather_data=self.current_weather_data,
         bridge_id=self.js_bridge.bridge_id,
+        output_dir=self.local_server.temp_dir if self.local_server else None,
     )
     self.map_generator.progress_updated.connect(self.progress_bar.setValue)
     self.map_generator.status_updated.connect(self.status_label.setText)
