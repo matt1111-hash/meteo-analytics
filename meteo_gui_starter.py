@@ -216,7 +216,7 @@ def check_requirements() -> bool:
     # Required paths - updated for presentation structure
     required_paths = [
         project_root / "src",
-        project_root / "src" / "config.py",
+        project_root / "src" / "config" / "__init__.py",
         project_root / "src" / "presentation" / "gui",
         project_root / "src" / "presentation" / "gui" / "windows" / "main_window.py",
         project_root / "src" / "presentation" / "gui" / "controller" / "app_controller.py",

@@ -47,10 +47,10 @@ class APIConfig:
     API_KEY: ClassVar[str | None] = os.getenv("API_KEY")
     API_KEY_ENABLED: ClassVar[bool] = bool(API_KEY)
 
-    # CORS
+    # CORS — default origin matches the Vite dev server (port 5174).
     CORS_ORIGINS: ClassVar[list[str]] = [
         origin.strip()
-        for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+        for origin in os.getenv("CORS_ORIGINS", "http://localhost:5174").split(",")
         if origin.strip()
     ]
 
@@ -88,7 +88,7 @@ class APIConfig:
             cls.API_KEY_ENABLED = bool(cls.API_KEY)
             cls.CORS_ORIGINS = [
                 origin.strip()
-                for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+                for origin in os.getenv("CORS_ORIGINS", "http://localhost:5174").split(",")
                 if origin.strip()
             ]
             cls.APP_ENV = _resolve_app_env()

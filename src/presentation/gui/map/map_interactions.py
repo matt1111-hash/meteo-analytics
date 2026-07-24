@@ -7,11 +7,13 @@
 FÁJL: src/presentation/gui/map/map_interactions.py
 """
 
+import functools
 import http.server
-import os
+import shutil
 import socketserver
 import tempfile
 import uuid
+from pathlib import Path
 
 from PySide6.QtCore import QThread, Signal
 from PySide6.QtWidgets import QWidget
@@ -22,6 +24,33 @@ try:
     FOLIUM_AVAILABLE = True
 except ImportError:
     FOLIUM_AVAILABLE = False
+
+
+def create_map_temp_dir() -> str:
+    """Dedikált, csak-tulajdonosnak olvasható (0700) temp könyvtár a térképfájloknak.
+
+    A megosztott rendszer-temp (``/tmp``) helyett egy privát könyvtárat használunk,
+    így egy localhost-on csatlakozó folyamat csak a generált térképfájlokat
+    olvashatja, más folyamatok temp fájljait nem. Lásd P2 finding #3 / CWE-200.
+    """
+    path = Path(tempfile.mkdtemp(prefix="meteo_map_"))
+    path.chmod(0o700)
+    return str(path)
+
+
+def make_map_request_handler(directory: str) -> functools.partial:
+    """Csendes ``SimpleHTTPRequestHandler``-gyár, a megadott ``directory``-hez kötve.
+
+    A ``directory=`` kötés (a teljes folyamat ``os.chdir``-jével szemben) azt
+    biztosítja, hogy a szerver csak a generált térképfájlokat szolgálja ki, ne a
+    teljes közös temp könyvtárat.
+    """
+
+    class _QuietHandler(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, format, *args):
+            pass
+
+    return functools.partial(_QuietHandler, directory=directory)
 
 
 class LocalHttpServerThread(QThread):
@@ -36,7 +65,7 @@ class LocalHttpServerThread(QThread):
         super().__init__(parent)
         self.server = None
         self.httpd = None
-        self.temp_dir = tempfile.gettempdir()
+        self.temp_dir = create_map_temp_dir()
         self.host = "127.0.0.1"
         self.port = 0
         self.running = False
@@ -46,13 +75,9 @@ class LocalHttpServerThread(QThread):
         🚀 HTTP szerver indítása háttérben.
         """
         try:
-            os.chdir(self.temp_dir)
+            handler_factory = make_map_request_handler(self.temp_dir)
 
-            class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
-                def log_message(self, format, *args):
-                    pass
-
-            with socketserver.TCPServer((self.host, self.port), QuietHTTPRequestHandler) as httpd:
+            with socketserver.TCPServer((self.host, self.port), handler_factory) as httpd:
                 self.httpd = httpd
                 self.port = httpd.server_address[1]
                 self.running = True
@@ -68,12 +93,15 @@ class LocalHttpServerThread(QThread):
 
     def stop(self) -> None:
         """
-        🛑 HTTP szerver leállítása.
+        🛑 HTTP szerver leállítása és a dedikált temp könyvtár törlése.
         """
         if self.httpd:
             self.httpd.shutdown()
+            self.httpd.server_close()
+            self.httpd = None
             self.running = False
             print("🛑 Local HTTP Server stopped")
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
 
 class JavaScriptBridge(QWidget):

@@ -7,11 +7,12 @@ from dataclasses import asdict
 from typing import Any, Dict, List  # noqa: UP035
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 from starlette.concurrency import run_in_threadpool
 
 from src.api.dependencies import ServiceRegistry, get_services
 from src.api.dto.weather_request import WeatherAnalysisRequest
+from src.api.dto.weather_request import validate_date_span, validate_iso_date
 from src.application.use_cases import AnalyzeMultiCityUseCase, DetectAnomaliesUseCase
 
 logger = logging.getLogger(__name__)
@@ -34,13 +35,23 @@ class AnomalyThresholds(BaseModel):
 class AnomalyDetectionRequest(BaseModel):
     """Request for anomaly detection."""
 
-    city: str = Field(..., description="City name to analyze")
+    city: str = Field(..., min_length=1, description="City name to analyze")
     start: str = Field(..., description="Start date (YYYY-MM-DD)")
     end: str = Field(..., description="End date (YYYY-MM-DD)")
     thresholds: AnomalyThresholds | None = Field(
         default=None,
         description="Custom thresholds (defaults provided if not specified)",
     )
+
+    @field_validator("start", "end")
+    @classmethod
+    def _check_date_format(cls, value: str) -> str:
+        return validate_iso_date(value)
+
+    @model_validator(mode="after")
+    def _check_date_span(self) -> AnomalyDetectionRequest:
+        validate_date_span(self.start, self.end)
+        return self
 
 
 anomaly_use_case = DetectAnomaliesUseCase()

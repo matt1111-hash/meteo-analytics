@@ -11,7 +11,6 @@ from src.domain.analytics.models import CityWeatherData, MultiCityQuery
 from src.domain.analytics.services import (
     AnalyticsTransformService,
     RegionResolverService,
-    WeatherFetchService,
 )
 from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
 from src.domain.entities.weather import CityWeatherResult

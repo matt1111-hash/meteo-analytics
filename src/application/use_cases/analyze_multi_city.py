@@ -10,11 +10,10 @@ from src.domain.analytics.models import CityWeatherData, MultiCityQuery
 from src.domain.analytics.services import (
     AnalyticsTransformService,
     RegionResolverService,
-    WeatherFetchService,
 )
 from src.domain.entities.analytics_models import AnalyticsQuestion, AnalyticsResult
 from src.domain.entities.weather import CityWeatherResult
-from src.domain.ports import CityRepositoryPort
+from src.domain.ports import CityRepositoryPort, WeatherFetchPort
 from src.domain.value_objects.enums import (
     AnalyticsMetric,
     DataSource,
@@ -39,7 +38,7 @@ class AnalyzeMultiCityUseCase:
         *,
         region_resolver: RegionResolverService,
         city_repository: CityRepositoryPort,
-        weather_fetch_service: WeatherFetchService,
+        weather_fetch_service: WeatherFetchPort,
         analytics_transform_service: AnalyticsTransformService,
         query_types: dict[str, dict[str, Any]],
         regions: dict[str, dict[str, Any]],

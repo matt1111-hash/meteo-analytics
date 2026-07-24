@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 from src.domain.analytics.models import CityWeatherData
-from src.domain.analytics.services.weather_fetch_service import WeatherFetchService
+from src.infrastructure.weather.weather_fetch_service import WeatherFetchService
 
 
 class _DummyWeatherClient:

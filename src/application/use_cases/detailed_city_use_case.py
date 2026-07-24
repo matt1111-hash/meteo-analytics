@@ -12,11 +12,8 @@ from dataclasses import dataclass
 from typing import Any
 
 from src.domain.analytics.models import CityWeatherData
-from src.domain.analytics.services import (
-    AnalyticsTransformService,
-    WeatherFetchService,
-)
-from src.domain.ports import CityRepositoryPort
+from src.domain.analytics.services import AnalyticsTransformService
+from src.domain.ports import CityRepositoryPort, WeatherFetchPort
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +46,7 @@ class DetailedCityUseCase:
         self,
         *,
         city_repository: CityRepositoryPort,
-        weather_fetch_service: WeatherFetchService,
+        weather_fetch_service: WeatherFetchPort,
         analytics_transform_service: AnalyticsTransformService,
         query_types: dict[str, dict[str, Any]],
         regions: dict[str, dict[str, Any]],

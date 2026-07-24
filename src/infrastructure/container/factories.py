@@ -23,6 +23,7 @@ if TYPE_CHECKING:
         CityManagerPort,
         CityRepositoryPort,
         WeatherClientPort,
+        WeatherFetchPort,
     )
 
 
@@ -62,6 +63,32 @@ def get_trend_calculator_port() -> "TrendCalculatorPort":
     from src.infrastructure.analytics.trend_calculator import TrendCalculator  # noqa: PLC0415
 
     return TrendCalculator()
+
+
+def get_weather_fetch_port() -> "WeatherFetchPort":
+    """
+    Factory function to get the WeatherFetchPort implementation.
+
+    Builds the infrastructure-layer weather fetch orchestrator (ThreadPoolExecutor,
+    retry, throttling) wired to a WeatherClientPort, configured via WeatherFetchConfig.
+    Use cases receive this via the WeatherFetchPort Protocol, not the concrete class.
+
+    Returns:
+        WeatherFetchPort implementation from Infrastructure Layer
+    """
+    from src.config.config_settings import WeatherFetchConfig  # noqa: PLC0415
+    from src.infrastructure.weather.weather_fetch_service import (  # noqa: PLC0415
+        WeatherFetchService,
+    )
+
+    cfg = WeatherFetchConfig()
+    return WeatherFetchService(
+        weather_client=get_weather_client_port(),
+        max_workers=cfg.max_workers,
+        request_timeout=cfg.request_timeout,
+        max_retries=cfg.max_retries,
+        retry_delay=cfg.retry_delay,
+    )
 
 
 def get_city_repository_port(

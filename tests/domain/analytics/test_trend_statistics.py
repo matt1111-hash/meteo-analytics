@@ -66,11 +66,13 @@ class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
     def test_calculates_r_squared(
         self, calculator: TrendStatisticsCalculator, monthly_df: pd.DataFrame
     ) -> None:
-        """Should calculate r_squared."""
+        """Should calculate r_squared as r_value**2 (scipy path, no sklearn)."""
         result = calculator.calculate_linear_regression(monthly_df)
         assert result is not None
-        # Perfect linear data should have r_squared close to 1
+        # The fixture is perfectly linear (10.0 + i*0.5), so r_squared ~= 1.0.
+        # This locks in r_squared == r_value**2 from scipy.stats.linregress.
         assert 0 <= result["r_squared"] <= 1
+        assert result["r_squared"] > 0.99
 
     def test_calculates_p_value(
         self, calculator: TrendStatisticsCalculator, monthly_df: pd.DataFrame
@@ -112,6 +114,9 @@ class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
         result = calculator.calculate_linear_regression(df)
         assert result is not None
         assert result["slope"] == 0
+        # A perfectly-fit constant series yields r_squared == 1.0 (the former
+        # sklearn.metrics.r2_score convention for 0/0; scipy alone gives NaN→0).
+        assert result["r_squared"] == 1.0
 
     def test_handles_negative_trend(self, calculator: TrendStatisticsCalculator) -> None:
         """Should handle negative trend."""

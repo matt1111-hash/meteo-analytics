@@ -53,6 +53,7 @@ class FoliumMapGenerator(QThread):
         weather_data: dict | None = None,
         bridge_id: str | None = None,
         output_path: str | None = None,
+        output_dir: str | None = None,
     ):
         super().__init__()
         self.config = config
@@ -62,8 +63,9 @@ class FoliumMapGenerator(QThread):
 
         if output_path is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            target_dir = output_dir or tempfile.gettempdir()
             self.output_path = os.path.join(  # noqa: PTH118
-                tempfile.gettempdir(), f"hungarian_folium_map_{timestamp}.html"
+                target_dir, f"hungarian_folium_map_{timestamp}.html"
             )
         else:
             self.output_path = output_path

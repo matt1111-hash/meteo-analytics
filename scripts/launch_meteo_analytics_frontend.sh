@@ -34,7 +34,7 @@ require_file() {
 }
 
 PROJECT_DIR="/home/tibor/PythonProjects/meteo-analytics/frontend"
-APP_URL="http://localhost:3000"
+APP_URL="http://localhost:5174"
 
 require_dir "$PROJECT_DIR" "frontend projektkönyvtár"
 require_file "$PROJECT_DIR/package.json" "frontend package.json"
@@ -70,4 +70,4 @@ fi
 ) &
 
 cd "$PROJECT_DIR"
-exec env DANGEROUSLY_DISABLE_HOST_CHECK=true BROWSER=none PORT=3000 npm start
+exec env DANGEROUSLY_DISABLE_HOST_CHECK=true BROWSER=none PORT=5174 npm start
