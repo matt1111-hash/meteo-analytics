@@ -46,7 +46,7 @@ npm install
 npm start
 ```
 
-The frontend opens at `http://localhost:3000` and proxies API requests to the backend.
+The frontend opens at `http://localhost:5174` and proxies API requests to the backend.
 
 ### 3. Desktop GUI (PySide6)
 

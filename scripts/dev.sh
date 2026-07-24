@@ -3,13 +3,13 @@
 # Usage: ./scripts/dev.sh
 # Environment:
 #   BACKEND_PORT  — backend port (default: 8003)
-#   FRONTEND_PORT — frontend port (default: 3000)
+#   FRONTEND_PORT — frontend port (default: 5174)
 
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BACKEND_PORT="${BACKEND_PORT:-8003}"
-FRONTEND_PORT="${FRONTEND_PORT:-3000}"
+FRONTEND_PORT="${FRONTEND_PORT:-5174}"
 BACKEND_HEALTH="http://127.0.0.1:${BACKEND_PORT}/health"
 FRONTEND_HEALTH="http://127.0.0.1:${FRONTEND_PORT}"
 

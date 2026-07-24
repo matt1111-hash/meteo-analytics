@@ -35,16 +35,26 @@ require_file() {
   fi
 }
 
+# Unique marker in meteo's served HTML. The launcher must verify the app
+# responding on the frontend port is actually meteo — another dev server
+# (Next.js, another Vite app) grabbing the same port must NOT be mistaken for
+# meteo, otherwise the launcher would open the wrong application.
+METEO_MARKER="Global Weather Analyzer"
+
+is_meteo_frontend() {
+  curl -fsS "$1" 2>/dev/null | grep -q "$METEO_MARKER"
+}
+
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
 PYTHON_BIN="$PROJECT_ROOT/venv/bin/python"
 BACKEND_LOG="/tmp/meteo_analytics_backend.log"
 FRONTEND_LOG="/tmp/meteo_analytics_frontend.log"
-FRONTEND_URL="http://localhost:3000"
+FRONTEND_URL="http://localhost:5174"
 BACKEND_HEALTH_URL="http://127.0.0.1:8003/health"
-FRONTEND_HEALTH_URL="http://localhost:3000"
+FRONTEND_HEALTH_URL="http://localhost:5174"
 BACKEND_PORT="8003"
-FRONTEND_PORT="3000"
+FRONTEND_PORT="5174"
 BACKEND_RETRY_COUNT="30"
 FRONTEND_RETRY_COUNT="120"
 
@@ -132,18 +142,18 @@ if [[ "$backend_started" == "1" ]] && [[ -n "$backend_pid" ]] && ! kill -0 "$bac
   backend_pid=""
 fi
 
-if ! curl -fsS "$FRONTEND_HEALTH_URL" >/dev/null 2>&1; then
+if ! is_meteo_frontend "$FRONTEND_HEALTH_URL"; then
   : >"$FRONTEND_LOG"
   (
     cd "$FRONTEND_DIR"
-    exec env PORT="$FRONTEND_PORT" npm run dev </dev/null
+    exec npm run dev -- --port "$FRONTEND_PORT" --strictPort </dev/null
   ) >"$FRONTEND_LOG" 2>&1 &
   frontend_pid="$!"
   frontend_started=1
 fi
 
 for _ in $(seq 1 "$FRONTEND_RETRY_COUNT"); do
-  if curl -fsS "$FRONTEND_HEALTH_URL" >/dev/null 2>&1; then
+  if is_meteo_frontend "$FRONTEND_HEALTH_URL"; then
     break
   fi
   if [[ "$frontend_started" == "1" ]] && [[ -n "$frontend_pid" ]] && ! kill -0 "$frontend_pid" >/dev/null 2>&1; then
@@ -152,11 +162,10 @@ for _ in $(seq 1 "$FRONTEND_RETRY_COUNT"); do
   sleep 1
 done
 
-if ! curl -fsS "$FRONTEND_HEALTH_URL" >/dev/null 2>&1; then
-  if ! grep -Eq "VITE v|ready in|Local:" "$FRONTEND_LOG" 2>/dev/null; then
-    show_error "Indítási hiba" "A frontend nem indult el. Log: $FRONTEND_LOG"
-    exit 1
-  fi
+if ! is_meteo_frontend "$FRONTEND_HEALTH_URL"; then
+  show_error "Indítási hiba" \
+    "A meteo frontend nem érhető el a $FRONTEND_PORT porton. Ha egy másik app (pl. Next.js vagy másik Vite app) foglalja a portot, állítsd le, vagy változtasd meg a FRONTEND_PORT környezeti változót. Log: $FRONTEND_LOG"
+  exit 1
 fi
 
 (

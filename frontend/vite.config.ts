@@ -4,7 +4,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
+    // 5174 = Vite default; avoids colliding with CRA/Next.js apps on 3000
+    // (a 3000 collision made the desktop launcher open the other app).
+    port: 5174,
     proxy: {
       '/api': {
         target: 'http://localhost:8003',
