@@ -5,12 +5,13 @@ from __future__ import annotations  # noqa: I001
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 from starlette.concurrency import run_in_threadpool
 
 from src.api.adapters.weather_adapter import to_multi_city_query
 from src.api.dependencies import ServiceRegistry, get_services
 from src.api.dto.weather_request import WeatherAnalysisRequest
+from src.api.dto.weather_request import validate_date_span, validate_iso_date
 from src.api.error_handling import raise_for_use_case_result
 
 logger = logging.getLogger(__name__)
@@ -20,13 +21,23 @@ router = APIRouter(prefix="/api/weather", tags=["weather"])
 class SingleCityRequest(BaseModel):
     """Request for single city time series analysis."""
 
-    city: str = Field(..., description="City name to analyze")
+    city: str = Field(..., min_length=1, description="City name to analyze")
     start: str = Field(..., description="Start date (YYYY-MM-DD)")
     end: str = Field(..., description="End date (YYYY-MM-DD)")
     metric: str = Field(
         default="temperature_2m_max",
         description="Metric to analyze (temperature_2m_max, windspeed_10m_max, etc.)",
     )
+
+    @field_validator("start", "end")
+    @classmethod
+    def _check_date_format(cls, value: str) -> str:
+        return validate_iso_date(value)
+
+    @model_validator(mode="after")
+    def _check_date_span(self) -> SingleCityRequest:
+        validate_date_span(self.start, self.end)
+        return self
 
 
 def _metric_to_query_type(metric: str) -> str:

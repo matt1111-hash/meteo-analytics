@@ -77,6 +77,20 @@ class MultiCityConfig:
 
 
 @dataclass(frozen=True)
+class RequestLimits:
+    """Input-size limits for public API requests (resource-exhaustion guard).
+
+    Caps the blast radius of a single request so a client cannot trigger
+    unbounded external API fan-out (one city plus one date range used to be
+    able to generate thousands of provider calls). See P2 finding #1 / CWE-400.
+    """
+
+    MAX_CITIES_PER_REQUEST: int = 50
+    MAX_DATE_RANGE_DAYS: int = 1825  # ~5 years; trend/multi-year use separate DTOs
+    DATE_FORMAT: str = "%Y-%m-%d"
+
+
+@dataclass(frozen=True)
 class AppInfo:
     """Application information and metadata."""
 
@@ -104,4 +118,11 @@ class AppInfo:
     LEGACY_VERSION: str = "1.0.0"
 
 
-__all__ = ["AppInfo", "GUIConfig", "HardwareConfig", "MultiCityConfig", "WeatherFetchConfig"]
+__all__ = [
+    "AppInfo",
+    "GUIConfig",
+    "HardwareConfig",
+    "MultiCityConfig",
+    "RequestLimits",
+    "WeatherFetchConfig",
+]

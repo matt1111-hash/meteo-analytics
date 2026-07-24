@@ -15,6 +15,7 @@ class TestModuleExports:
             "HardwareConfig",
             "MultiCityConfig",
             "AppInfo",
+            "RequestLimits",
             "WeatherFetchConfig",
         }
         actual_exports = set(config_settings.__all__)
@@ -28,12 +29,14 @@ class TestModuleExports:
             GUIConfig,
             HardwareConfig,
             MultiCityConfig,
+            RequestLimits,
         )
 
         assert GUIConfig is not None
         assert HardwareConfig is not None
         assert MultiCityConfig is not None
         assert AppInfo is not None
+        assert RequestLimits is not None
 
 
 class TestIntegration:

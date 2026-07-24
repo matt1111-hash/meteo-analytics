@@ -3,15 +3,28 @@
 
 from __future__ import annotations
 
+from pydantic import field_validator, model_validator
+from src.api.dto.weather_request import validate_date_span, validate_iso_date
+
 from .wind_rose_support import *
 
 
 class WindRoseRequest(BaseModel):
     """Request for wind rose analysis."""
 
-    city: str = Field(..., description="City name to analyze")
+    city: str = Field(..., min_length=1, description="City name to analyze")
     start: str = Field(..., description="Start date (YYYY-MM-DD)")
     end: str = Field(..., description="End date (YYYY-MM-DD)")
+
+    @field_validator("start", "end")
+    @classmethod
+    def _check_date_format(cls, value: str) -> str:
+        return validate_iso_date(value)
+
+    @model_validator(mode="after")
+    def _check_date_span(self) -> WindRoseRequest:
+        validate_date_span(self.start, self.end)
+        return self
 
 
 class DirectionData(BaseModel):
@@ -21,6 +34,7 @@ class DirectionData(BaseModel):
     angle: float = Field(..., description="Direction angle in degrees")
     speed_buckets: List[int] = Field(
         ...,
+        max_length=10,
         description="Count of observations in each speed category: "
         "[0-25, 25-50, 50-70, 70-100, 100-120, 120+] km/h",
     )

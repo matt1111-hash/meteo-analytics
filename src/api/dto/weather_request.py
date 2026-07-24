@@ -2,9 +2,15 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any, Dict, List  # noqa: UP035
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+from src.config.config_settings import RequestLimits
+
+_MAX_CITIES = RequestLimits.MAX_CITIES_PER_REQUEST
+_MAX_DATE_RANGE_DAYS = RequestLimits.MAX_DATE_RANGE_DAYS
+_DATE_FORMAT = RequestLimits.DATE_FORMAT
 
 
 def _normalize_city_names(value: List[str]) -> List[str]:  # noqa: UP006
@@ -17,10 +23,46 @@ def _has_supported_date_keys(value: Dict[str, Any]) -> bool:  # noqa: UP006
     return any(key in value for key in ("date", "start", "end"))
 
 
+def validate_iso_date(value: str) -> str:
+    """Validate an ISO ``YYYY-MM-DD`` date string and return it unchanged.
+
+    Raises ``ValueError`` (→ HTTP 422 at the API boundary) on malformed input,
+    so invalid dates never reach the provider/fetch layer.
+    """
+    try:
+        datetime.strptime(value, _DATE_FORMAT)
+    except (ValueError, TypeError) as exc:
+        raise ValueError(f"Érvénytelen dátum: {value!r} (várva YYYY-MM-DD).") from exc
+    return value
+
+
+def validate_date_span(start: str, end: str) -> None:
+    """Validate ordering and bounded span of a ``start``/``end`` date pair.
+
+    Rejects inverted ranges and spans exceeding ``MAX_DATE_RANGE_DAYS`` to keep
+    a single request from fanning out into thousands of provider calls.
+    """
+    start_dt = datetime.strptime(start, _DATE_FORMAT)
+    end_dt = datetime.strptime(end, _DATE_FORMAT)
+    if start_dt > end_dt:
+        raise ValueError("A kezdő dátum nem lehet későbbi a végdátumnál.")
+    span_days = (end_dt - start_dt).days
+    if span_days > _MAX_DATE_RANGE_DAYS:
+        raise ValueError(
+            f"A dátumtartomány túl nagy: {span_days} nap "
+            f"(maximum {_MAX_DATE_RANGE_DAYS} nap / ~5 év)."
+        )
+
+
 class WeatherAnalysisRequest(BaseModel):
     """Incoming payload for multi-city weather analysis."""
 
-    cities: List[str] = Field(..., min_length=1, description="City names to analyze.")  # noqa: UP006
+    cities: List[str] = Field(  # noqa: UP006
+        ...,
+        min_length=1,
+        max_length=_MAX_CITIES,
+        description="City names to analyze.",
+    )
     date_range: Dict[str, Any] = Field(  # noqa: UP006
         ...,
         description="Date descriptor with 'date' or 'start'/'end' keys.",
@@ -38,6 +80,10 @@ class WeatherAnalysisRequest(BaseModel):
         normalized = _normalize_city_names(value)
         if not normalized:
             raise ValueError("Üres városnevek nem engedélyezettek.")
+        if len(normalized) > _MAX_CITIES:
+            raise ValueError(
+                f"Túl sok város: {len(normalized)} (maximum {_MAX_CITIES} város/kérés)."
+            )
         return normalized
 
     @field_validator("date_range")
@@ -47,6 +93,16 @@ class WeatherAnalysisRequest(BaseModel):
             raise ValueError("date_range objektum kell legyen.")
         if not _has_supported_date_keys(value):
             raise ValueError("date_range tartalmazzon 'date' vagy 'start'/'end' kulcsot.")
+        start = value.get("start")
+        end = value.get("end")
+        if start and end:
+            validate_date_span(validate_iso_date(str(start)), validate_iso_date(str(end)))
+        elif start:
+            validate_iso_date(str(start))
+        elif end:
+            validate_iso_date(str(end))
+        elif value.get("date"):
+            validate_iso_date(str(value["date"]))
         return value
 
     model_config = ConfigDict(frozen=True)

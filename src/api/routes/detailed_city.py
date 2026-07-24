@@ -5,10 +5,11 @@ from __future__ import annotations  # noqa: I001
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 from starlette.concurrency import run_in_threadpool
 
 from src.api.dependencies import ServiceRegistry, get_services
+from src.api.dto.weather_request import validate_date_span, validate_iso_date
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/weather", tags=["weather"])
@@ -17,9 +18,19 @@ router = APIRouter(prefix="/api/weather", tags=["weather"])
 class DetailedCityRequest(BaseModel):
     """Request for detailed single city analysis with multiple metrics."""
 
-    city: str = Field(..., description="City name to analyze")
+    city: str = Field(..., min_length=1, description="City name to analyze")
     start: str = Field(..., description="Start date (YYYY-MM-DD)")
     end: str = Field(..., description="End date (YYYY-MM-DD)")
+
+    @field_validator("start", "end")
+    @classmethod
+    def _check_date_format(cls, value: str) -> str:
+        return validate_iso_date(value)
+
+    @model_validator(mode="after")
+    def _check_date_span(self) -> DetailedCityRequest:
+        validate_date_span(self.start, self.end)
+        return self
 
 
 @router.post("/single-city-detailed")
