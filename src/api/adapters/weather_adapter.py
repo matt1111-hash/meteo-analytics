@@ -28,6 +28,10 @@ def to_multi_city_query(request: WeatherAnalysisRequest) -> MultiCityQuery:
     """Transform API request to MultiCityQuery with safe defaults."""
     date_info = _extract_date_range(request)
     limit = min(len(request.cities), RequestLimits.MAX_CITIES_PER_REQUEST)
+    # Defense-in-depth: truncate the explicit city list to the cap too, not just
+    # the metadata. AnalyzeMultiCityUseCase uses query.cities directly when
+    # explicit names are provided, so an uncapped list would bypass the limit.
+    cities = request.cities[:limit]
 
     # Use metric from request to determine query_type
     query_type = _metric_to_query_type(request.metric or "temperature_2m_max")
@@ -40,7 +44,7 @@ def to_multi_city_query(request: WeatherAnalysisRequest) -> MultiCityQuery:
         end_date=date_info.get("end_date"),
         limit=limit,
         max_cities=limit,
-        cities=request.cities,  # Pass explicit city names
+        cities=cities,  # Truncated explicit city names (≤ MAX_CITIES_PER_REQUEST)
     )
 
 

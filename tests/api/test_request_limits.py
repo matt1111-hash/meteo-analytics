@@ -131,6 +131,10 @@ def test_adapter_caps_max_cities_at_limit() -> None:
     query = to_multi_city_query(fake_request)  # type: ignore[arg-type]
     assert query.max_cities == MAX_CITIES
     assert query.limit == MAX_CITIES
+    # The actual city list must be truncated too — AnalyzeMultiCityUseCase uses
+    # query.cities directly when explicit names are present, so capping only the
+    # metadata would leave the list uncapped (the bug this test now guards).
+    assert len(query.cities) == MAX_CITIES
 
 
 def test_adapter_forwards_valid_city_count() -> None:
@@ -142,6 +146,7 @@ def test_adapter_forwards_valid_city_count() -> None:
     query = to_multi_city_query(request)
     assert query.max_cities == 2
     assert query.limit == 2
+    assert len(query.cities) == 2
 
 
 # --- route-level inline DTOs -------------------------------------------------
