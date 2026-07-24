@@ -8,8 +8,6 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from scipy import stats
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
 
 logger = logging.getLogger(__name__)
 
@@ -18,26 +16,34 @@ class TrendStatisticsCalculator:
     """Linear regression and confidence interval calculations."""
 
     def calculate_linear_regression(self, monthly_df: pd.DataFrame) -> dict[str, Any] | None:
-        """Calculate linear regression statistics."""
+        """Calculate linear regression statistics.
+
+        Uses ``scipy.stats.linregress`` as the single source of truth for slope,
+        intercept, r, p and std_err; ``r_squared`` is ``r_value ** 2`` (numerically
+        identical to ``sklearn.metrics.r2_score`` for ordinary least squares, which
+        the heavy scikit-learn dependency was previously pulled in to compute).
+        """
         X = np.arange(len(monthly_df)).reshape(-1, 1)
         y = monthly_df["avg_value"].values
+        x_flat = X.flatten()
 
-        # Scikit-learn model
-        model = LinearRegression()
-        model.fit(X, y)
-        y_pred = model.predict(X)
-
-        r2 = r2_score(y, y_pred)
-
-        # Scipy stats for additional statistics
         try:
-            slope, intercept, _r_value, p_value, std_err = stats.linregress(X.flatten(), y)
+            slope, intercept, r_value, p_value, std_err = stats.linregress(x_flat, y)
+            r2 = float(r_value) ** 2
         except ValueError:
-            slope = model.coef_[0]
-            intercept = model.intercept_
-            np.sqrt(r2) if r2 >= 0 else 0
+            # Degenerate input (e.g. <2 points or constant x): safe fallback.
+            slope = 0.0
+            intercept = float(np.mean(y)) if len(y) else 0.0
+            r2 = 0.0
             p_value = 0.5
             std_err = 0.0
+
+        # Guard against NaN r_squared from edge-case inputs (e.g. constant y).
+        if not np.isfinite(r2):
+            r2 = 0.0
+
+        # Predicted values for the confidence-interval calculation.
+        y_pred = intercept + slope * x_flat
 
         # Confidence interval (95%)
         confidence_interval = self._calculate_confidence_interval(X, y, y_pred)

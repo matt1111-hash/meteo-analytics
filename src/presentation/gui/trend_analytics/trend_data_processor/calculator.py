@@ -4,8 +4,6 @@
 import numpy as np
 import pandas as pd
 from scipy import stats
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
 
 
 def _build_dataframe(weather_data: list[dict], api_field: str) -> pd.DataFrame | None:
@@ -51,32 +49,40 @@ def _build_monthly_dataframe(df: pd.DataFrame) -> pd.DataFrame | None:
 
 def _calculate_regression(
     monthly_df: pd.DataFrame,
-) -> tuple[np.ndarray, np.ndarray, LinearRegression, float, float]:
-    """Calculate linear regression values for the monthly series."""
+) -> tuple[np.ndarray, np.ndarray, float, float, float, float, float, float]:
+    """Calculate linear regression values for the monthly series (scipy-only).
+
+    A single ``stats.linregress`` call yields slope, intercept, r, p and std_err;
+    ``r_squared`` is ``r_value ** 2`` (identical to ``sklearn`` r2_score for
+    ordinary least squares), removing the heavy scikit-learn dependency.
+    Returns (x_values, y_values, slope, intercept, r2, trend_per_decade,
+    p_value, std_err).
+    """
     x_values = np.arange(len(monthly_df)).reshape(-1, 1)
     y_values = monthly_df["avg_value"].values
-    model = LinearRegression()
-    model.fit(x_values, y_values)
-    y_pred = model.predict(x_values)
-    r2 = r2_score(y_values, y_pred)
-    trend_per_decade = model.coef_[0] * 12 * 10
-    return x_values, y_values, model, float(r2), float(trend_per_decade)
-
-
-def _calculate_statistical_signals(
-    x_values: np.ndarray,
-    y_values: np.ndarray,
-    model: LinearRegression,
-    r2: float,  # noqa: ARG001
-) -> tuple[float, float, float]:
-    """Calculate slope, intercept and p-value for the trend."""
     try:
-        slope, intercept, _r_value, p_value, std_err = stats.linregress(
-            x_values.flatten(), y_values
-        )
-        return float(slope), float(intercept), float(p_value), float(std_err)
+        slope, intercept, r_value, p_value, std_err = stats.linregress(x_values.flatten(), y_values)
+        r2 = float(r_value) ** 2
     except ValueError:
-        return float(model.coef_[0]), float(model.intercept_), 0.5, 0.0
+        # Degenerate input (e.g. <2 points or constant x): safe fallback.
+        slope = 0.0
+        intercept = float(np.mean(y_values)) if len(y_values) else 0.0
+        r2 = 0.0
+        p_value = 0.5
+        std_err = 0.0
+    if not np.isfinite(r2):
+        r2 = 0.0
+    trend_per_decade = float(slope) * 12 * 10
+    return (
+        x_values,
+        y_values,
+        float(slope),
+        float(intercept),
+        r2,
+        trend_per_decade,
+        float(p_value),
+        float(std_err),
+    )
 
 
 def _calculate_confidence_bounds(
@@ -159,11 +165,17 @@ def calculate_trend_statistics(
     if monthly_df is None:
         return None
 
-    x_values, y_values, model, r2, trend_per_decade = _calculate_regression(monthly_df)
-    y_pred = model.predict(x_values)
-    slope, intercept, p_value, std_err = _calculate_statistical_signals(
-        x_values, y_values, model, r2
-    )
+    (
+        x_values,
+        y_values,
+        slope,
+        intercept,
+        r2,
+        trend_per_decade,
+        p_value,
+        std_err,
+    ) = _calculate_regression(monthly_df)
+    y_pred = slope * x_values.flatten() + intercept
     ci_lower, ci_upper = _calculate_confidence_bounds(y_values, y_pred, x_values)
 
     stats_dict = {
