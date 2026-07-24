@@ -50,11 +50,11 @@ FRONTEND_DIR="$PROJECT_ROOT/frontend"
 PYTHON_BIN="$PROJECT_ROOT/venv/bin/python"
 BACKEND_LOG="/tmp/meteo_analytics_backend.log"
 FRONTEND_LOG="/tmp/meteo_analytics_frontend.log"
-FRONTEND_URL="http://localhost:5174"
+FRONTEND_PORT="${FRONTEND_PORT:-5174}"
+FRONTEND_URL="http://localhost:${FRONTEND_PORT}"
 BACKEND_HEALTH_URL="http://127.0.0.1:8003/health"
-FRONTEND_HEALTH_URL="http://localhost:5174"
+FRONTEND_HEALTH_URL="http://localhost:${FRONTEND_PORT}"
 BACKEND_PORT="8003"
-FRONTEND_PORT="5174"
 BACKEND_RETRY_COUNT="30"
 FRONTEND_RETRY_COUNT="120"
 
@@ -116,7 +116,9 @@ if ! curl -fsS "$BACKEND_HEALTH_URL" >/dev/null 2>&1; then
   : >"$BACKEND_LOG"
   (
     cd "$PROJECT_ROOT"
-    exec "$PYTHON_BIN" -m uvicorn src.api.main:app --host 127.0.0.1 --port "$BACKEND_PORT"
+    # Allow the actual frontend origin (honors a FRONTEND_PORT override); dev only.
+    exec env CORS_ORIGINS="http://localhost:${FRONTEND_PORT}" \
+      "$PYTHON_BIN" -m uvicorn src.api.main:app --host 127.0.0.1 --port "$BACKEND_PORT"
   ) >"$BACKEND_LOG" 2>&1 &
   backend_pid="$!"
   backend_started=1
