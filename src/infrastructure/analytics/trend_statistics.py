@@ -19,31 +19,36 @@ class TrendStatisticsCalculator:
         """Calculate linear regression statistics.
 
         Uses ``scipy.stats.linregress`` as the single source of truth for slope,
-        intercept, r, p and std_err; ``r_squared`` is ``r_value ** 2`` (numerically
-        identical to ``sklearn.metrics.r2_score`` for ordinary least squares, which
-        the heavy scikit-learn dependency was previously pulled in to compute).
+        intercept, p and std_err; ``r_squared`` is computed from the residual vs.
+        total sum-of-squares (``1 - SS_res/SS_tot``), which is identical to
+        ``r_value ** 2`` for ordinary data and matches the former
+        ``sklearn.metrics.r2_score`` in the degenerate constant-y case (perfect
+        fit → 1.0, rather than scipy's NaN).
         """
         X = np.arange(len(monthly_df)).reshape(-1, 1)
         y = monthly_df["avg_value"].values
         x_flat = X.flatten()
 
         try:
-            slope, intercept, r_value, p_value, std_err = stats.linregress(x_flat, y)
-            r2 = float(r_value) ** 2
+            slope, intercept, _, p_value, std_err = stats.linregress(x_flat, y)
         except ValueError:
             # Degenerate input (e.g. <2 points or constant x): safe fallback.
             slope = 0.0
             intercept = float(np.mean(y)) if len(y) else 0.0
-            r2 = 0.0
             p_value = 0.5
             std_err = 0.0
 
-        # Guard against NaN r_squared from edge-case inputs (e.g. constant y).
-        if not np.isfinite(r2):
-            r2 = 0.0
-
         # Predicted values for the confidence-interval calculation.
         y_pred = intercept + slope * x_flat
+
+        # r_squared via SS — sklearn r2_score convention (0/0 → 1.0 for a
+        # perfect fit of a constant series, not scipy's NaN/0.0).
+        ss_res = float(np.sum((y - y_pred) ** 2))
+        ss_tot = float(np.sum((y - np.mean(y)) ** 2))
+        if ss_tot == 0.0:
+            r2 = 1.0 if ss_res == 0.0 else 0.0
+        else:
+            r2 = 1.0 - ss_res / ss_tot
 
         # Confidence interval (95%)
         confidence_interval = self._calculate_confidence_interval(X, y, y_pred)

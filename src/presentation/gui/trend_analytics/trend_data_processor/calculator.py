@@ -52,26 +52,33 @@ def _calculate_regression(
 ) -> tuple[np.ndarray, np.ndarray, float, float, float, float, float, float]:
     """Calculate linear regression values for the monthly series (scipy-only).
 
-    A single ``stats.linregress`` call yields slope, intercept, r, p and std_err;
-    ``r_squared`` is ``r_value ** 2`` (identical to ``sklearn`` r2_score for
-    ordinary least squares), removing the heavy scikit-learn dependency.
+    A single ``stats.linregress`` call yields slope, intercept, p and std_err;
+    ``r_squared`` is computed from the residual vs. total sum-of-squares
+    (``1 - SS_res/SS_tot``), identical to ``r_value ** 2`` for ordinary data and
+    matching the former ``sklearn`` r2_score in the degenerate constant-y case
+    (perfect fit → 1.0, not scipy's NaN/0.0).
     Returns (x_values, y_values, slope, intercept, r2, trend_per_decade,
     p_value, std_err).
     """
     x_values = np.arange(len(monthly_df)).reshape(-1, 1)
     y_values = monthly_df["avg_value"].values
     try:
-        slope, intercept, r_value, p_value, std_err = stats.linregress(x_values.flatten(), y_values)
-        r2 = float(r_value) ** 2
+        slope, intercept, _, p_value, std_err = stats.linregress(x_values.flatten(), y_values)
     except ValueError:
         # Degenerate input (e.g. <2 points or constant x): safe fallback.
         slope = 0.0
         intercept = float(np.mean(y_values)) if len(y_values) else 0.0
-        r2 = 0.0
         p_value = 0.5
         std_err = 0.0
-    if not np.isfinite(r2):
-        r2 = 0.0
+    y_pred = slope * x_values.flatten() + intercept
+    # r_squared via SS — sklearn r2_score convention (0/0 → 1.0 for a perfect
+    # fit of a constant series, not scipy's NaN/0.0).
+    ss_res = float(np.sum((y_values - y_pred) ** 2))
+    ss_tot = float(np.sum((y_values - np.mean(y_values)) ** 2))
+    if ss_tot == 0.0:
+        r2 = 1.0 if ss_res == 0.0 else 0.0
+    else:
+        r2 = 1.0 - ss_res / ss_tot
     trend_per_decade = float(slope) * 12 * 10
     return (
         x_values,

@@ -114,6 +114,9 @@ class TestCalculateLinearRegression(TestTrendStatisticsCalculator):
         result = calculator.calculate_linear_regression(df)
         assert result is not None
         assert result["slope"] == 0
+        # A perfectly-fit constant series yields r_squared == 1.0 (the former
+        # sklearn.metrics.r2_score convention for 0/0; scipy alone gives NaN→0).
+        assert result["r_squared"] == 1.0
 
     def test_handles_negative_trend(self, calculator: TrendStatisticsCalculator) -> None:
         """Should handle negative trend."""
