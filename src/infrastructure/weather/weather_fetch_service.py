@@ -8,8 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 
 from src.domain.analytics.models import CityWeatherData
-
-from .weather_fetch_service_support import (
+from src.domain.analytics.services.weather_fetch_service_support import (
     create_city_results,
     create_empty_city_data,
     normalize_weather_result,

@@ -7,6 +7,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Protocol
 
+from src.domain.analytics.models import CityWeatherData
 from src.domain.value_objects.enums import DataProvider
 
 
@@ -106,6 +107,25 @@ class WeatherClientPort(Protocol):
         longitude: float,
         user_override_provider: str | None = None,
     ) -> tuple[dict[str, Any] | None, str]: ...
+
+
+class WeatherFetchPort(Protocol):
+    """Port for batched, retry-capable multi-city weather fetching.
+
+    The implementation (ThreadPoolExecutor, retry, throttling) lives in
+    infrastructure; application use cases depend on this Protocol, not the
+    concrete class, so the domain stays framework-agnostic (Clean Architecture
+    dependency rule, criterion #26).
+    """
+
+    def fetch_weather_data_dual_api_batch(  # noqa: D102
+        self,
+        cities: list[dict[str, Any]],
+        date: str,
+        region_config: dict[str, Any],
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list[CityWeatherData]: ...
 
 
 class WeatherRepositoryPort(Protocol):

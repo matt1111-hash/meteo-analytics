@@ -4,6 +4,7 @@ from .city_weather_ports import (
     CityManagerPort,
     WeatherClientPort,
     WeatherFetchParams,
+    WeatherFetchPort,
     WeatherRepositoryPort,
 )
 from .enum_ports import (
@@ -24,5 +25,6 @@ __all__ = [
     "RegionScopePort",
     "WeatherClientPort",
     "WeatherFetchParams",
+    "WeatherFetchPort",
     "WeatherRepositoryPort",
 ]
