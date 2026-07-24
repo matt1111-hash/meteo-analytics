@@ -93,16 +93,20 @@ class WeatherAnalysisRequest(BaseModel):
             raise ValueError("date_range objektum kell legyen.")
         if not _has_supported_date_keys(value):
             raise ValueError("date_range tartalmazzon 'date' vagy 'start'/'end' kulcsot.")
+        # Validate every present date field. The adapter prefers a `date` field
+        # over start/end, so `date` must be validated even when a range is also
+        # present — otherwise a malformed `date` slips past the API boundary.
+        date_value = value.get("date")
         start = value.get("start")
         end = value.get("end")
-        if start and end:
-            validate_date_span(validate_iso_date(str(start)), validate_iso_date(str(end)))
-        elif start:
+        if date_value:
+            validate_iso_date(str(date_value))
+        if start:
             validate_iso_date(str(start))
-        elif end:
+        if end:
             validate_iso_date(str(end))
-        elif value.get("date"):
-            validate_iso_date(str(value["date"]))
+        if start and end:
+            validate_date_span(str(start), str(end))
         return value
 
     model_config = ConfigDict(frozen=True)

@@ -114,6 +114,16 @@ def test_weather_request_rejects_malformed_date() -> None:
         _valid_request(date_range={"start": "2026-03-01", "end": "not-a-date"})
 
 
+def test_weather_request_rejects_malformed_date_alongside_range() -> None:
+    """A malformed 'date' is rejected even when a valid start/end range is present.
+
+    The adapter prefers a 'date' field over start/end, so 'date' must be
+    validated regardless of the range (otherwise date='hibás' slips through).
+    """
+    with pytest.raises(ValidationError):
+        _valid_request(date_range={"date": "hibás", "start": "2026-03-01", "end": "2026-03-15"})
+
+
 # --- adapter cap -------------------------------------------------------------
 
 
