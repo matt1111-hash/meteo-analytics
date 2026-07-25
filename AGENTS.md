@@ -1,5 +1,5 @@
 # AGENTS.md — Universal Edition
-**Version: 3.3 (2026-06-27) | Scope: minden repo | Lang: magyar**
+**Version: 24 (2026-07-25) | Scope: minden repo | Lang: magyar**
 
 > Stack-független szerződés az ember és az agent között. A magyar nyelvű
 > természetes kommunikáció a fő interfész, nem a prompt engineering.

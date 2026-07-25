@@ -1,5 +1,5 @@
 # PRODUCTION MANDATE
-**Version: 2.3 (2026-05-24) | Scope: minden repository és agent**
+**Version: 24 (2026-07-25) | Scope: minden repository és agent**
 
 > v2.2-höz képest: lock/dependency/security elvárások maturity-level szerint pontosítva.
 
