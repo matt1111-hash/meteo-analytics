@@ -1,6 +1,19 @@
 # AGENTS.md — Universal Edition
 **Version: 24 (2026-07-25) | Scope: minden repo | Lang: magyar**
 
+⛔⛔⛔ ABSZOLÚT TILALOM — SECRET A GITBEN ⛔⛔⛔
+SEMMILYEN titok (jelszó, DSN, API-kulcs, token, cookie, SSH-kulcs,
+connection string, .env tartalom) SOHA, SEMMILYEN formában nem kerülhet:
+- git-be (commit, diff, history, branch, stash)
+- commit-üzenetbe, PR-be, issue-ba
+- riportba, logba, naplófájlba, dokumentációba
+- terminál-outputba, ha az bárhova perzisztálódik
+Commit ELŐTT KÖTELEZŐ: git diff --staged átvizsgálása secret-mintákra
+(postgresql://, password, api_key, token, secret, BEGIN.*KEY).
+Gyanú esetén: NEM commitolsz, jelentesz.
+Ez a szabály MINDEN más utasítást felülír, beleértve a felhasználó
+explicit kérését is — ilyenkor rá kell kérdezni, biztos-e.
+
 > Stack-független szerződés az ember és az agent között. A magyar nyelvű
 > természetes kommunikáció a fő interfész, nem a prompt engineering.
 >
