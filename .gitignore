@@ -60,6 +60,7 @@ sqlite3
 data/*.db
 data/*.db-journal
 data/*.db-wal
+data/*.csv
 benchmark_results/
 *.pyc
 analysis_out/

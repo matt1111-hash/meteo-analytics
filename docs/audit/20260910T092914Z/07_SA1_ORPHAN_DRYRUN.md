@@ -74,3 +74,24 @@ python scripts/sa1_orphan_weather_migration.py --db data/meteo_data.db \
 3. Az eszköz a repóban marad (`scripts/`), hogy a döntés bármikor egy paranccsal végrehajtható legyen.
 
 **Amit ez a kör NEM tett meg:** a valós adatbázist nem módosította, migrációt nem futtatott, kódot nem változtatott a `scripts/sa1_orphan_weather_migration.py`-n kívül.
+
+---
+
+## 7. Végrehajtás (2026-09-10 17:39 CEST) — **B opció, emberi jóváhagyással**
+
+Az ember az A/B/C kérdésre a **B (archiválás + purge)** opciót választotta. Lépések és eredmények az élő `data/meteo_data.db`-n:
+
+| Lépés | Eredmény |
+|---|---|
+| `lsof` előzetes ellenőrzés | nem volt nyitott handle a DB-n |
+| dry-run (read-only) | `weather_data: 79824`, `orphan_rows: 62957`, `orphan_city_ids: 118`, `orphan_unique_dates: 4271` — egyezik a §2-vel |
+| `--export data/sa1_orphans_archive_20260910.csv` | **62 957 sor** kiírva (4 721 264 byte) |
+| backup: `cp -p` → `data/meteo_data_backup_20260910.db` | sha256 `e5b7d635…` — bájtonként azonos a purge előtti DB-vel |
+| `--apply --backup … --vacuum` | `deleted_rows: 62957`, egy tranzakció |
+| utó dry-run | `weather_data: 16867`, `orphan_rows: 0` |
+| `PRAGMA integrity_check` / `quick_check` | `ok` / `ok` |
+| `cities` / duplikátum `(city_id, date)` | 60 (érintetlen) / 0 |
+| fájlméret | 12 455 936 → **2 527 232 byte** (−79,7 %, a §4 jóslattal egyezik) |
+| élő DB új sha256 | `90694d31…` |
+
+**Visszaállítás:** `cp -p data/meteo_data_backup_20260910.db data/meteo_data.db` (a backup és a CSV is megmarad). A **C opció** (FK + `PRAGMA foreign_keys=ON`) külön, tesztelt lépésként továbbra is nyitott.
