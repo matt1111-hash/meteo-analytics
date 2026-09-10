@@ -207,7 +207,8 @@ class DatabaseManager:
             current_city_data: Jelenlegi város adatai
 
         Returns:
-            bool: Sikeres volt-e a mentés
+            bool: True, ha legalább egy sor elmentésre került (részleges mentés
+            is True — a sikertelen sorok naplózottak); 0 sikeres sornál False.
         """
         try:
             if not current_city_data:
