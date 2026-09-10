@@ -83,6 +83,18 @@ class DatabaseManager:
         self._logger = logging.getLogger(__name__)
         self._init_database_connection()
 
+    def _connect(self) -> sqlite3.Connection:
+        """
+        Kapcsolatnyitás FOREIGN KEY enforcement mellett (SA-1 C).
+
+        A PRAGMA kapcsolatonként érvényesül, ezért minden nyitásnál állítani
+        kell; a séma a FK-t deklarálja (city_id -> cities.id), így a tranzakción
+        kívül futtatott PRAGMA az árva weather_data sorokat DB-szinten blokkolja.
+        """
+        conn = sqlite3.connect(str(self.db_path))
+        conn.execute("PRAGMA foreign_keys = ON")
+        return conn
+
     def _init_database_connection(self) -> None:
         """Adatbázis kapcsolat inicializálása wind gusts séma frissítéssel."""
         try:
@@ -90,7 +102,7 @@ class DatabaseManager:
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
             # Kapcsolat tesztelése és séma frissítés
-            conn = sqlite3.connect(str(self.db_path))
+            conn = self._connect()
 
             # Adatbázis séma frissítés wind_gusts_max oszloppal
             self._update_database_schema(conn)
@@ -164,7 +176,7 @@ class DatabaseManager:
             city_data: Település adatok
         """
         try:
-            conn = sqlite3.connect(str(self.db_path))
+            conn = self._connect()
             cursor = conn.cursor()
 
             # Upsert (ON CONFLICT) művelet — a meglévő sor id-je megmarad,
@@ -215,7 +227,7 @@ class DatabaseManager:
                 self._logger.warning("⚠️ Nincs város adat az időjárási adatok mentéséhez")
                 return False
 
-            conn = sqlite3.connect(str(self.db_path))
+            conn = self._connect()
             cursor = conn.cursor()
 
             # Város ID lekérdezése
@@ -280,12 +292,12 @@ class DatabaseManager:
 
     def get_connection(self) -> sqlite3.Connection:
         """
-        Adatbázis kapcsolat lekérdezése.
+        Adatbázis kapcsolat lekérdezése FOREIGN KEY enforcement mellett.
 
         Returns:
-            SQLite kapcsolat
+            SQLite kapcsolat (PRAGMA foreign_keys = ON)
         """
-        return sqlite3.connect(str(self.db_path))
+        return self._connect()
 
     @property
     def path(self) -> Path:
