@@ -194,6 +194,32 @@ class CityManagerStats(CityManagerSearch):
         cities = self.get_hungarian_settlements_by_county(county)
         return [city.to_dict() for city in cities]
 
+    def get_cities_for_region(
+        self,
+        region: str,
+        limit: int | None = None,
+        max_cities: int | None = None,
+    ) -> list[dict[str, Any]]:
+        """Get cities for a region (Port implementation).
+
+        Only the "Hungary" region is resolved by the product; it delegates to
+        the existing bulk settlement query. Other regions return an empty list
+        because no region resolver is defined for them.
+
+        Args:
+            region: Region name (e.g., "Hungary")
+            limit: Maximum number of cities to return
+            max_cities: Fallback maximum when limit is not given
+
+        Returns:
+            List of dictionaries with settlement data
+        """
+        if region != "Hungary":
+            return []
+
+        cap = limit or max_cities or 200
+        return self.get_settlements_bulk(limit=cap)
+
     def get_settlements_bulk(self, limit: int = 200) -> list[dict[str, Any]]:
         """Get Hungarian settlements in a single query (no N+1).
 
