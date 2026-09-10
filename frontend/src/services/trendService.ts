@@ -99,13 +99,31 @@ export interface TrendAnalysisResult {
 export const fetchTrendAnalysis = async (
   request: TrendAnalysisRequest,
 ): Promise<TrendAnalysisResult> => {
-  const response = await apiClient.post<TrendAnalysisResult>('/api/analytics/trend', request);
+  const response = await apiClient.post<TrendAnalysisResult>('/api/analytics/trend', request, {
+    timeout: TREND_REQUEST_TIMEOUT_MS,
+  });
   return response.data;
 };
 
 // =============================================================================
 // CONSTANTS
 // =============================================================================
+
+/**
+ * Per-request timeout for the trend endpoint (ms).
+ *
+ * The shared client timeout is 30 s, which is shorter than the algorithmic
+ * floor of a default request: `time_periods = [5, 10, 25, 55]` makes the use
+ * case fetch 55 years, i.e. 274 Open-Meteo chunk requests (90 days each) with
+ * the provider's 0.6 s inter-chunk throttle, spread over 4 workers — measured
+ * floor 33.7 s without any network latency (offline measurement, 2026-09-10).
+ * The trend screen therefore uses its own, longer budget.
+ *
+ * Note: the client's retry interceptor only retries network codes
+ * (ECONNREFUSED/ERR_NETWORK/ECONNRESET/ETIMEDOUT) and 5xx, never an axios
+ * timeout (ECONNABORTED), so this longer budget cannot be doubled by a retry.
+ */
+export const TREND_REQUEST_TIMEOUT_MS = 120_000;
 
 /**
  * Available time periods for trend analysis (years)
