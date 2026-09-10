@@ -39,9 +39,14 @@ logs/
 # OS
 .DS_Store
 
-# Secrets
-.secrets.baseline
+# Secrets (.secrets.baseline is tracked on purpose — review with PRs)
 .env
+
+# Local agent tool state (Reasonix / DeepSeek / Repowise)
+.deepseek/
+.reasonix/
+.repowise/
+reasonix.toml
 
 # Temp files
 *.save
