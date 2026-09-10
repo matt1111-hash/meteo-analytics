@@ -271,7 +271,7 @@ class DatabaseManager:
             self._logger.info(
                 f"✅ Weather data mentve adatbázisba ({data_provider}): {saved_count} rekord"
             )
-            return True
+            return saved_count > 0
 
         except Exception as e:
             self._logger.error(f"Weather data adatbázis hiba: {e}")
