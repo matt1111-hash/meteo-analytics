@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import logging
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
+from concurrent.futures import TimeoutError as FuturesTimeoutError
 from typing import Any
 
 from src.domain.analytics.models import CityWeatherData
@@ -107,6 +108,13 @@ class WeatherFetchService:
     ) -> list[CityWeatherData]:
         """Process a batch in parallel and collect results.
 
+        `request_timeout` is a wall-clock budget for the whole batch: once it is
+        exhausted no further city is started, the still-queued cities are
+        cancelled and reported as failed, while already running fetches are
+        still harvested (each HTTP call is capped by `APIConfig.REQUEST_TIMEOUT`,
+        so they drain quickly). Previously the per-future timeout below was a
+        no-op, because `as_completed` only yields futures that are already done.
+
         Returns:
             Flattened list of CityWeatherData (multiple days per city).
         """
@@ -119,21 +127,45 @@ class WeatherFetchService:
                 for city in batch
             }
 
-            for future in as_completed(futures):
-                city = futures[future]
-                try:
-                    city_data_list = future.result(timeout=self.request_timeout)
-                    # Flatten the list - each city returns multiple days
-                    batch_results.extend(city_data_list)
-                except Exception as exc:
-                    logger.error(
-                        "⚠ Hiba a város feldolgozásánál (%s): %s",
-                        city.get("city"),
-                        exc,
-                        exc_info=True,
-                    )
-                    batch_results.append(self.create_empty_city_data(city, str(exc)))
+            collected: set[Future] = set()
+            try:
+                for future in as_completed(futures, timeout=self.request_timeout):
+                    collected.add(future)
+                    self._collect_batch_result(future, futures[future], batch_results)
+            except FuturesTimeoutError:
+                skipped = [future for future in futures if future.cancel()]
+                logger.error(
+                    "⚠ Batch időkeret (%.0fs) lejárt: %d város kihagyva, %d fut tovább",
+                    self.request_timeout,
+                    len(skipped),
+                    len(futures) - len(skipped),
+                )
+                batch_results.extend(
+                    self.create_empty_city_data(futures[future], "batch deadline exceeded")
+                    for future in skipped
+                )
+                for future, city in futures.items():
+                    if future not in skipped and future not in collected:
+                        self._collect_batch_result(future, city, batch_results)
+
         return batch_results
+
+    def _collect_batch_result(
+        self, future: Future, city: dict[str, Any], batch_results: list[CityWeatherData]
+    ) -> None:
+        """Append one city's fetched rows, or its failure placeholder."""
+        try:
+            city_data_list = future.result()
+            # Flatten the list - each city returns multiple days
+            batch_results.extend(city_data_list)
+        except Exception as exc:
+            logger.error(
+                "⚠ Hiba a város feldolgozásánál (%s): %s",
+                city.get("city"),
+                exc,
+                exc_info=True,
+            )
+            batch_results.append(self.create_empty_city_data(city, str(exc)))
 
     def fetch_single_city_weather_dual_api(
         self, city: dict[str, Any], start_date: str, end_date: str | None = None
