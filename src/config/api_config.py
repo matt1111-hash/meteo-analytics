@@ -43,10 +43,6 @@ class APIConfig:
     METEOSTAT_MONTHLY_LIMIT: ClassVar[int] = 10000
     METEOSTAT_RATE_LIMIT: ClassVar[float] = 0.1
 
-    # API Authentication
-    API_KEY: ClassVar[str | None] = os.getenv("API_KEY")
-    API_KEY_ENABLED: ClassVar[bool] = bool(API_KEY)
-
     # CORS — default origin matches the Vite dev server (port 5174).
     CORS_ORIGINS: ClassVar[list[str]] = [
         origin.strip()
@@ -84,8 +80,6 @@ class APIConfig:
         """Re-read env vars so tests with monkeypatch see updated values."""
         with cls._reload_lock:
             cls.METEOSTAT_API_KEY = os.getenv("METEOSTAT_API_KEY")
-            cls.API_KEY = os.getenv("API_KEY")
-            cls.API_KEY_ENABLED = bool(cls.API_KEY)
             cls.CORS_ORIGINS = [
                 origin.strip()
                 for origin in os.getenv("CORS_ORIGINS", "http://localhost:5174").split(",")
