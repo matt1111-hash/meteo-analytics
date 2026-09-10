@@ -167,11 +167,17 @@ class DatabaseManager:
             conn = sqlite3.connect(str(self.db_path))
             cursor = conn.cursor()
 
-            # Upsert (INSERT OR REPLACE) művelet
+            # Upsert (ON CONFLICT) művelet — a meglévő sor id-je megmarad,
+            # így a weather_data előzmény nem szakad el (nincs árva city_id).
             cursor.execute(
                 """
-                INSERT OR REPLACE INTO cities (name, latitude, longitude, country, region)
+                INSERT INTO cities (name, latitude, longitude, country, region)
                 VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(name) DO UPDATE SET
+                    latitude = excluded.latitude,
+                    longitude = excluded.longitude,
+                    country = excluded.country,
+                    region = excluded.region
             """,
                 (
                     city_data["name"],
