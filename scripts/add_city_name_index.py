@@ -15,11 +15,13 @@ HUNGARIAN_DB = PROJECT_ROOT / "data" / "hungarian_settlements.db"
 
 
 def _column_exists(cursor: sqlite3.Cursor, table: str, column: str) -> bool:
-    cursor.execute(f"PRAGMA table_info({table})")
-    return any(row[1] == column for row in cursor.fetchall())
+    """Detect ordinary and generated columns without interpolating identifiers."""
+    cursor.execute("SELECT 1 FROM pragma_table_xinfo(?) WHERE name = ?", (table, column))
+    return cursor.fetchone() is not None
 
 
 def _index_exists(cursor: sqlite3.Cursor, index_name: str) -> bool:
+    """Return whether the named index already exists."""
     cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name=?", (index_name,))
     return cursor.fetchone() is not None
 

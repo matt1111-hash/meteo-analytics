@@ -19,14 +19,6 @@ For backward compatibility, all original symbols remain available.
 """
 
 # ============================================================================
-# TYPES
-# ============================================================================
-# ============================================================================
-# DEMO
-# ============================================================================
-from src.infrastructure.anomaly.anomaly_demo import demo_anomaly_profile_manager
-
-# ============================================================================
 # STORAGE
 # ============================================================================
 from src.infrastructure.anomaly.anomaly_storage import AnomalyProfileStorage
@@ -43,6 +35,15 @@ __all__ = [
     "AnomalyProfileStorage",
     "demo_anomaly_profile_manager",
 ]
+
+
+def demo_anomaly_profile_manager() -> None:
+    """Load the optional demo only when explicitly requested."""
+    from src.infrastructure.anomaly.anomaly_demo import (  # noqa: PLC0415
+        demo_anomaly_profile_manager as run_demo,
+    )
+
+    run_demo()
 
 
 if __name__ == "__main__":

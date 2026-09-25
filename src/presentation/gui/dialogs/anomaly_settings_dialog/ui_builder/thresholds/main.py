@@ -3,11 +3,19 @@
 
 from PySide6.QtWidgets import QTabWidget, QVBoxLayout, QWidget
 
-from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder import (
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.categories import (
     create_categories_tab,
-    create_precipitation_section,
+)
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.preview import (
     create_preview_tab,
+)
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds.precipitation import (
+    create_precipitation_section,
+)
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds.temperature import (
     create_temperature_section,
+)
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds.wind import (
     create_wind_section,
 )
 

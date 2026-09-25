@@ -3,7 +3,7 @@
 
 from PySide6.QtWidgets import QGroupBox, QLabel, QSpinBox, QVBoxLayout
 
-from ...utils import AnomalyConstants
+from src.presentation.gui.utils import AnomalyConstants
 
 
 def create_wind_section(dialog: object) -> QGroupBox:

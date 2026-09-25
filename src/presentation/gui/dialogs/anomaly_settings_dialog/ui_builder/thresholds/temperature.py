@@ -3,7 +3,7 @@
 
 from PySide6.QtWidgets import QDoubleSpinBox, QGroupBox, QLabel, QVBoxLayout
 
-from ...utils import AnomalyConstants
+from src.presentation.gui.utils import AnomalyConstants
 
 
 def create_temperature_section(dialog: object) -> QGroupBox:

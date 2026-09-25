@@ -62,15 +62,7 @@ def _log_saved_wind_metrics(
 
 
 class DatabaseManager:
-    """
-    Adatbázis műveletek kezelése.
-
-    Felelőségek:
-    - Adatbázis kapcsolat inicializálása
-    - Séma frissítések (wind_gusts_max, data_provider oszlopok)
-    - Város adatok mentése
-    - Időjárási adatok mentése
-    """
+    """SQLite-kapcsolat és séma kezelése, város- és időjárási adatok mentése."""
 
     def __init__(self, db_path: Path):
         """

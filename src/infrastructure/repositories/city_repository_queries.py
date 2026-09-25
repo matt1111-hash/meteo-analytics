@@ -232,8 +232,10 @@ class CityRepositoryQueries:
             try:
                 with sqlite3.connect(db_path) as conn:
                     cur = conn.cursor()
-                    cur.execute(f"PRAGMA table_info({table_name})")
-                    return any(row[1] == column for row in cur.fetchall())
+                    cur.execute(
+                        "SELECT 1 FROM pragma_table_xinfo(?) WHERE name = ?", (table_name, column)
+                    )
+                    return cur.fetchone() is not None
             except sqlite3.OperationalError:
                 return False
         return False

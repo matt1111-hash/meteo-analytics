@@ -8,6 +8,9 @@ from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.categories 
     create_categories_grid,
     create_categories_tab,
 )
+from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.core import (
+    AnomalySettingsUIBuilder,
+)
 from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.header import (
     create_header_section,
     create_profile_section,
@@ -24,6 +27,7 @@ from src.presentation.gui.dialogs.anomaly_settings_dialog.ui_builder.thresholds 
 )
 
 __all__ = [
+    "AnomalySettingsUIBuilder",
     "create_buttons_section",
     "create_categories_grid",
     "create_categories_tab",

@@ -33,9 +33,14 @@ def handle_export_request(window: "MainWindow", format: str) -> None:
 def show_extreme_weather(window: "MainWindow") -> None:
     """Szélsőséges időjárás dialog."""
     try:
-        from ..dialogs import ExtremeWeatherDialog  # noqa: PLC0415
+        from ...dialogs import ExtremeWeatherDialog  # noqa: PLC0415
 
-        dialog = ExtremeWeatherDialog(window)
+        panel = window.results_panel
+        if panel is None or not panel.current_data:
+            show_error(window, "Nincs megjelenített eredmény a szélsőséges időjárás elemzéséhez.")
+            return
+
+        dialog = ExtremeWeatherDialog(window, panel.current_data, panel.current_city)
         dialog.exec()
     except Exception as e:
         show_error(window, f"Hiba a szélsőséges időjárás megnyitásakor: {e}")
