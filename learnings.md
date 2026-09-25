@@ -8,13 +8,13 @@
 
 ## AKTUÁLIS ÁLLAPOT
 
-- **Aktív feladat:** A bloat-javítások elkészültek; Tibor kifejezetten commitot, pusht és zöld GitHub Actions futásokat kért. A publikálás és CI-ellenőrzés folyamatban.
-- **Hol tartok most:** `main` @ `2f5d40f`, szándékos, még nem commitolt javítások. A javítás alapja a `BLOAT_FINAL_20260925.md` volt; a `docs/` auditfájlok a commit előkészítése közben eltűntek a munkafából, így a jelentés nem kerül ebbe a commitba. 11 maradványfájl / 182 sor törölve; 12 kód-/scriptfájl módosult; 4 új tesztfájl / 19 regressziós eset; két helyi SQLite DB sémája migrálva.
-- **Ellenőrzés:** Teljes backend quality gate exit 0 / ALL CHECKS PASSED; **1766 passed, 1 warning in 32.52s**, coverage **92,98%** a meglévő GUI-kizárással. Valódi Qt menü → dialógus → napi/havi váltás; migráció kétszer mindkét élő DB-n; változatlan eredeti rekordok, hibátlan integritás; törlés utáni 11 importpróba sikeres.
-- **Eredmény:** F-01 teljes importlánc és konstruktoradatok rendben; F-02 generált oszlopok felismerése paraméterezett table_xinfo-val; F-03 demo csak meghíváskor töltődik, nincs importkör; F-04 mind a négy debug-delegálás javítva. A database_manager ismétlődő osztályleírásának tömörítésével 297 sor, futási logikája változatlan.
-- **Következő lépés:** A célzott javítási commit pusholása main-re, majd az adott SHA CI / Health Check / Pre-commit futásainak ellenőrzése. A korábbi stage-elt audittörlések nem részei ennek a commitnak; az eltűnt untracked auditfájlokat nem állítottam vissza.
-- **Nyitott kérdések / fenntartások:** A migrált repository prefixkeresési ágra vált. A követett `data/cities.db` és `data/hungarian_settlements.db` szándékosan módosult. Gitből kizárt, ellenőrzött mentések: `data/cities_pre_bloat_20260925.db`, `data/hungarian_settlements_pre_bloat_20260925.db`. Frontend és teljes interaktív desktop E2E nem futott.
-- **Blokkoló:** Nincs. A sandbox AnyIO-hívásai elakadtak; a három API-teszt sandboxon kívül 0,06 s alatt átment, a végső teljes kapu is ott sikeres. A nyolc korábbi stage-elt audittörlés megőrizve; nincs új stage, commit vagy push.
+- **Aktív feladat:** A bloat-javítások elkészítése, commit/push és GitHub-ellenőrzése **KÉSZ**. Tibor explicit időkorlát nélkül kérte a javításokat, majd külön engedélyezte a commitot és pusht.
+- **Hol tartok most:** A `2035013d3c5a9f876252e25264cb0a19d448a355` kódcommit az `origin/main` ágra pusholva. F-01–F-04 javítva, J-01–J-11 törölve (11 fájl / 182 sor), 19 regressziós eset hozzáadva, a két helyi SQLite DB migrálva. A CI/Health Check megkapta a Qt-tesztekhez szükséges libegl1/libopengl0 csomagokat és az offscreen beállítást.
+- **Ellenőrzés:** Teljes helyi backend kapu zöld: **1766 passed, 1 warning in 32.52s**, **92,98%** a meglévő GUI-kizárás mellett; 19 új teszt a CI pluginbeállításával is sikeres. Minden helyi git hook sikeres, Gitleaks és detect-secrets tiszta. A kódcommit GitHub-futásai mind sikeresek: [CI](https://github.com/matt1111-hash/meteo-analytics/actions/runs/36157687858), [Health Check, Python 3.12 és 3.13](https://github.com/matt1111-hash/meteo-analytics/actions/runs/36157687931), [Pre-commit](https://github.com/matt1111-hash/meteo-analytics/actions/runs/36157687738).
+- **Eredmény:** A valódi Qt menü megnyitja a dialógust és működik a napi/havi váltás. A generált oszlopok felismerése paraméterezett table_xinfo-val történik, a migráció kétszer is lefut. Nincs demo-importkör; mind a négy map-debug delegálás működik. A database_manager ismétlődő osztályleírása tömörítve (297 sor), futási logikája változatlan.
+- **Következő lépés:** Nincs további termékjavítás ebben a körben. A feltételes modul-/adat-/függőségkivezetés, valamint a korábbi stage-elt audittörlések rendezése külön munkakör.
+- **Nyitott kérdések / fenntartások:** A repository migráció után prefixkeresést használ. Az adatbázisok eredeti rekordjai változatlanok; Gitből kizárt mentések: `data/cities_pre_bloat_20260925.db`, `data/hungarian_settlements_pre_bloat_20260925.db`. A `docs/` untracked auditanyagai a commit előkészítése közben eltűntek; az agent nem törölte és nem állította vissza őket, ezért a jelentés nincs a commitban. A korábbi nyolc stage-elt audittörlés megmaradt. Teljes interaktív desktop E2E és a csak manuálisan/PR-ra induló E2E workflow nem futott.
+- **Blokkoló:** Nincs. A sandbox AnyIO-elakadása miatt a helyi teljes kapu és git hookok engedélyezett sandboxon kívüli környezetben futottak. A teszteket és kapuküszöböket nem gyengítettem.
 - **Utolsó frissítés:** 2026-09-25 | agent: Codex
 
 ---
@@ -251,3 +251,10 @@
 - **Döntés:** A korábbi, más auditkörből maradt stage-elt törlések és további untracked auditanyagok megőrzése mellett csak a javításokat publikálni. A végleges GitHub eredményekkel a napló lezárása még hátravan.
 
 - **Munkafaváltozás a publikálás közben:** A korábban untracked `docs/` auditanyagok, köztük a BLOAT_FINAL jelentés is eltűntek. Az agent nem törölte és nem állította vissza ezeket; a commitmanifest a megmaradt 32 javítási fájlra szűkült.
+
+
+### 2026-09-25 — Bloat-javítások pusholva, három GitHub workflow zöld
+- **Feladat:** Tibor „commit push, gh run zöld legyen” kérése.
+- **Eredmény:** `2035013` célzott kódcommit pusholva `origin/main`-re. GitHub CI (36157687858), Health Check (36157687931; Python 3.12/3.13) és Pre-commit (36157687738) mind `success`. A commit minden helyi hookon átment; Gitleaks nem talált titkot. A tesztkód változatlanul átment, csak a CI Qt rendszerfüggőségeinek telepítése és offscreen környezete egészült ki.
+- **Tanulság:** Az új GUI-regressziók futási rendszerkönyvtárait a CI és Health Check jobokban is biztosítani kell. A végső siker mindig az adott commit SHA-jához tartozó futásokból állapítandó meg.
+- **Döntés:** A korábbi nyolc stage-elt audittörlés külön maradt. Az untracked auditdokumentumok munka közbeni eltűnését megőriztem, a javítási commit 32 név szerint kijelölt fájlt tartalmaz. Ez a záró naplófrissítés külön dokumentációs commitként kerül pusholásra; termékkódja az ellenőrzött kódcommittal azonos.
